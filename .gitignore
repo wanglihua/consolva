@@ -1,0 +1,16 @@
+/csharp/Admin/bin/
+/csharp/Admin/obj/
+/csharp/Core/bin/
+/csharp/Core/obj/
+/csharp/Domain/bin/
+/csharp/Domain/obj/
+/csharp/Service/bin/
+/csharp/Service/obj/
+/csharp/Client/bin/
+/csharp/Client/obj/
+/csharp/Test/bin/
+/csharp/Test/obj/
+/csharp/Document/bin/
+/csharp/Document/obj/
+/csharp/.idea/
+
