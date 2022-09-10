@@ -1,0 +1,21 @@
+
+.Net Core 类注入单元测试
+
+ICreditCheckAppService _serviceClient = null;
+ 
+private void InitService()
+{
+    var config = new ConfigurationBuilder()
+        .Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })//ReloadOnChange = true 当appsettings.json被修改时重新加载
+        .Build();
+    IServiceCollection services = new ServiceCollection();
+    services.AddSingleton(config);
+    services.AddSingleton<ICIMSClient, CIMSClient>();
+    services.AddDbContext<CREDIT_CHECK_Context>();
+
+    var serviceProvider = services.BuildServiceProvider();
+    _serviceClient = serviceProvider.GetService<ICreditCheckAppService>();
+
+}
+
+有依赖的类需要通过 services.AddSingleton注入，并且需要在services.BuildServiceProvider(); 之前去做。

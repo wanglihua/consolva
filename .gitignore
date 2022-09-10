@@ -1,3 +1,5 @@
+
+*.DotSettings.user
 /csharp/Admin/bin/
 /csharp/Admin/obj/
 /csharp/Core/bin/
