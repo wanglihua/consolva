@@ -21,7 +21,7 @@ namespace shunda.Domain.Pass
         /// <summary>
         /// None
         /// </summary>
-        private static readonly UserStatus None = new UserStatus(0, "", "");
+        public static readonly UserStatus None = new UserStatus(0, "", "");
 
         public static UserStatus GetById(int id)
         {
