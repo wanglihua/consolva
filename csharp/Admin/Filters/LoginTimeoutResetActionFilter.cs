@@ -9,14 +9,10 @@ public class LoginTimeoutResetActionFilter : IActionFilter
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private LoginCustomerService loginCustomerService;
     private LoginUserService loginUserService;
 
-    public LoginTimeoutResetActionFilter(
-        LoginCustomerService loginCustomerService,
-        LoginUserService loginUserService)
+    public LoginTimeoutResetActionFilter(LoginUserService loginUserService)
     {
-        this.loginCustomerService = loginCustomerService;
         this.loginUserService = loginUserService;
     }
 
@@ -25,7 +21,6 @@ public class LoginTimeoutResetActionFilter : IActionFilter
     {
         // log.Trace("LoginTimeoutResetActionFilter.OnActionExecuting");
 
-        loginCustomerService.ResetLoginTimeout();
         loginUserService.ResetLoginTimeout();
     }
 
