@@ -10,6 +10,12 @@ namespace shunda.Domain.Pass;
 /// </summary>
 public class UserInfo : Entity
 {
+    public static readonly int DevUserId = 99999999; // 8 个 9
+
+    public static readonly string DevLoginName = "dev";
+
+    public static readonly int AdminUserId = 1;
+
     /// <summary>
     /// 登录名，非空
     /// </summary>

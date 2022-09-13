@@ -1,7 +1,5 @@
+using NHibernate;
 using shunda.Core.Service;
-using shunda.Domain;
-using NLog;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service;
 
@@ -11,12 +9,17 @@ namespace shunda.Service;
 [Service(ServiceType.Scoped)]
 public class UserService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
-
     private ISession session;
+    private AdminUserService adminUserService;
 
-    public UserService(ISession session)
+    public UserService(ISession session, AdminUserService adminUserService)
     {
         this.session = session;
+        this.adminUserService = adminUserService;
+    }
+
+    public bool IsUserAdmin(int userId)
+    {
+        return adminUserService.IsUserAdmin(userId);
     }
 }
