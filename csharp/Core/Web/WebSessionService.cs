@@ -15,7 +15,7 @@ namespace shunda.Core.Web;
 [Service(ServiceType.Scoped)]
 public class WebSessionService
 {
-    private string SessionIdCookieKey = "iepoch_session_id";
+    private string SessionIdCookieKey = "shunda_session_id";
 
     public string SessionId { get; set; } = string.Empty;
 
