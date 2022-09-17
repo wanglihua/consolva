@@ -4,10 +4,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using NLog;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Service;
 
 namespace shunda.Admin.Filters;
-
-/*
 
 public class AdminAuthActionFilter : IActionFilter
 {
@@ -141,5 +140,3 @@ public class AdminAuthActionFilter : IActionFilter
         }
     }
 }
-
-*/
