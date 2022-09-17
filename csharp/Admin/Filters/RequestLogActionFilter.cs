@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using NLog;
+using shunda.Service;
 
 namespace shunda.Admin.Filters;
-
-/*
 
 /// <summary>
 /// 这个只用于记录网站请求记录
@@ -49,5 +48,3 @@ public class RequestLogActionFilter : IActionFilter
         }
     }
 }
-
-*/
