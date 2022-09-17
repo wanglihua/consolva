@@ -24,15 +24,6 @@ public class PassResInfoMapping : ClassMapping<PassResInfo>
             }
         );
 
-        Property(
-            x => x.System,
-            map => {
-                map.Type<PassResSystemHibernateType>();
-                map.Column("system_id");
-                map.NotNullable(true);
-            }
-        );
-
         ManyToOne(
             x => x.Cate,
             map => {

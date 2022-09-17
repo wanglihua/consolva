@@ -1,9 +1,12 @@
 using NHibernate;
+using NLog;
 
 namespace shunda.Core.Hibernate;
 
 public class Transactional
 {
+    private static Logger log = LogManager.GetCurrentClassLogger();
+
     public static void Wrap(ISession session, Action action)
     {
         bool transactionBegin = false;
@@ -31,8 +34,10 @@ public class Transactional
         catch (Exception exp)
         {
             transaction?.Rollback();
-#pragma warning disable CA2200
-            throw exp;
+
+            log.Error(exp);
+
+            throw;
         }
     }
 }

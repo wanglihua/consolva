@@ -100,8 +100,7 @@ public class HibernateActionFilter : IActionFilter
                 transaction?.Rollback();
             }
 
-#pragma warning disable CA2200
-            throw exp; // 重新抛出给统一异常处理器
+            throw; // 重新抛出给统一异常处理器
         }
 
         // session.Close(); 在这里关闭会出错

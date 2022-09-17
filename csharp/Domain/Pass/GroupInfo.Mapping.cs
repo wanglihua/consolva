@@ -10,15 +10,6 @@ public class GroupInfoMapping : EntityMapping<GroupInfo>
         Table("tbl_group");
 
         Property(
-            x => x.System,
-            map => {
-                map.Type<PassResSystemHibernateType>();
-                map.Column("system_id");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
             x => x.Code,
             map => {
                 map.Type(NHibernateUtil.String);
