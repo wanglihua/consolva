@@ -1,0 +1,71 @@
+@model shunda.Core.ListModel
+
+@{
+    Layout = null;
+    string pagerIndexId = $"pageIndex_{Model.ListPager.TotalCount}_{new Random().Next(10000, 99999)}";
+    int pageCount = Model.ListPager.PageCount;
+    int pageNum = Model.ListPager.PageIndex + 1;
+    int pageIndexInputWidth = 35 + 7 * ((int)Math.Log10(pageNum) + 1);
+}
+
+<div class="data-list-pager" style="height: 27px; margin: 10px 0;">
+    <div style="line-height: 27px; float: left;">
+        <span>第&nbsp;@Model.ListPager.ItemBegin&nbsp;-&nbsp;@Model.ListPager.ItemEnd&nbsp;项&nbsp;&nbsp;共&nbsp;@Model.ListPager.TotalCount&nbsp;项</span>
+        &nbsp;&nbsp;
+        <span>第&nbsp;@(pageNum)&nbsp;页&nbsp;&nbsp;共&nbsp;@(pageCount)&nbsp;页</span>
+    </div>
+    <div style="float: right;">
+        <input id="@(pagerIndexId)" type="number" min="1" max="@(pageCount)" value="@(pageNum)" style="width: @(pageIndexInputWidth)px; height: 28px; text-align: center;" onkeydown="@(pagerIndexId)EnterKeyDown(event)"/>
+        <button type="button" onclick="@(pagerIndexId)GoClick()" class="btn btn-white" style="height: 28px; margin-top: -1px;">GO</button>
+        &nbsp;&nbsp;
+        <ul class="pagination pull-right no-margin">
+
+            <li>
+                <a href="javascript:@(ViewBag.LoadListFunc)(@Model.ListPager.FirstPageIndex)">
+                    @*<i class="ace-icon fa fa-angle-double-left">首页</i>*@
+                    首页
+                </a>
+            </li>
+
+            <li>
+                <a href="javascript:@(ViewBag.LoadListFunc)(@Model.ListPager.PrePageIndex)">
+                    @*<i class="ace-icon fa fa-angle-left"></i>*@
+                    上页
+                </a>
+            </li>
+
+            <li>
+                <a href="javascript:@(ViewBag.LoadListFunc)(@Model.ListPager.NextPageIndex)">
+                    @*<i class="ace-icon fa fa-angle-right"></i>*@
+                    下页
+                </a>
+            </li>
+
+            <li>
+                <a href="javascript:@(ViewBag.LoadListFunc)(@Model.ListPager.LastPageIndex)">
+                    @*<i class="ace-icon fa fa-angle-double-right">末页</i>*@
+                    末页
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+
+function @(pagerIndexId)EnterKeyDown(e) {
+    var keyCode = window.event ? e.keyCode : e.which;
+    var keyEnterCode = 13;
+
+    if(keyCode === keyEnterCode) {
+        @(pagerIndexId)GoClick();
+    }
+}
+
+function @(pagerIndexId)GoClick() {
+    var pageNumStr = $('#@(pagerIndexId)').val();
+    var pageIndex =  parseInt(pageNumStr) - 1;
+    @(ViewBag.LoadListFunc)(pageIndex);  
+}
+
+</script>
