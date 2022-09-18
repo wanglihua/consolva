@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NLog;
 using shunda.Service;
@@ -39,7 +40,15 @@ public class RequestLogActionFilter : IActionFilter
             // 网站请求数据库日志
             try
             {
-                siteRequestLogService.NewSiteRequest(context.HttpContext.Request, (decimal)requestTotalSeconds, useInnerTransaction: false);
+                var request = context.HttpContext.Request;
+
+                string relativeUrl = request.GetEncodedPathAndQuery();
+                if (relativeUrl.StartsWith("/admin") == false)
+                {
+                    log.Error($"url 没有以 /admin 开头: {relativeUrl}");
+                }
+
+                siteRequestLogService.NewSiteRequest(request, (decimal)requestTotalSeconds, useInnerTransaction: false);
             }
             catch (Exception exp) // 不能因为这个功能而影响了全局
             {

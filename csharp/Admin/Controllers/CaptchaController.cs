@@ -15,7 +15,7 @@ public class CaptchaController : Controller
     }
 
     [HttpGet]
-    [Route("/captcha")]
+    [Route("/admin/captcha")]
     public IActionResult Index()
     {
         MemoryStream memoryStream = captchaService.Create();
