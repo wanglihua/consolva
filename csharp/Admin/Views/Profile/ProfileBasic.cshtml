@@ -1,0 +1,94 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
+@model shunda.Admin.Models.Profile.ProfileBasicModel
+
+@{
+    ViewData[ViewDataKey.Title] = "修改密码";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="active" data-menu="profile-index-menu">个人设置</li>
+    <li>修改密码</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="save();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 780px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="profileForm" class="form-horizontal" role="form">
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="User.LoginName" class="col-xs-2 control-label">登录名</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="User.LoginName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="User.UserName" class="col-xs-2 control-label">用户名</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="User.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Password" class="col-xs-2 control-label">密码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Password" type="password" minlength="6" maxlength="18" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="PasswordAgain" class="col-xs-2 control-label">密码重输</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="PasswordAgain" type="password" minlength="6" maxlength="18" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function save() {
+        var form = $("#profileForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("BasicSave", "Profile")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    } 
+                    
+                    $.msg.show(data.message);
+                }
+            });
+        }
+    }
+</script>

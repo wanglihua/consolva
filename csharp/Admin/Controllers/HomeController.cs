@@ -25,6 +25,7 @@ public class HomeController : Controller
         return RedirectToAction("AdminIndex", "Home");
     }
 
+    [AdminAuth]
     [HttpGet]
     [Route("/admin")]
     public IActionResult AdminIndex()
@@ -34,6 +35,7 @@ public class HomeController : Controller
         return View("HomeAdminIndex", model);
     }
 
+    [AdminAuth]
     [HttpPost]
     [Route("/admin/home/set/sidebar/state")]
     public IActionResult SetSidebarState(bool isMin)
