@@ -1,7 +1,7 @@
 using NHibernate;
 using shunda.Core.Service;
 
-namespace shunda.Service;
+namespace shunda.Service.Pass;
 
 /// <summary>
 /// 用户 服务类

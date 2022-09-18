@@ -1,11 +1,10 @@
-using shunda.Core.Service;
-using shunda.Domain;
-using shunda.Domain.Pass;
 using Microsoft.Extensions.Caching.Memory;
 using NHibernate;
 using NLog;
+using shunda.Core.Service;
+using shunda.Domain.Pass;
 
-namespace shunda.Service;
+namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
 public class PassResService

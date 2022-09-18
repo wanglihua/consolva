@@ -5,7 +5,7 @@ using shunda.Core.Util;
 using shunda.Domain.Pass;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service;
+namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
 public class UserLoginLogService

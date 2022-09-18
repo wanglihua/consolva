@@ -8,6 +8,7 @@ using shunda.Core.Service;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Pass;
+using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service;

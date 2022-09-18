@@ -1,7 +1,7 @@
 using shunda.Core.Service;
 using shunda.Core.Util;
 
-namespace shunda.Service;
+namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
 public class PasswordService
