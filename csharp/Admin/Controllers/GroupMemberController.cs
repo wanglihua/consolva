@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.SqlCommand;
 using shunda.Admin.Models.GroupMember;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -66,6 +67,9 @@ public class GroupMemberController : Controller
     {
         ICriteria criteria = this.session.CreateCriteria<GroupMemberInfo>();
 
+        string userProp = nameof(GroupMemberInfo.User);
+        criteria = criteria.CreateAlias(userProp, userProp, JoinType.InnerJoin);
+
         criteria = criteria.SetReadOnly(true);
 
         int groupId = queryParam.GroupId;
@@ -74,13 +78,13 @@ public class GroupMemberController : Controller
         if (string.IsNullOrWhiteSpace(queryParam.LoginNameQuery) == false)
         {
             string loginNameQuery = queryParam.LoginNameQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<GroupMemberInfo>(e => e.LoginName).IsInsensitiveLike(loginNameQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.InsensitiveLike($"{userProp}.{nameof(UserInfo.LoginName)}", loginNameQuery, MatchMode.Anywhere));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
         {
             string userNameQuery = queryParam.UserNameQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<GroupMemberInfo>(e => e.UserName).IsInsensitiveLike(userNameQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.InsensitiveLike($"{userProp}.{nameof(UserInfo.UserName)}", userNameQuery, MatchMode.Anywhere));
         }
 
         return criteria;
@@ -155,8 +159,6 @@ public class GroupMemberController : Controller
         GroupMemberInfo groupMember = new GroupMemberInfo();
         groupMember.Group = session.Load<GroupInfo>(groupId);
         groupMember.User = user;
-        groupMember.LoginName = user.LoginName;
-        groupMember.UserName = user.UserName;
 
         this.session.Save(groupMember);
         this.session.Flush();
