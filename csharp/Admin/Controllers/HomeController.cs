@@ -2,6 +2,7 @@
 using NLog;
 using shunda.Admin.Models.Home;
 using shunda.Core.Web;
+using shunda.Service;
 
 namespace shunda.Admin.Controllers;
 
@@ -9,8 +10,11 @@ public class HomeController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public HomeController()
+    private SidebarStateService sidebarStateService;
+    
+    public HomeController(SidebarStateService sidebarStateService)
     {
+        this.sidebarStateService = sidebarStateService;
     }
 
     [NoLoginRequired]
@@ -29,4 +33,16 @@ public class HomeController : Controller
 
         return View("HomeAdminIndex", model);
     }
+
+    [HttpPost]
+    [Route("/admin/home/set/sidebar/state")]
+    public IActionResult SetSidebarState(bool isMin)
+    {
+        sidebarStateService.SetState(isMin);
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "Sidebar状态设置成功！" }
+        });
+    }    
 }
