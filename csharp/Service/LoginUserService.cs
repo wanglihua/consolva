@@ -283,7 +283,7 @@ public class LoginUserService
 
     public string GetUserLoginUrl()
     {
-        return "/shop/admin/login";
+        return "/admin/login";
     }
 
     private string GetLoginUserIdRedisKey()

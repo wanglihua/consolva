@@ -15,6 +15,7 @@
 /csharp/Document/bin/
 /csharp/Document/obj/
 /csharp/.idea/
+/csharp/Admin/logs/
 
 /csharp/Admin/wwwroot/static/msyh/
 /csharp/Admin/wwwroot/static/profile/

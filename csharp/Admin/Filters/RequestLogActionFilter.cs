@@ -43,7 +43,7 @@ public class RequestLogActionFilter : IActionFilter
                 var request = context.HttpContext.Request;
 
                 string relativeUrl = request.GetEncodedPathAndQuery();
-                if (relativeUrl.StartsWith("/admin") == false)
+                if (relativeUrl != "/" && relativeUrl.StartsWith("/admin") == false)
                 {
                     log.Error($"url 没有以 /admin 开头: {relativeUrl}");
                 }
