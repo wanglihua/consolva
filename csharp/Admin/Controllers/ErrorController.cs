@@ -4,9 +4,11 @@ using NLog;
 using shunda.Admin.Models;
 using shunda.Core.Config;
 using shunda.Core.Util;
+using shunda.Core.Web;
 
 namespace shunda.Admin.Controllers;
 
+[NoLoginRequired]
 public class ErrorController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
