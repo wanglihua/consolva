@@ -1,0 +1,192 @@
+@using shunda.Core.Web
+@using shunda.Domain.Pass
+@using shunda.Core
+@using shunda.Admin.Models.Group
+@model shunda.Admin.Models.Group.GroupIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "群组列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-group-index-menu">群组列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadGroupList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showGroupDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteGroup()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="codeQuery">编码</label>&nbsp;<input id="codeQuery" name="codeQuery" style="width: 100px; height: 30px;" placeholder="编码查询"/>&nbsp;
+    <label for="nameQuery">名称</label>&nbsp;<input id="nameQuery" name="nameQuery" style="width: 120px; height: 30px;" placeholder="名称查询"/>&nbsp;
+    <label for="userQuery">用户</label>&nbsp;<input id="userQuery" name="userQuery" style="width: 150px; height: 30px;" placeholder="用户查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadGroupList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="groupList" data-page-index="0" data-sort-field="@(nameof(GroupInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="groupDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadGroupList();
+    });
+
+    function sortGroupList(sortField, sortDir) {
+        var list = $('#groupList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadGroupList();
+    }
+
+    function loadGroupList(pageIndex) {
+        var list = $('#groupList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "Group")",
+            type: "POST",
+            data: {
+                '@(nameof(GroupListQueryParam.CodeQuery))': $('#codeQuery').val(),
+                '@(nameof(GroupListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(GroupListQueryParam.UserQuery))': $('#userQuery').val(),
+                '@(nameof(GroupListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(GroupListQueryParam.SortField))': sortField,
+                '@(nameof(GroupListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#groupList').html(data);
+
+                initListTable("#tblGroupList");
+            }
+        });
+    }
+
+    function showGroupDetail(id) {
+        $("#groupDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#groupDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "Group")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#groupDetailDialogWrapper").html(data);
+                $("#groupDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveGroup() {
+        var form = $("#groupDetailForm");
+        var valid = validate(form,
+            {
+                'Group.Code': {
+                    required: true,
+                    maxlength: 50
+                },
+                'Group.Name': {
+                    required: true,
+                    maxlength: 50
+                },
+                'Group.Description': {
+                    required: false,
+                    maxlength: 200
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "Group")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#groupDetailDialog').modal('hide');
+                        loadGroupList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteGroup() {
+        var idList = getSelectIdList('#tblGroupList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "Group")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadGroupList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

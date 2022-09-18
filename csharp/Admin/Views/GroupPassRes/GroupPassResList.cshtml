@@ -1,0 +1,80 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Pass
+@using shunda.Admin.Models.GroupPassRes
+@model shunda.Admin.Models.GroupPassRes.GroupPassResListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadGroupPassResList"})
+
+<table id="tblGroupPassResList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th style="width: 40px; text-align: center;">
+            <label for="groupPassResCheckAll"></label><input id="groupPassResCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+        </th>
+        <th style="width: 50px; text-align: center;">序号</th>
+
+        <th style="width: 120px;">
+            <a field="@($"{Model.PassResCateAlias}.{nameof(PassResCateInfo.Name)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortGroupPassResList">类别</a>
+        </th>
+
+        <th style="width: 150px;">
+            <a field="@(nameof(PassResInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortGroupPassResList">资源</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            操作
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.GroupPassResList != null && Model.GroupPassResList.Count() != 0)
+    {
+        int order = 1;
+        foreach (GroupPassResListItem groupPassRes in Model.GroupPassResList)
+        {
+            <tr ondblclick="showGroupPassResDetail(@(groupPassRes.PassResId));">
+                <td style="text-align: center;">
+                    <label for="groupPassResCheck_@(groupPassRes.PassResId)"></label><input id="groupPassResCheck_@(groupPassRes.PassResId)" type="checkbox" class="ace" value="@groupPassRes.PassResId"/><span class="lbl"></span>
+                </td>
+                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                <td>@groupPassRes.CateName</td>
+                <td>
+                    @if (groupPassRes.Granted)
+                    {
+                        <i class="ace-icon fa fa-check" style="color: green;"></i>
+                    }
+                    else
+                    {
+                        <i class="ace-icon fa fa-remove" style="color: red;"></i>
+                    }
+                    &nbsp;@groupPassRes.ResName
+                </td>
+                <td style="text-align: center;">
+                    @if (groupPassRes.Granted)
+                    {
+                        <button style="border: 0; cursor: pointer;" onclick="revokeGroupPassRes(@groupPassRes.PassResId)"><i class="ace-icon fa fa-remove" style="color: red;"></i>&nbsp;收权</button>
+                    }
+                    else
+                    {
+                        <button style="border: 0; cursor: pointer;" onclick="grantGroupPassRes(@groupPassRes.PassResId)"><i class="ace-icon fa fa-check" style="color: green;"></i>&nbsp;授权</button>
+                    }
+
+                </td>
+                <td></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="6">
+                暂时没有数据！
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadGroupPassResList"})

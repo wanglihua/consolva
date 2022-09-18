@@ -1,0 +1,178 @@
+@using shunda.Core.Web
+@using shunda.Domain.Pass
+@using shunda.Core
+@using shunda.Admin.Models.PassResUser
+@model shunda.Admin.Models.PassResUser.PassResUserIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "用户资源授权";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-pass-res-index-menu">
+        <a href="@Url.Action("Index", "PassRes")">权限资源</a>
+    </li>
+    <li>权限资源（<span>@(Model.PassRes.Cate.Name)</span>&nbsp;<span>@(Model.PassRes.Name)</span>）授权用户列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadPassResUserList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showPassResUserAdd(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        添加
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="removePassResUser()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        移除
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "PassRes")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div id="passResUserList" data-page-index="0" data-sort-field="@(nameof(UserPassResInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="passResUserAddDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadPassResUserList();
+    });
+
+    function sortPassResUserList(sortField, sortDir) {
+        var list = $('#passResUserList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadPassResUserList();
+    }
+
+    function loadPassResUserList(pageIndex) {
+        var list = $('#passResUserList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "PassResUser")",
+            type: "POST",
+            data: {
+                '@(nameof(PassResUserListQueryParam.PassResId))': @(Model.PassResId),
+                '@(nameof(PassResUserListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(PassResUserListQueryParam.SortField))': sortField,
+                '@(nameof(PassResUserListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#passResUserList').html(data);
+
+                initListTable("#tblPassResUserList");
+            }
+        });
+    }
+
+    function showPassResUserAdd(id) {
+        $("#passResUserAddDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#passResUserAddForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Add", "PassResUser", new { passResId = Model.PassResId })',
+            type: "POST",
+            data: { },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#passResUserAddDialogWrapper").html(data);
+                $("#passResUserAddDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function savePassResUser() {
+        var form = $("#passResUserAddForm");
+        var valid = validate(form,
+            {
+                'LoginName': {
+                    required: true,
+                    maxlength: 100
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("AddSave", "PassResUser")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#passResUserAddDialog').modal('hide');
+                        loadPassResUserList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function removePassResUser() {
+        var idList = getSelectIdList('#tblPassResUserList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要移除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Remove", "PassResUser")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadPassResUserList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

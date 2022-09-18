@@ -1,0 +1,181 @@
+@using shunda.Core.Web
+@using shunda.Domain.Pass
+@using shunda.Core
+@using shunda.Admin.Models.PassResGroup
+@model shunda.Admin.Models.PassResGroup.PassResGroupIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "群组资源授权";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-pass-res-index-menu">
+        <a href="@Url.Action("Index", "PassRes")">权限资源</a>
+    </li>
+    <li>权限资源（<span>@(Model.PassRes.Cate.Name)</span>&nbsp;<span>@(Model.PassRes.Name)</span>）授权群组列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadPassResGroupList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showPassResGroupAdd(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        添加
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="removePassResGroup()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        移除
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "PassRes")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div id="passResGroupList" data-page-index="0" data-sort-field="@(nameof(GroupPassResInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="passResGroupAddDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadPassResGroupList();
+    });
+
+    function sortPassResGroupList(sortField, sortDir) {
+        var list = $('#passResGroupList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadPassResGroupList();
+    }
+
+    function loadPassResGroupList(pageIndex) {
+        var list = $('#passResGroupList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "PassResGroup")",
+            type: "POST",
+            data: {
+                '@(nameof(PassResGroupListQueryParam.PassResId))': @(Model.PassResId),
+                '@(nameof(PassResGroupListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(PassResGroupListQueryParam.SortField))': sortField,
+                '@(nameof(PassResGroupListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#passResGroupList').html(data);
+
+                initListTable("#tblPassResGroupList");
+            }
+        });
+    }
+
+    function showPassResGroupAdd(id) {
+        $("#passResGroupAddDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#passResGroupAddForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Add", "PassResGroup", new { passResId = Model.PassResId })',
+            type: "POST",
+            data: { },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#passResGroupAddDialogWrapper").html(data);
+                $("#passResGroupAddDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function savePassResGroup() {
+        var form = $("#passResGroupAddForm");
+        var valid = validate(form,
+            {
+                'GroupCode': {
+                    required: true,
+                    maxlength: 50
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("AddSave", "PassResGroup")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#passResGroupAddDialog').modal('hide');
+                        loadPassResGroupList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function removePassResGroup() {
+        var idList = getSelectIdList('#tblPassResGroupList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要移除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Remove", "PassResGroup")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadPassResGroupList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
+
+
+@* todo 这个界面上有个排序的问题没解决 *@

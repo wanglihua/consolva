@@ -1,0 +1,82 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Pass
+@model shunda.Admin.Models.User.UserListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserList"})
+
+<table id="tblUserList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="userCheckAll"></label><input id="userCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 120px;">
+                <a field="@(nameof(UserInfo.LoginName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">登录名</a>
+            </th>
+            <th style="width: 200px;">
+                <a field="@(nameof(UserInfo.UserName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">用户名</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(UserInfo.LastLoginTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">登录时间</a>
+            </th>
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(UserInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">状态</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(UserInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">创建时间</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(UserInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">修改时间</a>
+            </th>
+            <th style="text-align: center; width: 100px;">操作</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.UserList != null && Model.UserList.Count() != 0)
+        {
+            int order = 1;
+            foreach (UserInfo user in Model.UserList)
+            {
+                <tr ondblclick="showUserDetail(@(user.Id));">
+                    <td style="text-align: center;">
+                        <label for="userCheck_@(user.Id)"></label><input id="userCheck_@(user.Id)" type="checkbox" class="ace" value="@user.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@user.LoginName</td>
+                    <td>@user.UserName</td>
+                    <td style="text-align: center;">@user.LastLoginTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">
+                        @if (user.Status == UserStatus.Normal)
+                        {
+                            <span style="color: green;">@user.Status?.Name</span>
+                        }
+                        else
+                        {
+                            <span style="color: red;">@user.Status?.Name</span>
+                        }
+                    </td>
+                    <td style="text-align: center;">@user.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@user.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">
+                        <a href="@Url.Action("Index", "UserPassRes", new {userId = user.Id})"><i class="fa fa-pencil-square-o"></i>&nbsp;授权资源</a>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserList"})

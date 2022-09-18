@@ -1,0 +1,267 @@
+@using shunda.Core.Web
+@using shunda.Domain.Pass
+@using shunda.Core
+@using shunda.Admin.Models.User
+@model shunda.Admin.Models.User.UserIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "用户列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-user-index-menu">用户列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadUserList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    
+    <button type="button" class="btn btn-success btn-sm" onclick="showUserDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    
+    <button type="button" class="btn btn-warning btn-sm" onclick="freezeUser()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        冻结
+    </button>
+    
+    <button type="button" class="btn btn-warning btn-sm" onclick="unfreezeUser()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        解冻
+    </button>    
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="loginNameQuery">登录名</label>&nbsp;<input id="loginNameQuery" name="loginNameQuery" style="width: 100px; height: 30px;" placeholder="登录名查询" />&nbsp;
+    <label for="userNameQuery">用户名</label>&nbsp;<input id="userNameQuery" name="userNameQuery" style="width: 100px; height: 30px;" placeholder="用户名查询" />&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadUserList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="userList" data-page-index="0" data-sort-field="@(nameof(UserInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="userDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadUserList();
+    });
+
+    function sortUserList(sortField, sortDir) {
+        var list = $('#userList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadUserList();
+    }
+
+    function loadUserList(pageIndex) {
+        var list = $('#userList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "User")",
+            type: "POST",
+            data: {
+                '@(nameof(UserListQueryParam.LoginNameQuery))': $('#loginNameQuery').val(),
+                '@(nameof(UserListQueryParam.UserNameQuery))': $('#userNameQuery').val(),
+                '@(nameof(UserListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(UserListQueryParam.SortField))': sortField,
+                '@(nameof(UserListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#userList').html(data);
+
+                initListTable("#tblUserList");
+            }
+        });
+    }
+
+    function showUserDetail(id) {
+        $("#userDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#userDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "User")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#userDetailDialogWrapper").html(data);
+                $("#userDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveUser() {
+        var form = $("#userDetailForm");
+        var valid = validate(form,
+            {
+                'User.LoginName': {
+                    required: true,
+                    maxlength: 100
+                },
+                'User.UserName': {
+                    required: true,
+                    maxlength: 100
+                },
+                'User.Password': {
+                    required: false,
+                    minlength: 6,
+                    maxlength: 18
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "User")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#userDetailDialog').modal('hide');
+                        loadUserList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteUser() {
+        var idList = getSelectIdList('#tblUserList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "User")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadUserList();
+                    }
+                });
+            }
+        );
+    }
+    
+    function freezeUser() {
+        var idList = getSelectIdList('#tblUserList');
+
+        if (idList.length !== 1) {
+            $.msg.alert("请选择一条数据！");
+            return;
+        }
+        
+        var userId = idList[0];
+        
+        $.msg.confirm("确认要冻结用户吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Freeze", "User")',
+                    type: "POST",
+                    data: { "id": userId},
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                        } else {
+                            $.msg.show(data.message);
+                            
+                            loadUserList();
+                        }
+                    }
+                });
+            }
+        );
+    }
+
+    function unfreezeUser() {
+        var idList = getSelectIdList('#tblUserList');
+
+        if (idList.length !== 1) {
+            $.msg.alert("请选择一条数据！");
+            return;
+        }
+        
+        var userId = idList[0];
+        
+        $.msg.confirm("确认要解冻用户吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Unfreeze", "User")',
+                    type: "POST",
+                    data: { "id": userId },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                        } else {
+                            $.msg.show(data.message);
+                            
+                            loadUserList();
+                        }
+                    }
+                });
+            }
+        );
+    }    
+
+</script>

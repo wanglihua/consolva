@@ -26,30 +26,6 @@ public class LoginController : Controller
     [NoLoginRequired]
     public IActionResult Index()
     {
-        // 域名重定向
-
-        // https 重定向            
-
-        /*
-         域名被屏蔽暂时去掉这个重定向
-#if !DEBUG
-        // 做可能的重定向
-        string requestUrl = Request.GetEncodedUrl();
-        if (string.IsNullOrWhiteSpace(requestUrl) == false 
-            && (requestUrl.ToUpper().IndexOf("http://hk.iepoch.store".ToUpper()) < 0 && requestUrl.ToUpper().IndexOf("https://hk.iepoch.store".ToUpper()) < 0))
-        {
-            if (Request.IsHttps == false)
-            {
-                return Redirect("http://hk.iepoch.store/admin/login");
-            }
-            else
-            {
-                return Redirect("https://hk.iepoch.store/admin/login");
-            }
-        }
-#endif
-        */
-
         LoginModel model = new LoginModel();
         return View("LoginIndex", model);
     }

@@ -1,0 +1,60 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Models.User.UserDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="userDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">用户详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="userDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="UserId" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LoginName" class="col-xs-2 control-label">登录名</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LoginName" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="UserName" class="col-xs-2 control-label">用户名</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="UserName" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Password" class="col-xs-2 control-label">密码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Password" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveUser();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
