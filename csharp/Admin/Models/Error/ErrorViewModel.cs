@@ -1,4 +1,4 @@
-namespace shunda.Admin.Models;
+namespace shunda.Admin.Models.Error;
 
 public class ErrorViewModel
 {

@@ -1,0 +1,68 @@
+@using shunda.Core.Util
+@using shunda.Core.Web
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+        <meta charset="utf-8"/>
+        <title>@(WebUtil.DebugTitle)@(ViewData[ViewDataKey.Title]) - @(WebUtil.SiteSubTitle)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+        <link type="text/css" rel="stylesheet" href="/static/ace/css/all.css?v=20200519" asp-append-version="true"/>
+        <link type="text/css" rel="stylesheet" href="/static/lib/poshytip/tip-yellow/tip-yellow.css?v=20200519" asp-append-version="true"/>
+        <link type="text/css" rel="stylesheet" href="/static/css/admin.css?v=20211227" asp-append-version="true"/>
+        <link type="text/css" rel="stylesheet" href="/static/js/select2/css/select2.min.css?v=20200519" asp-append-version="true"/>
+
+        <script type='text/javascript' src="/static/ace/js/jquery.min.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/ace/js/all1.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/ace/js/all2.js?v=20200519" asp-append-version="true"></script>
+
+        <script type="text/javascript" src="/static/js/ckeditor/ckeditor.js?v=20210421" asp-append-version="true"></script>
+
+        <script type="text/javascript" src="/static/js/ueditor/ueditor.config.js?v=20211011" charset="utf-8" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/js/ueditor/ueditor.all.min.js?v=20211011" charset="utf-8" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/js/ueditor/lang/zh-cn/zh-cn.js?v=20211011" charset="utf-8" asp-append-version="true"></script>
+
+        <script type="text/javascript" src="/static/js/plupload/moxie.min.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/js/plupload/plupload.min.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/js/plupload/zh_CN.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/lib/vue/vue.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/lib/poshytip/jquery.poshytip.min.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/lib/stickup/stickup.min.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/js/select2/js/select2.full.min.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/js/select2/js/i18n/zh-CN.js?v=20200519" asp-append-version="true"></script>
+
+        @if (WebUtil.IsDebug)
+        {
+            <script type="text/javascript" src="/static/lib/paho/paho-mqtt.js?v=20200525" asp-append-version="true"></script>
+        }
+        else
+        {
+            <script type="text/javascript" src="/static/lib/paho/paho-mqtt-min.js?v=20200525" asp-append-version="true"></script>
+        }
+
+        @*
+        好像是跟 bootstrap 有冲突
+        <script type="text/javascript" src="/static/lib/semantic/semantic.min.js?v=20200519" asp-append-version="true"></script>
+        *@
+
+        <script type="text/javascript" src="/static/lib/semantic/components/transition.min.js?v=20200519" asp-append-version="true"></script>
+        <script type="text/javascript" src="/static/lib/semantic/components/dropdown.min.js?v=20200519" asp-append-version="true"></script>
+
+        <script type="text/javascript" src="/static/js/admin.js?v=20210317" asp-append-version="true"></script>
+
+        @await RenderSectionAsync("Style", false)
+        @await RenderSectionAsync("Script", false)
+    </head>
+
+    <body class="no-skin">
+        <div id="huaduCover" class="huaduCover" style="display: none;">
+            <div class="huaduBg" id="huaduBg">&nbsp;</div>
+            <div class="huaduProgressBar" id="huaduProgressBar"></div>
+        </div>
+        @RenderBody()
+    </body>
+</html>

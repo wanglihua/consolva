@@ -62,9 +62,9 @@ public class NLogConfiguration
         config.LoggingRules.Add(new LoggingRule("Quartz.*", LogLevel.Warn, fileTarget));
         config.LoggingRules.Add(new LoggingRule("Quartz.*", LogLevel.Warn, consoleTarget));
 
-        // iepoch
-        config.LoggingRules.Add(new LoggingRule("iepoch.*", LogLevel.Trace, fileTarget));
-        config.LoggingRules.Add(new LoggingRule("iepoch.*", LogLevel.Trace, consoleTarget));
+        // shunda
+        config.LoggingRules.Add(new LoggingRule("shunda.*", LogLevel.Trace, fileTarget));
+        config.LoggingRules.Add(new LoggingRule("shunda.*", LogLevel.Trace, consoleTarget));
 
         // all
         config.LoggingRules.Add(new LoggingRule("*", LogLevel.Warn, fileTarget));

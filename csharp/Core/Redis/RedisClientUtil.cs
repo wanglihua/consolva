@@ -36,6 +36,6 @@ public class RedisClientUtil
     /// </summary>
     public static string RedisKeyPrefix
     {
-        get { return "iepoch"; }
+        get { return "shunda"; }
     }
 }

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using shunda.Admin.Models;
+using shunda.Admin.Models.Error;
 using shunda.Core.Config;
 using shunda.Core.Util;
 using shunda.Core.Web;

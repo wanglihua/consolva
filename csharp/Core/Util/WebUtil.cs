@@ -206,7 +206,7 @@ public class WebUtil
 
     public static string SiteSubTitle
     {
-        get { return "iepoch"; }
+        get { return "舜达"; }
     }
 
     public static string DebugTitle

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NHibernate;
 using NLog;
-using shunda.Admin.Models;
+using shunda.Admin.Models.Error;
 using shunda.Core;
 using shunda.Core.Util;
 
