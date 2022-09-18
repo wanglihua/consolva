@@ -13,11 +13,9 @@ public static class DataBaseConfig
         get
         {
 #if DEBUG
-            return "server=127.0.0.1;database=iepoch;user id=root;password=root;MinPoolSize=4;MaxPoolSize=512;Allow User Variables=True;CharacterSet=utf8mb4;";
+            return "server=127.0.0.1;database=shunda;user id=root;password=root;MinPoolSize=4;MaxPoolSize=512;Allow User Variables=True;CharacterSet=utf8mb4;";
 #else
-                // return "server=rm-j6c2d7u63zust6382.mysql.rds.aliyuncs.com;database=iepoch;user id=iepoch;password=iepoch_E20190629Pp;MinPoolSize=4;MaxPoolSize=512;Allow User Variables=True;CharacterSet=utf8mb4;"; // 虚拟专有网络
-                
-                return "server=rm-j6c2d7u63zust6382no.mysql.rds.aliyuncs.com;database=iepoch;user id=iepoch;password=iepoch_E20190629Pp;MinPoolSize=4;MaxPoolSize=512;Allow User Variables=True;CharacterSet=utf8mb4;"; // 公网
+            return "server=127.0.0.1;database=shunda;user id=root;password=root;MinPoolSize=4;MaxPoolSize=512;Allow User Variables=True;CharacterSet=utf8mb4;";
 #endif
         }
     }
