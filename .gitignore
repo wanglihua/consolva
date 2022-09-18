@@ -1,4 +1,4 @@
-
+.DS_Store
 *.DotSettings.user
 /csharp/Admin/bin/
 /csharp/Admin/obj/
@@ -17,3 +17,5 @@
 /csharp/.idea/
 
 /csharp/Admin/wwwroot/static/msyh/
+/csharp/Admin/wwwroot/static/profile/
+/csharp/Admin/wwwroot/static/upload/
