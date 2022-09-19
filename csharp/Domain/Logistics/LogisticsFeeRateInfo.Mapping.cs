@@ -1,0 +1,884 @@
+using NHibernate;
+using shunda.Core;
+
+namespace shunda.Domain.Logistics;
+
+public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
+{
+    public LogisticsFeeRateInfoMapping()
+    {
+        Table("tbl_logistics_fee_rate");
+
+        Property(
+            x => x.Name,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("name");
+                map.Length(200);
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.CareVolumeWeight,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("care_volume_weight");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.VolumeDenominator,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("volume_denominator");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.CareSideSum,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("care_side_sum");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.VolumeSelection,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("volume_selection");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.CustomerLengthDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("customer_length_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.CustomerWidthDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("customer_width_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.CustomerHeightDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("customer_height_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.CustomerWeightDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("customer_weight_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExportLengthDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("export_length_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExportWidthDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("export_width_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExportHeightDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("export_height_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExportWeightDiscount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("export_weight_discount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.HasLengthStart,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_length_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.LengthStart,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("length_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.HasLengthLimit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_length_limit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.LengthLimit,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("length_limit");
+            }
+        );
+
+        Property(
+            x => x.CanOverLength,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("can_over_length");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OverLengthStep,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("over_length_step");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.OverLengthStepFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("over_length_step_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.OverLengthFeeEveryPack,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("over_length_fee_every_pack");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.HasOverLengthCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_over_length_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OverLengthCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("over_length_cap_amount");
+            }
+        );
+
+        #region 单箱重量限制
+
+        Property(
+            x => x.HasSingleWeightStart,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_single_weight_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SingleWeightStart,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("single_weight_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.HasSingleWeightLimit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_single_weight_limit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SingleWeightLimit,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("single_weight_limit");
+            }
+        );
+
+        Property(
+            x => x.CanSingleOverWeight,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("can_single_over_weight");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SingleOverWeightStep,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("single_over_weight_step");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.SingleOverWeightStepFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("single_over_weight_step_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.HasSingleOverWeightCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_single_over_weight_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SingleOverWeightCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("single_over_weight_cap_amount");
+            }
+        );
+
+        #endregion
+
+        #region 平均单箱重量限制
+
+        Property(
+            x => x.HasAverageWeightStart,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_average_weight_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.AverageWeightStart,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("average_weight_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.HasAverageWeightLimit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_average_weight_limit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.AverageWeightLimit,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("average_weight_limit");
+            }
+        );
+
+        Property(
+            x => x.CanAverageOverWeight,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("can_average_over_weight");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.AverageOverWeightStep,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("average_over_weight_step");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.AverageOverWeightStepFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("average_over_weight_step_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.HasAverageOverWeightCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_average_over_weight_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.AverageOverWeightCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("average_over_weight_cap_amount");
+            }
+        );
+
+        #endregion
+
+        #region 重量限制
+
+        Property(
+            x => x.HasWeightStart,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_weight_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.WeightStart,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("weight_start");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.HasWeightLimit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_weight_limit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.WeightLimit,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("weight_limit");
+            }
+        );
+
+        Property(
+            x => x.CanOverWeight,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("can_over_weight");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OverWeightStep,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("over_weight_step");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.OverWeightStepFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("over_weight_step_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.HasOverWeightCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_over_weight_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OverWeightCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("over_weight_cap_amount");
+            }
+        );
+
+        #endregion
+
+        Property(
+            x => x.VolumeActualWeightMiddle,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("volume_actual_weight_middle");
+            }
+        );
+
+        Property(
+            x => x.CareVolumeActualWeightRatio,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("care_volume_actual_weight_ratio");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.MinVolumeActualWeightRatio,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("min_volume_actual_weight_ratio");
+            }
+        );
+
+        Property(
+            x => x.VolumeWeightCareMaxSideLength,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("volume_weight_care_max_side_length");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.VolumeWeightMaxSideLengthBegin,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("volume_weight_max_side_length_begin");
+            }
+        );
+
+        Property(
+            x => x.CareGoodsVolumePrice,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("care_goods_volume_price");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.GoodsVolumePrice,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("goods_volume_price");
+            }
+        );
+
+        Property(
+            x => x.HasFreePackageLimit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_free_package_limit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.FreePackageLimit,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("free_package_limit");
+            }
+        );
+
+        Property(
+            x => x.ExtraPackageFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("extra_package_fee");
+            }
+        );
+
+        Property(
+            x => x.HasExtraPackageFeeCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_extra_package_fee_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExtraPackageFeeCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("extra_package_fee_cap_amount");
+            }
+        );
+
+        Property(
+            x => x.HasFreeStorageDayLimit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_free_storage_day_limit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.FreeStorageDayLimit,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("free_storage_day_limit");
+            }
+        );
+
+        Property(
+            x => x.ExtraStorageDayFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("extra_storage_day_fee");
+            }
+        );
+
+        Property(
+            x => x.ExtraStorageDayMinFeePerDay,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("extra_storage_day_min_fee_per_day");
+            }
+        );
+
+        Property(
+            x => x.HasExtraStorageDayFeeCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_extra_storage_day_fee_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExtraStorageDayFeeCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("extra_storage_day_fee_cap_amount");
+            }
+        );
+
+        Property(
+            x => x.CommonGoodsPermit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("common_goods_permit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsPermit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("restrict_goods_permit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsByCount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("restrict_goods_by_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsByCountFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("restrict_goods_by_count_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsByVolume,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("restrict_goods_by_volume");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsByVolumeFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("restrict_goods_by_volume_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsByAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("restrict_goods_by_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsByAmountFeePercent,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("restrict_goods_by_amount_fee_percent");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.HasRestrictGoodsCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_restrict_goods_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.RestrictGoodsCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("restrict_goods_cap_amount");
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsPermit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("bamboo_goods_permit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsByCount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("bamboo_goods_by_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsByCountFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("bamboo_goods_by_count_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsByVolume,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("bamboo_goods_by_volume");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsByVolumeFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("bamboo_goods_by_volume_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsByAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("bamboo_goods_by_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsByAmountFeePercent,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("bamboo_goods_by_amount_fee_percent");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.HasBambooGoodsCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_bamboo_goods_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.BambooGoodsCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("bamboo_goods_cap_amount");
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsPermit,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("special_goods_permit");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsByCount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("special_goods_by_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsByCountFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("special_goods_by_count_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsByVolume,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("special_goods_by_volume");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsByVolumeFee,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("special_goods_by_volume_fee");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsByAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("special_goods_by_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsByAmountFeePercent,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("special_goods_by_amount_fee_percent");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.HasSpecialGoodsCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("has_special_goods_cap_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.SpecialGoodsCapAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("special_goods_cap_amount");
+            }
+        );
+
+        Property(
+            x => x.PublishRate,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("publish_rate");
+            }
+        );
+
+        Property(
+            x => x.Status,
+            map => {
+                map.Type<LogisticsFeeRateStatusHibernateType>();
+                map.Column("status_id");
+                map.NotNullable(true);
+            }
+        );
+    }
+}
