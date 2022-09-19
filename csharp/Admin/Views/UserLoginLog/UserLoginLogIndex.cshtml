@@ -1,0 +1,79 @@
+@using shunda.Domain.Pass
+@using shunda.Core
+@using shunda.Admin.Models.UserLoginLog
+@model shunda.Admin.Models.UserLoginLog.UserLoginLogIndexModel
+@{
+    ViewBag.Title = "用户登录日志";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-user-login-log-index-menu">用户登录日志</li>
+}
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="userQuery">用户</label>&nbsp;<input id="userQuery" name="userQuery" style="width: 150px; height: 30px;" placeholder="用户查询"/>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadUserLoginLogList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="userLoginLogList" data-page-index="0" data-sort-field="@(nameof(UserLoginLogInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="userLoginLogDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadUserLoginLogList();
+    });
+
+    function sortUserLoginLogList(sortField, sortDir) {
+        var list = $('#userLoginLogList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadUserLoginLogList();
+    }
+
+    function loadUserLoginLogList(pageIndex) {
+        var list = $('#userLoginLogList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "UserLoginLog")",
+            type: "POST",
+            data: {
+                '@(nameof(UserLoginLogListQueryParam.UserQuery))': $('#userQuery').val(),
+                '@(nameof(UserLoginLogListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(UserLoginLogListQueryParam.SortField))': sortField,
+                '@(nameof(UserLoginLogListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#userLoginLogList').html(data);
+
+                initListTable("#tblUserLoginLogList");
+            }
+        });
+    }
+
+</script>
