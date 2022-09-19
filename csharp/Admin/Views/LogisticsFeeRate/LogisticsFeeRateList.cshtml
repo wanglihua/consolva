@@ -1,0 +1,114 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Domain.Logistics
+@model shunda.Admin.Models.LogisticsFeeRate.LogisticsFeeRateListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsFeeRateList"})
+
+<table id="tblLogisticsFeeRateList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th style="width: 40px; text-align: center;">
+            <label for="logisticsFeeRateCheckAll"></label><input id="logisticsFeeRateCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+        </th>
+        <th style="width: 50px; text-align: center;">序号</th>
+        <th style="width: 200px;">
+            <a field="@(nameof(LogisticsFeeRateInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">名称</a>
+        </th>
+        <th style="width: 100px; text-align: center;">
+            <a field="@(nameof(LogisticsFeeRateInfo.CommonGoodsPermit))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">普通类</a>
+        </th>
+        <th style="width: 100px; text-align: center;">
+            <a field="@(nameof(LogisticsFeeRateInfo.RestrictGoodsPermit))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">限制类</a>
+        </th>
+        <th style="width: 100px; text-align: center;">
+            <a field="@(nameof(LogisticsFeeRateInfo.BambooGoodsPermit))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">草木竹类</a>
+        </th>
+        <th style="width: 100px; text-align: center;">
+            <a field="@(nameof(LogisticsFeeRateInfo.SpecialGoodsPermit))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">特货类</a>
+        </th>        
+        <th style="width: 60px; text-align: center;">
+            <a field="@(nameof(LogisticsFeeRateInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">状态</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(LogisticsFeeRateInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">创建时间</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(LogisticsFeeRateInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateList">修改时间</a>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.LogisticsFeeRateList != null && Model.LogisticsFeeRateList.Count() != 0)
+    {
+        int order = 1;
+        foreach (LogisticsFeeRateInfo logisticsFeeRate in Model.LogisticsFeeRateList)
+        {
+            <tr ondblclick="showLogisticsFeeRateDetail(@(logisticsFeeRate.Id));">
+                <td style="text-align: center;">
+                    <label for="logisticsFeeRateCheck_@(logisticsFeeRate.Id)"></label><input id="logisticsFeeRateCheck_@(logisticsFeeRate.Id)" type="checkbox" class="ace" value="@logisticsFeeRate.Id"/><span class="lbl"></span>
+                </td>
+                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                <td>@logisticsFeeRate.Name</td>
+                <td style="text-align: center;">
+                    @if (logisticsFeeRate.CommonGoodsPermit)
+                    {
+                        <span>允许</span>
+                    }
+                    else
+                    {
+                        <span>不允许</span>
+                    }
+                </td>
+                <td style="text-align: center;">
+                    @if (logisticsFeeRate.RestrictGoodsPermit)
+                    {
+                        <span>允许</span>
+                    }
+                    else
+                    {
+                        <span>不允许</span>
+                    }
+                </td>
+                <td style="text-align: center;">
+                    @if (logisticsFeeRate.BambooGoodsPermit)
+                    {
+                        <span>允许</span>
+                    }
+                    else
+                    {
+                        <span>不允许</span>
+                    }
+                </td>
+                <td style="text-align: center;">
+                    @if (logisticsFeeRate.SpecialGoodsPermit)
+                    {
+                        <span>允许</span>
+                    }
+                    else
+                    {
+                        <span>不允许</span>
+                    }
+                </td>                
+                <td style="text-align: center;">@logisticsFeeRate.Status.Name</td>
+                <td style="text-align: center;">@logisticsFeeRate.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td style="text-align: center;">@logisticsFeeRate.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="11">
+                暂时没有数据！
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsFeeRateList"})

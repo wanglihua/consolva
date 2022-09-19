@@ -1,0 +1,1781 @@
+@using shunda.Domain.Logistics
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Models.LogisticsFeeRate.LogisticsFeeRateDetailModel
+@{
+    ViewBag.Title = "物流费率详细";
+    Layout = "_AdminLayout";
+}
+
+@section Style {
+    <style>
+    div.widget-box {
+        margin-bottom: 10px;
+    }
+
+    div.widget-box > div.widget-header {
+        min-height: 28px;
+    }
+
+    div.widget-box > div.widget-header > h4.widget-title {
+        font-size: 12px;
+        line-height: 28px;
+        padding: 0;
+        margin: 0;
+        display: inline;
+    }
+
+    div.widget-box > div.widget-body > div.widget-main {
+        padding: 8px 10px 0;
+    }
+</style>
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-logistics-fee-rate-index-menu">
+        <a href="@Url.Action("Index", "LogisticsFeeRate")">通用费率</a>
+    </li>
+    <li>通用费率详细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="saveLogisticsFeeRate();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsFeeRate")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 860px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="logisticsFeeRateDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="LogisticsFeeRate.Id" type="hidden"/>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                基本信息
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.Name" class="col-xs-4 control-label">名称</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.Name" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.Status" class="col-xs-4 control-label">状态</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.Status" class="input-sm form-control">
+                                                    @foreach (LogisticsFeeRateStatus status in Model.StatusList)
+                                                    {
+                                                        <option value="@status.Id">@status.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                计量取向
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CareVolumeWeight" class="col-xs-4 control-label">考虑体积重</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CareVolumeWeight" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不考虑</option>
+                                                    <option value="@(true.ToString())">是，考虑</option>
+                                                </select>
+                                                <div class="help-block">考虑体积重启用后，跟体积重相关的逻辑才会启用。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.VolumeDenominator" class="col-xs-4 control-label">体积重分母</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.VolumeDenominator" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CareVolumeActualWeightRatio" class="col-xs-4 control-label">考虑体积重实际重倍率</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CareVolumeActualWeightRatio" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不考虑</option>
+                                                    <option value="@(true.ToString())">是，考虑</option>
+                                                </select>
+                                                <div class="help-block">考虑体积重启用后，这个配置才会起作用。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.MinVolumeActualWeightRatio" class="col-xs-4 control-label">体积重实际重最小倍率</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.MinVolumeActualWeightRatio" type="number" class="input-sm form-control"/>
+                                                <div class="help-block">大于这个倍率，考虑体积重。考虑体积重启用，考虑体积重实际重倍率，这个设置才会起作用。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.VolumeWeightCareMaxSideLength" class="col-xs-4 control-label">体积重考虑最长边</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.VolumeWeightCareMaxSideLength" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不考虑</option>
+                                                    <option value="@(true.ToString())">是，考虑</option>
+                                                </select>
+                                                <div class="help-block">考虑体积重启用后，这个配置才会起作用。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.VolumeWeightMaxSideLengthBegin" class="col-xs-4 control-label">体积重最长边起始</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.VolumeWeightMaxSideLengthBegin" type="number" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">cm</span>
+                                                </div>
+                                                <div class="help-block">大于这个长度，考虑体积重。考虑体积重启用，体积重考虑最长边，这个设置才会起作用。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CareSideSum" class="col-xs-4 control-label">考虑三边之和</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CareSideSum" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不考虑</option>
+                                                    <option value="@(true.ToString())">是，考虑</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.VolumeSelection" class="col-xs-4 control-label">体积重计算取向</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.VolumeSelection" class="input-sm form-control">
+                                                    @foreach (var orientationInfo in Model.VolumeWeightOrientationList)
+                                                    {
+                                                        <option value="@orientationInfo.Id">@orientationInfo.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.VolumeActualWeightMiddle" class="col-xs-4 control-label">体积重实际重折中</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.VolumeActualWeightMiddle" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不启用</option>
+                                                    <option value="@(true.ToString())">是，启用</option>
+                                                </select>
+                                                <div class="help-block">启用时需要同时启用考虑体积重，否则启用无效。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6" style="visibility: hidden;height: 61px;">
+                                        <div class="form-group">
+                                            <label for="nothing1" class="col-xs-4 control-label">&nbsp;</label>
+                                            <div class="col-xs-8">
+                                                <input id="nothing1" type="text"/>
+                                            </div>
+                                            <div class="help-block">&nbsp;</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CareGoodsVolumePrice" class="col-xs-4 control-label">考虑体积货值</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CareGoodsVolumePrice" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不考虑</option>
+                                                    <option value="@(true.ToString())">是，考虑</option>
+                                                </select>
+                                                <div class="help-block">是否启用实际货值与体积货值最大值计算</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.GoodsVolumePrice" class="col-xs-4 control-label">体积货值</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.GoodsVolumePrice" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                客户打折
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CustomerLengthDiscount" class="col-xs-4 control-label">长度</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.CustomerLengthDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CustomerWidthDiscount" class="col-xs-4 control-label">宽度</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.CustomerWidthDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CustomerHeightDiscount" class="col-xs-4 control-label">高度</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.CustomerHeightDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CustomerWeightDiscount" class="col-xs-4 control-label">重量</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.CustomerWeightDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                导出打折
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExportLengthDiscount" class="col-xs-4 control-label">长度</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.ExportLengthDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExportWidthDiscount" class="col-xs-4 control-label">宽度</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.ExportWidthDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExportHeightDiscount" class="col-xs-4 control-label">高度</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.ExportHeightDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExportWeightDiscount" class="col-xs-4 control-label">重量</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.ExportWeightDiscount" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                长度
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasLengthStart" class="col-xs-4 control-label">长度起步</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasLengthStart" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无长度起步</option>
+                                                    <option value="@(true.ToString())">是，有长度起步</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.LengthStart" class="col-xs-4 control-label">起步长度</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.LengthStart" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">cm</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasLengthLimit" class="col-xs-4 control-label">长度限制</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasLengthLimit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无限制</option>
+                                                    <option value="@(true.ToString())">是，有限制</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.LengthLimit" class="col-xs-4 control-label">限制长度</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.LengthLimit" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">cm</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CanOverLength" class="col-xs-4 control-label">能否超长</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CanOverLength" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不能超长</option>
+                                                    <option value="@(true.ToString())">是，可以超长</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.OverLengthStep" class="col-xs-4 control-label">超长阶梯</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.OverLengthStep" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">cm</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.OverLengthStepFee" class="col-xs-4 control-label">超长阶梯收费</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.OverLengthStepFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/次</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.OverLengthFeeEveryPack" class="col-xs-4 control-label">超长是否按件计费</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.OverLengthFeeEveryPack" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，只收一件</option>
+                                                    <option value="@(true.ToString())">是，按实际超长件数</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasOverLengthCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasOverLengthCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.OverLengthCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.OverLengthCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                单箱重量
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasSingleWeightStart" class="col-xs-4 control-label">单箱重量起步</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasSingleWeightStart" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无单箱重量起步</option>
+                                                    <option value="@(true.ToString())">是，有单箱重量起步</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SingleWeightStart" class="col-xs-4 control-label">单箱起步重量</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SingleWeightStart" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasSingleWeightLimit" class="col-xs-4 control-label">单箱重量限制</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasSingleWeightLimit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无限制</option>
+                                                    <option value="@(true.ToString())">是，有限制</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SingleWeightLimit" class="col-xs-4 control-label">单箱限制重量</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SingleWeightLimit" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CanSingleOverWeight" class="col-xs-4 control-label">单箱能否超重</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CanSingleOverWeight" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不能超重</option>
+                                                    <option value="@(true.ToString())">是，可以超重</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SingleOverWeightStep" class="col-xs-4 control-label">单箱超重阶梯</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SingleOverWeightStep" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SingleOverWeightStepFee" class="col-xs-4 control-label">单箱超重阶梯收费</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SingleOverWeightStepFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/次</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6" style="height: 37px;"></div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasSingleOverWeightCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasSingleOverWeightCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SingleOverWeightCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SingleOverWeightCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                平均单箱重量
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasAverageWeightStart" class="col-xs-4 control-label">平均单箱重量起步</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasAverageWeightStart" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无平均单箱重量起步</option>
+                                                    <option value="@(true.ToString())">是，有平均单箱重量起步</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.AverageWeightStart" class="col-xs-4 control-label">平均单箱起步重量</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.AverageWeightStart" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasAverageWeightLimit" class="col-xs-4 control-label">平均单箱重量限制</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasAverageWeightLimit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无限制</option>
+                                                    <option value="@(true.ToString())">是，有限制</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.AverageWeightLimit" class="col-xs-4 control-label">平均单箱限制重量</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.AverageWeightLimit" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CanAverageOverWeight" class="col-xs-4 control-label">平均单箱能否超重</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CanAverageOverWeight" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不能超重</option>
+                                                    <option value="@(true.ToString())">是，可以超重</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.AverageOverWeightStep" class="col-xs-4 control-label">平均单箱超重阶梯</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.AverageOverWeightStep" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.AverageOverWeightStepFee" class="col-xs-4 control-label">平均单箱超重阶梯收费</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.AverageOverWeightStepFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/次</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6" style="height: 37px;"></div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasAverageOverWeightCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasAverageOverWeightCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.AverageOverWeightCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.AverageOverWeightCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                重量
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasWeightStart" class="col-xs-4 control-label">重量起步</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasWeightStart" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无重量起步</option>
+                                                    <option value="@(true.ToString())">是，有重量起步</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.WeightStart" class="col-xs-4 control-label">起步重量</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.WeightStart" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasWeightLimit" class="col-xs-4 control-label">重量限制</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasWeightLimit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无限制</option>
+                                                    <option value="@(true.ToString())">是，有限制</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.WeightLimit" class="col-xs-4 control-label">限制重量</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.WeightLimit" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CanOverWeight" class="col-xs-4 control-label">能否超重</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CanOverWeight" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不能超重</option>
+                                                    <option value="@(true.ToString())">是，可以超重</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.OverWeightStep" class="col-xs-4 control-label">超重阶梯</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.OverWeightStep" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">kg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.OverWeightStepFee" class="col-xs-4 control-label">超重阶梯收费</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.OverWeightStepFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/次</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label class="col-xs-4 control-label">&nbsp;</label>
+                                            <div class="col-xs-8">
+                                                <input type="text" class="input-sm form-control" style="visibility: hidden;"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasOverWeightCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasOverWeightCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.OverWeightCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.OverWeightCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                签收快递单号数量
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasFreePackageLimit" class="col-xs-4 control-label">免费数量限制</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasFreePackageLimit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无限制</option>
+                                                    <option value="@(true.ToString())">是，有限制</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.FreePackageLimit" class="col-xs-4 control-label">免费快递单号数量</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.FreePackageLimit" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">个</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExtraPackageFee" class="col-xs-4 control-label">额外快递单号收费</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.ExtraPackageFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/个</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6" style="height: 37px;"></div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasExtraPackageFeeCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasExtraPackageFeeCapAmount" type="text" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExtraPackageFeeCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.ExtraPackageFeeCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                仓储
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasFreeStorageDayLimit" class="col-xs-4 control-label">免费天数限制</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasFreeStorageDayLimit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无限制</option>
+                                                    <option value="@(true.ToString())">是，有限制</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.FreeStorageDayLimit" class="col-xs-4 control-label">免费仓储天数</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.FreeStorageDayLimit" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">天</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExtraStorageDayFee" class="col-xs-4 control-label">额外仓储收费</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.ExtraStorageDayFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/天/立方</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExtraStorageDayMinFeePerDay" class="col-xs-4 control-label">最低仓储收费</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.ExtraStorageDayMinFeePerDay" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/天</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasExtraStorageDayFeeCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasExtraStorageDayFeeCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.ExtraStorageDayFeeCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.ExtraStorageDayFeeCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                普通类
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.CommonGoodsPermit" class="col-xs-4 control-label">是否允许</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.CommonGoodsPermit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不允许</option>
+                                                    <option value="@(true.ToString())">是，允许</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                限制类
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsPermit" class="col-xs-4 control-label">是否允许</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.RestrictGoodsPermit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不允许</option>
+                                                    <option value="@(true.ToString())">是，允许</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6" style="height: 38px;">
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsByCount" class="col-xs-4 control-label">按件加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.RestrictGoodsByCount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsByCountFee" class="col-xs-4 control-label">按件加收费用</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.RestrictGoodsByCountFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/件</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsByVolume" class="col-xs-4 control-label">按体积加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.RestrictGoodsByVolume" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsByVolumeFee" class="col-xs-4 control-label">按体积加收费用</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.RestrictGoodsByVolumeFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/立方</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsByAmount" class="col-xs-4 control-label">按金额加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.RestrictGoodsByAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsByAmountFeePercent" class="col-xs-4 control-label">按金额加收比率</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.RestrictGoodsByAmountFeePercent" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasRestrictGoodsCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasRestrictGoodsCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.RestrictGoodsCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.RestrictGoodsCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                草木竹类
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsPermit" class="col-xs-4 control-label">是否允许</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.BambooGoodsPermit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不允许</option>
+                                                    <option value="@(true.ToString())">是，允许</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6" style="height: 38px;">
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsByCount" class="col-xs-4 control-label">按件加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.BambooGoodsByCount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsByCountFee" class="col-xs-4 control-label">按件加收费用</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.BambooGoodsByCountFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/件</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsByVolume" class="col-xs-4 control-label">按体积加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.BambooGoodsByVolume" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsByVolumeFee" class="col-xs-4 control-label">按体积加收费用</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.BambooGoodsByVolumeFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/立方</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsByAmount" class="col-xs-4 control-label">按金额加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.BambooGoodsByAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsByAmountFeePercent" class="col-xs-4 control-label">按金额加收比率</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.BambooGoodsByAmountFeePercent" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasBambooGoodsCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasBambooGoodsCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.BambooGoodsCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.BambooGoodsCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                特货类
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsPermit" class="col-xs-4 control-label">是否允许</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.SpecialGoodsPermit" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不允许</option>
+                                                    <option value="@(true.ToString())">是，允许</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6" style="height: 38px;">
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsByCount" class="col-xs-4 control-label">按件加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.SpecialGoodsByCount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsByCountFee" class="col-xs-4 control-label">按件加收费用</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SpecialGoodsByCountFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/件</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsByVolume" class="col-xs-4 control-label">按体积加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.SpecialGoodsByVolume" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsByVolumeFee" class="col-xs-4 control-label">按体积加收费用</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SpecialGoodsByVolumeFee" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB/立方</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsByAmount" class="col-xs-4 control-label">按金额加收</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.SpecialGoodsByAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不开启</option>
+                                                    <option value="@(true.ToString())">是，开启</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsByAmountFeePercent" class="col-xs-4 control-label">按金额加收比率</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.SpecialGoodsByAmountFeePercent" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.HasSpecialGoodsCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.HasSpecialGoodsCapAmount" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，无封顶</option>
+                                                    <option value="@(true.ToString())">是，有封顶</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.SpecialGoodsCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.SpecialGoodsCapAmount" type="text" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">RMB</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                公布系数
+                            </h4>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-main">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.PublishRate" class="col-xs-4 control-label">公布系数</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="LogisticsFeeRate.PublishRate" type="text" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveLogisticsFeeRate() {
+        var form = $("#logisticsFeeRateDetailForm");
+        var valid = validate(form,
+            {
+                'LogisticsFeeRate.Name': {
+                    required: true,
+                    maxlength: 200
+                },
+                'LogisticsFeeRate.CareVolumeWeight': {
+                    required: true
+                },
+                'LogisticsFeeRate.VolumeDenominator': {
+                    required: false,
+                    digits: true
+                },
+                'LogisticsFeeRate.CareSideSum': {
+                    required: true
+                },
+                'LogisticsFeeRate.VolumeSelection': {
+                    required: true,
+                    digits: true
+                },
+                'LogisticsFeeRate.CustomerLengthDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.CustomerWidthDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.CustomerHeightDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.CustomerWeightDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.ExportLengthDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.ExportWidthDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.ExportHeightDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.ExportWeightDiscount': {
+                    required: true,
+                    number: true
+                },
+                'LogisticsFeeRate.HasLengthLimit': {
+                    required: true
+                },
+                'LogisticsFeeRate.LengthLimit': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.CanOverLength': {
+                    required: true
+                },
+                'LogisticsFeeRate.OverLengthStep': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.OverLengthStepFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasOverLengthCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.OverLengthCapAmount': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasSingleWeightLimit': {
+                    required: true
+                },
+                'LogisticsFeeRate.SingleWeightLimit': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.CanSingleOverWeight': {
+                    required: true
+                },
+                'LogisticsFeeRate.SingleOverWeightStep': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.SingleOverWeightStepFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasSingleOverWeightCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.SingleOverWeightCapAmount': {
+                    required: false
+                },
+                'LogisticsFeeRate.HasWeightLimit': {
+                    required: true
+                },
+                'LogisticsFeeRate.WeightLimit': {
+                    required: false,
+                    digits: true
+                },
+                'LogisticsFeeRate.CanOverWeight': {
+                    required: true
+                },
+                'LogisticsFeeRate.OverWeightStep': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.OverWeightStepFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasOverWeightCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.OverWeightCapAmount': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasFreePackageLimit': {
+                    required: true
+                },
+                'LogisticsFeeRate.FreePackageLimit': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.ExtraPackageFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasExtraPackageFeeCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.ExtraPackageFeeCapAmount': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasFreeStorageDayLimit': {
+                    required: true
+                },
+                'LogisticsFeeRate.FreeStorageDayLimit': {
+                    required: false,
+                    digits: true
+                },
+                'LogisticsFeeRate.ExtraStorageDayFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.ExtraStorageDayMinFeePerDay': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasExtraStorageDayFeeCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.ExtraStorageDayFeeCapAmount': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.CommonGoodsPermit': {
+                    required: true
+                },
+                'LogisticsFeeRate.RestrictGoodsPermit': {
+                    required: true
+                },
+                'LogisticsFeeRate.RestrictGoodsByCount': {
+                    required: true
+                },
+                'LogisticsFeeRate.RestrictGoodsByCountFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.RestrictGoodsByVolume': {
+                    required: true
+                },
+                'LogisticsFeeRate.RestrictGoodsByVolumeFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.RestrictGoodsByAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.RestrictGoodsByAmountFeePercent': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasRestrictGoodsCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.RestrictGoodsCapAmount': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.BambooGoodsPermit': {
+                    required: true
+                },
+                'LogisticsFeeRate.BambooGoodsByCount': {
+                    required: true
+                },
+                'LogisticsFeeRate.BambooGoodsByCountFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.BambooGoodsByVolume': {
+                    required: true
+                },
+                'LogisticsFeeRate.BambooGoodsByVolumeFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.BambooGoodsByAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.BambooGoodsByAmountFeePercent': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasBambooGoodsCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.BambooGoodsCapAmount': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.SpecialGoodsPermit': {
+                    required: true
+                },
+                'LogisticsFeeRate.SpecialGoodsByCount': {
+                    required: true
+                },
+                'LogisticsFeeRate.SpecialGoodsByCountFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.SpecialGoodsByVolume': {
+                    required: true
+                },
+                'LogisticsFeeRate.SpecialGoodsByVolumeFee': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.SpecialGoodsByAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.SpecialGoodsByAmountFeePercent': {
+                    required: false,
+                    number: true
+                },
+                'LogisticsFeeRate.HasSpecialGoodsCapAmount': {
+                    required: true
+                },
+                'LogisticsFeeRate.SpecialGoodsCapAmount': {
+                    required: false,
+                    number: true
+                },                
+                'LogisticsFeeRate.PublishRate': {
+                    required: false
+                },
+                'LogisticsFeeRate.GoodsVolumePrice': {
+                    required: false,
+                    number: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsFeeRate")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+
+                        if (data.create) {
+                            setTimeout("showDetail(" + data.id + ")", 1000);
+                        }
+
+                        //return;
+                    }
+                }
+            });
+        }
+        else
+        {
+            $.msg.error("存在数据录入验证错误！");      
+        }
+    }
+
+    function showLogisticsFeeRateDetail(id) {
+        var url = "@Url.Action("Detail", "LogisticsFeeRate", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+</script>
