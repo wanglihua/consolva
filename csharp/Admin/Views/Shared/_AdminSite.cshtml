@@ -46,8 +46,8 @@
 
         <script type="text/javascript" src="/static/js/admin.js?v=20210317" asp-append-version="true"></script>
 
-        @await RenderSectionAsync("Style", false)
-        @await RenderSectionAsync("Script", false)
+        @(await RenderSectionAsync("Style", false))
+        @(await RenderSectionAsync("Script", false))
     </head>
 
     <body class="no-skin">

@@ -4,12 +4,12 @@
 
 @section Style
 {
-    @await RenderSectionAsync("Style", false)
+    @(await RenderSectionAsync("Style", false))
 }
 
 @section Script
 {
-    @await RenderSectionAsync("Script", false)
+    @(await RenderSectionAsync("Script", false))
 }
 
 <div id="navbar" class="navbar navbar-default" xmlns="http://www.w3.org/1999/html">
@@ -38,7 +38,7 @@
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <span class="user-info">
-                            <span>欢迎！</span>@await Component.InvokeAsync("AdminLoginUser")
+                            <span>欢迎！</span>@(await Component.InvokeAsync("AdminLoginUser"))
                         </span>
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>

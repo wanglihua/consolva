@@ -4,7 +4,7 @@
 @using shunda.Domain.Pass
 @model shunda.Admin.Models.Admin.AdminListModel
 
-@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdminList" })
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdminList" }))
 
 <table id="tblAdminList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -54,4 +54,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdminList" })
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdminList" }))
