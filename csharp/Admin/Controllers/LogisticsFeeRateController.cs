@@ -562,7 +562,8 @@ public class LogisticsFeeRateController : Controller
         {
             LogisticsFeeRateInfo logisticsFeeRate = session.Get<LogisticsFeeRateInfo>(id);
 
-            IList<LogisticsModeInfo> modeList = session.Query<LogisticsModeInfo>().Where(e => e.FeeRate.Id == id).ToList();
+            /* todo 启用这个检查
+            IList<LogisticsModeInfo> modeList = session.Query<LogisticsModeInfo>().Where(e => e.FeeRate.Id 这里还要完善 == id).ToList();
 
             if (modeList.Count > 0)
             {
@@ -587,6 +588,7 @@ public class LogisticsFeeRateController : Controller
 
                 throw new ValidationException(sb.ToString());
             }
+            */
 
             session.Delete(logisticsFeeRate);
         }
