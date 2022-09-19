@@ -14,10 +14,10 @@
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 120px;">
-                <a field="@(nameof(AdminInfo.LoginName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdminList">登录名</a>
+                <a field="@(nameof(AdminInfo.User)).@(nameof(UserInfo.LoginName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdminList">登录名</a>
             </th>
             <th style="width: 200px;">
-                <a field="@(nameof(AdminInfo.UserName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdminList">用户名</a>
+                <a field="@(nameof(AdminInfo.User)).@(nameof(UserInfo.UserName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdminList">用户名</a>
             </th>
             <th style="width: 120px; text-align: center;">
                 <a field="@(nameof(AdminInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdminList">添加时间</a>
@@ -36,8 +36,8 @@
                         <label for="adminCheck_@(admin.Id)"></label><input id="adminCheck_@(admin.Id)" type="checkbox" class="ace" value="@admin.Id" /><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td>@admin.LoginName</td>
-                    <td>@admin.UserName</td>
+                    <td>@admin.User.LoginName</td>
+                    <td>@admin.User.UserName</td>
                     <td style="text-align: center;">@admin.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td></td>
                 </tr>

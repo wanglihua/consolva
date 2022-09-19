@@ -52,8 +52,9 @@ public class AdminController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<AdminInfo>();
 
-        AdminListModel model = new AdminListModel(listPager);
-        model.AdminList = adminList;
+        AdminListModel model = new AdminListModel(listPager) {
+            AdminList = adminList
+        };
 
         return View("AdminList", model);
     }
@@ -61,8 +62,8 @@ public class AdminController : Controller
     [NonAction]
     private ICriteria GetListCriteria(AdminListQueryParam queryParam)
     {
-        string loginNameQuery = queryParam.LoginNameQuery;
-        string userNameQuery = queryParam.UserNameQuery;
+        string loginNameQuery = queryParam.LoginNameQuery ?? string.Empty;
+        string userNameQuery = queryParam.UserNameQuery ?? string.Empty;
 
         ICriteria criteria = this.session.CreateCriteria<AdminInfo>();
 
@@ -72,18 +73,17 @@ public class AdminController : Controller
 
         string devLoginName = UserInfo.DevLoginName;
         criteria = criteria.Add(Restrictions.Not(Restrictions.Eq($"{nameof(AdminInfo.User)}.{nameof(AdminInfo.User.LoginName)}", devLoginName)));
-        criteria = criteria.Add(Restrictions.Where<AdminInfo>(e => e.LoginName != devLoginName));
 
         if (string.IsNullOrWhiteSpace(loginNameQuery) == false)
         {
             loginNameQuery = loginNameQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<AdminInfo>(e => e.LoginName).IsInsensitiveLike(loginNameQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.InsensitiveLike($"{nameof(AdminInfo.User)}.{nameof(UserInfo.LoginName)}", loginNameQuery, MatchMode.Anywhere));
         }
 
         if (string.IsNullOrWhiteSpace(userNameQuery) == false)
         {
             userNameQuery = userNameQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<AdminInfo>(e => e.UserName).IsInsensitiveLike(userNameQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.InsensitiveLike($"{nameof(AdminInfo.User)}.{nameof(UserInfo.UserName)}", userNameQuery, MatchMode.Anywhere));
         }
 
         return criteria;
@@ -131,10 +131,9 @@ public class AdminController : Controller
             throw new ValidationException("指定的用户已冻结！");
         }
 
-        AdminInfo admin = new AdminInfo();
-        admin.User = user;
-        admin.LoginName = user.LoginName;
-        admin.UserName = user.UserName;
+        AdminInfo admin = new AdminInfo {
+            User = user,
+        };
 
         this.session.Save(admin);
         this.session.Flush();

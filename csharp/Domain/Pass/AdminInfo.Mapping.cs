@@ -20,25 +20,5 @@ public class AdminInfoMapping : EntityMapping<AdminInfo>
                 map.Fetch(FetchKind.Select);
             }
         );
-
-        Property(
-            x => x.LoginName,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("login_name");
-                map.Length(100);
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.UserName,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("user_name");
-                map.Length(100);
-                map.NotNullable(true);
-            }
-        );
     }
 }
