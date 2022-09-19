@@ -1,0 +1,201 @@
+@using shunda.Domain.Pass
+@using shunda.Core
+@using shunda.Admin.Models.Admin
+@using shunda.Core.Web
+@model shunda.Admin.Models.Admin.AdminIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "管理员列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-admin-index-menu">管理员</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadAdminList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showAdminAdd()">
+        <i class="ace-icon fa fa-plus"></i>
+        添加
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="removeAdmin()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        移除
+    </button>
+    <button type="button" class="btn btn-purple btn-sm" onclick="refreshCache()">
+        <i class="ace-icon fa fa-gears"></i>
+        刷新管理员授权缓存
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="loginNameQuery">登录名</label>&nbsp;<input id="loginNameQuery" name="loginNameQuery" style="width: 100px; height: 30px;" placeholder="登录名查询"/>&nbsp;
+    <label for="userNameQuery">用户名</label>&nbsp;<input id="userNameQuery" name="userNameQuery" style="width: 100px; height: 30px;" placeholder="用户名查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadAdminList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="adminList" data-page-index="0" data-sort-field="@(nameof(AdminInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="adminAddDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadAdminList();
+    });
+
+    function sortAdminList(sortField, sortDir) {
+        var list = $('#adminList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadAdminList();
+    }
+
+    function loadAdminList(pageIndex) {
+        var list = $('#adminList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "Admin")",
+            type: "POST",
+            data: {
+                '@(nameof(AdminListQueryParam.LoginNameQuery))': $('#loginNameQuery').val(),
+                '@(nameof(AdminListQueryParam.UserNameQuery))': $('#userNameQuery').val(),
+                '@(nameof(AdminListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(AdminListQueryParam.SortField))': sortField,
+                '@(nameof(AdminListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#adminList').html(data);
+
+                initListTable("#tblAdminList");
+            }
+        });
+    }
+
+    function showAdminAdd() {
+        $("#adminAddDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#adminAddForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Add", "Admin")',
+            type: "POST",
+            data: {},
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#adminAddDialogWrapper").html(data);
+                $("#adminAddDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveAdmin() {
+        var form = $("#adminAddForm");
+        var valid = validate(form,
+            {
+                'LoginName': {
+                    required: true,
+                    maxlength: 100
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "Admin")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#adminAddDialog').modal('hide');
+                        loadAdminList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function removeAdmin() {
+        var idList = getSelectIdList('#tblAdminList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Remove", "Admin")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadAdminList();
+                    }
+                });
+            }
+        );
+    }
+    
+    function refreshCache() {
+        $.ajax({
+            url: '@Url.Action("RefreshCache", "Admin")',
+            type: "POST",
+            success: function(data) {
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $.msg.show(data.message);
+            }
+        });
+    }     
+
+</script>
