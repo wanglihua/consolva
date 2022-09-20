@@ -12,6 +12,11 @@ public class MySqlProfileConnection : DbConnection
 
     protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
     {
+        if (isolationLevel == IsolationLevel.Unspecified)
+        {
+            isolationLevel = IsolationLevel.ReadCommitted;
+        }
+
         return InnerConnection.BeginTransaction(isolationLevel);
     }
 
