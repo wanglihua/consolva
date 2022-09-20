@@ -115,6 +115,5 @@ CREATE TABLE tbl_logistics_fee_rate
 
     status_id                            INT                         NOT NULL COMMENT '状态#type:LogisticsFeeRateStatus',
     create_time                          DATETIME                    NOT NULL COMMENT '创建时间',
-    update_time                          DATETIME                    NOT NULL COMMENT '更新时间',
-    version                              INT            DEFAULT 1    NOT NULL
+    update_time                          DATETIME                    NOT NULL COMMENT '更新时间'
 ) COMMENT '物流费率';

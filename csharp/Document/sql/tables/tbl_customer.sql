@@ -22,7 +22,6 @@
     status_id          INT            NOT NULL DEFAULT 100 COMMENT '状态',
     create_time        DATETIME       NOT NULL COMMENT '创建时间',
     update_time        DATETIME       NOT NULL COMMENT '更新时间',
-    version            INT            NOT NULL DEFAULT 1 COMMENT '数据版本',
 
     INDEX ix_customer_mobile (mobile),
     INDEX ix_customer_open_id (open_id),
