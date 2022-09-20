@@ -1,0 +1,200 @@
+
+@using shunda.Domain.Warehouse
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Models.Warehouse.WarehouseDetailModel
+
+@{
+    ViewBag.Title = "仓库详细";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="storage-menu">仓储管理</li>
+    <li class="active" data-menu="storage-warehouse-index-menu">
+        <a href="@Url.Action("Index", "Warehouse")">仓库列表</a>
+    </li>
+    <li>仓库详细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="saveWarehouse();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "Warehouse")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 780px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="warehouseDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="Warehouse.Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.Code" class="col-xs-2 control-label">编码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Warehouse.Code" type="text" class="input-sm form-control" required="required" maxlength="100"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.Name" class="col-xs-2 control-label">名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Warehouse.Name" type="text" class="input-sm form-control" required="required" maxlength="200"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.Description" class="col-xs-2 control-label">描述</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="Warehouse.Description" rows="2" class="input-sm form-control"  required="required" maxlength="500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.Address" class="col-xs-2 control-label">地址</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="Warehouse.Address" rows="2" class="input-sm form-control"  required="required" maxlength="500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.OuterStatus" class="col-xs-2 control-label">对外状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Warehouse.OuterStatus" class="input-sm form-control">
+                                        @foreach (WarehouseStatus warehouseStatus in Model.WarehouseStatusList)
+                                        {
+                                            if (Model.Warehouse.OuterStatus == warehouseStatus)
+                                            {
+                                                <option value="@warehouseStatus.Id" selected="selected">@warehouseStatus.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@warehouseStatus.Id">@warehouseStatus.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.InnerStatus" class="col-xs-2 control-label">对内状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Warehouse.InnerStatus" class="input-sm form-control">
+                                        @foreach (WarehouseStatus warehouseStatus in Model.WarehouseStatusList)
+                                        {
+                                            if (Model.Warehouse.InnerStatus == warehouseStatus)
+                                            {
+                                                <option value="@warehouseStatus.Id" selected="selected">@warehouseStatus.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@warehouseStatus.Id">@warehouseStatus.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.OrderNum" class="col-xs-2 control-label">排序字段</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Warehouse.OrderNum" type="number" class="input-sm form-control" required="required" step="1" number="true" min="0"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.AddressDescription" class="col-xs-2 control-label">地址描述</label>
+                                <div class="col-xs-10">
+                                    <textarea id="addressDescription" asp-for="Warehouse.AddressDescription" rows="2" class="input-sm form-control"></textarea>
+
+                                    <div class="help-block">{auto_copy_begin_1}, {auto_copy_end_1}, ... , {auto_copy_begin_8}, {auto_copy_end_8} 从这里复制放入地址描述，不要应用任何文本格式。</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function saveWarehouse() {
+        var addressDescription = CKEDITOR.instances.addressDescription.getData();
+        $("#addressDescription").val(addressDescription);
+
+        var form = $("#warehouseDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "Warehouse")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+
+                        if (data.create) {
+                            setTimeout("showWarehouseDetail(" + data.id + ")", 1000);
+                        }
+
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function showWarehouseDetail(id) {
+        var url = "@Url.Action("Detail", "Warehouse", new {id = 88888})";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+</script>
+
+<script type="text/javascript">
+    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
+        CKEDITOR.tools.enableHtml5Elements(document);
+    }
+
+    CKEDITOR.config.height = 250;
+    CKEDITOR.config.width = 'auto';
+
+    var initCkEditor = (function () {
+        return function () {
+            CKEDITOR.replace('addressDescription');
+        };
+    })();
+
+    initCkEditor();
+</script>

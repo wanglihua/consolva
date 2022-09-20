@@ -1,0 +1,100 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Domain.Warehouse
+@model shunda.Admin.Models.Warehouse.WarehouseListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadWarehouseList" })
+
+<table id="tblWarehouseList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="warehouseCheckAll"></label><input id="warehouseCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 100px;">
+                <a field="@(nameof(WarehouseInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseList">编码</a>
+            </th>
+            <th style="width: 200px;">
+                <a field="@(nameof(WarehouseInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseList">名称</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(WarehouseInfo.OuterStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseList">对外状态</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(WarehouseInfo.InnerStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseList">对内状态</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(WarehouseInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseList">创建时间</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(WarehouseInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseList">修改时间</a>
+            </th>
+            <th style="width: 80px; text-align: center;">操作</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.WarehouseList != null && Model.WarehouseList.Count() != 0)
+        {
+            int order = 1;
+            foreach (WarehouseInfo warehouse in Model.WarehouseList)
+            {
+                <tr ondblclick="showWarehouseDetail(@(warehouse.Id));">
+                    <td style="text-align: center;">
+                        <label for="warehouseCheck_@(warehouse.Id)"></label><input id="warehouseCheck_@(warehouse.Id)" type="checkbox" class="ace" value="@warehouse.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@warehouse.Code</td>
+                    <td>@warehouse.Name</td>
+                    <td style="text-align: center;">
+                        @if (warehouse.OuterStatus == WarehouseStatus.Enabled)
+                        {
+                            <span style="color: green;">
+                                @(warehouse.OuterStatus?.Name)
+                            </span>
+                        }
+                        else
+                        {
+                            <span style="color: red;">
+                                @(warehouse.OuterStatus?.Name)
+                            </span>
+                        }
+                    </td>
+                    <td style="text-align: center;">
+                        @if (warehouse.InnerStatus == WarehouseStatus.Enabled)
+                        {
+                            <span style="color: green;">
+                                @(warehouse.InnerStatus?.Name)
+                            </span>
+                        }
+                        else
+                        {
+                            <span style="color: red;">
+                                @(warehouse.InnerStatus?.Name)
+                            </span>
+                        }
+                    </td>
+                    <td style="text-align: center;">@warehouse.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@warehouse.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">
+                        <a href="@Url.Action("Index", "Shelf", new { warehouseId = warehouse.Id })"><i class="fa fa-pencil-square-o"></i>&nbsp;货架</a>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadWarehouseList" })

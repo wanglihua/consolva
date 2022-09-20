@@ -1,0 +1,163 @@
+@using shunda.Domain.Warehouse
+@using shunda.Core
+@using shunda.Admin.Models.Warehouse
+@model shunda.Admin.Models.Warehouse.WarehouseIndexModel
+
+@{
+    ViewBag.Title = "仓库列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="storage-menu">仓储管理</li>
+    <li class="active" data-menu="storage-warehouse-index-menu">仓库列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadWarehouseList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showWarehouseDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWarehouse()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="codeQuery">编码</label>&nbsp;<input id="codeQuery" name="codeQuery" style="width: 100px; height: 30px;" placeholder="编码查询"/>&nbsp;
+    <label for="nameQuery">名称</label>&nbsp;<input id="nameQuery" name="nameQuery" style="width: 100px; height: 30px;" placeholder="名称查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadWarehouseList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+@*
+
+@if (Model.ShelfDuplicateList != null && Model.ShelfDuplicateList.Count != 0)
+{
+    <div style="margin-top: 10px; margin-bottom: 10px; color: red; font-weight: bold;">
+        存在有编码重复的货架！
+        <div style="margin: 5px 0;">
+        @foreach (ShelfDuplicateInfo shelf in Model.ShelfDuplicateList)
+        {
+            <div style="margin: 5px 0;">仓库：@(shelf.WarehouseName)，货架名称：@(shelf.ShelfName)</div>
+        }
+        </div>
+    </div>
+}
+
+@if (Model.StorageDuplicateList != null && Model.StorageDuplicateList.Count != 0)
+{
+    <div style="margin-top: 10px; margin-bottom: 10px; color: red; font-weight: bold;">
+        存在有编码重复的库位！
+        <div style="margin: 5px 0;">
+        @foreach (StorageLocDuplicateInfo loc in Model.StorageDuplicateList)
+        {
+            <div style="margin: 5px 0;">仓库：@(loc.WarehouseName)，货架名称：@(loc.ShelfName)，仓位：@(loc.ShelfName)-@(loc.StorageLocRowNum)层-@(loc.StorageLocColNum)号</div>
+        }
+        </div>
+    </div>
+}
+
+*@
+
+<div id="warehouseList" data-page-index="0" data-sort-field="@(nameof(WarehouseInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="warehouseDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadWarehouseList();
+    });
+
+    function sortWarehouseList(sortField, sortDir) {
+        var list = $('#warehouseList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadWarehouseList();
+    }
+
+    function loadWarehouseList(pageIndex) {
+        var list = $('#warehouseList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "Warehouse")",
+            type: "POST",
+            data: {
+                '@(nameof(WarehouseListQueryParam.CodeQuery))': $('#codeQuery').val(),
+                '@(nameof(WarehouseListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(WarehouseListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(WarehouseListQueryParam.SortField))': sortField,
+                '@(nameof(WarehouseListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#warehouseList').html(data);
+
+                initListTable("#tblWarehouseList");
+            }
+        });
+    }
+
+    function showWarehouseDetail(id) {
+        var url = "@Url.Action("Detail", "Warehouse", new { id = 88888})";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+    function deleteWarehouse() {
+        var idList = getSelectIdList('#tblWarehouseList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "Warehouse")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadWarehouseList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
