@@ -1,15 +1,76 @@
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using shunda.Core;
 
 namespace shunda.Domain.Warehouse;
 
 /// <summary>
 /// 仓库带有地址描述信息
 /// </summary>
-public class WarehouseWithAddressDescriptionInfo : WarehouseInfo
+public class WarehouseWithAddressDescriptionInfo : Entity
 {
+    /// <summary>
+    /// 编码
+    /// </summary>
+    [DisplayName("编码")]
+    [Required(ErrorMessage = "编码不能为空！")]
+    [MaxLength(100, ErrorMessage = "编码长度不能大于100！")]
+    public virtual string Code { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 名称
+    /// </summary>
+    [DisplayName("名称")]
+    [Required(ErrorMessage = "名称不能为空！")]
+    [MaxLength(200, ErrorMessage = "名称长度不能大于200！")]
+    public virtual string Name { get; set; } = String.Empty;
+
+    /// <summary>
+    /// 描述
+    /// </summary>
+    [DisplayName("描述")]
+    [Required(ErrorMessage = "描述不能为空！")]
+    [MaxLength(500, ErrorMessage = "描述长度不能大于500！")]
+    public virtual string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 地址
+    /// </summary>
+    [DisplayName("地址")]
+    [Required(ErrorMessage = "地址不能为空！")]
+    [MaxLength(500, ErrorMessage = "地址长度不能大于500！")]
+    public virtual string Address { get; set; } = string.Empty;
+
     /// <summary>
     /// 地址描述
     /// </summary>
     [DisplayName("地址描述")]
+    [Required(ErrorMessage = "地址描述不能为空！")]
     public virtual string AddressDescription { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 外部状态
+    /// 针对前台客户能否使用的状态
+    /// </summary>
+    [DisplayName("外部状态")]
+    [Required(ErrorMessage = "外部状态不能为空！")]
+    [ModelBinder(typeof(WarehouseStatusModelBinder))]
+    public virtual WarehouseStatus OuterStatus { get; set; } = WarehouseStatus.Enabled;
+
+    /// <summary>
+    /// 内部状态
+    /// 针对后台管理用户能否使用的状态
+    /// </summary>
+    [DisplayName("内部状态")]
+    [Required(ErrorMessage = "内部状态不能为空！")]
+    [ModelBinder(typeof(WarehouseStatusModelBinder))]
+    public virtual WarehouseStatus InnerStatus { get; set; } = WarehouseStatus.Enabled;
+
+    /// <summary>
+    /// 排序字段
+    /// </summary>
+    [DisplayName("排序字段")]
+    [Required(ErrorMessage = "排序字段不能为空！")]
+    public virtual int OrderNum { get; set; }    
 }

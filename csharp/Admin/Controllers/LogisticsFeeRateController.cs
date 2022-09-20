@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
@@ -18,7 +17,7 @@ namespace shunda.Admin.Controllers;
 [AdminAuth]
 public class LogisticsFeeRateController : Controller
 {
-    private ISession session ;
+    private ISession session;
     private LogisticsFeeRateService logisticsFeeRateService;
 
     public LogisticsFeeRateController(ISession session, LogisticsFeeRateService logisticsFeeRateService)
@@ -72,14 +71,14 @@ public class LogisticsFeeRateController : Controller
 
         criteria = criteria.SetReadOnly(true);
 
-        string nameQuery = queryParam.NameQuery;
+        string nameQuery = queryParam.NameQuery ?? string.Empty;
         if (string.IsNullOrWhiteSpace(nameQuery) == false)
         {
             nameQuery = nameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsFeeRateInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
 
-        LogisticsFeeRateStatus statusQuery = queryParam.StatusQuery;
+        LogisticsFeeRateStatus statusQuery = queryParam.StatusQuery ?? LogisticsFeeRateStatus.None;
         if (statusQuery != null && statusQuery != LogisticsFeeRateStatus.None)
         {
             criteria = criteria.Add(Restrictions.Where<LogisticsFeeRateInfo>(e => e.Status == statusQuery));
@@ -94,7 +93,7 @@ public class LogisticsFeeRateController : Controller
     {
         session.DefaultReadOnly = true;
 
-        LogisticsFeeRateInfo logisticsFeeRate = null;
+        LogisticsFeeRateInfo logisticsFeeRate;
 
         if (id == null || id.Value == 0)
         {
@@ -411,7 +410,7 @@ public class LogisticsFeeRateController : Controller
 
         bool isCreate = logisticsFeeRateId == 0;
 
-        LogisticsFeeRateInfo logisticsFeeRate = null;
+        LogisticsFeeRateInfo logisticsFeeRate;
 
         if (isCreate)
         {

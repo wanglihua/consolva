@@ -15,7 +15,7 @@ namespace shunda.Admin.Controllers;
 // [AdminAuth(PassRes.Storage.Warehouse)]
 public class WarehouseController : Controller
 {
-    private ISession session = null;
+    private ISession session;
 
     public WarehouseController(ISession session)
     {
@@ -70,8 +70,8 @@ public class WarehouseController : Controller
     [NonAction]
     private ICriteria GetListCriteria(WarehouseListQueryParam queryParam)
     {
-        string codeQuery = queryParam.CodeQuery;
-        string nameQuery = queryParam.NameQuery;
+        string codeQuery = queryParam.CodeQuery??string.Empty;
+        string nameQuery = queryParam.NameQuery??string.Empty;
 
         ICriteria criteria = session.CreateCriteria<WarehouseInfo>();
 
@@ -98,7 +98,7 @@ public class WarehouseController : Controller
     {
         session.DefaultReadOnly = true;
 
-        WarehouseWithAddressDescriptionInfo warehouse = null;
+        WarehouseWithAddressDescriptionInfo warehouse;
 
         if (id == null || id.Value == 0)
         {
@@ -138,7 +138,7 @@ public class WarehouseController : Controller
 
         bool isCreate = warehouseId == 0;
 
-        WarehouseWithAddressDescriptionInfo warehouse = null;
+        WarehouseWithAddressDescriptionInfo warehouse;
 
         if (isCreate)
         {
