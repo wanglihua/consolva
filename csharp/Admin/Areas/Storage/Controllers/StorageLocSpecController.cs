@@ -17,7 +17,7 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 [AdminAuth]
 public class StorageLocSpecController : Controller
 {
-    private ISession session = null;
+    private ISession session;
 
     public StorageLocSpecController(ISession session)
     {
@@ -64,20 +64,20 @@ public class StorageLocSpecController : Controller
 
         criteria = criteria.SetReadOnly(true);
 
-        ShelfType typeQuery = queryParam.TypeQuery;
-        if (typeQuery != null && typeQuery != ShelfType.None)
+        ShelfType shelfTypeQuery = queryParam.TypeQuery ?? ShelfType.None;
+        if (shelfTypeQuery != ShelfType.None)
         {
-            criteria = criteria.Add(Restrictions.Where<StorageLocSpecInfo>(e => e.ShelfType == typeQuery));
+            criteria = criteria.Add(Restrictions.Where<StorageLocSpecInfo>(e => e.ShelfType == shelfTypeQuery));
         }
 
-        string codeQuery = queryParam.CodeQuery;
+        string codeQuery = queryParam.CodeQuery ?? string.Empty;
         if (string.IsNullOrWhiteSpace(codeQuery) == false)
         {
             codeQuery = codeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<StorageLocSpecInfo>(e => e.Code).IsInsensitiveLike(codeQuery, MatchMode.Anywhere));
         }
 
-        string nameQuery = queryParam.NameQuery;
+        string nameQuery = queryParam.NameQuery ?? string.Empty;
         if (string.IsNullOrWhiteSpace(nameQuery) == false)
         {
             nameQuery = nameQuery.Trim();
@@ -93,7 +93,7 @@ public class StorageLocSpecController : Controller
     {
         session.DefaultReadOnly = true;
 
-        StorageLocSpecInfo storageLocSpec = null;
+        StorageLocSpecInfo storageLocSpec;
 
         if (id == null || id.Value == 0)
         {
@@ -131,7 +131,7 @@ public class StorageLocSpecController : Controller
 
         bool isCreate = storageLocSpecId == 0;
 
-        StorageLocSpecInfo storageLocSpec = null;
+        StorageLocSpecInfo storageLocSpec;
 
         if (isCreate)
         {
