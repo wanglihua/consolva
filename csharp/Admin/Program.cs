@@ -33,7 +33,7 @@ public class Program
 
         NLogConfiguration.Config();
         builder.Logging.AddNLogWeb();
-        NHibernateLogger.SetLoggersFactory(new HibernateLoggerFactory());        
+        NHibernateLogger.SetLoggersFactory(new HibernateLoggerFactory());
 
         // Add services to the container.
         var services = builder.Services;

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace shunda.Admin.Models.User;
+namespace shunda.Admin.Areas.Pass.Models.User;
 
 public class UserDetailModel
 {

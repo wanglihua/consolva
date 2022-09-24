@@ -30,4 +30,15 @@
         <ProjectReference Include="..\Service\Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\Pass\Models" />
+      <Folder Include="Areas\Pass\Views" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Pass\Views\User\UserDetail.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\User\UserIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\User\UserList.cshtml" />
+    </ItemGroup>
+
 </Project>

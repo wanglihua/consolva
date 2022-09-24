@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using shunda.Admin.Models.User;
+using shunda.Admin.Areas.Pass.Models.User;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -10,9 +10,10 @@ using shunda.Domain.Pass;
 using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Controllers;
+namespace shunda.Admin.Areas.Pass.Controllers;
 
 [AdminAuth(AdminOnly = true)]
+[PassArea]
 public class UserController : Controller
 {
     private ISession session;
@@ -82,7 +83,7 @@ public class UserController : Controller
             string loginNameQuery = queryParam.LoginNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<UserInfo>(e => e.LoginName).IsInsensitiveLike(loginNameQuery, MatchMode.Anywhere));
         }
-        
+
         if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
         {
             string userNameQuery = queryParam.UserNameQuery.Trim();

@@ -1,6 +1,6 @@
 using shunda.Core;
 
-namespace shunda.Admin.Models.User;
+namespace shunda.Admin.Areas.Pass.Models.User;
 
 public class UserListQueryParam : ListQueryParam
 {
