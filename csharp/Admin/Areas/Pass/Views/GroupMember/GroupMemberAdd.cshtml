@@ -1,0 +1,68 @@
+@model shunda.Admin.Areas.Pass.Models.GroupMember.GroupMemberAddModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="groupMemberAddDialog">
+    <div class="modal-dialog" style="width: 540px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">群组成员添加</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="groupMemberAddForm" class="form-horizontal" role="form">
+                    <input asp-for="GroupId" type="hidden"/>
+                    
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Group!.Code" class="col-xs-3 control-label">群组编号</label>
+                                <div class="col-xs-9">
+                                    <input asp-for="Group!.Code" type="text" class="input-sm form-control" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>                    
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Group!.Name" class="col-xs-3 control-label">群组名称</label>
+                                <div class="col-xs-9">
+                                    <input asp-for="Group!.Name" type="text" class="input-sm form-control" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LoginName" class="col-xs-3 control-label">新成员登录名</label>
+                                <div class="col-xs-9">
+                                    <input asp-for="LoginName" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveGroupMember();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -30,4 +30,40 @@
         <ProjectReference Include="..\Service\Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\GroupMember\GroupMemberAdd.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\GroupMember\GroupMemberIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\GroupMember\GroupMemberList.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\GroupPassRes\GroupPassResIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\GroupPassRes\GroupPassResList.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassRes\PassResIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassRes\PassResList.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassResGroup\PassResGroupAdd.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassResGroup\PassResGroupIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassResGroup\PassResGroupList.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassResUser\PassResUserAdd.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassResUser\PassResUserIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\PassResUser\PassResUserList.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\UserPassRes\UserPassResIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\UserPassRes\UserPassResList.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Pass\Views\GroupMember\GroupMemberAdd.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\GroupMember\GroupMemberIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\GroupMember\GroupMemberList.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\GroupPassRes\GroupPassResIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\GroupPassRes\GroupPassResList.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassResGroup\PassResGroupAdd.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassResGroup\PassResGroupIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassResGroup\PassResGroupList.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassResUser\PassResUserAdd.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassResUser\PassResUserIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassResUser\PassResUserList.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassRes\PassResIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\PassRes\PassResList.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\UserPassRes\UserPassResIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\UserPassRes\UserPassResList.cshtml" />
+    </ItemGroup>
+
 </Project>

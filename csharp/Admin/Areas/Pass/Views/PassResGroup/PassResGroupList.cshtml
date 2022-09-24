@@ -1,0 +1,57 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Pass
+@model shunda.Admin.Areas.Pass.Models.PassResGroup.PassResGroupListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadGroupPassResList"})
+
+<table id="tblPassResGroupList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th style="width: 40px; text-align: center;">
+            <label for="passResGroupCheckAll"></label><input id="passResGroupCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+        </th>
+        <th style="width: 50px; text-align: center;">序号</th>
+        <th style="width: 100px;">
+            <a field="@($"{Model.GroupAlias}.{nameof(GroupPassResInfo.Group.Code)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResGroupList">群组编码</a>
+        </th>
+        <th style="width: 150px;">
+            <a field="@($"{Model.GroupAlias}.{nameof(GroupPassResInfo.Group.Name)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResGroupList">群组名称</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(GroupPassResInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResGroupList">添加时间</a>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.GroupPassResList != null && Model.GroupPassResList.Count() != 0)
+    {
+        int order = 1;
+        foreach (GroupPassResInfo groupPassRes in Model.GroupPassResList)
+        {
+            <tr ondblclick="showGroupPassResDetail(@(groupPassRes.Id));">
+                <td style="text-align: center;">
+                    <label for="passResGroupCheck_@(groupPassRes.Id)"></label><input id="passResGroupCheck_@(groupPassRes.Id)" type="checkbox" class="ace" value="@groupPassRes.Id"/><span class="lbl"></span>
+                </td>
+                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                <td>@groupPassRes.Group.Code</td>
+                <td>@groupPassRes.Group.Name</td>
+                <td style="text-align: center;">@groupPassRes.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="6">
+                暂时没有数据！
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadGroupPassResList"})

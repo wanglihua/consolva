@@ -1,0 +1,57 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Pass
+@model shunda.Admin.Areas.Pass.Models.PassResUser.PassResUserListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserPassResList"})
+
+<table id="tblPassResUserList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th style="width: 40px; text-align: center;">
+            <label for="passResUserCheckAll"></label><input id="passResUserCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+        </th>
+        <th style="width: 50px; text-align: center;">序号</th>
+        <th style="width: 100px;">
+            <a field="@($"{Model.UserAlias}.{nameof(UserPassResInfo.User.LoginName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResUserList">登录名</a>
+        </th>
+        <th style="width: 150px;">
+            <a field="@($"{Model.UserAlias}.{nameof(UserPassResInfo.User.UserName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResUserList">用户名</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(UserPassResInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResUserList">添加时间</a>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.UserPassResList != null && Model.UserPassResList.Count() != 0)
+    {
+        int order = 1;
+        foreach (UserPassResInfo userPassRes in Model.UserPassResList)
+        {
+            <tr ondblclick="showUserPassResDetail(@(userPassRes.Id));">
+                <td style="text-align: center;">
+                    <label for="passResUserCheck_@(userPassRes.Id)"></label><input id="passResUserCheck_@(userPassRes.Id)" type="checkbox" class="ace" value="@userPassRes.Id"/><span class="lbl"></span>
+                </td>
+                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                <td>@userPassRes.User.LoginName</td>
+                <td>@userPassRes.User.UserName</td>
+                <td style="text-align: center;">@userPassRes.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="6">
+                暂时没有数据！
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserPassResList"})

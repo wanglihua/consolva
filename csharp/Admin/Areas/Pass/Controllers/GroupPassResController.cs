@@ -1,0 +1,164 @@
+using Microsoft.AspNetCore.Mvc;
+using NHibernate;
+using NHibernate.Criterion;
+using NHibernate.Linq;
+using shunda.Admin.Areas.Pass.Models.GroupPassRes;
+using shunda.Core;
+using shunda.Core.Hibernate;
+using shunda.Core.Web;
+using shunda.Domain.Pass;
+using shunda.Service.Pass;
+using ISession = NHibernate.ISession;
+
+namespace shunda.Admin.Areas.Pass.Controllers;
+
+[AdminAuth(AdminOnly = true)]
+[PassArea]
+public class GroupPassResController : Controller
+{
+    private ISession session;
+    private PassResService passResService;
+
+    public GroupPassResController(ISession session, PassResService passResService)
+    {
+        this.session = session;
+        this.passResService = passResService;
+    }
+
+    [HttpGet]
+    [Route("/admin/group/pass/res/{groupId:int}")]
+    public IActionResult Index(int groupId)
+    {
+        GroupInfo group = session.Get<GroupInfo>(groupId);
+        if (group == null)
+        {
+            return Content("指定的群组 Id 不存在！");
+        }
+
+        GroupPassResIndexModel model = new GroupPassResIndexModel();
+        model.GroupId = groupId;
+        model.Group = group;
+
+        return View("GroupPassResIndex", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/group/pass/res/list")]
+    public IActionResult List(GroupPassResListQueryParam queryParam)
+    {
+        int totalCount = GetListCriteria(queryParam)
+            .SetProjection(Projections.RowCount())
+            .UniqueResult<int>();
+
+        ListPager listPager = new ListPager(queryParam, totalCount);
+
+        IList<PassResInfo> passResList = GetListCriteria(queryParam)
+            .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
+            .AddOrder(Order.Desc(nameof(Entity.Id)))
+            .SetFirstResult(listPager.PageIndex * listPager.PageSize)
+            .SetMaxResults(listPager.PageSize)
+            .List<PassResInfo>();
+
+        int groupId = queryParam.GroupId;
+        IList<int> grantedPassResIdList = session.Query<GroupPassResInfo>().Where(e => e.Group.Id == groupId).Select(e => e.PassRes.Id).ToList();
+        IDictionary<int, bool> grantedPassResIdMap = new Dictionary<int, bool>();
+        foreach (int passResId in grantedPassResIdList)
+        {
+            grantedPassResIdMap[passResId] = true;
+        }
+
+        IList<GroupPassResListItem> groupPassResItemList = new List<GroupPassResListItem>();
+        foreach (PassResInfo passResInfo in passResList)
+        {
+            GroupPassResListItem groupPassResListItem = new GroupPassResListItem();
+            groupPassResListItem.PassResId = passResInfo.Id;
+            groupPassResListItem.CateName = passResInfo.Cate.Name;
+            groupPassResListItem.ResName = passResInfo.Name;
+
+            groupPassResListItem.Granted = false;
+            if (grantedPassResIdMap.ContainsKey(passResInfo.Id))
+            {
+                groupPassResListItem.Granted = true;
+            }
+
+            groupPassResItemList.Add(groupPassResListItem);
+        }
+
+        GroupPassResListModel model = new GroupPassResListModel(listPager);
+        model.GroupPassResList = groupPassResItemList;
+        model.PassResCateAlias = passResCateAlias;
+
+        return View("GroupPassResList", model);
+    }
+
+    private static readonly string passResCateAlias = "prc";
+
+    [NonAction]
+    private ICriteria GetListCriteria(GroupPassResListQueryParam queryParam)
+    {
+        ICriteria criteria = this.session.CreateCriteria<PassResInfo>();
+        criteria = criteria.CreateAlias(nameof(PassResInfo.Cate), passResCateAlias);
+
+        criteria = criteria.SetReadOnly(true);
+
+        if (string.IsNullOrWhiteSpace(queryParam.PassResNameQuery) == false)
+        {
+            string passResNameQuery = queryParam.PassResNameQuery.Trim();
+            criteria = criteria.Add(Restrictions.On<PassResInfo>(e => e.Name).IsInsensitiveLike(passResNameQuery, MatchMode.Anywhere));
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.CateNameQuery) == false)
+        {
+            string cateNameQuery = queryParam.CateNameQuery.Trim();
+            criteria.Add(Restrictions.InsensitiveLike($"{passResCateAlias}.{nameof(PassResCateInfo.Name)}", cateNameQuery, MatchMode.Anywhere));
+        }
+
+        return criteria;
+    }
+
+    [HttpPost]
+    [Route("/admin/group/pass/res/grant")]
+    [Transactional]
+    public IActionResult Grant(GroupPassResGrantModel model)
+    {
+        int passResId = model.PassResId;
+        int groupId = model.GroupId;
+
+        int count = session.Query<GroupPassResInfo>().Where(e => e.PassRes.Id == passResId && e.Group.Id == groupId).Count();
+        if (count == 0)
+        {
+            GroupPassResInfo groupPassResInfo = new GroupPassResInfo();
+            groupPassResInfo.PassRes = session.Load<PassResInfo>(passResId);
+            groupPassResInfo.Group = session.Load<GroupInfo>(groupId);
+
+            session.Save(groupPassResInfo);
+            session.Flush();
+        }
+
+        passResService.CachePassResIdMapForAllUser();
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "授权成功！" },
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/group/pass/res/revoke")]
+    [Transactional]
+    public IActionResult Revoke(GroupPassResRevokeModel model)
+    {
+        int passResId = model.PassResId;
+        int groupId = model.GroupId;
+
+        session.Query<GroupPassResInfo>().Where(e => e.PassRes.Id == passResId && e.Group.Id == groupId).Delete();
+        session.Flush();
+
+        passResService.CachePassResIdMapForAllUser();
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "收权成功！" },
+        });
+    }
+}

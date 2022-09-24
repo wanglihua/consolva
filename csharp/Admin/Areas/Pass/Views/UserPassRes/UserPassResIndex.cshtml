@@ -1,0 +1,142 @@
+@using shunda.Admin.Areas.Pass.Models.UserPassRes
+@using shunda.Core.Web
+@using shunda.Domain.Pass
+@using shunda.Core
+@model shunda.Admin.Areas.Pass.Models.UserPassRes.UserPassResIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "用户资源授权";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-user-index-menu">
+        <a href="@Url.Action("Index", "User")">用户列表</a>
+    </li>
+    <li>用户（<span>@Model.User.LoginName</span>&nbsp;<span>@Model.User.UserName</span>）资源授权</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadUserPassResList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "User")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="cateNameQuery">资源类别</label>&nbsp;<input id="cateNameQuery" name="cateNameQuery" style="width: 100px; height: 30px;" placeholder="资源类别查询"/>&nbsp;
+    <label for="passResNameQuery">资源名称</label>&nbsp;<input id="passResNameQuery" name="passResNameQuery" style="width: 100px; height: 30px;" placeholder="资源名称查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadUserPassResList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="userPassResList" data-page-index="0" data-sort-field="@(nameof(UserPassResInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="userPassResDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadUserPassResList();
+    });
+
+    function sortUserPassResList(sortField, sortDir) {
+        var list = $('#userPassResList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadUserPassResList();
+    }
+
+    function loadUserPassResList(pageIndex) {
+        var list = $('#userPassResList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "UserPassRes")",
+            type: "POST",
+            data: {
+                '@(nameof(UserPassResListQueryParam.UserId))': @(Model.UserId),
+                '@(nameof(UserPassResListQueryParam.CateNameQuery))': $("#cateNameQuery").val(),
+                '@(nameof(UserPassResListQueryParam.PassResNameQuery))': $("#passResNameQuery").val(),
+                '@(nameof(UserPassResListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(UserPassResListQueryParam.SortField))': sortField,
+                '@(nameof(UserPassResListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#userPassResList').html(data);
+
+                initListTable("#tblUserPassResList");
+            }
+        });
+    }
+
+    function grantUserPassRes(passResId) {
+        showMask("提交中...");
+        $.ajax({
+            url: '@Url.Action("Grant", "UserPassRes")',
+            type: "POST",
+            data: {
+                '@(nameof(UserPassResGrantModel.UserId))': @Model.UserId,
+                '@(nameof(UserPassResGrantModel.PassResId))': passResId
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    //return;
+                } else {
+                    $.msg.show(data.message);
+                    loadUserPassResList();
+                    //return;
+                }
+            }
+        });
+    }
+
+    function revokeUserPassRes(passResId) {
+        showMask("提交中...");
+        $.ajax({
+            url: '@Url.Action("Revoke", "UserPassRes")',
+            type: "POST",
+            data: {
+                '@(nameof(UserPassResRevokeModel.UserId))': @Model.UserId,
+                '@(nameof(UserPassResRevokeModel.PassResId))': passResId
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    //return;
+                } else {
+                    $.msg.show(data.message);
+                    loadUserPassResList();
+                    //return;
+                }
+            }
+        });
+    }
+
+</script>
