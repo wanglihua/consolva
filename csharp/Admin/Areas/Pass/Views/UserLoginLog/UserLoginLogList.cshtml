@@ -2,7 +2,7 @@
     Layout = null;
 }
 @using shunda.Domain.Pass
-@model shunda.Admin.Models.UserLoginLog.UserLoginLogListModel
+@model shunda.Admin.Areas.Pass.Models.UserLoginLog.UserLoginLogListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserLoginLogList"})
 

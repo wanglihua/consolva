@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using shunda.Admin.Models.UserLoginLog;
+using shunda.Admin.Areas.Pass.Models.UserLoginLog;
 using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Pass;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Controllers;
+namespace shunda.Admin.Areas.Pass.Controllers;
 
 [AdminAuth]
+[PassArea]
 public class UserLoginLogController : Controller
 {
     private ISession session;

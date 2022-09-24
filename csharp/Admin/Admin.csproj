@@ -30,30 +30,4 @@
         <ProjectReference Include="..\Service\Service.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Areas\Pass\Models" />
-      <Folder Include="Areas\Pass\Views" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Areas\Pass\Views\Admin\AdminAdd.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\Admin\AdminIndex.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\Admin\AdminList.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\Group\GroupDetail.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\Group\GroupIndex.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\Group\GroupList.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\User\UserDetail.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\User\UserIndex.cshtml" />
-      <AdditionalFiles Include="Areas\Pass\Views\User\UserList.cshtml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Group\GroupDetail.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Group\GroupIndex.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Group\GroupList.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Admin\AdminAdd.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Admin\AdminIndex.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Admin\AdminList.cshtml" />
-    </ItemGroup>
-
 </Project>
