@@ -16,7 +16,7 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 [AdminAuth]
 public class ShelfController : Controller
 {
-    private ISession session = null;
+    private ISession session;
 
     public ShelfController(ISession session)
     {
@@ -88,9 +88,9 @@ public class ShelfController : Controller
     private ICriteria GetListCriteria(ShelfListQueryParam queryParam)
     {
         int warehouseId = queryParam.WarehouseId;
-        ShelfType shelfTypeQuery = queryParam.ShelfTypeQuery;
-        string codeQuery = queryParam.CodeQuery;
-        string nameQuery = queryParam.NameQuery;
+        ShelfType shelfTypeQuery = queryParam.ShelfTypeQuery ?? ShelfType.None;
+        string codeQuery = queryParam.CodeQuery ?? string.Empty;
+        string nameQuery = queryParam.NameQuery ?? string.Empty;
 
         ICriteria criteria = session.CreateCriteria<ShelfInfo>();
 
@@ -127,7 +127,7 @@ public class ShelfController : Controller
 
         session.DefaultReadOnly = true;
 
-        ShelfInfo shelf = null;
+        ShelfInfo shelf;
 
         if (shelfId == 0)
         {
@@ -167,7 +167,7 @@ public class ShelfController : Controller
 
         bool isCreate = shelfId == 0;
 
-        ShelfInfo shelf = null;
+        ShelfInfo shelf;
 
         if (isCreate)
         {

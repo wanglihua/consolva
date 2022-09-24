@@ -106,7 +106,8 @@
             url: '@Url.Action("Design", "StorageLoc")',
             type: "POST",
             data: {
-                "@(nameof(StorageLocDesignModel.ShelfId))": shelfId
+                @* TODO "@(nameof(StorageLocDesignModel.ShelfId))": shelfId*@
+                "ShelfId": shelfId
             },
             success: function(data) {
                 hideMask();
@@ -131,7 +132,8 @@
             url: '@Url.Action("Preview", "StorageLoc")',
             type: "POST",
             data: {
-                "@(nameof(StorageLocPreviewModel.ShelfId))": shelfId
+                @* TODO "@(nameof(StorageLocPreviewModel.ShelfId))": shelfId *@
+                "ShelfId": shelfId
             },
             success: function(data) {
                 hideMask();
