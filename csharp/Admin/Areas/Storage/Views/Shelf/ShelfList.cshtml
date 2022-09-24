@@ -1,0 +1,150 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.Shelf.ShelfListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadShelfList"})
+
+<table id="tblShelfList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th style="width: 40px; text-align: center;">
+            <label for="shelfCheckAll"></label><input id="shelfCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+        </th>
+        <th style="width: 50px; text-align: center;">序号</th>
+        <th style="width: 80px;">
+            <a field="@(nameof(ShelfInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">编码</a>
+        </th>
+        <th style="width: 255px;">
+            <a field="@(nameof(ShelfInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">货架名</a>
+        </th>
+        <th style="width: 120px;">
+            <a field="@(nameof(ShelfInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">货架类型</a>
+        </th>
+        <th style="width: 100px;">
+            <a field="@(nameof(ShelfInfo.Cate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">货架类别</a>
+        </th>        
+        <th style="width: 60px;">
+            <a field="@(nameof(ShelfInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">状态</a>
+        </th>
+        <th style="width: 60px;">
+            <a field="@(nameof(ShelfInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">排序</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(ShelfInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">创建时间</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(ShelfInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfList">修改时间</a>
+        </th>
+        <th style="width: 120px; text-align: center;">操作</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.ShelfList != null && Model.ShelfList.Count() != 0)
+    {
+        int order = 1;
+        foreach (ShelfInfo shelf in Model.ShelfList)
+        {
+            <tr ondblclick="showShelfDetail(@(shelf.Id));">
+                <td style="text-align: center;">
+                    <label for="shelfCheck_@(shelf.Id)"></label><input id="shelfCheck_@(shelf.Id)" type="checkbox" class="ace" value="@shelf.Id"/><span class="lbl"></span>
+                </td>
+                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                <td>@shelf.Code</td>
+                <td>@shelf.Name</td>
+                <td>@shelf.Type?.Name</td>
+                <td>@shelf.Cate?.Name</td>
+                <td style="text-align: center;">
+                    @if (shelf.Status == ShelfStatus.Enabled)
+                    {
+                        <span style="color: green;">@shelf.Status?.Name</span>
+                    }
+                    else
+                    {
+                        <span style="color: red;">@shelf.Status?.Name</span>
+                    }
+                </td>
+                <td>@shelf.OrderNum</td>
+                <td style="text-align: center;">@shelf.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td style="text-align: center;">@shelf.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td style="text-align: center;">
+                    <a href="javascript:showStorageLocDesignDialog(@(shelf.Id));"><i class="fa fa-pencil-square-o"></i>&nbsp;库位规划</a>&nbsp;&nbsp;
+                    <a href="javascript:showStorageLocPreviewDialog(@(shelf.Id));"><i class="fa fa-pencil-square-o"></i>&nbsp;层级预览</a>&nbsp;&nbsp;
+                    <a target="_blank" href="@Url.Action("Index", "StorageLoc", new {shelfId = shelf.Id})"><i class="fa fa-pencil-square-o"></i>&nbsp;库位列表</a>
+                </td>
+                <td></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="12">
+                暂时没有数据！
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadShelfList"})
+
+<div id="storageLocDesignDialogWrapper"></div>
+<div id="storageLocPreviewDialogWrapper"></div>
+
+<script type="text/javascript">
+
+    function showStorageLocDesignDialog(shelfId)
+    {
+        $("#storageLocDesignDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("Design", "StorageLoc")',
+            type: "POST",
+            data: {
+                "@(nameof(StorageLocDesignModel.ShelfId))": shelfId
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#storageLocDesignDialogWrapper").html(data);
+                $("#storageLocDesignDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function showStorageLocPreviewDialog(shelfId)
+    {
+        $("#storageLocPreviewDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("Preview", "StorageLoc")',
+            type: "POST",
+            data: {
+                "@(nameof(StorageLocPreviewModel.ShelfId))": shelfId,
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#storageLocPreviewDialogWrapper").html(data);
+                $("#storageLocPreviewDialog").modal(modalOptions);
+            }
+        });
+    }
+
+
+</script>

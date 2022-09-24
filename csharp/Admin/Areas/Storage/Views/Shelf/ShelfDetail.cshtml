@@ -1,0 +1,103 @@
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.Shelf.ShelfDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="shelfDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">货架详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="shelfDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="Shelf.Id" type="hidden"/>
+                    <input asp-for="WarehouseId" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Shelf.Code" class="col-xs-2 control-label">编码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Shelf.Code" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Shelf.Name" class="col-xs-2 control-label">货架名</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Shelf.Name" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Shelf.Type" class="col-xs-2 control-label">货架类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Shelf.Type" class="input-sm form-control">
+                                        @foreach (ShelfType shelfType in Model.ShelfTypeList)
+                                        {
+                                            <option value="@shelfType.Id">@shelfType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Shelf.Cate" class="col-xs-2 control-label">货架类别</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Shelf.Cate" class="input-sm form-control">
+                                        @foreach (ShelfCate shelfCate in Model.ShelfCateList)
+                                        {
+                                            <option value="@shelfCate.Id">@shelfCate.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>                        
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Shelf.Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Shelf.Status" class="input-sm form-control">
+                                        @foreach (ShelfStatus shelfStatusInfo in Model.ShelfStatusList)
+                                        {
+                                            <option value="@shelfStatusInfo.Id">@shelfStatusInfo.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Shelf.OrderNum" class="col-xs-2 control-label">排序</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Shelf.OrderNum" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveShelf();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
