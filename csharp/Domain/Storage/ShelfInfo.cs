@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 
-namespace shunda.Domain.Warehouse;
+namespace shunda.Domain.Storage;
 
 /// <summary>
 /// 货架

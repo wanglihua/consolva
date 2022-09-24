@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.Warehouse;
+namespace shunda.Domain.Storage;
 
 /// <summary>
 /// 仓库状态

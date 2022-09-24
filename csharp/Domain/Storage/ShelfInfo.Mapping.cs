@@ -2,7 +2,7 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Core;
 
-namespace shunda.Domain.Warehouse;
+namespace shunda.Domain.Storage;
 
 public class ShelfInfoMapping : EntityMapping<ShelfInfo>
 {

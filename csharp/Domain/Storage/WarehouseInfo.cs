@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Core;
 
-namespace shunda.Domain.Warehouse;
+namespace shunda.Domain.Storage;
 
 /// <summary>
 /// 仓库

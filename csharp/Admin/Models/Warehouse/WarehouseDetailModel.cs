@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using shunda.Domain.Warehouse;
+using shunda.Domain.Storage;
 
 namespace shunda.Admin.Models.Warehouse;
 

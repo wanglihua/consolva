@@ -1,5 +1,5 @@
 using shunda.Core;
-using shunda.Domain.Warehouse;
+using shunda.Domain.Storage;
 
 namespace shunda.Admin.Models.Warehouse;
 

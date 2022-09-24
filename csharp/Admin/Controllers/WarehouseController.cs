@@ -6,7 +6,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
-using shunda.Domain.Warehouse;
+using shunda.Domain.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Controllers;

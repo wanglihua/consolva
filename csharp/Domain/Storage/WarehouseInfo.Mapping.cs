@@ -1,11 +1,11 @@
 using NHibernate;
 using shunda.Core;
 
-namespace shunda.Domain.Warehouse;
+namespace shunda.Domain.Storage;
 
-public class WarehouseWithAddressDescriptionInfoMapping : EntityMapping<WarehouseWithAddressDescriptionInfo>
+public class WarehouseInfoMapping : EntityMapping<WarehouseInfo>
 {
-    public WarehouseWithAddressDescriptionInfoMapping()
+    public WarehouseInfoMapping()
     {
         Table("tbl_warehouse");
 
@@ -51,14 +51,14 @@ public class WarehouseWithAddressDescriptionInfoMapping : EntityMapping<Warehous
             }
         );
 
-        Property(
-            x => x.AddressDescription,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("address_description");
-                map.NotNullable(true);
-            }
-        );
+        // Property(
+        //     x => x.AddressDescription,
+        //     map => {
+        //         map.Type(NHibernateUtil.String);
+        //         map.Column("address_description");
+        //         map.NotNullable(true);
+        //     }
+        // );
 
         Property(
             x => x.OuterStatus,
