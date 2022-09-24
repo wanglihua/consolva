@@ -30,4 +30,15 @@
         <ProjectReference Include="..\Service\Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\Storage\Models" />
+      <Folder Include="Areas\Storage\Views" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Storage\Views\Warehouse\WarehouseDetail.cshtml" />
+      <AdditionalFiles Include="Areas\Storage\Views\Warehouse\WarehouseIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Storage\Views\Warehouse\WarehouseList.cshtml" />
+    </ItemGroup>
+
 </Project>

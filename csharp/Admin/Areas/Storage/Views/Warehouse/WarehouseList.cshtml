@@ -3,7 +3,7 @@
 }
 
 @using shunda.Domain.Storage
-@model shunda.Admin.Models.Warehouse.WarehouseListModel
+@model shunda.Admin.Areas.Storage.Models.Warehouse.WarehouseListModel
 
 @await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadWarehouseList" })
 

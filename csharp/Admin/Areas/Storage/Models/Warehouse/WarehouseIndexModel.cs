@@ -1,4 +1,4 @@
-namespace shunda.Admin.Models.Warehouse;
+namespace shunda.Admin.Areas.Storage.Models.Warehouse;
 
 public class WarehouseIndexModel
 {

@@ -1,7 +1,7 @@
 using shunda.Core;
 using shunda.Domain.Storage;
 
-namespace shunda.Admin.Models.Warehouse;
+namespace shunda.Admin.Areas.Storage.Models.Warehouse;
 
 public class WarehouseListModel : ListModel
 {

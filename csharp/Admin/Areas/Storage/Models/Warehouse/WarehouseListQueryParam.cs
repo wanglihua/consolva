@@ -1,6 +1,6 @@
 using shunda.Core;
 
-namespace shunda.Admin.Models.Warehouse;
+namespace shunda.Admin.Areas.Storage.Models.Warehouse;
 
 public class WarehouseListQueryParam : ListQueryParam
 {
