@@ -9,7 +9,7 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Pass.Controllers;
 
-[AdminAuth]
+[AdminAuth(AdminOnly = true)]
 [PassArea]
 public class UserLoginLogController : Controller
 {
