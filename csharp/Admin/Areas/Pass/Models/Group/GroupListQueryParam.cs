@@ -1,6 +1,6 @@
 using shunda.Core;
 
-namespace shunda.Admin.Models.Group;
+namespace shunda.Admin.Areas.Pass.Models.Group;
 
 public class GroupListQueryParam : ListQueryParam
 {

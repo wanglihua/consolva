@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace shunda.Admin.Models.Group;
+namespace shunda.Admin.Areas.Pass.Models.Group;
 
 public class GroupDetailModel
 {

@@ -1,7 +1,7 @@
 using shunda.Core;
 using shunda.Domain.Pass;
 
-namespace shunda.Admin.Models.Group;
+namespace shunda.Admin.Areas.Pass.Models.Group;
 
 public class GroupListModel : ListModel
 {

@@ -36,9 +36,18 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Areas\Pass\Views\Group\GroupDetail.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\Group\GroupIndex.cshtml" />
+      <AdditionalFiles Include="Areas\Pass\Views\Group\GroupList.cshtml" />
       <AdditionalFiles Include="Areas\Pass\Views\User\UserDetail.cshtml" />
       <AdditionalFiles Include="Areas\Pass\Views\User\UserIndex.cshtml" />
       <AdditionalFiles Include="Areas\Pass\Views\User\UserList.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Group\GroupDetail.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Group\GroupIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Group\GroupList.cshtml" />
     </ItemGroup>
 
 </Project>

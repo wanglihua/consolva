@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using shunda.Admin.Models.Group;
+using shunda.Admin.Areas.Pass.Models.Group;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -9,9 +9,10 @@ using shunda.Core.Web;
 using shunda.Domain.Pass;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Controllers;
+namespace shunda.Admin.Areas.Pass.Controllers;
 
 [AdminAuth(AdminOnly = true)]
+[PassArea]
 public class GroupController : Controller
 {
     private ISession session;
