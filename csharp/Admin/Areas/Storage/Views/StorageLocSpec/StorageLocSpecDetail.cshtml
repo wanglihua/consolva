@@ -1,0 +1,120 @@
+@using shunda.Domain
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.StorageLocSpec.StorageLocSpecDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="storageLocSpecDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">库位规格详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="storageLocSpecDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="StorageLocSpec.Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.Type" class="col-xs-2 control-label">货架类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="StorageLocSpec.Type" class="input-sm form-control">
+                                        @foreach (ShelfType type in Model.TypeList)
+                                        {
+                                            <option value="@type.Id">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.Code" class="col-xs-2 control-label">编码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLocSpec.Code" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.Name" class="col-xs-2 control-label">名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLocSpec.Name" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.Length" class="col-xs-2 control-label">长/cm</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLocSpec.Length" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.Width" class="col-xs-2 control-label">宽/cm</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLocSpec.Width" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.Height" class="col-xs-2 control-label">高/cm</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLocSpec.Height" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.Color" class="col-xs-2 control-label">颜色</label>
+                                <div class="col-xs-4">
+                                    <div id="divColor" style="margin-top: 5px;  padding: 10px; background-color: @(Model.StorageLocSpec.Color);"></div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <select id="selColor" asp-for="StorageLocSpec.Color" class="input-sm form-control" onchange="onColorSelectChange();">
+
+                                        @foreach (WebColor color in Model.ColorList)
+                                        {
+                                            <option value="@(color.Hex)" style="color: @(color.Hex);">██████████&nbsp;<span>@(color.Hex)</span></option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveStorageLocSpec();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function onColorSelectChange() {
+        $("#divColor").css("background-color", $("#selColor").val());
+    }
+
+</script>

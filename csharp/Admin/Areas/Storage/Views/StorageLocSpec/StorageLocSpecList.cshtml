@@ -1,0 +1,87 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.StorageLocSpec.StorageLocSpecListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadStorageLocSpecList" })
+
+<table id="tblStorageLocSpecList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="storageLocSpecCheckAll"></label><input id="storageLocSpecCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(StorageLocSpecInfo.ShelfType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">货架类型</a>
+            </th>
+
+            <th style="width: 65px; text-align: center;">
+                <a field="@(nameof(StorageLocSpecInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">编码</a>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(StorageLocSpecInfo.Color))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">颜色</a>
+            </th>
+
+            <th style="width: 350px;">
+                <a field="@(nameof(StorageLocSpecInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">名称</a>
+            </th>
+
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(StorageLocSpecInfo.Length))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">长</a>
+            </th>
+
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(StorageLocSpecInfo.Width))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">宽</a>
+            </th>
+
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(StorageLocSpecInfo.Height))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">高</a>
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.StorageLocSpecList != null && Model.StorageLocSpecList.Count() != 0)
+        {
+            int order = 1;
+            foreach (StorageLocSpecInfo storageLocSpec in Model.StorageLocSpecList)
+            {
+                <tr ondblclick="showStorageLocSpecDetail(@(storageLocSpec.Id));">
+                    <td style="text-align: center;">
+                        <label for="storageLocSpecCheck_@(storageLocSpec.Id)"></label><input id="storageLocSpecCheck_@(storageLocSpec.Id)" type="checkbox" class="ace" value="@storageLocSpec.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">@storageLocSpec.ShelfType?.Name</td>
+                    <td style="text-align: center;">@storageLocSpec.Code</td>
+                    <td style="text-align: center;">
+                        <span style="display: inline-block; width: 85px; padding: 3px 10px; text-align: center; background-color: @storageLocSpec.Color;">
+                            @*storageLocSpec.Color*@ &nbsp;
+                        </span>
+                    </td>
+                    <td>@storageLocSpec.Name</td>
+                    <td style="text-align: center;">@(storageLocSpec.Length)cm</td>
+                    <td style="text-align: center;">@(storageLocSpec.Width)cm</td>
+                    <td style="text-align: center;">@(storageLocSpec.Height)cm</td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadStorageLocSpecList" })

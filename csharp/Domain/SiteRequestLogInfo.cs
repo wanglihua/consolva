@@ -1,5 +1,3 @@
-using System;
-
 namespace shunda.Domain;
 
 public class SiteRequestLogInfo
