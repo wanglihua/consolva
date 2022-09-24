@@ -1,7 +1,7 @@
 using shunda.Core.Config;
 using shunda.Core.Service;
 
-namespace shunda.Service.LogisticsFee;
+namespace shunda.Service.Logistics;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsFeeRateService
