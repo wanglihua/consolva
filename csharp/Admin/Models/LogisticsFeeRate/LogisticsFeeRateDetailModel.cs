@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Logistics;
-using shunda.Domain.LogisticsFeeRate;
 
 namespace shunda.Admin.Models.LogisticsFeeRate;
 

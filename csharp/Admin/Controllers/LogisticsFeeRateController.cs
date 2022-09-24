@@ -7,7 +7,6 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Logistics;
-using shunda.Domain.LogisticsFeeRate;
 using shunda.Service.LogisticsFee;
 using ISession = NHibernate.ISession;
 

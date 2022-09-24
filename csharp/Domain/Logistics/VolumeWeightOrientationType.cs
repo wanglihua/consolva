@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.LogisticsFeeRate;
+namespace shunda.Domain.Logistics;
 
 /// <summary>
 /// 体积重取向
