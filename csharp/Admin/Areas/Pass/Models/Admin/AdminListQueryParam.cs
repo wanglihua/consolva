@@ -1,7 +1,7 @@
 using System;
 using shunda.Core;
 
-namespace shunda.Admin.Models.Admin;
+namespace shunda.Admin.Areas.Pass.Models.Admin;
 
 public class AdminListQueryParam : ListQueryParam
 {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace shunda.Admin.Models.Admin;
+namespace shunda.Admin.Areas.Pass.Models.Admin;
 
 public class AdminAddModel
 {

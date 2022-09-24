@@ -2,7 +2,7 @@
     Layout = null;
 }
 @using shunda.Domain.Pass
-@model shunda.Admin.Models.Admin.AdminListModel
+@model shunda.Admin.Areas.Pass.Models.Admin.AdminListModel
 
 @(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdminList" }))
 

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
-using shunda.Admin.Models.Admin;
+using shunda.Admin.Areas.Pass.Models.Admin;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -11,9 +11,10 @@ using shunda.Domain.Pass;
 using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Controllers;
+namespace shunda.Admin.Areas.Pass.Controllers;
 
 [AdminAuth(AdminOnly = true)]
+[PassArea]
 public class AdminController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();

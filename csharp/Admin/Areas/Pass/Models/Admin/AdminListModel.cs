@@ -1,7 +1,7 @@
 using shunda.Core;
 using shunda.Domain.Pass;
 
-namespace shunda.Admin.Models.Admin;
+namespace shunda.Admin.Areas.Pass.Models.Admin;
 
 public class AdminListModel : ListModel
 {
