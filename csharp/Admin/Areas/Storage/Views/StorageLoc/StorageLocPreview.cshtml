@@ -119,7 +119,7 @@
                                             for (int colIndex = 0; colIndex < maxColNumInRow; colIndex++)
                                             {
                                                 int colNum = colIndex + 1;
-                                                StorageLocInfo loc = locListInRow.Where(e => e.ColNum == colNum).Take(1).SingleOrDefault();
+                                                StorageLocInfo? loc = locListInRow.Where(e => e.ColNum == colNum).Take(1).SingleOrDefault();
 
                                                 if (loc != null)
                                                 {

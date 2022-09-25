@@ -544,7 +544,7 @@
                     uploader.start();
                 },
                 BeforeUpload: function(uploader,file) {
-                    var url = "@Url.Action("ImporttOffShelfOrder", "StorageLoc", new { shelfId = Model.ShelfId })";                    
+                    var url = "@Url.Action("ImportOffShelfOrder", "StorageLoc", new { shelfId = Model.ShelfId })";                    
                     uploader.settings.url = url;
                 },
                 FileUploaded: function (up, file, response) {

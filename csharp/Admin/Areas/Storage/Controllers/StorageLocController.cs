@@ -6,11 +6,13 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Storage.Models.StorageLoc;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Pass;
 using shunda.Domain.Storage;
 using shunda.Service;
+using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Storage.Controllers;
@@ -20,9 +22,9 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 [AdminAuth]
 public class StorageLocController : Controller
 {
-    private ISession session = null;
-    private StorageLocDesignService storageLocDesignService = null;
-    private StorageLocLabelService storageLocLabelService = null;
+    private ISession session;
+    private StorageLocDesignService storageLocDesignService;
+    private StorageLocLabelService storageLocLabelService;
     private LoginUserService loginUserService;
 
     public StorageLocController(ISession session,
@@ -46,7 +48,7 @@ public class StorageLocController : Controller
             return Content("指定的货架不存在！");
         }
 
-        WarehouseInfo warehouseInfo = session.Get<WarehouseInfo>(shelfInfo.Warehouse?.Id ?? 0);
+        WarehouseInfo warehouseInfo = session.Get<WarehouseInfo>(shelfInfo.Warehouse.Id);
 
         StorageLocIndexModel model = new StorageLocIndexModel();
         model.ShelfId = shelfId;
@@ -131,7 +133,7 @@ public class StorageLocController : Controller
 
         session.DefaultReadOnly = true;
 
-        StorageLocInfo storageLoc = null;
+        StorageLocInfo storageLoc;
 
         if (storageLocId == 0)
         {
@@ -176,6 +178,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/save")]
+    [Transactional]
     public IActionResult Save(StorageLocDetailModel model)
     {
         if (!ModelState.IsValid)
@@ -228,7 +231,7 @@ public class StorageLocController : Controller
         storageLoc.RowNum = storageLocFromUi.RowNum;
         storageLoc.ColNum = storageLocFromUi.ColNum;
 
-        if ((storageLocSpec.Type == ShelfType.LongNoPickDump || storageLocSpec.Type == ShelfType.LongNoProcessDump) == false)
+        if ((storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump) == false)
         {
             storageLoc.Name = $"{storageLocFromUi.RowNum}层{storageLocFromUi.ColNum}列";
         }
@@ -261,6 +264,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/enable")]
+    [Transactional]
     public IActionResult Enable(int[] idList)
     {
         foreach (int id in idList)
@@ -291,6 +295,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/disable")]
+    [Transactional]
     public IActionResult Disable(int[] idList)
     {
         foreach (int id in idList)
@@ -321,6 +326,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/batch/enable")]
+    [Transactional]
     public IActionResult BatchEnable(int shelfId)
     {
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>()
@@ -351,6 +357,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/batch/disable")]
+    [Transactional]
     public IActionResult BatchDisable(int shelfId)
     {
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>()
@@ -381,8 +388,10 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/delete")]
+    [Transactional]
     public IActionResult Delete(int[] idList)
     {
+        /*
         LogisticsOrderGoodsInfo orderGoods = session.Query<LogisticsOrderGoodsInfo>()
             .Where(e => idList.Contains(e.StorageLoc.Id))
             .Take(1)
@@ -395,6 +404,7 @@ public class StorageLocController : Controller
                 { "message", "有物品正引用选择的仓位, 删除失败!" },
             });
         }
+        */
 
         foreach (int id in idList)
         {
@@ -412,7 +422,6 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/design")]
-    [NoHibernateAutoTransaction]
     public IActionResult Design(StorageLocDesignModel model)
     {
         int shelfId = model.ShelfId;
@@ -436,6 +445,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/design/save")]
+    [Transactional]
     public IActionResult DesignSave(StorageLocDesignModel model)
     {
         int shelfId = model.ShelfId;
@@ -457,7 +467,6 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/preview")]
-    [NoHibernateAutoTransaction]
     public IActionResult Preview(StorageLocPreviewModel model)
     {
         int shelfId = model.ShelfId;
@@ -476,7 +485,7 @@ public class StorageLocController : Controller
         ShelfType shelfType = shelf.Type;
         IList<StorageLocSpecInfo> storageLocSpecList = session
             .Query<StorageLocSpecInfo>()
-            .Where(e => e.Type == shelfType)
+            .Where(e => e.ShelfType == shelfType)
             .OrderBy(e => e.Id)
             .ToList();
 
@@ -488,6 +497,7 @@ public class StorageLocController : Controller
             .OrderBy(e => e.Id)
             .ToList();
 
+        /*
         var occupyStorageLocOrderStatusList = LogisticsOrderStatus.GetOccupyStorageLocStatusList();
         var occupyStorageLocOrderGoodsStatusList = LogisticsOrderGoodsStatus.GetOccupyStorageLocStatusList();
         IList<LogisticsOrderGoodsInfo> orderGoodsListHasStorageLoc = session
@@ -503,6 +513,7 @@ public class StorageLocController : Controller
         {
             loc.HasGoodsCache = orderGoodsListHasStorageLoc.Where(e => e.StorageLoc != null && e.StorageLoc.Id == loc.Id).Count() != 0;
         }
+        */
 
         model.StorageLocList = storageLocList;
 
@@ -511,8 +522,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/get/label/print/data")]
-    [NoHibernateAutoTransaction]
-    [AdminAuthNoCheck]
+    [NoLoginRequired]
     public IActionResult GetLabelPrintData(IList<int> idList)
     {
         if (idList == null || idList.Count == 0)
@@ -551,8 +561,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/get/label/print/data/by/shelf")]
-    [NoHibernateAutoTransaction]
-    [AdminAuthNoCheck]
+    [NoLoginRequired]
     public IActionResult GetLabelPrintDataByShelf(int shelfId)
     {
         ShelfInfo shelf = session.Get<ShelfInfo>(shelfId);
@@ -598,6 +607,7 @@ public class StorageLocController : Controller
     /// <exception cref="ValidationException"></exception>
     [HttpPost]
     [Route("/admin/storage/loc/auto/generate/off/shelf/order/num")]
+    [Transactional]
     public IActionResult AutoGenerateOffShelfOrderNum(int shelfId)
     {
         ShelfInfo shelf = session.Get<ShelfInfo>(shelfId);
@@ -626,7 +636,7 @@ public class StorageLocController : Controller
 
             foreach (int row in rowList)
             {
-                StorageLocInfo storageLoc = storageLocList
+                StorageLocInfo? storageLoc = storageLocList
                     .Where(e => e.ColNum == column && e.RowNum == row)
                     .Take(1)
                     .SingleOrDefault();
@@ -654,6 +664,7 @@ public class StorageLocController : Controller
     /// <returns></returns>
     [HttpGet]
     [Route("/admin/storage/loc/auto/generate/off/shelf/order/num/warehouse")]
+    [Transactional]
     public IActionResult AutoGenerateOffShelfOrderNumWarehouse(int warehouseId)
     {
         IList<ShelfInfo> shelfList = session.Query<ShelfInfo>().Where(e => e.Warehouse.Id == warehouseId && e.Status == ShelfStatus.Enabled).ToList();
@@ -682,7 +693,7 @@ public class StorageLocController : Controller
 
                 foreach (int row in rowList)
                 {
-                    StorageLocInfo storageLoc = storageLocList
+                    StorageLocInfo? storageLoc = storageLocList
                         .Where(e => e.ColNum == column && e.RowNum == row)
                         .Take(1)
                         .SingleOrDefault();
@@ -796,7 +807,7 @@ public class StorageLocController : Controller
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = precision0Style;
             cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(sl.OffShelfOrderNum ?? 0);
+            cell.SetCellValue(sl.OffShelfOrderNum);
         }
 
         MemoryStream memoryStream = new MemoryStream();
@@ -808,7 +819,8 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/import/off/shelf/order")]
-    public IActionResult ImporttOffShelfOrder(int shelfId, IFormFile excelFile)
+    [Transactional]
+    public IActionResult ImportOffShelfOrder(int shelfId, IFormFile excelFile)
     {
         ShelfInfo shelf = session.Get<ShelfInfo>(shelfId);
         if (shelf == null)
@@ -856,14 +868,14 @@ public class StorageLocController : Controller
 
             // 层 列 下架顺序
             cellIndex = 0;
-            string rowNumStr = row.GetCell(cellIndex++)?.StringCellValue;
+            string rowNumStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             if (string.IsNullOrWhiteSpace(rowNumStr))
             {
                 break;
             }
 
-            string colNumStr = row.GetCell(cellIndex++)?.StringCellValue;
-            string offShelfOrderStr = row.GetCell(cellIndex++)?.StringCellValue;
+            string colNumStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            string offShelfOrderStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
 
             if (int.TryParse(rowNumStr, out int rowNum) == false)
             {
