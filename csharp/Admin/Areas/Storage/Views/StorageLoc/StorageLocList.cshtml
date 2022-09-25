@@ -1,0 +1,97 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadStorageLocList"})
+
+<table id="tblStorageLocList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="storageLocCheckAll"></label><input id="storageLocCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 100px;">
+                <a field="@(nameof(StorageLocInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">名称</a>
+            </th>
+            <th style="width: 50px; text-align: center;">
+                <a field="@(nameof(StorageLocInfo.RowNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">层</a>
+            </th>
+            <th style="width: 50px; text-align: center;">
+                <a field="@(nameof(StorageLocInfo.ColNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">列</a>
+            </th>
+            <th style="width: 200px;">
+                <a field="@($"{Model.StorageLocSpecAlias}.{nameof(StorageLocSpecInfo.Id)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">规格</a>
+            </th>
+            <th style="width: 120px">
+                <span>标签编码</span>
+            </th>
+            <th style="width: 60px; text-align: center;">
+                <a field="@(nameof(StorageLocInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">状态</a>
+            </th>
+            <th style="width: 60px; text-align: center;">
+                <a field="@(nameof(StorageLocInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">排序</a>
+            </th>
+            <th style="width: 110px; text-align: center;">
+                <a field="@(nameof(StorageLocInfo.OffShelfOrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">下架顺序</a>
+            </th>
+            @*
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(StorageLocInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">创建时间</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(StorageLocInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocList">修改时间</a>
+        </th>
+        *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.StorageLocList != null && Model.StorageLocList.Count() != 0)
+        {
+            int order = 1;
+            foreach (StorageLocInfo storageLoc in Model.StorageLocList)
+            {
+                <tr ondblclick="showStorageLocDetail(@(storageLoc.Id));">
+                    <td style="text-align: center;">
+                        <label for="storageLocCheck_@(storageLoc.Id)"></label><input id="storageLocCheck_@(storageLoc.Id)" type="checkbox" class="ace" value="@storageLoc.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@storageLoc.Name</td>
+                    <td style="text-align: center;">@storageLoc.RowNum</td>
+                    <td style="text-align: center;">@storageLoc.ColNum</td>
+                    <td>
+                        <span style="display: inline-block; padding: 3px 10px; background-color: @storageLoc.Spec.Color;">
+                            <span>@storageLoc.Spec.Code</span>&nbsp;<span>@storageLoc.Spec.Name</span>&nbsp;
+                            <span>@storageLoc.Spec.Length</span>*<span>@storageLoc.Spec.Width</span>*<span>@storageLoc.Spec.Height</span><span>cm<sup>3</sup></span>
+                        </span>
+                    </td>
+                    <td style="text-align: center;">@(storageLoc.Id.ToString() + "@" + storageLoc.Shelf.Id.ToString())</td>
+                    <td style="text-align: center;">@storageLoc.Status.Name</td>
+                    <td style="text-align: center;">@storageLoc.OrderNum</td>
+                    <td style="text-align: center;">@storageLoc.OffShelfOrderNum</td>
+
+                    @*
+                    <td style="text-align: center;">@storageLoc.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@storageLoc.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    *@
+
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadStorageLocList"})

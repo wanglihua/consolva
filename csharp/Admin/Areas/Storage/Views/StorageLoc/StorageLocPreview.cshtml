@@ -1,0 +1,181 @@
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocPreviewModel
+@{
+    Layout = null;
+
+    int maxColNumInAll = Model.StorageLocList.Max(e => e.ColNum);
+
+    int dialogWidth = 840 + (maxColNumInAll - 17) * 45;
+}
+
+<style type="text/css">
+    div#storageLocSpecList {
+        margin: 5px auto;
+        text-align: center;
+        padding: 20px;
+    }
+
+    div#storageLocList div.storageLocRow {
+    }
+
+    div#storageLocList div.storageLocRow div.colorBox {
+        float: left;
+        width: 35px;
+        height:35px;
+        border-radius: 3px;
+        border: 1px solid transparent;
+        margin: 5px;
+        text-align: center;
+        line-height: 35px;
+        font-weight: bold;
+        color: white;
+    }
+
+    div#storageLocSpecList div.item {
+        float: left;
+    }
+
+    div#storageLocSpecList div.item div.colorItem {
+        float: left;
+        width: 35px;
+        height:35px;
+    }
+
+    div#storageLocSpecList div.item div.colorItem div.colorBox {
+        width: 25px;
+        height: 25px;
+        border-radius: 3px;
+        margin: 5px;
+        text-align: center;
+        line-height: 25px;
+        color: white;
+    }
+
+    div#storageLocSpecList div.item div.titleItem {
+        float: left;
+        width: 60px;
+        height: 35px;
+        line-height: 35px;
+    }
+</style>
+
+<div class="modal fade" id="storageLocPreviewDialog">
+    <div class="modal-dialog" style="width:@(dialogWidth)px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">
+                    <span>库位预览</span>
+                    <span>——</span>
+                    <span>@(Model.Warehouse.Name)</span>
+                    &nbsp;
+                    <span>@(Model.Shelf.Name)</span>
+                    &nbsp;
+                    <span>平面图</span>
+                </h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="storageLocPreviewForm" class="form-horizontal" role="form">
+
+                    <div id="preview">
+                        <div id="storageLocList">
+                            @{
+                                int maxRowNum = Model.StorageLocList.Max(e => e.RowNum);
+
+                                <div class="storageLocRow">
+                                    <div class="colorBox" style="background-color: white;">
+                                        <span></span>
+                                    </div>
+                                    @for (int numRowIndex = 0; numRowIndex < maxColNumInAll; numRowIndex++)
+                                    {
+                                        int rowNum = numRowIndex + 1;
+
+                                        <div class="colorBox" style="background-color: white; color: #393939;">
+                                            <span>@(rowNum)</span>
+                                        </div>
+                                    }
+                                    <div style="clear: both;"></div>
+                                </div>
+
+                                for (int rowIndex = 0; rowIndex < maxRowNum; rowIndex++)
+                                {
+                                    int rowNum = rowIndex + 1;
+                                    IList<StorageLocInfo> locListInRow = Model.StorageLocList.Where(e => e.RowNum == rowNum).ToList();
+                                    <div class="storageLocRow">
+                                        <div class="colorBox" style="background-color: white; color: #393939;">
+                                            <span>@(rowNum)</span>
+                                        </div>
+
+                                        @if (locListInRow == null || locListInRow.Count == 0)
+                                        {
+                                            <div class="colorBox" style="background-color: black; border: 1px solid darkgray;">
+                                                @*<span>无</span>*@
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            int maxColNumInRow = locListInRow.Max(e => e.ColNum);
+
+                                            for (int colIndex = 0; colIndex < maxColNumInRow; colIndex++)
+                                            {
+                                                int colNum = colIndex + 1;
+                                                StorageLocInfo loc = locListInRow.Where(e => e.ColNum == colNum).Take(1).SingleOrDefault();
+
+                                                if (loc != null)
+                                                {
+                                                    <div class="colorBox" style="background-color: @loc.Spec.Color;color: white;">
+                                                        @if (loc.HasGoodsCache)
+                                                        {
+                                                            <span>货</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@loc.Spec.Code</span>
+                                                        }
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="colorBox" style="background-color: black; border: 1px solid darkgray;">
+                                                        @*<span>无</span>*@
+                                                    </div>
+                                                }
+                                            }
+
+                                        }
+                                        <div style="clear: both;"></div>
+                                    </div>
+                                }
+                            }
+                            <div style="clear: both;"></div>
+                        </div>
+
+                        <div id="storageLocSpecList">
+                            @foreach (StorageLocSpecInfo spec in Model.StorageLocSpecList)
+                            {
+                                <div class="item">
+                                    <div class="colorItem">
+                                        <div class="colorBox" style="background-color: @spec.Color;">
+                                            <span>@(spec.Code)</span>
+                                        </div>
+                                    </div>
+                                    <div class="titleItem">
+                                        @spec.Name
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                </div>
+                            }
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

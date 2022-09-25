@@ -1,0 +1,80 @@
+@model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocDesignModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="storageLocDesignDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">库位规划</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="storageLocDesignForm" class="form-horizontal" role="form">
+                    <input asp-for="ShelfId" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="DesignContent" class="control-label">@(Model.Warehouse.Name) @(Model.Shelf.Name) 层次规划</label>
+                                <div class="col-xs-12">
+                                    <textarea asp-for="DesignContent" rows="8" class="input-sm form-control" style="font-family: 'Courier New', Courier, monospace"></textarea>
+                                    <div class="help-block">每行表示一层，每个编码表示一个仓位，“_” 或 “-” 表示留空</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveStorageLocDesign();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveStorageLocDesign()
+    {
+        var form = $("#storageLocDesignForm");
+
+        var valid = validate(form,
+            {
+                'DesignContent': {
+                    required: true,
+                    maxlength: 1000
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+
+            $.ajax({
+                url: '@Url.Action("DesignSave", "StorageLoc")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#storageLocDesignDialog').modal('hide');
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+</script>

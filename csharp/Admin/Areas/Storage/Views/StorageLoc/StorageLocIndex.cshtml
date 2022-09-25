@@ -1,0 +1,569 @@
+@using shunda.Admin.Areas.Storage.Models.StorageLoc
+@using shunda.Core
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocIndexModel
+@{
+    ViewBag.Title = "库位列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="storage-menu">仓储管理</li>
+    <li class="active" data-menu="storage-warehouse-index-menu">
+        <a href="@Url.Action("Index", "Warehouse")">仓库列表</a>
+    </li>
+    <li>
+        <a href="@Url.Action("Index", "Shelf", new { warehouseId = Model.Warehouse.Id })">
+            仓库（<span>@Model.Warehouse.Code</span>&nbsp;<span>@Model.Warehouse.Name</span>）货架列表
+        </a>
+    </li>
+    <li>
+        货架（<span>@Model.Shelf.Code</span>&nbsp;<span>@Model.Shelf.Name</span>）库位列表
+    </li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadStorageLocList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showStorageLocDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-purple btn-sm" onclick="enableStorageLoc()">
+        <i class="ace-icon fa fa-plus"></i>
+        启用
+    </button>
+    <button type="button" class="btn btn-pink btn-sm" onclick="disableStorageLoc()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        停用
+    </button>
+    <button type="button" class="btn btn-purple btn-sm" onclick="batchEnableStorageLoc()">
+        <i class="ace-icon fa fa-plus"></i>
+        批量启用
+    </button>
+    <button type="button" class="btn btn-pink btn-sm" onclick="batchDisableStorageLoc()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        批量停用
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteStorageLoc()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+
+    <button type="button" class="btn btn-default btn-sm" onclick="labelPrint()">
+        <i class="ace-icon fa fa-print"></i>
+        标签打印
+    </button>
+    <button type="button" class="btn btn-default btn-sm" onclick="labelPrintBatch()">
+        <i class="ace-icon fa fa-print"></i>
+        批量打印
+    </button>
+
+    <button type="button" class="btn btn-purple btn-sm" onclick="autoGenerateOffShelfOrderNum()">
+        <i class="ace-icon fa fa-gear"></i>
+        自动生成下架顺序
+    </button>
+    <button class="btn btn-purple btn-sm" onclick="exportData()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出下架顺序
+    </button>
+    <button id="btnImportOffShelfOrder" class="btn btn-purple btn-sm">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导入下架顺序
+    </button>
+
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "Shelf", new { warehouseId = Model.Warehouse.Id })">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="rowNumQuery">层数</label>&nbsp;<input id="rowNumQuery" name="rowNumQuery" style="width: 60px; height: 30px;" placeholder="层数查询"/>&nbsp;
+    <label for="colNumQuery">列数</label>&nbsp;<input id="colNumQuery" name="colNumQuery" style="width: 60px; height: 30px;" placeholder="列数查询"/>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadStorageLocList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+@*
+@if (Model.StorageDuplicateList != null && Model.StorageDuplicateList.Count != 0)
+{
+    <div style="margin-top: 10px; margin-bottom: 10px; color: red; font-weight: bold;">
+        存在有编码重复的库位！
+        <div style="margin: 5px 0;">
+            @foreach (StorageLocDuplicateInfo loc in Model.StorageDuplicateList)
+            {
+                <div style="margin: 5px 0;">仓库：@(loc.WarehouseName)，货架名称：@(loc.ShelfName)，仓位：@(loc.ShelfName)-@(loc.StorageLocRowNum)层-@(loc.StorageLocColNum)号</div>
+            }
+        </div>
+    </div>
+}
+*@
+
+<div id="storageLocList" data-page-index="0" data-sort-field="@(nameof(StorageLocInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="storageLocDetailDialogWrapper"></div>
+
+<script type="text/javascript" src="/static/lodop/LodopFuncs.js?v=20191002"></script>
+<script type="text/javascript" src="@Url.Action("Index", "LodopScript")"></script>
+
+<script type="text/javascript">
+
+    $(function() {
+        loadStorageLocList();
+    });
+
+    function sortStorageLocList(sortField, sortDir) {
+        var list = $('#storageLocList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadStorageLocList();
+    }
+
+    function loadStorageLocList(pageIndex) {
+        var list = $('#storageLocList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "StorageLoc")",
+            type: "POST",
+            data: {
+                '@(nameof(StorageLocListQueryParam.ShelfId))': @Model.ShelfId,
+                '@(nameof(StorageLocListQueryParam.RowNumQuery))': $('#rowNumQuery').val(),
+                '@(nameof(StorageLocListQueryParam.ColNumQuery))': $('#colNumQuery').val(),
+                '@(nameof(StorageLocListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(StorageLocListQueryParam.SortField))': sortField,
+                '@(nameof(StorageLocListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#storageLocList').html(data);
+
+                initListTable("#tblStorageLocList");
+            }
+        });
+    }
+
+    function showStorageLocDetail(id) {
+        $("#storageLocDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#storageLocDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "StorageLoc")',
+            type: "POST",
+            data: {
+                "@nameof(StorageLocDetailModel.Id)": id,
+                "@nameof(StorageLocDetailModel.ShelfId)": @Model.ShelfId
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#storageLocDetailDialogWrapper").html(data);
+                $("#storageLocDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveStorageLoc() {
+        var form = $("#storageLocDetailForm");
+        var valid = validate(form,
+            {
+                'StorageLoc.Name': {
+                    required: true,
+                    maxlength: 255
+                },
+                'StorageLoc.RowNum': {
+                    required: true,
+                    digits: true
+                },
+                'StorageLoc.ColNum': {
+                    required: true,
+                    digits: true
+                },
+                'StorageLoc.SpecId': {
+                    required: true,
+                    digits: true
+                },
+                'StorageLoc.ShelfId': {
+                    required: true,
+                    digits: true
+                },
+                'StorageLoc.HasGoods': {
+                    required: true
+                },
+                'StorageLoc.StatusId': {
+                    required: true,
+                    digits: true
+                },
+                'StorageLoc.OrderNum': {
+                    required: true,
+                    digits: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "StorageLoc")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#storageLocDetailDialog').modal('hide');
+                        loadStorageLocList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteStorageLoc() {
+        var idList = getSelectIdList('#tblStorageLocList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "StorageLoc")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadStorageLocList();
+                    }
+                });
+            }
+        );
+    }
+    
+    function enableStorageLoc() {
+        var idList = getSelectIdList('#tblStorageLocList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要启用这些仓位吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Enable", "StorageLoc")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadStorageLocList();
+                    }
+                });
+            }
+        );
+    }  
+    
+    function disableStorageLoc() {
+        var idList = getSelectIdList('#tblStorageLocList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要停用这些仓位吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Disable", "StorageLoc")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadStorageLocList();
+                    }
+                });
+            }
+        );
+    }
+    
+    function batchEnableStorageLoc() {
+        $.msg.confirm("确认要批量启用货架下的所有仓位吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("BatchEnable", "StorageLoc")',
+                    type: "POST",
+                    data: { "shelfId": "@(Model.ShelfId)" },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadStorageLocList();
+                    }
+                });
+            }
+        );
+    }  
+    
+    function batchDisableStorageLoc() {
+        $.msg.confirm("确认要批量停用货架下的所有仓位吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("BatchDisable", "StorageLoc")',
+                    type: "POST",
+                    data: { "shelfId": "@(Model.ShelfId)" },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadStorageLocList();
+                    }
+                });
+            }
+        );
+    }     
+    
+    function labelPrint() {
+        var idList = getSelectIdList('#tblStorageLocList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择要打印标签的仓位！");
+            return;
+        }
+        
+        $.msg.confirm("确认要打印所选仓位的标签吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("GetLabelPrintData", "StorageLoc")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        printLabelList(data.labelList);
+                    }
+                });
+            }
+        );
+    }
+    
+    function labelPrintBatch() {
+        $.msg.confirm("确认要打印货架所有仓位的标签吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("GetLabelPrintDataByShelf", "StorageLoc")',
+                    type: "POST",
+                    data: { "shelfId": "@(Model.ShelfId)" },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        printLabelList(data.labelList);
+                    }
+                });
+            }
+        );
+    }
+    
+    function autoGenerateOffShelfOrderNum() {
+        $.msg.confirm("自动生成下架顺序将清除原来设定的下架顺序，确认要自动生成吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("AutoGenerateOffShelfOrderNum", "StorageLoc")',
+                    type: "POST",
+                    data: { "shelfId": "@(Model.ShelfId)" },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadStorageLocList();
+                    }
+                });
+            }
+        );        
+    }
+    
+    function printLabelList(labelList) {
+        var LODOP = getLodopWithLicenses();
+        LODOP.PRINT_INIT("仓位标签打印");
+
+        LODOP.SET_PRINT_PAGESIZE(1, "100mm", "50mm", "仓位标签打印");
+
+        LODOP.SET_PRINT_STYLE("FontName", "微软雅黑");
+        LODOP.SET_PRINT_STYLE("Bold", 0);
+        LODOP.SET_PRINT_STYLE("FontSize", 10);
+
+        for (var index = 0; index < labelList.length; index++) {
+            LODOP.NEWPAGE();
+            
+            LODOP.ADD_PRINT_TEXT("10.00mm","4.00mm","50.0mm","13.00mm", labelList[index].shelfName);
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 28);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);
+            
+            LODOP.ADD_PRINT_TEXT("24.00mm","4.00mm","50.0mm","13.00mm", labelList[index].storageLocName);
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 28);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);            
+            
+            LODOP.ADD_PRINT_BARCODE("5.00mm", "55.00mm", "45mm", "45mm", "QRCode", labelList[index].labelCode);
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 10);
+            LODOP.SET_PRINT_STYLEA(0,"DataCharset", "UTF-8");            
+        }
+
+        @if (Model.Debug)
+        {
+            <text>
+                // LODOP.PRINT_DESIGN();
+                LODOP.PREVIEW();
+            </text>
+        }
+        else
+        {
+            <text>
+                LODOP.PRINT();
+            </text>
+        }
+    }
+    
+    function exportData() {
+        var params = $.param({
+            "shelfId": "@(Model.ShelfId)"
+        });
+
+        var url = '@Url.Action("ExportOffShelfOrder", "StorageLoc")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }   
+    
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {        
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImportOffShelfOrder',
+            file_data_name: "excelFile",
+
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                BeforeUpload: function(uploader,file) {
+                    var url = "@Url.Action("ImporttOffShelfOrder", "StorageLoc", new { shelfId = Model.ShelfId })";                    
+                    uploader.settings.url = url;
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                    } else {
+                        loadStorageLocList();
+                        $.msg.show(result.message);
+                    }
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }        
+
+</script>

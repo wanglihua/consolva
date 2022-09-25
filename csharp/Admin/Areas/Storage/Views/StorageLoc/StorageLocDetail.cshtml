@@ -1,0 +1,117 @@
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="storageLocDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">库位详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="storageLocDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="StorageLoc.Id" type="hidden"/>
+                    <input asp-for="ShelfId" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLoc.Name" class="col-xs-2 control-label">名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLoc.Name" type="text" class="input-sm form-control" disabled="disabled" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLoc.RowNum" class="col-xs-2 control-label">层</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="StorageLoc.RowNum" class="input-sm form-control">
+                                        @for(int index = 1 ;index <= 10; index ++){
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLoc.ColNum" class="col-xs-2 control-label">列</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="StorageLoc.ColNum" class="input-sm form-control">
+                                        @for(int index = 1 ;index <= 50; index ++){
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="SpecId" class="col-xs-2 control-label">规格</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="SpecId" class="input-sm form-control">
+                                        @foreach (StorageLocSpecInfo storageLocSpecInfo in Model.StorageLocSpecList)
+                                        {
+                                            <option value="@storageLocSpecInfo.Id">
+                                                @storageLocSpecInfo.Code&nbsp;@storageLocSpecInfo.Name&nbsp;
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLoc.Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="StorageLoc.Status" class="input-sm form-control">
+                                        @foreach (StorageLocStatus storageLocStatus in Model.StorageLocStatusList)
+                                        {
+                                            <option value="@storageLocStatus.Id">@storageLocStatus.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLoc.OrderNum" class="col-xs-2 control-label">排序</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLoc.OrderNum" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLoc.OffShelfOrderNum" class="col-xs-2 control-label">下架顺序</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLoc.OffShelfOrderNum" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>                        
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveStorageLoc();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
