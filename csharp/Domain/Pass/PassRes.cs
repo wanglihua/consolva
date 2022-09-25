@@ -2,19 +2,18 @@ namespace shunda.Domain.Pass;
 
 /// <summary>
 /// 授权资源 id 定义
-/// 商城系统中的 CateId 都是大于 9999_9999 的
 /// </summary>
 public class PassRes
 {
     /// <summary>
-    /// 商城订单
+    /// 仓储管理
     /// </summary>
     public class ShopOrder
     {
         /// <summary>
         /// 类别
         /// </summary>
-        public const int CateId = 1_0100_0000;
+        public const int CateId = 01000_01000;
 
         /// <summary>
         /// 所有
@@ -26,6 +25,6 @@ public class PassRes
         /// <summary>
         /// 订单列表
         /// </summary>
-        public const int OrderList = ShopOrder.CateId + 0100;
+        public const int OrderList = CateId + 0100;
     }
 }
