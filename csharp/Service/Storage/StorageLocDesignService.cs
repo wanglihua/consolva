@@ -8,7 +8,7 @@ namespace shunda.Service.Storage;
 [Service(ServiceType.Scoped)]
 public class StorageLocDesignService
 {
-    private ISession session = null;
+    private ISession session;
 
     public StorageLocDesignService(ISession session)
     {
@@ -65,7 +65,7 @@ public class StorageLocDesignService
                     continue;
                 }
 
-                StorageLocSpecInfo spec = specList.Where(e => e.Code == specCodeFromDesign).Take(1).SingleOrDefault();
+                StorageLocSpecInfo? spec = specList.Where(e => e.Code == specCodeFromDesign).Take(1).SingleOrDefault();
                 if (spec == null)
                 {
                     throw new Exception($"{shelfType.Name}类型中，不存在编码为{specCodeFromDesign}的仓位规格！");
@@ -91,13 +91,13 @@ public class StorageLocDesignService
                     continue;
                 }
 
-                StorageLocSpecInfo spec = specList.Where(e => e.Code == specCodeFromDesign).Take(1).SingleOrDefault();
+                StorageLocSpecInfo? spec = specList.Where(e => e.Code == specCodeFromDesign).Take(1).SingleOrDefault();
 
                 StorageLocInfo storageLocInfo = new StorageLocInfo() {
                     Name = $"{rowNum}层{colNum}列",
                     RowNum = rowNum,
                     ColNum = colNum,
-                    Spec = spec,
+                    Spec = spec!,
                     Shelf = session.Load<ShelfInfo>(shelfId),
                     Status = StorageLocStatus.Enabled,
                     OrderNum = 0
@@ -166,7 +166,7 @@ public class StorageLocDesignService
                 int maxColNum = storageLocListInRow.Max(e => e.ColNum);
                 for (int colNum = 1; colNum <= maxColNum; colNum++)
                 {
-                    StorageLocInfo loc = storageLocListInRow.Where(e => e.ColNum == colNum).Take(1).SingleOrDefault();
+                    StorageLocInfo? loc = storageLocListInRow.Where(e => e.ColNum == colNum).Take(1).SingleOrDefault();
                     if (loc == null)
                     {
                         sb.Append(emptyStorageLocCodes[(colNum + 1) % 2]); // 同一行中，两个空符号交叉变换，先用其中第一个

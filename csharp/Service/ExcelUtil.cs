@@ -22,7 +22,8 @@ public static class ExcelUtil
 
         IFont font = workbook.CreateFont();
         font.FontName = "微软雅黑";
-        font.Boldweight = (short)FontBoldWeight.Bold;
+        // font.Boldweight = (short)FontBoldWeight.Bold;
+        font.IsBold = true;
         font.FontHeightInPoints = 10;
 
         cellStyle.SetFont(font);
@@ -39,7 +40,8 @@ public static class ExcelUtil
 
         IFont font = workbook.CreateFont();
         font.FontName = "微软雅黑";
-        font.Boldweight = (short)FontBoldWeight.Bold;
+        // sfont.Boldweight = (short)FontBoldWeight.Bold;
+        font.IsBold = true;
         font.FontHeightInPoints = 10;
 
         cellStyle.SetFont(font);
@@ -60,7 +62,8 @@ public static class ExcelUtil
 
         IFont font = workbook.CreateFont();
         font.FontName = "微软雅黑";
-        font.Boldweight = (short)FontBoldWeight.Normal;
+        // font.Boldweight = (short)FontBoldWeight.Normal;
+        font.IsBold = true;
         font.FontHeightInPoints = 10;
 
         cellStyle.SetFont(font);
