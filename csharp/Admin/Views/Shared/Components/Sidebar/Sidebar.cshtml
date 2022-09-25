@@ -31,20 +31,14 @@
                     <b class="arrow"></b>
                 </li>
 
-                @*
 
-                @if (Model.HasPassRes(PassRes.Storage.StorageLocSpec))
-                {
-                    <li id="storage-storage-loc-spec-index-menu">
-                        <a href="@Url.Action("Index", "StorageLocSpec")">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            库位规格
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                }
-
-                *@
+                <li id="storage-storage-loc-spec-index-menu">
+                    <a asp-area="Storage" asp-controller="StorageLocSpec" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        仓位规格
+                    </a>
+                    <b class="arrow"></b>
+                </li>
             </ul>
         </li>
 

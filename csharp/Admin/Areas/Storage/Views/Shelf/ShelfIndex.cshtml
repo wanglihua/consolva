@@ -1,9 +1,10 @@
 @using shunda.Admin.Areas.Storage.Models.Shelf
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.Shelf.ShelfIndexModel
 @{
-    ViewBag.Title = "货架列表";
+    ViewData[ViewDataKey.Title] = "货架列表";
     Layout = "_AdminLayout";
 }
 
@@ -12,7 +13,7 @@
     <li class="active" data-menu="storage-warehouse-index-menu">
         <a href="@Url.Action("Index", "Warehouse")">仓库列表</a>
     </li>
-    <li>仓库（<span>@Model.Warehouse.Code</span>&nbsp;<span>@Model.Warehouse.Name</span>）货架列表</li>
+    <li>仓库（<span>@Model.Warehouse.Code</span>&nbsp;<span>@Model.Warehouse.Name</span>）@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

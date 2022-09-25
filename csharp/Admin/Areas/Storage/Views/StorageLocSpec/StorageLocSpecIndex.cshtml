@@ -1,16 +1,16 @@
-
 @using shunda.Admin.Areas.Storage.Models.StorageLocSpec
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.StorageLocSpec.StorageLocSpecIndexModel
 @{
-    ViewBag.Title = "库位规格列表";
+    ViewData[ViewDataKey.Title] = "仓位规格";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="storage-menu">仓储管理</li>
-    <li class="active" data-menu="storage-storage-loc-spec-index-menu">库位规格列表</li>
+    <li class="active" data-menu="storage-storage-loc-spec-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

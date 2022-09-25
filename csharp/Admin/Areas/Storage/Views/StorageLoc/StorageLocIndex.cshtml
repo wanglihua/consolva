@@ -1,9 +1,10 @@
 @using shunda.Admin.Areas.Storage.Models.StorageLoc
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocIndexModel
 @{
-    ViewBag.Title = "库位列表";
+    ViewData[ViewDataKey.Title] = "库位列表";
     Layout = "_AdminLayout";
 }
 

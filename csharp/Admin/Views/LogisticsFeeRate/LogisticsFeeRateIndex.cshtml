@@ -2,15 +2,16 @@
 @using shunda.Core
 @using shunda.Admin.Models.LogisticsFeeRate
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
 @model shunda.Admin.Models.LogisticsFeeRate.LogisticsFeeRateIndexModel
 @{
-    ViewBag.Title = "通用费率";
+    ViewData[ViewDataKey.Title] = "通用费率";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
-    <li class="active" data-menu="logistics-logistics-fee-rate-index-menu">通用费率</li>
+    <li class="active" data-menu="logistics-logistics-fee-rate-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

@@ -1,16 +1,17 @@
 @using shunda.Admin.Areas.Storage.Models.Warehouse
 @using shunda.Domain.Storage
 @using shunda.Core
+@using shunda.Core.Web
 @model shunda.Admin.Areas.Storage.Models.Warehouse.WarehouseIndexModel
 
 @{
-    ViewBag.Title = "仓库列表";
+    ViewData[ViewDataKey.Title] = "仓库列表";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="storage-menu">仓储管理</li>
-    <li class="active" data-menu="storage-warehouse-index-menu">仓库列表</li>
+    <li class="active" data-menu="storage-warehouse-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

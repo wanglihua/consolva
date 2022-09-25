@@ -1,8 +1,9 @@
+@using shunda.Core.Web
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.Warehouse.WarehouseDetailModel
 
 @{
-    ViewBag.Title = "仓库详细";
+    ViewData[ViewDataKey.Title] = "仓库详细";
     Layout = "_AdminLayout";
 }
 
@@ -11,7 +12,7 @@
     <li class="active" data-menu="storage-warehouse-index-menu">
         <a href="@Url.Action("Index", "Warehouse")">仓库列表</a>
     </li>
-    <li>仓库详细</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
