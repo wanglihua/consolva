@@ -7,14 +7,14 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
+using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Storage.Controllers;
 
 [StorageArea]
-// [AdminAuth(PassRes.Storage.StorageLocSpec)]
-[AdminAuth]
+[AdminAuth(PassRes.Storage.StorageLocSpec)]
 public class StorageLocSpecController : Controller
 {
     private ISession session;

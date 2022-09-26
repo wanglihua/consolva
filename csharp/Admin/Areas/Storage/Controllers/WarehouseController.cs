@@ -6,14 +6,14 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Storage.Controllers;
 
-[AdminAuth]
-// [AdminAuth(PassRes.Storage.Warehouse)]
 [StorageArea]
+[AdminAuth(PassRes.Storage.Warehouse)]
 public class WarehouseController : Controller
 {
     private ISession session;
