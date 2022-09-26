@@ -11,6 +11,6 @@ CREATE TABLE tbl_shelf
     create_time  DATETIME     NOT NULL COMMENT '创建时间',
     update_time  DATETIME     NOT NULL COMMENT '更新时间',
 
-    FOREIGN KEY fk_shelf_warehouse_id (warehouse_id) REFERENCES tbl_warehouse (id),
+    CONSTRAINT fk_shelf_warehouse_id FOREIGN KEY (warehouse_id) REFERENCES tbl_warehouse (id),
     INDEX ix_shelf_order_num (order_num)
 ) COMMENT = '货架';

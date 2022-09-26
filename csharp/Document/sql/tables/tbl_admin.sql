@@ -5,7 +5,7 @@ CREATE TABLE tbl_admin
     create_time DATETIME NOT NULL COMMENT '创建时间',
     update_time DATETIME NOT NULL COMMENT '更新时间',
 
-    FOREIGN KEY fk_admin_user_id (user_id) REFERENCES tbl_user (id)
+    CONSTRAINT fk_admin_user_id FOREIGN KEY (user_id) REFERENCES tbl_user (id)
 ) COMMENT '管理员';
 
 INSERT INTO tbl_admin (id, user_id, create_time, update_time)

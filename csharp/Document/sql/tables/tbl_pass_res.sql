@@ -6,6 +6,6 @@ CREATE TABLE tbl_pass_res
     description VARCHAR(300)  NULL COMMENT '描述',
     order_num   INT DEFAULT 0 NOT NULL COMMENT '序号',
 
-    FOREIGN KEY fk_pass_res_cate_id (cate_id) REFERENCES tbl_pass_res_cate (id),
+    CONSTRAINT fk_pass_res_cate_id FOREIGN KEY (cate_id) REFERENCES tbl_pass_res_cate (id),
     INDEX ix_pass_res_order_num (order_num)
 ) COMMENT '权限资源';

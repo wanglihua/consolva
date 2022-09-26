@@ -13,8 +13,8 @@ CREATE TABLE tbl_storage_loc
     create_time         DATETIME     NOT NULL COMMENT '创建时间',
     update_time         DATETIME     NOT NULL COMMENT '更新时间',
 
-    FOREIGN KEY fk_storage_loc_spec_id (spec_id) REFERENCES tbl_storage_loc_spec (id),
-    FOREIGN KEY fk_storage_loc_shelf_id (shelf_id) REFERENCES tbl_shelf (id),
+    CONSTRAINT fk_storage_loc_spec_id FOREIGN KEY (spec_id) REFERENCES tbl_storage_loc_spec (id),
+    CONSTRAINT fk_storage_loc_shelf_id FOREIGN KEY (shelf_id) REFERENCES tbl_shelf (id),
     # INDEX ix_storage_loc_row_num (row_num),
     # INDEX ix_storage_loc_col_num (col_num),
     INDEX ix_storage_loc_order_num (order_num),

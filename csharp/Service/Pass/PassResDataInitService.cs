@@ -1,6 +1,7 @@
 using NHibernate;
 using shunda.Core.Service;
 using shunda.Domain.Pass;
+using shunda.Domain.Pass.PassRes;
 
 namespace shunda.Service.Pass;
 
@@ -16,9 +17,8 @@ public class PassResDataInitService
 
     public void InitData()
     {
-        IList<PassResInfo> passResList = new List<PassResInfo> {
-            // new PassResInfo { System = PassResSystem.Logistics, CateIdForCache = PassRes.ShopOrder.CateId, Id = PassRes.ShopOrder.OrderList, Name = "订单列表", Description = null },
-        };
+        List<PassResInfo> passResList = new List<PassResInfo>();
+        passResList.AddRange(PassRes.Storage.AllData);
 
         IList<int> passResIdList = passResList.Select(e => e.Id).ToList();
         IList<PassResInfo> passResListInDb = session.Query<PassResInfo>()
@@ -41,7 +41,7 @@ public class PassResDataInitService
                 passResInDb.Id = passRes.Id;
             }
 
-            if ((passResInDb.Cate?.Id ?? 0) != passRes.CateIdForCache)
+            if (passResInDb.Cate.Id != passRes.CateIdForCache)
             {
                 shouldSave = true;
                 passResInDb.Cate = session.Load<PassResCateInfo>(passRes.CateIdForCache);
