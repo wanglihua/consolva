@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Pass.PassRes
 @model shunda.Admin.Models.Sidebar.SidebarModel
 @{
     Layout = null;
@@ -14,33 +15,41 @@
 <div id="sidebar" class="sidebar responsive @(sidebarMinClassStr)">
     <ul class="nav nav-list">
 
-        <li id="storage-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-cubes"></i>
-                <span class="menu-text">仓储管理</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
+        @if (Model.HasOneOfPassRes(PassRes.Storage.All))
+        {
+            <li id="storage-menu">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-cubes"></i>
+                    <span class="menu-text">仓储管理</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
 
-                <li id="storage-warehouse-index-menu">
-                    <a asp-area="Storage" asp-controller="Warehouse" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        仓库
-                    </a>
-                    <b class="arrow"></b>
-                </li>
+                    @if (Model.HasPassRes(PassRes.Storage.Warehouse))
+                    {
+                        <li id="storage-warehouse-index-menu">
+                            <a asp-area="Storage" asp-controller="Warehouse" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                仓库
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
 
-
-                <li id="storage-storage-loc-spec-index-menu">
-                    <a asp-area="Storage" asp-controller="StorageLocSpec" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        仓位规格
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-            </ul>
-        </li>
+                    @if (Model.HasPassRes(PassRes.Storage.StorageLocSpec))
+                    {
+                        <li id="storage-storage-loc-spec-index-menu">
+                            <a asp-area="Storage" asp-controller="StorageLocSpec" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                仓位规格
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
 
         @if (Model.IsAdmin)
         {
