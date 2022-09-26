@@ -42,5 +42,14 @@ public class PassResCateInfoMapping : ClassMapping<PassResCateInfo>
                 map.Length(300);
             }
         );
+
+        Property(
+            x => x.OrderNum,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_num");
+                map.NotNullable(true);
+            }
+        );
     }
 }

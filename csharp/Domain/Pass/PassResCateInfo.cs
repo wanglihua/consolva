@@ -27,4 +27,9 @@ public class PassResCateInfo
     [DisplayName("描述")]
     [MaxLength(300, ErrorMessage = "描述长度不能大于300！")]
     public virtual string? Description { get; set; }
+
+    /// <summary>
+    /// 序号
+    /// </summary>
+    public virtual int OrderNum { get; set; }
 }
