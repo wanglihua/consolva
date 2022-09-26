@@ -20,6 +20,18 @@ public class PassResDataInitService
         List<PassResInfo> passResList = new List<PassResInfo>();
         passResList.AddRange(PassRes.Storage.AllData);
 
+        // 检查 pass res id 唯一性
+        Dictionary<int, PassResInfo> passResIdMap = new Dictionary<int, PassResInfo>();
+        foreach (PassResInfo passRes in passResList)
+        {
+            if (passResIdMap.TryGetValue(passRes.Id, out PassResInfo? passResExist))
+            {
+                throw new Exception($"授权资源 {passRes.Name} 和 {passResExist.Name} 两者 id#{passRes.Id} 相重！");
+            }
+
+            passResIdMap[passRes.Id] = passRes;
+        }
+
         IList<int> passResIdList = passResList.Select(e => e.Id).ToList();
         IList<PassResInfo> passResListInDb = session.Query<PassResInfo>()
             .Where(e => passResIdList.Contains(e.Id))
