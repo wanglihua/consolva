@@ -10,17 +10,17 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="passResCheckAll"></label><input id="passResCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                <label for="passResCheckAll"></label><input id="passResCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 100px;">
-                <a field="@($"{Model.PassResCateAlias}.{nameof(PassResCateInfo.Name)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResList">类别</a>
+                <span>类别</span>
             </th>
             <th style="width: 150px;">
-                <a field="@(nameof(PassResInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResList">名称</a>
+                <span>名称</span>
             </th>
             <th style="width: 220px;">
-                <a field="@(nameof(PassResInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortPassResList">描述</a>
+                <span>描述</span>
             </th>
             <th style="width: 130px; text-align: center;">操作</th>
             <th></th>
@@ -34,7 +34,7 @@
             {
                 <tr ondblclick="showPassResDetail(@(passRes.Id));">
                     <td style="text-align: center;">
-                        <label for="passResCheck_@(passRes.Id)"></label><input id="passResCheck_@(passRes.Id)" type="checkbox" class="ace" value="@passRes.Id" /><span class="lbl"></span>
+                        <label for="passResCheck_@(passRes.Id)"></label><input id="passResCheck_@(passRes.Id)" type="checkbox" class="ace" value="@passRes.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td>@passRes.Cate.Name</td>

@@ -57,8 +57,10 @@ public class PassResController : Controller
         ListPager listPager = new ListPager(queryParam, totalCount);
 
         IList<PassResInfo> passResList = GetListCriteria(queryParam)
-            .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
-            .AddOrder(Order.Desc(nameof(Entity.Id)))
+            .AddOrder(Order.Asc($"{passResCateAlias}.{nameof(PassResCateInfo.OrderNum)}"))
+            .AddOrder(Order.Asc($"{passResCateAlias}.{nameof(PassResCateInfo.Id)}"))
+            .AddOrder(Order.Asc(nameof(PassResInfo.OrderNum)))
+            .AddOrder(Order.Asc(nameof(PassResInfo.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<PassResInfo>();

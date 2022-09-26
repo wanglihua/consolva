@@ -19,6 +19,8 @@ public class PassResDataInitService
     {
         List<PassResInfo> passResList = new List<PassResInfo>();
         passResList.AddRange(PassRes.Storage.AllData);
+        passResList.AddRange(PassRes.Logistics.AllData);
+        passResList.AddRange(PassRes.CustomerMessage.AllData);
 
         // 检查 pass res id 唯一性
         Dictionary<int, PassResInfo> passResIdMap = new Dictionary<int, PassResInfo>();

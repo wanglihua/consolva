@@ -43,7 +43,7 @@
     </button>
 </div>
 
-<div id="passResList" data-page-index="0" data-sort-field="@(Model.PassResCateAlias).@(nameof(PassResInfo.Cate.Id))" data-sort-dir="@(SortDirection.Asc)">
+<div id="passResList" data-page-index="0">
 </div>
 
 <div id="passResDetailDialogWrapper"></div>
@@ -70,9 +70,6 @@
             list.data("page-index", pageIndex);
         }
 
-        var sortField = list.data('sort-field');
-        var sortDir = list.data('sort-dir');
-
         showMask("数据加载中，请稍候");
 
         $.ajax({
@@ -81,9 +78,7 @@
             data: {
                 '@(nameof(PassResListQueryParam.CateIdQuery))': $('#cateIdQuery').val(),
                 '@(nameof(PassResListQueryParam.NameQuery))': $('#nameQuery').val(),
-                '@(nameof(PassResListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(PassResListQueryParam.SortField))': sortField,
-                '@(nameof(PassResListQueryParam.SortDir))': sortDir
+                '@(nameof(PassResListQueryParam.PageIndex))': pageIndex
             },
             success: function(data) {
                 hideMask();

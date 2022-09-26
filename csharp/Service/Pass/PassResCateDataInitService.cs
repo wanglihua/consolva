@@ -19,6 +19,8 @@ public class PassResCateDataInitService
     {
         IList<PassResCateInfo> cateList = new List<PassResCateInfo>() {
             PassRes.Storage.Cate,
+            PassRes.Logistics.Cate,
+            PassRes.CustomerMessage.Cate,
         };
 
         // 检查 cate id 唯一性
