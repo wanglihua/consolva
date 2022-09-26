@@ -1753,16 +1753,16 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-
-                        if (data.create) {
-                            setTimeout("showDetail(" + data.id + ")", 1000);
-                        }
-
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+
+                    if (data.create) {
+                        setTimeout("showDetail(" + data.id + ")", 1000);
+                    }
+
+                    //return;
                 }
             });
         }

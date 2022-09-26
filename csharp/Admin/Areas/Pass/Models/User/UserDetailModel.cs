@@ -16,5 +16,5 @@ public class UserDetailModel
 
     [MinLength(6, ErrorMessage = "密码长度不能小于6！")]
     [MaxLength(18, ErrorMessage = "密码长度不能大于18！")]
-    public string Password { get; set; } = string.Empty;
+    public string? Password { get; set; }
 }

@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Primitives;
@@ -42,6 +41,8 @@ public class SiteRequestLogService
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
+
+#if !DEBUG
         if (loginUserId == UserInfo.DevUserId)
         {
             return;
@@ -51,6 +52,7 @@ public class SiteRequestLogService
         {
             return;
         }
+#endif
 
         IStatelessSession? statelessSession = null;
         ITransaction? transaction = null;
