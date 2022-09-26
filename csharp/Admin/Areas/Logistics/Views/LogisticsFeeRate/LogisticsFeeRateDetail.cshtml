@@ -1,7 +1,6 @@
 @using shunda.Domain.Logistics
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Core.Web
-@model shunda.Admin.Models.LogisticsFeeRate.LogisticsFeeRateDetailModel
+@model shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate.LogisticsFeeRateDetailModel
 @{
     ViewData[ViewDataKey.Title] = "物流费率详细";
     Layout = "_AdminLayout";
@@ -71,7 +70,7 @@
                                         <div class="form-group">
                                             <label asp-for="LogisticsFeeRate.Name" class="col-xs-4 control-label">名称</label>
                                             <div class="col-xs-8">
-                                                <input asp-for="LogisticsFeeRate.Name" type="text" class="input-sm form-control"/>
+                                                <input asp-for="LogisticsFeeRate.Name" type="text" required="required" class="input-sm form-control"/>
                                             </div>
                                         </div>
                                     </div>
@@ -1769,7 +1768,7 @@
         }
         else
         {
-            $.msg.error("存在数据录入验证错误！");      
+            $.msg.error("存在页面数据录入错误，请检查录入数据！");
         }
     }
 

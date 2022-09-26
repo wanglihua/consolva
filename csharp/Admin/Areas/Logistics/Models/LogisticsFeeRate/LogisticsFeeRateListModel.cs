@@ -1,7 +1,7 @@
 using shunda.Core;
 using shunda.Domain.Logistics;
 
-namespace shunda.Admin.Models.LogisticsFeeRate;
+namespace shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate;
 
 public class LogisticsFeeRateListModel : ListModel
 {

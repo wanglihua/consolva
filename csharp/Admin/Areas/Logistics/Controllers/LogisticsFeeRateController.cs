@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using shunda.Admin.Models.LogisticsFeeRate;
+using shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
