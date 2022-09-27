@@ -47,10 +47,10 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
         );
 
         Property(
-            x => x.VolumeSelection,
+            x => x.VolumeWeightResultType,
             map => {
-                map.Type(NHibernateUtil.Int32);
-                map.Column("volume_selection");
+                map.Type<VolumeWeightResultTypeHibernateType>();
+                map.Column("volume_weight_result_type_id");
                 map.NotNullable(true);
             }
         );
@@ -141,7 +141,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("length_start");
-                map.NotNullable(true);
+                map.NotNullable(false);
             }
         );
 
@@ -159,6 +159,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("length_limit");
+                map.NotNullable(false);
             }
         );
 
@@ -212,6 +213,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("over_length_cap_amount");
+                map.NotNullable(false);
             }
         );
 
@@ -249,6 +251,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("single_weight_limit");
+                map.NotNullable(false);
             }
         );
 
@@ -293,6 +296,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("single_over_weight_cap_amount");
+                map.NotNullable(false);
             }
         );
 
@@ -314,7 +318,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("average_weight_start");
-                map.NotNullable(true);
+                map.NotNullable(false);
             }
         );
 
@@ -332,6 +336,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("average_weight_limit");
+                map.NotNullable(false);
             }
         );
 
@@ -376,6 +381,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("average_over_weight_cap_amount");
+                map.NotNullable(false);
             }
         );
 
@@ -397,7 +403,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("weight_start");
-                map.NotNullable(true);
+                map.NotNullable(false);
             }
         );
 
@@ -415,6 +421,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("weight_limit");
+                map.NotNullable(false);
             }
         );
 
@@ -459,6 +466,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("over_weight_cap_amount");
+                map.NotNullable(false);
             }
         );
 
@@ -469,6 +477,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Boolean);
                 map.Column("volume_actual_weight_middle");
+                map.NotNullable(true);
             }
         );
 
@@ -486,6 +495,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("min_volume_actual_weight_ratio");
+                map.NotNullable(false);
             }
         );
 
@@ -503,6 +513,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("volume_weight_max_side_length_begin");
+                map.NotNullable(false);
             }
         );
 
@@ -520,6 +531,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("goods_volume_price");
+                map.NotNullable(false);
             }
         );
 
@@ -537,6 +549,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("free_package_limit");
+                map.NotNullable(false);
             }
         );
 
@@ -545,6 +558,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("extra_package_fee");
+                map.NotNullable(false);
             }
         );
 
@@ -562,6 +576,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("extra_package_fee_cap_amount");
+                map.NotNullable(false);
             }
         );
 
@@ -579,6 +594,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("free_storage_day_limit");
+                map.NotNullable(false);
             }
         );
 
@@ -587,6 +603,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("extra_storage_day_fee");
+                map.NotNullable(false);
             }
         );
 
@@ -595,6 +612,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("extra_storage_day_min_fee_per_day");
+                map.NotNullable(false);
             }
         );
 
@@ -612,6 +630,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("extra_storage_day_fee_cap_amount");
+                map.NotNullable(false);
             }
         );
 
@@ -701,6 +720,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("special_goods_cap_amount");
+                map.NotNullable(false);
             }
         );
 
@@ -709,6 +729,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("publish_rate");
+                map.NotNullable(true);
             }
         );
 

@@ -43,7 +43,8 @@ public class LogisticsFeeRateInfo : Entity
     /// </summary>
     [DisplayName("体积重计算取向")]
     [Required(ErrorMessage = "体积重计算取向不能为空！")]
-    public virtual int VolumeSelection { get; set; }
+    [ModelBinder(typeof(VolumeWeightResultTypeModelBinder))]
+    public virtual VolumeWeightResultType VolumeWeightResultType { get; set; } = VolumeWeightResultType.None;
 
     /// <summary>
     /// 客户计算折扣 长
@@ -109,7 +110,7 @@ public class LogisticsFeeRateInfo : Entity
     /// <summary>
     /// 长度起步
     /// </summary>
-    public virtual int LengthStart { get; set; } = 0;
+    public virtual int? LengthStart { get; set; }
 
     /// <summary>
     /// 是否有长度限制
@@ -171,7 +172,7 @@ public class LogisticsFeeRateInfo : Entity
     /// <summary>
     /// 单箱起步重量
     /// </summary>
-    public virtual int SingleWeightStart { get; set; } = 0;
+    public virtual int? SingleWeightStart { get; set; }
 
     /// <summary>
     /// 是否有单箱重量限制
@@ -230,7 +231,7 @@ public class LogisticsFeeRateInfo : Entity
     /// <summary>
     /// 平均单箱起步重量
     /// </summary>
-    public virtual int AverageWeightStart { get; set; } = 0;
+    public virtual int? AverageWeightStart { get; set; }
 
     /// <summary>
     /// 是否有平均单箱重量限制
@@ -289,7 +290,7 @@ public class LogisticsFeeRateInfo : Entity
     /// <summary>
     /// 起步重量
     /// </summary>
-    public virtual int WeightStart { get; set; } = 0;
+    public virtual int? WeightStart { get; set; }
 
     /// <summary>
     /// 是否有重量限制

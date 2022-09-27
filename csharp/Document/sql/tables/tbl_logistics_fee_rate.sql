@@ -8,7 +8,7 @@ CREATE TABLE tbl_logistics_fee_rate
     care_volume_weight                   BOOL           NOT NULL COMMENT '是否考虑体积重',
     volume_denominator                   INT            NULL COMMENT '体积重分母',
     care_side_sum                        BOOL           NOT NULL COMMENT '是否考虑三边之和',
-    volume_selection                     INT            NOT NULL COMMENT '体积重计算取向',
+    volume_weight_result_type_id         INT            NOT NULL COMMENT '体积重计算取向#type:VolumeWeightResultType',
 
     customer_length_discount             DECIMAL(10, 2) NOT NULL COMMENT '客户计算折扣 长',
     customer_width_discount              DECIMAL(10, 2) NOT NULL COMMENT '客户计算折扣 宽',
@@ -31,8 +31,8 @@ CREATE TABLE tbl_logistics_fee_rate
     has_over_length_cap_amount           BOOL           NOT NULL COMMENT '是否有超长封顶金额',
     over_length_cap_amount               DECIMAL(10, 2) NULL COMMENT '超长封顶金额',
 
-    has_weight_start                     BOOL           NOT NULL COMMENT '是否有起步重量',
-    weight_start                         INT            NULL COMMENT '起步重量',
+    has_single_weight_start              BOOL           NOT NULL COMMENT '是否有单箱起步重量',
+    single_weight_start                  INT            NOT NULL COMMENT '单箱起步重量',
     has_single_weight_limit              BOOL           NOT NULL COMMENT '是否有单箱重量限制',
     single_weight_limit                  INT            NULL COMMENT '单箱重量限制',
     can_single_over_weight               BOOL           NOT NULL COMMENT '单箱能否超重',
@@ -51,6 +51,8 @@ CREATE TABLE tbl_logistics_fee_rate
     has_average_over_weight_cap_amount   BOOL           NOT NULL COMMENT '是否有平均单箱超重封顶金额',
     average_over_weight_cap_amount       DECIMAL(10, 2) NULL COMMENT '平均单箱超重封顶金额',
 
+    has_weight_start                     BOOL           NOT NULL COMMENT '是否有起步重量',
+    weight_start                         INT            NULL COMMENT '起步重量',
     has_weight_limit                     BOOL           NOT NULL COMMENT '是否有重量限制',
     weight_limit                         INT            NULL COMMENT '重量限制',
     can_over_weight                      BOOL           NOT NULL COMMENT '能否超重',
@@ -64,8 +66,6 @@ CREATE TABLE tbl_logistics_fee_rate
     volume_weight_care_max_side_length   BOOL           NOT NULL COMMENT '体积重考虑最长边',
     volume_weight_max_side_length_begin  DECIMAL(10, 2) NULL COMMENT '体积重最长边起始',
 
-    has_single_weight_start              BOOL           NOT NULL COMMENT '是否有单箱起步重量',
-    single_weight_start                  INT            NOT NULL COMMENT '单箱起步重量',
     min_volume_actual_weight_ratio       DECIMAL(10, 2) NULL COMMENT '体积重实际重最小倍率',
     care_goods_volume_price              BOOL           NOT NULL COMMENT '是否启用实际货值与体积货值最大值计算',
     goods_volume_price                   DECIMAL(10, 2) NULL COMMENT '体积货值设定',

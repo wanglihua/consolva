@@ -351,7 +351,7 @@ public class LogisticsFeeRateController : Controller
         logisticsFeeRate.CareVolumeWeight = logisticsFeeRateFromUi.CareVolumeWeight;
         logisticsFeeRate.VolumeDenominator = logisticsFeeRateFromUi.VolumeDenominator;
         logisticsFeeRate.CareSideSum = logisticsFeeRateFromUi.CareSideSum;
-        logisticsFeeRate.VolumeSelection = logisticsFeeRateFromUi.VolumeSelection;
+        logisticsFeeRate.VolumeWeightResultType = logisticsFeeRateFromUi.VolumeWeightResultType;
         logisticsFeeRate.VolumeActualWeightMiddle = logisticsFeeRateFromUi.VolumeActualWeightMiddle;
         logisticsFeeRate.CareGoodsVolumePrice = logisticsFeeRateFromUi.CareGoodsVolumePrice;
         logisticsFeeRate.GoodsVolumePrice = logisticsFeeRateFromUi.GoodsVolumePrice;

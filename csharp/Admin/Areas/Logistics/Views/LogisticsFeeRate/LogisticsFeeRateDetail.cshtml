@@ -199,9 +199,9 @@
 
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label asp-for="LogisticsFeeRate.VolumeSelection" class="col-xs-4 control-label">体积重计算取向</label>
+                                            <label asp-for="LogisticsFeeRate.VolumeWeightResultType" class="col-xs-4 control-label">体积重计算取向</label>
                                             <div class="col-xs-8">
-                                                <select asp-for="LogisticsFeeRate.VolumeSelection" class="input-sm form-control">
+                                                <select asp-for="LogisticsFeeRate.VolumeWeightResultType" class="input-sm form-control">
                                                     @foreach (var orientationInfo in Model.VolumeWeightResultTypeList)
                                                     {
                                                         <option value="@orientationInfo.Id">@orientationInfo.Name</option>
