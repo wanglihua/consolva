@@ -56,15 +56,13 @@ public class LogisticsInsuranceController : Controller
     [NonAction]
     private ICriteria GetListCriteria(LogisticsInsuranceListQueryParam queryParam)
     {
-        string nameQuery = queryParam.NameQuery;
-
         ICriteria criteria = session.CreateCriteria<LogisticsInsuranceInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(nameQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
         {
-            nameQuery = nameQuery.Trim();
+            string nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsInsuranceInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
 

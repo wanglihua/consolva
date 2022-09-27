@@ -1,0 +1,197 @@
+@using shunda.Admin.Areas.Logistics.Models.LogisticsGst
+@using shunda.Core
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsGst.LogisticsGstIndexModel
+@{
+    ViewBag.Title = "GST列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-logistics-gst-index-menu">GST列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsGstList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsGstDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsGst()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="nameQuery">名称</label>&nbsp;<input id="nameQuery" name="nameQuery" style="width: 180px; height: 30px;" placeholder="名称查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsGstList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsGstList" data-page-index="0" data-sort-field="@(nameof(LogisticsGstInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="logisticsGstDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsGstList();
+    });
+
+    function sortLogisticsGstList(sortField, sortDir) {
+        var list = $('#logisticsGstList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsGstList();
+    }
+
+    function loadLogisticsGstList(pageIndex) {
+        var list = $('#logisticsGstList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsGst")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsGstListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(LogisticsGstListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsGstListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsGstListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsGstList').html(data);
+
+                initListTable("#tblLogisticsGstList");
+            }
+        });
+    }
+
+    function showLogisticsGstDetail(id) {
+        $("#logisticsGstDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsGstDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "LogisticsGst")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsGstDetailDialogWrapper").html(data);
+                $("#logisticsGstDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveLogisticsGst() {
+        var form = $("#logisticsGstDetailForm");
+        var valid = validate(form,
+            {
+                'LogisticsGst.Name': {
+                    required: true,
+                    maxlength: 200
+                },
+                'LogisticsGst.BasisId': {
+                    required: true,
+                    digits: true 
+                },
+                'LogisticsGst.StartAmount': {
+                    required: true
+                },
+                'LogisticsGst.FeeRate': {
+                    required: true
+                },
+                'LogisticsGst.OrderNum': {
+                    required: false,
+                    digits: true 
+                },
+                'LogisticsGst.StatusId': {
+                    required: true,
+                    digits: true 
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsGst")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#logisticsGstDetailDialog').modal('hide');
+                        loadLogisticsGstList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteLogisticsGst() {
+        var idList = getSelectIdList('#tblLogisticsGstList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "LogisticsGst")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadLogisticsGstList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

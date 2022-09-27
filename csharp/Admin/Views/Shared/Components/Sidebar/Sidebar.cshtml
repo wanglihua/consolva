@@ -100,7 +100,7 @@
                     @if (Model.HasPassRes(PassRes.Logistics.Gst))
                     {
                         <li id="logistics-logistics-gst-index-menu">
-                            <a href="@Url.Action("Index", "LogisticsGst")">
+                            <a asp-area="Logistics" asp-controller="LogisticsGst" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 GST
                             </a>
