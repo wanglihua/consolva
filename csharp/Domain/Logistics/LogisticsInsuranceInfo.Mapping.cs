@@ -24,6 +24,7 @@ public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInf
             map => {
                 map.Type(NHibernateUtil.StringClob);
                 map.Column("content");
+                map.NotNullable(false);
             }
         );
 

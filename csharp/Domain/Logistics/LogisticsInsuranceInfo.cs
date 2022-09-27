@@ -22,7 +22,7 @@ public class LogisticsInsuranceInfo : Entity
     /// 保险条款
     /// </summary>
     [DisplayName("保险条款")]
-    public virtual string Content { get; set; } = string.Empty;
+    public virtual string? Content { get; set; }
 
     /// <summary>
     /// 费用类型

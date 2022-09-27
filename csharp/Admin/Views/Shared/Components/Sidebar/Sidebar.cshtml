@@ -89,7 +89,7 @@
                     @if (Model.HasPassRes(PassRes.Logistics.Insurance))
                     {
                         <li id="logistics-logistics-insurance-index-menu">
-                            <a href="@Url.Action("Index", "LogisticsInsurance")">
+                            <a asp-area="Logistics" asp-controller="LogisticsInsurance" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 保险
                             </a>
