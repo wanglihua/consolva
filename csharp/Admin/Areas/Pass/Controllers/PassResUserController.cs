@@ -88,8 +88,6 @@ public class PassResUserController : Controller
     [Route("/admin/pass/res/user/add/{passResId:int}")]
     public IActionResult Add(int passResId)
     {
-        this.session.DefaultReadOnly = true;
-
         PassResInfo passRes = this.session.Get<PassResInfo>(passResId);
         if (passRes == null)
         {

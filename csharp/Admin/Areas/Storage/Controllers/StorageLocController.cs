@@ -131,8 +131,6 @@ public class StorageLocController : Controller
         int storageLocId = model.Id;
         int shelfId = model.ShelfId;
 
-        session.DefaultReadOnly = true;
-
         StorageLocInfo storageLoc;
 
         if (storageLocId == 0)

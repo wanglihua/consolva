@@ -94,8 +94,6 @@ public class AdminController : Controller
     [Route("/admin/admin/add")]
     public IActionResult Add()
     {
-        this.session.DefaultReadOnly = true;
-
         AdminAddModel model = new AdminAddModel();
 
         return View("AdminAdd", model);

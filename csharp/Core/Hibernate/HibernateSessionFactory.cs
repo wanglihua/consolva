@@ -196,12 +196,12 @@ public class HibernateSessionFactory
     {
 #if DEBUG
         ISession session = sessionFactory.WithOptions().Interceptor(new HibernateInterceptor()).OpenSession();
-        session.DefaultReadOnly = true;
+        // session.DefaultReadOnly = true; 这个不能加上，否则 session.Update() 会不成功
 
         return session;
 #else
         ISession session = sessionFactory.OpenSession(); // configuration.SetInterceptor(new HibernateInterceptor()); 中配置了
-        session.DefaultReadOnly = true;
+        // session.DefaultReadOnly = true; 这个不能加上，否则 session.Update() 会不成功
 
         return session;
 #endif

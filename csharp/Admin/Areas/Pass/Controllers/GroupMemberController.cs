@@ -95,8 +95,6 @@ public class GroupMemberController : Controller
     [Route("/admin/group/member/add/{groupId:int}")]
     public IActionResult Add(int groupId)
     {
-        this.session.DefaultReadOnly = true;
-
         GroupInfo group = this.session.Get<GroupInfo>(groupId);
 
         if (group == null)

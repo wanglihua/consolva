@@ -95,8 +95,6 @@ public class GroupController : Controller
     [Route("/admin/group/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        this.session.DefaultReadOnly = true;
-
         GroupInfo group;
 
         if (id == null || id.Value == 0)

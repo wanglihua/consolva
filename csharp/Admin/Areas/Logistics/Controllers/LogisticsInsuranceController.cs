@@ -73,8 +73,6 @@ public class LogisticsInsuranceController : Controller
     [Route("/admin/logistics/insurance/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        session.DefaultReadOnly = true;
-
         LogisticsInsuranceInfo logisticsInsurance;
 
         if (id == null || id.Value == 0)

@@ -75,8 +75,6 @@ public class LogisticsGstController : Controller
     [Route("/admin/logistics/gst/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        session.DefaultReadOnly = true;
-
         LogisticsGstInfo logisticsGst;
 
         if (id == null || id.Value == 0)

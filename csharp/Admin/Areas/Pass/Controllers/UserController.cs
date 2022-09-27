@@ -97,8 +97,6 @@ public class UserController : Controller
     [Route("/admin/user/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        this.session.DefaultReadOnly = true;
-
         UserInfo user;
 
         if (id == null || id.Value == 0)

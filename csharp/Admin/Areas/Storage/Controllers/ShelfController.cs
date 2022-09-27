@@ -125,8 +125,6 @@ public class ShelfController : Controller
         int shelfId = model.Id;
         int warehouseId = model.WarehouseId;
 
-        session.DefaultReadOnly = true;
-
         ShelfInfo shelf;
 
         if (shelfId == 0)

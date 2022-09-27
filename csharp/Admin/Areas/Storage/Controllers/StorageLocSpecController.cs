@@ -91,8 +91,6 @@ public class StorageLocSpecController : Controller
     [Route("/admin/storage/loc/spec/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        session.DefaultReadOnly = true;
-
         StorageLocSpecInfo storageLocSpec;
 
         if (id == null || id.Value == 0)

@@ -97,8 +97,6 @@ public class WarehouseController : Controller
     [Route("/admin/warehouse/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        session.DefaultReadOnly = true;
-
         WarehouseWithAddressDescriptionInfo warehouse;
 
         if (id == null || id.Value == 0)

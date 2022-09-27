@@ -91,8 +91,6 @@ public class LogisticsFeeRateController : Controller
     [Route("/admin/logistics/fee/rate/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        session.DefaultReadOnly = true;
-
         LogisticsFeeRateInfo logisticsFeeRate;
 
         if (id == null || id.Value == 0)
