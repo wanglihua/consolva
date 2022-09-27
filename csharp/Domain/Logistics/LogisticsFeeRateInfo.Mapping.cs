@@ -224,7 +224,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Boolean);
                 map.Column("has_single_weight_start");
-                map.NotNullable(true);
+                map.NotNullable(false);
             }
         );
 
@@ -233,7 +233,7 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("single_weight_start");
-                map.NotNullable(true);
+                map.NotNullable(false);
             }
         );
 

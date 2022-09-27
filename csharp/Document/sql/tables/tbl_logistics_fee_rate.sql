@@ -32,7 +32,7 @@ CREATE TABLE tbl_logistics_fee_rate
     over_length_cap_amount               DECIMAL(10, 2) NULL COMMENT '超长封顶金额',
 
     has_single_weight_start              BOOL           NOT NULL COMMENT '是否有单箱起步重量',
-    single_weight_start                  INT            NOT NULL COMMENT '单箱起步重量',
+    single_weight_start                  INT            NULL COMMENT '单箱起步重量',
     has_single_weight_limit              BOOL           NOT NULL COMMENT '是否有单箱重量限制',
     single_weight_limit                  INT            NULL COMMENT '单箱重量限制',
     can_single_over_weight               BOOL           NOT NULL COMMENT '单箱能否超重',
