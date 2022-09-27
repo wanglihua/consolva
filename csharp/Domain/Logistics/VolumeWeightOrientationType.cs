@@ -5,37 +5,37 @@ namespace shunda.Domain.Logistics;
 /// <summary>
 /// 体积重取向
 /// </summary>
-public class VolumeWeightOrientationType : CodeTypeBase
+public class VolumeWeightResultType : CodeTypeBase
 {
     /// <summary>
     /// 取大, 1000
     /// </summary>
-    public static readonly VolumeWeightOrientationType Big = new VolumeWeightOrientationType(1000, "取大", "取大");
+    public static readonly VolumeWeightResultType Big = new VolumeWeightResultType(1000, "取大", "取大");
 
     /// <summary>
     /// 取中, 2000
     /// </summary>
-    public static readonly VolumeWeightOrientationType Middle = new VolumeWeightOrientationType(2000, "取中", "取中");
+    public static readonly VolumeWeightResultType Middle = new VolumeWeightResultType(2000, "取中", "取中");
 
     /// <summary>
     /// 取小, 3000
     /// </summary>
-    public static readonly VolumeWeightOrientationType Small = new VolumeWeightOrientationType(3000, "取小", "取小");
+    public static readonly VolumeWeightResultType Small = new VolumeWeightResultType(3000, "取小", "取小");
 
     /// <summary>
     /// None
     /// </summary>
-    private static readonly VolumeWeightOrientationType None = new VolumeWeightOrientationType(0, "", "");
+    private static readonly VolumeWeightResultType None = new VolumeWeightResultType(0, "", "");
 
-    private static readonly IList<VolumeWeightOrientationType> codeTypeList = new List<VolumeWeightOrientationType>() {
+    private static readonly IList<VolumeWeightResultType> codeTypeList = new List<VolumeWeightResultType>() {
         Big,
         Middle,
         Small,
     };
 
-    private static readonly IDictionary<int, VolumeWeightOrientationType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
+    private static readonly IDictionary<int, VolumeWeightResultType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static VolumeWeightOrientationType GetById(int id)
+    public static VolumeWeightResultType GetById(int id)
     {
         if (codeTypeMap.ContainsKey(id))
         {
@@ -46,28 +46,28 @@ public class VolumeWeightOrientationType : CodeTypeBase
     }
 
 
-    public static IList<VolumeWeightOrientationType> GetList()
+    public static IList<VolumeWeightResultType> GetList()
     {
         return codeTypeList;
     }
 
-    private VolumeWeightOrientationType(int id, string name, string description) : base(id, name, description)
+    private VolumeWeightResultType(int id, string name, string description) : base(id, name, description)
     {
     }
 }
 
-public class VolumeWeightOrientationTypeHibernateType : CodeHibernateTypeBase<VolumeWeightOrientationType>
+public class VolumeWeightResultTypeHibernateType : CodeHibernateTypeBase<VolumeWeightResultType>
 {
-    protected override VolumeWeightOrientationType GetCodeTypeById(int id)
+    protected override VolumeWeightResultType GetCodeTypeById(int id)
     {
-        return VolumeWeightOrientationType.GetById(id);
+        return VolumeWeightResultType.GetById(id);
     }
 }
 
-public class VolumeWeightOrientationTypeModelBinder : CodeTypeModelBinderBase<VolumeWeightOrientationType>
+public class VolumeWeightResultTypeModelBinder : CodeTypeModelBinderBase<VolumeWeightResultType>
 {
-    protected override VolumeWeightOrientationType GetCodeTypeById(int id)
+    protected override VolumeWeightResultType GetCodeTypeById(int id)
     {
-        return VolumeWeightOrientationType.GetById(id);
+        return VolumeWeightResultType.GetById(id);
     }
 }

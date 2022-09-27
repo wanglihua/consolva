@@ -29,7 +29,7 @@ public class LogisticsFeeRateInfo : Entity
     /// 体积重分母
     /// </summary>
     [DisplayName("体积重分母")]
-    public virtual int? VolumeDenominator { get; set; }
+    public virtual int? VolumeDenominator { get; set; } = 5000;
 
     /// <summary>
     /// 是否考虑三边之和
@@ -50,56 +50,56 @@ public class LogisticsFeeRateInfo : Entity
     /// </summary>
     [DisplayName("客户计算折扣 长")]
     [Required(ErrorMessage = "客户计算折扣 长不能为空！")]
-    public virtual decimal CustomerLengthDiscount { get; set; }
+    public virtual decimal CustomerLengthDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 客户计算折扣 宽
     /// </summary>
     [DisplayName("客户计算折扣 宽")]
     [Required(ErrorMessage = "客户计算折扣 宽不能为空！")]
-    public virtual decimal CustomerWidthDiscount { get; set; }
+    public virtual decimal CustomerWidthDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 客户计算折扣 高
     /// </summary>
     [DisplayName("客户计算折扣 高")]
     [Required(ErrorMessage = "客户计算折扣 高不能为空！")]
-    public virtual decimal CustomerHeightDiscount { get; set; }
+    public virtual decimal CustomerHeightDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 客户计算折扣 重
     /// </summary>
     [DisplayName("客户计算折扣 重")]
     [Required(ErrorMessage = "客户计算折扣 重不能为空！")]
-    public virtual decimal CustomerWeightDiscount { get; set; }
+    public virtual decimal CustomerWeightDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 导出计算折扣 长
     /// </summary>
     [DisplayName("导出计算折扣 长")]
     [Required(ErrorMessage = "导出计算折扣 长不能为空！")]
-    public virtual decimal ExportLengthDiscount { get; set; }
+    public virtual decimal ExportLengthDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 导出计算折扣 宽
     /// </summary>
     [DisplayName("导出计算折扣 宽")]
     [Required(ErrorMessage = "导出计算折扣 宽不能为空！")]
-    public virtual decimal ExportWidthDiscount { get; set; }
+    public virtual decimal ExportWidthDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 导出计算折扣 高
     /// </summary>
     [DisplayName("导出计算折扣 高")]
     [Required(ErrorMessage = "导出计算折扣 高不能为空！")]
-    public virtual decimal ExportHeightDiscount { get; set; }
+    public virtual decimal ExportHeightDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 导出计算折扣 重
     /// </summary>
     [DisplayName("导出计算折扣 重")]
     [Required(ErrorMessage = "导出计算折扣 重不能为空！")]
-    public virtual decimal ExportWeightDiscount { get; set; }
+    public virtual decimal ExportWeightDiscount { get; set; } = 1.0m;
 
     /// <summary>
     /// 是否有起步长度
@@ -452,124 +452,6 @@ public class LogisticsFeeRateInfo : Entity
     public virtual bool CommonGoodsPermit { get; set; }
 
     /// <summary>
-    /// 限制类是否允许
-    /// </summary>
-    [DisplayName("限制类是否允许")]
-    [Required(ErrorMessage = "限制类是否允许不能为空！")]
-    public virtual bool RestrictGoodsPermit { get; set; }
-
-    /// <summary>
-    /// 限制类是否开启按件加收费用
-    /// </summary>
-    [DisplayName("限制类是否开启按件加收费用")]
-    [Required(ErrorMessage = "限制类是否开启按件加收费用不能为空！")]
-    public virtual bool RestrictGoodsByCount { get; set; }
-
-    /// <summary>
-    /// 限制类按件加收费用
-    /// </summary>
-    [DisplayName("限制类按件加收费用")]
-    public virtual decimal? RestrictGoodsByCountFee { get; set; }
-
-    /// <summary>
-    /// 限制类是否开启按体积加收费用
-    /// </summary>
-    [DisplayName("限制类是否开启按体积加收费用")]
-    [Required(ErrorMessage = "限制类是否开启按体积加收费用不能为空！")]
-    public virtual bool RestrictGoodsByVolume { get; set; }
-
-    /// <summary>
-    /// 限制类按体积加收费用
-    /// </summary>
-    [DisplayName("限制类按体积加收费用")]
-    public virtual decimal? RestrictGoodsByVolumeFee { get; set; }
-
-    /// <summary>
-    /// 限制类是否开启按金额加收费用
-    /// </summary>
-    [DisplayName("限制类是否开启按金额加收费用")]
-    [Required(ErrorMessage = "限制类是否开启按金额加收费用不能为空！")]
-    public virtual bool RestrictGoodsByAmount { get; set; }
-
-    /// <summary>
-    /// 限制类按金额加收费用百分比
-    /// </summary>
-    [DisplayName("限制类按金额加收费用百分比")]
-    public virtual decimal? RestrictGoodsByAmountFeePercent { get; set; }
-
-    /// <summary>
-    /// 是否有限制类加收费用封顶金额
-    /// </summary>
-    [DisplayName("是否有限制类加收费用封顶金额")]
-    [Required(ErrorMessage = "是否有限制类加收费用封顶金额不能为空！")]
-    public virtual bool HasRestrictGoodsCapAmount { get; set; }
-
-    /// <summary>
-    /// 限制类加收费用封顶金额
-    /// </summary>
-    [DisplayName("限制类加收费用封顶金额")]
-    public virtual decimal? RestrictGoodsCapAmount { get; set; }
-
-    /// <summary>
-    /// 草木竹类是否允许
-    /// </summary>
-    [DisplayName("草木竹类是否允许")]
-    [Required(ErrorMessage = "草木竹类是否允许不能为空！")]
-    public virtual bool BambooGoodsPermit { get; set; }
-
-    /// <summary>
-    /// 草木竹类是否开启按件加收费用
-    /// </summary>
-    [DisplayName("草木竹类是否开启按件加收费用")]
-    [Required(ErrorMessage = "草木竹类是否开启按件加收费用不能为空！")]
-    public virtual bool BambooGoodsByCount { get; set; }
-
-    /// <summary>
-    /// 草木竹类按件加收费用
-    /// </summary>
-    [DisplayName("草木竹类按件加收费用")]
-    public virtual decimal? BambooGoodsByCountFee { get; set; }
-
-    /// <summary>
-    /// 草木竹类是否开启按体积加收费用
-    /// </summary>
-    [DisplayName("草木竹类是否开启按体积加收费用")]
-    [Required(ErrorMessage = "草木竹类是否开启按体积加收费用不能为空！")]
-    public virtual bool BambooGoodsByVolume { get; set; }
-
-    /// <summary>
-    /// 草木竹类按体积加收费用
-    /// </summary>
-    [DisplayName("草木竹类按体积加收费用")]
-    public virtual decimal? BambooGoodsByVolumeFee { get; set; }
-
-    /// <summary>
-    /// 草木竹类是否开启按金额加收费用
-    /// </summary>
-    [DisplayName("草木竹类是否开启按金额加收费用")]
-    [Required(ErrorMessage = "草木竹类是否开启按金额加收费用不能为空！")]
-    public virtual bool BambooGoodsByAmount { get; set; }
-
-    /// <summary>
-    /// 草木竹类按金额加收费用百分比
-    /// </summary>
-    [DisplayName("草木竹类按金额加收费用百分比")]
-    public virtual decimal? BambooGoodsByAmountFeePercent { get; set; }
-
-    /// <summary>
-    /// 是否有草木竹类加收费用封顶金额
-    /// </summary>
-    [DisplayName("是否有草木竹类加收费用封顶金额")]
-    [Required(ErrorMessage = "是否有草木竹类加收费用封顶金额不能为空！")]
-    public virtual bool HasBambooGoodsCapAmount { get; set; }
-
-    /// <summary>
-    /// 草木竹类加收费用封顶金额
-    /// </summary>
-    [DisplayName("草木竹类加收费用封顶金额")]
-    public virtual decimal? BambooGoodsCapAmount { get; set; }
-
-    /// <summary>
     /// 特货类是否允许
     /// </summary>
     [DisplayName("特货类是否允许")]
@@ -632,7 +514,7 @@ public class LogisticsFeeRateInfo : Entity
     /// 公布系数
     /// </summary>
     [DisplayName("公布系数")]
-    public virtual decimal? PublishRate { get; set; }
+    public virtual decimal PublishRate { get; set; } = 1.0m;
 
     /// <summary>
     /// 状态

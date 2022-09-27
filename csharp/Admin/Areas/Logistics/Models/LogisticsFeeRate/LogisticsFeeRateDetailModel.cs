@@ -8,7 +8,7 @@ public class LogisticsFeeRateDetailModel
     public LogisticsFeeRateInfo LogisticsFeeRate { get; set; } = new LogisticsFeeRateInfo();
 
     [BindNever]
-    public IList<VolumeWeightOrientationType> VolumeWeightOrientationList { get; set; } = new List<VolumeWeightOrientationType>();
+    public IList<VolumeWeightResultType> VolumeWeightResultTypeList { get; set; } = new List<VolumeWeightResultType>();
 
     [BindNever]
     public IList<LogisticsFeeRateStatus> StatusList { get; set; } = new List<LogisticsFeeRateStatus>();

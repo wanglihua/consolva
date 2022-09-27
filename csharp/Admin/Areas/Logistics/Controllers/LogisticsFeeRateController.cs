@@ -122,7 +122,7 @@ public class LogisticsFeeRateController : Controller
 
         LogisticsFeeRateDetailModel model = new LogisticsFeeRateDetailModel();
         model.LogisticsFeeRate = logisticsFeeRate;
-        model.VolumeWeightOrientationList = VolumeWeightOrientationType.GetList();
+        model.VolumeWeightResultTypeList = VolumeWeightResultType.GetList();
         model.StatusList = LogisticsFeeRateStatus.GetList();
 
         return View("LogisticsFeeRateDetail", model);
@@ -322,82 +322,6 @@ public class LogisticsFeeRateController : Controller
             {
                 ModelState.AddModelError(nameof(LogisticsFeeRateInfo.ExtraStorageDayFeeCapAmount), "仓储有费用封顶，但封顶金额 未配置 或 为0！");
             }
-
-            if (logisticsFeeRateFromUi.RestrictGoodsPermit)
-            {
-                // 按件加收费用
-                if (logisticsFeeRateFromUi.RestrictGoodsByCount)
-                {
-                    if (logisticsFeeRateFromUi.RestrictGoodsByCountFee.HasValue == false || logisticsFeeRateFromUi.RestrictGoodsByCountFee.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.RestrictGoodsByCountFee), "限制类已启用按件加收，但 按件加收费用 未设置 或为 0！");
-                    }
-                }
-
-                // 按体积加收费用
-                if (logisticsFeeRateFromUi.RestrictGoodsByVolume)
-                {
-                    if (logisticsFeeRateFromUi.RestrictGoodsByVolumeFee.HasValue == false || logisticsFeeRateFromUi.RestrictGoodsByVolumeFee.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.RestrictGoodsByVolumeFee), "限制类已启用按体积加收，但 按体积加收费用 未设置 或为 0！");
-                    }
-                }
-
-                // 按申报金额加收费用
-                if (logisticsFeeRateFromUi.RestrictGoodsByAmount)
-                {
-                    if (logisticsFeeRateFromUi.RestrictGoodsByAmountFeePercent.HasValue == false || logisticsFeeRateFromUi.RestrictGoodsByAmountFeePercent.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.RestrictGoodsByAmountFeePercent), "限制类已启用按金额加收，但 按金额加收比率 未设置 或为 0！");
-                    }
-                }
-
-                if (logisticsFeeRateFromUi.HasRestrictGoodsCapAmount)
-                {
-                    if (logisticsFeeRateFromUi.RestrictGoodsCapAmount.HasValue == false || logisticsFeeRateFromUi.RestrictGoodsCapAmount.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.RestrictGoodsCapAmount), "限制类有费用封顶，但 封顶金额 未设置 或为 0！");
-                    }
-                }
-            }
-
-            if (logisticsFeeRateFromUi.BambooGoodsPermit)
-            {
-                // 按件加收费用
-                if (logisticsFeeRateFromUi.BambooGoodsByCount)
-                {
-                    if (logisticsFeeRateFromUi.BambooGoodsByCountFee.HasValue == false || logisticsFeeRateFromUi.BambooGoodsByCountFee.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.BambooGoodsByCountFee), "草木竹类已启用按件加收，但 按件加收费用 未设置 或为 0！");
-                    }
-                }
-
-                // 按体积加收费用
-                if (logisticsFeeRateFromUi.BambooGoodsByVolume)
-                {
-                    if (logisticsFeeRateFromUi.BambooGoodsByVolumeFee.HasValue == false || logisticsFeeRateFromUi.BambooGoodsByVolumeFee.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.BambooGoodsByVolumeFee), "草木竹类已启用按体积加收，但 按体积加收费用 未设置 或为 0！");
-                    }
-                }
-
-                // 按申报金额加收费用
-                if (logisticsFeeRateFromUi.BambooGoodsByAmount)
-                {
-                    if (logisticsFeeRateFromUi.BambooGoodsByAmountFeePercent.HasValue == false || logisticsFeeRateFromUi.BambooGoodsByAmountFeePercent.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.BambooGoodsByAmountFeePercent), "草木竹类已启用按金额加收，但 按金额加收比率 未设置 或为 0！");
-                    }
-                }
-
-                if (logisticsFeeRateFromUi.HasBambooGoodsCapAmount)
-                {
-                    if (logisticsFeeRateFromUi.BambooGoodsCapAmount.HasValue == false || logisticsFeeRateFromUi.BambooGoodsCapAmount.Value <= 0)
-                    {
-                        ModelState.AddModelError(nameof(LogisticsFeeRateInfo.BambooGoodsCapAmount), "草木竹类有费用封顶，但 封顶金额 未设置 或为 0！");
-                    }
-                }
-            }
         }
 
         if (!ModelState.IsValid)
@@ -501,26 +425,6 @@ public class LogisticsFeeRateController : Controller
         logisticsFeeRate.ExtraStorageDayFeeCapAmount = logisticsFeeRateFromUi.ExtraStorageDayFeeCapAmount;
 
         logisticsFeeRate.CommonGoodsPermit = logisticsFeeRateFromUi.CommonGoodsPermit;
-
-        logisticsFeeRate.RestrictGoodsPermit = logisticsFeeRateFromUi.RestrictGoodsPermit;
-        logisticsFeeRate.RestrictGoodsByCount = logisticsFeeRateFromUi.RestrictGoodsByCount;
-        logisticsFeeRate.RestrictGoodsByCountFee = logisticsFeeRateFromUi.RestrictGoodsByCountFee;
-        logisticsFeeRate.RestrictGoodsByVolume = logisticsFeeRateFromUi.RestrictGoodsByVolume;
-        logisticsFeeRate.RestrictGoodsByVolumeFee = logisticsFeeRateFromUi.RestrictGoodsByVolumeFee;
-        logisticsFeeRate.RestrictGoodsByAmount = logisticsFeeRateFromUi.RestrictGoodsByAmount;
-        logisticsFeeRate.RestrictGoodsByAmountFeePercent = logisticsFeeRateFromUi.RestrictGoodsByAmountFeePercent;
-        logisticsFeeRate.HasRestrictGoodsCapAmount = logisticsFeeRateFromUi.HasRestrictGoodsCapAmount;
-        logisticsFeeRate.RestrictGoodsCapAmount = logisticsFeeRateFromUi.RestrictGoodsCapAmount;
-
-        logisticsFeeRate.BambooGoodsPermit = logisticsFeeRateFromUi.BambooGoodsPermit;
-        logisticsFeeRate.BambooGoodsByCount = logisticsFeeRateFromUi.BambooGoodsByCount;
-        logisticsFeeRate.BambooGoodsByCountFee = logisticsFeeRateFromUi.BambooGoodsByCountFee;
-        logisticsFeeRate.BambooGoodsByVolume = logisticsFeeRateFromUi.BambooGoodsByVolume;
-        logisticsFeeRate.BambooGoodsByVolumeFee = logisticsFeeRateFromUi.BambooGoodsByVolumeFee;
-        logisticsFeeRate.BambooGoodsByAmount = logisticsFeeRateFromUi.BambooGoodsByAmount;
-        logisticsFeeRate.BambooGoodsByAmountFeePercent = logisticsFeeRateFromUi.BambooGoodsByAmountFeePercent;
-        logisticsFeeRate.HasBambooGoodsCapAmount = logisticsFeeRateFromUi.HasBambooGoodsCapAmount;
-        logisticsFeeRate.BambooGoodsCapAmount = logisticsFeeRateFromUi.BambooGoodsCapAmount;
 
         logisticsFeeRate.SpecialGoodsPermit = logisticsFeeRateFromUi.SpecialGoodsPermit;
         logisticsFeeRate.SpecialGoodsByCount = logisticsFeeRateFromUi.SpecialGoodsByCount;
