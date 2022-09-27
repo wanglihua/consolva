@@ -1,0 +1,208 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsInsurance.LogisticsInsuranceDetailModel
+
+@{
+    ViewBag.Title = "保险详细";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-logistics-insurance-index-menu">
+        <a href="@Url.Action("Index", "LogisticsInsurance")">保险列表</a>
+    </li>
+    <li>保险详细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="saveLogisticsInsurance();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsInsurance")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 780px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="logisticsInsuranceDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="LogisticsInsurance.Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsInsurance.Name" class="col-xs-2 control-label">名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LogisticsInsurance.Name" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsInsurance.CalcBaseType" class="col-xs-2 control-label">计算基数</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="LogisticsInsurance.CalcBaseType" class="input-sm form-control">
+                                        @foreach (var baseType in Model.FeeCalcBaseTypeList)
+                                        {
+                                            <option value="@baseType.Id">@baseType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsInsurance.Type" class="col-xs-2 control-label">费用类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="LogisticsInsurance.Type" class="input-sm form-control">
+                                        @foreach (LogisticsInsuranceType logisticsInsuranceType in Model.LogisticsInsuranceTypeList)
+                                        {
+                                            <option value="@logisticsInsuranceType.Id">@logisticsInsuranceType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsInsurance.FeeRate" class="col-xs-2 control-label">费率/金额</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LogisticsInsurance.FeeRate" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsInsurance.OrderNum" class="col-xs-2 control-label">排序</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LogisticsInsurance.OrderNum" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsInsurance.Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="LogisticsInsurance.Status" class="input-sm form-control">
+                                        @foreach (LogisticsInsuranceStatus logisticsInsuranceStatus in Model.LogisticsInsuranceStatusList)
+                                        {
+                                            <option value="@logisticsInsuranceStatus.Id">@logisticsInsuranceStatus.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsInsurance.Content" class="col-xs-2 control-label">保险条款</label>
+                                <div class="col-xs-10">
+                                    <textarea id="content" asp-for="LogisticsInsurance.Content" rows="10" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveLogisticsInsurance() {
+
+        var content = CKEDITOR.instances.content.getData();
+        $("#content").val(content);
+
+        var form = $("#logisticsInsuranceDetailForm");
+        var valid = validate(form,
+            {
+                'LogisticsInsurance.Name': {
+                    required: true,
+                    maxlength: 50
+                },
+                'LogisticsInsurance.Content': {
+                    required: false,
+                    maxlength: 10000
+                },
+                'LogisticsInsurance.BasisId': {
+                    required: true,
+                    digits: true
+                },
+                'LogisticsInsurance.TypeId': {
+                    required: true,
+                    digits: true
+                },
+                'LogisticsInsurance.FeeRate': {
+                    required: true
+                },
+                'LogisticsInsurance.OrderNum': {
+                    required: false,
+                    digits: true
+                },
+                'LogisticsInsurance.StatusId': {
+                    required: true,
+                    digits: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsInsurance")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+
+                        if (data.create) {
+                            setTimeout("showDetail(" + data.id + ")", 1000);
+                        }
+
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function showDetail(id) {
+        var url = "@Url.Action("Detail", "LogisticsInsurance", new { id = 88888})";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+</script>
+
+<script type="text/javascript">
+    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
+        CKEDITOR.tools.enableHtml5Elements(document);
+    }
+
+    CKEDITOR.config.height = 520;
+    CKEDITOR.config.width = 'auto';
+
+    var initCkEditor = (function () {
+        return function () {
+            CKEDITOR.replace('content');
+        };
+    })();
+
+    initCkEditor();
+</script>
