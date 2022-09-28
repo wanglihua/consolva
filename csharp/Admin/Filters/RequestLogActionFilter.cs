@@ -49,7 +49,7 @@ public class RequestLogActionFilter : IActionFilter
                     log.Error($"url 没有以 /admin 开头: {relativeUrl}");
                 }
 
-                siteRequestLogService.NewSiteRequest(request, (decimal)requestTotalSeconds, useInnerTransaction: false);
+                // siteRequestLogService.NewSiteRequest(request, (decimal)requestTotalSeconds, useInnerTransaction: false);
             }
             catch (Exception exp) // 不能因为这个功能而影响了全局
             {
