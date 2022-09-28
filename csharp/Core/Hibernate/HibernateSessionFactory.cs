@@ -110,9 +110,7 @@ public class HibernateSessionFactory
         configuration.SetProperty(Environment.QueryStartupChecking, "true");
 #endif
 
-#if !DEBUG
-        configuration.SetInterceptor(new HibernateInterceptor()); // 用这个方案的话，session内SQL计数就不准了。这个SQL计数开发的时候有用
-#endif
+        configuration.SetInterceptor(new HibernateInterceptor());
 
         // use NHibernate.Mapping.ByCode;
         ModelMapper mapper = new ModelMapper();
@@ -146,7 +144,7 @@ public class HibernateSessionFactory
     {
         var configuration = BuildConfiguration(dataBaseType, mappingTypes);
         return configuration.BuildSessionFactory();
-    }    
+    }
 
     private static ISessionFactory BuildSessionFactory(Configuration configuration)
     {
@@ -195,16 +193,9 @@ public class HibernateSessionFactory
 
     public static ISession OpenSession(ISessionFactory sessionFactory)
     {
-#if DEBUG
-        ISession session = sessionFactory.WithOptions().Interceptor(new HibernateInterceptor()).OpenSession();
-        // session.DefaultReadOnly = true; 这个不能加上，否则 session.Update() 会不成功
+        ISession session = sessionFactory.OpenSession(); // configuration.SetInterceptor(new HibernateInterceptor()); 中配置了 HibernateInterceptor
+        // session.DefaultReadOnly = true; 这个不能加上，否则 更新数据 会不成功
 
         return session;
-#else
-        ISession session = sessionFactory.OpenSession(); // configuration.SetInterceptor(new HibernateInterceptor()); 中配置了
-        // session.DefaultReadOnly = true; 这个不能加上，否则 session.Update() 会不成功
-
-        return session;
-#endif
     }
 }

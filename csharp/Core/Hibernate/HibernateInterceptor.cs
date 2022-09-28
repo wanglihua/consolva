@@ -13,10 +13,6 @@ public class HibernateInterceptor : EmptyInterceptor
     private static readonly string createTimePropertyName = nameof(Entity.CreateTime);
     private static readonly string updateTimePropertyName = nameof(Entity.UpdateTime);
 
-#if DEBUG
-    private int sqlNum = 1;
-#endif
-
     public override bool OnSave(object entity, object id, object[] state, string[] propertyNames, IType[] types)
     {
         if (entity is Entity e)
@@ -114,10 +110,6 @@ public class HibernateInterceptor : EmptyInterceptor
 
     public override SqlString OnPrepareStatement(SqlString sql)
     {
-#if DEBUG
-        log.Trace($"SQL NO {sqlNum++}: ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-#endif
-
         return sql;
     }
 }
