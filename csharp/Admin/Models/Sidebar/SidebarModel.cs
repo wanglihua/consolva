@@ -41,5 +41,11 @@ public class SidebarModel
     public bool HasOneOfPassRes(IList<int> passResIdList)
     {
         return PassUtil.HasOneOfPassRes(PassResIdMap, IsAdmin, passResIdList);
-    }    
+    }
+
+#if DEBUG
+    public bool Debug { get; } = true;
+#else
+    public bool Debug { get; } = false;
+#endif
 }
