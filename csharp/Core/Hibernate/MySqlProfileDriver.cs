@@ -35,5 +35,5 @@ public class MySqlProfileDriver : DriverBase
 
     public override bool RequiresTimeSpanForTime => true;
 
-    public override DateTime MinDate => new DateTime(1000, 1, 1);
+    public override DateTime MinDate => new DateTime(1, 1, 1);
 }

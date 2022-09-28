@@ -1,4 +1,3 @@
-using System;
 using System.Data.Common;
 using MySql.Data.MySqlClient;
 using NHibernate.AdoNet;
@@ -22,50 +21,26 @@ public class MiniProfilerMySqlDataDriver : DriverBase, IEmbeddedBatcherFactoryPr
         return new MiniProfilerMySqlDbCommand(new MySqlCommand(), new MySqlConnection(), MiniProfiler.Current);
     }
 
-    public override bool UseNamedPrefixInSql
-    {
-        get { return true; }
-    }
+    public override bool UseNamedPrefixInSql => true;
 
-    public override bool UseNamedPrefixInParameter
-    {
-        get { return true; }
-    }
+    public override bool UseNamedPrefixInParameter => true;
 
-    public override string NamedPrefix
-    {
-        get { return "?"; }
-    }
+    public override string NamedPrefix => "?";
 
-    public override bool SupportsMultipleOpenReaders
-    {
-        get { return false; }
-    }
+    public override bool SupportsMultipleOpenReaders => false;
 
-    protected override bool SupportsPreparingCommands
-    {
-        get { return false; }
-    }
+    protected override bool SupportsPreparingCommands => false;
 
     public override IResultSetsCommand GetResultSetsCommand(ISessionImplementor session)
     {
         return new BasicResultSetsCommand(session);
     }
 
-    public override bool SupportsMultipleQueries
-    {
-        get { return true; }
-    }
+    public override bool SupportsMultipleQueries => true;
 
-    public override bool RequiresTimeSpanForTime
-    {
-        get { return true; }
-    }
+    public override bool RequiresTimeSpanForTime => true;
 
-    public override DateTime MinDate
-    {
-        get { return new DateTime(1, 1, 1); }
-    }
+    public override DateTime MinDate => new DateTime(1, 1, 1);
 
     Type IEmbeddedBatcherFactoryProvider.BatcherFactoryClass
     {

@@ -1,14 +1,14 @@
 using System.Data;
-using System.Data.Common;
 using System.Reflection;
-using shunda.Core.Config;
-using shunda.Core.Log;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Dialect;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
+using shunda.Core.Config;
+using shunda.Core.Hibernate.MiniProfilerMySql;
+using shunda.Core.Log;
 using Environment = NHibernate.Cfg.Environment;
 
 // using NHibernate.Caches.RtMemoryCache;
@@ -44,7 +44,8 @@ public class HibernateSessionFactory
                     cfg.ConnectionString = DataBaseConfig.MySQLConnectionString;
                     cfg.Dialect<MySQL55InnoDBDialect>();
 #if DEBUG
-                    cfg.Driver<MySqlProfileDriver>();
+                    // cfg.Driver<MySqlProfileDriver>();
+                    cfg.Driver<MiniProfilerMySqlDataDriver>();
 #else
                     cfg.Driver<MySqlDataDriver>();
 #endif
