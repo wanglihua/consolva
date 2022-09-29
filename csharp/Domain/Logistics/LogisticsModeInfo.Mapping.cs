@@ -128,6 +128,14 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
             }
         );
 
+        Property(
+            x => x.PackLabelType,
+            map => {
+                map.Type<LogisticsPackLabelTypeHibernateType>();
+                map.Column("pack_label_type_id");
+                map.NotNullable(false);
+            }
+        );
 
         Property(
             x => x.ExpressCompanyName,

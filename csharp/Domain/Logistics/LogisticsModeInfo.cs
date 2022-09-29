@@ -10,7 +10,7 @@ namespace shunda.Domain.Logistics;
 /// <summary>
 /// 物流方式
 /// </summary>
-public partial class LogisticsModeInfo : Entity
+public class LogisticsModeInfo : Entity
 {
     /// <summary>
     /// 类别
@@ -71,7 +71,7 @@ public partial class LogisticsModeInfo : Entity
     /// <summary>
     /// 费用计算描述
     /// </summary>
-    public virtual string FeeCalDesc { get; set; } = string.Empty;
+    public virtual string? FeeCalDesc { get; set; } = string.Empty;
 
     /// <summary>
     /// 最小重量

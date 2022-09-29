@@ -1,4 +1,5 @@
 .DS_Store
+.vs
 *.DotSettings.user
 /csharp/Admin/bin/
 /csharp/Admin/obj/
