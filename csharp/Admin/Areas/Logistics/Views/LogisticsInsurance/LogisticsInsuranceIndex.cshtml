@@ -1,14 +1,15 @@
 @using shunda.Admin.Areas.Logistics.Models.LogisticsInsurance
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Logistics
 @{
-    ViewBag.Title = "保险列表";
+    ViewData[ViewDataKey.Title] = "保险";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
-    <li class="active" data-menu="logistics-logistics-insurance-index-menu">保险列表</li>
+    <li class="active" data-menu="logistics-logistics-insurance-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

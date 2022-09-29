@@ -1,15 +1,16 @@
 @using shunda.Admin.Areas.Logistics.Models.LogisticsGst
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsGst.LogisticsGstIndexModel
 @{
-    ViewBag.Title = "GST列表";
+    ViewData[ViewDataKey.Title] = "GST";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
-    <li class="active" data-menu="logistics-logistics-gst-index-menu">GST列表</li>
+    <li class="active" data-menu="logistics-logistics-gst-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

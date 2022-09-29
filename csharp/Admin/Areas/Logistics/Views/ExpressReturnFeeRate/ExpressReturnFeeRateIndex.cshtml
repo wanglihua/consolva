@@ -1,0 +1,70 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
+@model shunda.Admin.Areas.Logistics.Models.ExpressReturnFeeRate.ExpressReturnFeeRateIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "退运操作费率";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-express-return-fee-rate-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-success btn-sm" onclick="saveExpressReturnFeeRate();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+</div>
+
+<div class="widget-box" style="border-style: none; width: 400px;">
+    <div class="widget-body">
+        <div class="widget-main">
+            <form id="expressReturnFeeRateDetailForm" class="form-horizontal" role="form">
+                <div class="row">
+
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label asp-for="FeePerExpress" class="col-xs-6 control-label">每快递操作费</label>
+                            <div class="col-xs-6">
+                                <div class="input-group">
+                                    <input asp-for="FeePerExpress" type="number" required="required" number="true" class="input-sm form-control" style="text-align: right;"/>
+                                    <span class="input-group-addon">RMB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveExpressReturnFeeRate() {
+        var form = $("#expressReturnFeeRateDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ExpressReturnFeeRate")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                }
+            });
+        }
+    }
+
+</script>
