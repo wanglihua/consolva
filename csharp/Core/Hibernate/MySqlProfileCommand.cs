@@ -123,6 +123,8 @@ public class MySqlProfileCommand : DbCommand
             sqlTrace = sqlTrace.Replace(p.ParameterName, parameterValue);
         }
 
+        // 这里的替换可能会造成，SQL字符串值的不必要替换。比如一个字符串值中，正好有  left join ，但不是这个SQL语句语法的一部分
+        sqlTrace = sqlTrace.Replace(" as ", " AS ");
         sqlTrace = sqlTrace.Replace(" on ", " ON ");
         sqlTrace = sqlTrace.Replace(" is ", " IS ");
         sqlTrace = sqlTrace.Replace(" null ", " NULL ");
