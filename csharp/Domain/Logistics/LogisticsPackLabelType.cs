@@ -55,7 +55,7 @@ public class LogisticsPackLabelType : CodeTypeBase
     }
 }
 
-public class LogisticsOrderPackPrintTypeHibernateType : CodeHibernateTypeBase<LogisticsPackLabelType>
+public class LogisticsPackLabelTypeHibernateType : CodeHibernateTypeBase<LogisticsPackLabelType>
 {
     protected override LogisticsPackLabelType GetCodeTypeById(int id)
     {
@@ -63,7 +63,7 @@ public class LogisticsOrderPackPrintTypeHibernateType : CodeHibernateTypeBase<Lo
     }
 }
 
-public class LogisticsOrderPackPrintTypeModelBinder : CodeTypeModelBinderBase<LogisticsPackLabelType>
+public class LogisticsPackLabelTypeModelBinder : CodeTypeModelBinderBase<LogisticsPackLabelType>
 {
     protected override LogisticsPackLabelType GetCodeTypeById(int id)
     {
