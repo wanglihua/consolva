@@ -1,0 +1,15 @@
+@model shunda.Admin.Models.MiniProfilerLink.MiniProfilerLinkModel
+
+@if (Model.Debug)
+{
+    <div>
+        <a target="_blank" href="/profiler/results-index" class="mini-profiler-link">
+            Result Index
+        </a>
+    </div>
+    <div>
+        <a target="_blank" href="/profiler/results" class="mini-profiler-link">
+            Latest Result
+        </a>
+    </div>
+}
