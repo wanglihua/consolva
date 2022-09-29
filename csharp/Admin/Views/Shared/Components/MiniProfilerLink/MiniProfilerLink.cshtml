@@ -2,14 +2,22 @@
 
 @if (Model.Debug)
 {
-    <div>
-        <a target="_blank" href="/profiler/results-index" class="mini-profiler-link">
-            Result Index
-        </a>
-    </div>
-    <div>
-        <a target="_blank" href="/profiler/results" class="mini-profiler-link">
-            Latest Result
-        </a>
+    <style>
+        a.mini-profiler-link{
+            color: white;
+            line-height: 16px;
+        }
+    </style>
+    <div style="float: left !important; padding: 5px;">
+        <div>
+            <a target="_blank" href="/profiler/results-index" class="mini-profiler-link">
+                MiniProfiler Result Index
+            </a>
+        </div>
+        <div>
+            <a target="_blank" href="/profiler/results" class="mini-profiler-link">
+                MiniProfiler Latest Result
+            </a>
+        </div>
     </div>
 }
