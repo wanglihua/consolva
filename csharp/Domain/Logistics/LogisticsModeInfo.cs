@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -21,7 +20,6 @@ public class LogisticsModeInfo : Entity
     /// <summary>
     /// 类型
     /// </summary>
-    [DisplayName("物流类型")]
     [Required(ErrorMessage = "物流类型不能为空！")]
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
     public virtual LogisticsModeType Type { get; set; } = LogisticsModeType.None;
@@ -35,7 +33,6 @@ public class LogisticsModeInfo : Entity
     /// <summary>
     /// 编码
     /// </summary>
-    [DisplayName("编码")]
     [Required(ErrorMessage = "编码不能为空！")]
     [MaxLength(100, ErrorMessage = "编码长度不能大于100！")]
     public virtual string Code { get; set; } = string.Empty;
@@ -43,7 +40,6 @@ public class LogisticsModeInfo : Entity
     /// <summary>
     /// 名称
     /// </summary>
-    [DisplayName("名称")]
     [Required(ErrorMessage = "名称不能为空！")]
     [MaxLength(200, ErrorMessage = "名称长度不能大于200！")]
     public virtual string Name { get; set; } = string.Empty;
@@ -51,7 +47,6 @@ public class LogisticsModeInfo : Entity
     /// <summary>
     /// 描述
     /// </summary>
-    [DisplayName("描述")]
     [Required(ErrorMessage = "描述不能为空！")]
     [MaxLength(500, ErrorMessage = "描述长度不能大于500！")]
     public virtual string Description { get; set; } = string.Empty;
@@ -121,7 +116,6 @@ public class LogisticsModeInfo : Entity
     /// <summary>
     /// 内部状态
     /// </summary>
-    [DisplayName("内部状态")]
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public virtual LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
 }

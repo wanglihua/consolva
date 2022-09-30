@@ -12,7 +12,6 @@ public class GroupMemberInfo : EntityNoUpdate
     /// <summary>
     /// 群组
     /// </summary>
-    [DisplayName("群组")]
     // [Required(ErrorMessage = "群组不能为空！")]
     [BindNever]
     public virtual GroupInfo Group { get; set; } = new GroupInfo();

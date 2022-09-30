@@ -14,7 +14,6 @@ public class StorageLocInfo : Entity
     /// <summary>
     /// 名称
     /// </summary>
-    [DisplayName("名称")]
     // [Required(ErrorMessage = "名称不能为空！")]
     // [MaxLength(255, ErrorMessage = "名称长度不能大于255！")]
     public virtual string Name { get; set; } = String.Empty;
@@ -22,14 +21,12 @@ public class StorageLocInfo : Entity
     /// <summary>
     /// 层
     /// </summary>
-    [DisplayName("层")]
     [Required(ErrorMessage = "层不能为空！")]
     public virtual int RowNum { get; set; }
 
     /// <summary>
     /// 列
     /// </summary>
-    [DisplayName("列")]
     [Required(ErrorMessage = "列不能为空！")]
     public virtual int ColNum { get; set; }
 
@@ -44,14 +41,12 @@ public class StorageLocInfo : Entity
     /// <summary>
     /// 货架
     /// </summary>
-    [DisplayName("货架")]
     [BindNever]
     public virtual ShelfInfo Shelf { get; set; } = new ShelfInfo();
 
     /// <summary>
     /// 状态
     /// </summary>
-    [DisplayName("状态")]
     [Required(ErrorMessage = "状态不能为空！")]
     [ModelBinder(typeof(StorageLocStatusModelBinder))]
     public virtual StorageLocStatus Status { get; set; } = StorageLocStatus.None;
@@ -59,7 +54,6 @@ public class StorageLocInfo : Entity
     /// <summary>
     /// 排序
     /// </summary>
-    [DisplayName("排序")]
     [Required(ErrorMessage = "排序不能为空！")]
     public virtual int OrderNum { get; set; }
 

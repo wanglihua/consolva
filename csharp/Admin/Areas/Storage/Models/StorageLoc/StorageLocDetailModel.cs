@@ -15,7 +15,6 @@ public class StorageLocDetailModel
     /// <summary>
     /// 货架
     /// </summary>
-    [DisplayName("货架")]
     [Required(ErrorMessage = "货架不能为空！")]
     public int ShelfId { get; set; }
 
@@ -24,7 +23,6 @@ public class StorageLocDetailModel
     /// <summary>
     /// 货架 Id， 用于界面显示和传值
     /// </summary>
-    [DisplayName("货架")]
     [Required(ErrorMessage = "货架不能为空！")]
     public int SpecId { get; set; }
 

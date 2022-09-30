@@ -18,7 +18,6 @@ public class LogisticsModeDetailModel
     /// <summary>
     /// 类型
     /// </summary>
-    [DisplayName("物流类型")]
     [Required(ErrorMessage = "物流类型不能为空！")]
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
     public LogisticsModeType Type { get; set; } = LogisticsModeType.None;
@@ -32,7 +31,6 @@ public class LogisticsModeDetailModel
     /// <summary>
     /// 编码
     /// </summary>
-    [DisplayName("编码")]
     [Required(ErrorMessage = "编码不能为空！")]
     [MaxLength(100, ErrorMessage = "编码长度不能大于100！")]
     public string Code { get; set; } = string.Empty;
@@ -40,7 +38,6 @@ public class LogisticsModeDetailModel
     /// <summary>
     /// 名称
     /// </summary>
-    [DisplayName("名称")]
     [Required(ErrorMessage = "名称不能为空！")]
     [MaxLength(200, ErrorMessage = "名称长度不能大于200！")]
     public string Name { get; set; } = string.Empty;
@@ -48,7 +45,6 @@ public class LogisticsModeDetailModel
     /// <summary>
     /// 描述
     /// </summary>
-    [DisplayName("描述")]
     [Required(ErrorMessage = "描述不能为空！")]
     [MaxLength(500, ErrorMessage = "描述长度不能大于500！")]
     public string Description { get; set; } = string.Empty;
@@ -56,13 +52,11 @@ public class LogisticsModeDetailModel
     /// <summary>
     /// 普通类通用费率
     /// </summary>
-    [DisplayName("普通类通用费率")]
     public int? CommonFeeRateId { get; set; }
 
     /// <summary>
     /// 特货类通用费率
     /// </summary>
-    [DisplayName("特货类通用费率")]
     public int? SpecialFeeRateId { get; set; }
 
     /// <summary>
