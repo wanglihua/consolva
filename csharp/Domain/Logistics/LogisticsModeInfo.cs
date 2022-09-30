@@ -109,7 +109,6 @@ public class LogisticsModeInfo : Entity
     /// <summary>
     /// 状态
     /// </summary>
-    [DisplayName("状态")]
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public virtual LogisticsModeStatus Status { get; set; } = LogisticsModeStatus.None;
 
