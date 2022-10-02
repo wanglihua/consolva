@@ -10,12 +10,12 @@ public class LogisticsModeService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
+    private ISession session;
     // private LogisticsExpressService logisticsExpressService = null;
     // private LogisticsFeeService logisticsFeeService = null;
 
     public LogisticsModeService(
-        ISession session,
+        ISession session
         // LogisticsExpressService logisticsExpressService,
         // LogisticsFeeService logisticsFeeService
         )
