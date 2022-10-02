@@ -58,11 +58,11 @@ public class LogisticsGoodsType : CodeTypeBase
     public static LogisticsGoodsType GetById(int id)
     {
         IList<LogisticsGoodsType> goodsTypeList = GetInnerList();
-        foreach (LogisticsGoodsType goodsTypeInfo in goodsTypeList)
+        foreach (LogisticsGoodsType goodsType in goodsTypeList)
         {
-            if (goodsTypeInfo.Id == id)
+            if (goodsType.Id == id)
             {
-                return goodsTypeInfo;
+                return goodsType;
             }
         }
 
@@ -79,11 +79,11 @@ public class LogisticsGoodsType : CodeTypeBase
         name = name.Trim();
 
         IList<LogisticsGoodsType> goodsTypeList = GetInnerList();
-        foreach (LogisticsGoodsType goodsTypeInfo in goodsTypeList)
+        foreach (LogisticsGoodsType goodsType in goodsTypeList)
         {
-            if (goodsTypeInfo.Name == name)
+            if (goodsType.Name == name)
             {
-                return goodsTypeInfo;
+                return goodsType;
             }
         }
 
