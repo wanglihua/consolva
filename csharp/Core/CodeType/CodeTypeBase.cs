@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace shunda.Core.CodeType;
 
 public abstract class CodeTypeBase
@@ -5,16 +7,19 @@ public abstract class CodeTypeBase
     /// <summary>
     /// 编码
     /// </summary>
+    [JsonProperty("id")]
     public int Id { get; protected set; }
 
     /// <summary>
     /// 名称
     /// </summary>
+    [JsonProperty("name")]
     public string Name { get; protected set; }
 
     /// <summary>
     /// 描述
     /// </summary>
+    [JsonProperty("description")]
     public string Description { get; protected set; }
 
     public CodeTypeBase(int id, string name, string description)

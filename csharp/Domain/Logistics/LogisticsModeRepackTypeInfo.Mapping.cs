@@ -1,6 +1,5 @@
-using shunda.Core;
-using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Core;
 
 namespace shunda.Domain.Logistics;
 
@@ -22,13 +21,12 @@ public class LogisticsModeRepackTypeInfoMapping : EntityMapping<LogisticsModeRep
         );
 
         Property(
-            x => x.RepackTypeId,
+            x => x.RepackType,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Type<LogisticsRepackTypeHibernateType>();
                 map.Column("repack_type_id");
                 map.NotNullable(true);
             }
         );
-
     }
 }
