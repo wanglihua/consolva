@@ -77,7 +77,8 @@ public class LogisticsModeDetailModel
     /// <summary>
     /// 收货仓库
     /// </summary>
-    public int? WarehouseId { get; set; }
+    [Required(ErrorMessage = "收货仓库不能为空！")]
+    public int WarehouseId { get; set; }
 
     /// <summary>
     /// 打包标签
