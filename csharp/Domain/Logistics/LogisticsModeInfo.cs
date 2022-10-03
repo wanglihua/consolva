@@ -69,16 +69,6 @@ public class LogisticsModeInfo : Entity
     public virtual string? FeeCalDesc { get; set; } = string.Empty;
 
     /// <summary>
-    /// 最小重量
-    /// </summary>
-    public virtual decimal? MinWeight { get; set; }
-
-    /// <summary>
-    /// 最大重量
-    /// </summary>
-    public virtual decimal? MaxWeight { get; set; }
-
-    /// <summary>
     /// 收货仓库
     /// </summary>
     [BindNever]

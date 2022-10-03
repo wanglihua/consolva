@@ -1,0 +1,398 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Logistics.Models.LogisticsMode.LogisticsModeDetailModel
+
+@{
+    ViewData[ViewDataKey.Title] = "物流详细";
+    Layout = "_AdminLayout";
+
+    var isCreate = Model.Id == 0;
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+
+    <li class="active" data-menu="logistics-logistics-mode-index-menu">
+        <a href="@Url.Action("Index", "LogisticsMode", new { typeId = Model.Type.Id })">物流列表</a>
+    </li>
+
+    <li>@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsMode();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsMode", new { typeId = Model.Type.Id })">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 780px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="logisticsModeDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="Id" type="hidden"/>
+                    <div class="row">
+
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Type" class="col-xs-2 control-label">类型</label>
+                                <div class="col-xs-10">
+                                    @if (isCreate)
+                                    {
+                                        <select asp-for="Type" type="text" class="input-sm form-control" onchange="reloadWithTypeId();">
+                                            @foreach (LogisticsModeType logisticsModeTypeInfo in Model.LogisticsModeTypeList)
+                                            {
+                                                <option value="@logisticsModeTypeInfo.Id">@logisticsModeTypeInfo.Name</option>
+                                            }
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="Type" type="hidden"/>
+                                        <select asp-for="Type" type="text" class="input-sm form-control" disabled="disabled">
+                                            @foreach (LogisticsModeType logisticsModeTypeInfo in Model.LogisticsModeTypeList)
+                                            {
+                                                <option value="@logisticsModeTypeInfo.Id">@logisticsModeTypeInfo.Name</option>
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @* 这个实际应该不需要 *@
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="PackSizeType" class="col-xs-2 control-label">大小件类别</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="PackSizeType" type="text" class="input-sm form-control">
+                                        <option value="0">请选择包裹大小件类别</option>
+                                        @foreach (var  packSizeType in Model.PackSizeTypeList)
+                                        {
+                                            <option value="@packSizeType.Id">@packSizeType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Code" class="col-xs-2 control-label">编码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Code" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Name" class="col-xs-2 control-label">名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Name" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Description" class="col-xs-2 control-label">描述</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="Description" rows="8" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CommonFeeRateId" class="col-xs-2 control-label">普通类通用费率</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CommonFeeRateId" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
+                                        {
+                                            <option value="@feeRate.Id">@feeRate.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="SpecialFeeRateId" class="col-xs-2 control-label">特货类通用费率</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="SpecialFeeRateId" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
+                                        {
+                                            <option value="@feeRate.Id">@feeRate.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="FeeCalDesc" class="col-xs-2 control-label">费用计算描述</label>
+                                    <div class="col-xs-10">
+                                        <input asp-for="FeeCalDesc" type="text" class="input-sm form-control"/>
+                                        <div class="help-block">用于【空运订单已打包提醒】客户消息</div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        
+
+
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="WarehouseId" class="col-xs-2 control-label">收货仓库</label>
+                                    <div class="col-xs-10">
+                                        <select asp-for="WarehouseId" class="input-sm form-control">
+                                            <option value="">收货仓库</option>
+                                            @foreach (WarehouseInfo warehouse in Model.WarehouseList)
+                                            {
+                                                <option value="@(warehouse.Id)">@(warehouse.Name)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Status" class="input-sm form-control">
+                                        @foreach (var status in Model.StatusList)
+                                        {
+                                            <option value="@status.Id">@status.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="InnerStatus" class="col-xs-2 control-label">内部状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="InnerStatus" class="input-sm form-control">
+                                        <option value="0">未设置</option>
+                                        @foreach (var status in Model.StatusList)
+                                        {
+                                            <option value="@status.Id">@status.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="Status" class="col-xs-2 control-label">打包方式</label>
+                                    <div class="col-xs-10">
+                                        @foreach (var repackType in Model.RepackTypeList)
+                                        {
+                                            var checkedStr = "";
+                                            if (Model.RepackTypeIdList.Contains(repackType.Id))
+                                            {
+                                                checkedStr = "checked = \"checked\"";
+                                            }
+
+                                            <div style="display:inline-block;height: 28px; line-height: 28px;">
+                                                <input id="repackType@(repackType.Id)" name="@(nameof(Model.RepackTypeIdList))" type="checkbox" class="input-sm" value="@repackType.Id" @checkedStr/>
+                                                <label for="repackType@(repackType.Id)" class="control-label" style="position: relative; top: -10px;">@repackType.Name</label>
+                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="Status" class="col-xs-2 control-label">关联物品类型</label>
+                                    <div class="col-xs-10">
+                                        @foreach (var goodsType in Model.GoodsTypeList)
+                                        {
+                                            var checkedStr = "";
+                                            if (Model.GoodsTypeIdList.Contains(goodsType.Id))
+                                            {
+                                                checkedStr = "checked = \"checked\"";
+                                            }
+
+                                            <div style="display:inline-block;height: 28px; line-height: 28px;">
+                                                <input id="GoodsType@(goodsType.Id)" name="@(nameof(Model.GoodsTypeIdList))" type="checkbox" class="input-sm" value="@goodsType.Id" @checkedStr/>
+                                                <label for="GoodsType@(goodsType.Id)" class="control-label" style="position: relative; top: -10px;">@goodsType.Name</label>
+                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="PackLabelType" class="col-xs-2 control-label">打印标签选择</label>
+                                    <div class="col-xs-10">
+                                        <select asp-for="PackLabelType" class="input-sm form-control">
+                                            <option value="@(LogisticsPackLabelType.None.Id)">此处不考虑</option>
+
+                                            @foreach (var packPrintType in Model.PackLabelTypeList)
+                                            {
+                                                <option value="@(packPrintType.Id)">@(packPrintType.Name)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        
+
+
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="ExpressCompanyName" class="col-xs-2 control-label">快递公司名称</label>
+                                    <div class="col-xs-10">
+                                        <input asp-for="ExpressCompanyName" type="text" class="input-sm form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="ExpressCompanyUrl" class="col-xs-2 control-label">快递公司网址</label>
+                                    <div class="col-xs-10">
+                                        <input asp-for="ExpressCompanyUrl" type="text" class="input-sm form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label asp-for="InnerModeId" class="col-xs-2 control-label">内部计费物流</label>
+                                    <div class="col-xs-10">
+                                        <select asp-for="InnerModeId" class="input-sm form-control">
+                                            <option value="">该物流无对应内部计费物流</option>
+
+                                            @if (Model.InnerModeList != null && Model.InnerModeList.Count != 0)
+                                            {
+                                                @foreach (var innerMode in Model.InnerModeList)
+                                                {
+                                                    <option value="@(innerMode.Id)">@(innerMode.Name)</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    function saveLogisticsMode() {
+        var form = $("#logisticsModeDetailForm");
+        var valid = validate(form,
+            {
+                'FeeRateId': {
+                    required: true,
+                    digits: true
+                },
+                'WarehouseFromId': {
+                    required: false,
+                    digits: true
+                },
+                'WarehouseToId': {
+                    required: false,
+                    digits: true
+                },
+                'Type': {
+                    required: true,
+                    digits: true
+                },
+                'Code': {
+                    required: true,
+                    maxlength: 100
+                },
+                'Name': {
+                    required: true,
+                    maxlength: 200
+                },
+                'Description': {
+                    required: true,
+                    maxlength: 500
+                },
+                'CompanyName': {
+                    required: false,
+                    maxlength: 100
+                },
+                'IconFileName': {
+                    required: false,
+                    maxlength: 200
+                },
+                'Status': {
+                    required: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsMode")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+
+                        if (data.create) {
+                            setTimeout("showLogisticsModeDetail(" + data.id + ")", 1000);
+                        }
+
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function showLogisticsModeDetail(id) {
+        var url = "@Url.Action("Detail", "LogisticsMode", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+    function reloadWithTypeId() {
+        // window.location.reload();
+        var url = "@Url.Action("Detail", "LogisticsMode", new { id = 0, typeId = 88888 })";
+        url = url.replace("88888", $("#Type").val());
+        window.location.href = url;
+    }
+
+</script>

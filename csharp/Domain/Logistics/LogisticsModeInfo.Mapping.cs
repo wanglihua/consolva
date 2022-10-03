@@ -94,25 +94,7 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
             x => x.FeeCalDesc,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("fee_cal_desc");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.MinWeight,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("min_weight");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.MaxWeight,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("max_weight");
+                map.Column("fee_calc_desc");
                 map.NotNullable(false);
             }
         );
@@ -133,7 +115,7 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
             map => {
                 map.Type<LogisticsPackLabelTypeHibernateType>();
                 map.Column("pack_label_type_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -178,7 +160,7 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
             map => {
                 map.Type<LogisticsModeStatusHibernateType>();
                 map.Column("inner_status_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
     }

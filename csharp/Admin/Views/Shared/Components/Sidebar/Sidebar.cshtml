@@ -78,7 +78,7 @@
                     @if (Model.HasPassRes(PassRes.Logistics.LogisticsModeList))
                     {
                         <li id="logistics-logistics-mode-index-menu">
-                            <a href="@Url.Action("Index", "LogisticsMode", new { typeId = LogisticsModeType.CnAuExpress.Id })">
+                            <a asp-area="Logistics" asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(LogisticsModeType.CnAuExpress.Id)">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 物流列表
                             </a>

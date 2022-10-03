@@ -8,8 +8,7 @@ public class CheckResult
 
     public static CheckResult Fail(string message) => new CheckResult(false, message);
 
-    // todo 改成 private
-    public CheckResult(bool success, string message)
+    private CheckResult(bool success, string message)
     {
         this.Success = success;
         this.Message = message;

@@ -165,9 +165,6 @@ public class LogisticsModeController : Controller
         model.Name = logisticsMode.Name;
         model.Description = logisticsMode.Description;
 
-        model.MinWeight = logisticsMode.MinWeight;
-        model.MaxWeight = logisticsMode.MaxWeight;
-
         model.ExpressCompanyName = logisticsMode.ExpressCompanyName;
         model.ExpressCompanyUrl = logisticsMode.ExpressCompanyUrl;
 
@@ -263,9 +260,6 @@ public class LogisticsModeController : Controller
         logisticsMode.Code = model.Code;
         logisticsMode.Name = model.Name;
         logisticsMode.Description = model.Description;
-
-        logisticsMode.MinWeight = model.MinWeight;
-        logisticsMode.MaxWeight = model.MaxWeight;
 
         if (logisticsMode.Type == LogisticsModeType.CnAuExpress)
         {

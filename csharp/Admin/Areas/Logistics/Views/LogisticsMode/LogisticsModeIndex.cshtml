@@ -1,0 +1,173 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Logistics.Models.LogisticsMode
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsMode.LogisticsModeIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "物流列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-logistics-mode-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsModeList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsModeDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsMode()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+
+<div style="margin-bottom: 8px;">
+    <ul class="nav nav-tabs">
+        @foreach (LogisticsModeType logisticsModeTypeInfo in Model.LogisticsModeTypeList)
+        {
+            string activeClass = "";
+            if (logisticsModeTypeInfo.Id == Model.TypeId)
+            {
+                activeClass = " active ";
+            }
+
+            <li class="@(activeClass)">
+                <a href="@Url.Action("Index", "LogisticsMode", new { typeId = logisticsModeTypeInfo.Id })">@logisticsModeTypeInfo.Name</a>
+            </li>
+        }
+    </ul>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <span style="font-weight: bold;">@(Model.Type.Name)</span>&nbsp;&nbsp;
+
+    <label for="codeQuery">编码</label>&nbsp;
+    <input id="codeQuery" name="codeQuery" style="width: 120px; height: 30px;" placeholder="编号查询"/>&nbsp;
+
+    <label for="nameQuery">名称</label>&nbsp;
+    <input id="nameQuery" name="nameQuery" style="width: 120px; height: 30px;" placeholder="名称查询"/>&nbsp;
+
+    <label for="statusQuery">状态过滤</label>&nbsp;
+    <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;" onchange="loadLogisticsModeList()">
+        <option value="0">状态选择</option>
+        @foreach (var status in Model.StatusList)
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsModeList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+
+<div>
+    <a href="@Url.Action("Index", "LogisticsModeInner")" target="_blank">内部计费物流</a>
+</div>
+
+
+<div id="logisticsModeList" data-page-index="0" data-sort-field="@(nameof(LogisticsModeInfo.Status))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="logisticsModeDetailDialogWrapper"></div>
+
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsModeList();
+    });
+
+    function sortLogisticsModeList(sortField, sortDir) {
+        var list = $('#logisticsModeList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsModeList();
+    }
+
+    function loadLogisticsModeList(pageIndex) {
+        var list = $('#logisticsModeList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsMode")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsModeListQueryParam.TypeIdQuery))': @(Model.TypeId),
+                '@(nameof(LogisticsModeListQueryParam.CodeQuery))': $('#codeQuery').val(),
+                '@(nameof(LogisticsModeListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(LogisticsModeListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(LogisticsModeListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsModeListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsModeListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsModeList').html(data);
+
+                initListTable("#tblLogisticsModeList");
+            }
+        });
+    }
+
+    function showLogisticsModeDetail(id) {
+        var url = "@Url.Action("Detail", "LogisticsMode", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+    function deleteLogisticsMode() {
+        var idList = getSelectIdList('#tblLogisticsModeList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("删除物流方式将同时删除物流方式下的费率设置，确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "LogisticsMode")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadLogisticsModeList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

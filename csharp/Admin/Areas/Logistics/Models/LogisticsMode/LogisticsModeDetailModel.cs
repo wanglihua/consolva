@@ -65,16 +65,6 @@ public class LogisticsModeDetailModel
     public string? FeeCalDesc { get; set; }
 
     /// <summary>
-    /// 最小重量
-    /// </summary>
-    public decimal? MinWeight { get; set; }
-
-    /// <summary>
-    /// 最大重量
-    /// </summary>
-    public decimal? MaxWeight { get; set; }
-
-    /// <summary>
     /// 收货仓库
     /// </summary>
     [Required(ErrorMessage = "收货仓库不能为空！")]
@@ -84,7 +74,7 @@ public class LogisticsModeDetailModel
     /// 打包标签
     /// </summary>
     [ModelBinder(typeof(LogisticsPackLabelTypeModelBinder))]
-    public LogisticsPackLabelType? PackLabelType { get; set; }
+    public LogisticsPackLabelType PackLabelType { get; set; } = LogisticsPackLabelType.None;
 
     [BindNever]
     public IList<LogisticsPackLabelType> PackLabelTypeList { get; } = LogisticsPackLabelType.GetList();
