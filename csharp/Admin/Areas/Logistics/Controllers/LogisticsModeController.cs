@@ -308,12 +308,6 @@ public class LogisticsModeController : Controller
 
         logisticsMode.Warehouse = warehouse;
 
-        CheckResult checkResult = logisticsModeService.ValidateLogisticsMode(logisticsMode);
-        if (checkResult.Success == false)
-        {
-            ModelState.AddModelError("Warehouse", checkResult.Message);
-        }
-
         if (!ModelState.IsValid)
         {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
@@ -426,7 +420,7 @@ public class LogisticsModeController : Controller
         session.Flush();
 
         #endregion
-        
+
         // todo 检查 物品类型 和 通用费率 的配合
 
         return Json(new Dictionary<string, object>() {
