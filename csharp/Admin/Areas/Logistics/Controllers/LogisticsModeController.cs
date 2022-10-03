@@ -295,16 +295,18 @@ public class LogisticsModeController : Controller
 
         logisticsMode.FeeCalDesc = model.FeeCalDesc;
 
-        if (model.WarehouseId != null)
+        if (model.WarehouseId == null || model.WarehouseId == 0)
         {
-            var warehouse = session.Get<WarehouseInfo>(model.WarehouseId);
-            if (warehouse == null)
-            {
-                throw new ValidationException($"指定的收货仓库#{model.WarehouseId}不存在！");
-            }
-
-            logisticsMode.Warehouse = warehouse;
+            throw new ValidationException("收货仓库不能为空！");
         }
+
+        var warehouse = session.Get<WarehouseInfo>(model.WarehouseId);
+        if (warehouse == null)
+        {
+            throw new ValidationException($"指定的收货仓库#{model.WarehouseId}不存在！");
+        }
+
+        logisticsMode.Warehouse = warehouse;
 
         CheckResult checkResult = logisticsModeService.ValidateLogisticsMode(logisticsMode);
         if (checkResult.Success == false)
@@ -380,7 +382,7 @@ public class LogisticsModeController : Controller
         session.Flush();
 
         #endregion
-        
+
         #region 物品类型
 
         IList<int> goodsTypeIdList = model.GoodsTypeIdList;
@@ -399,7 +401,7 @@ public class LogisticsModeController : Controller
         foreach (int goodsTypeId in goodsTypeIdList)
         {
             LogisticsGoodsType goodsType = LogisticsGoodsType.GetById(goodsTypeId);
-            
+
             if (goodsTypeListInDb.Contains(goodsType) == false)
             {
                 LogisticsModeGoodsTypeInfo logisticsModeGoodsType = new LogisticsModeGoodsTypeInfo();
@@ -422,8 +424,10 @@ public class LogisticsModeController : Controller
         }
 
         session.Flush();
-        
+
         #endregion
+        
+        // todo 检查 物品类型 和 通用费率 的配合
 
         return Json(new Dictionary<string, object>() {
             { "success", true },

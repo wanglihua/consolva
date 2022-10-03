@@ -4,10 +4,11 @@ namespace shunda.Core;
 
 public class CheckResult
 {
-    public static CheckResult OK(string message) => new CheckResult(true, message);
+    public static CheckResult Ok(string message) => new CheckResult(true, message);
 
-    public static CheckResult FAIL(string message) => new CheckResult(false, message);
+    public static CheckResult Fail(string message) => new CheckResult(false, message);
 
+    // todo 改成 private
     public CheckResult(bool success, string message)
     {
         this.Success = success;
