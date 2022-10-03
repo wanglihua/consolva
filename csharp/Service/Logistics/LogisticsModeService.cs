@@ -1,5 +1,6 @@
 using NHibernate;
 using NLog;
+using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Logistics;
 
@@ -122,25 +123,7 @@ public class LogisticsModeService
                     return new CheckResult(false, "仓库应为澳洲仓库！");
                 }
             }
-
-            if (logisticsModeInfo.Type == LogisticsModeType.TerminalPickup)
-            {
-                logisticsModeInfo.WarehouseFrom = logisticsModeInfo.PickupStation.Warehouse;
-
-                // 检查发货仓库类型
-                if (logisticsModeInfo.WarehouseFrom.Type != WarehouseType.Au)
-                {
-                    return new CheckResult(false, "仓库应为澳洲仓库！");
-                }
-            }
-
-            if (logisticsModeInfo.Type == LogisticsModeType.TerminalPickup)
-            {
-                if (logisticsModeInfo.PickupStation == null)
-                {
-                    return new CheckResult(false, "自提点不能为空！");
-                }
-            }
+            
         }
 
         return new CheckResult(true, "");
@@ -152,6 +135,7 @@ public class LogisticsModeService
 
     /// <summary>
     /// 判断物流方式是不是EMS类型的物流方式
+    /// todo : 通过就上一个字段的方式来实现 Channel
     /// </summary>
     /// <param name="logisticsMode"></param>
     /// <returns></returns>

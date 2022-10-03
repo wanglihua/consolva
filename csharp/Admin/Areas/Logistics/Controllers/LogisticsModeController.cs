@@ -380,6 +380,50 @@ public class LogisticsModeController : Controller
         session.Flush();
 
         #endregion
+        
+        #region 物品类型
+
+        IList<int> goodsTypeIdList = model.GoodsTypeIdList;
+        if (goodsTypeIdList == null)
+        {
+            goodsTypeIdList = new List<int>();
+        }
+
+        IList<LogisticsGoodsType> goodsTypeListInDb = session
+            .Query<LogisticsModeGoodsTypeInfo>()
+            .Where(e => e.LogisticsMode.Id == modeId)
+            .Select(e => e.GoodsType)
+            .ToList();
+
+        // 物品类型关联 界面上有数据库里面没有的添加保存
+        foreach (int goodsTypeId in goodsTypeIdList)
+        {
+            LogisticsGoodsType goodsType = LogisticsGoodsType.GetById(goodsTypeId);
+            
+            if (goodsTypeListInDb.Contains(goodsType) == false)
+            {
+                LogisticsModeGoodsTypeInfo logisticsModeGoodsType = new LogisticsModeGoodsTypeInfo();
+                logisticsModeGoodsType.LogisticsMode = logisticsMode;
+                logisticsModeGoodsType.GoodsType = goodsType;
+
+                session.Save(logisticsModeGoodsType);
+            }
+        }
+
+        // 物品类型关联 数据库里面有界面上没有的删除
+        foreach (LogisticsGoodsType goodsType in goodsTypeListInDb)
+        {
+            if (goodsTypeIdList.Contains(goodsType.Id) == false)
+            {
+                session.Query<LogisticsModeGoodsTypeInfo>()
+                    .Where(e => e.LogisticsMode.Id == modeId && e.GoodsType == goodsType)
+                    .Delete();
+            }
+        }
+
+        session.Flush();
+        
+        #endregion
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
