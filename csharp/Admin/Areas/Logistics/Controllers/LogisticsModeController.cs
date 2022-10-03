@@ -98,9 +98,10 @@ public class LogisticsModeController : Controller
             criteria = criteria.Add(Restrictions.On<LogisticsModeInfo>(e => e.Name).IsLike(nameQuery, MatchMode.Anywhere));
         }
 
-        LogisticsModeStatus statusQuery = queryParam.StatusQuery;
-        if (statusQuery != null && statusQuery != LogisticsModeStatus.None)
+
+        if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsModeStatus.None)
         {
+            LogisticsModeStatus statusQuery = queryParam.StatusQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Status == statusQuery));
         }
 
@@ -117,7 +118,7 @@ public class LogisticsModeController : Controller
 
         LogisticsModeDetailModel model = new LogisticsModeDetailModel();
 
-        LogisticsModeInfo logisticsMode = null;
+        LogisticsModeInfo logisticsMode;
         if (id == 0)
         {
             logisticsMode = new LogisticsModeInfo();
@@ -239,7 +240,7 @@ public class LogisticsModeController : Controller
 
         bool isCreate = logisticsModeId == 0;
 
-        LogisticsModeInfo logisticsMode = null;
+        LogisticsModeInfo logisticsMode;
 
         if (isCreate)
         {
@@ -268,8 +269,8 @@ public class LogisticsModeController : Controller
 
         if (logisticsMode.Type == LogisticsModeType.CnAuExpress)
         {
-            logisticsMode.ExpressCompanyName = model.ExpressCompanyName;
-            logisticsMode.ExpressCompanyUrl = model.ExpressCompanyUrl;
+            logisticsMode.ExpressCompanyName = model.ExpressCompanyName ?? string.Empty;
+            logisticsMode.ExpressCompanyUrl = model.ExpressCompanyUrl ?? string.Empty;
         }
 
         logisticsMode.Status = model.Status;
@@ -295,7 +296,7 @@ public class LogisticsModeController : Controller
 
         logisticsMode.FeeCalDesc = model.FeeCalDesc;
 
-        if (model.WarehouseId == null || model.WarehouseId == 0)
+        if (model.WarehouseId == 0)
         {
             throw new ValidationException("收货仓库不能为空！");
         }

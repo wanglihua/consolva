@@ -112,38 +112,41 @@ public class LogisticsModeDetailModel
     public LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
 
 
+    // todo 这两者可不可以只保留一个s
+
     #region repack type 关联
 
-    public IList<int> RepackTypeIdList { get; set; }
+    public IList<int> RepackTypeIdList { get; set; } = new List<int>();
 
     [BindNever]
-    public IList<LogisticsRepackType> RepackTypeList { get; set; }
+    public IList<LogisticsRepackType> RepackTypeList { get; set; } = new List<LogisticsRepackType>();
 
     #endregion
 
 
+    // todo 下面这两者可不可以只保留一个
 
 
-
-    public IList<int> GoodsTypeIdList { get; set; }
-
-    [BindNever]
-    public IList<LogisticsGoodsType> GoodsTypeList { get; set; }
+    public IList<int> GoodsTypeIdList { get; set; } = new List<int>();
 
     [BindNever]
-    public IList<LogisticsModeType> LogisticsModeTypeList { get; set; }
+    public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = new List<LogisticsGoodsType>();
+
 
     [BindNever]
-    public IList<LogisticsModePackSizeType> PackSizeTypeList { get; set; }
+    public IList<LogisticsModeType> LogisticsModeTypeList { get; set; } = new List<LogisticsModeType>();
 
     [BindNever]
-    public IList<LogisticsFeeRateInfo> LogisticsFeeRateList { get; set; }
+    public IList<LogisticsModePackSizeType> PackSizeTypeList { get; set; } = new List<LogisticsModePackSizeType>();
 
     [BindNever]
-    public IList<WarehouseInfo> WarehouseList { get; set; }
+    public IList<LogisticsFeeRateInfo> LogisticsFeeRateList { get; set; } = new List<LogisticsFeeRateInfo>();
 
     [BindNever]
-    public IList<LogisticsModeStatus> StatusList { get; set; }
+    public IList<WarehouseInfo> WarehouseList { get; set; } = new List<WarehouseInfo>();
+
+    [BindNever]
+    public IList<LogisticsModeStatus> StatusList { get; set; } = new List<LogisticsModeStatus>();
 
     /// <summary>
     /// 对应的内部计费物流方式列表
@@ -154,5 +157,5 @@ public class LogisticsModeDetailModel
     /// 对应的内部计费物流方式列表
     /// </summary>
     [BindNever]
-    public IList<LogisticsModeInfo> InnerModeList { get; set; }
+    public IList<LogisticsModeInfo> InnerModeList { get; set; } = new List<LogisticsModeInfo>();
 }

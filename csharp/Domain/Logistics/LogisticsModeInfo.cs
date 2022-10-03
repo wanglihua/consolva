@@ -55,13 +55,13 @@ public class LogisticsModeInfo : Entity
     /// 普通类通用费率
     /// </summary>
     [BindNever]
-    public virtual LogisticsFeeRateInfo CommonFeeRate { get; set; } = new LogisticsFeeRateInfo();
+    public virtual LogisticsFeeRateInfo? CommonFeeRate { get; set; }
 
     /// <summary>
     /// 特货类通用费率
     /// </summary>
     [BindNever]
-    public virtual LogisticsFeeRateInfo SpecialFeeRate { get; set; } = new LogisticsFeeRateInfo();
+    public virtual LogisticsFeeRateInfo? SpecialFeeRate { get; set; }
 
     /// <summary>
     /// 费用计算描述
