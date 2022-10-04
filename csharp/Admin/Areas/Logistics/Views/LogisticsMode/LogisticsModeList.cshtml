@@ -10,11 +10,12 @@
 <table id="tblLogisticsModeList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
-            <th style="width: 40px; text-align: center;">
+            <th style="width: 40px;" class="center">
                 <label for="logisticsModeCheckAll"></label><input id="logisticsModeCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
-            <th style="width: 50px; text-align: center;">序号</th>
-            <th style="width: 250px; text-align: center;">
+            <th style="width: 50px;" class="center">序号</th>
+            <th></th>
+            <th style="width: 250px;" class="center">
                 <div>
                     <a field="@(nameof(LogisticsModeInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">类型</a>
                 </div>
@@ -26,29 +27,23 @@
                 </div>
             </th>
 
-            <th style="width: 180px;">
+            <th style="width: 180px;" class="center">
                 <a>通用费率</a>
             </th>
 
-            <th style="width: 100px;">
-
+            <th style="width: 100px;" class="center">
                 <div>
                     <a field="@($"{nameof(LogisticsModeInfo.Warehouse)}.{nameof(WarehouseInfo.Id)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">收货仓库</a>
                 </div>
-
             </th>
 
-
-            <th style="width: 100px;">
-
+            <th style="width: 100px;" class="center">
                 <div>
-                    <a field="@(nameof(LogisticsModeInfo.PackLabelType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">打印标签</a>
+                    <a field="@(nameof(LogisticsModeInfo.PackLabelType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">标签打印</a>
                 </div>
-
             </th>
 
-
-            <th style="width: 90px; text-align: center;">
+            <th style="width: 90px;" class="center">
                 <div>
                     <a field="@(nameof(LogisticsModeInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">状态</a>
                 </div>
@@ -56,7 +51,7 @@
                     <a field="@(nameof(LogisticsModeInfo.InnerStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">内部状态</a>
                 </div>
             </th>
-            <th style="width: 120px; text-align: center;">
+            <th style="width: 120px;" class="center">
                 <span>操作</span>
             </th>
             <th></th>
@@ -69,11 +64,11 @@
             foreach (LogisticsModeInfo logisticsMode in Model.LogisticsModeList)
             {
                 <tr ondblclick="showLogisticsModeDetail(@(logisticsMode.Id));">
-                    <td style="text-align: center;">
+                    <td class="center">
                         <label for="logisticsModeCheck_@(logisticsMode.Id)"></label><input id="logisticsModeCheck_@(logisticsMode.Id)" type="checkbox" class="ace" value="@logisticsMode.Id"/><span class="lbl"></span>
                     </td>
-                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td style="text-align: center;" class="break-word">
+                    <td class="center">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td class="center break-word">
                         <div>
                             @logisticsMode.Type.Name
                         </div>
@@ -97,18 +92,18 @@
 
                     </td>
 
-                    <td>
+                    <td class="center">
                         <div>
                             <span>@logisticsMode.Warehouse?.Name</span>
                         </div>
                     </td>
 
 
-                    <td>
+                    <td class="center">
                         <div style="color: blue;">
                             @if (logisticsMode.PackLabelType == null || logisticsMode.PackLabelType == LogisticsPackLabelType.None)
                             {
-                                <span>此处不考虑打包标签</span>
+                                <span>此处不考虑</span>
                             }
                             else
                             {
@@ -119,7 +114,7 @@
                     </td>
 
 
-                    <td style="text-align: center;">
+                    <td class="center">
                         <div style="color: blue;">
                             @(logisticsMode.Status?.Name)
                         </div>
@@ -127,7 +122,7 @@
                             @(logisticsMode.InnerStatus?.Name)
                         </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td class="center">
                         <div style="margin-bottom: 5px;">
                             <a class="btn btn-xs btn-info" href="@Url.Action("Detail", "LogisticsMode", new { id = logisticsMode.Id })" style="width: 90px;">
                                 <i class="ace-icon fa fa-pencil bigger-120"></i>&nbsp;修&nbsp;改&nbsp;
@@ -135,7 +130,7 @@
                         </div>
 
                         <div>
-                            <a class="btn btn-xs btn-info" href="@Url.Action("Index", "LogisticsModeFeeRate", new { logisticsModeId = logisticsMode.Id })" style="width: 80px;">
+                            <a class="btn btn-xs btn-info" href="@Url.Action("Index", "LogisticsModeFeeRate", new { logisticsModeId = logisticsMode.Id })" style="width: 90px;">
                                 <i class="ace-icon fa fa-pencil bigger-120"></i>费率设置
                             </a>
                         </div>
