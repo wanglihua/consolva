@@ -19,7 +19,7 @@
                             <div class="form-group">
                                 <label asp-for="Code" class="col-xs-2 control-label">编码</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Code" type="text" class="input-sm form-control"/>
+                                    <input asp-for="Code" type="text" required="required" maxlength="50" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
@@ -28,7 +28,7 @@
                             <div class="form-group">
                                 <label asp-for="Name" class="col-xs-2 control-label">名称</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Name" type="text" class="input-sm form-control"/>
+                                    <input asp-for="Name" type="text" required="required" maxlength="50" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                             <div class="form-group">
                                 <label asp-for="Description" class="col-xs-2 control-label">描述</label>
                                 <div class="col-xs-10">
-                                    <textarea asp-for="Description" rows="3" class="input-sm form-control"></textarea>
+                                    <textarea asp-for="Description" rows="3" maxlength="200" class="input-sm form-control"></textarea>
                                 </div>
                             </div>
                         </div>

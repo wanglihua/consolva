@@ -116,31 +116,7 @@
 
     function saveLogisticsGst() {
         var form = $("#logisticsGstDetailForm");
-        var valid = validate(form,
-            {
-                'LogisticsGst.Name': {
-                    required: true,
-                    maxlength: 200
-                },
-                'LogisticsGst.BasisId': {
-                    required: true,
-                    digits: true 
-                },
-                'LogisticsGst.StartAmount': {
-                    required: true
-                },
-                'LogisticsGst.FeeRate': {
-                    required: true
-                },
-                'LogisticsGst.OrderNum': {
-                    required: false,
-                    digits: true 
-                },
-                'LogisticsGst.StatusId': {
-                    required: true,
-                    digits: true 
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");

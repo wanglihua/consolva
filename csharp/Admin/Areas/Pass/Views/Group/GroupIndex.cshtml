@@ -120,21 +120,7 @@
 
     function saveGroup() {
         var form = $("#groupDetailForm");
-        var valid = validate(form,
-            {
-                'Group.Code': {
-                    required: true,
-                    maxlength: 50
-                },
-                'Group.Name': {
-                    required: true,
-                    maxlength: 50
-                },
-                'Group.Description': {
-                    required: false,
-                    maxlength: 200
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");

@@ -38,7 +38,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.Name" class="col-xs-2 control-label">名称</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="LogisticsInsurance.Name" type="text" class="input-sm form-control"/>
+                                    <input asp-for="LogisticsInsurance.Name" type="text" required="required" maxlength="50" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.CalcBaseType" class="col-xs-2 control-label">计算基数</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="LogisticsInsurance.CalcBaseType" class="input-sm form-control">
+                                    <select asp-for="LogisticsInsurance.CalcBaseType" required="required" class="input-sm form-control">
                                         @foreach (var baseType in Model.FeeCalcBaseTypeList)
                                         {
                                             <option value="@baseType.Id">@baseType.Name</option>
@@ -61,7 +61,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.Type" class="col-xs-2 control-label">费用类型</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="LogisticsInsurance.Type" class="input-sm form-control">
+                                    <select asp-for="LogisticsInsurance.Type" required="required" class="input-sm form-control">
                                         @foreach (LogisticsInsuranceType logisticsInsuranceType in Model.LogisticsInsuranceTypeList)
                                         {
                                             <option value="@logisticsInsuranceType.Id">@logisticsInsuranceType.Name</option>
@@ -75,7 +75,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.FeeRate" class="col-xs-2 control-label">费率/金额</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="LogisticsInsurance.FeeRate" type="text" class="input-sm form-control"/>
+                                    <input asp-for="LogisticsInsurance.FeeRate" type="number" step="1" required="required" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.OrderNum" class="col-xs-2 control-label">排序</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="LogisticsInsurance.OrderNum" type="text" class="input-sm form-control"/>
+                                    <input asp-for="LogisticsInsurance.OrderNum" type="number" step="1" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="LogisticsInsurance.Status" class="input-sm form-control">
+                                    <select asp-for="LogisticsInsurance.Status" required="required" class="input-sm form-control">
                                         @foreach (LogisticsInsuranceStatus logisticsInsuranceStatus in Model.LogisticsInsuranceStatusList)
                                         {
                                             <option value="@logisticsInsuranceStatus.Id">@logisticsInsuranceStatus.Name</option>
@@ -107,7 +107,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.Content" class="col-xs-2 control-label">保险条款</label>
                                 <div class="col-xs-10">
-                                    <textarea id="content" asp-for="LogisticsInsurance.Content" rows="10" class="input-sm form-control"></textarea>
+                                    <textarea id="content" asp-for="LogisticsInsurance.Content" rows="10" maxlength="100000" class="input-sm form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -127,36 +127,7 @@
         $("#content").val(content);
 
         var form = $("#logisticsInsuranceDetailForm");
-        var valid = validate(form,
-            {
-                'LogisticsInsurance.Name': {
-                    required: true,
-                    maxlength: 50
-                },
-                'LogisticsInsurance.Content': {
-                    required: false,
-                    maxlength: 10000
-                },
-                'LogisticsInsurance.BasisId': {
-                    required: true,
-                    digits: true
-                },
-                'LogisticsInsurance.TypeId': {
-                    required: true,
-                    digits: true
-                },
-                'LogisticsInsurance.FeeRate': {
-                    required: true
-                },
-                'LogisticsInsurance.OrderNum': {
-                    required: false,
-                    digits: true
-                },
-                'LogisticsInsurance.StatusId': {
-                    required: true,
-                    digits: true
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");

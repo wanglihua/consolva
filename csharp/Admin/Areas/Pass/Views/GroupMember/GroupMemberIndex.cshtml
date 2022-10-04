@@ -126,13 +126,7 @@
 
     function saveGroupMember() {
         var form = $("#groupMemberAddForm");
-        var valid = validate(form,
-            {
-                'LoginName': {
-                    required: true,
-                    maxlength: 100
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");
