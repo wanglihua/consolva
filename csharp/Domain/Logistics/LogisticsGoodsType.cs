@@ -4,16 +4,10 @@ namespace shunda.Domain.Logistics;
 
 /// <summary>
 /// 物品类型
-/// todo 这里看情况是不是要改造
 /// </summary>
 public class LogisticsGoodsType : CodeTypeBase
 {
     public string Code { get; set; }
-
-    /// <summary>
-    ///  空运名称
-    /// </summary>
-    public string AirName { get; set; }
 
     /// <summary>
     /// 入库标签短类型
@@ -23,47 +17,43 @@ public class LogisticsGoodsType : CodeTypeBase
     /// <summary>
     /// 普通类
     /// </summary>
-    public static readonly LogisticsGoodsType Common = new LogisticsGoodsType(100, "普", "普通类", "普通物品", "【普】", "普通类, 普通物品");
-
-    /// <summary>
-    /// 限制类
-    /// </summary>
-    public static readonly LogisticsGoodsType Restrict = new LogisticsGoodsType(200, "限", "限制类", "食品干货", "【限】", "限制类, 食品干货");
-
-    /// <summary>
-    /// 草木竹
-    /// </summary>
-    public static readonly LogisticsGoodsType Bamboo = new LogisticsGoodsType(300, "草", "草木竹", "特殊渠道", "【草】", "草木竹, 特殊渠道");
-
-    /// <summary>
-    /// 限制+草木
-    /// </summary>
-    public static readonly LogisticsGoodsType RestrictBamboo = new LogisticsGoodsType(350, "限+草", "限制+草木", "食品干货+特殊渠道", "【草】", "限制+草木, 食品干货+特殊渠道");
+    public static readonly LogisticsGoodsType Common = new LogisticsGoodsType(1000, "普", "普通类", "【普】", "普通类, 普通物品");
 
     /// <summary>
     /// 特货
     /// </summary>
-    public static readonly LogisticsGoodsType Special = new LogisticsGoodsType(380, "特", "特货", "特货", "【特】", "特货");
+    public static readonly LogisticsGoodsType Special = new LogisticsGoodsType(4000, "特", "特货", "【特】", "特货");
 
     /// <summary>
     /// 禁止类
     /// </summary>
-    public static readonly LogisticsGoodsType Forbidden = new LogisticsGoodsType(400, "禁", "禁止类", "禁止类", "【禁】", "禁止类");
+    public static readonly LogisticsGoodsType Forbidden = new LogisticsGoodsType(5000, "禁", "禁止类", "【禁】", "禁止类");
 
     /// <summary>
     /// None
     /// </summary>
-    public static readonly LogisticsGoodsType None = new LogisticsGoodsType(0, "", "", "", "", "");
+    public static readonly LogisticsGoodsType None = new LogisticsGoodsType(0, "", "", "", "");
+
+    private static readonly List<LogisticsGoodsType> codeTypeListCustomer = new List<LogisticsGoodsType>() {
+        Common,
+        Special,
+    };
+
+    private static readonly List<LogisticsGoodsType> codeTypeListInner = new List<LogisticsGoodsType>() {
+        Common,
+        Special,
+        Forbidden,
+    };
+
+    private static readonly Dictionary<int, LogisticsGoodsType> codeTypeMap = codeTypeListInner.ToDictionary(e => e.Id);
+
+    private static readonly Dictionary<string, LogisticsGoodsType> codeTypeMapName = codeTypeListInner.ToDictionary(e => e.Name);
 
     public static LogisticsGoodsType GetById(int id)
     {
-        IList<LogisticsGoodsType> goodsTypeList = GetInnerList();
-        foreach (LogisticsGoodsType goodsType in goodsTypeList)
+        if (codeTypeMap.TryGetValue(id, out LogisticsGoodsType? codeType))
         {
-            if (goodsType.Id == id)
-            {
-                return goodsType;
-            }
+            return codeType;
         }
 
         return None;
@@ -71,20 +61,9 @@ public class LogisticsGoodsType : CodeTypeBase
 
     public static LogisticsGoodsType GetByName(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (codeTypeMapName.TryGetValue(name, out LogisticsGoodsType? codeType))
         {
-            return None;
-        }
-
-        name = name.Trim();
-
-        IList<LogisticsGoodsType> goodsTypeList = GetInnerList();
-        foreach (LogisticsGoodsType goodsType in goodsTypeList)
-        {
-            if (goodsType.Name == name)
-            {
-                return goodsType;
-            }
+            return codeType;
         }
 
         return None;
@@ -97,28 +76,7 @@ public class LogisticsGoodsType : CodeTypeBase
     /// <returns></returns>
     public static IList<LogisticsGoodsType> GetCustomerList()
     {
-        IList<LogisticsGoodsType> goodsTypeList = new List<LogisticsGoodsType>();
-        goodsTypeList.Add(Common);
-        goodsTypeList.Add(Restrict);
-        goodsTypeList.Add(Bamboo);
-        goodsTypeList.Add(RestrictBamboo);
-        goodsTypeList.Add(Special);
-
-        return goodsTypeList;
-    }
-
-    /// <summary>
-    /// 获取缩减了的客户视图列表
-    /// 这个主要是放在运费预估那里
-    /// </summary>
-    /// <returns></returns>
-    public static IList<LogisticsGoodsType> GetCustomerCompactList()
-    {
-        IList<LogisticsGoodsType> goodsTypeList = new List<LogisticsGoodsType>();
-        goodsTypeList.Add(Common);
-        goodsTypeList.Add(Special);
-
-        return goodsTypeList;
+        return codeTypeListCustomer;
     }
 
     /// <summary>
@@ -128,31 +86,12 @@ public class LogisticsGoodsType : CodeTypeBase
     /// <returns></returns>
     public static IList<LogisticsGoodsType> GetInnerList()
     {
-        IList<LogisticsGoodsType> goodsTypeList = GetCustomerList();
-        goodsTypeList.Add(Forbidden); // 内部视图列表加上禁止类的
-
-        return goodsTypeList;
+        return codeTypeListInner;
     }
 
-    /// <summary>
-    /// 获取缩减了的内部列表
-    /// 当前该列表也只有在物品录入那里
-    /// </summary>
-    /// <returns></returns>
-    public static IList<LogisticsGoodsType> GetInnerCompactList()
-    {
-        IList<LogisticsGoodsType> goodsTypeList = new List<LogisticsGoodsType>();
-        goodsTypeList.Add(Common);
-        goodsTypeList.Add(Special);
-        goodsTypeList.Add(Forbidden);
-
-        return goodsTypeList;
-    }
-
-    private LogisticsGoodsType(int id, string code, string name, string airName, string checkinLabelShortName, string description) : base(id, name, description)
+    private LogisticsGoodsType(int id, string code, string name, string checkinLabelShortName, string description) : base(id, name, description)
     {
         this.Code = code;
-        this.AirName = airName;
         this.CheckinLabelShortName = checkinLabelShortName;
     }
 }

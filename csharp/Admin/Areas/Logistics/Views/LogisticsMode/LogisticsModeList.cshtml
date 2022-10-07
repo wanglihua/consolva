@@ -14,11 +14,12 @@
                 <label for="logisticsModeCheckAll"></label><input id="logisticsModeCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px;" class="center">序号</th>
-            <th></th>
-            <th style="width: 250px;" class="center">
+            <th style="width: 100px;" class="center">
                 <div>
                     <a field="@(nameof(LogisticsModeInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">类型</a>
                 </div>
+            </th>
+            <th style="width: 250px;" class="center">
                 <div>
                     <a field="@(nameof(LogisticsModeInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">编码</a>
                 </div>
@@ -68,10 +69,14 @@
                         <label for="logisticsModeCheck_@(logisticsMode.Id)"></label><input id="logisticsModeCheck_@(logisticsMode.Id)" type="checkbox" class="ace" value="@logisticsMode.Id"/><span class="lbl"></span>
                     </td>
                     <td class="center">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td class="center break-word">
+
+                    <td class="center">
                         <div>
                             @logisticsMode.Type.Name
                         </div>
+                    </td>
+
+                    <td class="center break-word">
                         <div style="color: blue;">
                             @logisticsMode.Code
                         </div>
@@ -81,7 +86,6 @@
                     </td>
 
                     <td>
-
                         <div>
                             <span>普通类：</span><span>@logisticsMode.CommonFeeRate?.Name</span>
                         </div>
@@ -142,7 +146,7 @@
         else
         {
             <tr>
-                <td colspan="9">
+                <td colspan="10">
                     暂时没有数据！
                 </td>
             </tr>
