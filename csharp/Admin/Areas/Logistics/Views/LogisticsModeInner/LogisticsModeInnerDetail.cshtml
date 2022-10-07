@@ -1,0 +1,175 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsModeInner.LogisticsModeInnerDetailModel
+
+@{
+    ViewBag.Title = "物流详细";
+    Layout = "_AdminLayout";
+
+    var isCreate = Model.Id == 0;
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-logistics-mode-index-menu">
+        <a href="@Url.Action("Index", "LogisticsMode", new { typeId = Model.Type.Id })">物流列表</a>
+    </li>
+    <li>
+        <a href="@Url.Action("Index", "LogisticsModeInner", new { typeId = Model.Type.Id })">内部费率物流</a>
+    </li>
+    <li>物流详细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsMode();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsModeInner", new { typeId = Model.Type.Id })">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 780px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="logisticsModeDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="typeName" class="col-xs-2 control-label">类型</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Type" type="hidden"/>
+                                    <input id="typeName" type="text" value="@Model.Type.Name" class="input-sm form-control" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Code" class="col-xs-2 control-label">编码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Code" type="text" required="required" maxlength="100" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Name" class="col-xs-2 control-label">名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Name" type="text" required="required" maxlength="200" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Description" class="col-xs-2 control-label">描述</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="Description" rows="8" required="required" maxlength="500" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CommonFeeRateId" class="col-xs-2 control-label">普通类通用费率</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CommonFeeRateId" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
+                                        {
+                                            <option value="@feeRate.Id">@feeRate.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="SpecialFeeRateId" class="col-xs-2 control-label">特货类通用费率</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="SpecialFeeRateId" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
+                                        {
+                                            <option value="@feeRate.Id">@feeRate.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Status" required="required" class="input-sm form-control">
+                                        @foreach (var status in Model.StatusList)
+                                        {
+                                            <option value="@status.Id">@status.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    function saveLogisticsMode() {
+        var form = $("#logisticsModeDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsModeInner")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+
+                    if (data.create) {
+                        setTimeout("showLogisticsModeDetail(" + data.id + ")", 1000);
+                    }
+                }
+            });
+        }
+    }
+
+    function showLogisticsModeDetail(id) {
+        var url = "@Url.Action("Detail", "LogisticsModeInner", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+    function reloadWithTypeId() {
+        // window.location.reload();
+        var url = "@Url.Action("Detail", "LogisticsModeInner", new { id = 0, typeId = 88888 })";
+        url = url.replace("88888", $("#Type").val());
+        window.location.href = url;
+    }
+
+</script>

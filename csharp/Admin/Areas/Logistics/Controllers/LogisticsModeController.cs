@@ -441,12 +441,10 @@ public class LogisticsModeController : Controller
             }
 
             // 先删除关联的费率数据
-            /* todo 后面补上
             if (logisticsMode.Type == LogisticsModeType.CnAuExpress)
             {
                 session.Query<LogisticsFeeRateExpressInfo>().Where(e => e.LogisticsModeId == modeId).Delete();
             }
-            */
 
             session.Delete(logisticsMode);
         }

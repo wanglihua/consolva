@@ -1,0 +1,118 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsModeInner.LogisticsModeInnerListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsModeList" })
+
+<table id="tblLogisticsModeList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px;" class="center">
+                <label for="logisticsModeCheckAll"></label><input id="logisticsModeCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px;" class="center">序号</th>
+            <th style="width: 100px;" class="center">
+                <div>
+                    <a field="@(nameof(LogisticsModeInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">类型</a>
+                </div>
+            </th>
+            <th style="width: 250px;" class="center">
+                <div>
+                    <a field="@(nameof(LogisticsModeInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">编码</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsModeInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">名称</a>
+                </div>
+            </th>
+
+            <th style="width: 180px;" class="center">
+                <a>通用费率</a>
+            </th>
+
+            <th style="width: 90px;" class="center">
+                <div>
+                    <a field="@(nameof(LogisticsModeInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">状态</a>
+                </div>
+
+            </th>
+            <th style="width: 120px;" class="center">
+                <span>操作</span>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsModeList != null && Model.LogisticsModeList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsModeInfo logisticsMode in Model.LogisticsModeList)
+            {
+                <tr ondblclick="showLogisticsModeDetail(@(logisticsMode.Id));">
+                    <td class="center">
+                        <label for="logisticsModeCheck_@(logisticsMode.Id)"></label><input id="logisticsModeCheck_@(logisticsMode.Id)" type="checkbox" class="ace" value="@logisticsMode.Id"/><span class="lbl"></span>
+                    </td>
+                    <td class="center">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td class="center">
+                        <div>
+                            @logisticsMode.Type.Name
+                        </div>
+                    </td>
+
+                    <td class="center break-word">
+                        <div style="color: blue;">
+                            @logisticsMode.Code
+                        </div>
+                        <div>
+                            <span style="color: red;">@(logisticsMode.Name)</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            <span>普通类：</span><span>@logisticsMode.CommonFeeRate?.Name</span>
+                        </div>
+
+                        <div>
+                            <span>特货类：</span><span>@logisticsMode.SpecialFeeRate?.Name</span>
+                        </div>
+
+                    </td>
+
+                    <td class="center">
+                        <div style="color: blue;">
+                            @(logisticsMode.Status?.Name)
+                        </div>
+                    </td>
+                    <td class="center">
+                        <div style="margin-bottom: 5px;">
+                            <a target="_blank" class="btn btn-xs btn-info" asp-controller="LogisticsMode" asp-action="Detail" asp-route-id="@(logisticsMode.Id)" style="width: 90px;">
+                                <i class="ace-icon fa fa-pencil bigger-120"></i>&nbsp;修&nbsp;改&nbsp;
+                            </a>
+                        </div>
+
+                        <div>
+                            <a target="_blank" class="btn btn-xs btn-info" asp-controller="LogisticsFeeRateExpress" asp-action="Index" asp-route-logisticsModeId="@(logisticsMode.Id)" style="width: 90px;">
+                                <i class="ace-icon fa fa-pencil bigger-120"></i>费率设置
+                            </a>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsModeList" })
