@@ -10,7 +10,7 @@
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
     <li class="active" data-menu="logistics-logistics-insurance-index-menu">
-        <a href="@Url.Action("Index", "LogisticsInsurance")">保险列表</a>
+        <a asp-controller="LogisticsInsurance" asp-action="Index">保险列表</a>
     </li>
     <li>保险详细</li>
 }
@@ -20,7 +20,7 @@
         <i class="ace-icon fa fa-floppy-o"></i>
         保存
     </button>
-    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsInsurance")">
+    <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsInsurance" asp-action="Index">
         <i class="ace-icon fa fa-arrow-left"></i>
         返回
     </a>

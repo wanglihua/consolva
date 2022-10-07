@@ -80,7 +80,7 @@
                     <td style="text-align: center;">@warehouse.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td style="text-align: center;">@warehouse.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td style="text-align: center;">
-                        <a href="@Url.Action("Index", "Shelf", new { warehouseId = warehouse.Id })"><i class="fa fa-pencil-square-o"></i>&nbsp;货架</a>
+                        <a asp-controller="Shelf" asp-action="Index" asp-route-warehouseId="@(warehouse.Id)"><i class="fa fa-pencil-square-o"></i>&nbsp;货架</a>
                     </td>
                     <td></td>
                 </tr>

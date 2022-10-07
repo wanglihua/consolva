@@ -62,7 +62,7 @@
                     <td style="text-align: center;">@user.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td style="text-align: center;">@user.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td style="text-align: center;">
-                        <a href="@Url.Action("Index", "UserPassRes", new {userId = user.Id})"><i class="fa fa-pencil-square-o"></i>&nbsp;授权资源</a>
+                        <a asp-controller="UserPassRes" asp-action="Index" asp-route-userId="@(user.Id)"><i class="fa fa-pencil-square-o"></i>&nbsp;授权资源</a>
                     </td>
                     <td></td>
                 </tr>

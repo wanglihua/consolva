@@ -111,7 +111,7 @@
                     @if (Model.HasPassRes(PassRes.Logistics.ExpressReturnFeeRate))
                     {
                         <li id="logistics-express-return-fee-rate-index-menu">
-                            <a href="@Url.Action("Index", "ExpressReturnFeeRate")">
+                            <a asp-area="Logistics" asp-controller="ExpressReturnFeeRate" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 退运费率
                             </a>

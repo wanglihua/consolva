@@ -47,8 +47,8 @@
                     <td style="text-align: center;">@group.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td style="text-align: center;">@group.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td style="text-align: center;">
-                        <a href="@Url.Action("Index","GroupMember", new { groupId = group.Id })"><i class="fa fa-pencil-square-o"></i>&nbsp;群组成员</a>&nbsp;
-                        <a href="@Url.Action("Index","GroupPassRes", new { groupId = group.Id })"><i class="fa fa-pencil-square-o"></i>&nbsp;资源授权</a>
+                        <a asp-controller="GroupMember" asp-action="Index" asp-route-groupId="@(group.Id)"><i class="fa fa-pencil-square-o"></i>&nbsp;群组成员</a>&nbsp;
+                        <a asp-controller="GroupPassRes" asp-action="Index" asp-route-groupId="@(group.Id)"><i class="fa fa-pencil-square-o"></i>&nbsp;资源授权</a>
                     </td>
                     <td></td>
                 </tr>

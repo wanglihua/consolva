@@ -32,16 +32,16 @@
 
 <div style="margin-bottom: 8px;">
     <ul class="nav nav-tabs">
-        @foreach (LogisticsModeType logisticsModeTypeInfo in Model.LogisticsModeTypeList)
+        @foreach (LogisticsModeType type in Model.LogisticsModeTypeList)
         {
             string activeClass = "";
-            if (logisticsModeTypeInfo.Id == Model.TypeId)
+            if (type.Id == Model.TypeId)
             {
                 activeClass = " active ";
             }
 
             <li class="@(activeClass)">
-                <a href="@Url.Action("Index", "LogisticsMode", new { typeId = logisticsModeTypeInfo.Id })">@logisticsModeTypeInfo.Name</a>
+                <a asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(Model.Type.Id)">@type.Name</a>
             </li>
         }
     </ul>
@@ -71,7 +71,7 @@
 
 
 <div>
-    <a href="@Url.Action("Index", "LogisticsModeInner")" target="_blank">内部计费物流</a>
+    <a asp-controller="LogisticsModeInner" asp-action="Index" target="_blank">内部计费物流</a>
 </div>
 
 

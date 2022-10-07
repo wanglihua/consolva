@@ -11,7 +11,7 @@
 @section Breadcrumb {
     <li class="parent" data-menu="auth-menu">权限管理</li>
     <li class="active" data-menu="auth-group-index-menu">
-        <a href="@Url.Action("Index", "Group")">群组列表</a>
+        <a asp-controller="Group" asp-action="Index">群组列表</a>
     </li>
     <li>群组（<span>@(Model.Group.Code)</span>&nbsp;<span>@(Model.Group.Name)</span>）成员列表</li>
 }
@@ -29,7 +29,7 @@
         <i class="ace-icon fa fa-trash-o"></i>
         移除
     </button>
-    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "Group")">
+    <a type="button" class="btn btn-info btn-sm" asp-controller="Group" asp-action="Index">
         <i class="ace-icon fa fa-arrow-left"></i>
         返回
     </a>

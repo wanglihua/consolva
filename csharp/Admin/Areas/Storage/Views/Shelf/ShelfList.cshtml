@@ -1,6 +1,8 @@
 @{
     Layout = null;
 }
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Storage.Models.StorageLoc
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.Shelf.ShelfListModel
 
@@ -72,7 +74,7 @@
                 <td style="text-align: center;">
                     <a href="javascript:showStorageLocDesignDialog(@(shelf.Id));"><i class="fa fa-pencil-square-o"></i>&nbsp;库位规划</a>&nbsp;&nbsp;
                     <a href="javascript:showStorageLocPreviewDialog(@(shelf.Id));"><i class="fa fa-pencil-square-o"></i>&nbsp;层级预览</a>&nbsp;&nbsp;
-                    <a target="_blank" href="@Url.Action("Index", "StorageLoc", new {shelfId = shelf.Id})"><i class="fa fa-pencil-square-o"></i>&nbsp;库位列表</a>
+                    <a target="_blank" asp-controller="StorageLoc" asp-action="Index" asp-route-shelfId="@(shelf.Id)"><i class="fa fa-pencil-square-o"></i>&nbsp;库位列表</a>
                 </td>
                 <td></td>
             </tr>
@@ -106,8 +108,7 @@
             url: '@Url.Action("Design", "StorageLoc")',
             type: "POST",
             data: {
-                @* TODO "@(nameof(StorageLocDesignModel.ShelfId))": shelfId*@
-                "ShelfId": shelfId
+                "@(nameof(StorageLocDesignModel.ShelfId))": shelfId
             },
             success: function(data) {
                 hideMask();
@@ -132,8 +133,7 @@
             url: '@Url.Action("Preview", "StorageLoc")',
             type: "POST",
             data: {
-                @* TODO "@(nameof(StorageLocPreviewModel.ShelfId))": shelfId *@
-                "ShelfId": shelfId
+                "@(nameof(StorageLocPreviewModel.ShelfId))": shelfId
             },
             success: function(data) {
                 hideMask();

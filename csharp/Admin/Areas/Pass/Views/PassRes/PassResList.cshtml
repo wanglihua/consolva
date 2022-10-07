@@ -41,8 +41,8 @@
                     <td>@passRes.Name</td>
                     <td>@passRes.Description</td>
                     <td style="text-align: center;">
-                        <a href="@Url.Action("Index", "PassResUser", new { passResId = passRes.Id })"><i class="fa fa-pencil-square-o"></i>&nbsp;授权用户</a>&nbsp;
-                        <a href="@Url.Action("Index", "PassResGroup", new { passResId = passRes.Id })"><i class="fa fa-pencil-square-o"></i>&nbsp;授权群组</a>
+                        <a asp-controller="PassResUser" asp-action="Index" asp-route-passResId="@(passRes.Id)"><i class="fa fa-pencil-square-o"></i>&nbsp;授权用户</a>&nbsp;
+                        <a asp-controller="PassResGroup" asp-action="Index" asp-route-passResId="@(passRes.Id)"><i class="fa fa-pencil-square-o"></i>&nbsp;授权群组</a>
                     </td>
                     <td></td>
                 </tr>

@@ -12,10 +12,10 @@
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
     <li class="active" data-menu="logistics-logistics-mode-index-menu">
-        <a href="@Url.Action("Index", "LogisticsMode", new { typeId = Model.Type.Id })">物流列表</a>
+        <a asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(Model.Type.Id)">物流列表</a>
     </li>
     <li>
-        <a href="@Url.Action("Index", "LogisticsModeInner", new { typeId = Model.Type.Id })">内部费率物流</a>
+        <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-typeId="@(Model.Type.Id)">内部费率物流</a>
     </li>
     <li>物流详细</li>
 }
@@ -25,7 +25,7 @@
         <i class="ace-icon fa fa-floppy-o"></i>
         保存
     </button>
-    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsModeInner", new { typeId = Model.Type.Id })">
+    <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsModeInner" asp-action="Index" asp-route-typeId="@(Model.Type.Id)">
         <i class="ace-icon fa fa-arrow-left"></i>
         返回
     </a>
