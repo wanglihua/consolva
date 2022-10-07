@@ -182,7 +182,7 @@ public class LogisticsModeInnerController : Controller
 
         bool isCreate = logisticsModeId == 0;
 
-        LogisticsModeInfo logisticsMode = null;
+        LogisticsModeInfo logisticsMode;
 
         if (isCreate)
         {
