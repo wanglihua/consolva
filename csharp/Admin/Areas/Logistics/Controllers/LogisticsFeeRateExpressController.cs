@@ -50,7 +50,7 @@ public class LogisticsFeeRateExpressController : Controller
     [HttpPost]
     [Route("/admin/logistics/fee/rate/express/save")]
     [Transactional]
-    public IActionResult Save(LogisticsFeeRateExpressIndexModel model)
+    public IActionResult Save(LogisticsFeeRateExpressSaveModel model)
     {
         if (!ModelState.IsValid)
         {

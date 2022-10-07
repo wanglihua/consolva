@@ -128,13 +128,13 @@
                     </td>
                     <td class="center">
                         <div style="margin-bottom: 5px;">
-                            <a class="btn btn-xs btn-info" href="@Url.Action("Detail", "LogisticsMode", new { id = logisticsMode.Id })" style="width: 90px;">
+                            <a target="_blank" class="btn btn-xs btn-info" asp-controller="LogisticsMode" asp-action="Detail" asp-route-id="@(logisticsMode.Id)" style="width: 90px;">
                                 <i class="ace-icon fa fa-pencil bigger-120"></i>&nbsp;修&nbsp;改&nbsp;
                             </a>
                         </div>
 
                         <div>
-                            <a class="btn btn-xs btn-info" href="@Url.Action("Index", "LogisticsModeFeeRate", new { logisticsModeId = logisticsMode.Id })" style="width: 90px;">
+                            <a target="_blank" class="btn btn-xs btn-info" asp-controller="LogisticsFeeRateExpress" asp-action="Index" asp-route-logisticsModeId="@(logisticsMode.Id)" style="width: 90px;">
                                 <i class="ace-icon fa fa-pencil bigger-120"></i>费率设置
                             </a>
                         </div>
