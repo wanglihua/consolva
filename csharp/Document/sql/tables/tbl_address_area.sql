@@ -15,6 +15,10 @@ CREATE TABLE tbl_address_area
     INDEX ix_address_area_city_code (city_code)
 ) COMMENT '地区';
 
+/*
+
+TRUNCATE TABLE tbl_address_area;
+
 INSERT INTO tbl_address_area(id, city_code, code, name, short_name, lng, lat, sort, create_time, update_time)
 SELECT id,
        city_code,
@@ -27,3 +31,5 @@ SELECT id,
        create_time,
        update_time
 FROM iepoch.tbl_address_area;
+
+ */

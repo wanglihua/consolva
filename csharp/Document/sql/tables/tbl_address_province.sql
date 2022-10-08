@@ -13,6 +13,7 @@ CREATE TABLE tbl_address_province
     INDEX ix_address_province_code (code)
 ) COMMENT '省';
 
+/*
 
 TRUNCATE TABLE tbl_address_province;
 
@@ -28,3 +29,5 @@ SELECT id,
        create_time,
        update_time
 FROM iepoch.tbl_address_province;
+
+ */

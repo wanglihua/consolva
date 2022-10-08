@@ -15,6 +15,9 @@ CREATE TABLE tbl_address_street
     INDEX ix_address_street_area_code (area_code)
 ) COMMENT '街道';
 
+
+/*
+
 TRUNCATE TABLE tbl_address_street;
 
 INSERT INTO tbl_address_street(id, area_code, code, name, short_name, lng, lat, sort, create_time, update_time)
@@ -29,3 +32,5 @@ SELECT id,
        create_time,
        update_time
 FROM iepoch.tbl_address_street;
+
+ */

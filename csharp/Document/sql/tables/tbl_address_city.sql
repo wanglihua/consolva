@@ -15,6 +15,10 @@ CREATE TABLE tbl_address_city
     INDEX ix_address_city_province_code (province_code)
 ) COMMENT '城市';
 
+/*
+
+TRUNCATE TABLE tbl_address_city;
+
 INSERT INTO tbl_address_city(id, province_code, code, name, short_name, lng, lat, sort, create_time, update_time)
 SELECT id,
        province_code,
@@ -27,3 +31,5 @@ SELECT id,
        create_time,
        update_time
 FROM iepoch.tbl_address_city;
+
+ */
