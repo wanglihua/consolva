@@ -1,35 +1,28 @@
 CREATE TABLE tbl_address_area
 (
-    id          INT         NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'Id',
-    city_code   VARCHAR(40) NOT NULL COMMENT '城市编码',
-    code        VARCHAR(40) NOT NULL COMMENT '编码',
-    name        VARCHAR(50) NOT NULL COMMENT '名称',
-    short_name  VARCHAR(20) NOT NULL COMMENT '简称',
-    lng         VARCHAR(20) NOT NULL COMMENT '纬度',
-    lat         VARCHAR(20) NOT NULL COMMENT '经度',
-    sort        INT         NOT NULL COMMENT '排序',
-    create_time DATETIME    NOT NULL COMMENT '创建时间',
-    update_time DATETIME    NOT NULL COMMENT '更新时间',
+    id         INT         NOT NULL PRIMARY KEY COMMENT '编码',
+    city_id    INT         NOT NULL COMMENT '城市编码',
+    name       VARCHAR(50) NOT NULL COMMENT '名称',
+    short_name VARCHAR(20) NOT NULL COMMENT '简称',
+    lng        VARCHAR(20) NOT NULL COMMENT '纬度',
+    lat        VARCHAR(20) NOT NULL COMMENT '经度',
+    sort       INT         NOT NULL COMMENT '排序',
 
-    INDEX ix_address_area_code (code),
-    INDEX ix_address_area_city_code (city_code)
+    CONSTRAINT fk_address_area_city_id FOREIGN KEY (city_id) REFERENCES tbl_address_city (id)
 ) COMMENT '地区';
 
 /*
 
 TRUNCATE TABLE tbl_address_area;
 
-INSERT INTO tbl_address_area(id, city_code, code, name, short_name, lng, lat, sort, create_time, update_time)
-SELECT id,
+INSERT INTO tbl_address_area(id, city_id, name, short_name, lng, lat, sort)
+SELECT code,
        city_code,
-       code,
        name,
        short_name,
        lng,
        lat,
-       sort,
-       create_time,
-       update_time
+       sort
 FROM iepoch.tbl_address_area;
 
  */
