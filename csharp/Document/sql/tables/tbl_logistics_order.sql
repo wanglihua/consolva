@@ -4,8 +4,9 @@ CREATE TABLE tbl_logistics_order
     code                   VARCHAR(100)   DEFAULT ''   NOT NULL COMMENT '订单编号',
     customer_id            INT            DEFAULT 0    NOT NULL COMMENT '客户',
     customer_code          VARCHAR(30)                 NOT NULL COMMENT '客户ID',
-    fee_method_id          INT            DEFAULT 0    NOT NULL COMMENT '订单收费方式', # todo
-    create_method_id       INT            DEFAULT 0    NOT NULL COMMENT '创建方式',   # todo
+    fee_method_id          INT            DEFAULT 0    NOT NULL COMMENT '订单收费方式#type:LogisticsOrderFeeMethod',
+    create_method_id       INT            DEFAULT 0    NOT NULL COMMENT '创建方式#type:LogisticsOrderCreateMethod',
+    warehouse_id           INT                         NOT NULL COMMENT '收货仓库',
     logistics_mode_type_id INT                         NOT NULL COMMENT '物流方式类型#type:LogisticsModeType',
     logistics_mode_id      INT                         NOT NULL COMMENT '物流方式',
     goods_type_id          INT            DEFAULT 0    NOT NULL COMMENT '物品类型#type:LogisticsGoodsType',
@@ -18,13 +19,12 @@ CREATE TABLE tbl_logistics_order
     paid_amount            DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '已支付金额',
     insurance_id           INT                         NOT NULL COMMENT '保险id',
     gst_id                 INT                         NOT NULL COMMENT '纳税申报',
-    warehouse_id           INT                         NOT NULL COMMENT '收货仓库',
 
     customer_note          VARCHAR(250)   DEFAULT ''   NOT NULL COMMENT '客户备注',
     service_note           VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '客服备注',
     warehouse_note         VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '仓库备注',
 
-    repack_type_id         INT                         NULL COMMENT '打包类型',
+    repack_type_id         INT                         NULL COMMENT '打包类型#type:LogisticsRepackType',
 
     storage_loc_id         INT                         NULL COMMENT '仓位',
     storage_loc_count      INT                         NULL COMMENT '占用仓位数',
@@ -45,20 +45,14 @@ CREATE TABLE tbl_logistics_order
 
     UNIQUE INDEX ix_logistics_order_code (code),
     INDEX ix_logistics_order_order_status_id (order_status_id),
-    INDEX ix_logistics_order_pay_status_id (pay_status_id),
     INDEX ix_logistics_order_pickup_code (pickup_code),
-    INDEX ix_logistics_order_order_goods_type (goods_type_id),
-    INDEX ix_logistics_order_order_pay_type_id (pay_type_id),
-    INDEX ix_logistics_order_order_customer_id (customer_id),
     INDEX ix_logistics_order_logistics_mode_type_id (logistics_mode_type_id),
-    INDEX ix_logistics_order_storage_loc_id (storage_loc_id),
-    INDEX ix_logistics_order_submit_pack_time (submit_pack_time),
     INDEX ix_logistics_order_create_time (create_time),
-    INDEX ix_logistics_order_update_time (update_time),
 
-    CONSTRAINT fk_logistics_order_insurance_id FOREIGN KEY (insurance_id) REFERENCES tbl_logistics_insurance (id),
-    CONSTRAINT fk_logistics_order_gst_id FOREIGN KEY (gst_id) REFERENCES tbl_logistics_gst (id),
+    CONSTRAINT fk_logistics_order_customer_id FOREIGN KEY (customer_id) REFERENCES tbl_customer (id),
     CONSTRAINT fk_logistics_order_warehouse_id FOREIGN KEY (warehouse_id) REFERENCES tbl_warehouse (id),
     CONSTRAINT fk_logistics_order_logistics_mode_id FOREIGN KEY (logistics_mode_id) REFERENCES tbl_logistics_mode (id),
+    CONSTRAINT fk_logistics_order_insurance_id FOREIGN KEY (insurance_id) REFERENCES tbl_logistics_insurance (id),
+    CONSTRAINT fk_logistics_order_gst_id FOREIGN KEY (gst_id) REFERENCES tbl_logistics_gst (id),
     CONSTRAINT fk_logistics_order_storage_loc_id FOREIGN KEY (storage_loc_id) REFERENCES tbl_storage_loc (id)
 ) COMMENT '物流订单';
