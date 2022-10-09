@@ -1,6 +1,6 @@
 CREATE TABLE tbl_customer_receive_address
 (
-    id          INT                        NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '表id',
+    id          INT                        NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
     customer_id INT          DEFAULT 0     NOT NULL COMMENT '客户id',
     country_id  INT          DEFAULT 0     NOT NULL COMMENT '国家#type:Country',
     first_name  VARCHAR(60)  DEFAULT ''    NOT NULL COMMENT '收货人名',
