@@ -41,7 +41,7 @@
             }
 
             <li class="@(activeClass)">
-                <a asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(Model.Type.Id)">@type.Name</a>
+                <a asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(type.Id)">@type.Name</a>
             </li>
         }
     </ul>
