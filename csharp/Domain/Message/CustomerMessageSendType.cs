@@ -27,13 +27,13 @@ public class CustomerMessageSendType : CodeTypeBase
     /// </summary>
     public static readonly CustomerMessageSendType None = new CustomerMessageSendType(0, "", "");
 
-    public static readonly List<CustomerMessageSendType> codeTypeList = new List<CustomerMessageSendType>() {
+    private static readonly List<CustomerMessageSendType> codeTypeList = new List<CustomerMessageSendType>() {
         Manual,
         CycleTiming,
         RealTime,
     };
 
-    public static readonly Dictionary<int, CustomerMessageSendType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
+    private static readonly Dictionary<int, CustomerMessageSendType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
     public static CustomerMessageSendType GetById(int id)
     {
