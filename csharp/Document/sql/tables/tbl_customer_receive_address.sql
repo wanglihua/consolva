@@ -13,7 +13,7 @@ CREATE TABLE tbl_customer_receive_address
     zipcode     VARCHAR(10)  DEFAULT ''    NOT NULL COMMENT '邮政编码',
     tfn         VARCHAR(100) DEFAULT ''    NOT NULL COMMENT 'ABN/ACN',
     company     VARCHAR(100) DEFAULT ''    NOT NULL COMMENT '公司',
-    is_default  BOOL         DEFAULT 0     NOT NULL COMMENT '默认收货地址',
+    is_default  BOOL         DEFAULT FALSE NOT NULL COMMENT '默认收货地址',
     valid       BOOL         DEFAULT FALSE NOT NULL COMMENT '是否已验证',
     create_time DATETIME                   NOT NULL COMMENT '创建时间',
     update_time DATETIME                   NOT NULL COMMENT '更新时间',
