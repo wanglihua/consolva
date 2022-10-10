@@ -20,3 +20,5 @@ CREATE TABLE tbl_logistics_order_air_express
     CONSTRAINT fk_logistics_order_air_express_import_user_id FOREIGN KEY (import_user_id) REFERENCES tbl_user (id)
 
 ) COMMENT '空运订单国际快递单';
+
+# 一个订单多个物流方式的怎么处理

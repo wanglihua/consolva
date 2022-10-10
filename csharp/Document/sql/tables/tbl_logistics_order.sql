@@ -56,3 +56,7 @@ CREATE TABLE tbl_logistics_order
     CONSTRAINT fk_logistics_order_gst_id FOREIGN KEY (gst_id) REFERENCES tbl_logistics_gst (id),
     CONSTRAINT fk_logistics_order_storage_loc_id FOREIGN KEY (storage_loc_id) REFERENCES tbl_storage_loc (id)
 ) COMMENT '物流订单';
+
+
+# 一个订单多个物流方式的怎么处理
+

@@ -1,5 +1,6 @@
 .DS_Store
 .vs
+.vscode
 *.DotSettings.user
 /csharp/shunda.sublime-workspace
 /csharp/Admin/bin/
