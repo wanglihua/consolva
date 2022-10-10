@@ -10,9 +10,9 @@ CREATE TABLE tbl_logistics_order
     logistics_mode_type_id INT                         NOT NULL COMMENT '物流方式类型#type:LogisticsModeType',
     logistics_mode_id      INT                         NOT NULL COMMENT '物流方式',
     goods_type_id          INT            DEFAULT 0    NOT NULL COMMENT '物品类型#type:LogisticsGoodsType',
-    order_status_id        INT            DEFAULT 0    NOT NULL COMMENT '订单状态',   # todo
-    pay_status_id          INT            DEFAULT 0    NOT NULL COMMENT '支付状态',   # todo
-    pay_type_id            INT                         NULL COMMENT '支付方式',       # todo
+    order_status_id        INT            DEFAULT 0    NOT NULL COMMENT '订单状态', # todo
+    pay_status_id          INT            DEFAULT 0    NOT NULL COMMENT '支付状态', # todo
+    pay_type_id            INT                         NULL COMMENT '支付方式',     # todo
     goods_price            DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '商品总价',
     user_account           DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '使用余额',
     order_amount           DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '应付款金额',
@@ -29,10 +29,11 @@ CREATE TABLE tbl_logistics_order
     storage_loc_id         INT                         NULL COMMENT '仓位',
     storage_loc_count      INT                         NULL COMMENT '占用仓位数',
     pickup_code            VARCHAR(12)    DEFAULT ''   NOT NULL COMMENT '取件码',
+
     total_actual_weight    DECIMAL(10, 3)              NULL COMMENT '实际重量',
     total_volume_weight    DECIMAL(10, 3)              NULL COMMENT '体积重',
     total_weight           DECIMAL(10, 3)              NULL COMMENT '总重量',
-    total_package_count    DECIMAL(10, 0)              NULL COMMENT '总箱数',
+    total_package_count    INT                         NULL COMMENT '总箱数',
     total_volume           DECIMAL(14, 6)              NULL COMMENT '总体积',
 
     pay_time               DATETIME                    NULL COMMENT '支付时间',
@@ -59,4 +60,4 @@ CREATE TABLE tbl_logistics_order
 
 
 # 一个订单多个物流方式的怎么处理
-
+# 可以把物流方式（logistics_mode_id）存储到【订单打包】里面，订单里面存储的是用户选择的那个，会优先使用这个选择的
