@@ -10,6 +10,15 @@ public class CustomerInfoMapping : EntityMapping<CustomerInfo>
         Table("tbl_customer");
 
         Property(
+            x => x.CheckinCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("checkin_code");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Country,
             map => {
                 map.Type<CountryHibernateType>();
@@ -179,6 +188,5 @@ public class CustomerInfoMapping : EntityMapping<CustomerInfo>
                 map.NotNullable(true);
             }
         );
-
     }
 }

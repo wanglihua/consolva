@@ -11,6 +11,14 @@ namespace shunda.Domain.Customer;
 public class CustomerInfo : Entity
 {
     /// <summary>
+    /// 入库校验，非空
+    /// </summary>
+    [Required(ErrorMessage = "入库校验不能为空！")]
+    [MaxLength(10, ErrorMessage = "入库校验长度不能大于10！")]
+    [JsonProperty("checkinCode")]
+    public virtual string CheckinCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 客户国家，非空
     /// </summary>
     [Required(ErrorMessage = "客户国家不能为空！")]
@@ -153,5 +161,4 @@ public class CustomerInfo : Entity
     [Required(ErrorMessage = "状态不能为空！")]
     [JsonProperty("statusId")]
     public virtual int StatusId { get; set; } = 0;
-
 }

@@ -1,6 +1,7 @@
 ﻿CREATE TABLE tbl_customer
 (
     id                 INT                          NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
+    checkin_code       VARCHAR(10)                  NOT NULL COMMENT '入库校验', # 实际上就是个校验位，防止入库面单上的客户ID错误，一旦生成就不能改了
     country_id         INT            DEFAULT 0     NOT NULL COMMENT '客户国家#type:Country',
     open_id            VARCHAR(100)   DEFAULT ''    NOT NULL COMMENT 'OpenId',
     mobile             VARCHAR(20)    DEFAULT ''    NOT NULL COMMENT '手机号码',
@@ -28,6 +29,3 @@
     # INDEX ix_customer_customer_character (customer_character), 这个很少查询 
     # INDEX ix_customer_create_time (create_time) 很少按这个查询 
 ) COMMENT '客户';
-
-
-# todo 还需要加上一个收货代码 可以是数字前缀 234 
