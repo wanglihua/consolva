@@ -19,6 +19,7 @@ CREATE TABLE tbl_logistics_order_air_express
     update_time       DATETIME       NOT NULL COMMENT '更新时间',
 
     INDEX ix_logistics_order_air_express_tracking_no (tracking_no),
+    CONSTRAINT fk_logistics_order_air_express_order_id FOREIGN KEY (order_id) REFERENCES tbl_logistics_order (id),
     CONSTRAINT fk_logistics_order_air_express_import_user_id FOREIGN KEY (import_user_id) REFERENCES tbl_user (id)
 
 ) COMMENT '空运订单国际快递单';

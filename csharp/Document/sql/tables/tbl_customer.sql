@@ -28,3 +28,6 @@
     # INDEX ix_customer_customer_character (customer_character), 这个很少查询 
     # INDEX ix_customer_create_time (create_time) 很少按这个查询 
 ) COMMENT '客户';
+
+
+# todo 还需要加上一个收货代码 可以是数字前缀 234 

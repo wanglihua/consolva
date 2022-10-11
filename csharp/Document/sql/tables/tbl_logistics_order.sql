@@ -20,9 +20,9 @@ CREATE TABLE tbl_logistics_order
     insurance_id           INT                         NOT NULL COMMENT '保险id',
     gst_id                 INT                         NOT NULL COMMENT '纳税申报',
 
-    customer_note          VARCHAR(250)   DEFAULT ''   NOT NULL COMMENT '客户备注',
-    service_note           VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '客服备注',
-    warehouse_note         VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '仓库备注',
+    # customer_note          VARCHAR(250)   DEFAULT ''   NOT NULL COMMENT '客户备注', 这三个字段都不用了，改用 tbl_logistics_remark.sql
+    # service_note           VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '客服备注',
+    # warehouse_note         VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '仓库备注',
 
     repack_type_id         INT                         NULL COMMENT '打包类型#type:LogisticsRepackType',
 
