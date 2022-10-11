@@ -49,7 +49,7 @@ public class LogisticsOrderCreateMethod : CodeTypeBase
     }
 }
 
-public class OrderCreateMethodHibernateType : CodeHibernateTypeBase<LogisticsOrderCreateMethod>
+public class LogisticsOrderCreateMethodHibernateType : CodeHibernateTypeBase<LogisticsOrderCreateMethod>
 {
     protected override LogisticsOrderCreateMethod GetCodeTypeById(int id)
     {
@@ -57,7 +57,7 @@ public class OrderCreateMethodHibernateType : CodeHibernateTypeBase<LogisticsOrd
     }
 }
 
-public class OrderCreateMethodModelBinder : CodeTypeModelBinderBase<LogisticsOrderCreateMethod>
+public class LogisticsOrderCreateMethodModelBinder : CodeTypeModelBinderBase<LogisticsOrderCreateMethod>
 {
     protected override LogisticsOrderCreateMethod GetCodeTypeById(int id)
     {

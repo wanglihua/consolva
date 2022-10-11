@@ -1,0 +1,308 @@
+using shunda.Core;
+using NHibernate;
+using NHibernate.Mapping.ByCode;
+using shunda.Domain.Customer;
+using shunda.Domain.Logistics;
+using shunda.Domain.Storage;
+
+namespace shunda.Domain.Order;
+
+public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
+{
+    public LogisticsOrderInfoMapping()
+    {
+        Table("tbl_logistics_order");
+
+        Property(
+            x => x.Code,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("code");
+                map.NotNullable(true);
+            }
+        );
+
+        ManyToOne(
+            x => x.Customer,
+            map => {
+                map.Class(typeof(CustomerInfo));
+                map.Column("customer_id");
+                map.NotNullable(true);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.CustomerCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("customer_code");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.FeeMethod,
+            map => {
+                map.Type<LogisticsOrderFeeMethodHibernateType>();
+                map.Column("fee_method_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.CreateMethod,
+            map => {
+                map.Type<LogisticsOrderCreateMethodHibernateType>();
+                map.Column("create_method_id");
+                map.NotNullable(true);
+            }
+        );
+
+        ManyToOne(
+            x => x.Warehouse,
+            map => {
+                map.Class(typeof(WarehouseInfo));
+                map.Column("warehouse_id");
+                map.NotNullable(true);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.LogisticsModeType,
+            map => {
+                map.Type<LogisticsModeTypeHibernateType>();
+                map.Column("logistics_mode_type_id");
+                map.NotNullable(true);
+            }
+        );
+
+        ManyToOne(
+            x => x.LogisticsMode,
+            map => {
+                map.Class(typeof(LogisticsModeInfo));
+                map.Column("logistics_mode_id");
+                map.NotNullable(true);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        ManyToOne(
+            x => x.Insurance,
+            map => {
+                map.Class(typeof(LogisticsInsuranceInfo));
+                map.Column("insurance_id");
+                map.NotNullable(true);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        ManyToOne(
+            x => x.Gst,
+            map => {
+                map.Class(typeof(LogisticsGstInfo));
+                map.Column("gst_id");
+                map.NotNullable(true);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.GoodsType,
+            map => {
+                map.Type<LogisticsGoodsTypeHibernateType>();
+                map.Column("goods_type_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderStatus,
+            map => {
+                map.Type<LogisticsOrderStatusHibernateType>();
+                map.Column("order_status_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.PayStatus,
+            map => {
+                map.Type<LogisticsOrderPayStatusHibernateType>();
+                map.Column("pay_status_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.PayType,
+            map => {
+                map.Type<PayTypeHibernateType>();
+                map.Column("pay_type_id");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.GoodsPrice,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("goods_price");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.UserAccount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("user_account");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("order_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.PaidAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("paid_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.RepackType,
+            map => {
+                map.Type<LogisticsRepackTypeHibernateType>();
+                map.Column("repack_type_id");
+                map.NotNullable(false);
+            }
+        );
+
+        ManyToOne(
+            x => x.StorageLoc,
+            map => {
+                map.Class(typeof(StorageLocInfo));
+                map.Column("storage_loc_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.StorageLocCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("storage_loc_count");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.PickupCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("pickup_code");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.TotalActualWeight,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("total_actual_weight");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.TotalVolumeWeight,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("total_volume_weight");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.TotalWeight,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("total_weight");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.TotalPackageCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("total_package_count");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.TotalVolume,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("total_volume");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.PayTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("pay_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.SubmitPackTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("submit_pack_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.TransferTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("transfer_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.DeliveredTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("delivered_time");
+                map.NotNullable(false);
+            }
+        );
+
+    }
+}

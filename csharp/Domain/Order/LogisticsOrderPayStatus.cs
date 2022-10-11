@@ -35,7 +35,7 @@ public class LogisticsOrderPayStatus : CodeTypeBase
     /// <summary>
     /// None
     /// </summary>
-    private static readonly LogisticsOrderPayStatus None = new LogisticsOrderPayStatus(0, "", "");
+    public static readonly LogisticsOrderPayStatus None = new LogisticsOrderPayStatus(0, "", "");
 
     private static readonly List<LogisticsOrderPayStatus> codeTypeList = new List<LogisticsOrderPayStatus>() {
         NotPaid,
