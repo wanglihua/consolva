@@ -12,7 +12,7 @@ CREATE TABLE tbl_logistics_order
     goods_type_id          INT            DEFAULT 0    NOT NULL COMMENT '物品类型#type:LogisticsGoodsType',
     order_status_id        INT            DEFAULT 0    NOT NULL COMMENT '订单状态', # todo
     pay_status_id          INT            DEFAULT 0    NOT NULL COMMENT '支付状态', # todo
-    pay_type_id            INT                         NULL COMMENT '支付方式',     # todo
+    pay_type_id            INT                         NULL COMMENT '支付方式#type:PayType',
     goods_price            DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '商品总价',
     user_account           DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '使用余额',
     order_amount           DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '应付款金额',
