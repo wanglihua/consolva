@@ -9,16 +9,17 @@ CREATE TABLE tbl_logistics_order
     warehouse_id           INT                         NOT NULL COMMENT '收货仓库',
     logistics_mode_type_id INT                         NOT NULL COMMENT '物流方式类型#type:LogisticsModeType',
     logistics_mode_id      INT                         NOT NULL COMMENT '物流方式',
+    insurance_id           INT                         NOT NULL COMMENT '保险id',
+    gst_id                 INT                         NOT NULL COMMENT '纳税申报',
     goods_type_id          INT            DEFAULT 0    NOT NULL COMMENT '物品类型#type:LogisticsGoodsType',
-    order_status_id        INT            DEFAULT 0    NOT NULL COMMENT '订单状态', # todo
-    pay_status_id          INT            DEFAULT 0    NOT NULL COMMENT '支付状态', # todo
+    order_status_id        INT            DEFAULT 0    NOT NULL COMMENT '订单状态#type:LogisticsOrderStatus',
+    pay_status_id          INT            DEFAULT 0    NOT NULL COMMENT '支付状态#type:LogisticsOrderPayStatus',
     pay_type_id            INT                         NULL COMMENT '支付方式#type:PayType',
     goods_price            DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '商品总价',
     user_account           DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '使用余额',
     order_amount           DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '应付款金额',
     paid_amount            DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '已支付金额',
-    insurance_id           INT                         NOT NULL COMMENT '保险id',
-    gst_id                 INT                         NOT NULL COMMENT '纳税申报',
+
 
     # customer_note          VARCHAR(250)   DEFAULT ''   NOT NULL COMMENT '客户备注', 这三个字段都不用了，改用 tbl_logistics_remark.sql
     # service_note           VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '客服备注',
