@@ -181,9 +181,9 @@ public class CustomerInfoMapping : EntityMapping<CustomerInfo>
         );
 
         Property(
-            x => x.StatusId,
+            x => x.Status,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Type<CustomerStatusHibernateType>();
                 map.Column("status_id");
                 map.NotNullable(true);
             }

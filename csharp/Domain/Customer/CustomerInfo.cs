@@ -10,6 +10,8 @@ namespace shunda.Domain.Customer;
 /// </summary>
 public class CustomerInfo : Entity
 {
+    public static readonly string DefaultPassword = "111111"; // 6 个 1
+    
     /// <summary>
     /// 入库校验，非空
     /// </summary>
@@ -159,6 +161,6 @@ public class CustomerInfo : Entity
     /// 状态，非空
     /// </summary>
     [Required(ErrorMessage = "状态不能为空！")]
-    [JsonProperty("statusId")]
-    public virtual int StatusId { get; set; } = 0;
+    [JsonProperty("status")]
+    public virtual CustomerStatus Status { get; set; } = CustomerStatus.None;
 }

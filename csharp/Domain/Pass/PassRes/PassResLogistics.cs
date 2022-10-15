@@ -8,7 +8,7 @@ public partial class PassRes
     public class Logistics
     {
         /// <summary>
-        /// 类别
+        /// 物流设置类别
         /// </summary>
         public const int CateId = 10000_00000;
 
