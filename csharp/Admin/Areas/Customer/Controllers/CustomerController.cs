@@ -33,10 +33,10 @@ public class CustomerController : Controller
     public static readonly string NoVipLevelName = "NoVip";
     public static readonly string superVipLevelName = "超级VIP";
 
-    private ISession session = null;
-    private CustomerCodeService customerCodeService = null;
-    private LoginUserService loginUserService = null;
-    private PasswordService passwordService = null;
+    private ISession session;
+    private CustomerCodeService customerCodeService;
+    private LoginUserService loginUserService;
+    private PasswordService passwordService;
 
     public CustomerController(ISession session,
         CustomerCodeService customerCodeService,
@@ -48,9 +48,8 @@ public class CustomerController : Controller
         this.loginUserService = loginUserService;
         this.passwordService = passwordService;
     }
-
-    #region 会员列表
-
+    
+    /*
     [HttpGet]
     [Route("/admin/customer")]
     [AdminAuth(PassRes.Customer.CustomerList)]
@@ -80,7 +79,9 @@ public class CustomerController : Controller
 
         return View("CustomerIndex", model);
     }
+    */
 
+    /*
     [HttpPost]
     [Route("/admin/customer/list")]
     [AdminAuth(PassRes.Customer.CustomerList)]
@@ -130,15 +131,6 @@ public class CustomerController : Controller
             mobileQuery = mobileQuery.Trim();
             criteria = criteria.Add(Restrictions.On<CustomerInfo>(e => e.Mobile).IsInsensitiveLike(mobileQuery, MatchMode.Anywhere));
         }
-
-        /*
-        string emailQuery = queryParam.EmailQuery;
-        if (string.IsNullOrWhiteSpace(emailQuery) == false)
-        {
-            emailQuery = emailQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<CustomerInfo>(e => e.Email).IsInsensitiveLike(emailQuery, MatchMode.Anywhere));
-        }
-        */
 
         string nicknameQuery = queryParam.NicknameQuery;
         if (string.IsNullOrWhiteSpace(nicknameQuery) == false)
@@ -204,6 +196,9 @@ public class CustomerController : Controller
     }
 
     #endregion
+    */
+    
+    /*
 
     [HttpGet]
     [Route("/admin/customer/detail/{id:int}")]
@@ -516,12 +511,11 @@ public class CustomerController : Controller
             throw new ValidationException("指定的客户不存在！");
         }
 
-        /*
-        if (character != null && character.Length > 5)
-        {
-            throw new ValidationException("客户性质长度不能大于5个字符！");
-        }
-        */
+        // if (character != null && character.Length > 5)
+        // {
+        //     throw new ValidationException("客户性质长度不能大于5个字符！");
+        // }
+        
 
         customer.CustomerCharacter = character;
 
@@ -693,4 +687,5 @@ public class CustomerController : Controller
             { "message", "导入创建测试客户成功！" },
         });
     }
+    */
 }

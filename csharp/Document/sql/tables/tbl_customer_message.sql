@@ -13,7 +13,6 @@ CREATE TABLE tbl_customer_message
     send_time    DATETIME     NOT NULL COMMENT '发送时间',
     create_time  DATETIME     NOT NULL COMMENT '创建时间',
     update_time  DATETIME     NOT NULL COMMENT '更新时间',
-    version      INT          NOT NULL DEFAULT 1 COMMENT '数据版本',
 
     INDEX ix_customer_message_type_id (type_id),
     INDEX ix_customer_message_create_time (create_time),
