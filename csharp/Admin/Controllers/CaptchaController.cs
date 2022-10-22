@@ -23,6 +23,6 @@ public class CaptchaController : Controller
         memoryStream.Close();
 
         Response.Body.Dispose();
-        return File(bytes, @"image/png");
+        return File(bytes, ContentType.ImagePng);
     }
 }

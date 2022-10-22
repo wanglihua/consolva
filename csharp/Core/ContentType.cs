@@ -12,4 +12,6 @@ public class ContentType
     public static readonly string JavaScript = "text/javascript";
 
     public static readonly string Json = "application/json";
+
+    public static readonly string ImagePng = "image/png";
 }
