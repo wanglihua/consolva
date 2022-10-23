@@ -139,6 +139,17 @@
                         </li>
                     }
                     *@
+                    
+                    @if (Model.HasPassRes(PassRes.Customer.CustomerCharacter))
+                    {
+                        <li id="customer-customer-character-index-menu">
+                            <a asp-area="Customer" asp-controller="CustomerCharacter" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                客户性质
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }                    
 
                 </ul>
             </li>
