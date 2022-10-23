@@ -116,11 +116,13 @@
                             <b class="arrow"></b>
                         </li>
                     }
+                    
+                    *@
 
                     @if (Model.HasPassRes(PassRes.Customer.CustomerVipDiscount))
                     {
                         <li id="customer-customer-vip-discount-index-menu">
-                            <a href="@Url.Action("Index", "CustomerVipDiscount")">
+                            <a asp-area="Customer" asp-controller="CustomerVipDiscount" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 VIP折扣设置
                             </a>
@@ -138,7 +140,6 @@
                             <b class="arrow"></b>
                         </li>
                     }
-                    *@
                     
                     @if (Model.HasPassRes(PassRes.Customer.CustomerCharacter))
                     {

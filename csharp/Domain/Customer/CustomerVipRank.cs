@@ -137,6 +137,8 @@ public class CustomerVipRank : CodeTypeBase
 
     private static readonly Dictionary<int, CustomerVipRank> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
+    private static readonly Dictionary<string, CustomerVipRank> codeTypeNameMap = codeTypeList.ToDictionary(e => e.Name.ToUpper()); // 与下面的  name = name.ToUpper(); 相对应
+
     public static CustomerVipRank GetById(int id)
     {
         if (codeTypeMap.TryGetValue(id, out CustomerVipRank? codeType))
@@ -146,6 +148,23 @@ public class CustomerVipRank : CodeTypeBase
 
         return None;
     }
+
+    public static CustomerVipRank GetByName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return None;
+        }
+
+        name = name.ToUpper(); // 与 codeTypeList.ToDictionary(e => e.Name.ToUpper()); 相对应 
+
+        if (codeTypeNameMap.TryGetValue(name, out CustomerVipRank? codeType))
+        {
+            return codeType;
+        }
+
+        return None;
+    }    
 
     public static List<CustomerVipRank> GetList()
     {
