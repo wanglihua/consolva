@@ -10,7 +10,7 @@ CREATE TABLE tbl_customer_vip_discount
     create_time DATETIME       NOT NULL COMMENT '创建时间',
     update_time DATETIME       NOT NULL COMMENT '更新时间',
 
-    INDEX ix_customer_vip_discount_rank_id (rank_id),
+    UNIQUE INDEX ix_customer_vip_discount_rank_id (rank_id),
     INDEX ix_customer_vip_discount_score (score),
     CONSTRAINT fk_customer_vip_discount_user_id FOREIGN KEY (user_id) REFERENCES tbl_user (id)
 ) COMMENT 'VIP折扣设置';

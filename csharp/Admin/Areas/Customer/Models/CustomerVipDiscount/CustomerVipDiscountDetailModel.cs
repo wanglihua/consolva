@@ -8,8 +8,11 @@ namespace shunda.Admin.Areas.Customer.Models.CustomerVipDiscount;
 
 public class CustomerVipDiscountDetailModel
 {
-    public int CustomerVipDiscountId { get; set; } 
-    
+    [BindNever]
+    public bool IsCreate { get; set; }
+
+    public int CustomerVipDiscountId { get; set; }
+
     /// <summary>
     /// 会员VIP等级
     /// </summary>
@@ -23,14 +26,16 @@ public class CustomerVipDiscountDetailModel
     /// </summary>
     [DisplayName("历史总积分")]
     [Required(ErrorMessage = "历史总积分不能为空！")]
+    [Range()]
     public virtual decimal Score { get; set; }
 
     /// <summary>
-    /// 集运头程折扣
+    /// 折扣
     /// </summary>
-    [DisplayName("集运头程折扣")]
-    [Required(ErrorMessage = "集运头程折扣不能为空！")]
-    public virtual decimal Discount { get; set; }    
+    [DisplayName("折扣")]
+    [Required(ErrorMessage = "折扣不能为空！")]
+    [Range(0, 100, ErrorMessage = "折扣只能在0和100之间！")]
+    public virtual decimal Discount { get; set; }
 
     [BindNever]
     public IList<CustomerVipRank> CustomerVipRankList { get; set; } = CustomerVipRank.GetList();

@@ -81,12 +81,17 @@ public class CustomerVipDiscountController : Controller
 
         CustomerVipDiscountInfo customerVipDiscount;
 
+        bool isCreate = false;
         if (id == null || id.Value == 0)
         {
+            isCreate = true;
+
             customerVipDiscount = new CustomerVipDiscountInfo();
         }
         else
         {
+            isCreate = false;
+
             customerVipDiscount = session.Get<CustomerVipDiscountInfo>(id.Value);
             if (customerVipDiscount == null)
             {
@@ -99,6 +104,8 @@ public class CustomerVipDiscountController : Controller
         model.Rank = customerVipDiscount.Rank;
         model.Score = customerVipDiscount.Score;
         model.Discount = customerVipDiscount.Discount;
+
+        model.IsCreate = isCreate;
 
         return View("CustomerVipDiscountDetail", model);
     }
@@ -113,6 +120,13 @@ public class CustomerVipDiscountController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
+        CustomerVipRank rank = model.Rank;
+
+        if (rank == null || rank == CustomerVipRank.None)
+        {
+            throw new ValidationException("指定的客户VIP级别不存在！");
+        }
+
         UserInfo loginUser = session.Load<UserInfo>(loginUserService.GetLoginUserId());
 
         int customerVipDiscountId = model.CustomerVipDiscountId;
@@ -123,14 +137,34 @@ public class CustomerVipDiscountController : Controller
 
         if (isCreate)
         {
+            CustomerVipDiscountInfo? vipDiscount = session.Query<CustomerVipDiscountInfo>()
+                .Where(e => e.Rank == rank)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (vipDiscount != null)
+            {
+                throw new ValidationException($"指定的客户VIP级别#{rank.Name}折扣设置已经存在！");
+            }
+
             customerVipDiscount = new CustomerVipDiscountInfo();
+            customerVipDiscount.Rank = model.Rank; // 编辑时这个级别不能修改，所以只在新建时设置保存
         }
         else
         {
+            CustomerVipDiscountInfo? vipDiscount = session.Query<CustomerVipDiscountInfo>()
+                .Where(e => e.Rank == rank && e.Id != customerVipDiscountId)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (vipDiscount != null)
+            {
+                throw new ValidationException($"指定的客户VIP级别#{rank.Name}折扣设置已经存在！");
+            }
+
             customerVipDiscount = session.Get<CustomerVipDiscountInfo>(customerVipDiscountId);
         }
 
-        customerVipDiscount.Rank = model.Rank;
         customerVipDiscount.Score = model.Score;
         customerVipDiscount.Discount = model.Discount;
         customerVipDiscount.User = loginUser;

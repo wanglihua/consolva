@@ -28,10 +28,10 @@ public class CustomerVipDiscountInfo : Entity
     public virtual decimal Score { get; set; }
 
     /// <summary>
-    /// 集运头程折扣
+    /// 折扣
     /// </summary>
-    [DisplayName("集运头程折扣")]
-    [Required(ErrorMessage = "集运头程折扣不能为空！")]
+    [DisplayName("折扣")]
+    [Required(ErrorMessage = "折扣不能为空！")]
     public virtual decimal Discount { get; set; }
 
     /// <summary>

@@ -20,13 +20,27 @@
                             <div class="form-group">
                                 <label asp-for="Rank" class="col-xs-2 control-label">会员VIP等级</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="Rank" required="required" class="input-sm form-control">
-                                        <option value="">会员VIP等级</option>
-                                        @foreach (CustomerVipRank rank in Model.CustomerVipRankList)
-                                        {
-                                            <option value="@(rank.Id)">@(rank.Name)</option>
-                                        }
-                                    </select>
+                                    @if (Model.IsCreate)
+                                    {
+                                        <select asp-for="Rank" required="required" class="input-sm form-control">
+                                            <option value="">会员VIP等级</option>
+                                            @foreach (CustomerVipRank rank in Model.CustomerVipRankList)
+                                            {
+                                                <option value="@(rank.Id)">@(rank.Name)</option>
+                                            }
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden" asp-for="Rank"/>
+                                        <select asp-for="Rank" required="required" class="input-sm form-control" disabled="disabled">
+                                            <option value="">会员VIP等级</option>
+                                            @foreach (CustomerVipRank rank in Model.CustomerVipRankList)
+                                            {
+                                                <option value="@(rank.Id)">@(rank.Name)</option>
+                                            }
+                                        </select>
+                                    }
                                 </div>
                             </div>
                         </div>
