@@ -5,13 +5,15 @@ using shunda.Admin.Areas.Customer.Models.CustomerCharacter;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
+using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Customer.Controllers;
 
 [CustomerArea]
-// [AdminAuth(PassRes.SystemSetting.CustomerCharacter)]
+[AdminAuth(PassRes.Customer.CustomerCharacter)]
 public class CustomerCharacterController : Controller
 {
     private ISession session;

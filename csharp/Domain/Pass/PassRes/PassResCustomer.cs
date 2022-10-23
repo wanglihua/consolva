@@ -19,7 +19,7 @@ public partial class PassRes
             new PassResInfo() { Id = ImportTestCustomer, Name = "测试账号导入", CateIdForCache = CateId },
             new PassResInfo() { Id = CustomerFreeze, Name = "会员冻结解冻", CateIdForCache = CateId },
             new PassResInfo() { Id = CustomerResetPassword, Name = "会员重设密码", CateIdForCache = CateId },
-            new PassResInfo() { Id = CustomerCharacter, Name = "编辑会员性质", CateIdForCache = CateId },
+            new PassResInfo() { Id = CustomerCharacter, Name = "会员性质", CateIdForCache = CateId },
             new PassResInfo() { Id = CustomerPromotion, Name = "客户推广", CateIdForCache = CateId },
             new PassResInfo() { Id = SupperPassword, Name = "超级密码", CateIdForCache = CateId },
             new PassResInfo() { Id = CustomerScoreRule, Name = "积分规则", CateIdForCache = CateId },
@@ -56,7 +56,7 @@ public partial class PassRes
         public const int CustomerResetPassword = CateId + 08000;
 
         /// <summary>
-        /// 编辑会员性质
+        /// 会员性质
         /// </summary>
         public const int CustomerCharacter = CateId + 10000;
 
