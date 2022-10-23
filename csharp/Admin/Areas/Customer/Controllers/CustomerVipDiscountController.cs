@@ -95,7 +95,10 @@ public class CustomerVipDiscountController : Controller
         }
 
         CustomerVipDiscountDetailModel model = new CustomerVipDiscountDetailModel();
-        model.CustomerVipDiscount = customerVipDiscount;
+        model.CustomerVipDiscountId = customerVipDiscount.Id;
+        model.Rank = customerVipDiscount.Rank;
+        model.Score = customerVipDiscount.Score;
+        model.Discount = customerVipDiscount.Discount;
 
         return View("CustomerVipDiscountDetail", model);
     }
@@ -112,8 +115,7 @@ public class CustomerVipDiscountController : Controller
 
         UserInfo loginUser = session.Load<UserInfo>(loginUserService.GetLoginUserId());
 
-        CustomerVipDiscountInfo customerVipDiscountFromUi = model.CustomerVipDiscount;
-        int customerVipDiscountId = customerVipDiscountFromUi.Id;
+        int customerVipDiscountId = model.CustomerVipDiscountId;
 
         bool isCreate = customerVipDiscountId == 0;
 
@@ -128,9 +130,9 @@ public class CustomerVipDiscountController : Controller
             customerVipDiscount = session.Get<CustomerVipDiscountInfo>(customerVipDiscountId);
         }
 
-        customerVipDiscount.Rank = customerVipDiscountFromUi.Rank;
-        customerVipDiscount.Score = customerVipDiscountFromUi.Score;
-        customerVipDiscount.Discount = customerVipDiscountFromUi.Discount;
+        customerVipDiscount.Rank = model.Rank;
+        customerVipDiscount.Score = model.Score;
+        customerVipDiscount.Discount = model.Discount;
         customerVipDiscount.User = loginUser;
 
         if (isCreate)

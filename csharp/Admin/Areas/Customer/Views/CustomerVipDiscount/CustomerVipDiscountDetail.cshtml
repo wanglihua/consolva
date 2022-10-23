@@ -13,14 +13,14 @@
             </div>
             <div class="modal-body clearfix">
                 <form id="customerVipDiscountDetailForm" class="form-horizontal" role="form">
-                    <input asp-for="CustomerVipDiscount.Id" type="hidden"/>
+                    <input asp-for="CustomerVipDiscountId" type="hidden"/>
                     <div class="row">
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="CustomerVipDiscount.Rank" class="col-xs-2 control-label">会员VIP等级</label>
+                                <label asp-for="Rank" class="col-xs-2 control-label">会员VIP等级</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="CustomerVipDiscount.Rank" required="required" class="input-sm form-control">
+                                    <select asp-for="Rank" required="required" class="input-sm form-control">
                                         <option value="">会员VIP等级</option>
                                         @foreach (CustomerVipRank rank in Model.CustomerVipRankList)
                                         {
@@ -33,19 +33,19 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="CustomerVipDiscount.Score" class="col-xs-2 control-label">历史总积分</label>
+                                <label asp-for="Score" class="col-xs-2 control-label">历史总积分</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="CustomerVipDiscount.Score" type="number" required="required" min="1" step="1" class="input-sm form-control"/>
+                                    <input asp-for="Score" type="number" required="required" min="1" step="1" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="CustomerVipDiscount.Discount" class="col-xs-2 control-label">折扣</label>
+                                <label asp-for="Discount" class="col-xs-2 control-label">折扣</label>
                                 <div class="col-xs-10">
                                     <div class="input-group">
-                                        <input asp-for="CustomerVipDiscount.Discount" type="number" required="required" min="0" max="100" step="1" class="input-sm form-control"/>
+                                        <input asp-for="Discount" type="number" required="required" min="0" max="100" step="1" class="input-sm form-control"/>
                                         <span class="input-group-addon">%</span>
                                     </div>
                                 </div>
