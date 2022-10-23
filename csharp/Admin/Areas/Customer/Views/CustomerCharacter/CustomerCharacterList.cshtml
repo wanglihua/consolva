@@ -1,0 +1,57 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerCharacter.CustomerCharacterListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerCharacterList"})
+
+<table id="tblCustomerCharacterList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="customerCharacterCheckAll"></label><input id="customerCharacterCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 300px;">
+                <a field="@(nameof(CustomerCharacterInfo.Content))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerCharacterList">内容</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerCharacterInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerCharacterList">创建时间</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerCharacterInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerCharacterList">修改时间</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerCharacterList != null && Model.CustomerCharacterList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CustomerCharacterInfo customerCharacter in Model.CustomerCharacterList)
+            {
+                <tr ondblclick="showCustomerCharacterDetail(@(customerCharacter.Id));">
+                    <td style="text-align: center;">
+                        <label for="customerCharacterCheck_@(customerCharacter.Id)"></label><input id="customerCharacterCheck_@(customerCharacter.Id)" type="checkbox" class="ace" value="@customerCharacter.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@customerCharacter.Content</td>
+                    <td style="text-align: center;">@customerCharacter.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@customerCharacter.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerCharacterList"})

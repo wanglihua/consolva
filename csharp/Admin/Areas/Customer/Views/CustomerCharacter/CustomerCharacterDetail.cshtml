@@ -1,0 +1,42 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Customer.Models.CustomerCharacter.CustomerCharacterDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="customerCharacterDetailDialog">
+    <div class="modal-dialog" style="width: 540px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">客户性质详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="customerCharacterDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="CustomerCharacter.Id" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerCharacter.Content" class="col-xs-2 control-label">内容</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CustomerCharacter.Content" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveCustomerCharacter();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,169 @@
+@using shunda.Admin.Areas.Customer.Models.CustomerCharacter
+@using shunda.Core
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerCharacter.CustomerCharacterIndexModel
+@{
+    ViewBag.Title = "客户性质";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-customer-character-index-menu">客户性质</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerCharacterList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerCharacterDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerCharacter()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="customerCharacterList" data-page-index="0" data-sort-field="@(nameof(CustomerCharacterInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="customerCharacterDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerCharacterList();
+    });
+
+    function sortCustomerCharacterList(sortField, sortDir) {
+        var list = $('#customerCharacterList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerCharacterList();
+    }
+
+    function loadCustomerCharacterList(pageIndex) {
+        var list = $('#customerCharacterList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerCharacter")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerCharacterListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerCharacterListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerCharacterListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerCharacterList').html(data);
+
+                initListTable("#tblCustomerCharacterList");
+            }
+        });
+    }
+
+    function showCustomerCharacterDetail(id) {
+        $("#customerCharacterDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#customerCharacterDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CustomerCharacter")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerCharacterDetailDialogWrapper").html(data);
+                $("#customerCharacterDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCustomerCharacter() {
+        var form = $("#customerCharacterDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerCharacter.Content': {
+                    required: true,
+                    maxlength: 5
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerCharacter")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#customerCharacterDetailDialog').modal('hide');
+                        loadCustomerCharacterList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteCustomerCharacter() {
+        var idList = getSelectIdList('#tblCustomerCharacterList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "CustomerCharacter")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadCustomerCharacterList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
