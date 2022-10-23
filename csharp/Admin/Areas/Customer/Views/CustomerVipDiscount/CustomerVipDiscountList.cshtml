@@ -1,0 +1,69 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerVipDiscount.CustomerVipDiscountListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerVipDiscountList" })
+
+<table id="tblCustomerVipDiscountList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="customerVipDiscountCheckAll"></label><input id="customerVipDiscountCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 110px; text-align: center;">
+                <a field="@(nameof(CustomerVipDiscountInfo.Rank))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">会员VIP等级</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerVipDiscountInfo.Score))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">历史总积分</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerVipDiscountInfo.Discount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">折扣</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(CustomerVipDiscountInfo.User))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">操作用户</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerVipDiscountInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">创建时间</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerVipDiscountInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">修改时间</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerVipDiscountList != null && Model.CustomerVipDiscountList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CustomerVipDiscountInfo customerVipDiscount in Model.CustomerVipDiscountList)
+            {
+        <tr ondblclick="showCustomerVipDiscountDetail(@(customerVipDiscount.Id));">
+            <td style="text-align: center;">
+                <label for="customerVipDiscountCheck_@(customerVipDiscount.Id)"></label><input id="customerVipDiscountCheck_@(customerVipDiscount.Id)" type="checkbox" class="ace" value="@customerVipDiscount.Id" /><span class="lbl"></span>
+            </td>
+            <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+            <td style="text-align: center;">@customerVipDiscount.Rank?.Name</td>
+            <td style="text-align: center;">@customerVipDiscount.Score</td>
+            <td style="text-align: center;">@(customerVipDiscount.Discount)%</td>
+            <td style="text-align: center;" class="break-word">@(customerVipDiscount.User?.UserName)</td>
+            <td style="text-align: center;">@customerVipDiscount.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+            <td style="text-align: center;">@customerVipDiscount.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+            <td></td>
+        </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerVipDiscountList" })
