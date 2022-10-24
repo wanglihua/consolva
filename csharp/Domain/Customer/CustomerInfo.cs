@@ -11,7 +11,7 @@ namespace shunda.Domain.Customer;
 public class CustomerInfo : Entity
 {
     public static readonly string DefaultPassword = "111111"; // 6 个 1
-    
+
     /// <summary>
     /// 入库校验，非空
     /// </summary>
@@ -166,7 +166,7 @@ public class CustomerInfo : Entity
 
     #region cache
 
-    public string  CustomerCodeCache { get; set; }
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
 
     #endregion
 }

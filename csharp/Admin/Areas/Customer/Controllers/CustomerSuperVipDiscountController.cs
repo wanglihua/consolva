@@ -147,10 +147,30 @@ public class CustomerSuperVipDiscountController : Controller
 
         if (isCreate)
         {
+            CustomerSuperVipDiscountInfo? customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
+                .Where(e => e.Customer.Id == customerId)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (customerSuperVipDiscountExist != null)
+            {
+                throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
+            }
+
             customerSuperVipDiscount = new CustomerSuperVipDiscountInfo();
         }
         else
         {
+            CustomerSuperVipDiscountInfo? customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
+                .Where(e => e.Customer.Id == customerId && e.Id != customerSuperVipDiscountId)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (customerSuperVipDiscountExist != null)
+            {
+                throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
+            }
+
             customerSuperVipDiscount = session.Get<CustomerSuperVipDiscountInfo>(customerSuperVipDiscountId);
         }
 
@@ -260,7 +280,7 @@ public class CustomerSuperVipDiscountController : Controller
             cell.SetCellType(CellType.String);
             cell.SetCellValue(superVipDiscount.Description);
 
-            // 商城折扣
+            // 折扣
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.Numeric);
@@ -295,7 +315,7 @@ public class CustomerSuperVipDiscountController : Controller
 
         IList<CustomerSuperVipDiscountInfo> superVipDiscountList = new List<CustomerSuperVipDiscountInfo>();
 
-        // 会员  备注  商城折扣    集运头程折扣    集运二程折扣
+        // 会员  备注  折扣 
 
         // 略过标题行，所以 rowIndex = 1 开始
         int lastRowNum = sheet.LastRowNum;
