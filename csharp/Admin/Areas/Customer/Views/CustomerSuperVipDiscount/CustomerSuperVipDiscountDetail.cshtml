@@ -1,0 +1,63 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Customer.Models.CustomerSuperVipDiscount.CustomerSuperVipDiscountDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="customerSuperVipDiscountDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">超级VIP折扣详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="customerSuperVipDiscountDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="CustomerSuperVipDiscount.Id" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerSuperVipDiscount.CustomerCodeCache" class="col-xs-2 control-label">会员</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CustomerSuperVipDiscount.CustomerCodeCache" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerSuperVipDiscount.Description" class="col-xs-2 control-label">备注</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerSuperVipDiscount.Description" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerSuperVipDiscount.Discount" class="col-xs-2 control-label">折扣</label>
+                                <div class="col-xs-10">
+                                    <div class="input-group">
+                                        <input asp-for="CustomerSuperVipDiscount.Discount" type="number" step="1" min="0" max="100" class="input-sm form-control" />
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveCustomerSuperVipDiscount();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

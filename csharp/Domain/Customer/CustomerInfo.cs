@@ -163,4 +163,10 @@ public class CustomerInfo : Entity
     [Required(ErrorMessage = "状态不能为空！")]
     [JsonProperty("status")]
     public virtual CustomerStatus Status { get; set; } = CustomerStatus.None;
+
+    #region cache
+
+    public string  CustomerCodeCache { get; set; }
+
+    #endregion
 }

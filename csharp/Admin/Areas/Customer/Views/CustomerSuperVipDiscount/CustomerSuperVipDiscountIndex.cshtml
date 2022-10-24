@@ -1,0 +1,274 @@
+@using shunda.Admin.Areas.Customer.Models.CustomerSuperVipDiscount
+@using shunda.Core
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerSuperVipDiscount.CustomerSuperVipDiscountIndexModel
+@{
+    ViewBag.Title = "超级VIP折扣";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="active" data-menu="customer-customer-super-vip-discount-index-menu">超级VIP折扣</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerSuperVipDiscountList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerSuperVipDiscountDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerSuperVipDiscount()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    <button id="btnImport" class="btn btn-success btn-sm">
+        <i class="ace-icon fa fa-plus"></i>
+        导入
+    </button>
+    <button class="btn btn-purple btn-sm" onclick="exportData()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>
+
+    <button class="btn btn-pink btn-sm" onclick="updateCustomerVip()">
+        <i class="ace-icon fa fa-gear"></i>
+        手动更新会员VIP标识
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCode">会员ID</label>&nbsp;<input id="customerCode" name="customerCode" style="width: 100px; height: 30px;" placeholder="会员ID查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerSuperVipDiscountList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerSuperVipDiscountList" data-page-index="0" data-sort-field="@(nameof(CustomerSuperVipDiscountInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="customerSuperVipDiscountDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerSuperVipDiscountList();
+    });
+
+    function sortCustomerSuperVipDiscountList(sortField, sortDir) {
+        var list = $('#customerSuperVipDiscountList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerSuperVipDiscountList();
+    }
+
+    function loadCustomerSuperVipDiscountList(pageIndex) {
+        var list = $('#customerSuperVipDiscountList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerSuperVipDiscount")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerSuperVipDiscountListQueryParam.CustomerCode))': $("#customerCode").val(),
+                '@(nameof(CustomerSuperVipDiscountListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerSuperVipDiscountListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerSuperVipDiscountListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerSuperVipDiscountList').html(data);
+
+                initListTable("#tblCustomerSuperVipDiscountList");
+            }
+        });
+    }
+
+    function showCustomerSuperVipDiscountDetail(id) {
+        $("#customerSuperVipDiscountDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#customerSuperVipDiscountDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CustomerSuperVipDiscount")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerSuperVipDiscountDetailDialogWrapper").html(data);
+                $("#customerSuperVipDiscountDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCustomerSuperVipDiscount() {
+        var form = $("#customerSuperVipDiscountDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerSuperVipDiscount.CustomerId': {
+                    required: true,
+                    digits: true
+                },
+                'CustomerSuperVipDiscount.MallDiscount': {
+                    required: true
+                },
+                'CustomerSuperVipDiscount.LogisticsFirstDiscount': {
+                    required: true
+                },
+                'CustomerSuperVipDiscount.LogisticsSecondDiscount': {
+                    required: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerSuperVipDiscount")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#customerSuperVipDiscountDetailDialog').modal('hide');
+                        loadCustomerSuperVipDiscountList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteCustomerSuperVipDiscount() {
+        var idList = getSelectIdList('#tblCustomerSuperVipDiscountList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "CustomerSuperVipDiscount")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadCustomerSuperVipDiscountList();
+                    }
+                });
+            }
+        );
+    }
+
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {
+        var url = '@Url.Action("Import", "CustomerSuperVipDiscount")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImport',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                    } else {
+                        loadCustomerSuperVipDiscountList();
+                        $.msg.show(result.message);
+                    }
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }
+
+    function exportData() {
+        var url = '@Url.Action("Export", "CustomerSuperVipDiscount")';
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }
+
+    function updateCustomerVip() {
+
+        showMask("处理中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("UpdateVip", "Customer")",
+            type: "POST",
+            data: {
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $.msg.show(data.message);
+            }
+        });
+    }
+
+</script>
