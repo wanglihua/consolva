@@ -6,7 +6,7 @@ namespace shunda.Service.Customer;
 [Service(ServiceType.Scoped)]
 public class CustomerCodeService
 {
-    private static readonly string digitsPattern = @"[0-9]+";
+    private static readonly Regex regexCustomerId = new Regex(@"[0-9]+", RegexOptions.Compiled);
 
     public int GetCustomerIdFromCustomerCode(string customerIdOrCode)
     {
@@ -15,7 +15,7 @@ public class CustomerCodeService
             return 0;
         }
 
-        MatchCollection matches = Regex.Matches(customerIdOrCode, digitsPattern);
+        MatchCollection matches = regexCustomerId.Matches(customerIdOrCode);
 
         IList<string> matchDigitList = new List<string>();
         foreach (Match match in matches)
@@ -42,7 +42,7 @@ public class CustomerCodeService
             return 0;
         }
 
-        MatchCollection matches = Regex.Matches(guestIdOrCode, digitsPattern);
+        MatchCollection matches = regexCustomerId.Matches(guestIdOrCode);
 
         IList<string> matchDigitList = new List<string>();
         foreach (Match match in matches)
@@ -60,5 +60,10 @@ public class CustomerCodeService
         }
 
         return 0;
+    }
+
+    public string GetCustomerCode(int customerId)
+    {
+        return "SD" + customerId.ToString("#000");
     }
 }

@@ -26,7 +26,7 @@ public class CustomerVipDiscountDetailModel
     /// </summary>
     [DisplayName("历史总积分")]
     [Required(ErrorMessage = "历史总积分不能为空！")]
-    [Range()]
+    [Range(0, int.MaxValue, ErrorMessage = "历史总积分必须大于零！")]
     public virtual decimal Score { get; set; }
 
     /// <summary>
