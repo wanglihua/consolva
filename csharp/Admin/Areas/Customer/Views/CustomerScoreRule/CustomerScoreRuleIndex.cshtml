@@ -1,0 +1,186 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Customer.Models.CustomerScoreRule.CustomerScoreRuleIndexModel
+@{
+    ViewBag.Title = "会员积分规则";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="active" data-menu="customer-customer-score-rule-index-menu">会员积分规则</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-success btn-sm" onclick="saveCustomerScoreRule();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 780px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="customerScoreRuleDetailForm" class="form-horizontal" role="form">
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                @Model.PromotionRule?.Type?.Name
+                            </h4>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main">
+
+                                <input asp-for="PromotionRule.Id" type="hidden"/>
+                                <input asp-for="PromotionRule.Type" type="hidden"/>
+                                <div class="row">
+
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label asp-for="PromotionRule.Amount" class="col-xs-2 control-label">下线消费金额</label>
+                                            <div class="col-xs-10">
+                                                <div class="input-group">
+                                                    <input asp-for="PromotionRule.Amount" type="number" required="required" step="1" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">元</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label asp-for="PromotionRule.Score" class="col-xs-2 control-label">产生积分</label>
+                                            <div class="col-xs-10">
+                                                <div class="input-group">
+                                                    <input asp-for="PromotionRule.Score" type="number" required="required" step="1" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">分</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                @Model.LogisticsConsumeRule?.Type?.Name
+                            </h4>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main">
+
+                                <input asp-for="LogisticsConsumeRule.Id" type="hidden"/>
+                                <input asp-for="LogisticsConsumeRule.Type" type="hidden"/>
+                                <div class="row">
+
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsConsumeRule.Amount" class="col-xs-2 control-label">集运消费金额</label>
+                                            <div class="col-xs-10">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsConsumeRule.Amount" type="number" required="required" step="1" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">元</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsConsumeRule.Score" class="col-xs-2 control-label">集运积分</label>
+                                            <div class="col-xs-10">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsConsumeRule.Score" type="number" required="required" step="1" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">分</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4 class="widget-title">
+                                @Model.ScoreToBalanceRule?.Type?.Name
+                            </h4>
+                        </div>
+
+                        <div class="widget-body">
+                            <div class="widget-main">
+
+                                <input asp-for="ScoreToBalanceRule.Id" type="hidden"/>
+                                <input asp-for="ScoreToBalanceRule.Type" type="hidden"/>
+                                <div class="row">
+
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label asp-for="ScoreToBalanceRule.Score" class="col-xs-2 control-label">多少积分</label>
+                                            <div class="col-xs-10">
+                                                <div class="input-group">
+                                                    <input asp-for="ScoreToBalanceRule.Score" type="number" required="required" step="1" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">分</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label asp-for="ScoreToBalanceRule.Amount" class="col-xs-2 control-label">可兑换余额</label>
+                                            <div class="col-xs-10">
+                                                <div class="input-group">
+                                                    <input asp-for="ScoreToBalanceRule.Amount" type="number" required="required" step="1" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">元</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveCustomerScoreRule() {
+        var form = $("#customerScoreRuleDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerScoreRule")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    } 
+
+                    $.msg.show(data.message);
+                }
+            });
+        }
+    }
+
+</script>

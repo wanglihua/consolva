@@ -97,6 +97,17 @@
                     
                     *@
 
+                    @if (Model.HasPassRes(PassRes.Customer.CustomerScoreRule))
+                    {
+                        <li id="customer-customer-score-rule-index-menu">
+                            <a asp-area="Customer" asp-controller="CustomerScoreRule" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                积分规则
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
                     @if (Model.HasPassRes(PassRes.Customer.CustomerAccountEntry))
                     {
                         <li id="customer-customer-account-entry-index-menu">
