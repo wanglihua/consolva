@@ -84,17 +84,6 @@
                         </li>
                     }
 
-                    @if (Model.HasPassRes(PassRes.Customer.SupperPassword))
-                    {
-                        <li id="customer-customer-supper-password-index-menu">
-                            <a href="@Url.Action("Index", "CustomerSupperPassword")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                超级密码
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
                     @if (Model.HasPassRes(PassRes.Customer.CustomerScoreLog))
                     {
                         <li id="customer-customer-score-log-index-menu">
@@ -118,6 +107,17 @@
                     }
                     
                     *@
+
+                    @if (Model.HasPassRes(PassRes.Customer.SupperPassword))
+                    {
+                        <li id="customer-customer-supper-password-index-menu">
+                            <a asp-area="Customer" asp-controller="CustomerSupperPassword" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                超级密码
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
 
                     @if (Model.HasPassRes(PassRes.Customer.CustomerVipDiscount))
                     {
