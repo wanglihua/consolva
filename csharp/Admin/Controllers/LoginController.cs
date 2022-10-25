@@ -73,8 +73,6 @@ public class LoginController : Controller
     [NoLoginRequired]
     public IActionResult Logout()
     {
-        int loginUserId = loginUserService.GetLoginUserId();
-
         this.loginUserService.Logout(this.Request, this.Response);
 
         return Json(new {
