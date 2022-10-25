@@ -136,7 +136,6 @@ public class CustomerSupperPasswordService
             return false;
         }
 
-
         return true;
     }
 

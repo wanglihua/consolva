@@ -54,6 +54,14 @@ public class PayType : CodeTypeBase
         WriteOff,
     };
 
+    private static readonly List<PayType> customerCodeTypeList = new List<PayType>() {
+        Balance,
+        Wechat,
+        AliPay,
+        PayPal,
+        CreditCard,
+    };
+
     private static readonly Dictionary<int, PayType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
     public static PayType GetById(int id)
@@ -81,14 +89,7 @@ public class PayType : CodeTypeBase
     /// <returns></returns>
     public static IList<PayType> GetCustomerPayTypeList()
     {
-        IList<PayType> payTypeList = new List<PayType>();
-        payTypeList.Add(Balance);
-        payTypeList.Add(Wechat);
-        payTypeList.Add(AliPay);
-        payTypeList.Add(PayPal);
-        payTypeList.Add(CreditCard);
-
-        return payTypeList;
+        return customerCodeTypeList;
     }
 
     private PayType(int id, string name, string description) : base(id, name, description)
