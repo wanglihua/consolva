@@ -62,17 +62,6 @@
                         </li>
                     }
 
-                    @if (Model.HasPassRes(PassRes.Customer.CustomerAccountEntry))
-                    {
-                        <li id="customer-customer-account-entry-index-menu">
-                            <a href="@Url.Action("Index", "CustomerAccountEntry")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                客户账户余额变动
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
                     @if (Model.HasPassRes(PassRes.Customer.CustomerPromotion))
                     {
                         <li id="customer-customer-promotion-index-menu">
@@ -107,6 +96,17 @@
                     }
                     
                     *@
+
+                    @if (Model.HasPassRes(PassRes.Customer.CustomerAccountEntry))
+                    {
+                        <li id="customer-customer-account-entry-index-menu">
+                            <a asp-area="Customer" asp-controller="CustomerAccountEntry" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                客户账户余额变动
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
 
                     @if (Model.HasPassRes(PassRes.Customer.SupperPassword))
                     {
