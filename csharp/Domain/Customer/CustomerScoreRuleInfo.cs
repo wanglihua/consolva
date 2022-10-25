@@ -7,6 +7,7 @@ namespace shunda.Domain.Customer;
 
 /// <summary>
 /// 会员积分规则
+/// 使用这些规则时要检查 金额 或 积分 是不是0
 /// </summary>
 public class CustomerScoreRuleInfo : Entity
 {
