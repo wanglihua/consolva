@@ -1,0 +1,73 @@
+@{
+    Layout = null;
+}
+
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerAccountEntry.CustomerAccountEntryListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerAccountEntryList"})
+
+<table id="tblCustomerAccountEntryList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(CustomerAccountEntryInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">会员</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(CustomerAccountEntryInfo.ChangeType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">变动类型</a>
+            </th>
+            <th style="width: 100px; text-align: right;">
+                <a field="@(nameof(CustomerAccountEntryInfo.Amount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">金额</a>
+            </th>
+            <th style="width: 100px; text-align: right;">
+                <a field="@(nameof(CustomerAccountEntryInfo.AccountBefore))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">变动前</a>
+            </th>
+            <th style="width: 100px; text-align: right;">
+                <a field="@(nameof(CustomerAccountEntryInfo.AccountAfter))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">变动后</a>
+            </th>
+            <th style="width: 300px; text-align: center;">
+                <a field="@(nameof(CustomerAccountEntryInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">变动描述</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerAccountEntryInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">变动时间</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerAccountEntryList != null && Model.CustomerAccountEntryList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CustomerAccountEntryInfo customerAccountEntry in Model.CustomerAccountEntryList)
+            {
+                <tr>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <a asp-controller="Customer" asp-action="Detail" asp-route-id="@(customerAccountEntry.Customer.Id)" target="_blank">
+                            @(customerAccountEntry.Customer.Id)
+                        </a>
+                    </td>
+                    <td style="text-align: center;">@customerAccountEntry.ChangeType?.Name</td>
+                    <td style="text-align: right;">@customerAccountEntry.Amount</td>
+                    <td style="text-align: right;">@customerAccountEntry.AccountBefore</td>
+                    <td style="text-align: right;">@customerAccountEntry.AccountAfter</td>
+                    <td style="text-align: center;">@customerAccountEntry.Description</td>
+                    <td style="text-align: center;">@customerAccountEntry.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerAccountEntryList"})

@@ -12,14 +12,12 @@ public class CustomerSupperPasswordInfo : Entity
     /// <summary>
     /// 客户id
     /// </summary>
-    [DisplayName("客户id")]
     [Required(ErrorMessage = "客户id不能为空！")]
     public virtual int CustomerId { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
-    [DisplayName("密码")]
     [Required(ErrorMessage = "密码不能为空！")]
     [MaxLength(40, ErrorMessage = "密码长度不能大于40！")]
     public virtual string Password { get; set; } = string.Empty;

@@ -12,7 +12,6 @@ public class CustomerCharacterInfo : Entity
     /// <summary>
     /// 内容
     /// </summary>
-    [DisplayName("内容")]
     [Required(ErrorMessage = "内容不能为空！")]
     [MaxLength(5, ErrorMessage = "内容长度不能大于5！")]
     public virtual string Content { get; set; } = string.Empty;

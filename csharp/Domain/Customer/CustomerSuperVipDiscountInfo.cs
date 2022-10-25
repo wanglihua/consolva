@@ -14,14 +14,12 @@ public class CustomerSuperVipDiscountInfo : Entity
     /// <summary>
     /// 会员
     /// </summary>
-    [DisplayName("会员")]
     [BindNever]
     public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
 
     /// <summary>
     /// 折扣
     /// </summary>
-    [DisplayName("折扣")]
     [Required(ErrorMessage = "折扣不能为空！")]
     public virtual decimal Discount { get; set; }
 
@@ -41,7 +39,6 @@ public class CustomerSuperVipDiscountInfo : Entity
     /// <summary>
     /// 会员
     /// </summary>
-    [DisplayName("会员")]
     [Required(ErrorMessage = "会员不能为空！")]
     public virtual string CustomerCodeCache { get; set; } = string.Empty;
 

@@ -1,0 +1,99 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Customer.Models.CustomerAccountEntry
+@using shunda.Core
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerAccountEntry.CustomerAccountEntryIndexModel
+@{
+    ViewBag.Title = "客户账户余额变动";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="active" data-menu="customer-customer-account-entry-index-menu">
+        客户账户余额变动
+    </li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerAccountEntryList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+
+    <label for="changeTypeQuery">余额变动类型</label>&nbsp;
+    <select id="changeTypeQuery" name="customerCodeQuery" style="width: 150px; height: 30px;">
+        <option value="">变动类型查询</option>
+        @foreach (var changeType in Model.ChangeTypeList)
+        {
+            <option value="@(changeType.Id)">@(changeType.Name)</option>
+        }
+    </select>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerAccountEntryList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerAccountEntryList" data-page-index="0" data-sort-field="@(nameof(CustomerAccountEntryInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerAccountEntryDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerAccountEntryList();
+    });
+
+    function sortCustomerAccountEntryList(sortField, sortDir) {
+        var list = $('#customerAccountEntryList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerAccountEntryList();
+    }
+
+    function loadCustomerAccountEntryList(pageIndex) {
+        var list = $('#customerAccountEntryList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerAccountEntry")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerAccountEntryListQueryParam.CustomerCodeQuery))': $("#customerCodeQuery").val(),
+                '@(nameof(CustomerAccountEntryListQueryParam.ChangeTypeQuery))': $("#changeTypeQuery").val(),
+                '@(nameof(CustomerAccountEntryListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerAccountEntryListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerAccountEntryListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerAccountEntryList').html(data);
+
+                initListTable("#tblCustomerAccountEntryList");
+            }
+        });
+    }
+
+</script>
