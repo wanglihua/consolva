@@ -62,7 +62,7 @@ public class HibernateActionFilter : IActionFilter
 
         if (context.Exception != null)
         {
-            if ((context.Exception is ValidationException == false) || (context.Exception is System.ComponentModel.DataAnnotations.ValidationException == false))
+            if ((context.Exception is ValidationException == false) && (context.Exception is System.ComponentModel.DataAnnotations.ValidationException == false))
             {
                 // 这里不记录异常也是可以的，因为异常统一处理程序会记录
                 log.Error(context.Exception);
