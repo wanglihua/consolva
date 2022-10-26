@@ -5,13 +5,15 @@ using shunda.Admin.Areas.Fee.Models.ManualFeeReason;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
+using shunda.Core.Web;
 using shunda.Domain.Order;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
-// [AdminAuth(PassRes.SystemSetting.ManualFeeReason)] todo 后面补上
+[AdminAuth(PassRes.Fee.ManualFeeReason)]
 public class ManualFeeReasonController : Controller
 {
     private ISession session;
