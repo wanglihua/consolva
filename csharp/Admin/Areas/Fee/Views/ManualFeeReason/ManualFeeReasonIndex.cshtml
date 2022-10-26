@@ -1,0 +1,202 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.ManualFeeReason
+@using shunda.Core
+@using shunda.Domain.Order
+@model shunda.Admin.Areas.Fee.Models.ManualFeeReason.ManualFeeReasonIndexModel
+@{
+    ViewBag.Title = "增减核销费用原因";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-manual-fee-reason-index-menu">增减核销费用原因</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadManualFeeReasonList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showManualFeeReasonDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteManualFeeReason()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="feeTypeQuery">费用类型</label>&nbsp;
+    <select id="feeTypeQuery" name="feeTypeQuery" style="width: 120px; height: 30px;" onchange="loadManualFeeReasonList(0)">
+        <option value="">费用类型</option>
+        @foreach (ManualFeeType feeType in Model.FeeTypeList)
+        {
+            <option value="@(feeType.Id)">@(feeType.Name)</option>
+        }
+    </select>&nbsp;
+    
+    <label for="statusQuery">状态</label>&nbsp;
+    <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;" onchange="loadManualFeeReasonList(0)">
+        <option value="">状态</option>
+        @foreach (ManualFeeReasonStatus status in Model.StatusList)
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>&nbsp;
+    
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadManualFeeReasonList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="manualFeeReasonList" data-page-index="0" data-sort-field="@(nameof(ManualFeeReasonInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="manualFeeReasonDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadManualFeeReasonList();
+    });
+
+    function sortManualFeeReasonList(sortField, sortDir) {
+        var list = $('#manualFeeReasonList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadManualFeeReasonList();
+    }
+
+    function loadManualFeeReasonList(pageIndex) {
+        var list = $('#manualFeeReasonList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ManualFeeReason")",
+            type: "POST",
+            data: {
+                '@(nameof(ManualFeeReasonListQueryParam.FeeTypeQuery))': $('#feeTypeQuery').val(),
+                '@(nameof(ManualFeeReasonListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(ManualFeeReasonListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ManualFeeReasonListQueryParam.SortField))': sortField,
+                '@(nameof(ManualFeeReasonListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#manualFeeReasonList').html(data);
+
+                initListTable("#tblManualFeeReasonList");
+            }
+        });
+    }
+
+    function showManualFeeReasonDetail(id) {
+        $("#manualFeeReasonDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#manualFeeReasonDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ManualFeeReason")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#manualFeeReasonDetailDialogWrapper").html(data);
+                $("#manualFeeReasonDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveManualFeeReason() {
+        var form = $("#manualFeeReasonDetailForm");
+        var valid = validate(form,
+            {
+                'ManualFeeReason.FeeTypeId': {
+                    required: true,
+                    digits: true 
+                },
+                'ManualFeeReason.Content': {
+                    required: true,
+                    maxlength: 300
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ManualFeeReason")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#manualFeeReasonDetailDialog').modal('hide');
+                        loadManualFeeReasonList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteManualFeeReason() {
+        var idList = getSelectIdList('#tblManualFeeReasonList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ManualFeeReason")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadManualFeeReasonList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
