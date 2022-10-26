@@ -144,7 +144,7 @@
                     @if (Model.HasPassRes(PassRes.Customer.CustomerSuperVipDiscount))
                     {
                         <li id="customer-customer-super-vip-discount-index-menu">
-                            <a href="@Url.Action("Index", "CustomerSuperVipDiscount")">
+                            <a asp-area="Customer" asp-controller="CustomerSuperVipDiscount" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 超级VIP折扣
                             </a>
