@@ -1,0 +1,98 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Customer.Models.CustomerScoreLog
+@using shunda.Core
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerScoreLog.CustomerScoreLogIndexModel
+@{
+    ViewBag.Title = "会员积分日志";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="active" data-menu="customer-customer-score-log-index-menu">会员积分日志</li>
+}
+
+@*
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerScoreLogList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+</div>
+*@
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询" />&nbsp;
+    <label for="customerScoreTypeQuery">积分类型</label>&nbsp;
+    <select id="customerScoreTypeQuery" name="customerScoreTypeQuery" style="width: 100px; height: 30px;">
+        <option value="">积分类型</option>
+        @foreach (var scoreType in Model.ScoreTypeList)
+        {
+            <option value="@(scoreType.Id)">@(scoreType.Name)</option>
+        }
+    </select>&nbsp;
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号精确查询" />&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerScoreLogList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerScoreLogList" data-page-index="0" data-sort-field="@(nameof(CustomerScoreLogInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerScoreLogDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerScoreLogList();
+    });
+
+    function sortCustomerScoreLogList(sortField, sortDir) {
+        var list = $('#customerScoreLogList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerScoreLogList();
+    }
+
+    function loadCustomerScoreLogList(pageIndex) {
+        var list = $('#customerScoreLogList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerScoreLog")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerScoreLogListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(CustomerScoreLogListQueryParam.ScoreTypeQuery))': $('#customerScoreTypeQuery').val(),
+                '@(nameof(CustomerScoreLogListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(CustomerScoreLogListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerScoreLogListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerScoreLogListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerScoreLogList').html(data);
+
+                initListTable("#tblCustomerScoreLogList");
+            }
+        });
+    }
+</script>

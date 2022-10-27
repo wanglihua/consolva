@@ -362,6 +362,17 @@
                     
                     *@
 
+                   @if (Model.HasPassRes(PassRes.Customer.CustomerScoreLog))
+                    {
+                        <li id="customer-customer-score-log-index-menu">
+                            <a asp-area="Customer" asp-controller="CustomerScoreLog" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                会员积分日志
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
                     @if (Model.HasPassRes(PassRes.Customer.CustomerScoreRule))
                     {
                         <li id="customer-customer-score-rule-index-menu">
