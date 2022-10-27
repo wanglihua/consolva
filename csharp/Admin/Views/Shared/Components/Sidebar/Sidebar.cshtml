@@ -316,17 +316,6 @@
                         </li>
                     }
 
-                    @if (Model.HasPassRes(PassRes.Customer.CustomerScoreRule))
-                    {
-                        <li id="customer-customer-score-rule-index-menu">
-                            <a href="@Url.Action("Index", "CustomerScoreRule")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                积分规则
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
                     @if (Model.HasPassRes(PassRes.Customer.CustomerPromotionImage))
                     {
                         <li id="customer-customer-promotion-image-index-menu">
