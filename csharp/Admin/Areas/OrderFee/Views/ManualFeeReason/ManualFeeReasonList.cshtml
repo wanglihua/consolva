@@ -2,7 +2,7 @@
     Layout = null;
 }
 @using shunda.Domain.Order
-@model shunda.Admin.Areas.Fee.Models.ManualFeeReason.ManualFeeReasonListModel
+@model shunda.Admin.Areas.OrderFee.Models.ManualFeeReason.ManualFeeReasonListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualFeeReasonList"})
 
@@ -54,7 +54,7 @@
         else
         {
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     暂时没有数据！
                 </td>
             </tr>

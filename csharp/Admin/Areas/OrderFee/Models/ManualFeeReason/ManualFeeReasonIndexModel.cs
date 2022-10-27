@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Order;
 
-namespace shunda.Admin.Areas.Fee.Models.ManualFeeReason;
+namespace shunda.Admin.Areas.OrderFee.Models.ManualFeeReason;
 
-public class ManualFeeReasonDetailModel
+public class ManualFeeReasonIndexModel
 {
-    public ManualFeeReasonInfo ManualFeeReason { get; set; } = new ManualFeeReasonInfo();
-
     [BindNever]
     public IList<ManualFeeType> FeeTypeList { get; set; } = ManualFeeType.GetList();
 

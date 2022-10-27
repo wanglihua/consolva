@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using shunda.Admin.Areas.Fee.Models.ManualFeeReason;
+using shunda.Admin.Areas.OrderFee.Models.ManualFeeReason;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -10,9 +10,9 @@ using shunda.Domain.Order;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.Fee.Controllers;
+namespace shunda.Admin.Areas.OrderFee.Controllers;
 
-[FeeArea]
+[OrderFeeArea]
 [AdminAuth(PassRes.OrderFee.ManualFeeReason)]
 public class ManualFeeReasonController : Controller
 {

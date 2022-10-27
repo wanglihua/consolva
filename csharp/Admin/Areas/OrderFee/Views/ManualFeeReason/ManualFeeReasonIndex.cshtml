@@ -1,16 +1,16 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Admin.Areas.Fee.Models.ManualFeeReason
+@using shunda.Admin.Areas.OrderFee.Models.ManualFeeReason
 @using shunda.Core
 @using shunda.Domain.Order
-@model shunda.Admin.Areas.Fee.Models.ManualFeeReason.ManualFeeReasonIndexModel
+@model shunda.Admin.Areas.OrderFee.Models.ManualFeeReason.ManualFeeReasonIndexModel
 @{
     ViewBag.Title = "增减核销费用原因";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
-    <li class="parent" data-menu="settings-menu">系统设置</li>
-    <li class="active" data-menu="settings-manual-fee-reason-index-menu">增减核销费用原因</li>
+    <li class="parent" data-menu="order-fee-menu">系统设置</li>
+    <li class="active" data-menu="order-fee-manual-fee-reason-index-menu">增减核销费用原因</li>
 }
 
 <div class="gridToolBar clearfix">

@@ -18,7 +18,7 @@ public class PassResDataInitService
     public void InitData()
     {
         List<PassResInfo> passResList = new List<PassResInfo>();
-        passResList.AddRange(PassRes.Storage.AllData);1
+        passResList.AddRange(PassRes.Storage.AllData);
         passResList.AddRange(PassRes.Storage.AllData);
         passResList.AddRange(PassRes.Logistics.AllData);
         passResList.AddRange(PassRes.CustomerMessage.AllData);

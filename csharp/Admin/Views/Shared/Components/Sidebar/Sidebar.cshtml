@@ -15,7 +15,283 @@
 }
 <div id="sidebar" class="sidebar responsive @(sidebarMinClassStr)">
     <ul class="nav nav-list">
-        
+
+        @if (Model.HasOneOfPassRes(PassRes.OrderFee.All))
+        {
+            <li id="order-fee-menu">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-dollar"></i>
+                    <span class="menu-text">费用管理</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+
+                    @*
+                    @if (Model.HasPassRes(PassRes.OrderFee.ManualIncreaseFee))
+                    {
+                        <li id="order-fee-manual-increase-fee-index-menu">
+                            <a href="@Url.Action("Index", "ManualIncreaseFee")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                增加费用
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasOneOfPassRes(PassRes.OrderFee.ManualDecreaseFeeApply, PassRes.OrderFee.ManualDecreaseFeeApprove, PassRes.OrderFee.ManualDecreaseFee))
+                    {
+                        <li id="order-fee-manual-decrease-fee-menu">
+                            <a href="#" class="dropdown-toggle">
+                                <span class="menu-text">减少费用</span>
+                                <b class="arrow fa fa-angle-down"></b>
+                            </a>
+                            <b class="arrow"></b>
+                            <ul class="submenu">
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.ManualDecreaseFeeApply))
+                                {
+                                    <li id="order-fee-manual-fee-apply-index-menu">
+                                        <a href="@Url.Action("Index", "LogisticsOrderManualFeeApply")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            减少费用申请
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.ManualDecreaseFeeApprove))
+                                {
+                                    <li id="order-fee-manual-fee-approve-index-menu">
+                                        <a href="@Url.Action("Index", "LogisticsOrderManualFeeApprove")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            减少费用审核
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.ManualDecreaseFee))
+                                {
+                                    <li id="order-fee-manual-decrease-fee-index-menu">
+                                        <a href="@Url.Action("Index", "ManualDecreaseFee")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            减少费用
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Model.HasOneOfPassRes(PassRes.OrderFee.WriteOffFeeApply, PassRes.OrderFee.WriteOffFeeApprove, PassRes.OrderFee.WriteOffFee))
+                    {
+                        <li id="order-fee-write-off-fee-menu">
+                            <a href="#" class="dropdown-toggle">
+                                <span class="menu-text">费用核销</span>
+                                <b class="arrow fa fa-angle-down"></b>
+                            </a>
+                            <b class="arrow"></b>
+                            <ul class="submenu">
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.WriteOffFeeApply))
+                                {
+                                    <li id="order-fee-write-off-apply-index-menu">
+                                        <a href="@Url.Action("Index", "LogisticsOrderFeeWriteOffApply")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            费用核销申请
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.WriteOffFeeApprove))
+                                {
+                                    <li id="order-fee-write-off-approve-index-menu">
+                                        <a href="@Url.Action("Index", "LogisticsOrderFeeWriteOffApprove")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            费用核销审核
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.WriteOffFee))
+                                {
+                                    <li id="order-fee-write-off-fee-index-menu">
+                                        <a href="@Url.Action("Index", "WriteOffFee")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            费用核销
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                    @if (Model.HasOneOfPassRes(PassRes.OrderFee.RefundApply, PassRes.OrderFee.RefundApprove, PassRes.OrderFee.Refund))
+                    {
+                        <li id="order-fee-refund-menu">
+                            <a href="#" class="dropdown-toggle">
+                                <span class="menu-text">退赔款</span>
+                                <b class="arrow fa fa-angle-down"></b>
+                            </a>
+                            <b class="arrow"></b>
+                            <ul class="submenu">
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.RefundApply))
+                                {
+                                    <li id="order-fee-refund-apply-index-menu">
+                                        <a href="@Url.Action("Index", "LogisticsOrderRefundApply")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            退赔款申请
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.RefundApprove))
+                                {
+                                    <li id="order-fee-refund-approve-index-menu">
+                                        <a href="@Url.Action("Index", "LogisticsOrderRefundApprove")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            退赔款审核
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                                @if (Model.HasPassRes(PassRes.OrderFee.Refund))
+                                {
+                                    <li id="order-fee-refund-index-menu">
+                                        <a href="@Url.Action("Index", "LogisticsOrderRefund")">
+                                            <i class="menu-icon fa fa-caret-right"></i>
+                                            退赔款
+                                        </a>
+                                        <b class="arrow"></b>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.ArrearsFeeList))
+                    {
+                        <li id="order-fee-logistics-order-arrears-index-menu">
+                            <a href="@Url.Action("Index", "LogisticsOrderArrears")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                欠费清单
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.PickupStationFee))
+                    {
+                        <li id="order-fee-logistics-order-pickup-station-fee-index-menu">
+                            <a href="@Url.Action("Index", "LogisticsOrderPickupStationFee")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                自提点费用
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.PickupStationFee))
+                    {
+                        <li id="order-fee-ops-fee-by-deliver-index-menu">
+                            <a href="@Url.Action("Index", "LogisticsOrderPickupStationFeeByDeliver")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                自提点费用按交付
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.HomeDeliveryFee))
+                    {
+                        <li id="order-fee-home-deliver-fee-index-menu">
+                            <a href="@Url.Action("Index", "LogisticsOrderHomeDeliverFee")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                送货上门费用
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.LogisticsOrderPay))
+                    {
+                        <li id="order-fee-logistics-order-pay-index-menu">
+                            <a href="@Url.Action("Index", "LogisticsOrderPay")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                实时收入
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.CustomerCharge))
+                    {
+                        <li id="order-fee-customer-charge-index-menu">
+                            <a href="@Url.Action("Index", "CustomerCharge")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                余额充值
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.ExpressReturnPay))
+                    {
+                        <li id="order-fee-express-return-pay-index-menu">
+                            <a href="@Url.Action("Index", "ExpressReturnPay")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                退运支付
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.Coupon))
+                    {
+                        <li id="order-fee-coupon-batch-index-menu">
+                            <a href="@Url.Action("Index", "CouponBatch")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                优惠券批次
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.Coupon))
+                    {
+                        <li id="order-fee-coupon-index-menu">
+                            <a href="@Url.Action("Index", "Coupon")">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                优惠券总览
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+                    *@
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.ManualFeeReason))
+                    {
+                        <li id="order-fee-manual-fee-reason-index-menu">
+                            <a asp-area="OrderFee" asp-controller="ManualFeeReason" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                增减核销费用原因
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                </ul>
+            </li>
+        }
 
         @if (Model.HasOneOfPassRes(PassRes.Customer.All))
         {

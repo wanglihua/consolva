@@ -1,7 +1,7 @@
 using shunda.Core;
 using shunda.Domain.Order;
 
-namespace shunda.Admin.Areas.Fee.Models.ManualFeeReason;
+namespace shunda.Admin.Areas.OrderFee.Models.ManualFeeReason;
 
 public class ManualFeeReasonListModel : ListModel
 {
