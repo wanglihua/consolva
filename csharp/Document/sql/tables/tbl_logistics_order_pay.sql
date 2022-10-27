@@ -20,5 +20,6 @@ CREATE TABLE tbl_logistics_order_pay
     INDEX ix_logistics_order_pay_payment_id (paypal_payment_id),
 
     CONSTRAINT fk_logistics_order_pay_order_id FOREIGN KEY (order_id) REFERENCES tbl_logistics_order (id),
-    CONSTRAINT fk_logistics_order_pay_customer_id FOREIGN KEY (customer_id) REFERENCES tbl_customer (id)
+    CONSTRAINT fk_logistics_order_pay_customer_id FOREIGN KEY (customer_id) REFERENCES tbl_customer (id),
+    CONSTRAINT fk_logistics_order_write_off_reason_id FOREIGN KEY (write_off_reason_id) REFERENCES tbl_manual_fee_reason (id)
 ) COMMENT '物流订单支付';
