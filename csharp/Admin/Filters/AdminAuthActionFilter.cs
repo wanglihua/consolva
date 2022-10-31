@@ -54,11 +54,11 @@ public class AdminAuthActionFilter : IActionFilter
         #endregion
 
         #region 权限判断
-        
+
         // Controller 类上设置的 possResId 中有一个是已授权的，就是 Controller 级别已授权。就是这里的各个 passResId 是 "或 or" 的关系
         // Action 方法上设置的 passResId 中的有一个是已授权的，就是 Action 级别已授权。就是这里的各个 passResId 是 "或 or" 的关系
         // Controller 级别（如果有）已授权 和 Action 级别（如果有）已授权，同时满足，这个Action才能正常访问。就是 Controller级别 和 Action级别 是 "且 and" 的关系
-        
+
         object[] controllerAdminAuthAttributes = actionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(AdminAuthAttribute), true);
         object[] actionAdminAuthAttributes = actionDescriptor.MethodInfo.GetCustomAttributes(typeof(AdminAuthAttribute), true);
 
@@ -71,6 +71,8 @@ public class AdminAuthActionFilter : IActionFilter
         }
 
         Dictionary<int, bool> passResIdMap = this.loginUserService.GetPassResIdMap();
+
+        // 下面的两个循环，表名Controller 和 Action 上的PassRes是并且的关系
 
         foreach (object adminAuthAttributeObj in controllerAdminAuthAttributes)
         {
@@ -114,8 +116,8 @@ public class AdminAuthActionFilter : IActionFilter
                     return;
                 }
             }
-        }        
-        
+        }
+
         #endregion
     }
 

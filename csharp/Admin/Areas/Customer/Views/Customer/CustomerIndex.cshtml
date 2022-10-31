@@ -19,11 +19,6 @@
         刷新
     </button>
 
-    <button type="button" class="btn btn-pink btn-sm" onclick="updateAllCustomerCodePrefix()">
-        <i class="ace-icon fa fa-gear"></i>
-        手动更新客户ID前缀
-    </button>
-
     <button class="btn btn-pink btn-sm" onclick="updateCustomerVip()">
         <i class="ace-icon fa fa-gear"></i>
         手动更新会员VIP标识
@@ -163,29 +158,6 @@
         var url = "@Url.Action("Detail", "Customer", new {id = 88888})";
         url = url.replace(/88888/, id);
         window.open(url, "customer_detail");
-    }
-
-    function updateAllCustomerCodePrefix() {
-
-        showMask("处理中，请稍候");
-
-        $.ajax({
-            url: "@Url.Action("UpdateCodePrefix", "Customer")",
-            type: "POST",
-            data: {
-            },
-            success: function(data) {
-                hideMask();
-
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $.msg.show(data.message);
-                loadCustomerList();
-            }
-        });
     }
 
     function updateCustomerVip() {

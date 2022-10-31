@@ -378,11 +378,11 @@ public class CustomerController : Controller
         return View("CustomerDetail", model);
     }
 
-    /*
+
     [HttpPost]
     [Route("/admin/customer/unfreeze")]
     [AdminAuth(PassRes.Customer.CustomerFreeze)]
-    [NoHibernateAutoTransaction] // no trans
+    [Transactional]
     public IActionResult Unfreeze(int id)
     {
         int customerId = id;
@@ -411,7 +411,7 @@ public class CustomerController : Controller
     [HttpPost]
     [Route("/admin/customer/freeze")]
     [AdminAuth(PassRes.Customer.CustomerFreeze)]
-    [NoHibernateAutoTransaction] // no trans
+    [Transactional]
     public IActionResult Freeze(int id)
     {
         int customerId = id;
@@ -464,6 +464,7 @@ public class CustomerController : Controller
         });
     }
 
+    /*
     [HttpPost]
     [Route("/admin/customer/edit/character")]
     [AdminAuth(PassRes.Customer.CustomerCharacter)]
