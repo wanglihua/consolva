@@ -464,7 +464,6 @@ public class CustomerController : Controller
         });
     }
 
-    /*
     [HttpPost]
     [Route("/admin/customer/edit/character")]
     [AdminAuth(PassRes.Customer.CustomerCharacter)]
@@ -481,7 +480,6 @@ public class CustomerController : Controller
         // {
         //     throw new ValidationException("客户性质长度不能大于5个字符！");
         // }
-        
 
         customer.CustomerCharacter = character;
 
@@ -500,7 +498,7 @@ public class CustomerController : Controller
     // 这里的事务还是需要的，但事务已经做在存储过程里面了
     public IActionResult UpdateVip()
     {
-        customerCodeService.UpdateAllCustomerVip();
+        // customerCodeService.UpdateAllCustomerVip(); todo 这个这里还没实现
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
@@ -510,7 +508,7 @@ public class CustomerController : Controller
 
     [HttpPost]
     [Route("/admin/customer/import/test/cutomer")]
-    [AdminAuth(PassRes.Customer.ImportTestCustomer)]
+    [AdminAuth(PassRes.Customer.ImportTestCustomer)] // todo 这个还会有可能的修改
     // 内部有数据库事务
     public IActionResult ImportTestCustomer(IFormFile excelFile)
     {
@@ -653,5 +651,4 @@ public class CustomerController : Controller
             { "message", "导入创建测试客户成功！" },
         });
     }
-    */
 }
