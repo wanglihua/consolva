@@ -303,12 +303,11 @@
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-
-                    @*
+                    
                     @if (Model.HasPassRes(PassRes.Customer.CustomerList))
                     {
                         <li id="customer-customer-index-menu">
-                            <a href="@Url.Action("Index", "Customer")">
+                            <a asp-area="Customer" asp-controller="Customer" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 会员列表
                             </a>
@@ -316,6 +315,7 @@
                         </li>
                     }
 
+                    @*
                     @if (Model.HasPassRes(PassRes.Customer.CustomerPromotionImage))
                     {
                         <li id="customer-customer-promotion-image-index-menu">

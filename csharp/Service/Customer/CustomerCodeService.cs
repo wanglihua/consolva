@@ -3,6 +3,8 @@ using shunda.Core.Service;
 
 namespace shunda.Service.Customer;
 
+// todo 考虑客户编号后缀，一个固定长度的后缀，用于客户ID方面的校验。两位三位四位都可以，生成是可以去掉不吉利的数字
+
 [Service(ServiceType.Scoped)]
 public class CustomerCodeService
 {

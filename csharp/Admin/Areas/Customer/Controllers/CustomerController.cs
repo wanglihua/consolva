@@ -1,5 +1,4 @@
 using System;
-
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
@@ -7,7 +6,7 @@ using NHibernate.SqlCommand;
 using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-
+using shunda.Admin.Areas.Customer.Models.Customer;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -25,13 +24,13 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Customer.Controllers;
 
 [CustomerArea]
-// [AdminAuth(PassRes.Customer.CustomerList)] // action 权限分开设置
+[AdminAuth(PassRes.Customer.CustomerList)]
 public class CustomerController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public static readonly string NoVipLevelName = "NoVip";
-    public static readonly string superVipLevelName = "超级VIP";
+    public static readonly int NoVipRankId = -100;
+    public static readonly int SuperVipRankId = -200;
 
     private ISession session;
     private CustomerCodeService customerCodeService;
@@ -48,25 +47,22 @@ public class CustomerController : Controller
         this.loginUserService = loginUserService;
         this.passwordService = passwordService;
     }
-    
-    /*
+
+
     [HttpGet]
     [Route("/admin/customer")]
-    [AdminAuth(PassRes.Customer.CustomerList)]
-    [NoHibernateAutoTransaction]
     public IActionResult Index()
     {
         CustomerIndexModel model = new CustomerIndexModel();
-        model.StateList = AustraliaState.GetList();
 
-        IList<Tuple<string, string>> vipLevelList = new List<Tuple<string, string>>();
-        vipLevelList.Add(Tuple.Create(NoVipLevelName, "无VIP"));
-        vipLevelList.Add(Tuple.Create(superVipLevelName, superVipLevelName));
+        IList<Tuple<int, string>> vipLevelList = new List<Tuple<int, string>>();
+        vipLevelList.Add(Tuple.Create(NoVipRankId, "无VIP"));
+        vipLevelList.Add(Tuple.Create(SuperVipRankId, "超级VIP"));
 
         IList<CustomerVipDiscountInfo> customerVipDiscountList = session.Query<CustomerVipDiscountInfo>().OrderBy(e => e.Id).ToList();
         foreach (var customerVipDiscount in customerVipDiscountList)
         {
-            vipLevelList.Add(Tuple.Create(customerVipDiscount.LevelName, customerVipDiscount.LevelName));
+            vipLevelList.Add(Tuple.Create(customerVipDiscount.Rank.Id, customerVipDiscount.Rank.Name));
         }
 
         model.VipLevelList = vipLevelList;
@@ -79,13 +75,9 @@ public class CustomerController : Controller
 
         return View("CustomerIndex", model);
     }
-    */
 
-    /*
     [HttpPost]
     [Route("/admin/customer/list")]
-    [AdminAuth(PassRes.Customer.CustomerList)]
-    [NoHibernateAutoTransaction]
     public IActionResult List(CustomerListQueryParam queryParam)
     {
         int totalCount = GetListCriteria(queryParam)
@@ -96,14 +88,14 @@ public class CustomerController : Controller
 
         IList<CustomerInfo> customerList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
-            .AddOrder(Order.Desc(nameof(Model.Id)))
+            .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerInfo>();
 
-        foreach (CustomerInfo customerInfo in customerList)
+        foreach (CustomerInfo customer in customerList)
         {
-            //
+            customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
         }
 
         CustomerListModel model = new CustomerListModel(listPager);
@@ -125,50 +117,27 @@ public class CustomerController : Controller
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Id == customerId));
         }
 
-        string mobileQuery = queryParam.MobileQuery;
-        if (string.IsNullOrWhiteSpace(mobileQuery) == false)
+        if ((queryParam.VipLevelQuery ?? 0) != 0)
         {
-            mobileQuery = mobileQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<CustomerInfo>(e => e.Mobile).IsInsensitiveLike(mobileQuery, MatchMode.Anywhere));
-        }
+            int vipLevelQuery = queryParam.VipLevelQuery ?? 0;
 
-        string nicknameQuery = queryParam.NicknameQuery;
-        if (string.IsNullOrWhiteSpace(nicknameQuery) == false)
-        {
-            nicknameQuery = nicknameQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<CustomerInfo>(e => e.Nickname).IsInsensitiveLike(nicknameQuery, MatchMode.Anywhere));
-        }
-
-        string stateCodeQuery = queryParam.StateCodeQuery;
-        if (string.IsNullOrWhiteSpace(stateCodeQuery) == false)
-        {
-            AustraliaState stateQuery = AustraliaState.GetByCode(stateCodeQuery);
-            if (stateQuery != null && stateQuery != AustraliaState.None)
+            if (vipLevelQuery == NoVipRankId)
             {
-                criteria = criteria.Add(Restrictions.Eq(nameof(CustomerInfo.Province), stateQuery.CustomerCodePrefix));
+                criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Level == CustomerLevel.Common));
             }
-        }
-
-        string vipLevelQuery = queryParam.VipLevelQuery;
-        if (string.IsNullOrWhiteSpace(vipLevelQuery) == false)
-        {
-            if (vipLevelQuery == NoVipLevelName)
+            else if (vipLevelQuery == SuperVipRankId)
             {
-                criteria = criteria.Add(
-                    Restrictions.Or(
-                        Restrictions.Where<CustomerInfo>(e => e.Vip == null),
-                        Restrictions.Where<CustomerInfo>(e => e.Vip == "")
-                    )
-                );
+                criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Level == CustomerLevel.SuperVip));
             }
             else
             {
-                criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Vip == vipLevelQuery));
+                CustomerVipRank vipRank = CustomerVipRank.GetById(vipLevelQuery);
+                criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Level == CustomerLevel.Vip && e.VipRank == vipRank));
             }
         }
 
-        CustomerStatus statusQuery = queryParam.StatusQuery;
-        if (statusQuery != null && statusQuery != CustomerStatus.None)
+        CustomerStatus statusQuery = queryParam.StatusQuery ?? CustomerStatus.None;
+        if (statusQuery != CustomerStatus.None)
         {
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Status == statusQuery));
         }
@@ -185,25 +154,18 @@ public class CustomerController : Controller
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.RegTime < endDateQueryValue));
         }
 
-        string characterQuery = queryParam.CharacterQuery;
-        if (string.IsNullOrWhiteSpace(characterQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.CharacterQuery) == false)
         {
-            characterQuery = characterQuery.Trim();
+            string characterQuery = queryParam.CharacterQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.CustomerCharacter == characterQuery));
         }
 
         return criteria;
     }
 
-    #endregion
-    */
-    
-    /*
-
     [HttpGet]
     [Route("/admin/customer/detail/{id:int}")]
     [AdminAuth(PassRes.Customer.CustomerList)]
-    [NoHibernateAutoTransaction]
     public IActionResult Detail(int id)
     {
         int customerId = id;
@@ -217,6 +179,7 @@ public class CustomerController : Controller
         CustomerDetailModel model = new CustomerDetailModel();
         model.Customer = customer;
 
+        /*
         // 订单列表
         {
             ICriteria criteria = session.CreateCriteria<LogisticsOrderInfo>();
@@ -396,6 +359,7 @@ public class CustomerController : Controller
 
             model.CustomerAddressList = customerAddressList;
         }
+        */
 
         bool isAdmin = loginUserService.IsAdmin;
         Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
@@ -414,6 +378,7 @@ public class CustomerController : Controller
         return View("CustomerDetail", model);
     }
 
+    /*
     [HttpPost]
     [Route("/admin/customer/unfreeze")]
     [AdminAuth(PassRes.Customer.CustomerFreeze)]

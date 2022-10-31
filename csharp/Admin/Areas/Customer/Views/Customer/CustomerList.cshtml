@@ -1,0 +1,198 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.Customer.CustomerListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerList"})
+
+<table id="tblCustomerList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="customerCheckAll"></label><input id="customerCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 90px;">
+                <div>
+                    <a field="@(nameof(CustomerInfo.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">客户ID</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerInfo.Level))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">会员等级</a>
+                </div>
+            </th>
+            <th style="width: 90px;">
+                <div>
+                    <a field="@(nameof(CustomerInfo.Mobile))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">手机号码</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerInfo.MobileValidated))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">手机验证</a>
+                </div>
+            </th>
+            <th style="width: 120px;">
+                <div>
+                    <a field="@(nameof(CustomerInfo.RegTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">注册时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerInfo.LastLogin))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">登录时间</a>
+                </div>
+            </th>
+            <th style="width: 110px;">
+                <div>
+                    <span>OpenId</span>
+                </div>
+                <div>
+                    <span>登录ip</span>
+                </div>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <div>
+                    <a field="@(nameof(CustomerInfo.Account))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">用户余额</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerInfo.VipRank))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">客户VIP</a>
+                </div>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <div>
+                    <a field="@(nameof(CustomerInfo.TotalScore))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">总积分</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerInfo.ValidScore))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerList">有效积分</a>
+                </div>
+            </th>
+
+            <th style="width: 150px; text-align: center;">操作</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerList != null && Model.CustomerList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CustomerInfo customer in Model.CustomerList)
+            {
+                <tr ondblclick="showCustomerDetail(@customer.Id)">
+                    <td style="text-align: center;">
+                        <label for="customerCheck_@(customer.Id)"></label><input id="customerCheck_@(customer.Id)" type="checkbox" class="ace" value="@customer.Id"/><span class="lbl"></span>
+                    </td>
+
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td>
+                        <div>
+                            @if (customer.Status == CustomerStatus.Frozen)
+                            {
+                                <span style="background-color: red; color: white;padding: 0 5px;">
+                                    @(customer.CustomerCodeCache)
+                                    @if (string.IsNullOrWhiteSpace(customer.CustomerCharacter) == false)
+                                    {
+                                        <span>(@(customer.CustomerCharacter))</span>
+                                    }
+                                    (已冻结)
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    @(customer.CustomerCodeCache)
+                                    @if (string.IsNullOrWhiteSpace(customer.CustomerCharacter) == false)
+                                    {
+                                        <span>(@(customer.CustomerCharacter))</span>
+                                    }
+                                </span>
+                            }
+                        </div>
+                        <div>
+                            @(customer.Level.Name)
+                        </div>
+                        <div>
+                            <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = customer.Id})">查看详细</a>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            @if (string.IsNullOrWhiteSpace(customer.Mobile))
+                            {
+                                <span>无</span>
+                            }
+                            else
+                            {
+                                @customer.Mobile
+                            }
+                        </div>
+                        <div>
+                            @if (customer.MobileValidated)
+                            {
+                                <span>已验证</span>
+                            }
+                            else
+                            {
+                                <span>未验证</span>
+                            }
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            @customer.RegTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                        <div>
+                            @customer.LastLogin.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            @customer.LastIp
+                        </div>
+                    </td>
+
+                    <td style="text-align: right;">
+                        <div>
+                            @customer.Account.ToString("#0.00")
+                        </div>
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(customer.VipRank?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: right;">
+                        <div>
+                            @(customer.TotalScore.ToString("#0.00"))
+                        </div>
+                        <div>
+                            @(customer.ValidScore.ToString("#0.00"))
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            <a target="_blank" href="@Url.Action("Index", "CustomerAddress", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;客户地址</a>&nbsp;
+                            <a target="_blank" href="@Url.Action("Index", "CustomerAccountEntryCustomer", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;余额明细</a>
+                        </div>
+                        <div>
+                            <a target="_blank" href="@Url.Action("Index", "LogisticsOrderPayCustomer", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;支付明细</a>&nbsp;
+                            <a target="_blank" href="@Url.Action("Index", "CustomerScoreLogCustomer", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;积分明细</a>
+                        </div>
+                    </td>
+
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerList"})

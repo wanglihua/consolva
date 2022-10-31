@@ -1,0 +1,261 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Customer.Models.Customer
+@using shunda.Core
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.Customer.CustomerIndexModel
+@{
+    ViewBag.Title = "会员列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="active" data-menu="customer-customer-index-menu">会员列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+
+    <button type="button" class="btn btn-pink btn-sm" onclick="updateAllCustomerCodePrefix()">
+        <i class="ace-icon fa fa-gear"></i>
+        手动更新客户ID前缀
+    </button>
+
+    <button class="btn btn-pink btn-sm" onclick="updateCustomerVip()">
+        <i class="ace-icon fa fa-gear"></i>
+        手动更新会员VIP标识
+    </button>
+
+    @if (Model.CanImportTestCustomer)
+    {
+
+        <button id="btnImportTestCustomer" class="btn btn-purple btn-sm">
+            <i class="ace-icon fa fa-file-excel-o"></i>
+            导入测试客户
+        </button>
+
+        <a style="margin-left: 20px; display: inline-block;" href="/static/excel-template/customer/customer_test_create_template.xlsx">下载测试客户导入模板</a>
+    }
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+
+    <label for="vipLevelQuery">VIP</label>&nbsp;
+    <select id="vipLevelQuery" name="stateQuery" style="width: 100px; height: 30px;">
+        <option value="">VIP查询</option>
+        @foreach (var vip in Model.VipLevelList)
+        {
+            <option value="@(vip.Item1)">@(vip.Item2)</option>
+        }
+    </select>&nbsp;  
+    
+    <label for="statusQuery">状态查询</label>&nbsp;
+    <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;">
+        <option value="">状态查询</option>
+        @foreach (var status in Model.StatusList)
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>&nbsp; 
+    
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="注册时间起始" autocomplete="off"/>&nbsp;
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="注册时间截止" autocomplete="off"/>&nbsp;    
+    
+    <label for="characterQuery">会员性质</label>&nbsp;
+    <select id="characterQuery" name="characterQuery" style="width: 100px; height: 30px;">
+        <option value="">会员性质</option>
+        @foreach (var character in Model.CharacterList)
+        {
+            <option value="@(character.Content)">@(character.Content)</option>
+        }
+    </select>&nbsp;     
+    
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerList" data-page-index="0" data-sort-field="@(nameof(CustomerInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#beginDateQuery").on("dp.change", function (e) {
+            $('#endDateQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#endDateQuery").on("dp.change", function (e) {
+            $('#beginDateQuery').data("DateTimePicker").maxDate(e.date);
+        });   
+                
+        loadCustomerList();
+    });
+
+    function sortCustomerList(sortField, sortDir) {
+        var list = $('#customerList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerList();
+    }
+
+    function loadCustomerList(pageIndex) {
+        var list = $('#customerList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "Customer")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(CustomerListQueryParam.VipLevelQuery))': $('#vipLevelQuery').val(),
+                '@(nameof(CustomerListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(CustomerListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(CustomerListQueryParam.EndDateQuery))': $('#endDateQuery').val(),     
+                '@(nameof(CustomerListQueryParam.CharacterQuery))': $('#characterQuery').val(),
+                '@(nameof(CustomerListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerList').html(data);
+
+                initListTable("#tblCustomerList");
+            }
+        });
+    }
+
+    function showCustomerDetail(id) {
+        var url = "@Url.Action("Detail", "Customer", new {id = 88888})";
+        url = url.replace(/88888/, id);
+        window.open(url, "customer_detail");
+    }
+
+    function updateAllCustomerCodePrefix() {
+
+        showMask("处理中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("UpdateCodePrefix", "Customer")",
+            type: "POST",
+            data: {
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $.msg.show(data.message);
+                loadCustomerList();
+            }
+        });
+    }
+
+    function updateCustomerVip() {
+
+        showMask("处理中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("UpdateVip", "Customer")",
+            type: "POST",
+            data: {
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $.msg.show(data.message);
+                loadCustomerList();
+            }
+        });
+    }
+    
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {
+
+        var url = '@Url.Action("ImportTestCustomer", "Customer")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImportTestCustomer',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                        return;
+                    } 
+                    loadCustomerList();
+                    $.msg.show(result.message);
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }       
+
+</script>
