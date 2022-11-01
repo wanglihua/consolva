@@ -17,17 +17,32 @@ public class LogisticsGoodsType : CodeTypeBase
     /// <summary>
     /// 普通类
     /// </summary>
-    public static readonly LogisticsGoodsType Common = new LogisticsGoodsType(1000, "普", "普通类", "【普】", "普通类, 普通物品");
+    public static readonly LogisticsGoodsType Common = new LogisticsGoodsType(1000, "普", "普通类", "【普】", "普通类");
 
     /// <summary>
-    /// 特货
+    /// 品牌类
     /// </summary>
-    public static readonly LogisticsGoodsType Special = new LogisticsGoodsType(4000, "特", "特货", "【特】", "特货");
+    public static readonly LogisticsGoodsType Brand = new LogisticsGoodsType(2000, "牌", "品牌类", "【牌】", "品牌类");
+
+    /// <summary>
+    /// 液体粉末
+    /// </summary>
+    public static readonly LogisticsGoodsType LiquidPowder = new LogisticsGoodsType(3000, "液", "液体粉末", "【液】", "液体粉末");
+
+    /// <summary>
+    /// 食品类
+    /// </summary>
+    public static readonly LogisticsGoodsType Food = new LogisticsGoodsType(4000, "食", "食品类", "【食】", "食品类");
+
+    /// <summary>
+    /// 含电类
+    /// </summary>
+    public static readonly LogisticsGoodsType Electric = new LogisticsGoodsType(5000, "电", "含电类", "【电】", "含电类");   
 
     /// <summary>
     /// 禁止类
     /// </summary>
-    public static readonly LogisticsGoodsType Forbidden = new LogisticsGoodsType(5000, "禁", "禁止类", "【禁】", "禁止类");
+    public static readonly LogisticsGoodsType Forbidden = new LogisticsGoodsType(6000, "禁", "禁止类", "【禁】", "禁止类");
 
     /// <summary>
     /// None
@@ -36,12 +51,18 @@ public class LogisticsGoodsType : CodeTypeBase
 
     private static readonly List<LogisticsGoodsType> codeTypeListCustomer = new List<LogisticsGoodsType>() {
         Common,
-        Special,
+        Brand,
+        LiquidPowder,
+        Food,
+        Electric,
     };
 
     private static readonly List<LogisticsGoodsType> codeTypeListInner = new List<LogisticsGoodsType>() {
         Common,
-        Special,
+        Brand,
+        LiquidPowder,
+        Food,
+        Electric,
         Forbidden,
     };
 
