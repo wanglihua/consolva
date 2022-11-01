@@ -1,0 +1,105 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsModeFeeRate.LogisticsModeFeeRateListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsModeFeeRateList" }))
+
+<table id="tblLogisticsModeFeeRateList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="logisticsModeFeeRateCheckAll"></label><input id="logisticsModeFeeRateCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ModeAlias).@(nameof(LogisticsModeFeeRateInfo.Mode.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeFeeRateList">物流方式</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeFeeRateAlias).@(nameof(LogisticsModeFeeRateInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeFeeRateList">物品类型</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.FeeRateAlias).@(nameof(LogisticsModeFeeRateInfo.FeeRate.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeFeeRateList">通用费率</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeFeeRateAlias).@(nameof(LogisticsModeFeeRateInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeFeeRateList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeFeeRateAlias).@(nameof(LogisticsModeFeeRateInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeFeeRateList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsModeFeeRateList.Count != 0)
+        {
+            int itemIndex = 0;
+            foreach (LogisticsModeFeeRateInfo logisticsModeFeeRate in Model.LogisticsModeFeeRateList)
+            {
+                <tr ondblclick="showLogisticsModeFeeRateDetail(@(logisticsModeFeeRate.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="logisticsModeFeeRateCheck_@(logisticsModeFeeRate.Id)"></label><input id="logisticsModeFeeRateCheck_@(logisticsModeFeeRate.Id)" type="checkbox" class="ace" value="@logisticsModeFeeRate.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeFeeRate.Mode?.Id)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeFeeRate.GoodsType.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeFeeRate.FeeRate?.Id)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsModeFeeRate.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsModeFeeRate.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsModeFeeRateList" }))

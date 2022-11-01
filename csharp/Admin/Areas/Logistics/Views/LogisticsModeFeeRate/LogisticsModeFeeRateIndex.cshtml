@@ -1,0 +1,192 @@
+@using shunda.Domain.Logistics
+@model LogisticsModeFeeRateIndexModel
+@using shunda.Admin.Areas.Logistics.Models.LogisticsModeFeeRate
+@{
+    ViewData[ViewDataKey.Title] = "物流方式通用费率";
+    Layout = "_AdminLayout";
+}
+
+@*
+
+        <li id="logistics-menu">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-copy"></i>
+                <span class="menu-text">物流设置</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+
+                <li id="logistics-logistics-mode-fee-rate-menu">
+                    <a asp-area="Logistics" asp-controller="LogisticsModeFeeRate" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>物流方式通用费率
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+
+*@
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-logistics-mode-fee-rate-menu">物流方式通用费率</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsModeFeeRateList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsModeFeeRateDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsModeFeeRate()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsModeFeeRateList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsModeFeeRateList" data-page-index="0" data-sort-field="@(nameof(LogisticsModeFeeRateInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsModeFeeRateDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsModeFeeRateList();
+    });
+
+    function sortLogisticsModeFeeRateList(sortField, sortDir) {
+        var list = $('#logisticsModeFeeRateList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsModeFeeRateList();
+    }
+
+    function loadLogisticsModeFeeRateList(pageIndex) {
+        var list = $('#logisticsModeFeeRateList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsModeFeeRate")",
+            type: "POST",
+            data: {
+                "@(nameof(LogisticsModeFeeRateListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(LogisticsModeFeeRateListQueryParam.SortField))": sortField,
+                "@(nameof(LogisticsModeFeeRateListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsModeFeeRateList').html(data);
+
+                initListTable("#tblLogisticsModeFeeRateList");
+            }
+        });
+    }
+
+    function showLogisticsModeFeeRateDetail(id) {
+        $("#logisticsModeFeeRateDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsModeFeeRateDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "LogisticsModeFeeRate")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsModeFeeRateDetailDialogWrapper").html(data);
+                $("#logisticsModeFeeRateDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveLogisticsModeFeeRate() {
+        var form = $("#logisticsModeFeeRateDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsModeFeeRate")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#logisticsModeFeeRateDetailDialog').modal('hide');
+                    loadLogisticsModeFeeRateList();
+                }
+            });
+        }
+    }
+
+    function deleteLogisticsModeFeeRate() {
+        var idList = getSelectIdList('#tblLogisticsModeFeeRateList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "LogisticsModeFeeRate")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadLogisticsModeFeeRateList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
