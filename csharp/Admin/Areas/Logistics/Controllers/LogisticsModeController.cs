@@ -59,6 +59,21 @@ public class LogisticsModeController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsModeInfo>();
 
+        IList<int> modeIdList = logisticsModeList.Select(e => e.Id).ToList();
+        IList<LogisticsModeFeeRateInfo> modeFeeRateList = session.Query<LogisticsModeFeeRateInfo>()
+            .Fetch(e => e.FeeRate)
+            .Where(e => modeIdList.Contains(e.Mode.Id))
+            .ToList();
+
+        foreach (LogisticsModeInfo mode in logisticsModeList)
+        {
+            int modeId = mode.Id;
+            mode.ModeFeeRateListCache = modeFeeRateList
+                .Where(e => e.Mode.Id == modeId)
+                .OrderBy(e =>e.GoodsType.Id) // 显示时按物品类型排序
+                .ToList();
+        }
+
         LogisticsModeListModel model = new LogisticsModeListModel(listPager);
         model.LogisticsModeList = logisticsModeList;
         model.ModeType = LogisticsModeType.GetById((queryParam.TypeIdQuery ?? 0));
@@ -259,7 +274,7 @@ public class LogisticsModeController : Controller
 
         logisticsMode.Status = model.Status;
         logisticsMode.InnerStatus = model.InnerStatus;
-        
+
         // todo 这里要修改
 
         logisticsMode.FeeCalDesc = model.FeeCalDesc;

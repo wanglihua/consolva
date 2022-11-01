@@ -86,10 +86,14 @@
                     </td>
 
                     <td>
-                        <div>
-                          TODO 这里要修改
-                        </div>
-
+                        @foreach (LogisticsModeFeeRateInfo modeFeeRate in logisticsMode.ModeFeeRateListCache)
+                        {
+                            <div>
+                                <span>@(modeFeeRate.GoodsType.Name)</span>
+                                <span>:&nbsp;</span>
+                                <a target="_blank" asp-controller="LogisticsFeeRate" asp-action="Detail" asp-route-id="@(modeFeeRate.FeeRate.Id)">@(modeFeeRate.FeeRate.Name)</a>
+                            </div>
+                        }
                     </td>
 
                     <td class="center">

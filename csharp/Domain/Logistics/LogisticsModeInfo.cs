@@ -101,4 +101,14 @@ public class LogisticsModeInfo : Entity
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public virtual LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
+
+    #region Cache
+
+    /// <summary>
+    /// 关联的通用费率列表
+    /// </summary>
+    [BindNever]
+    public virtual IList<LogisticsModeFeeRateInfo> ModeFeeRateListCache { get; set; } = new List<LogisticsModeFeeRateInfo>();
+
+    #endregion
 }
