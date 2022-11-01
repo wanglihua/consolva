@@ -15,7 +15,7 @@ public class LogisticsModeChannel : CodeTypeBase
     /// <summary>
     /// 其他, 100_000
     /// </summary>
-    public static readonly LogisticsModeChannel Inner = new LogisticsModeChannel(100_000, "其他", "其他");
+    public static readonly LogisticsModeChannel Other = new LogisticsModeChannel(100_000, "其他", "其他");
 
     /// <summary>
     /// None
@@ -24,7 +24,7 @@ public class LogisticsModeChannel : CodeTypeBase
 
     private static readonly List<LogisticsModeChannel> codeTypeList = new List<LogisticsModeChannel>() {
         Ems,
-        Inner,
+        Other,
     };
 
     private static readonly Dictionary<int, LogisticsModeChannel> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

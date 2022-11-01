@@ -144,6 +144,8 @@ public class LogisticsModeController : Controller
             {
                 logisticsMode.Type = LogisticsModeType.GetById(typeList.First().Id);
             }
+            
+            logisticsMode.Channel = LogisticsModeChannel.Other; // 新建时在界面上优先显示其他
 
             // 在界面上保证 RepackTypeIdList 不为 null
             model.RepackTypeIdList = new List<int>();
