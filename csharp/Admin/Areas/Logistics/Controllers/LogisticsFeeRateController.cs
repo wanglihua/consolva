@@ -422,18 +422,6 @@ public class LogisticsFeeRateController : Controller
         logisticsFeeRate.HasExtraStorageDayFeeCapAmount = logisticsFeeRateFromUi.HasExtraStorageDayFeeCapAmount;
         logisticsFeeRate.ExtraStorageDayFeeCapAmount = logisticsFeeRateFromUi.ExtraStorageDayFeeCapAmount;
 
-        logisticsFeeRate.CommonGoodsPermit = logisticsFeeRateFromUi.CommonGoodsPermit;
-
-        logisticsFeeRate.SpecialGoodsPermit = logisticsFeeRateFromUi.SpecialGoodsPermit;
-        logisticsFeeRate.SpecialGoodsByCount = logisticsFeeRateFromUi.SpecialGoodsByCount;
-        logisticsFeeRate.SpecialGoodsByCountFee = logisticsFeeRateFromUi.SpecialGoodsByCountFee;
-        logisticsFeeRate.SpecialGoodsByVolume = logisticsFeeRateFromUi.SpecialGoodsByVolume;
-        logisticsFeeRate.SpecialGoodsByVolumeFee = logisticsFeeRateFromUi.SpecialGoodsByVolumeFee;
-        logisticsFeeRate.SpecialGoodsByAmount = logisticsFeeRateFromUi.SpecialGoodsByAmount;
-        logisticsFeeRate.SpecialGoodsByAmountFeePercent = logisticsFeeRateFromUi.SpecialGoodsByAmountFeePercent;
-        logisticsFeeRate.HasSpecialGoodsCapAmount = logisticsFeeRateFromUi.HasSpecialGoodsCapAmount;
-        logisticsFeeRate.SpecialGoodsCapAmount = logisticsFeeRateFromUi.SpecialGoodsCapAmount;
-
         logisticsFeeRate.PublishRate = logisticsFeeRateFromUi.PublishRate;
 
         if (isCreate)

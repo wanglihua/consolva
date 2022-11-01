@@ -52,18 +52,6 @@ public class LogisticsModeInfo : Entity
     public virtual string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// 普通类通用费率
-    /// </summary>
-    [BindNever]
-    public virtual LogisticsFeeRateInfo? CommonFeeRate { get; set; }
-
-    /// <summary>
-    /// 特货类通用费率
-    /// </summary>
-    [BindNever]
-    public virtual LogisticsFeeRateInfo? SpecialFeeRate { get; set; }
-
-    /// <summary>
     /// 费用计算描述
     /// </summary>
     public virtual string? FeeCalDesc { get; set; } = string.Empty;
@@ -79,6 +67,12 @@ public class LogisticsModeInfo : Entity
     /// </summary>
     [ModelBinder(typeof(LogisticsPackLabelTypeModelBinder))]
     public virtual LogisticsPackLabelType PackLabelType { get; set; } = LogisticsPackLabelType.None;
+
+    /// <summary>
+    /// 渠道类型
+    /// </summary>
+    [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
+    public virtual LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
 
     /// <summary>
     /// 快递公司名称

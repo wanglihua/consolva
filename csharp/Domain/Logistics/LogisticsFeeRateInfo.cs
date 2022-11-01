@@ -395,62 +395,6 @@ public class LogisticsFeeRateInfo : Entity
     public virtual decimal? ExtraStorageDayFeeCapAmount { get; set; }
 
     /// <summary>
-    /// 普通类是否允许
-    /// </summary>
-    [Required(ErrorMessage = "普通类是否允许不能为空！")]
-    public virtual bool CommonGoodsPermit { get; set; }
-
-    /// <summary>
-    /// 特货类是否允许
-    /// </summary>
-    [Required(ErrorMessage = "特货类是否允许不能为空！")]
-    public virtual bool SpecialGoodsPermit { get; set; }
-
-    /// <summary>
-    /// 特货类是否开启按件加收费用
-    /// </summary>
-    [Required(ErrorMessage = "特货类是否开启按件加收费用不能为空！")]
-    public virtual bool SpecialGoodsByCount { get; set; }
-
-    /// <summary>
-    /// 特货类按件加收费用
-    /// </summary>
-    public virtual decimal? SpecialGoodsByCountFee { get; set; }
-
-    /// <summary>
-    /// 特货类是否开启按体积加收费用
-    /// </summary>
-    [Required(ErrorMessage = "特货类是否开启按体积加收费用不能为空！")]
-    public virtual bool SpecialGoodsByVolume { get; set; }
-
-    /// <summary>
-    /// 特货类按体积加收费用
-    /// </summary>
-    public virtual decimal? SpecialGoodsByVolumeFee { get; set; }
-
-    /// <summary>
-    /// 特货类是否开启按金额加收费用
-    /// </summary>
-    [Required(ErrorMessage = "特货类是否开启按金额加收费用不能为空！")]
-    public virtual bool SpecialGoodsByAmount { get; set; }
-
-    /// <summary>
-    /// 特货类按金额加收费用百分比
-    /// </summary>
-    public virtual decimal? SpecialGoodsByAmountFeePercent { get; set; }
-
-    /// <summary>
-    /// 是否有特货类加收费用封顶金额
-    /// </summary>
-    [Required(ErrorMessage = "是否有特货类加收费用封顶金额不能为空！")]
-    public virtual bool HasSpecialGoodsCapAmount { get; set; }
-
-    /// <summary>
-    /// 特货类加收费用封顶金额
-    /// </summary>
-    public virtual decimal? SpecialGoodsCapAmount { get; set; }
-
-    /// <summary>
     /// 公布系数
     /// </summary>
     public virtual decimal PublishRate { get; set; } = 1.0m;

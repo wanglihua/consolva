@@ -68,28 +68,6 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
             }
         );
 
-        ManyToOne(
-            x => x.CommonFeeRate,
-            map => {
-                map.Class(typeof(LogisticsFeeRateInfo));
-                map.Column("common_fee_rate_id");
-                map.NotNullable(false);
-                map.Cascade(Cascade.None);
-                map.Fetch(FetchKind.Select);
-            }
-        );
-
-        ManyToOne(
-            x => x.SpecialFeeRate,
-            map => {
-                map.Class(typeof(LogisticsFeeRateInfo));
-                map.Column("special_fee_rate_id");
-                map.NotNullable(false);
-                map.Cascade(Cascade.None);
-                map.Fetch(FetchKind.Select);
-            }
-        );
-
         Property(
             x => x.FeeCalDesc,
             map => {
@@ -115,6 +93,15 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
             map => {
                 map.Type<LogisticsPackLabelTypeHibernateType>();
                 map.Column("pack_label_type_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.Channel,
+            map => {
+                map.Type<LogisticsModeChannelHibernateType>();
+                map.Column("channel_id");
                 map.NotNullable(true);
             }
         );

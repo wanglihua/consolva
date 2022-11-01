@@ -83,18 +83,6 @@ CREATE TABLE tbl_logistics_fee_rate
     has_extra_storage_day_fee_cap_amount BOOL           NOT NULL COMMENT '是否有额外仓储收费封顶金额',
     extra_storage_day_fee_cap_amount     DECIMAL(10, 2) NULL COMMENT '额外仓储收费封顶金额',
 
-    common_goods_permit                  BOOL           NOT NULL COMMENT '普通类是否允许',
-
-    special_goods_permit                 BOOL           NOT NULL COMMENT '特货类是否允许',
-    special_goods_by_count               BOOL           NOT NULL COMMENT '特货类是否开启按件加收费用',
-    special_goods_by_count_fee           DECIMAL(10, 2) NULL COMMENT '特货类按件加收费用',
-    special_goods_by_volume              BOOL           NOT NULL COMMENT '特货类是否开启按体积加收费用',
-    special_goods_by_volume_fee          DECIMAL(10, 2) NULL COMMENT '特货类按体积加收费用',
-    special_goods_by_amount              BOOL           NOT NULL COMMENT '特货类是否开启按金额加收费用',
-    special_goods_by_amount_fee_percent  DECIMAL(10, 4) NULL COMMENT '特货类按金额加收费用百分比',
-    has_special_goods_cap_amount         BOOL           NOT NULL COMMENT '是否有特货类加收费用封顶金额',
-    special_goods_cap_amount             DECIMAL(10, 2) NULL COMMENT '特货类加收费用封顶金额',
-
     publish_rate                         DECIMAL(10, 2) NOT NULL COMMENT '公布系数',
 
     status_id                            INT            NOT NULL COMMENT '状态#type:LogisticsFeeRateStatus',

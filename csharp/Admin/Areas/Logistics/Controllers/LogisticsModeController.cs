@@ -74,8 +74,6 @@ public class LogisticsModeController : Controller
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.CreateAlias(nameof(LogisticsModeInfo.Warehouse), nameof(LogisticsModeInfo.Warehouse));
-        criteria = criteria.CreateAlias(nameof(LogisticsModeInfo.CommonFeeRate), nameof(LogisticsModeInfo.CommonFeeRate), JoinType.LeftOuterJoin);
-        criteria = criteria.CreateAlias(nameof(LogisticsModeInfo.SpecialFeeRate), nameof(LogisticsModeInfo.SpecialFeeRate), JoinType.LeftOuterJoin);
 
         criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Cate == LogisticsModeCate.Customer));
 
@@ -171,15 +169,7 @@ public class LogisticsModeController : Controller
         model.Status = logisticsMode.Status;
         model.InnerStatus = logisticsMode.InnerStatus;
 
-        if (logisticsMode.CommonFeeRate != null)
-        {
-            model.CommonFeeRateId = logisticsMode.CommonFeeRate.Id;
-        }
-
-        if (logisticsMode.SpecialFeeRate != null)
-        {
-            model.SpecialFeeRateId = logisticsMode.SpecialFeeRate.Id;
-        }
+        // todo 这里要修改
 
         model.FeeCalDesc = logisticsMode.FeeCalDesc;
 
@@ -269,24 +259,8 @@ public class LogisticsModeController : Controller
 
         logisticsMode.Status = model.Status;
         logisticsMode.InnerStatus = model.InnerStatus;
-
-        if (model.CommonFeeRateId.HasValue && model.CommonFeeRateId.Value != 0)
-        {
-            logisticsMode.CommonFeeRate = session.Load<LogisticsFeeRateInfo>(model.CommonFeeRateId.Value);
-        }
-        else
-        {
-            logisticsMode.CommonFeeRate = null;
-        }
-
-        if (model.SpecialFeeRateId.HasValue && model.SpecialFeeRateId.Value != 0)
-        {
-            logisticsMode.SpecialFeeRate = session.Load<LogisticsFeeRateInfo>(model.SpecialFeeRateId.Value);
-        }
-        else
-        {
-            logisticsMode.SpecialFeeRate = null;
-        }
+        
+        // todo 这里要修改
 
         logisticsMode.FeeCalDesc = model.FeeCalDesc;
 

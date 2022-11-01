@@ -46,6 +46,8 @@ public class LogisticsModeInnerDetailModel
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public LogisticsModeStatus Status { get; set; } = LogisticsModeStatus.None;
 
+    // todo 这里要修改
+    
     /// <summary>
     /// 普通类通用费率
     /// </summary>
