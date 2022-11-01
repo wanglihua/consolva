@@ -35,7 +35,7 @@ public class LogisticsModeFeeRateController : Controller
     {
         LogisticsModeFeeRateIndexModel model = new LogisticsModeFeeRateIndexModel();
 
-        model.GoodsTypeList = LogisticsGoodsType.GetList();
+        model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();
 
         return View("LogisticsModeFeeRateIndex", model);
     }
@@ -130,7 +130,7 @@ public class LogisticsModeFeeRateController : Controller
         model.GoodsType = logisticsModeFeeRate.GoodsType;
         model.FeeRateId = logisticsModeFeeRate.FeeRate?.Id ?? 0;
 
-        model.GoodsTypeList = LogisticsGoodsType.GetList();
+        model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();
 
         return View("LogisticsModeFeeRateDetail", model);
     }

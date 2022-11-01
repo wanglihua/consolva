@@ -550,7 +550,7 @@ public class CustomerController : Controller
             cellIndex = 0;
 
             // 手机号码
-            string mobile = row.GetCell(cellIndex++)?.StringCellValue;
+            string mobile = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             if (string.IsNullOrWhiteSpace(mobile))
             {
                 break;
@@ -560,7 +560,7 @@ public class CustomerController : Controller
             customer.Mobile = mobile.Trim();
 
             // 密码
-            string password = row.GetCell(cellIndex++)?.StringCellValue;
+            string password = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             if (string.IsNullOrWhiteSpace(password) && password.Trim().Length < 6)
             {
                 throw new ValidationException("密码不能为空，且不能少于6位！");
@@ -603,7 +603,7 @@ public class CustomerController : Controller
             }
         }
 
-        ITransaction transaction = null;
+        ITransaction? transaction = null;
         try
         {
             transaction = session.BeginTransaction();
