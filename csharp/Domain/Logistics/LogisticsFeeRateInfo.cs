@@ -397,6 +397,8 @@ public class LogisticsFeeRateInfo : Entity
     /// <summary>
     /// 公布系数
     /// </summary>
+    [Required(ErrorMessage = "公布系数不能为空！")]
+    [Range(0, 1, ErrorMessage = "公布系数只能在0和1之间！")]
     public virtual decimal PublishRate { get; set; } = 1.0m;
 
     /// <summary>
