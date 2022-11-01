@@ -70,7 +70,7 @@ public class LogisticsModeController : Controller
             int modeId = mode.Id;
             mode.ModeFeeRateListCache = modeFeeRateList
                 .Where(e => e.Mode.Id == modeId)
-                .OrderBy(e =>e.GoodsType.Id) // 显示时按物品类型排序
+                .OrderBy(e => e.GoodsType.Id) // 显示时按物品类型排序
                 .ToList();
         }
 
@@ -178,6 +178,7 @@ public class LogisticsModeController : Controller
         model.Name = logisticsMode.Name;
         model.Description = logisticsMode.Description;
 
+        model.Channel = logisticsMode.Channel;
         model.ExpressCompanyName = logisticsMode.ExpressCompanyName;
         model.ExpressCompanyUrl = logisticsMode.ExpressCompanyUrl;
 
@@ -267,11 +268,9 @@ public class LogisticsModeController : Controller
         logisticsMode.Name = model.Name;
         logisticsMode.Description = model.Description;
 
-        if (logisticsMode.Type == LogisticsModeType.CnAuExpress)
-        {
-            logisticsMode.ExpressCompanyName = model.ExpressCompanyName ?? string.Empty;
-            logisticsMode.ExpressCompanyUrl = model.ExpressCompanyUrl ?? string.Empty;
-        }
+        logisticsMode.Channel = model.Channel;
+        logisticsMode.ExpressCompanyName = model.ExpressCompanyName ?? string.Empty;
+        logisticsMode.ExpressCompanyUrl = model.ExpressCompanyUrl ?? string.Empty;
 
         logisticsMode.Status = model.Status;
         logisticsMode.InnerStatus = model.InnerStatus;

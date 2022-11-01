@@ -263,7 +263,12 @@
                             <div class="form-group">
                                 <label asp-for="Channel" class="col-xs-2 control-label">渠道类型</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="" type="text" maxlength="100" class="input-sm form-control"/>
+                                    <select asp-for="Channel" class="input-sm form-control">
+                                        @foreach (var channel in Model.ChannelList)
+                                        {
+                                            <option value="@(channel.Id)">@(channel.Name)</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
                         </div>
