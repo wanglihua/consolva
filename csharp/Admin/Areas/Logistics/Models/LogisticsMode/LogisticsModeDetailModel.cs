@@ -80,6 +80,12 @@ public class LogisticsModeDetailModel
     public IList<LogisticsPackLabelType> PackLabelTypeList { get; } = LogisticsPackLabelType.GetList();
 
     /// <summary>
+    /// 渠道类型
+    /// </summary>
+    [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
+    public LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
+
+    /// <summary>
     /// 快递公司名称
     /// </summary>
     public string? ExpressCompanyName { get; set; }
@@ -102,7 +108,7 @@ public class LogisticsModeDetailModel
     public LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
 
 
-    // todo 这两者可不可以只保留一个s
+    // todo 这两者可不可以只保留一个
 
     #region repack type 关联
 
@@ -122,6 +128,8 @@ public class LogisticsModeDetailModel
     [BindNever]
     public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = new List<LogisticsGoodsType>();
 
+    [BindNever]
+    public IList<LogisticsModeChannel> ChannelList { get; set; } = new List<LogisticsModeChannel>();
 
     [BindNever]
     public IList<LogisticsModeType> LogisticsModeTypeList { get; set; } = new List<LogisticsModeType>();

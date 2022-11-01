@@ -202,6 +202,7 @@ public class LogisticsModeController : Controller
         model.StatusList = LogisticsModeStatus.GetList();
         model.RepackTypeList = LogisticsRepackType.GetList();
         model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();
+        model.ChannelList = LogisticsModeChannel.GetList();
 
         model.InnerModeId = logisticsMode.InnerModeId;
         var modeType = logisticsMode.Type;
