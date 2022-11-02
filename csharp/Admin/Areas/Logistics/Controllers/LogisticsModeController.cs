@@ -260,7 +260,7 @@ public class LogisticsModeController : Controller
                 {
                     if (int.TryParse(feeRateIdStrs[0], out int feeRateId) == true)
                     {
-                        feeRateIdList.Add(goodsType.Id);
+                        feeRateIdList.Add(feeRateId);
                         goodsTypeFeeRateIdMap[goodsType.Id] = feeRateId;
                     }
                 }
@@ -269,7 +269,7 @@ public class LogisticsModeController : Controller
 
         foreach (int goodsTypeId in goodsTypeIdList)
         {
-            if (goodsTypeFeeRateIdMap.TryGetValue(goodsTypeId, out int feeRateId) == true)
+            if (goodsTypeFeeRateIdMap.TryGetValue(goodsTypeId, out int feeRateId) == false)
             {
                 throw new ValidationException($"物流方式选择了物品类型{LogisticsGoodsType.GetById(goodsTypeId).Name}，但没有设置对应的通用费率！");
             }

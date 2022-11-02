@@ -47,9 +47,9 @@
                                     @if (isCreate)
                                     {
                                         <select asp-for="Type" class="input-sm form-control" onchange="reloadWithTypeId();" required="required">
-                                            @foreach (LogisticsModeType logisticsModeTypeInfo in Model.LogisticsModeTypeList)
+                                            @foreach (LogisticsModeType logisticsModeType in Model.LogisticsModeTypeList)
                                             {
-                                                <option value="@logisticsModeTypeInfo.Id">@logisticsModeTypeInfo.Name</option>
+                                                <option value="@logisticsModeType.Id">@logisticsModeType.Name</option>
                                             }
                                         </select>
                                     }
@@ -57,9 +57,9 @@
                                     {
                                         <input asp-for="Type" type="hidden"/>
                                         <select asp-for="Type" class="input-sm form-control" disabled="disabled">
-                                            @foreach (LogisticsModeType logisticsModeTypeInfo in Model.LogisticsModeTypeList)
+                                            @foreach (LogisticsModeType logisticsModeType in Model.LogisticsModeTypeList)
                                             {
-                                                <option value="@logisticsModeTypeInfo.Id">@logisticsModeTypeInfo.Name</option>
+                                                <option value="@logisticsModeType.Id">@logisticsModeType.Name</option>
                                             }
                                         </select>
                                     }
@@ -129,13 +129,13 @@
                                                 if (feeRateId == feeRate.Id)
                                                 {
                                                     <option value="@feeRate.Id" selected="selected">
-                                                        @feeRate.Name<span>@(feeRate.Status.Name)</span>
+                                                        @feeRate.Name<span>(@(feeRate.Status.Name))</span>
                                                     </option>
                                                 }
                                                 else
                                                 {
                                                     <option value="@feeRate.Id">
-                                                        @feeRate.Name<span>@(feeRate.Status.Name)</span>
+                                                        @feeRate.Name<span>(@(feeRate.Status.Name))</span>
                                                     </option>
                                                 }
                                             }
