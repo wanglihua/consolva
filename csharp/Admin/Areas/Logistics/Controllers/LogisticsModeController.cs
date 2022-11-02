@@ -238,18 +238,51 @@ public class LogisticsModeController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
-        if (model.Type == LogisticsModeType.CnAuExpress)
+        IList<int> repackTypeIdList = model.RepackTypeIdList;
+        if (repackTypeIdList == null)
         {
-            if (string.IsNullOrWhiteSpace(model.ExpressCompanyName))
-            {
-                throw new ValidationException("快递单公司名称不能为空！");
-            }
+            repackTypeIdList = new List<int>();
+        }
 
-            if (string.IsNullOrWhiteSpace(model.ExpressCompanyUrl))
+        IList<int> goodsTypeIdList = model.GoodsTypeIdList;
+        if (goodsTypeIdList == null)
+        {
+            goodsTypeIdList = new List<int>();
+        }
+
+        IList<LogisticsGoodsType> goodsTypeListAll = LogisticsGoodsType.GetCustomerList();
+        IDictionary<int, int> goodsTypeFeeRateIdMap = new Dictionary<int, int>();
+        foreach (LogisticsGoodsType goodsType in goodsTypeListAll)
+        {
+            if (Request.Form.TryGetValue(model.GetFeeRateFieldName(goodsType), out StringValues feeRateIdStrs) == true)
             {
-                throw new ValidationException("快递公司网址不能为空！");
+                if (feeRateIdStrs.Count > 0 && string.IsNullOrWhiteSpace(feeRateIdStrs[0]) == false)
+                {
+                    if (int.TryParse(feeRateIdStrs[0], out int feeRateId) == true)
+                    {
+                        goodsTypeFeeRateIdMap[goodsType.Id] = feeRateId;
+                    }
+                }
             }
         }
+
+        foreach (int goodsTypeId in goodsTypeIdList)
+        {
+            if (goodsTypeFeeRateIdMap.TryGetValue(goodsTypeId, out int feeRateId) == true)
+            {
+                throw new ValidationException($"物流方式选择了物品类型{LogisticsGoodsType.GetById(goodsTypeId).Name}，但没有设置对应的通用费率！");
+            }
+        }
+
+        // if (string.IsNullOrWhiteSpace(model.ExpressCompanyName))
+        // {
+        //     throw new ValidationException("快递单公司名称不能为空！");
+        // }
+        //
+        // if (string.IsNullOrWhiteSpace(model.ExpressCompanyUrl))
+        // {
+        //     throw new ValidationException("快递公司网址不能为空！");
+        // }
 
         int logisticsModeId = model.Id;
 
@@ -325,12 +358,6 @@ public class LogisticsModeController : Controller
 
         // 保存打包方式
 
-        IList<int> repackTypeIdList = model.RepackTypeIdList;
-        if (repackTypeIdList == null)
-        {
-            repackTypeIdList = new List<int>();
-        }
-
         IList<LogisticsRepackType> repackTypeListInDb = session
             .Query<LogisticsModeRepackTypeInfo>()
             .Where(e => e.LogisticsMode.Id == modeId)
@@ -372,12 +399,6 @@ public class LogisticsModeController : Controller
 
         #region 物品类型
 
-        IList<int> goodsTypeIdList = model.GoodsTypeIdList;
-        if (goodsTypeIdList == null)
-        {
-            goodsTypeIdList = new List<int>();
-        }
-
         IList<LogisticsGoodsType> goodsTypeListInDb = session
             .Query<LogisticsModeGoodsTypeInfo>()
             .Where(e => e.LogisticsMode.Id == modeId)
@@ -414,16 +435,12 @@ public class LogisticsModeController : Controller
 
         #endregion
 
-        // todo 检查 物品类型 和 通用费率 的配合
-        // todo 这里要修改
-        IList<LogisticsGoodsType> goodsTypeList = LogisticsGoodsType.GetCustomerList();
-        foreach (LogisticsGoodsType goodsType in goodsTypeList)
+        // 保存通用费率
+        foreach (LogisticsGoodsType goodsType in goodsTypeListAll)
         {
             if (Request.Form.TryGetValue(model.GetFeeRateFieldName(goodsType), out StringValues feeRateIdStrs) == true)
             {
             }
-            
-            // todo 还没完成
         }
 
         return Json(new Dictionary<string, object>() {
