@@ -3,7 +3,6 @@ using Microsoft.Extensions.Primitives;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
-using NHibernate.SqlCommand;
 using shunda.Admin.Areas.Logistics.Models.LogisticsMode;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -251,6 +250,7 @@ public class LogisticsModeController : Controller
         }
 
         IList<LogisticsGoodsType> goodsTypeListAll = LogisticsGoodsType.GetCustomerList();
+        IList<int> feeRateIdList = new List<int>();
         IDictionary<int, int> goodsTypeFeeRateIdMap = new Dictionary<int, int>();
         foreach (LogisticsGoodsType goodsType in goodsTypeListAll)
         {
@@ -260,6 +260,7 @@ public class LogisticsModeController : Controller
                 {
                     if (int.TryParse(feeRateIdStrs[0], out int feeRateId) == true)
                     {
+                        feeRateIdList.Add(goodsType.Id);
                         goodsTypeFeeRateIdMap[goodsType.Id] = feeRateId;
                     }
                 }
@@ -271,6 +272,20 @@ public class LogisticsModeController : Controller
             if (goodsTypeFeeRateIdMap.TryGetValue(goodsTypeId, out int feeRateId) == true)
             {
                 throw new ValidationException($"物流方式选择了物品类型{LogisticsGoodsType.GetById(goodsTypeId).Name}，但没有设置对应的通用费率！");
+            }
+        }
+
+        IList<LogisticsFeeRateInfo> feeRateListFromUi = session.Query<LogisticsFeeRateInfo>()
+            .Where(e => feeRateIdList.Contains(e.Id))
+            .ToList();
+        foreach (int feeRateId in feeRateIdList)
+        {
+            LogisticsFeeRateInfo? feeRate = feeRateListFromUi
+                .Where(e => e.Id == feeRateId)
+                .Take(1).SingleOrDefault();
+            if (feeRate == null) // 一般情况下是不会发生的
+            {
+                throw new ValidationException($"指定的通用费率#{feeRateId}不存在！");
             }
         }
 
@@ -436,12 +451,38 @@ public class LogisticsModeController : Controller
         #endregion
 
         // 保存通用费率
+        IList<LogisticsModeFeeRateInfo> modeFeeRateListInDb = session.Query<LogisticsModeFeeRateInfo>()
+            .Where(e => e.Mode.Id == modeId)
+            .ToList();
         foreach (LogisticsGoodsType goodsType in goodsTypeListAll)
         {
-            if (Request.Form.TryGetValue(model.GetFeeRateFieldName(goodsType), out StringValues feeRateIdStrs) == true)
+            LogisticsModeFeeRateInfo? modeFeeRateInDb = modeFeeRateListInDb
+                .Where(e => e.GoodsType == goodsType)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (goodsTypeFeeRateIdMap.TryGetValue(goodsType.Id, out int feeRateId) == true)
             {
+                if (modeFeeRateInDb == null) // 数据库里面没有，但界面上有
+                {
+                    modeFeeRateInDb = new LogisticsModeFeeRateInfo();
+                    modeFeeRateInDb.Mode = logisticsMode;
+                    modeFeeRateInDb.GoodsType = goodsType;
+                    modeFeeRateInDb.FeeRate = feeRateListFromUi.Where(e => e.Id == feeRateId).Take(1).Single(); // 前面验证过了，肯定存在
+
+                    session.Save(modeFeeRateInDb);
+                }
+            }
+            else
+            {
+                if (modeFeeRateInDb != null) // 数据里有，但界面上没有
+                {
+                    session.Delete(modeFeeRateInDb);
+                }
             }
         }
+
+        session.Flush();
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
