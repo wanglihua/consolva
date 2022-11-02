@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
@@ -285,8 +286,6 @@ public class LogisticsModeController : Controller
         logisticsMode.Status = model.Status;
         logisticsMode.InnerStatus = model.InnerStatus;
 
-        // todo 这里要修改
-
         logisticsMode.FeeCalDesc = model.FeeCalDesc;
 
         if (model.WarehouseId == 0)
@@ -416,6 +415,16 @@ public class LogisticsModeController : Controller
         #endregion
 
         // todo 检查 物品类型 和 通用费率 的配合
+        // todo 这里要修改
+        IList<LogisticsGoodsType> goodsTypeList = LogisticsGoodsType.GetCustomerList();
+        foreach (LogisticsGoodsType goodsType in goodsTypeList)
+        {
+            if (Request.Form.TryGetValue(model.GetFeeRateFieldName(goodsType), out StringValues feeRateIdStrs) == true)
+            {
+            }
+            
+            // todo 还没完成
+        }
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
