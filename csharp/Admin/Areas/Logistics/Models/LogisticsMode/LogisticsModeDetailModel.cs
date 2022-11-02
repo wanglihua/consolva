@@ -10,6 +10,13 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsMode;
 
 public class LogisticsModeDetailModel
 {
+    public static readonly string FeeRateFieldPrefix = "fee_rate_";
+
+    public string GetFeeRateFieldName(LogisticsGoodsType goodsType)
+    {
+        return $"{FeeRateFieldPrefix}{goodsType?.Id ?? 0}";
+    }
+
     /// <summary>
     /// Id
     /// </summary>
@@ -106,6 +113,11 @@ public class LogisticsModeDetailModel
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
+
+    /// <summary>
+    /// 物流方式关联通用费率
+    /// </summary>
+    public IList<LogisticsModeFeeRateInfo> ModeFeeRateList { get; set; } = new List<LogisticsModeFeeRateInfo>();
 
 
     // todo 这两者可不可以只保留一个

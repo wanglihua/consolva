@@ -113,21 +113,37 @@
                             </div>
                         </div>
 
+                        @foreach (LogisticsGoodsType goodsType in Model.GoodsTypeList)
+                        {
+                            string feeRateFieldName = Model.GetFeeRateFieldName(goodsType);
+                            int feeRateId = Model.ModeFeeRateList.Where(e => e.GoodsType == goodsType).Take(1).SingleOrDefault()?.Id ?? 0;
 
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label asp-for="CommonFeeRateId" class="col-xs-2 control-label">普通类通用费率</label>
-                                <div class="col-xs-10">
-                                    <select asp-for="CommonFeeRateId" class="input-sm form-control">
-                                        <option value=""></option>
-                                        @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
-                                        {
-                                            <option value="@feeRate.Id">@feeRate.Name</option>
-                                        }
-                                    </select>
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <label id="@(feeRateFieldName)" class="col-xs-2 control-label">@(goodsType.Name)通用费率</label>
+                                    <div class="col-xs-10">
+                                        <select id="@(feeRateFieldName)" name="@(feeRateFieldName)" class="input-sm form-control">
+                                            <option value=""></option>
+                                            @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
+                                            {
+                                                if (feeRateId == feeRate.Id)
+                                                {
+                                                    <option value="@feeRate.Id" selected="selected">
+                                                        @feeRate.Name<span>@(feeRate.Status.Name)</span>
+                                                    </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@feeRate.Id">
+                                                        @feeRate.Name<span>@(feeRate.Status.Name)</span>
+                                                    </option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
 
                         <div class="col-xs-12">
                             <div class="form-group">

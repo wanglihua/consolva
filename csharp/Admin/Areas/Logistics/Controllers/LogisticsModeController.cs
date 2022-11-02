@@ -144,12 +144,14 @@ public class LogisticsModeController : Controller
             {
                 logisticsMode.Type = LogisticsModeType.GetById(typeList.First().Id);
             }
-            
+
             logisticsMode.Channel = LogisticsModeChannel.Other; // 新建时在界面上优先显示其他
 
             // 在界面上保证 RepackTypeIdList 不为 null
             model.RepackTypeIdList = new List<int>();
             model.GoodsTypeIdList = LogisticsGoodsType.GetCustomerList().Select(e => e.Id).ToList();
+
+            model.ModeFeeRateList = new List<LogisticsModeFeeRateInfo>(); // 保证列表非空
         }
         else
         {
@@ -171,6 +173,14 @@ public class LogisticsModeController : Controller
                 .Where(e => e.LogisticsMode.Id == id)
                 .ToList();
             model.GoodsTypeIdList = logisticsModeGoodsTypeList.Select(e => e.GoodsType.Id).ToList();
+
+            // 物流方式关联通用费率
+            IList<LogisticsModeFeeRateInfo> modeFeeRateList = session.Query<LogisticsModeFeeRateInfo>()
+                .Fetch(e => e.FeeRate)
+                .Where(e => e.Mode.Id == id)
+                .ToList();
+
+            model.ModeFeeRateList = modeFeeRateList;
         }
 
         model.Id = logisticsMode.Id;
@@ -186,8 +196,6 @@ public class LogisticsModeController : Controller
 
         model.Status = logisticsMode.Status;
         model.InnerStatus = logisticsMode.InnerStatus;
-
-        // todo 这里要修改
 
         model.FeeCalDesc = logisticsMode.FeeCalDesc;
 
