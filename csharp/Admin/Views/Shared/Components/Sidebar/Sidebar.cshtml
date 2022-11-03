@@ -277,6 +277,7 @@
                         </li>
                     }
                     *@
+                                      
 
                     @if (Model.HasPassRes(PassRes.OrderFee.ManualFeeReason))
                     {
@@ -288,6 +289,17 @@
                             <b class="arrow"></b>
                         </li>
                     }
+                    
+                    @if (Model.HasPassRes(PassRes.OrderFee.LogisticsOrderPay))
+                    {
+                        <li id="order-fee-logistics-order-pay-index-menu">
+                            <a asp-area="OrderFee" asp-controller="LogisticsOrderPay" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                实时收入
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }                    
 
                 </ul>
             </li>

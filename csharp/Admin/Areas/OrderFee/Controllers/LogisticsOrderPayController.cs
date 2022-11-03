@@ -164,7 +164,7 @@ public class LogisticsOrderPayController : Controller
             });
         }
 
-        DateTime dateBegin = DateTime.ParseExact("2019-10-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        DateTime dateBegin = DateTime.ParseExact("2023-01-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
         if (queryParam.PayTimeBeginQuery != null)
         {
             dateBegin = queryParam.PayTimeBeginQuery.Value;
