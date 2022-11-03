@@ -1,0 +1,169 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay
+@using shunda.Core
+@using shunda.Domain.Logistics
+@using shunda.Domain.Order
+@model shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay.LogisticsOrderPayIndexModel
+
+@{
+    ViewBag.Title = "实时收入";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="order-fee-menu">费用管理</li>
+    <li class="active" data-menu="order-fee-logistics-order-pay-index-menu">实时收入</li>
+}
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCodeQuery">会员ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 120px; height: 30px;" placeholder="会员ID精确查询"/>&nbsp;
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号精确查询"/>&nbsp;
+    <label for="firstLogisticsModeTypeQuery">头程物流</label>&nbsp;
+    <select id="firstLogisticsModeTypeQuery" name="firstLogisticsModeTypeQuery" style="width: 80px; height: 30px;">
+        <option value="0">头程物流</option>
+        @foreach (LogisticsModeType modeType in Model.LogisticsModeTypeList)
+        {
+            <option value="@modeType.Id">@modeType.Name</option>
+        }
+    </select>&nbsp;
+
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="query()">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+
+    <button type="button" class="btn btn-purple btn-sm" style="margin-bottom: 3px; height: 30px;" onclick="exportData()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>
+</div>
+
+<div id="logisticsOrderPayList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderPayInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="dateStatList" data-page-index="0"  style="font-family: Consolas, monospace, 'Courier New', serif"></div>
+
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+        
+        loadLogisticsOrderPayList();
+        loadDateStatList();
+    });
+
+    function sortLogisticsOrderPayList(sortField, sortDir) {
+        var list = $('#logisticsOrderPayList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsOrderPayList();
+    }
+
+    function loadLogisticsOrderPayList(pageIndex) {
+        var list = $('#logisticsOrderPayList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsOrderPay")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsOrderPayListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.LogisticsModeTypeIdQuery))': $('#firstLogisticsModeTypeQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.PayTimeBeginQuery))': $('#beginDateQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.PayTimeEndQuery))': $('#endDateQuery').val(),                
+                '@(nameof(LogisticsOrderPayListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsOrderPayListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsOrderPayListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderPayList').html(data);
+
+                initListTable("#tblLogisticsOrderPayList");
+            }
+        });
+    }
+    
+    function loadDateStatList(pageIndex) {
+        var list = $('#dateStatList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("DateStatList", "LogisticsOrderPay")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsOrderPayListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.LogisticsModeTypeIdQuery))': $('#firstLogisticsModeTypeQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.PayTimeBeginQuery))': $('#beginDateQuery').val(),
+                '@(nameof(LogisticsOrderPayListQueryParam.PayTimeEndQuery))': $('#endDateQuery').val(),                
+                '@(nameof(LogisticsOrderPayListQueryParam.PageIndex))': pageIndex
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                list.html(data);
+            }
+        });
+    }    
+    
+    function query() {
+        loadLogisticsOrderPayList();
+        loadDateStatList();
+    }
+    
+    function exportData() {
+        var params = $.param({
+            '@(nameof(LogisticsOrderPayListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+            '@(nameof(LogisticsOrderPayListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+            '@(nameof(LogisticsOrderPayListQueryParam.LogisticsModeTypeIdQuery))': $('#firstLogisticsModeTypeQuery').val(),
+            '@(nameof(LogisticsOrderPayListQueryParam.PayTimeBeginQuery))': $('#beginDateQuery').val(),
+            '@(nameof(LogisticsOrderPayListQueryParam.PayTimeEndQuery))': $('#endDateQuery').val()
+        });
+
+        var url = '@Url.Action("Export", "LogisticsOrderPay")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }    
+
+</script>
