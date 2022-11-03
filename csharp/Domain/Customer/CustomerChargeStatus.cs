@@ -20,7 +20,7 @@ public class CustomerChargeStatus : CodeTypeBase
     /// <summary>
     /// None
     /// </summary>
-    private static readonly CustomerChargeStatus None = new CustomerChargeStatus(0, "", "");
+    public static readonly CustomerChargeStatus None = new CustomerChargeStatus(0, "", "");
 
     private static readonly List<CustomerChargeStatus> codeTypeList = new List<CustomerChargeStatus>() {
         New,
