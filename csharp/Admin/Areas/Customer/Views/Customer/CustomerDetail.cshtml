@@ -16,7 +16,7 @@
         <a href="@Url.Action("Index", "Customer")">会员列表</a>
     </li>
     <li>@(Model.Customer?.CustomerCodeCache)</li>
-    <li>会员详细</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
 @section Style

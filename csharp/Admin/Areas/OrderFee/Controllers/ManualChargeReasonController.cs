@@ -5,13 +5,15 @@ using shunda.Admin.Areas.OrderFee.Models.ManualChargeReason;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
+using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.OrderFee.Controllers;
 
 [OrderFeeArea]
-// todo [AdminAuth(PassRes.SystemSetting.ManualChargeReason)]
+[AdminAuth(PassRes.OrderFee.ManualChargeReason)]
 public class ManualChargeReasonController : Controller
 {
     private ISession session;
@@ -45,11 +47,6 @@ public class ManualChargeReasonController : Controller
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<ManualChargeReasonInfo>();
-
-        foreach (ManualChargeReasonInfo manualChargeReasonInfo in manualChargeReasonList)
-        {
-            // manualChargeReasonInfo
-        }
 
         ManualChargeReasonListModel model = new ManualChargeReasonListModel(listPager);
         model.ManualChargeReasonList = manualChargeReasonList;

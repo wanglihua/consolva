@@ -32,6 +32,7 @@ public partial class PassRes
             new PassResInfo() { Id = ExpressReturnPay, Name = "退运支付", CateIdForCache = CateId },
             new PassResInfo() { Id = Coupon, Name = "优惠券", CateIdForCache = CateId },
             new PassResInfo() { Id = ManualFeeReason, Name = "增减核销费用原因", CateIdForCache = CateId },
+            new PassResInfo() { Id = ManualChargeReason, Name = "手动充值原因", CateIdForCache = CateId },
         };
 
         /// <summary>
@@ -124,5 +125,10 @@ public partial class PassRes
         /// 增减核销费用原因
         /// </summary>
         public const int ManualFeeReason = CateId + 34000;
+
+        /// <summary>
+        /// 手动充值原因
+        /// </summary>
+        public const int ManualChargeReason = CateId + 3600;
     }
 }

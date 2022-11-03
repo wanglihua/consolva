@@ -18,7 +18,7 @@
     <li>
         <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-typeId="@(Model.Type.Id)">内部费率物流</a>
     </li>
-    <li>物流详细</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
