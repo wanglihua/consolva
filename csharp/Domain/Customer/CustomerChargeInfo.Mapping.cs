@@ -1,7 +1,6 @@
+using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using shunda.Core;
-using shunda.Domain.Customer.Domain.Customer;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Customer;
@@ -55,18 +54,16 @@ public class CustomerChargeInfoMapping : EntityMapping<CustomerChargeInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("out_trade_no");
-                map.Length(50);
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
         Property(
-            x => x.PayPalPaymentId,
+            x => x.PaypalPaymentId,
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("paypal_payment_id");
-                map.Length(50);
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -75,16 +72,6 @@ public class CustomerChargeInfoMapping : EntityMapping<CustomerChargeInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("manual_charge_reason");
-                map.Length(300);
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.Status,
-            map => {
-                map.Type<CustomerChargeStatusHibernateType>();
-                map.Column("status_id");
                 map.NotNullable(true);
             }
         );
@@ -99,5 +86,15 @@ public class CustomerChargeInfoMapping : EntityMapping<CustomerChargeInfo>
                 map.Fetch(FetchKind.Select);
             }
         );
+
+        Property(
+            x => x.Status,
+            map => {
+                map.Type<CustomerChargeStatusHibernateType>();
+                map.Column("status_id");
+                map.NotNullable(true);
+            }
+        );
+
     }
 }
