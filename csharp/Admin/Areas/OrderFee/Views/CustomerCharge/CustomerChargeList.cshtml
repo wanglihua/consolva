@@ -1,9 +1,8 @@
 @{
     Layout = null;
 }
-@using Domain
-@using Domain.Customer
-@model Web.Areas.admin.Models.CustomerCharge.CustomerChargeListModel
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.OrderFee.Models.CustomerCharge.CustomerChargeListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerChargeList"})
 
@@ -13,10 +12,7 @@
             <th style="width: 40px; text-align: center;">
                 <label for="customerChargeCheckAll"></label><input id="customerChargeCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
-            <th style="width: 50px; text-align: center;">序号</th>
-            <th style="width: 100px; text-align: center;">
-                <a field="@(nameof(CustomerChargeInfo.OrderCate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerChargeList">订单类别</a>
-            </th>            
+            <th style="width: 50px; text-align: center;">序号</th>           
             <th style="width: 100px; text-align: center;">
                 <a field="@(nameof(CustomerChargeInfo.ChargeType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerChargeList">充值方式</a>
             </th>
@@ -55,7 +51,6 @@
                         <label for="customerChargeCheck_@(customerCharge.Id)"></label><input id="customerChargeCheck_@(customerCharge.Id)" type="checkbox" class="ace" value="@customerCharge.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td style="text-align: center;">@customerCharge.OrderCate?.Name</td>
                     <td style="text-align: center;">@customerCharge.ChargeType?.Name</td>
                     <td style="text-align: center;">@customerCharge.Customer.Id</td>
                     <td style="text-align: right;">
@@ -75,7 +70,7 @@
         else
         {
             <tr>
-                <td colspan="12">
+                <td colspan="11">
                     暂时没有数据！
                 </td>
             </tr>

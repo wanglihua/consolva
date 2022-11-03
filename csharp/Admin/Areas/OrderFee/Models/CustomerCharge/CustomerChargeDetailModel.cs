@@ -1,20 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Customer;
 
 namespace shunda.Admin.Areas.OrderFee.Models.CustomerCharge;
 
 public class CustomerChargeDetailModel
 {
     [Required(ErrorMessage = "会员ID不能为空！")]
-    public string CustomerCode { get; set; }
+    public string CustomerCode { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "充值金额不能为空！")]
-    public decimal Amount { get; set; }
+    public decimal Amount { get; set; } = 0;
 
     [Required(ErrorMessage = "手工充值原因不能为空！")]
-    public string ChargeReason { get; set; }
+    public string ChargeReason { get; set; } = String.Empty;
 
-    // todo 马上补上
-    // [BindNever]
-    // public IList<ManualChargeReasonInfo> ChargeReasonList { get; set; }
+    [BindNever]
+    public IList<ManualChargeReasonInfo> ChargeReasonList { get; set; } = new List<ManualChargeReasonInfo>();
 }

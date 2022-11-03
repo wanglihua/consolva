@@ -1,0 +1,61 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.OrderFee.Models.ManualChargeReason.ManualChargeReasonListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualChargeReasonList"})
+
+<table id="tblManualChargeReasonList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="manualChargeReasonCheckAll"></label><input id="manualChargeReasonCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 300px;">
+                <a field="@(nameof(ManualChargeReasonInfo.Content))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortManualChargeReasonList">内容</a>
+            </th>
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(ManualChargeReasonInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortManualChargeReasonList">状态</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(ManualChargeReasonInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortManualChargeReasonList">创建时间</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(ManualChargeReasonInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortManualChargeReasonList">修改时间</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ManualChargeReasonList != null && Model.ManualChargeReasonList.Count() != 0)
+        {
+            int order = 1;
+            foreach (ManualChargeReasonInfo manualChargeReason in Model.ManualChargeReasonList)
+            {
+                <tr ondblclick="showManualChargeReasonDetail(@(manualChargeReason.Id));">
+                    <td style="text-align: center;">
+                        <label for="manualChargeReasonCheck_@(manualChargeReason.Id)"></label><input id="manualChargeReasonCheck_@(manualChargeReason.Id)" type="checkbox" class="ace" value="@manualChargeReason.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@manualChargeReason.Content</td>
+                    <td style="text-align: center;">@(manualChargeReason.Status?.Name)</td>
+                    <td style="text-align: center;">@manualChargeReason.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@manualChargeReason.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualChargeReasonList"})

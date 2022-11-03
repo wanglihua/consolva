@@ -1,0 +1,175 @@
+@using shunda.Admin.Areas.OrderFee.Models.ManualChargeReason
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.OrderFee.Models.ManualChargeReason.ManualChargeReasonIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = "手动充值原因";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-manual-charge-reason-index-menu">手动充值原因</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadManualChargeReasonList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showManualChargeReasonDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteManualChargeReason()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="manualChargeReasonList" data-page-index="0" data-sort-field="@(nameof(ManualChargeReasonInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="manualChargeReasonDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadManualChargeReasonList();
+    });
+
+    function sortManualChargeReasonList(sortField, sortDir) {
+        var list = $('#manualChargeReasonList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadManualChargeReasonList();
+    }
+
+    function loadManualChargeReasonList(pageIndex) {
+        var list = $('#manualChargeReasonList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ManualChargeReason")",
+            type: "POST",
+            data: {
+                '@(nameof(ManualChargeReasonListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ManualChargeReasonListQueryParam.SortField))': sortField,
+                '@(nameof(ManualChargeReasonListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#manualChargeReasonList').html(data);
+
+                initListTable("#tblManualChargeReasonList");
+            }
+        });
+    }
+
+    function showManualChargeReasonDetail(id) {
+        $("#manualChargeReasonDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#manualChargeReasonDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ManualChargeReason")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#manualChargeReasonDetailDialogWrapper").html(data);
+                $("#manualChargeReasonDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveManualChargeReason() {
+        var form = $("#manualChargeReasonDetailForm");
+        var valid = validate(form,
+            {
+                'ManualChargeReason.Content': {
+                    required: true,
+                    maxlength: 300
+                },
+                'ManualChargeReason.StatusId': {
+                    required: true,
+                    digits: true 
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ManualChargeReason")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#manualChargeReasonDetailDialog').modal('hide');
+                        loadManualChargeReasonList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteManualChargeReason() {
+        var idList = getSelectIdList('#tblManualChargeReasonList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "ManualChargeReason")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadManualChargeReasonList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
