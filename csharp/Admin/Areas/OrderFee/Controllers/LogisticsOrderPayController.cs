@@ -22,7 +22,7 @@ namespace shunda.Admin.Areas.OrderFee.Controllers;
 [AdminAuth(PassRes.OrderFee.LogisticsOrderPay)]
 public class LogisticsOrderPayController : Controller
 {
-    private static readonly DateTime defaultDateBeginQuery = DateTime.ParseExact("2023-01-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+    private static readonly DateTime defaultDateBeginQuery = DateTime.ParseExact("2022-01-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
     private ISession session;
     private CustomerCodeService customerCodeService;
