@@ -22,6 +22,8 @@ namespace shunda.Admin.Areas.OrderFee.Controllers;
 [AdminAuth(PassRes.OrderFee.LogisticsOrderPay)]
 public class LogisticsOrderPayController : Controller
 {
+    private static readonly DateTime defaultDateBeginQuery = DateTime.ParseExact("2023-01-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
     private ISession session;
     private CustomerCodeService customerCodeService;
 
@@ -164,7 +166,7 @@ public class LogisticsOrderPayController : Controller
             });
         }
 
-        DateTime dateBegin = DateTime.ParseExact("2023-01-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        DateTime dateBegin = defaultDateBeginQuery;
         if (queryParam.PayTimeBeginQuery != null)
         {
             dateBegin = queryParam.PayTimeBeginQuery.Value;
@@ -196,7 +198,7 @@ public class LogisticsOrderPayController : Controller
     [Route("/admin/logistics/order/pay/date/stat/list")]
     public IActionResult DateStatList(LogisticsOrderPayListQueryParam queryParam)
     {
-        DateTime dateBegin = DateTime.ParseExact("2019-10-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        DateTime dateBegin = defaultDateBeginQuery;
         if (queryParam.PayTimeBeginQuery != null)
         {
             dateBegin = queryParam.PayTimeBeginQuery.Value;
@@ -438,7 +440,7 @@ public class LogisticsOrderPayController : Controller
             cell.SetCellType(CellType.String);
             cell.SetCellValue("总金额");
 
-            DateTime dateBegin = DateTime.ParseExact("2019-10-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            DateTime dateBegin = defaultDateBeginQuery;
             if (queryParam.PayTimeBeginQuery != null)
             {
                 dateBegin = queryParam.PayTimeBeginQuery.Value;

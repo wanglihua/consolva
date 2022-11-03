@@ -277,7 +277,7 @@
                         </li>
                     }
                     *@
-                                      
+
 
                     @if (Model.HasPassRes(PassRes.OrderFee.ManualFeeReason))
                     {
@@ -289,7 +289,7 @@
                             <b class="arrow"></b>
                         </li>
                     }
-                    
+
                     @if (Model.HasPassRes(PassRes.OrderFee.LogisticsOrderPay))
                     {
                         <li id="order-fee-logistics-order-pay-index-menu">
@@ -299,7 +299,18 @@
                             </a>
                             <b class="arrow"></b>
                         </li>
-                    }                    
+                    }
+
+                    @if (Model.HasPassRes(PassRes.OrderFee.ManualChargeReason))
+                    {
+                        <li id="order-fee-manual-charge-reason-index-menu">
+                            <a asp-area="OrderFee" asp-controller="ManualChargeReason" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                手动充值原因
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
 
                 </ul>
             </li>
@@ -315,7 +326,7 @@
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    
+
                     @if (Model.HasPassRes(PassRes.Customer.CustomerList))
                     {
                         <li id="customer-customer-index-menu">
@@ -374,7 +385,7 @@
                     
                     *@
 
-                   @if (Model.HasPassRes(PassRes.Customer.CustomerScoreLog))
+                    @if (Model.HasPassRes(PassRes.Customer.CustomerScoreLog))
                     {
                         <li id="customer-customer-score-log-index-menu">
                             <a asp-area="Customer" asp-controller="CustomerScoreLog" asp-action="Index">
@@ -439,7 +450,7 @@
                             <b class="arrow"></b>
                         </li>
                     }
-                    
+
                     @if (Model.HasPassRes(PassRes.Customer.CustomerCharacter))
                     {
                         <li id="customer-customer-character-index-menu">
@@ -449,11 +460,11 @@
                             </a>
                             <b class="arrow"></b>
                         </li>
-                    }                    
+                    }
 
                 </ul>
             </li>
-        }        
+        }
 
         @if (Model.HasOneOfPassRes(PassRes.Storage.All))
         {
