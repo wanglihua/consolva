@@ -205,7 +205,6 @@ public class StorageLocSpecController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        /* todo 加上
         foreach (int specId in idList)
         {
             StorageLocSpecInfo storageLocSpec = session.Get<StorageLocSpecInfo>(specId);
@@ -216,7 +215,6 @@ public class StorageLocSpecController : Controller
                 throw new ValidationException($"仓位规格{storageLocSpec.Name}有仓位正在使用中，删除失败！");
             }
         }
-        */
 
         foreach (int id in idList)
         {
