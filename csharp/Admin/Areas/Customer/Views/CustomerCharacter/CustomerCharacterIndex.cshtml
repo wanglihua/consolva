@@ -1,9 +1,10 @@
 @using shunda.Admin.Areas.Customer.Models.CustomerCharacter
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerCharacter.CustomerCharacterIndexModel
 @{
-    ViewBag.Title = "客户性质";
+    ViewData[ViewDataKey.Title] = "客户性质";
     Layout = "_AdminLayout";
 }
 

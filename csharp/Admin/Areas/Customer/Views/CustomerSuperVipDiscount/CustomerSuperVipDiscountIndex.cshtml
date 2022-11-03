@@ -1,9 +1,10 @@
 @using shunda.Admin.Areas.Customer.Models.CustomerSuperVipDiscount
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerSuperVipDiscount.CustomerSuperVipDiscountIndexModel
 @{
-    ViewBag.Title = "超级VIP折扣";
+    ViewData[ViewDataKey.Title] = "超级VIP折扣";
     Layout = "_AdminLayout";
 }
 

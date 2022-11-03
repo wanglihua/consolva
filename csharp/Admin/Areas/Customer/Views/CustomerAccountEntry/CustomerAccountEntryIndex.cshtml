@@ -1,10 +1,11 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Customer.Models.CustomerAccountEntry
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerAccountEntry.CustomerAccountEntryIndexModel
 @{
-    ViewBag.Title = "客户账户余额变动";
+    ViewData[ViewDataKey.Title] = "客户账户余额变动";
     Layout = "_AdminLayout";
 }
 

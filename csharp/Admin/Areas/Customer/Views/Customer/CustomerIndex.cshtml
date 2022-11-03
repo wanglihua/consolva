@@ -1,10 +1,11 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Customer.Models.Customer
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.Customer.CustomerIndexModel
 @{
-    ViewBag.Title = "会员列表";
+    ViewData[ViewDataKey.Title] = "会员列表";
     Layout = "_AdminLayout";
 }
 

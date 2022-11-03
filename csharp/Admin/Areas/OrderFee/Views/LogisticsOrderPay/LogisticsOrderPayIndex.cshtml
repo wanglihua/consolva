@@ -1,12 +1,13 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Logistics
 @using shunda.Domain.Order
 @model shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay.LogisticsOrderPayIndexModel
 
 @{
-    ViewBag.Title = "实时收入";
+    ViewData[ViewDataKey.Title] = "实时收入";
     Layout = "_AdminLayout";
 }
 

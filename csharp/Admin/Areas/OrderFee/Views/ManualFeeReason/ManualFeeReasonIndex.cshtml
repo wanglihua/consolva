@@ -1,10 +1,11 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.OrderFee.Models.ManualFeeReason
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Order
 @model shunda.Admin.Areas.OrderFee.Models.ManualFeeReason.ManualFeeReasonIndexModel
 @{
-    ViewBag.Title = "增减核销费用原因";
+    ViewData[ViewDataKey.Title] = "增减核销费用原因";
     Layout = "_AdminLayout";
 }
 

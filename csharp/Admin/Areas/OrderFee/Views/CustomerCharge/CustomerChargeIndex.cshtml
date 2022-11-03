@@ -1,0 +1,366 @@
+
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.OrderFee.Models.CustomerCharge
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.OrderFee.Models.CustomerCharge.CustomerChargeIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "余额充值";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="order-fee-menu">费用管理</li>
+    <li class="active" data-menu="order-fee-customer-charge-index-menu">余额充值</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerChargeList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+
+    @if (Model.HasManualChargePass)
+    {
+        <button type="button" class="btn btn-success btn-sm" onclick="showCustomerChargeSeaDetail(0)">
+            <i class="ace-icon fa fa-plus"></i>
+            海运手工充值
+        </button>
+
+        <button type="button" class="btn btn-pink btn-sm" onclick="showCustomerChargeAirDetail(0)">
+            <i class="ace-icon fa fa-plus"></i>
+            空运手工充值
+        </button>        
+
+        <button id="btnImportSea" class="btn btn-success btn-sm">
+            <i class="ace-icon fa fa-plus"></i>
+            海运导入充值
+        </button>
+
+        <button id="btnImportAir" class="btn btn-pink btn-sm">
+            <i class="ace-icon fa fa-plus"></i>
+            空运导入充值
+        </button>        
+
+        <a style="margin-left: 20px; display: inline-block;" href="/static/excel-template/customer-charge/customer-charge-import.xlsx">下载余额充值导入模板</a>
+    }
+
+    @*
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerCharge()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    *@
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+    <label for="chargeTypeQuery">充值方式</label>&nbsp;
+    <select id="chargeTypeQuery" name="chargeTypeQuery" style="width: 100px; height: 30px;">
+        <option value="">充值方式</option>
+        @foreach (CustomerChargeType chargeType in Model.ChargeTypeList)
+        {
+            <option value="@(chargeType.Id)">@(chargeType.Name)</option>
+        }
+    </select>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerChargeList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerChargeList" data-page-index="0" data-sort-field="@(nameof(CustomerChargeInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerChargeDetailDialogWrapper"></div>
+
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerChargeList();
+    });
+
+    function sortCustomerChargeList(sortField, sortDir) {
+        var list = $('#customerChargeList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerChargeList();
+    }
+
+    function loadCustomerChargeList(pageIndex) {
+        var list = $('#customerChargeList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerCharge")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerChargeListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(CustomerChargeListQueryParam.ChargeTypeQuery))': $('#chargeTypeQuery').val(),
+                '@(nameof(CustomerChargeListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerChargeListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerChargeListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerChargeList').html(data);
+
+                initListTable("#tblCustomerChargeList");
+            }
+        });
+    }
+    
+    function saveCustomerChargeSea() {
+        var form = $("#customerChargeDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerCode': {
+                    required: true
+                },
+                'Amount': {
+                    required: true,
+                    number: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("ManualChargeSeaSave", "CustomerCharge")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                    } else {
+                        $.msg.show(data.message);
+                        $('#customerChargeDetailDialog').modal('hide');
+                        loadCustomerChargeList();
+                    }
+
+                    hideMask();
+                }
+            });
+        }
+    }
+    
+    function saveCustomerChargeAir() {
+        var form = $("#customerChargeDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerCode': {
+                    required: true
+                },
+                'Amount': {
+                    required: true,
+                    number: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("ManualChargeAirSave", "CustomerCharge")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                    } else {
+                        $.msg.show(data.message);
+                        $('#customerChargeDetailDialog').modal('hide');
+                        loadCustomerChargeList();
+                    }
+
+                    hideMask();
+                }
+            });
+        }
+    }    
+
+    function showCustomerChargeSeaDetail(id) {
+        $("#customerChargeDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("ManualChargeSea", "CustomerCharge")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerChargeDetailDialogWrapper").html(data);
+                $("#customerChargeDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+    
+    function showCustomerChargeAirDetail(id) {
+        $("#customerChargeDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("ManualChargeAir", "CustomerCharge")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerChargeDetailDialogWrapper").html(data);
+                $("#customerChargeDetailDialog").modal(modalOptions);
+            }
+        });
+    }    
+
+    @*
+    
+    function deleteCustomerCharge() {
+        var idList = getSelectIdList('#tblCustomerChargeList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "CustomerCharge")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadCustomerChargeList();
+                    }
+                });
+            }
+        );
+    }
+    
+    *@
+
+
+    $(function(){
+        initUploaderSea();
+        initUploaderAir();
+    });
+
+    function initUploaderSea() {
+
+        var url = '@Url.Action("ImportSea", "CustomerCharge")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImportSea',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                        return;
+                    }
+                    loadCustomerChargeList();
+                    $.msg.show(result.message);
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }  
+    
+    function initUploaderAir() {
+
+        var url = '@Url.Action("ImportAir", "CustomerCharge")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImportAir',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                        return;
+                    }
+                    loadCustomerChargeList();
+                    $.msg.show(result.message);
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }      
+</script>

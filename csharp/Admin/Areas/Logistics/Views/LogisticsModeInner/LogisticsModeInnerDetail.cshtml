@@ -1,9 +1,10 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsModeInner.LogisticsModeInnerDetailModel
 
 @{
-    ViewBag.Title = "物流详细";
+    ViewData[ViewDataKey.Title] = "物流详细";
     Layout = "_AdminLayout";
 
     var isCreate = Model.Id == 0;

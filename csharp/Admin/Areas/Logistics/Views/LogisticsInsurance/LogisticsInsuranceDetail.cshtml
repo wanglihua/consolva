@@ -1,9 +1,10 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsInsurance.LogisticsInsuranceDetailModel
 
 @{
-    ViewBag.Title = "保险详细";
+    ViewData[ViewDataKey.Title] = "保险详细";
     Layout = "_AdminLayout";
 }
 
