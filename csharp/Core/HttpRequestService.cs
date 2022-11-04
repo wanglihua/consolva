@@ -21,7 +21,7 @@ public class HttpRequestService
 
         if (string.IsNullOrWhiteSpace(json))
         {
-            return default(T);
+            return default(T)!;
         }
 
         return JsonConvert.DeserializeObject<T>(json)!;
@@ -35,7 +35,7 @@ public class HttpRequestService
     public string GetJson(Dictionary<string, string> headers, string url)
     {
         HttpClient httpClient = new HttpClient(new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip });
-        HttpResponseMessage response = null;
+        HttpResponseMessage? response = null;
         try
         {
             httpClient.CancelPendingRequests();

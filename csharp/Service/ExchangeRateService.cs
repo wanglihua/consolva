@@ -13,9 +13,9 @@ public class ExchangeRateService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
-    private HttpRequestService httpRequestService = null;
-    private SiteErrorService siteErrorService = null;
+    private ISession session ;
+    private HttpRequestService httpRequestService;
+    private SiteErrorService siteErrorService;
 
     public ExchangeRateService(ISession session,
         HttpRequestService httpRequestService,
@@ -179,7 +179,7 @@ public class ExchangeRateService
             .Take(1)
             .SingleOrDefault();
 
-        ITransaction transaction = null;
+        ITransaction? transaction = null;
         try
         {
             if (useInnerTransaction)
@@ -245,7 +245,7 @@ public class ExchangeRateService
         public string From { get; set; } = string.Empty;
 
         [JsonProperty("to")]
-        public string To { get; set; }
+        public string To { get; set; } = string.Empty;
 
         [JsonProperty("fromname")]
         public string FromName { get; set; } = string.Empty;

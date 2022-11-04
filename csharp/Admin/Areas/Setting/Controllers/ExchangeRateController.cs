@@ -71,7 +71,7 @@ public class ExchangeRateController : Controller
     {
         this.session.DefaultReadOnly = true;
 
-        ExchangeRateInfo exchangeRate = null;
+        ExchangeRateInfo exchangeRate;
 
         if (id == null || id.Value == 0)
         {
@@ -107,7 +107,7 @@ public class ExchangeRateController : Controller
 
         bool isCreate = exchangeRateId == 0;
 
-        ExchangeRateInfo exchangeRate = null;
+        ExchangeRateInfo exchangeRate;
 
         if (isCreate)
         {
