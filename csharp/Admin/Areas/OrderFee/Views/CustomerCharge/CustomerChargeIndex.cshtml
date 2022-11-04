@@ -23,25 +23,15 @@
 
     @if (Model.HasManualChargePass)
     {
-        <button type="button" class="btn btn-success btn-sm" onclick="showCustomerChargeSeaDetail(0)">
+        <button type="button" class="btn btn-pink btn-sm" onclick="showCustomerChargeDetail(0)">
             <i class="ace-icon fa fa-plus"></i>
-            海运手工充值
-        </button>
-
-        <button type="button" class="btn btn-pink btn-sm" onclick="showCustomerChargeAirDetail(0)">
-            <i class="ace-icon fa fa-plus"></i>
-            空运手工充值
-        </button>        
+            手工充值
+        </button>     
 
         <button id="btnImportSea" class="btn btn-success btn-sm">
             <i class="ace-icon fa fa-plus"></i>
-            海运导入充值
+            导入充值
         </button>
-
-        <button id="btnImportAir" class="btn btn-pink btn-sm">
-            <i class="ace-icon fa fa-plus"></i>
-            空运导入充值
-        </button>        
 
         <a style="margin-left: 20px; display: inline-block;" href="/static/excel-template/customer-charge/customer-charge-import.xlsx">下载余额充值导入模板</a>
     }
@@ -127,7 +117,7 @@
         });
     }
     
-    function saveCustomerChargeSea() {
+    function saveCustomerCharge() {
         var form = $("#customerChargeDetailForm");
         var valid = validate(form,
             {
@@ -143,7 +133,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("ManualChargeSeaSave", "CustomerCharge")',
+                url: '@Url.Action("ManualChargeSave", "CustomerCharge")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -159,49 +149,15 @@
                 }
             });
         }
-    }
-    
-    function saveCustomerChargeAir() {
-        var form = $("#customerChargeDetailForm");
-        var valid = validate(form,
-            {
-                'CustomerCode': {
-                    required: true
-                },
-                'Amount': {
-                    required: true,
-                    number: true
-                }
-            });
+    }   
 
-        if (valid) {
-            showMask("提交中...");
-            $.ajax({
-                url: '@Url.Action("ManualChargeAirSave", "CustomerCharge")',
-                type: "POST",
-                data: form.serialize(),
-                success: function(data) {
-                    if (data.success === false) {
-                        $.msg.error(data.message);
-                    } else {
-                        $.msg.show(data.message);
-                        $('#customerChargeDetailDialog').modal('hide');
-                        loadCustomerChargeList();
-                    }
-
-                    hideMask();
-                }
-            });
-        }
-    }    
-
-    function showCustomerChargeSeaDetail(id) {
+    function showCustomerChargeDetail(id) {
         $("#customerChargeDetailDialogWrapper").html("");
 
         showMask("加载中...");
 
         $.ajax({
-            url: '@Url.Action("ManualChargeSea", "CustomerCharge")',
+            url: '@Url.Action("ManualCharge", "CustomerCharge")',
             type: "POST",
             data: { "id": id },
             success: function(data) {
@@ -215,29 +171,7 @@
                 $("#customerChargeDetailDialog").modal(modalOptions);
             }
         });
-    }
-    
-    function showCustomerChargeAirDetail(id) {
-        $("#customerChargeDetailDialogWrapper").html("");
-
-        showMask("加载中...");
-
-        $.ajax({
-            url: '@Url.Action("ManualChargeAir", "CustomerCharge")',
-            type: "POST",
-            data: { "id": id },
-            success: function(data) {
-                hideMask();
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $("#customerChargeDetailDialogWrapper").html(data);
-                $("#customerChargeDetailDialog").modal(modalOptions);
-            }
-        });
-    }    
+    }   
 
     @*
     

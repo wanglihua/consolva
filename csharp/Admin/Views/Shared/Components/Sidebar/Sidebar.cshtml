@@ -301,6 +301,17 @@
                         </li>
                     }
 
+                    @if (Model.HasPassRes(PassRes.OrderFee.CustomerCharge))
+                    {
+                        <li id="order-fee-customer-charge-index-menu">
+                            <a asp-area="OrderFee" asp-controller="CustomerCharge" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                余额充值
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
                     @if (Model.HasPassRes(PassRes.OrderFee.ManualChargeReason))
                     {
                         <li id="order-fee-manual-charge-reason-index-menu">

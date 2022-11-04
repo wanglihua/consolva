@@ -6,6 +6,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.OrderFee.Models.CustomerCharge;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -118,8 +119,8 @@ public class CustomerChargeController : Controller
     [HttpPost]
     [Route("/admin/customer/charge/sea/save")]
     [AdminAuth(PassRes.OrderFee.CustomerChargeManualCharge)]
-    // trans
-    public IActionResult ManualChargeSeaSave(CustomerChargeDetailModel model)
+    [Transactional]
+    public IActionResult ManualChargeSave(CustomerChargeDetailModel model)
     {
         if (!ModelState.IsValid)
         {
