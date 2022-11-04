@@ -31,6 +31,7 @@
 
 /csharp/Job/bin/
 /csharp/Job/obj/
+/csharp/Job/Logs/
 
 /csharp/.idea/
 

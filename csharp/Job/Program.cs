@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using NHibernate;
 using NLog.Web;
+using Service.Jobs;
 using shunda.Core;
 using shunda.Core.Binder;
 using shunda.Core.Config;
@@ -90,10 +91,10 @@ public class Program
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
         // 添加 Core 项目中的 service，强制 Singleton 方便 Job 中引用 
-        services.AddCoreServicesForceSingleton();
+        services.AddCoreServices();
 
         // 添加 Service 项目中的 service，强制 Singleton 方便 Job 中引用 
-        services.AddAppServicesForceSingleton();
+        services.AddAppServices();
 
         // 必须 Singleton
         services.AddSingleton<ISessionFactory>((provider) =>
@@ -148,9 +149,9 @@ public class Program
             // endpoints.MapHub<HandleHub>("/hub/handle");
         });
 
-        // var quartz = new QuartzStartup(app.Services);
-        // app.Lifetime.ApplicationStarted.Register(quartz.Start);
-        // app.Lifetime.ApplicationStopping.Register(quartz.Stop);
+        var quartz = new QuartzStartup(app.Services, app.Environment.IsDevelopment());
+        app.Lifetime.ApplicationStarted.Register(quartz.Start);
+        app.Lifetime.ApplicationStopping.Register(quartz.Stop);
 
         app.Run();
     }
