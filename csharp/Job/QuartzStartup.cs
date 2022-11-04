@@ -52,10 +52,10 @@ public class QuartzStartup
             // 下面的定时任务需要错开时间开始
 
             DateTime jobStartTime = DateTime.Parse("2022-01-01 02:00"); // 这个时间是 UTC 时间，加上 new TimeSpan(10, 0, 0) 变成 澳大利亚时间
-            // int jobIntervalMinutes = 5; // 每个任务的错开时间
+            int jobIntervalMinutes = 5; // 每个任务的错开时间
 
-            // jobStartTime = jobStartTime.AddMinutes(jobIntervalMinutes);
-            // ExchangeRateRefreshJob.Schedule(scheduler, jobStartTime);
+            jobStartTime = jobStartTime.AddMinutes(jobIntervalMinutes);
+            ExchangeRateRefreshJob.Schedule(scheduler, jobStartTime);
         }
     }
 
