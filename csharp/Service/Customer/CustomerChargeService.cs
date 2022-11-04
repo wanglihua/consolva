@@ -10,15 +10,15 @@ public class CustomerChargeService
 {
     private ISession session;
 
-    // private ExchangeRateService exchangeRateService = null; todo 汇率补上
+    private ExchangeRateService exchangeRateService;
     private CustomerAccountService customerAccountService;
 
     public CustomerChargeService(ISession session,
-        // ExchangeRateService exchangeRateService, 
+        ExchangeRateService exchangeRateService,
         CustomerAccountService customerAccountService)
     {
         this.session = session;
-        // this.exchangeRateService = exchangeRateService;
+        this.exchangeRateService = exchangeRateService;
         this.customerAccountService = customerAccountService;
     }
 
@@ -46,7 +46,7 @@ public class CustomerChargeService
         }
         else if (chargeType == CustomerChargeType.PayPal)
         {
-            decimal audExchangeRate = 5; // todo 汇率补上 exchangeRateService.GetAudFinalRate();
+            decimal audExchangeRate = exchangeRateService.GetAudFinalRate();
             if (audExchangeRate <= 0)
             {
                 throw new ValidationException("汇率值不合法!");
@@ -70,6 +70,8 @@ public class CustomerChargeService
 
         // 充值和余额日志
         customerAccountService.Change(CustomerAccountChangeType.Charge, customer.Id, amount, chargeDescription);
+
+        /* todo 这个充值奖励暂时禁用吧，舜达的不一定会是这样的优惠
 
         // 计算充值奖励
         {
@@ -149,5 +151,6 @@ public class CustomerChargeService
                 }
             }
         }
+        */
     }
 }

@@ -13,7 +13,7 @@ public class ExchangeRateInfo : Entity
     /// 原货币代码
     /// </summary>
     [Required(ErrorMessage = "原货币代码不能为空！")]
-    [ModelBinder(typeof(CurrencyTypeHibernateType))]
+    [ModelBinder(typeof(CurrencyTypeModelBinder))]
     public virtual CurrencyType FromCurrency { get; set; } = CurrencyType.None;
 
     /// <summary>
@@ -21,7 +21,7 @@ public class ExchangeRateInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "折算货币代码不能为空！")]
     [MaxLength(10, ErrorMessage = "折算货币代码长度不能大于10！")]
-    [ModelBinder(typeof(CurrencyTypeHibernateType))]
+    [ModelBinder(typeof(CurrencyTypeModelBinder))]
     public virtual CurrencyType ToCurrency { get; set; } = CurrencyType.None;
 
     /// <summary>

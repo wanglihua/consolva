@@ -1,15 +1,16 @@
 @using shunda.Admin.Areas.Setting.Models.ExchangeRate
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain
 @model shunda.Admin.Areas.Setting.Models.ExchangeRate.ExchangeRateIndexModel
 @{
-    ViewBag.Title = "汇率列表";
+    ViewData[ViewDataKey.Title] = "汇率列表";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="settings-menu">系统设置</li>
-    <li class="active" data-menu="settings-exchange-rate-index-menu">汇率列表</li>
+    <li class="active" data-menu="settings-exchange-rate-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
@@ -104,33 +105,7 @@
 
     function saveExchangeRate() {
         var form = $("#exchangeRateDetailForm");
-        var valid = validate(form,
-            {
-                'ExchangeRate.FromCurrencyCode': {
-                    required: true,
-                    maxlength: 10
-                },
-                'ExchangeRate.FromCurrencyName': {
-                    required: true,
-                    maxlength: 10
-                },
-                'ExchangeRate.ToCurrencyCode': {
-                    required: true,
-                    maxlength: 10
-                },
-                'ExchangeRate.ToCurrencyName': {
-                    required: true,
-                    maxlength: 10
-                },
-                'ExchangeRate.Rate': {
-                    required: true,
-                    number: true
-                },
-                'ExchangeRate.RateFix': {
-                    required: true,
-                    number: true
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");
@@ -152,37 +127,6 @@
                 }
             });
         }
-    }
-
-    function deleteExchangeRate() {
-        var idList = getSelectIdList('#tblExchangeRateList');
-
-        if (idList.length === 0) {
-            $.msg.alert("请选择数据！");
-            return;
-        }
-
-        $.msg.confirm("确认要删除吗？",
-            function() {
-                showMask("提交中...");
-                $.ajax({
-                    url: '@Url.Action("Delete", "ExchangeRate")',
-                    type: "POST",
-                    data: { "idList": idList },
-                    success: function(data) {
-                        hideMask();
-                        if (data.success === false) {
-                            $.msg.error(data.message);
-                            return;
-                        } else {
-                            $.msg.show(data.message);
-                        }
-
-                        loadExchangeRateList();
-                    }
-                });
-            }
-        );
     }
 
     function refreshExchangeRate() {
@@ -210,10 +154,10 @@
     }
 
     function calculateFinalRate() {
-        var rate = parseFloat($("#ExchangeRate_Rate").val());
-        var rateFix = parseFloat($("#ExchangeRate_RateFix").val());
+        var rate = parseFloat($("#rate").val());
+        var rateFix = parseFloat($("#rateFix").val());
 
-        $("#ExchangeRate_FinalRate").val(rate + rateFix);
+        $("#finalRate").val(rate + rateFix);
     }
 
 </script>

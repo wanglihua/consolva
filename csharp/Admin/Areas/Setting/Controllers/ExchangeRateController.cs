@@ -59,35 +59,29 @@ public class ExchangeRateController : Controller
 
     private ICriteria GetListCriteria(ExchangeRateListQueryParam queryParam)
     {
-        ICriteria criteria = this.session.CreateCriteria<ExchangeRateInfo>();
+        ICriteria criteria = session.CreateCriteria<ExchangeRateInfo>();
         criteria = criteria.SetReadOnly(true);
 
         return criteria;
     }
 
     [HttpPost]
-    [Route("/admin/exchange/rate/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
+    [Route("/admin/exchange/rate/detail")]
+    public IActionResult Detail(IdParam param)
     {
-        this.session.DefaultReadOnly = true;
+        session.DefaultReadOnly = true;
 
-        ExchangeRateInfo exchangeRate;
-
-        if (id == null || id.Value == 0)
+        ExchangeRateInfo? exchangeRate = session.Get<ExchangeRateInfo>(param.Id);
+        if (exchangeRate == null)
         {
-            exchangeRate = new ExchangeRateInfo();
-        }
-        else
-        {
-            exchangeRate = this.session.Get<ExchangeRateInfo>(id.Value);
-            if (exchangeRate == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            throw new ValidationException($"指定的汇率数据项#{param.Id}不存在！");
         }
 
         ExchangeRateDetailModel model = new ExchangeRateDetailModel();
         model.ExchangeRate = exchangeRate;
+
+        model.ExchangeRateId = exchangeRate.Id;
+        model.RateFix = exchangeRate.RateFix;
 
         return View("ExchangeRateDetail", model);
     }
@@ -95,69 +89,29 @@ public class ExchangeRateController : Controller
     [HttpPost]
     [Route("/admin/exchange/rate/save")]
     [Transactional]
-    public IActionResult Save(ExchangeRateDetailModel model)
+    public IActionResult Save(ExchangeRateSaveModel model)
     {
         if (!this.ModelState.IsValid)
         {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
-        ExchangeRateInfo exchangeRateFromUi = model.ExchangeRate;
-        int exchangeRateId = exchangeRateFromUi.Id;
+        int exchangeRateId = model.ExchangeRateId;
 
-        bool isCreate = exchangeRateId == 0;
-
-        ExchangeRateInfo exchangeRate;
-
-        if (isCreate)
+        ExchangeRateInfo? exchangeRate = session.Get<ExchangeRateInfo>(exchangeRateId);
+        if (exchangeRate == null)
         {
-            exchangeRate = new ExchangeRateInfo();
-        }
-        else
-        {
-            exchangeRate = this.session.Get<ExchangeRateInfo>(exchangeRateId);
+            throw new ValidationException($"指定的汇率数据项#{exchangeRateId}不存在！");
         }
 
-        // exchangeRate.FromCurrencyCode = exchangeRateFromUi.FromCurrencyCode;
-        // exchangeRate.FromCurrencyName = exchangeRateFromUi.FromCurrencyName;
-        // exchangeRate.ToCurrencyCode = exchangeRateFromUi.ToCurrencyCode;
-        // exchangeRate.ToCurrencyName = exchangeRateFromUi.ToCurrencyName;
+        exchangeRate.RateFix = model.RateFix;
 
-        exchangeRate.Rate = exchangeRateFromUi.Rate;
-        exchangeRate.RateFix = exchangeRateFromUi.RateFix;
-
-        if (isCreate)
-        {
-            this.session.Save(exchangeRate);
-        }
-        else
-        {
-            this.session.Update(exchangeRate);
-        }
-
-        this.session.Flush();
+        session.Update(exchangeRate);
+        session.Flush();
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
             { "message", "保存成功！" }
-        });
-    }
-
-    [HttpPost]
-    [Route("/admin/exchange/rate/delete")]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (int id in idList)
-        {
-            ExchangeRateInfo exchangeRate = this.session.Load<ExchangeRateInfo>(id);
-            this.session.Delete(exchangeRate);
-        }
-
-        this.session.Flush();
-
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "删除成功！" },
         });
     }
 
