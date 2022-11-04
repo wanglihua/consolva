@@ -1,0 +1,219 @@
+@using shunda.Admin.Areas.Setting.Models.ExchangeRate
+@using shunda.Core
+@using shunda.Domain
+@model shunda.Admin.Areas.Setting.Models.ExchangeRate.ExchangeRateIndexModel
+@{
+    ViewBag.Title = "汇率列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-exchange-rate-index-menu">汇率列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadExchangeRateList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+
+    <button type="button" class="btn btn-success btn-sm" onclick="refreshExchangeRate()">
+        <i class="ace-icon fa fa-refresh"></i>
+        更新
+    </button>
+</div>
+
+<div id="exchangeRateList" data-page-index="0" data-sort-field="@(nameof(ExchangeRateInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="exchangeRateDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadExchangeRateList();
+    });
+
+    function sortExchangeRateList(sortField, sortDir) {
+        var list = $('#exchangeRateList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExchangeRateList();
+    }
+
+    function loadExchangeRateList(pageIndex) {
+        var list = $('#exchangeRateList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExchangeRate")",
+            type: "POST",
+            data: {
+                '@(nameof(ExchangeRateListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ExchangeRateListQueryParam.SortField))': sortField,
+                '@(nameof(ExchangeRateListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#exchangeRateList').html(data);
+
+                initListTable("#tblExchangeRateList");
+            }
+        });
+    }
+
+    function showExchangeRateDetail(id) {
+        $("#exchangeRateDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#exchangeRateDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ExchangeRate")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#exchangeRateDetailDialogWrapper").html(data);
+                $("#exchangeRateDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveExchangeRate() {
+        var form = $("#exchangeRateDetailForm");
+        var valid = validate(form,
+            {
+                'ExchangeRate.FromCurrencyCode': {
+                    required: true,
+                    maxlength: 10
+                },
+                'ExchangeRate.FromCurrencyName': {
+                    required: true,
+                    maxlength: 10
+                },
+                'ExchangeRate.ToCurrencyCode': {
+                    required: true,
+                    maxlength: 10
+                },
+                'ExchangeRate.ToCurrencyName': {
+                    required: true,
+                    maxlength: 10
+                },
+                'ExchangeRate.Rate': {
+                    required: true,
+                    number: true
+                },
+                'ExchangeRate.RateFix': {
+                    required: true,
+                    number: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ExchangeRate")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#exchangeRateDetailDialog').modal('hide');
+                        loadExchangeRateList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteExchangeRate() {
+        var idList = getSelectIdList('#tblExchangeRateList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ExchangeRate")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadExchangeRateList();
+                    }
+                });
+            }
+        );
+    }
+
+    function refreshExchangeRate() {
+        $.msg.confirm("确认要从网络更新汇率吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Refresh", "ExchangeRate")',
+                    type: "POST",
+                    data: {},
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadExchangeRateList();
+                    }
+                });
+            }
+        );
+    }
+
+    function calculateFinalRate() {
+        var rate = parseFloat($("#ExchangeRate_Rate").val());
+        var rateFix = parseFloat($("#ExchangeRate_RateFix").val());
+
+        $("#ExchangeRate_FinalRate").val(rate + rateFix);
+    }
+
+</script>

@@ -10,9 +10,9 @@ public class ExchangeRateInfoMapping : EntityMapping<ExchangeRateInfo>
         Table("tbl_exchange_rate");
 
         Property(
-            x => x.FromCurrencyCode,
+            x => x.FromCurrency,
             map => {
-                map.Type(NHibernateUtil.String);
+                map.Type<CurrencyTypeHibernateType>();
                 map.Column("from_currency_code");
                 map.Length(10);
                 map.NotNullable(true);
@@ -20,30 +20,10 @@ public class ExchangeRateInfoMapping : EntityMapping<ExchangeRateInfo>
         );
 
         Property(
-            x => x.FromCurrencyName,
+            x => x.ToCurrency,
             map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("from_currency_name");
-                map.Length(10);
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.ToCurrencyCode,
-            map => {
-                map.Type(NHibernateUtil.String);
+                map.Type<CurrencyTypeHibernateType>();
                 map.Column("to_currency_code");
-                map.Length(10);
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.ToCurrencyName,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("to_currency_name");
                 map.Length(10);
                 map.NotNullable(true);
             }

@@ -22,6 +22,7 @@ public class PassResCateDataInitService
             PassRes.Storage.Cate,
             PassRes.Logistics.Cate,
             PassRes.CustomerMessage.Cate,
+            PassRes.SystemSetting.Cate,
         };
 
         // 检查 cate id 唯一性

@@ -17,6 +17,13 @@ public abstract class StringCodeTypeBase
     /// </summary>
     public string Description { get; protected set; } = string.Empty;
 
+    public StringCodeTypeBase(string code, string name, string description)
+    {
+        Code = code;
+        Name = name;
+        Description = description;
+    }
+
     /// <summary>
     /// 字符串表示, 这个的实现方式很重要
     /// </summary>

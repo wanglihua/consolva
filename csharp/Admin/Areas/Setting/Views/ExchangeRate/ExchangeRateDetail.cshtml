@@ -1,0 +1,96 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Setting.Models.ExchangeRate.ExchangeRateDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="exchangeRateDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">汇率详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="exchangeRateDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="ExchangeRate.Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExchangeRate.FromCurrency.Code" class="col-xs-2 control-label">原货币代码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExchangeRate.FromCurrency.Code" type="text" class="input-sm form-control" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExchangeRate.FromCurrency.Name" class="col-xs-2 control-label">原货币名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExchangeRate.FromCurrency.Name" type="text" class="input-sm form-control" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExchangeRate.ToCurrency.Code" class="col-xs-2 control-label">折算货币代码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExchangeRate.ToCurrency.Code" type="text" class="input-sm form-control" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExchangeRate.ToCurrency.Name" class="col-xs-2 control-label">折算货币名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExchangeRate.ToCurrency.Name" type="text" class="input-sm form-control" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExchangeRate.Rate" class="col-xs-2 control-label">汇率</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExchangeRate.Rate" type="text" class="input-sm form-control" onchange="calculateFinalRate()"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExchangeRate.RateFix" class="col-xs-2 control-label">汇率修正</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExchangeRate.RateFix" type="text" class="input-sm form-control" onchange="calculateFinalRate()"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="finalRate" class="col-xs-2 control-label">最终汇率</label>
+                                <div class="col-xs-10">
+                                    <input id="finalRate" type="text" value="@(Model.ExchangeRate.GetFinalRate())" class="input-sm form-control" readonly="readonly"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveExchangeRate();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
