@@ -21,7 +21,7 @@ public class HelloJob : JobBase
         var jobDetail = JobBuilder.Create<HelloJob>().WithDescription("HelloJob").Build();
         // var sampleTrigger = TriggerBuilder.Create().StartNow().WithCronSchedule("* * * * * ? *").Build();
         var jobTrigger = TriggerBuilder.Create()
-            .StartAt(new DateTimeOffset(DateTime.Parse("2022-01-01 04:00"), new TimeSpan(8, 0, 0)))
+            .StartAt(new DateTimeOffset(DateTime.Parse("2022-01-01 00:00"), new TimeSpan(8, 0, 0)))
             .WithSimpleSchedule(
                 x => x.WithIntervalInSeconds(1).RepeatForever()
             )
