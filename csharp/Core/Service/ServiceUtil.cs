@@ -30,4 +30,22 @@ public class ServiceUtil
             }
         }
     }
+
+    /// <summary>
+    /// 强制添加 service 为 Singleton
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="assembly"></param>
+    public static void AddAssemblyServiceForceSingleton(IServiceCollection services, Assembly assembly)
+    {
+        IList<Type> typeList = assembly.GetTypes().Where(t => t.IsClass && (!t.IsAbstract)).ToList();
+        foreach (Type type in typeList)
+        {
+            ServiceAttribute serviceAttribute = type.GetCustomAttribute<ServiceAttribute>();
+            if (serviceAttribute != null)
+            {
+                services.AddSingleton(type);
+            }
+        }
+    }
 }

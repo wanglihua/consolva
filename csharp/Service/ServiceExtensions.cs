@@ -11,4 +11,10 @@ public static class ServiceExtensions
         Assembly assembly = typeof(ServiceExtensions).Assembly;
         ServiceUtil.AddAssemblyService(services, assembly);
     }
+
+    public static void AddAppServicesForceSingleton(this IServiceCollection services)
+    {
+        Assembly assembly = typeof(ServiceExtensions).Assembly;
+        ServiceUtil.AddAssemblyServiceForceSingleton(services, assembly);
+    }    
 }

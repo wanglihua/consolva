@@ -89,11 +89,11 @@ public class Program
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-        // 添加 Core 项目中的 service
-        services.AddCoreServices();
+        // 添加 Core 项目中的 service，强制 Singleton 方便 Job 中引用 
+        services.AddCoreServicesForceSingleton();
 
-        // 添加 Service 项目中的 service
-        services.AddAppServices();
+        // 添加 Service 项目中的 service，强制 Singleton 方便 Job 中引用 
+        services.AddAppServicesForceSingleton();
 
         // 必须 Singleton
         services.AddSingleton<ISessionFactory>((provider) =>
