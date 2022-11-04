@@ -1,9 +1,9 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using NHibernate;
 using NLog.Web;
-using Service.Jobs;
 using shunda.Core;
 using shunda.Core.Binder;
 using shunda.Core.Config;
@@ -11,6 +11,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Hibernate.MiniProfilerMySql;
 using shunda.Core.Json;
 using shunda.Core.Log;
+using shunda.Core.Service;
 using shunda.Domain;
 using shunda.Job.Filters;
 using shunda.Job.Middlewares;
@@ -90,11 +91,15 @@ public class Program
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-        // 添加 Core 项目中的 service，强制 Singleton 方便 Job 中引用 
+        // 添加 Core 项目中的 service
         services.AddCoreServices();
 
-        // 添加 Service 项目中的 service，强制 Singleton 方便 Job 中引用 
+        // 添加 Service 项目中的 service
         services.AddAppServices();
+
+        // 添加 Job 项目中的 Service
+        Assembly assembly = typeof(QuartzStartup).Assembly;
+        ServiceUtil.AddAssemblyService(services, assembly);
 
         // 必须 Singleton
         services.AddSingleton<ISessionFactory>((provider) =>

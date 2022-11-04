@@ -1,23 +1,19 @@
 using NHibernate;
 using NLog;
 using Quartz;
-using shunda.Core.Hibernate;
+using shunda.Core.Quartz;
 using shunda.Core.Service;
 using shunda.Domain.Pass;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Job.Jobs;
 
 [Service(ServiceType.Singleton)]
-public class HelloJob : IJob
+public class HelloJob : JobBase
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISessionFactory sessionFactory;
-
-    public HelloJob(ISessionFactory sessionFactory)
+    public HelloJob(ISessionFactory sessionFactory) : base(sessionFactory)
     {
-        this.sessionFactory = sessionFactory;
     }
 
     public static void Schedule(IScheduler scheduler)
@@ -34,36 +30,12 @@ public class HelloJob : IJob
         scheduler.ScheduleJob(jobDetail, jobTrigger).Wait();
     }
 
-    public Task Execute(IJobExecutionContext context)
+    public override void Execute()
     {
-        ISession session = null;
-        ITransaction transaction = null;
-        try
-        {
-            session = sessionFactory.WithOptions().Interceptor(new HibernateInterceptor()).OpenSession();
+        IList<GroupInfo> groupList = session.Query<GroupInfo>().ToList();
 
-            transaction = session.BeginTransaction();
+        log.Trace("group count " + groupList.Count);
 
-            IList<GroupInfo> groupList = session.Query<GroupInfo>().ToList();
-
-            log.Trace("group count " + groupList.Count);
-
-            log.Trace("Hello World from HelloJob！" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-
-            session.Flush();
-
-            transaction.Commit();
-        }
-        catch (Exception exp)
-        {
-            transaction?.Rollback();
-            log.Error(exp);
-        }
-        finally
-        {
-            session?.Close();
-        }
-
-        return Task.CompletedTask;
+        log.Trace("Hello World from HelloJob！" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
     }
 }
