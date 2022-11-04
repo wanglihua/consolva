@@ -1,3 +1,6 @@
+using NHibernate;
+using NLog;
+using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using ISession = NHibernate.ISession;
 
@@ -6,32 +9,64 @@ namespace shunda.Service.Express;
 [Service(ServiceType.Scoped)]
 public class CheckinTrackingNoService
 {
-    private ISession session;
+    private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public CheckinTrackingNoService(ISession session)
+    private static readonly object LockObject = new object();
+
+    private ISessionFactory sessionFactory;
+
+    public CheckinTrackingNoService(ISessionFactory sessionFactory)
     {
-        this.session = session;
+        this.sessionFactory = sessionFactory;
     }
 
-    private string GetNextMainTrackinigNo()
+    public string GetNextMainTrackinigNo()
     {
-        // 这里应该在一个事务内，并且lock?
-        // 暂时不用了，现在的入库速度，一般不会有并发的
-
-        object[] seqObjs = session.CreateSQLQuery("CALL checkin_tracking_no_next_seq()").UniqueResult<object[]>();
-        if (seqObjs == null || seqObjs.Length != 3)
+        lock (LockObject) // lock() 时，数据库事务应该是在内部，否则 lock() 后有时也没意义
         {
-            throw new Exception("获取下一个入库跟踪号失败！");
+            int seq;
+
+            string yearLabel;
+            string monthLabel;
+
+            ISession? sessionLocal = null;
+            ITransaction? transaction = null;
+            try
+            {
+                sessionLocal = HibernateSessionFactory.OpenSession(sessionFactory);
+                transaction = sessionLocal.BeginTransaction();
+
+                object[] seqObjs = sessionLocal.CreateSQLQuery("CALL checkin_tracking_no_next_seq()").UniqueResult<object[]>();
+                if (seqObjs == null || seqObjs.Length != 3)
+                {
+                    throw new Exception("获取下一个入库跟踪号失败！");
+                }
+
+                int year = int.Parse(seqObjs[0].ToString() ?? string.Empty);
+                int month = int.Parse(seqObjs[1].ToString() ?? string.Empty);
+                seq = int.Parse(seqObjs[2].ToString() ?? string.Empty);
+
+                yearLabel = GetYearLetter(year);
+                monthLabel = GetMonthLetter(month);
+
+
+                sessionLocal.Flush();
+                transaction.Commit();
+            }
+            catch (Exception exp)
+            {
+                log.Error(exp);
+                transaction?.Rollback();
+
+                throw;
+            }
+            finally
+            {
+                sessionLocal?.Close();
+            }
+
+            return $"SD{seq:#00000}{yearLabel}{monthLabel}";
         }
-
-        int year = int.Parse(seqObjs[0].ToString() ?? string.Empty);
-        int month = int.Parse(seqObjs[1].ToString() ?? string.Empty);
-        int seq = int.Parse(seqObjs[2].ToString() ?? string.Empty);
-
-        string yearLabel = GetYearLetter(year);
-        string monthLabel = GetMonthLetter(month);
-
-        return $"SD{seq:#00000}{yearLabel}{monthLabel}";
     }
 
     private string GetYearLetter(int year)
@@ -48,6 +83,7 @@ public class CheckinTrackingNoService
 
 /*
 
+todo 其他的逻辑放在 CheckinTrackingNoExpressService 中，并且不用 注入 ISessionFactory，直接使用 ISession
 
 
 using System;
