@@ -33,9 +33,9 @@ namespace shunda.Service.Order
 
             以客户ID：5001,第15个订单，举例：
 
-            订单编号为：CN050010015；
+            订单编号为：SD050010015；
 
-            共3箱的话：CN0500100150001，CN0500100150002，CN0500100150003         
+            共3箱的话：SD0500100150001，SD0500100150002，SD0500100150003         
          */
 
         public string GenerateNewCode(int customerId)
