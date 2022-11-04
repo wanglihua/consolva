@@ -16,6 +16,31 @@
 <div id="sidebar" class="sidebar responsive @(sidebarMinClassStr)">
     <ul class="nav nav-list">
 
+        @if (Model.HasOneOfPassRes(PassRes.Express.All))
+        {
+            <li id="express-menu">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-file-o"></i>
+                    <span class="menu-text">快递管理</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+
+                    @if (Model.HasPassRes(PassRes.Express.ExpressRemarkPresetSelect))
+                    {
+                        <li id="express-express-remark-preset-select-menu">
+                            <a asp-area="Express" asp-controller="ExpressRemarkPresetSelect" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>快递单备注预设
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                </ul>
+            </li>
+        }
+
         @if (Model.HasOneOfPassRes(PassRes.OrderFee.All))
         {
             <li id="order-fee-menu">

@@ -1,0 +1,164 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model ExpressRemarkPresetSelectIndexModel
+@using shunda.Admin.Areas.Express.Models.ExpressRemarkPresetSelect
+@{
+    ViewData[ViewDataKey.Title] = "快递单备注预设";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="express-menu">快递管理</li>
+    <li class="active" data-menu="express-express-remark-preset-select-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadExpressRemarkPresetSelectList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showExpressRemarkPresetSelectDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteExpressRemarkPresetSelect()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="expressRemarkPresetSelectList" data-page-index="0" data-sort-field="@(nameof(ExpressRemarkPresetSelectInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="expressRemarkPresetSelectDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadExpressRemarkPresetSelectList();
+    });
+
+    function sortExpressRemarkPresetSelectList(sortField, sortDir) {
+        var list = $('#expressRemarkPresetSelectList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExpressRemarkPresetSelectList();
+    }
+
+    function loadExpressRemarkPresetSelectList(pageIndex) {
+        var list = $('#expressRemarkPresetSelectList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExpressRemarkPresetSelect")",
+            type: "POST",
+            data: {
+                "@(nameof(ExpressRemarkPresetSelectListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ExpressRemarkPresetSelectListQueryParam.SortField))": sortField,
+                "@(nameof(ExpressRemarkPresetSelectListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#expressRemarkPresetSelectList').html(data);
+
+                initListTable("#tblExpressRemarkPresetSelectList");
+            }
+        });
+    }
+
+    function showExpressRemarkPresetSelectDetail(id) {
+        $("#expressRemarkPresetSelectDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#expressRemarkPresetSelectDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ExpressRemarkPresetSelect")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#expressRemarkPresetSelectDetailDialogWrapper").html(data);
+                $("#expressRemarkPresetSelectDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveExpressRemarkPresetSelect() {
+        var form = $("#expressRemarkPresetSelectDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ExpressRemarkPresetSelect")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#expressRemarkPresetSelectDetailDialog').modal('hide');
+                    loadExpressRemarkPresetSelectList();
+                }
+            });
+        }
+    }
+
+    function deleteExpressRemarkPresetSelect() {
+        var idList = getSelectIdList('#tblExpressRemarkPresetSelectList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ExpressRemarkPresetSelect")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadExpressRemarkPresetSelectList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

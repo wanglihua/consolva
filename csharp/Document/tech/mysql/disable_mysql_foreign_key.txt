@@ -1,0 +1,19 @@
+
+
+mysql禁用启用外键
+
+SET FOREIGN_KEY_CHECKS=0;
+来禁用外键约束.
+
+SET FOREIGN_KEY_CHECKS=1;
+来启动外键约束.
+
+查看当前FOREIGN_KEY_CHECKS的值可用如下命令
+SELECT @@FOREIGN_KEY_CHECKS;
+
+要全局closures外键约束，请执行以下操作：
+
+ SET GLOBAL FOREIGN_KEY_CHECKS=0; 
+并记住当你完成后把它放回去
+
+ SET GLOBAL FOREIGN_KEY_CHECKS=1; 

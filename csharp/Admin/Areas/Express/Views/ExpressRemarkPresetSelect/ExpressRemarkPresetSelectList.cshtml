@@ -1,0 +1,106 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Express.Models.ExpressRemarkPresetSelect.ExpressRemarkPresetSelectListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressRemarkPresetSelectList" }))
+
+<table id="tblExpressRemarkPresetSelectList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="expressRemarkPresetSelectCheckAll"></label><input id="expressRemarkPresetSelectCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressRemarkPresetSelectAlias).@(nameof(ExpressRemarkPresetSelectInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressRemarkPresetSelectList">备注类型</a>
+                </div>
+            </th>
+
+            <th style="width: 200px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressRemarkPresetSelectAlias).@(nameof(ExpressRemarkPresetSelectInfo.Remark))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressRemarkPresetSelectList">备注</a>
+                </div>
+            </th>
+
+            <th style="width: 80px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressRemarkPresetSelectAlias).@(nameof(ExpressRemarkPresetSelectInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressRemarkPresetSelectList">排序</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressRemarkPresetSelectAlias).@(nameof(ExpressRemarkPresetSelectInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressRemarkPresetSelectList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressRemarkPresetSelectAlias).@(nameof(ExpressRemarkPresetSelectInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressRemarkPresetSelectList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ExpressRemarkPresetSelectList.Count != 0)
+        {
+            int itemIndex = 0;
+            foreach (ExpressRemarkPresetSelectInfo expressRemarkPresetSelect in Model.ExpressRemarkPresetSelectList)
+            {
+                <tr ondblclick="showExpressRemarkPresetSelectDetail(@(expressRemarkPresetSelect.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="expressRemarkPresetSelectCheck_@(expressRemarkPresetSelect.Id)"></label><input id="expressRemarkPresetSelectCheck_@(expressRemarkPresetSelect.Id)" type="checkbox" class="ace" value="@expressRemarkPresetSelect.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressRemarkPresetSelect.Type.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressRemarkPresetSelect.Remark)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressRemarkPresetSelect.OrderNum)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @expressRemarkPresetSelect.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @expressRemarkPresetSelect.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressRemarkPresetSelectList" }))

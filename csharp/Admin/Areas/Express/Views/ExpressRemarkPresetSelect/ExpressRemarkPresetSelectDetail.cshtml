@@ -1,0 +1,76 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Express.Models.ExpressRemarkPresetSelect.ExpressRemarkPresetSelectDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="expressRemarkPresetSelectDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">快递单备注预设详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="expressRemarkPresetSelectDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="ExpressRemarkPresetSelectId" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Type" class="col-xs-2 control-label">备注类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Type" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(ExpressRemarkType type in Model.TypeList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Remark" class="col-xs-2 control-label">备注</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="Remark" rows="2" required="required" maxlength="300" class="input-sm form-control" autocomplete="off"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="OrderNum" class="col-xs-2 control-label">排序</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="OrderNum" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveExpressRemarkPresetSelect();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

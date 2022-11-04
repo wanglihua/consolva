@@ -10,7 +10,7 @@ public partial class PassRes
         /// <summary>
         /// 类别
         /// </summary>
-        public const int CateId = 0900_0000;
+        public const int CateId = 09000_00000;
 
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "系统配置" };
 
