@@ -1,3 +1,5 @@
+# DROP TABLE IF EXISTS tbl_logistics_order;
+
 CREATE TABLE tbl_logistics_order
 (
     id                     INT                         NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
