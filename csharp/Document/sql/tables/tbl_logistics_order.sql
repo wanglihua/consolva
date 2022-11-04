@@ -13,7 +13,7 @@ CREATE TABLE tbl_logistics_order
     gst_id                 INT                         NOT NULL COMMENT '纳税申报',
     goods_type_id          INT            DEFAULT 0    NOT NULL COMMENT '物品类型#type:LogisticsGoodsType',
     order_status_id        INT            DEFAULT 0    NOT NULL COMMENT '订单状态#type:LogisticsOrderStatus',
-    pay_status_id          INT            DEFAULT 0    NOT NULL COMMENT '支付状态#type:LogisticsOrderPayStatus',
+    pay_status_id          INT            DEFAULT 0    NOT NULL COMMENT '支付状态#type:PayStatus',
     pay_type_id            INT                         NULL COMMENT '支付方式#type:PayType',
     goods_price            DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '商品总价',
     user_account           DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '使用余额',

@@ -17,7 +17,7 @@ public class ExchangeRateRefreshJob : IJob
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISessionFactory sessionFactory = null;
+    private ISessionFactory sessionFactory;
 
     public ExchangeRateRefreshJob(ISessionFactory sessionFactory)
     {

@@ -58,8 +58,8 @@ public class LogisticsOrderPayInfo : Entity
     /// 状态，只使用里面的未支付和已支付
     /// </summary>
     [Required(ErrorMessage = "状态不能为空！")]
-    [ModelBinder(typeof(LogisticsOrderPayStatusModelBinder))]
-    public virtual LogisticsOrderPayStatus Status { get; set; } = LogisticsOrderPayStatus.None;
+    [ModelBinder(typeof(PayStatusModelBinder))]
+    public virtual PayStatus Status { get; set; } = PayStatus.None;
 
     /// <summary>
     /// 核销原因Id

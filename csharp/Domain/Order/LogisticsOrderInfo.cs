@@ -109,8 +109,8 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "支付状态不能为空！")]
     [JsonProperty("payStatus")]
-    [ModelBinder(typeof(LogisticsOrderPayStatusModelBinder))]
-    public virtual LogisticsOrderPayStatus PayStatus { get; set; } = LogisticsOrderPayStatus.None;
+    [ModelBinder(typeof(PayStatusModelBinder))]
+    public virtual PayStatus PayStatus { get; set; } = PayStatus.None;
 
     /// <summary>
     /// 支付方式，可空

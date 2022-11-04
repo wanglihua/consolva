@@ -80,7 +80,7 @@ public class LogisticsOrderPayController : Controller
         criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
         criteria = criteria.SetReadOnly(true);
 
-        criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Status == LogisticsOrderPayStatus.Paid));
+        criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Status == PayStatus.Paid));
 
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)

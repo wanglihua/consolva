@@ -329,7 +329,7 @@ public class CustomerController : Controller
         // 支付明细
         {
             IList<LogisticsOrderPayInfo> logisticsOrderPayList = session.CreateCriteria<LogisticsOrderPayInfo>()
-                .Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId && e.Status == LogisticsOrderPayStatus.Paid))
+                .Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId && e.Status == PayStatus.Paid))
                 .AddOrder(new Order(nameof(LogisticsOrderPayInfo.Id), false))
                 .SetMaxResults(10)
                 .List<LogisticsOrderPayInfo>();

@@ -86,7 +86,7 @@ public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
         Property(
             x => x.Status,
             map => {
-                map.Type<LogisticsOrderPayStatusHibernateType>();
+                map.Type<PayStatusHibernateType>();
                 map.Column("status_id");
                 map.NotNullable(true);
             }
