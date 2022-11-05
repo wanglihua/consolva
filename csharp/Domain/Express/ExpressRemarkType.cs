@@ -8,9 +8,14 @@ namespace shunda.Domain.Express;
 public class ExpressRemarkType : CodeTypeBase
 {
     /// <summary>
-    /// 入库备注, 1000
+    /// 客户备注, 1000
     /// </summary>
-    public static readonly ExpressRemarkType Checkin = new ExpressRemarkType(1000, "入库备注", "入库备注");
+    public static readonly ExpressRemarkType Customer = new ExpressRemarkType(1000, "客户备注", "客户备注");
+
+    /// <summary>
+    /// 入库备注, 2000
+    /// </summary>
+    public static readonly ExpressRemarkType Checkin = new ExpressRemarkType(2000, "入库备注", "入库备注");
 
     /// <summary>
     /// None
@@ -18,6 +23,7 @@ public class ExpressRemarkType : CodeTypeBase
     public static readonly ExpressRemarkType None = new ExpressRemarkType(0, "", "");
 
     private static readonly List<ExpressRemarkType> codeTypeList = new List<ExpressRemarkType>() {
+        Customer,
         Checkin,
     };
 
