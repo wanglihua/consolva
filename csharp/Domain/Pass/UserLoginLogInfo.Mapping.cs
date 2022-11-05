@@ -1,26 +1,14 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
+using shunda.Core;
 
 namespace shunda.Domain.Pass;
 
-public class UserLoginLogInfoMapping : ClassMapping<UserLoginLogInfo>
+public class UserLoginLogInfoMapping : EntityNoCreateNoUpdateMapping<UserLoginLogInfo>
 {
     public UserLoginLogInfoMapping()
     {
         Table("tbl_user_login_log");
-
-        Lazy(true);
-        DynamicInsert(false);
-        DynamicUpdate(true);
-
-        Id(
-            x => x.Id,
-            map => {
-                map.Column("id");
-                map.Generator(Generators.Native);
-            }
-        );
 
         ManyToOne(
             x => x.User,

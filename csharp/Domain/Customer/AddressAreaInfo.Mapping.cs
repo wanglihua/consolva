@@ -1,21 +1,14 @@
-using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
+using shunda.Core;
 
 namespace shunda.Domain.Customer;
 
-public class AddressAreaInfoMapping : ClassMapping<AddressAreaInfo>
+public class AddressAreaInfoMapping : EntityNoCreateNoUpdateMapping<AddressAreaInfo>
 {
     public AddressAreaInfoMapping()
     {
         Table("tbl_address_area");
-
-        Lazy(true);
-        DynamicInsert(false);
-        DynamicUpdate(true);
-        Mutable(false); // 这些数据一般是不会通过程序改动的
-        Cache(x => x.Usage(CacheUsage.ReadWrite));        
 
         ManyToOne(
             x => x.City,

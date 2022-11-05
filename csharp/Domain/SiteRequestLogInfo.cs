@@ -1,9 +1,9 @@
+using shunda.Core;
+
 namespace shunda.Domain;
 
-public class SiteRequestLogInfo
+public class SiteRequestLogInfo : EntityNoCreateNoUpdate
 {
-    public virtual int Id { get; set; }
-
     public virtual string SessionId { get; set; } = string.Empty;
 
     public virtual string IpAddress { get; set; } = string.Empty;

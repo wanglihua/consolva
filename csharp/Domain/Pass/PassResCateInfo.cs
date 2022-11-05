@@ -1,18 +1,13 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using shunda.Core;
 
 namespace shunda.Domain.Pass;
 
 /// <summary>
 /// 资源类别
 /// </summary>
-public class PassResCateInfo
+public class PassResCateInfo : EntityNoCreateNoUpdate
 {
-    /// <summary>
-    /// Id
-    /// </summary>
-    public virtual int Id { get; set; }
-
     /// <summary>
     /// 名称
     /// </summary>

@@ -1,20 +1,14 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
+using shunda.Core;
 
 namespace shunda.Domain.Customer;
 
-public class AddressProvinceInfoMapping : ClassMapping<AddressProvinceInfo>
+public class AddressProvinceInfoMapping : EntityNoCreateNoUpdateMapping<AddressProvinceInfo>
 {
     public AddressProvinceInfoMapping()
     {
         Table("tbl_address_province");
-
-        Lazy(true);
-        DynamicInsert(false);
-        DynamicUpdate(true);
-        Mutable(false); // 这些数据一般是不会通过程序改动的
-        Cache(x => x.Usage(CacheUsage.ReadWrite));
 
         Id(
             x => x.Id,

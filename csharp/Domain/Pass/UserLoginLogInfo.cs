@@ -1,15 +1,13 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using shunda.Core;
 
 namespace shunda.Domain.Pass;
 
 /// <summary>
 /// 用户登录日志
 /// </summary>
-public class UserLoginLogInfo
+public class UserLoginLogInfo : EntityNoCreateNoUpdate
 {
-    public virtual int Id { get; set; }
-
     /// <summary>
     /// 登录用户
     /// </summary>

@@ -1,10 +1,11 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
+using shunda.Core;
 
 namespace shunda.Domain;
 
-public class SiteRequestLogInfoMapping : ClassMapping<SiteRequestLogInfo>
+public class SiteRequestLogInfoMapping : EntityNoCreateNoUpdateMapping<SiteRequestLogInfo>
 {
     public SiteRequestLogInfoMapping()
     {

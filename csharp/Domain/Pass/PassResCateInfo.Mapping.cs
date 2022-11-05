@@ -1,10 +1,10 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
+using shunda.Core;
 
 namespace shunda.Domain.Pass;
 
-public class PassResCateInfoMapping : ClassMapping<PassResCateInfo>
+public class PassResCateInfoMapping : EntityNoCreateNoUpdateMapping<PassResCateInfo>
 {
     public PassResCateInfoMapping()
     {
@@ -15,14 +15,6 @@ public class PassResCateInfoMapping : ClassMapping<PassResCateInfo>
         DynamicUpdate(true);
 
         Cache(x => x.Usage(CacheUsage.ReadWrite));
-
-        Id(
-            x => x.Id,
-            map => {
-                map.Column("id");
-                map.Generator(Generators.Assigned);
-            }
-        );
 
         Property(
             x => x.Name,

@@ -1,28 +1,14 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
+using shunda.Core;
 
 namespace shunda.Domain.Pass;
 
-public class PassResInfoMapping : ClassMapping<PassResInfo>
+public class PassResInfoMapping : EntityNoCreateNoUpdateMapping<PassResInfo>
 {
     public PassResInfoMapping()
     {
         Table("tbl_pass_res");
-
-        Lazy(true);
-        DynamicInsert(false);
-        DynamicUpdate(true);
-
-        Cache(x => x.Usage(CacheUsage.ReadWrite));
-
-        Id(
-            x => x.Id,
-            map => {
-                map.Column("id");
-                map.Generator(Generators.Assigned);
-            }
-        );
 
         ManyToOne(
             x => x.Cate,
