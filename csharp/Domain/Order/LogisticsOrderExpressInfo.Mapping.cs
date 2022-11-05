@@ -1,6 +1,6 @@
-using shunda.Core;
-using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Core;
+using shunda.Domain.Express;
 
 namespace shunda.Domain.Order;
 

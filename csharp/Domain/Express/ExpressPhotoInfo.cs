@@ -1,0 +1,100 @@
+using System.ComponentModel.DataAnnotations;
+using shunda.Core;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using shunda.Domain.Order;
+
+namespace shunda.Domain.Express;
+
+/// <summary>
+/// 快递单图片
+/// </summary>
+public class ExpressPhotoInfo : Entity
+{
+    /// <summary>
+    /// 客户，可空
+    /// </summary>
+    [JsonProperty("customerId")]
+    public virtual int? CustomerId { get; set; } = null;
+
+    /// <summary>
+    /// 物流订单，可空
+    /// </summary>
+    [JsonProperty("order")]
+    public virtual LogisticsOrderInfo? Order { get; set; } = null;
+
+    /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    [Required(ErrorMessage = "订单编号不能为空！")]
+    [MaxLength(100, ErrorMessage = "订单编号长度不能大于100！")]
+    [JsonProperty("orderCode")]
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 快递单号，可空
+    /// </summary>
+    [JsonProperty("express")]
+    public virtual ExpressInfo? Express { get; set; } = null;
+
+    /// <summary>
+    /// 快递单号，可空
+    /// </summary>
+    [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
+    [JsonProperty("expressTrackingNo")]
+    public virtual string? ExpressTrackingNo { get; set; } = null;
+
+    /// <summary>
+    /// 快递公司，可空
+    /// </summary>
+    [MaxLength(100, ErrorMessage = "快递公司长度不能大于100！")]
+    [JsonProperty("expressComName")]
+    public virtual string? ExpressComName { get; set; } = null;
+
+    /// <summary>
+    /// 类型，非空
+    /// </summary>
+    [Required(ErrorMessage = "类型不能为空！")]
+    [JsonProperty("type")]
+    [ModelBinder(typeof(ExpressPhotoTypeModelBinder))]
+    public virtual ExpressPhotoType Type { get; set; } = ExpressPhotoType.None;
+
+    /// <summary>
+    /// 存储路径，非空
+    /// </summary>
+    [Required(ErrorMessage = "存储路径不能为空！")]
+    [MaxLength(255, ErrorMessage = "存储路径长度不能大于255！")]
+    [JsonProperty("storePath")]
+    public virtual string StorePath { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 存储名称，非空
+    /// </summary>
+    [Required(ErrorMessage = "存储名称不能为空！")]
+    [MaxLength(50, ErrorMessage = "存储名称长度不能大于50！")]
+    [JsonProperty("storeName")]
+    public virtual string StoreName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 上传用户，可空
+    /// </summary>
+    [JsonProperty("userId")]
+    public virtual int? UserId { get; set; } = null;
+
+    /// <summary>
+    /// 存储位置，非空
+    /// </summary>
+    [Required(ErrorMessage = "存储位置不能为空！")]
+    [JsonProperty("storeLoc")]
+    [ModelBinder(typeof(ExpressPhotoStoreLocModelBinder))]
+    public virtual ExpressPhotoStoreLoc StoreLoc { get; set; } = ExpressPhotoStoreLoc.None;
+
+    /// <summary>
+    /// 状态，非空
+    /// </summary>
+    [Required(ErrorMessage = "状态不能为空！")]
+    [JsonProperty("status")]
+    [ModelBinder(typeof(ExpressPhotoStatusModelBinder))]
+    public virtual ExpressPhotoStatus Status { get; set; } = ExpressPhotoStatus.None;
+
+}

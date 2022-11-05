@@ -1,3 +1,5 @@
+# DROP TABLE IF EXISTS tbl_express_photo;
+
 CREATE TABLE tbl_express_photo
 (
     id                  INT                     NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
@@ -11,7 +13,7 @@ CREATE TABLE tbl_express_photo
     store_path          VARCHAR(255)            NOT NULL COMMENT '存储路径',
     store_name          VARCHAR(50)             NOT NULL COMMENT '存储名称', # 服务器上的文件名，设计为guid
     user_id             INT                     NULL COMMENT '上传用户',
-    store_oss           BOOL                    NULL COMMENT '存储在阿里云OSS',
+    store_loc_id        INT                     NOT NULL COMMENT '存储位置#type:ExpressPhotoStoreLoc', # 存储在阿里云ECS还是OSS
     status_id           INT                     NOT NULL COMMENT '状态#type:ExpressPhotoStatus',
 
     create_time         DATETIME                NOT NULL COMMENT '创建时间',
