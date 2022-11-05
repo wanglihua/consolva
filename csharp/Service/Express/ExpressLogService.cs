@@ -1,130 +1,80 @@
 using NHibernate;
+using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
 using shunda.Domain.Express;
+using shunda.Domain.Pass;
 
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
 public class ExpressLogService
 {
-    private ISession session = null;
+    private ISession session;
 
     public ExpressLogService(ISession session)
     {
         this.session = session;
     }
 
-    public void UserClaimLog(int claimId, ExpressLogType type, string description, int userId)
+    public void UserLog(int expressId, ExpressLogType type, string description, int userId)
     {
-        Log(claimId: claimId, orderExpressId: 0, type: type, description: description, userId: userId, customerId: 0);
+        Log(expressId: expressId, type: type, description: description, userId: userId, customerId: 0);
     }
 
-    public void UserClaimLog(int claimId, ExpressLogType type, int userId)
+    public void UserLog(int expressId, ExpressLogType type, int userId)
     {
-        Log(claimId: claimId, orderExpressId: 0, type: type, description: string.Empty, userId: userId, customerId: 0);
-    }
-
-    public void UserExpressLog(int orderExpressId, ExpressLogType type, string description, int userId)
-    {
-        Log(claimId: 0, orderExpressId: orderExpressId, type: type, description: description, userId: userId, customerId: 0);
-    }
-
-    public void UserExpressLog(int orderExpressId, ExpressLogType type, int userId)
-    {
-        Log(claimId: 0, orderExpressId: orderExpressId, type: type, description: string.Empty, userId: userId, customerId: 0);
-    }
-
-    public void ExpressLog(int orderExpressId, ExpressLogType type)
-    {
-        Log(claimId: 0, orderExpressId: orderExpressId, type: type, description: string.Empty, userId: 0, customerId: 0);
-    }
-
-    public void UserLog(int claimId, int orderExpressId, ExpressLogType type, string description, int userId)
-    {
-        Log(claimId: claimId, orderExpressId: orderExpressId, type: type, description: description, userId: userId, customerId: 0);
-    }
-
-    public void UserLog(int claimId, int orderExpressId, ExpressLogType type, int userId)
-    {
-        Log(claimId: claimId, orderExpressId: orderExpressId, type: type, description: string.Empty, userId: userId, customerId: 0);
+        Log(expressId: expressId, type: type, description: string.Empty, userId: userId, customerId: 0);
     }
 
     public void UserLog(string trackingNo, ExpressLogType type, string description, int userId)
     {
-        Log(claimId: 0, orderExpressId: 0, trackingNo: trackingNo, type: type, description: description, userId: userId, customerId: 0);
+        Log(expressId: 0, trackingNo: trackingNo, type: type, description: description, userId: userId, customerId: 0);
     }
 
-    public void CustomerClaimLog(int claimId, ExpressLogType type, string description, int customerId)
+    public void CustomerLog(int expressId, ExpressLogType type, string description, int customerId)
     {
-        Log(claimId: claimId, orderExpressId: 0, type: type, description: description, userId: 0, customerId: customerId);
+        Log(expressId: expressId, type: type, description: description, userId: 0, customerId: customerId);
     }
 
-    public void CustomerClaimLog(int claimId, ExpressLogType type, int customerId)
+    public void CustomerLog(int expressId, ExpressLogType type, int customerId)
     {
-        Log(claimId: claimId, orderExpressId: 0, type: type, description: string.Empty, userId: 0, customerId: customerId);
-    }
-
-    public void CustomerExpressLog(int orderExpressId, ExpressLogType type, string description, int customerId)
-    {
-        Log(claimId: 0, orderExpressId: orderExpressId, type: type, description: description, userId: 0, customerId: customerId);
-    }
-
-    public void CustomerExpressLog(int orderExpressId, ExpressLogType type, int customerId)
-    {
-        Log(claimId: 0, orderExpressId: orderExpressId, type: type, description: string.Empty, userId: 0, customerId: customerId);
-    }
-
-    public void CustomerLog(int claimId, int orderExpressId, ExpressLogType type, string description, int customerId)
-    {
-        Log(claimId: claimId, orderExpressId: orderExpressId, type: type, description: description, userId: 0, customerId: customerId);
-    }
-
-    public void CustomerLog(int claimId, int orderExpressId, ExpressLogType type, int customerId)
-    {
-        Log(claimId: claimId, orderExpressId: orderExpressId, type: type, description: string.Empty, userId: 0, customerId: customerId);
+        Log(expressId: expressId, type: type, description: string.Empty, userId: 0, customerId: customerId);
     }
 
     public void Log(string trackingNo, ExpressLogType type, string description)
     {
-        Log(claimId: 0, orderExpressId: 0, trackingNo: trackingNo, type: type, description: description, userId: 0, customerId: 0);
+        Log(expressId: 0, trackingNo: trackingNo, type: type, description: description, userId: 0, customerId: 0);
     }
 
-    private void Log(int claimId, int orderExpressId, ExpressLogType type, string description, int userId, int customerId)
+    private void Log(int expressId, ExpressLogType type, string description, int userId, int customerId)
     {
-        Log(claimId: claimId, orderExpressId: orderExpressId, trackingNo: "", type: type, description: description, userId: userId, customerId: customerId);
+        Log(expressId: expressId, trackingNo: "", type: type, description: description, userId: userId, customerId: customerId);
     }
 
-    private void Log(int claimId, int orderExpressId, string trackingNo, ExpressLogType type, string description, int userId, int customerId)
+    private void Log(int expressId, string trackingNo, ExpressLogType type, string description, int userId, int customerId)
     {
-        /* todo a 完成
+        if (expressId == 0 && string.IsNullOrWhiteSpace(trackingNo) == true)
+        {
+            throw new Exception("快递单号日志expressId和trackingNo不能同时为空！");
+        }
+
         ExpressLogInfo log = new ExpressLogInfo();
 
-        if (claimId != 0)
+        if (expressId != 0)
         {
-            LogisticsClaimGoodsInfo claimGoods = session.Get<LogisticsClaimGoodsInfo>(claimId);
-            if (claimGoods == null)
+            ExpressInfo express = session.Get<ExpressInfo>(expressId);
+            if (express == null)
             {
-                throw new ValidationException($"指定的申领件#{claimId}不存在！");
+                throw new ValidationException($"指定的申领件#{expressId}不存在！");
             }
 
-            log.Claim = claimGoods;
-            log.TrackingNo = claimGoods.TrackingNo;
+            log.Express = express;
+            log.Order = express.Order; // express.Order 这时可能为空，也可能不为空
+            log.TrackingNo = express.TrackingNo;
         }
 
-        if (orderExpressId != 0)
-        {
-            LogisticsOrderGoodsExpressInfo orderExpress = session.Get<LogisticsOrderGoodsExpressInfo>(orderExpressId);
-            if (orderExpress == null)
-            {
-                throw new ValidationException($"指定的订单快递单号#{orderExpressId}不存在！");
-            }
-
-            log.Express = orderExpress;
-            log.ExpressOrder = orderExpress.Order;
-            log.TrackingNo = orderExpress.ExpressTrackingNo;
-        }
-
-        if (claimId == 0 && orderExpressId == 0 && string.IsNullOrWhiteSpace(trackingNo) == false)
+        if (expressId == 0 && string.IsNullOrWhiteSpace(trackingNo) == false)
         {
             log.TrackingNo = trackingNo;
         }
@@ -146,6 +96,5 @@ public class ExpressLogService
 
         session.Save(log);
         session.Flush();
-        */
     }
 }

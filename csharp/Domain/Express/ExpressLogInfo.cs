@@ -11,7 +11,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 快递单日志
 /// </summary>
-public class ExpressLogInfo : EntityNoUpdate
+public class ExpressLogInfo : Entity
 {
     /// <summary>
     /// 类型，非空
@@ -22,11 +22,18 @@ public class ExpressLogInfo : EntityNoUpdate
     public virtual ExpressLogType Type { get; set; } = ExpressLogType.None;
 
     /// <summary>
-    /// 快递单，非空
+    /// 快递单，可空
     /// </summary>
-    [Required(ErrorMessage = "快递单不能为空！")]
     [JsonProperty("express")]
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual ExpressInfo? Express { get; set; } = null;
+
+    /// <summary>
+    /// 快递单号，非空
+    /// </summary>
+    [Required(ErrorMessage = "快递单号不能为空！")]
+    [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
+    [JsonProperty("trackingNo")]
+    public virtual string TrackingNo { get; set; } = string.Empty;
 
     /// <summary>
     /// 物流订单，可空

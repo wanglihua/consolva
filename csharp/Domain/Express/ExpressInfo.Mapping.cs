@@ -1,6 +1,7 @@
-using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Core;
+using shunda.Domain.Order;
 
 namespace shunda.Domain.Express;
 
@@ -19,5 +20,15 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo>
             }
         );
 
+        ManyToOne(
+            x => x.Order,
+            map => {
+                map.Class(typeof(LogisticsOrderInfo));
+                map.Column("order_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
     }
 }

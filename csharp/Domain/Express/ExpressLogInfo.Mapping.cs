@@ -1,13 +1,13 @@
-using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Core;
 using shunda.Domain.Customer;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
 
-public class ExpressLogInfoMapping : EntityNoUpdateMapping<ExpressLogInfo>
+public class ExpressLogInfoMapping : EntityMapping<ExpressLogInfo>
 {
     public ExpressLogInfoMapping()
     {
@@ -27,9 +27,18 @@ public class ExpressLogInfoMapping : EntityNoUpdateMapping<ExpressLogInfo>
             map => {
                 map.Class(typeof(ExpressInfo));
                 map.Column("express_id");
-                map.NotNullable(true);
+                map.NotNullable(false);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.TrackingNo,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("tracking_no");
+                map.NotNullable(true);
             }
         );
 
