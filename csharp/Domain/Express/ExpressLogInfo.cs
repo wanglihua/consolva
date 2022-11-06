@@ -11,7 +11,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 快递单日志
 /// </summary>
-public class ExpressLogInfo : Entity
+public class ExpressLogInfo : EntityNoUpdate
 {
     /// <summary>
     /// 类型，非空

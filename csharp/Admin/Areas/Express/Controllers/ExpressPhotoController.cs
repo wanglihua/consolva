@@ -316,10 +316,13 @@ public class ExpressPhotoController : Controller
         session.Save(expressPhoto);
         session.Flush();
 
-        if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) == false)
+        if (express == null)
         {
-            // 这里只放了照片上传的时候的日志，这条照片记录被修改的日志，暂时还没加上
             expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型：{expressPhoto.Type?.Name}", loginUserId);
+        }
+        else
+        {
+            expressLogService.UserLog(express.Id, ExpressLogType.PhotoUpload, $"类型：{expressPhoto.Type?.Name}", loginUserId);
         }
 
         expressPhotoFileService.AddWatermark(expressPhoto.StorePath, expressPhoto.StoreName, expressPhoto.Type ?? ExpressPhotoType.None);

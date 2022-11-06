@@ -7,7 +7,7 @@ using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
 
-public class ExpressLogInfoMapping : EntityMapping<ExpressLogInfo>
+public class ExpressLogInfoMapping : EntityNoUpdateMapping<ExpressLogInfo>
 {
     public ExpressLogInfoMapping()
     {
