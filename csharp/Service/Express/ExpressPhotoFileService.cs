@@ -20,7 +20,7 @@ public class ExpressPhotoFileService
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     public static readonly string ImageUploadFolder = Path.Combine("wwwroot", "static", "upload", "images", "express");
-    public static readonly string ImageUploadUrl = "/static/upload/images/experss";
+    public static readonly string ImageUploadUrl = "/static/upload/images/express";
 
     private static readonly int MAX_WIDTH = 800;
     private static readonly int MAX_HEIGHT = 600;
