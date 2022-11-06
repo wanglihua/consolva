@@ -1,13 +1,9 @@
 using NHibernate;
 using NLog;
 using shunda.Core;
-using shunda.Core.Config;
 using shunda.Core.Service;
-using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Message;
-using shunda.Domain.Order;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Express;
 
@@ -59,8 +55,8 @@ public class ExpressPhotoService
         else
         {
             expressPhoto.Express = express;
-            expressPhoto.Customer = express.Customer;
-            expressPhoto.Order = express.Order;
+            expressPhoto.Customer = express.Customer; // 有可能为 null，也有可能不是
+            expressPhoto.Order = express.Order; // 有可能为 null，也有可能不是
             if (express.Order != null)
             {
                 expressPhoto.OrderCode = express.Order?.Code ?? string.Empty;
@@ -86,8 +82,29 @@ public class ExpressPhotoService
         {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
-        
-        // todo  to complete 
+
+        IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => e.Express != null && e.Express.Id == expressId)
+            .ToList();
+
+        foreach (ExpressPhotoInfo expressPhoto in expressPhotoList)
+        {
+            expressPhoto.Express = express;
+            expressPhoto.Customer = express.Customer; // 有可能为 null，也有可能不是
+            expressPhoto.Order = express.Order; // 有可能为 null，也有可能不是
+            if (express.Order != null)
+            {
+                expressPhoto.OrderCode = express.Order?.Code ?? string.Empty;
+            }
+            else
+            {
+                expressPhoto.OrderCode = string.Empty;
+            }
+
+            session.Update(expressPhoto);
+        }
+
+        session.Flush();
     }
 
     /// <summary>
