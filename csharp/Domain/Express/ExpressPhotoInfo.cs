@@ -2,7 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using shunda.Domain.Customer;
 using shunda.Domain.Order;
+using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
 
@@ -14,8 +16,8 @@ public class ExpressPhotoInfo : Entity
     /// <summary>
     /// 客户，可空
     /// </summary>
-    [JsonProperty("customerId")]
-    public virtual int? CustomerId { get; set; } = null;
+    [JsonProperty("customer")]
+    public virtual CustomerInfo? Customer { get; set; } = null;
 
     /// <summary>
     /// 物流订单，可空
@@ -41,8 +43,8 @@ public class ExpressPhotoInfo : Entity
     /// 快递单号，可空
     /// </summary>
     [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
-    [JsonProperty("expressTrackingNo")]
-    public virtual string? ExpressTrackingNo { get; set; } = null;
+    [JsonProperty("trackingNo")]
+    public virtual string TrackingNo { get; set; } = null;
 
     /// <summary>
     /// 快递公司，可空
@@ -78,8 +80,8 @@ public class ExpressPhotoInfo : Entity
     /// <summary>
     /// 上传用户，可空
     /// </summary>
-    [JsonProperty("userId")]
-    public virtual int? UserId { get; set; } = null;
+    [JsonProperty("user")]
+    public virtual UserInfo? User { get; set; } = null;
 
     /// <summary>
     /// 存储位置，非空

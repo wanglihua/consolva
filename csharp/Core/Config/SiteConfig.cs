@@ -2,6 +2,8 @@ namespace shunda.Core.Config;
 
 public class SiteConfig
 {
+    public static string SiteRoot => "http://localhost:9001";
+    
     public const string ErrorHandlerUrl = "/error";
 
     /// <summary>

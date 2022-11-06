@@ -1,7 +1,9 @@
 using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Domain.Customer;
 using shunda.Domain.Order;
+using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
 
@@ -11,12 +13,14 @@ public class ExpressPhotoInfoMapping : EntityMapping<ExpressPhotoInfo>
     {
         Table("tbl_express_photo");
 
-        Property(
-            x => x.CustomerId,
+        ManyToOne(
+            x => x.Customer,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Class(typeof(CustomerInfo));
                 map.Column("customer_id");
                 map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 
@@ -52,11 +56,11 @@ public class ExpressPhotoInfoMapping : EntityMapping<ExpressPhotoInfo>
         );
 
         Property(
-            x => x.ExpressTrackingNo,
+            x => x.TrackingNo,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("express_tracking_no");
-                map.NotNullable(false);
+                map.Column("tracking_no");
+                map.NotNullable(true);
             }
         );
 
@@ -96,12 +100,14 @@ public class ExpressPhotoInfoMapping : EntityMapping<ExpressPhotoInfo>
             }
         );
 
-        Property(
-            x => x.UserId,
+        ManyToOne(
+            x => x.User,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Class(typeof(UserInfo));
                 map.Column("user_id");
                 map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 
@@ -122,6 +128,5 @@ public class ExpressPhotoInfoMapping : EntityMapping<ExpressPhotoInfo>
                 map.NotNullable(true);
             }
         );
-
     }
 }
