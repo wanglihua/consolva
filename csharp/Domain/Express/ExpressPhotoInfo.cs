@@ -44,7 +44,7 @@ public class ExpressPhotoInfo : Entity
     /// </summary>
     [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
     [JsonProperty("trackingNo")]
-    public virtual string TrackingNo { get; set; } = null;
+    public virtual string TrackingNo { get; set; } = string.Empty;
 
     /// <summary>
     /// 快递公司，可空
@@ -98,5 +98,4 @@ public class ExpressPhotoInfo : Entity
     [JsonProperty("status")]
     [ModelBinder(typeof(ExpressPhotoStatusModelBinder))]
     public virtual ExpressPhotoStatus Status { get; set; } = ExpressPhotoStatus.None;
-
 }

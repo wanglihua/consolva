@@ -26,6 +26,7 @@ public class ExpressPhotoService
         // this.customerMessageService = customerMessageService;
     }
 
+    // todo b 调用
     /// <summary>
     /// 绑定图片到快递单号，添加和更新图片时调用
     /// </summary>
@@ -71,6 +72,7 @@ public class ExpressPhotoService
         session.Flush();
     }
 
+    // todo b 调用
     /// <summary>
     /// 绑定快递单号到图片，添加和更新快递单时调用
     /// </summary>
@@ -107,6 +109,7 @@ public class ExpressPhotoService
         session.Flush();
     }
 
+    // todo b 调用
     /// <summary>
     /// 给图片从快递单号解绑，用户快递单号删除的时候调用
     /// </summary>
