@@ -1,0 +1,215 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Express.Models.ExpressPhoto
+@using shunda.Core
+@using shunda.Domain.Express
+@model ExpressPhotoIndexModel
+@{
+    ViewBag.Title = "快递单图片";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="express-menu">快递管理</li>
+    <li class="active" data-menu="express-photo-index-menu">快递单图片</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadExpressPhotoList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+
+    <button type="button" class="btn btn-success btn-sm" onclick="showExpressPhotoDetail()">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+
+    @if (Model.CanDelete)
+    {
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteExpressPhoto()">
+            <i class="ace-icon fa fa-trash-o"></i>
+            删除
+        </button>
+    }
+
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="typeIdQuery">类型</label>&nbsp;
+    <select id="typeIdQuery" name="typeIdQuery" style="width: 100px; height: 30px;" placeholder="类型查询">
+        <option value="0">类型查询</option>
+        @foreach (ExpressPhotoType photoType in Model.PhotoTypeList)
+        {
+            <option value="@(photoType.Id)">@(photoType.Name)</option>
+        }
+    </select> &nbsp;
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+    <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" style="width: 180px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
+    
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
+    
+    <label for="userNameQuery">拍照人</label>&nbsp;<input id="userNameQuery" name="userNameQuery" style="width: 90px; height: 30px;" placeholder="拍照人查询" autocomplete="off"/>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressPhotoList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="expressPhotoList" data-page-index="0" data-sort-field="@(nameof(ExpressPhotoInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="expressPhotoDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#beginDateQuery").on("dp.change", function (e) {
+            $('#endDateQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#endDateQuery").on("dp.change", function (e) {
+            $('#beginDateQuery').data("DateTimePicker").maxDate(e.date);
+        });
+        
+        loadExpressPhotoList();
+    });
+
+    function sortExpressPhotoList(sortField, sortDir) {
+        var list = $('#expressPhotoList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExpressPhotoList();
+    }
+
+    function loadExpressPhotoList(pageIndex) {
+        var list = $('#expressPhotoList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExpressPhoto")",
+            type: "POST",
+            data: {
+                '@(nameof(ExpressPhotoListQueryParam.TypeQuery))': $('#typeIdQuery').val(),
+                '@(nameof(ExpressPhotoListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(ExpressPhotoListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(ExpressPhotoListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+                '@(nameof(ExpressPhotoListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(ExpressPhotoListQueryParam.EndDateQuery))': $('#endDateQuery').val(),    
+                '@(nameof(ExpressPhotoListQueryParam.UserNameQuery))': $('#userNameQuery').val(),                
+                '@(nameof(ExpressPhotoListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ExpressPhotoListQueryParam.SortField))': sortField,
+                '@(nameof(ExpressPhotoListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#expressPhotoList').html(data);
+                initListTable("#tblExpressPhotoList");
+            }
+        });
+    }
+
+    function showExpressPhotoDetail() {
+        $("#expressPhotoDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        $.ajax({
+            url: '@Url.Action("Detail", "ExpressPhoto")',
+            type: "POST",
+            data: {},
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#expressPhotoDetailDialogWrapper").html(data);
+                $("#expressPhotoDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    @* todo a *@
+    function saveExpressPhoto() {
+        var form = $("#expressPhotoDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ExpressPhoto")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#expressPhotoDetailDialog').modal('hide');
+                    loadExpressPhotoList();
+                }
+            });
+        }
+    }
+
+    function deleteExpressPhoto() {
+        var idList = getSelectIdList('#tblExpressPhotoList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "ExpressPhoto")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } 
+
+                        $.msg.show(data.message);
+                        loadExpressPhotoList();
+                    }
+                });
+            }
+        );
+    }
+ 
+</script>

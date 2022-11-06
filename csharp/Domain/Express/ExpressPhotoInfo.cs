@@ -98,4 +98,14 @@ public class ExpressPhotoInfo : Entity
     [JsonProperty("status")]
     [ModelBinder(typeof(ExpressPhotoStatusModelBinder))]
     public virtual ExpressPhotoStatus Status { get; set; } = ExpressPhotoStatus.None;
+
+    #region Cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    public virtual string BigImageFullUrlCache { get; set; } = string.Empty;
+
+    public virtual string SmallImageFullUrlCache { get; set; } = string.Empty;
+
+    #endregion
 }

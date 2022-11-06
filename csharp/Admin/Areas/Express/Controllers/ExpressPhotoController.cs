@@ -1,0 +1,381 @@
+using Aliyun.OSS;
+using Microsoft.AspNetCore.Mvc;
+using NHibernate;
+using NHibernate.Criterion;
+using NHibernate.SqlCommand;
+using NLog;
+using shunda.Admin.Areas.Express.Models.ExpressPhoto;
+using shunda.Core;
+using shunda.Core.Config;
+using shunda.Core.Hibernate;
+using shunda.Core.Util;
+using shunda.Core.Web;
+using shunda.Domain.Express;
+using shunda.Domain.Order;
+using shunda.Domain.Pass;
+using shunda.Domain.Pass.PassRes;
+using shunda.Service;
+using shunda.Service.Customer;
+using shunda.Service.Express;
+using ISession = NHibernate.ISession;
+
+namespace shunda.Admin.Areas.Express.Controllers;
+
+[ExpressArea]
+[AdminAuth(PassRes.Express.ExpressPhoto)]
+public class ExpressPhotoController : Controller
+{
+    private static Logger log = LogManager.GetCurrentClassLogger();
+
+    private ISession session = null;
+    private ExpressPhotoFileService expressPhotoFileService = null;
+    private ExpressPhotoService expressPhotoService = null;
+    private LoginUserService loginUserService = null;
+    private CustomerCodeService customerCodeService = null;
+    private ExpressTrackingNoService expressTrackingNoService = null;
+    private ExpressLogService expressLogService = null;
+
+    public ExpressPhotoController(ISession session,
+        ExpressPhotoFileService expressPhotoFileService,
+        ExpressPhotoService expressPhotoService,
+        LoginUserService loginUserService,
+        CustomerCodeService customerCodeService,
+        ExpressTrackingNoService expressTrackingNoService,
+        ExpressLogService expressLogService)
+    {
+        this.session = session;
+        this.expressPhotoFileService = expressPhotoFileService;
+        this.expressPhotoService = expressPhotoService;
+        this.loginUserService = loginUserService;
+        this.customerCodeService = customerCodeService;
+        this.expressTrackingNoService = expressTrackingNoService;
+        this.expressLogService = expressLogService;
+    }
+
+    [HttpGet]
+    [Route("/admin/express/photo")]
+    public IActionResult Index()
+    {
+        ExpressPhotoIndexModel model = new ExpressPhotoIndexModel();
+        model.PhotoTypeList = ExpressPhotoType.GetList();
+
+        bool isAdmin = loginUserService.IsAdmin;
+        Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
+        model.CanDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressPhotoDelete);
+
+        return View("ExpressPhotoIndex", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/express/photo/list")]
+    public IActionResult List(ExpressPhotoListQueryParam queryParam)
+    {
+        int totalCount = GetListCriteria(queryParam)
+            .SetProjection(Projections.Count<ExpressPhotoInfo>(e => e.Id))
+            .UniqueResult<int>();
+
+        ListPager listPager = new ListPager(queryParam, totalCount);
+
+        IList<int> expressPhotoIdList = GetListCriteria(queryParam)
+            .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
+            .AddOrder(Order.Desc(nameof(Entity.Id)))
+            .SetFirstResult(listPager.PageIndex * listPager.PageSize)
+            .SetMaxResults(listPager.PageSize)
+            .SetProjection(Projections.Property(nameof(ExpressPhotoInfo.Id)))
+            .List<int>();
+
+        ICriteria listCriteria = session.CreateCriteria<ExpressPhotoInfo>();
+        listCriteria = listCriteria.CreateAlias(nameof(ExpressPhotoInfo.Customer), nameof(ExpressPhotoInfo.Customer), JoinType.LeftOuterJoin);
+        listCriteria = listCriteria.CreateAlias(nameof(ExpressPhotoInfo.Order), nameof(ExpressPhotoInfo.Order), JoinType.LeftOuterJoin);
+        // listCriteria = listCriteria.CreateAlias(nameof(ExpressPhotoInfo.Express), nameof(ExpressPhotoInfo.Express), JoinType.LeftOuterJoin);
+        listCriteria = listCriteria.CreateAlias(nameof(ExpressPhotoInfo.User), nameof(ExpressPhotoInfo.User), JoinType.LeftOuterJoin);
+
+        IList<ExpressPhotoInfo> expressPhotoList = listCriteria
+            .Add(Restrictions.In($"{nameof(ExpressPhotoInfo.Id)}", expressPhotoIdList.ToArray()))
+            .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
+            .AddOrder(Order.Desc(nameof(Entity.Id)))
+            .List<ExpressPhotoInfo>();
+
+        foreach (ExpressPhotoInfo expressPhoto in expressPhotoList)
+        {
+            if (expressPhoto.Customer != null)
+            {
+                expressPhoto.CustomerCodeCache = customerCodeService.GetCustomerCode(expressPhoto.Customer?.Id ?? 0);
+            }
+            else
+            {
+                expressPhoto.CustomerCodeCache = string.Empty;
+            }
+
+            expressPhoto.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(expressPhoto, OssSiteLocType.China);
+            expressPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(expressPhoto, OssSiteLocType.China);
+        }
+
+        ExpressPhotoListModel model = new ExpressPhotoListModel(listPager);
+        model.ExpressPhotoList = expressPhotoList;
+
+        return View("ExpressPhotoList", model);
+    }
+
+    [NonAction]
+    private ICriteria GetListCriteria(ExpressPhotoListQueryParam queryParam)
+    {
+        LogisticsOrderInfo? order = null;
+        string orderCodeQuery = queryParam.OrderCodeQuery;
+        if (string.IsNullOrWhiteSpace(orderCodeQuery) == false)
+        {
+            orderCodeQuery = orderCodeQuery.Trim();
+            order = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Take(1)
+                .SingleOrDefault();
+        }
+
+        UserInfo? user = null;
+        if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
+        {
+            string userNameQuery = queryParam.UserNameQuery.Trim();
+
+            user = session.Query<UserInfo>()
+                .Where(e => e.LoginName == userNameQuery || e.UserName == userNameQuery)
+                .Take(1)
+                .SingleOrDefault();
+        }
+
+        ICriteria criteria = session.CreateCriteria<ExpressPhotoInfo>();
+
+        criteria.SetReadOnly(true);
+
+        // criteria = criteria.CreateAlias(nameof(ExpressPhotoInfo.Order), nameof(ExpressPhotoInfo.Order), JoinType.LeftOuterJoin);
+        // criteria = criteria.CreateAlias(nameof(ExpressPhotoInfo.Express), nameof(ExpressPhotoInfo.Express), JoinType.LeftOuterJoin);
+        // criteria = criteria.CreateAlias(nameof(ExpressPhotoInfo.User), nameof(ExpressPhotoInfo.User), JoinType.LeftOuterJoin);
+
+
+        if (queryParam.TypeQuery != null && queryParam.TypeQuery != ExpressPhotoType.None)
+        {
+            ExpressPhotoType typeQuery = queryParam.TypeQuery;
+            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.Type == typeQuery));
+        }
+
+
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
+        {
+            string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
+            int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
+            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.Customer.Id == customerIdQuery));
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressPhotoInfo.Order)}.{nameof(ExpressPhotoInfo.Order.Id)}", (order?.Id ?? 0)));
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
+        {
+            string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
+            criteria = criteria.Add(Restrictions.Eq(nameof(ExpressPhotoInfo.TrackingNo), trackingNoQuery));
+        }
+
+        if (queryParam.BeginDateQuery != null)
+        {
+            DateTime beginDateQueryValue = queryParam.BeginDateQuery.Value;
+            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.CreateTime >= beginDateQueryValue));
+        }
+
+        if (queryParam.EndDateQuery != null)
+        {
+            DateTime endDateQueryValue = queryParam.EndDateQuery.Value.AddDays(1);
+            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.CreateTime < endDateQueryValue));
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
+        {
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressPhotoInfo.User)}.{nameof(ExpressPhotoInfo.User.Id)}", (user?.Id ?? 0)));
+        }
+
+        return criteria;
+    }
+
+    [HttpPost]
+    [Route("/admin/express/photo/detail")]
+    public IActionResult Detail()
+    {
+        session.DefaultReadOnly = true;
+
+        ExpressPhotoDetailModel model = new ExpressPhotoDetailModel();
+        model.PhotoTypeList = ExpressPhotoType.GetList();
+
+        return View("ExpressPhotoDetail", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/express/photo/upload")]
+    public IActionResult Upload(IFormFile imageFile)
+    {
+        if (imageFile == null)
+        {
+            throw new ValidationException("文件未能上传成功！");
+        }
+
+        string fileExt = expressPhotoFileService.GetFileExt(imageFile.FileName);
+        if (fileExt.ToLower() != ".png".ToLower() && fileExt.ToLower() != ".jpg".ToLower() && fileExt.ToLower() != ".jpeg".ToLower())
+        {
+            return Json(new Dictionary<string, object>() {
+                { "success", false },
+                { "message", "只支持 png 和 jpg,jpeg 格式的图片文件！" },
+            });
+        }
+
+        var result = expressPhotoFileService.SaveImageFile(imageFile);
+
+        string imageFileUrl = result.Item1;
+        string storePath = result.Item2;
+        string storeName = result.Item3;
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "上传成功！" },
+            { "imageFileUrl", imageFileUrl },
+            { "storePath", storePath },
+            { "storeName", storeName },
+        });
+    }
+
+    /// <summary>
+    /// 这里只能创建不能编辑，要么删除了重新创建
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    /// <exception cref="ValidationException"></exception>
+    [HttpPost]
+    [Route("/admin/express/photo/save")]
+    [Transactional]
+    public IActionResult Save(ExpressPhotoDetailModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
+
+        int loginUserId = loginUserService.GetLoginUserId();
+
+
+        if (string.IsNullOrWhiteSpace(model.TrackingNo) == false && expressTrackingNoService.IsValidateTrackingNo(model.TrackingNo) == false)
+        {
+            throw new ValidationException("快递单号格式不符合规范！");
+        }
+
+        ExpressPhotoInfo expressPhoto = new ExpressPhotoInfo();
+
+        expressPhoto.Status = ExpressPhotoStatus.Normal;
+        expressPhoto.ExpressComName = string.Empty;
+        expressPhoto.User = session.Get<UserInfo>(loginUserId);
+
+
+        LogisticsOrderInfo? logisticsOrder = null;
+
+
+        string orderCode = model.OrderCode ?? string.Empty;
+
+        if (string.IsNullOrEmpty(orderCode) == false)
+        {
+            logisticsOrder = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCode)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (logisticsOrder == null)
+            {
+                throw new ValidationException("指定的订单编号不存在！");
+            }
+        }
+
+        ExpressInfo? express = null;
+        string trackingNo = model.TrackingNo;
+        if (string.IsNullOrWhiteSpace(trackingNo) == false)
+        {
+            express = session.Query<ExpressInfo>()
+                .Where(e => e.TrackingNo == trackingNo)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (express != null && logisticsOrder != null && (express.Order?.Id ?? 0) != logisticsOrder.Id)
+            {
+                throw new ValidationException("指定的快递单号和订单编号不匹配，可能快递单号属于别的订单！");
+            }
+        }
+
+        expressPhoto.TrackingNo = trackingNo;
+        expressPhoto.Express = express;
+        expressPhoto.Customer = express?.Customer;
+        expressPhoto.Order = logisticsOrder;
+        expressPhoto.OrderCode = logisticsOrder?.Code ?? string.Empty;
+        expressPhoto.Type = model.PhotoType;
+        expressPhoto.StorePath = model.StorePath;
+        expressPhoto.StoreName = model.StoreName;
+
+        session.Save(expressPhoto);
+        session.Flush();
+
+        if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) == false)
+        {
+            // 这里只放了照片上传的时候的日志，这条照片记录被修改的日志，暂时还没加上
+            expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型：{expressPhoto.Type?.Name}", loginUserId);
+        }
+
+        expressPhotoFileService.AddWatermark(expressPhoto.StorePath, expressPhoto.StoreName, expressPhoto.Type ?? ExpressPhotoType.None);
+        expressPhotoService.SendAddOrderPhotoMessage(expressPhoto);
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "保存成功！" }
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/express/photo/delete")]
+    [AdminAuth(PassRes.Express.ExpressPhotoDelete)]
+    public IActionResult Delete(int[] idList)
+    {
+        IList<ExpressPhotoInfo> photoList = new List<ExpressPhotoInfo>();
+
+        foreach (int id in idList)
+        {
+            ExpressPhotoInfo expressPhoto = session.Load<ExpressPhotoInfo>(id);
+            session.Delete(expressPhoto);
+
+            photoList.Add(expressPhoto);
+        }
+
+        session.Flush();
+
+        OssClient client = new OssClient(AliYunOssConfig.EndpointChina, AliYunOssConfig.AccessKeyId, AliYunOssConfig.AccessKeySecret);
+
+        foreach (ExpressPhotoInfo expressPhoto in photoList)
+        {
+            if (expressPhoto.StoreLoc == ExpressPhotoStoreLoc.Oss)
+            {
+                // 如果是OSS图片删除，就要做OSS图片删除
+                try
+                {
+                    string objectName = Path.Combine(expressPhoto.StorePath, expressPhoto.StoreName).Replace("\\", "/");
+                    client.DeleteObject(AliYunOssConfig.BucketNameChina, objectName);
+                }
+                catch (Exception exp)
+                {
+                    log.Error(exp);
+                }
+            }
+            else
+            {
+                // 如果是服务器图片就做服务器图片删除
+                expressPhotoFileService.DeleteFile(expressPhoto);
+            }
+        }
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "删除成功！" },
+        });
+    }
+}
