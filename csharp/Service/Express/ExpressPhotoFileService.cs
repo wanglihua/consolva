@@ -19,8 +19,8 @@ public class ExpressPhotoFileService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public static readonly string ImageUploadFolder = Path.Combine("static", "upload", "images", "logistics");
-    public static readonly string ImageUploadUrl = ImageUploadFolder.Replace("\\", "/");
+    public static readonly string ImageUploadFolder = Path.Combine("wwwroot", "static", "upload", "images", "express");
+    public static readonly string ImageUploadUrl = "/static/upload/images/experss";
 
     private static readonly int MAX_WIDTH = 800;
     private static readonly int MAX_HEIGHT = 600;
@@ -85,7 +85,7 @@ public class ExpressPhotoFileService
         originImage.Dispose();
         memoryStream.Dispose();
 
-        return Tuple.Create($"/{ImageUploadUrl}/{dayFolderName}/{newFileName}", dayFolderName, newFileName);
+        return Tuple.Create($"{ImageUploadUrl}/{dayFolderName}/{newFileName}", dayFolderName, newFileName);
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public class ExpressPhotoFileService
 
         originImage.Dispose();
 
-        return Tuple.Create($"/{ImageUploadUrl}/{monthFolderName}/{newFileName}", monthFolderName, newFileName);
+        return Tuple.Create($"{ImageUploadUrl}/{monthFolderName}/{newFileName}", monthFolderName, newFileName);
     }
 
     /// <summary>
@@ -211,15 +211,15 @@ public class ExpressPhotoFileService
         {
             if (renderLocation == PhotoRenderLocation.Site)
             {
-                return $"/{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
             if (renderLocation == PhotoRenderLocation.App)
             {
-                return $"{SiteConfig.SiteRoot}/{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{SiteConfig.SiteRoot}{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
-            return $"/{ImageUploadUrl}/{storePath}/{storeName}";
+            return $"{ImageUploadUrl}/{storePath}/{storeName}";
         }
     }
 
@@ -263,15 +263,15 @@ public class ExpressPhotoFileService
         {
             if (renderLocation == PhotoRenderLocation.Site)
             {
-                return $"/{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
             if (renderLocation == PhotoRenderLocation.App)
             {
-                return $"{SiteConfig.SiteRoot}/{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{SiteConfig.SiteRoot}{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
-            return $"/{ImageUploadUrl}/{storePath}/{storeName}";
+            return $"{ImageUploadUrl}/{storePath}/{storeName}";
         }
     }
 
@@ -315,15 +315,15 @@ public class ExpressPhotoFileService
         {
             if (renderLocation == PhotoRenderLocation.Site)
             {
-                return $"/{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
             if (renderLocation == PhotoRenderLocation.App)
             {
-                return $"{SiteConfig.SiteRoot}/{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{SiteConfig.SiteRoot}{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
-            return $"/{ImageUploadUrl}/{storePath}/{storeName}";
+            return $"{ImageUploadUrl}/{storePath}/{storeName}";
         }
     }
 

@@ -27,13 +27,13 @@ public class ExpressPhotoController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
-    private ExpressPhotoFileService expressPhotoFileService = null;
-    private ExpressPhotoService expressPhotoService = null;
-    private LoginUserService loginUserService = null;
-    private CustomerCodeService customerCodeService = null;
-    private ExpressTrackingNoService expressTrackingNoService = null;
-    private ExpressLogService expressLogService = null;
+    private ISession session;
+    private ExpressPhotoFileService expressPhotoFileService;
+    private ExpressPhotoService expressPhotoService;
+    private LoginUserService loginUserService;
+    private CustomerCodeService customerCodeService;
+    private ExpressTrackingNoService expressTrackingNoService;
+    private ExpressLogService expressLogService;
 
     public ExpressPhotoController(ISession session,
         ExpressPhotoFileService expressPhotoFileService,
@@ -121,10 +121,9 @@ public class ExpressPhotoController : Controller
     private ICriteria GetListCriteria(ExpressPhotoListQueryParam queryParam)
     {
         LogisticsOrderInfo? order = null;
-        string orderCodeQuery = queryParam.OrderCodeQuery;
-        if (string.IsNullOrWhiteSpace(orderCodeQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
-            orderCodeQuery = orderCodeQuery.Trim();
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             order = session.Query<LogisticsOrderInfo>()
                 .Where(e => e.Code == orderCodeQuery)
                 .Take(1)
@@ -162,7 +161,7 @@ public class ExpressPhotoController : Controller
         {
             string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
-            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.Customer.Id == customerIdQuery));
+            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.Customer != null && e.Customer.Id == customerIdQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)

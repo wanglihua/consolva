@@ -27,6 +27,16 @@
                 <b class="arrow"></b>
                 <ul class="submenu">
 
+                    @if (Model.HasPassRes(PassRes.Express.ExpressPhoto))
+                    {
+                        <li id="express-photo-index-menu">
+                            <a asp-area="Express" asp-controller="ExpressPhoto" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>快递单图片
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
                     @if (Model.HasPassRes(PassRes.Express.ExpressRemarkPresetSelect))
                     {
                         <li id="express-express-remark-preset-select-menu">
