@@ -1,0 +1,137 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.ExpressReturnPay.ExpressReturnPayListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressReturnPayList" })
+
+<table id="tblExpressReturnPayList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="expressReturnPayCheckAll"></label><input id="expressReturnPayCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 180px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressReturnPayInfo.Express)).@(nameof(ExpressReturnPayInfo.Express.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnPayList">快递单</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressReturnPayInfo.Customer)).@(nameof(ExpressReturnPayInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnPayList">客户</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressReturnPayInfo.PayType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnPayList">支付类型</a>
+                </div>
+            </th>
+
+            <th style="width: 270px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressReturnPayInfo.OutTradeNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnPayList">支付宝/微信/PayPal 单号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressReturnPayInfo.Amount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnPayList">支付金额</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressReturnPayInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnPayList">状态</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressReturnPayInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnPayList">完成时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ExpressReturnPayList != null && Model.ExpressReturnPayList.Count() != 0)
+        {
+            int order = 1;
+            foreach (ExpressReturnPayInfo expressReturnPay in Model.ExpressReturnPayList)
+            {
+                <tr ondblclick="showExpressReturnPayDetail(@(expressReturnPay.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="expressReturnPayCheck_@(expressReturnPay.Id)"></label><input id="expressReturnPayCheck_@(expressReturnPay.Id)" type="checkbox" class="ace" value="@expressReturnPay.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                        <a target="_blank" asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressReturnPay.Express.Id)">
+                            @ListDataUtil.Render(expressReturnPay.Express.TrackingNo)
+                            </a>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturnPay.CustomerCodeCache)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturnPay.PayType?.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturnPay.OutTradeNo)
+                        </div>
+                        @if (string.IsNullOrWhiteSpace(expressReturnPay.PaypalPaymentId) == false)
+                        {
+                            <div>
+                                @(expressReturnPay.PaypalPaymentId)
+                            </div>
+                        }                        
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturnPay.Amount)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturnPay.Status?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @expressReturnPay.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressReturnPayList" })

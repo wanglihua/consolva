@@ -24,23 +24,27 @@ public partial class PassRes
         public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
 
         /// <summary>
+        /// 快递列表
+        /// </summary>
+        public const int ExpressList = CateId + 10000;        
+
+        /// <summary>
         /// 预报单号
         /// </summary>
-        public const int ExpressExpect = CateId + 0900;
-
+        public const int ExpressExpect = CateId + 20000;
         /// <summary>
         /// 快递单图片
         /// </summary>
-        public const int ExpressPhoto = CateId + 10000;
+        public const int ExpressPhoto = CateId + 30000;
 
         /// <summary>
         /// 快递单图片删除
         /// </summary>
-        public const int ExpressPhotoDelete = CateId + 20000;
+        public const int ExpressPhotoDelete = CateId + 40000;
 
         /// <summary>
         /// 快递备注预设
         /// </summary>
-        public const int ExpressRemarkPresetSelect = CateId + 30000;
+        public const int ExpressRemarkPresetSelect = CateId + 50000;
     }
 }

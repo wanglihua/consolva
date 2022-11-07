@@ -1,0 +1,101 @@
+@using shunda.Admin.Areas.Fee.Models.ExpressReturnPay
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.ExpressReturnPay.ExpressReturnPayIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "退运支付";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="fee-menu">费用管理</li>
+    <li class="active" data-menu="fee-express-return-pay-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadExpressReturnPayList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCodeQuery">会员ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 120px; height: 30px;" placeholder="会员ID精确查询"/>&nbsp;
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressReturnPayList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="expressReturnPayList" data-page-index="0" data-sort-field="@(nameof(ExpressReturnPayInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="expressReturnPayDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });        
+        
+        loadExpressReturnPayList();
+    });
+
+    function sortExpressReturnPayList(sortField, sortDir) {
+        var list = $('#expressReturnPayList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExpressReturnPayList();
+    }
+
+    function loadExpressReturnPayList(pageIndex) {
+        var list = $('#expressReturnPayList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExpressReturnPay")",
+            type: "POST",
+            data: {
+                '@(nameof(ExpressReturnPayListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(ExpressReturnPayListQueryParam.PayTimeBeginQuery))': $('#beginDateQuery').val(),
+                '@(nameof(ExpressReturnPayListQueryParam.PayTimeEndQuery))': $('#endDateQuery').val(),                  
+                "@(nameof(ExpressReturnPayListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ExpressReturnPayListQueryParam.SortField))": sortField,
+                "@(nameof(ExpressReturnPayListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#expressReturnPayList').html(data);
+
+                initListTable("#tblExpressReturnPayList");
+            }
+        });
+    }
+
+</script>

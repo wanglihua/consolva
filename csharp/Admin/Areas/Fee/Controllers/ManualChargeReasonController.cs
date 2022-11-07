@@ -12,7 +12,7 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
 
-[OrderFeeArea]
+[FeeArea]
 [AdminAuth(PassRes.Fee.ManualChargeReason)]
 public class ManualChargeReasonController : Controller
 {

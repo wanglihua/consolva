@@ -1,6 +1,6 @@
+using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using shunda.Core;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
 
@@ -16,7 +16,7 @@ public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
             x => x.Express,
             map => {
                 map.Class(typeof(ExpressInfo));
-                map.Column("claim_id");
+                map.Column("express_id");
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
@@ -57,7 +57,7 @@ public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("paypal_payment_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
