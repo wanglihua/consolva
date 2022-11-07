@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Core;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.Fee;
 
 /// <summary>
 /// 增减核销费用原因

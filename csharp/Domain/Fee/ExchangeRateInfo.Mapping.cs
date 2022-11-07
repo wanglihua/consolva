@@ -1,7 +1,7 @@
 using NHibernate;
 using shunda.Core;
 
-namespace shunda.Domain;
+namespace shunda.Domain.Fee;
 
 public class ExchangeRateInfoMapping : EntityMapping<ExchangeRateInfo>
 {

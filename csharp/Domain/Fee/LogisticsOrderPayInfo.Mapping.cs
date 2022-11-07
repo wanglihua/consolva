@@ -2,21 +2,22 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Core;
 using shunda.Domain.Customer;
-using shunda.Domain.Express;
+using shunda.Domain.Order;
+using shunda.Domain.Pass;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.Fee;
 
-public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
+public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
 {
-    public ExpressReturnPayInfoMapping()
+    public LogisticsOrderPayInfoMapping()
     {
-        Table("tbl_express_return_pay");
+        Table("tbl_logistics_order_pay");
 
         ManyToOne(
-            x => x.Express,
+            x => x.Order,
             map => {
-                map.Class(typeof(ExpressInfo));
-                map.Column("claim_id");
+                map.Class(typeof(LogisticsOrderInfo));
+                map.Column("order_id");
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
@@ -48,15 +49,17 @@ public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("out_trade_no");
+                map.Length(25);
                 map.NotNullable(true);
             }
         );
 
         Property(
-            x => x.PaypalPaymentId,
+            x => x.PayPalPaymentId,
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("paypal_payment_id");
+                map.Length(50);
                 map.NotNullable(false);
             }
         );
@@ -70,12 +73,41 @@ public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
             }
         );
 
+        ManyToOne(
+            x => x.User,
+            map => {
+                map.Class(typeof(UserInfo));
+                map.Column("user_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
         Property(
             x => x.Status,
             map => {
                 map.Type<PayStatusHibernateType>();
                 map.Column("status_id");
                 map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.WriteOffReasonId,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("write_off_reason_id");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.WriteOffReasonContent,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("write_off_reason_content");
+                map.NotNullable(false);
             }
         );
     }

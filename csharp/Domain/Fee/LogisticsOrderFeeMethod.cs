@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.Fee;
 
 /// <summary>
 /// 订单计费方式

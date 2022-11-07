@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain;
+namespace shunda.Domain.Fee;
 
 /// <summary>
 /// 物流订单支付状态

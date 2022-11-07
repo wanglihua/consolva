@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.Fee;
 
 /// <summary>
 /// 增减核销费用原因状态

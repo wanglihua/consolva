@@ -2,7 +2,7 @@ using shunda.Core;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.Fee;
 
 // todo 数据表建好后，使用生成的吧
 

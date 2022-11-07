@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.Fee;
 
 /// <summary>
 /// 人工操作费用类型

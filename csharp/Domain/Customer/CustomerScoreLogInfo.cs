@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Core;
+using shunda.Domain.Fee;
 using shunda.Domain.Order;
 
 namespace shunda.Domain.Customer;

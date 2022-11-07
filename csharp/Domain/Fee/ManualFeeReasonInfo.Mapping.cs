@@ -1,7 +1,7 @@
 using NHibernate;
 using shunda.Core;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.Fee;
 
 
 public class ManualFeeReasonInfoMapping : EntityMapping<ManualFeeReasonInfo>
