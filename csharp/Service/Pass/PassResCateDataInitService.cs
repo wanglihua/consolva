@@ -18,7 +18,7 @@ public class PassResCateDataInitService
     public void InitData()
     {
         IList<PassResCateInfo> cateList = new List<PassResCateInfo>() {
-            PassRes.OrderFee.Cate,
+            PassRes.Fee.Cate,
             PassRes.Storage.Cate,
             PassRes.Logistics.Cate,
             PassRes.CustomerMessage.Cate,

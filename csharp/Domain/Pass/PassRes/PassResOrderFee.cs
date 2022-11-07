@@ -5,7 +5,7 @@ public partial class PassRes
     /// <summary>
     /// 费用管理
     /// </summary>
-    public class OrderFee
+    public class Fee
     {
         /// <summary>
         /// 费用管理类别

@@ -19,7 +19,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Fee.Controllers;
 
 [OrderFeeArea]
-[AdminAuth(PassRes.OrderFee.CustomerCharge)]
+[AdminAuth(PassRes.Fee.CustomerCharge)]
 public class CustomerChargeController : Controller
 {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -47,7 +47,7 @@ public class CustomerChargeController : Controller
     {
         var model = new CustomerChargeIndexModel();
         model.ChargeTypeList = CustomerChargeType.GetList();
-        model.HasManualChargePass = PassUtil.HasPassRes(loginUserService.GetPassResIdMap(), loginUserService.IsAdmin, PassRes.OrderFee.CustomerChargeManualCharge);
+        model.HasManualChargePass = PassUtil.HasPassRes(loginUserService.GetPassResIdMap(), loginUserService.IsAdmin, PassRes.Fee.CustomerChargeManualCharge);
 
         return View("CustomerChargeIndex", model);
     }
@@ -107,7 +107,7 @@ public class CustomerChargeController : Controller
 
     [HttpPost]
     [Route("/admin/customer/charge/manual/charge")]
-    [AdminAuth(PassRes.OrderFee.CustomerChargeManualCharge)]
+    [AdminAuth(PassRes.Fee.CustomerChargeManualCharge)]
     public IActionResult ManualCharge()
     {
         var model = new CustomerChargeDetailModel();
@@ -118,7 +118,7 @@ public class CustomerChargeController : Controller
 
     [HttpPost]
     [Route("/admin/customer/charge/sea/save")]
-    [AdminAuth(PassRes.OrderFee.CustomerChargeManualCharge)]
+    [AdminAuth(PassRes.Fee.CustomerChargeManualCharge)]
     [Transactional]
     public IActionResult ManualChargeSave(CustomerChargeDetailModel model)
     {

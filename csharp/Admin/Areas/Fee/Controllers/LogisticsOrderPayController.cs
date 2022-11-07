@@ -19,7 +19,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Fee.Controllers;
 
 [OrderFeeArea]
-[AdminAuth(PassRes.OrderFee.LogisticsOrderPay)]
+[AdminAuth(PassRes.Fee.LogisticsOrderPay)]
 public class LogisticsOrderPayController : Controller
 {
     private static readonly DateTime defaultDateBeginQuery = DateTime.ParseExact("2022-01-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
