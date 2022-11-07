@@ -1,0 +1,259 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.CouponBatch
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Coupon
+@model shunda.Admin.Areas.Fee.Models.CouponBatch.CouponBatchIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "优惠券批次";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="order-fee-menu">费用管理</li>
+    <li class="active" data-menu="order-fee-coupon-batch-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCouponBatchList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showCouponBatchDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCouponBatch()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="nameQuery">名称</label>&nbsp;<input id="nameQuery" name="nameQuery" style="width: 120px; height: 30px;" placeholder="名称查询"/>&nbsp;
+
+    <label for="typeQuery">类型</label>&nbsp;
+    <select id="typeQuery" name="typeQuery" style="width: 100px; height: 30px;">
+        <option value="0">类型查询</option>
+        @foreach (var type in Model.TypeList)
+        {
+            <option value="@type.Id">@type.Name</option>
+        }
+    </select>&nbsp;
+
+    <label for="expireBeginQuery">有效期开始</label>&nbsp;<input id="expireBeginQuery" name="expireBeginQuery" style="width: 90px; height: 30px;" placeholder="有效期开始" autocomplete="off"/>&nbsp;
+
+    <label for="expireEndQuery">有效期截止</label>&nbsp;<input id="expireEndQuery" name="expireEndQuery" style="width: 90px; height: 30px;" placeholder="有效期截止" autocomplete="off"/>&nbsp;
+
+    <label for="statusQuery">状态</label>&nbsp;
+    <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;">
+        <option value="0">状态查询</option>
+        @foreach (var status in Model.StatusList)
+        {
+            <option value="@status.Id">@status.Name</option>
+        }
+    </select>&nbsp;
+
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCouponBatchList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="couponBatchList" data-page-index="0" data-sort-field="@(nameof(CouponBatchInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="couponBatchDetailDialogWrapper"></div>
+<div id="couponRuleDialogWrapper"></div>
+<div id="firstModeSelectingDialogWrapper"></div>
+
+<script type="text/javascript">
+
+    $(function() {
+        
+        $('#expireBeginQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#expireEndQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });        
+        
+        loadCouponBatchList();
+    });
+
+    function sortCouponBatchList(sortField, sortDir) {
+        var list = $('#couponBatchList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCouponBatchList();
+    }
+
+    function loadCouponBatchList(pageIndex) {
+        var list = $('#couponBatchList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CouponBatch")",
+            type: "POST",
+            data: {
+                "@(nameof(CouponBatchListQueryParam.NameQuery))": $("#nameQuery").val(),
+                "@(nameof(CouponBatchListQueryParam.TypeQuery))": $("#typeQuery").val(),
+                "@(nameof(CouponBatchListQueryParam.ExpireBeginQuery))": $("#expireBeginQuery").val(),
+                "@(nameof(CouponBatchListQueryParam.ExpireEndQuery))": $("#expireEndQuery").val(),
+                "@(nameof(CouponBatchListQueryParam.StatusQuery))": $("#statusQuery").val(),
+                "@(nameof(CouponBatchListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(CouponBatchListQueryParam.SortField))": sortField,
+                "@(nameof(CouponBatchListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#couponBatchList').html(data);
+
+                initListTable("#tblCouponBatchList");
+            }
+        });
+    }
+
+    function showCouponBatchDetail(id) {
+        $("#couponBatchDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#couponBatchDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CouponBatch")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#couponBatchDetailDialogWrapper").html(data);
+                $("#couponBatchDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCouponBatch() {
+        var form = $("#couponBatchDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CouponBatch")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#couponBatchDetailDialog').modal('hide');
+                    loadCouponBatchList();
+                }
+            });
+        }
+    }
+
+    function deleteCouponBatch() {
+        var idList = getSelectIdList('#tblCouponBatchList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "CouponBatch")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadCouponBatchList();
+                    }
+                });
+            }
+        );
+    }
+    
+    function showCouponRule(batchId) {
+        $("#couponRuleDialogWrapper").html("");
+
+        showMask("加载中...");
+        $.ajax({
+            url: '@Url.Action("ShowRule", "CouponBatch")',
+            type: "POST",
+            data: { "batchId": batchId },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#couponRuleDialogWrapper").html(data);
+                $("#couponRuleDialog").modal(modalOptions);
+            }
+        });
+    }
+    
+    function releaseCouponBatch(batchId) {
+        $.msg.confirm("投放后将不能修改批次信息和优惠规则，确认要投放客户吗？", function() {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Release", "CouponBatch")',
+                type: "POST",
+                data: {
+                    batchId: batchId
+                },
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+    
+                    $.msg.show(data.message);
+                    loadCouponBatchList();
+                }
+            });
+        });
+    }
+
+</script>

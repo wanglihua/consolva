@@ -66,6 +66,21 @@ public class CustomerCodeService
 
     public string GetCustomerCode(int customerId)
     {
+        if (customerId <= 0)
+        {
+            return string.Empty;
+        }
+
         return "SD" + customerId.ToString("#000");
+    }
+
+    public string GetGuestCode(int guestId)
+    {
+        if (guestId >= 0)
+        {
+            return string.Empty;
+        }
+
+        return "G-" + guestId.ToString("#000");
     }
 }

@@ -53,4 +53,10 @@ public class CouponInfo : Entity
     /// 状态，非空
     /// </summary>
     public virtual CouponStatus Status { get; set; } = CouponStatus.None;
+
+    #region Cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

@@ -1,0 +1,179 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Core.Web
+@using shunda.Domain.Coupon
+@model shunda.Admin.Areas.Fee.Models.CouponBatch.CouponBatchListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCouponBatchList" })
+
+<table id="tblCouponBatchList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="couponBatchCheckAll"></label><input id="couponBatchCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 150px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">批次名称</a>
+                </div>
+            </th>
+
+            <th style="width: 90px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">类型</a>
+                </div>
+            </th>
+
+            <th style="width: 150px; text-align: center;">
+                <div>
+                    规则描述
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.Expire))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">有效期</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">状态</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.TotalQuantity))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">总数量</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.MaxQtyPerCustomer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">每客户可领取</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.PickQuantity))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">已领用数量</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.UseQuantity))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">已使用数量</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">创建时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">修改时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <span>操作</span>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CouponBatchList != null && Model.CouponBatchList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CouponBatchInfo couponBatch in Model.CouponBatchList)
+            {
+                <tr ondblclick="showCouponBatchDetail(@(couponBatch.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="couponBatchCheck_@(couponBatch.Id)"></label><input id="couponBatchCheck_@(couponBatch.Id)" type="checkbox" class="ace" value="@couponBatch.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(couponBatch.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div style="color: blue;">
+                            @ListDataUtil.Render(couponBatch.Type?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(couponBatch.Rule)
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(couponBatch.RuleDesc)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(couponBatch.Expire, "yyyy-MM-dd")
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.Render(couponBatch.Status?.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(couponBatch.TotalQuantity)
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(couponBatch.MaxQtyPerCustomer)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(couponBatch.PickQuantity)
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(couponBatch.UseQuantity)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @couponBatch.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                        <div>
+                            @couponBatch.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        @if ((couponBatch.Status?.Released() ?? false) == false)
+                        {
+                            <div>
+                                <a href="javascript:showCouponRule('@(couponBatch.Id)');">编辑规则</a>
+                            </div>
+                            <div>
+                                <a href="javascript:releaseCouponBatch('@(couponBatch.Id)');">投放客户</a>
+                            </div>
+                        }
+                        <div>
+                            <a href="@Url.Action("IndexBatch", "Coupon", new { batchId = couponBatch.Id })" target="_blank">查看明细</a>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCouponBatchList" })

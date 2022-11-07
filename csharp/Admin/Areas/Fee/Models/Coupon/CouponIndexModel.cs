@@ -6,7 +6,7 @@ namespace shunda.Admin.Areas.Fee.Models.Coupon;
 public class CouponIndexModel
 {
     [BindNever]
-    public CouponBatchInfo Batch { get; set; } = new();
+    public CouponBatchInfo? Batch { get; set; }
 
     [BindNever]
     public IList<CouponStatus> StatusList { get; set; } = CouponStatus.GetList();

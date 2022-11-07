@@ -1,0 +1,181 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Coupon
+@model shunda.Admin.Areas.Fee.Models.Coupon.CouponListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCouponList" })
+
+<table id="tblCouponList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="couponCheckAll"></label><input id="couponCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">编号</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponInfo.Batch)).@(nameof(CouponInfo.Batch.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">批次名称</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponInfo.Batch)).@(nameof(CouponInfo.Batch.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">类型</a>
+                </div>
+            </th>
+
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponInfo.Customer)).@(nameof(CouponInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">客户</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponInfo.Order)).@(nameof(CouponInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">订单</a>
+                </div>
+            </th>
+
+            <th style="width: 90px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponInfo.Order)).@(nameof(CouponInfo.Order.OrderAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">订单金额</a>
+                </div>
+            </th>
+
+            <th style="width: 90px; text-align: right;">
+                <div>
+                    <a field="@(nameof(CouponInfo.ActualDiscountAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">实际优惠</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">状态</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponInfo.GetMethod))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">获取方式</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CouponInfo.PickTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">领用时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CouponInfo.UseTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponList">使用时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CouponList != null && Model.CouponList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CouponInfo coupon in Model.CouponList)
+            {
+                <tr ondblclick="showCouponDetail(@(coupon.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="couponCheck_@(coupon.Id)"></label><input id="couponCheck_@(coupon.Id)" type="checkbox" class="ace" value="@coupon.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td style="text-align: center;">
+                        <div style="color: blue;">
+                            @ListDataUtil.Render(coupon.Code)
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(coupon.Batch?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(coupon.Batch?.Type?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(coupon.Customer?.Id ?? 0)" target="_blank">
+                                @ListDataUtil.Render(coupon.CustomerCodeCache)
+                            </a>
+                        </div>
+                        <div>
+                            <a asp-area="Order" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(coupon.Order?.Id ?? 0)" target="_blank">
+                                @ListDataUtil.Render(coupon.Order?.Code)
+                            </a>
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        <div>
+                            <span class="num">
+                                @ListDataUtil.Render(coupon.Order?.OrderAmount)
+                            </span>
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        <div>
+                            <span class="num">
+                                @ListDataUtil.Render(coupon.ActualDiscountAmount)
+                            </span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @if (coupon.Status == CouponStatus.Expire)
+                            {
+                                <span style="color: red;">
+                                    @ListDataUtil.Render(coupon.Status?.Name)
+                                </span>
+                            }
+                            else if (coupon.Status == CouponStatus.Use)
+                            {
+                                <span style="color: blue;">
+                                    @ListDataUtil.Render(coupon.Status?.Name)
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    @ListDataUtil.Render(coupon.Status?.Name)
+                                </span>
+                            }
+
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(coupon.GetMethod?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(coupon.PickTime)
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.Render(coupon.UseTime)
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCouponList" })

@@ -1,0 +1,285 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.Coupon
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Coupon
+@model shunda.Admin.Areas.Fee.Models.Coupon.CouponIndexModel
+@{
+    if (Model.Batch != null)
+    {
+        ViewData[ViewDataKey.Title] = "优惠券列表";
+    }
+    else
+    {
+        ViewData[ViewDataKey.Title] = "优惠券总览";
+    }
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="order-fee-menu">费用管理</li>
+
+    @if (Model.Batch != null)
+    {
+        <li class="active" data-menu="order-fee-coupon-batch-index-menu">
+            <a href="@Url.Action("Index", "CouponBatch")">优惠券批次</a>
+        </li>
+        <li>
+            <span>
+                @(Model.Batch?.Name)
+                @if (string.IsNullOrWhiteSpace(Model.Batch?.RuleDesc) == false)
+                {
+                    <span>(@(Model.Batch?.RuleDesc))</span>
+                }
+            </span>
+        </li>
+        <li>@(ViewData[ViewDataKey.Title])</li>
+    }
+    else
+    {
+        <li class="active" data-menu="order-fee-coupon-index-menu">
+            @(ViewData[ViewDataKey.Title])
+        </li>
+    }
+}
+
+@if (Model.Batch != null)
+{
+    <div class="gridToolBar clearfix">
+        <button type="button" class="btn btn-primary btn-sm" onclick="loadCouponList()">
+            <i class="ace-icon fa fa-refresh"></i>
+            刷新
+        </button>
+
+        <button type="button" class="btn btn-success btn-sm" onclick="showGrant()">
+            <i class="ace-icon fa fa-plus"></i>
+            新增发放
+        </button>
+
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeGrant()">
+            <i class="ace-icon fa fa-trash-o"></i>
+            收回发放
+        </button>
+
+        <button id="btnImportGrant" type="button" class="btn btn-success btn-sm">
+            <i class="ace-icon fa fa-plus"></i>
+            导入发放
+        </button>
+
+        <a style="margin-left: 20px; display: inline-block;" href="/static/excel-template/coupon/coupon_import_template.xlsx">下载优惠券发放导入模板</a>
+    </div>
+}
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="codeQuery">编号</label>&nbsp;<input id="codeQuery" style="width: 150px; height: 30px;" placeholder="编号查询"/>&nbsp;
+
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+
+    <label for="statusQuery">状态</label>&nbsp;
+    <select id="statusQuery" style="width: 100px; height: 30px;">
+        <option value="0">状态查询</option>
+        @foreach (var status in Model.StatusList)
+        {
+            <option value="@status.Id">@status.Name</option>
+        }
+    </select>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCouponList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="couponList" data-page-index="0" data-sort-field="@(nameof(CouponInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="couponDetailDialogWrapper"></div>
+<div id="couponGrantDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCouponList();
+    });
+
+    function sortCouponList(sortField, sortDir) {
+        var list = $('#couponList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCouponList();
+    }
+
+    function loadCouponList(pageIndex) {
+        var list = $('#couponList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "Coupon")",
+            type: "POST",
+            data: {
+                "@(nameof(CouponListQueryParam.BatchId))": "@(Model.Batch?.Id ?? 0)",
+                "@(nameof(CouponListQueryParam.CodeQuery))": $("#codeQuery").val(),
+                "@(nameof(CouponListQueryParam.CustomerCodeQuery))": $("#customerCodeQuery").val(),
+                "@(nameof(CouponListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(CouponListQueryParam.StatusQuery))": $("#statusQuery").val(),
+                "@(nameof(CouponListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(CouponListQueryParam.SortField))": sortField,
+                "@(nameof(CouponListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#couponList').html(data);
+
+                initListTable("#tblCouponList");
+            }
+        });
+    }
+    
+    function showGrant() {
+        $("#couponGrantDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("ShowGrant", "Coupon")',
+            type: "POST",
+            data: { "batchId": "@(Model.Batch?.Id ?? 0)" },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#couponGrantDialogWrapper").html(data);
+                $("#couponGrantDialog").modal(modalOptions);
+            }
+        });
+    }
+    
+    function saveGrant() {
+        var form = $("#couponGrantForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("SaveGrant", "Coupon")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    } 
+
+                    $.msg.show(data.message);
+                    $('#couponGrantDialog').modal('hide');
+
+                    loadCouponList();
+                }
+            });
+        }
+    }    
+    
+    function removeGrant() {
+        var idList = getSelectIdList('#couponList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要收回优惠券发放吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("RemoveGrant", "Coupon")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadCouponList();
+                    }
+                });
+            }
+        );
+    }
+    
+    $(function(){
+        initCouponGrantUploader();
+    });
+
+    function initCouponGrantUploader() {
+        
+        var params = $.param({
+            "batchId": "@(Model.Batch?.Id ?? 0)"
+        });
+        var url = '@Url.Action("ImportGrant", "Coupon")?' + params;
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImportGrant',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                        return;
+                    }
+                    
+                    loadCouponList();
+                    $.msg.show(result.message);
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }    
+
+</script>
