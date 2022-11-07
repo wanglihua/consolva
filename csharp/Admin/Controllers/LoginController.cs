@@ -11,8 +11,8 @@ namespace shunda.Admin.Controllers;
 [NoLoginRequired]
 public class LoginController : Controller
 {
-    private LoginUserService loginUserService;
-    private CaptchaService captchaService;
+    private readonly CaptchaService captchaService;
+    private readonly LoginUserService loginUserService;
 
     public LoginController(LoginUserService loginUserService,
         CaptchaService captchaService)
@@ -26,45 +26,42 @@ public class LoginController : Controller
     [NoLoginRequired]
     public IActionResult Index()
     {
-        LoginModel model = new LoginModel();
+        var model = new LoginModel();
         return View("LoginIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/login")]
-    [ValidateAntiForgeryToken()]
+    [ValidateAntiForgeryToken]
     [NoLoginRequired]
     [Transactional]
     public IActionResult Login(LoginModel model)
     {
-        if (this.ModelState.IsValid == false)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (ModelState.IsValid == false) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        if (this.captchaService.CheckInputCode(model.Captcha) == false)
+        if (captchaService.CheckInputCode(model.Captcha) == false)
         {
             // 如果发现验证码不对,应该马上把原来的验证码设为无效
-            this.captchaService.MakeCurrentExpire();
+            captchaService.MakeCurrentExpire();
 
             throw new ValidationException("验证码输入有错误！");
         }
 
-        string loginName = model.LoginName.Trim();
-        string password = model.Password.Trim();
+        var loginName = model.LoginName.Trim();
+        var password = model.Password.Trim();
 
-        bool loginSuccess = this.loginUserService.Login(loginName, password, Request);
+        var loginSuccess = loginUserService.Login(loginName, password, Request);
         if (loginSuccess == false)
         {
             // 如果发现用户名或者密码不对,应该马上把原来的验证码设为无效
-            this.captchaService.MakeCurrentExpire();
+            captchaService.MakeCurrentExpire();
 
             throw new ValidationException("用户不存在或密码不正确！");
         }
 
         return Json(new {
             success = true,
-            message = "登录成功！",
+            message = "登录成功！"
         });
     }
 
@@ -73,11 +70,11 @@ public class LoginController : Controller
     [NoLoginRequired]
     public IActionResult Logout()
     {
-        this.loginUserService.Logout(this.Request, this.Response);
+        loginUserService.Logout(Request, Response);
 
         return Json(new {
             success = true,
-            message = "注销成功！",
+            message = "注销成功！"
         });
-    }    
+    }
 }

@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Models.Profile;
 using shunda.Core;
@@ -15,9 +14,9 @@ namespace shunda.Admin.Controllers;
 [AdminAuth]
 public class ProfileController : Controller
 {
-    private ISession session;
-    private LoginUserService loginUserService;
-    private PasswordService passwordService;
+    private readonly LoginUserService loginUserService;
+    private readonly PasswordService passwordService;
+    private readonly ISession session;
 
     public ProfileController(ISession session,
         LoginUserService loginUserService,
@@ -32,14 +31,11 @@ public class ProfileController : Controller
     [Route("/admin/profile/basic")]
     public IActionResult Basic()
     {
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo user = session.Get<UserInfo>(loginUserId);
-        if (user == null)
-        {
-            return Content("用户未登录，或者指定的用户不存在！");
-        }
+        var loginUserId = loginUserService.GetLoginUserId();
+        var user = session.Get<UserInfo>(loginUserId);
+        if (user == null) return Content("用户未登录，或者指定的用户不存在！");
 
-        ProfileBasicModel model = new ProfileBasicModel();
+        var model = new ProfileBasicModel();
         model.User = user;
 
         return View("ProfileBasic", model);
@@ -50,20 +46,14 @@ public class ProfileController : Controller
     [Transactional]
     public IActionResult BasicSave(ProfileBasicModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         if (string.IsNullOrWhiteSpace(model.Password) == false)
         {
-            if (model.Password != model.PasswordAgain)
-            {
-                throw new ValidationException("密码重输和密码应该一致！");
-            }
+            if (model.Password != model.PasswordAgain) throw new ValidationException("密码重输和密码应该一致！");
 
-            int loginUserId = loginUserService.GetLoginUserId();
-            UserInfo userInDb = session.Get<UserInfo>(loginUserId);
+            var loginUserId = loginUserService.GetLoginUserId();
+            var userInDb = session.Get<UserInfo>(loginUserId);
 
             userInDb.Password = passwordService.Encrypt(model.Password);
 
@@ -73,7 +63,7 @@ public class ProfileController : Controller
 
         return Json(new {
             success = true,
-            message = "保存成功！",
+            message = "保存成功！"
         });
     }
 }

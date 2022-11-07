@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
-using NHibernate.SqlCommand;
 using shunda.Admin.Areas.Logistics.Models.LogisticsModeInner;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -16,13 +15,13 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Logistics.Controllers;
 
 /// <summary>
-/// 内部计费物流管理
+///     内部计费物流管理
 /// </summary>
 [LogisticsArea]
 [AdminAuth(PassRes.Logistics.LogisticsModeList)]
 public class LogisticsModeInnerController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public LogisticsModeInnerController(ISession session)
     {
@@ -33,7 +32,7 @@ public class LogisticsModeInnerController : Controller
     [Route("/admin/logistics/mode/inner/{typeId:int}")]
     public IActionResult Index(int typeId)
     {
-        LogisticsModeInnerIndexModel model = new LogisticsModeInnerIndexModel();
+        var model = new LogisticsModeInnerIndexModel();
         model.TypeId = typeId;
         model.Type = LogisticsModeType.GetById(typeId);
 
@@ -47,20 +46,20 @@ public class LogisticsModeInnerController : Controller
     [Route("/admin/logistics/mode/inner/list")]
     public IActionResult List(LogisticsModeInnerListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<LogisticsModeInfo> logisticsModeList = GetListCriteria(queryParam)
+        var logisticsModeList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsModeInfo>();
 
-        LogisticsModeInnerListModel model = new LogisticsModeInnerListModel(listPager);
+        var model = new LogisticsModeInnerListModel(listPager);
         model.LogisticsModeList = logisticsModeList;
         model.ModeType = LogisticsModeType.GetById(queryParam.TypeIdQuery ?? 0);
 
@@ -70,7 +69,7 @@ public class LogisticsModeInnerController : Controller
     [NonAction]
     private ICriteria GetListCriteria(LogisticsModeInnerListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<LogisticsModeInfo>();
+        var criteria = session.CreateCriteria<LogisticsModeInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
@@ -86,20 +85,20 @@ public class LogisticsModeInnerController : Controller
 
         if (string.IsNullOrWhiteSpace(queryParam.CodeQuery) == false)
         {
-            string codeQuery = queryParam.CodeQuery.Trim();
+            var codeQuery = queryParam.CodeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsModeInfo>(e => e.Code).IsLike(codeQuery, MatchMode.Anywhere));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
         {
-            string nameQuery = queryParam.NameQuery.Trim();
+            var nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsModeInfo>(e => e.Name).IsLike(nameQuery, MatchMode.Anywhere));
         }
 
 
         if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsModeStatus.None)
         {
-            LogisticsModeStatus statusQuery = queryParam.StatusQuery;
+            var statusQuery = queryParam.StatusQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Status == statusQuery));
         }
 
@@ -114,9 +113,9 @@ public class LogisticsModeInnerController : Controller
 
         session.DefaultReadOnly = true;
 
-        IList<LogisticsModeType> typeList = LogisticsModeType.GetList();
+        var typeList = LogisticsModeType.GetList();
 
-        LogisticsModeInnerDetailModel model = new LogisticsModeInnerDetailModel();
+        var model = new LogisticsModeInnerDetailModel();
 
         LogisticsModeInfo logisticsMode;
         if (id == 0)
@@ -124,21 +123,14 @@ public class LogisticsModeInnerController : Controller
             logisticsMode = new LogisticsModeInfo();
 
             if (typeId.HasValue)
-            {
                 logisticsMode.Type = LogisticsModeType.GetById(typeId.Value);
-            }
             else
-            {
                 logisticsMode.Type = LogisticsModeType.GetById(typeList.First().Id);
-            }
         }
         else
         {
             logisticsMode = session.Get<LogisticsModeInfo>(id);
-            if (logisticsMode == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (logisticsMode == null) throw new ValidationException("指定的数据项不存在！");
         }
 
         model.Id = logisticsMode.Id;
@@ -163,14 +155,11 @@ public class LogisticsModeInnerController : Controller
     [Transactional]
     public IActionResult Save(LogisticsModeInnerDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        int logisticsModeId = model.Id;
+        var logisticsModeId = model.Id;
 
-        bool isCreate = logisticsModeId == 0;
+        var isCreate = logisticsModeId == 0;
 
         LogisticsModeInfo logisticsMode;
 
@@ -196,23 +185,16 @@ public class LogisticsModeInnerController : Controller
 
         logisticsMode.Warehouse = session.Query<WarehouseInfo>().Take(1).SingleOrDefault()!; // 随便给个仓库
 
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         if (isCreate)
-        {
             session.Save(logisticsMode);
-        }
         else
-        {
             session.Update(logisticsMode);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
             { "create", isCreate },
@@ -225,24 +207,21 @@ public class LogisticsModeInnerController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int modeId in idList)
+        foreach (var modeId in idList)
         {
-            LogisticsModeInfo logisticsMode = session.Load<LogisticsModeInfo>(modeId);
+            var logisticsMode = session.Load<LogisticsModeInfo>(modeId);
 
             // 先删除关联的费率数据
-            if (logisticsMode.Type == LogisticsModeType.CnAuExpress)
-            {
-                session.Query<LogisticsFeeRateExpressInfo>().Where(e => e.LogisticsModeId == modeId).Delete();
-            }
+            if (logisticsMode.Type == LogisticsModeType.CnAuExpress) session.Query<LogisticsFeeRateExpressInfo>().Where(e => e.LogisticsModeId == modeId).Delete();
 
             session.Delete(logisticsMode);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

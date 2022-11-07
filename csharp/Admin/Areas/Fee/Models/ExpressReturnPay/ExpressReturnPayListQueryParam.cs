@@ -1,6 +1,6 @@
 using shunda.Core;
 
-namespace shunda.Admin.Areas.OrderFee.Models.ExpressReturnPay;
+namespace shunda.Admin.Areas.Fee.Models.ExpressReturnPay;
 
 public class ExpressReturnPayListQueryParam : ListQueryParam
 {

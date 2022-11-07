@@ -4,7 +4,7 @@
 @using shunda.Domain.Pass
 @model shunda.Admin.Areas.Pass.Models.User.UserListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadUserList" })
 
 <table id="tblUserList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -38,8 +38,8 @@
     <tbody>
         @if (Model.UserList != null && Model.UserList.Count() != 0)
         {
-            int order = 1;
-            foreach (UserInfo user in Model.UserList)
+            var order = 1;
+            foreach (var user in Model.UserList)
             {
                 <tr ondblclick="showUserDetail(@(user.Id));">
                     <td style="text-align: center;">
@@ -79,4 +79,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadUserList" })

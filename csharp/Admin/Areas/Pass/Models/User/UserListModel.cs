@@ -3,11 +3,11 @@ using shunda.Domain.Pass;
 
 namespace shunda.Admin.Areas.Pass.Models.User;
 
-    public class UserListModel : ListModel
+public class UserListModel : ListModel
+{
+    public UserListModel(ListPager listPager) : base(listPager)
     {
-        public UserListModel(ListPager listPager) : base(listPager)
-        {
-        }
-
-        public IList<UserInfo> UserList { get; set; } = new List<UserInfo>();
     }
+
+    public IList<UserInfo> UserList { get; set; } = new List<UserInfo>();
+}

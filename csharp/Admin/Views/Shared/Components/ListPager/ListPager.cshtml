@@ -2,10 +2,10 @@
 
 @{
     Layout = null;
-    string pagerIndexId = $"pageIndex_{Model.ListPager.TotalCount}_{new Random().Next(10000, 99999)}";
-    int pageCount = Model.ListPager.PageCount;
-    int pageNum = Model.ListPager.PageIndex + 1;
-    int pageIndexInputWidth = 35 + 7 * ((int)Math.Log10(pageNum) + 1);
+    var pagerIndexId = $"pageIndex_{Model.ListPager.TotalCount}_{new Random().Next(10000, 99999)}";
+    var pageCount = Model.ListPager.PageCount;
+    var pageNum = Model.ListPager.PageIndex + 1;
+    var pageIndexInputWidth = 35 + 7 * ((int)Math.Log10(pageNum) + 1);
 }
 
 <div class="data-list-pager" style="height: 27px; margin: 10px 0;">

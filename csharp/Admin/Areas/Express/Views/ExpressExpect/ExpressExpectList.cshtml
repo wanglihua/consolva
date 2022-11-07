@@ -63,8 +63,8 @@
     <tbody>
         @if (Model.ExpressExpectList.Count != 0)
         {
-            int itemIndex = 0;
-            foreach (ExpressExpectInfo expressExpect in Model.ExpressExpectList)
+            var itemIndex = 0;
+            foreach (var expressExpect in Model.ExpressExpectList)
             {
                 <tr>
                     <td style="text-align: center;">

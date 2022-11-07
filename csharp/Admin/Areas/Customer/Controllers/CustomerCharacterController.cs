@@ -16,7 +16,7 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [AdminAuth(PassRes.Customer.CustomerCharacter)]
 public class CustomerCharacterController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public CustomerCharacterController(ISession session)
     {
@@ -27,7 +27,7 @@ public class CustomerCharacterController : Controller
     [Route("/admin/customer/character")]
     public IActionResult Index()
     {
-        CustomerCharacterIndexModel model = new CustomerCharacterIndexModel();
+        var model = new CustomerCharacterIndexModel();
         return View("CustomerCharacterIndex", model);
     }
 
@@ -35,20 +35,20 @@ public class CustomerCharacterController : Controller
     [Route("/admin/customer/character/list")]
     public IActionResult List(CustomerCharacterListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<CustomerCharacterInfo> customerCharacterList = GetListCriteria(queryParam)
+        var customerCharacterList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerCharacterInfo>();
 
-        CustomerCharacterListModel model = new CustomerCharacterListModel(listPager);
+        var model = new CustomerCharacterListModel(listPager);
         model.CustomerCharacterList = customerCharacterList;
 
         return View("CustomerCharacterList", model);
@@ -57,7 +57,7 @@ public class CustomerCharacterController : Controller
     [NonAction]
     private ICriteria GetListCriteria(CustomerCharacterListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<CustomerCharacterInfo>();
+        var criteria = session.CreateCriteria<CustomerCharacterInfo>();
 
         criteria.SetReadOnly(true);
 
@@ -79,13 +79,10 @@ public class CustomerCharacterController : Controller
         else
         {
             customerCharacter = session.Get<CustomerCharacterInfo>(id.Value);
-            if (customerCharacter == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (customerCharacter == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        CustomerCharacterDetailModel model = new CustomerCharacterDetailModel();
+        var model = new CustomerCharacterDetailModel();
         model.CustomerCharacter = customerCharacter;
 
         return View("CustomerCharacterDetail", model);
@@ -96,41 +93,30 @@ public class CustomerCharacterController : Controller
     [Transactional]
     public IActionResult Save(CustomerCharacterDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        CustomerCharacterInfo customerCharacterFromUi = model.CustomerCharacter;
-        int customerCharacterId = customerCharacterFromUi.Id;
+        var customerCharacterFromUi = model.CustomerCharacter;
+        var customerCharacterId = customerCharacterFromUi.Id;
 
-        bool isCreate = customerCharacterId == 0;
+        var isCreate = customerCharacterId == 0;
 
         CustomerCharacterInfo customerCharacter;
 
         if (isCreate)
-        {
             customerCharacter = new CustomerCharacterInfo();
-        }
         else
-        {
             customerCharacter = session.Get<CustomerCharacterInfo>(customerCharacterId);
-        }
 
         customerCharacter.Content = customerCharacterFromUi.Content;
 
         if (isCreate)
-        {
             session.Save(customerCharacter);
-        }
         else
-        {
             session.Update(customerCharacter);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -141,17 +127,17 @@ public class CustomerCharacterController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            CustomerCharacterInfo customerCharacter = session.Load<CustomerCharacterInfo>(id);
+            var customerCharacter = session.Load<CustomerCharacterInfo>(id);
             session.Delete(customerCharacter);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

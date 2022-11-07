@@ -6,7 +6,7 @@ namespace shunda.Admin.Areas.Customer.Models.CustomerAccountEntry;
 public class CustomerAccountEntryIndexModel
 {
     [BindNever]
-    public CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public CustomerInfo Customer { get; set; } = new();
 
     [BindNever]
     public IList<CustomerAccountChangeType> ChangeTypeList { get; set; } = new List<CustomerAccountChangeType>();

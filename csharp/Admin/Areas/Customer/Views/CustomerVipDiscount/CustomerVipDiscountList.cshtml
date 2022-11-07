@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="customerVipDiscountCheckAll"></label><input id="customerVipDiscountCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                <label for="customerVipDiscountCheckAll"></label><input id="customerVipDiscountCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 110px; text-align: center;">
@@ -37,22 +37,22 @@
     <tbody>
         @if (Model.CustomerVipDiscountList != null && Model.CustomerVipDiscountList.Count() != 0)
         {
-            int order = 1;
-            foreach (CustomerVipDiscountInfo customerVipDiscount in Model.CustomerVipDiscountList)
+            var order = 1;
+            foreach (var customerVipDiscount in Model.CustomerVipDiscountList)
             {
-        <tr ondblclick="showCustomerVipDiscountDetail(@(customerVipDiscount.Id));">
-            <td style="text-align: center;">
-                <label for="customerVipDiscountCheck_@(customerVipDiscount.Id)"></label><input id="customerVipDiscountCheck_@(customerVipDiscount.Id)" type="checkbox" class="ace" value="@customerVipDiscount.Id" /><span class="lbl"></span>
-            </td>
-            <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-            <td style="text-align: center;">@customerVipDiscount.Rank?.Name</td>
-            <td style="text-align: center;">@customerVipDiscount.Score</td>
-            <td style="text-align: center;">@(customerVipDiscount.Discount)%</td>
-            <td style="text-align: center;" class="break-word">@(customerVipDiscount.User?.UserName)</td>
-            <td style="text-align: center;">@customerVipDiscount.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
-            <td style="text-align: center;">@customerVipDiscount.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
-            <td></td>
-        </tr>
+                <tr ondblclick="showCustomerVipDiscountDetail(@(customerVipDiscount.Id));">
+                    <td style="text-align: center;">
+                        <label for="customerVipDiscountCheck_@(customerVipDiscount.Id)"></label><input id="customerVipDiscountCheck_@(customerVipDiscount.Id)" type="checkbox" class="ace" value="@customerVipDiscount.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">@customerVipDiscount.Rank?.Name</td>
+                    <td style="text-align: center;">@customerVipDiscount.Score</td>
+                    <td style="text-align: center;">@(customerVipDiscount.Discount)%</td>
+                    <td style="text-align: center;" class="break-word">@(customerVipDiscount.User?.UserName)</td>
+                    <td style="text-align: center;">@customerVipDiscount.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@customerVipDiscount.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td></td>
+                </tr>
             }
         }
         else

@@ -15,7 +15,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [AdminAuth(PassRes.Logistics.LogisticsModeList)]
 public class LogisticsFeeRateExpressController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public LogisticsFeeRateExpressController(ISession session)
     {
@@ -26,11 +26,11 @@ public class LogisticsFeeRateExpressController : Controller
     [Route("/admin/logistics/fee/rate/express/{logisticsModeId:int}")]
     public IActionResult Index(int logisticsModeId)
     {
-        LogisticsFeeRateExpressIndexModel model = new LogisticsFeeRateExpressIndexModel();
+        var model = new LogisticsFeeRateExpressIndexModel();
         model.LogisticsModeId = logisticsModeId;
         model.LogisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
 
-        LogisticsFeeRateExpressInfo? logisticsFeeRateExpressInfo = session
+        var logisticsFeeRateExpressInfo = session
             .Query<LogisticsFeeRateExpressInfo>()
             .Where(e => e.LogisticsModeId == logisticsModeId)
             .Take(1)
@@ -52,23 +52,20 @@ public class LogisticsFeeRateExpressController : Controller
     [Transactional]
     public IActionResult Save(LogisticsFeeRateExpressSaveModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        LogisticsFeeRateExpressInfo logisticsFeeRateExpressFromUi = model.LogisticsFeeRateExpress;
-        int logisticsFeeRateExpressId = logisticsFeeRateExpressFromUi.Id;
+        var logisticsFeeRateExpressFromUi = model.LogisticsFeeRateExpress;
+        var logisticsFeeRateExpressId = logisticsFeeRateExpressFromUi.Id;
 
 
         var logisticsModeId = model.LogisticsFeeRateExpress.LogisticsModeId;
-        LogisticsFeeRateExpressInfo? logisticsFeeRateExpress = session
+        var logisticsFeeRateExpress = session
             .Query<LogisticsFeeRateExpressInfo>()
             .Where(e => e.LogisticsModeId == logisticsModeId)
             .Take(1)
             .SingleOrDefault();
 
-        bool isCreate = true;
+        var isCreate = true;
         if (logisticsFeeRateExpress == null)
         {
             isCreate = true;
@@ -81,10 +78,7 @@ public class LogisticsFeeRateExpressController : Controller
             // 删除掉其他的可能的这个物流方式的多余的费率，防止不合法的多余数据的出现
             session.Query<LogisticsFeeRateExpressInfo>().Where(e => e.LogisticsModeId == logisticsModeId && e.Id != logisticsFeeRateExpressId).Delete();
 
-            if (logisticsFeeRateExpress.LogisticsModeId != logisticsFeeRateExpressFromUi.LogisticsModeId)
-            {
-                throw new ValidationException("指定的物流方式Id和当前费率不匹配！");
-            }
+            if (logisticsFeeRateExpress.LogisticsModeId != logisticsFeeRateExpressFromUi.LogisticsModeId) throw new ValidationException("指定的物流方式Id和当前费率不匹配！");
         }
 
         logisticsFeeRateExpress.LogisticsModeId = logisticsFeeRateExpressFromUi.LogisticsModeId;
@@ -97,17 +91,13 @@ public class LogisticsFeeRateExpressController : Controller
         logisticsFeeRateExpress.WeightBreakDiscount = logisticsFeeRateExpressFromUi.WeightBreakDiscount;
 
         if (isCreate)
-        {
             session.Save(logisticsFeeRateExpress);
-        }
         else
-        {
             session.Update(logisticsFeeRateExpress);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
             { "id", logisticsFeeRateExpress.Id }

@@ -1,6 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Core.Web
-@using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsInsurance.LogisticsInsuranceDetailModel
 
 @{
@@ -63,7 +62,7 @@
                                 <label asp-for="LogisticsInsurance.Type" class="col-xs-2 control-label">费用类型</label>
                                 <div class="col-xs-10">
                                     <select asp-for="LogisticsInsurance.Type" required="required" class="input-sm form-control">
-                                        @foreach (LogisticsInsuranceType logisticsInsuranceType in Model.LogisticsInsuranceTypeList)
+                                        @foreach (var logisticsInsuranceType in Model.LogisticsInsuranceTypeList)
                                         {
                                             <option value="@logisticsInsuranceType.Id">@logisticsInsuranceType.Name</option>
                                         }
@@ -95,7 +94,7 @@
                                 <label asp-for="LogisticsInsurance.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="LogisticsInsurance.Status" required="required" class="input-sm form-control">
-                                        @foreach (LogisticsInsuranceStatus logisticsInsuranceStatus in Model.LogisticsInsuranceStatusList)
+                                        @foreach (var logisticsInsuranceStatus in Model.LogisticsInsuranceStatusList)
                                         {
                                             <option value="@logisticsInsuranceStatus.Id">@logisticsInsuranceStatus.Name</option>
                                         }
@@ -156,7 +155,7 @@
     }
 
     function showDetail(id) {
-        var url = "@Url.Action("Detail", "LogisticsInsurance", new { id = 88888})";
+        var url = "@Url.Action("Detail", "LogisticsInsurance", new { id = 88888 })";
         url = url.replace("88888", id);
         window.location.href = url;
     }

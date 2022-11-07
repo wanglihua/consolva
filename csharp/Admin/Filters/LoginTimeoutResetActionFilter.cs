@@ -8,7 +8,7 @@ public class LoginTimeoutResetActionFilter : IActionFilter
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private LoginUserService loginUserService;
+    private readonly LoginUserService loginUserService;
 
     public LoginTimeoutResetActionFilter(LoginUserService loginUserService)
     {

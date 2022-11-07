@@ -16,7 +16,7 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 [AdminAuth(PassRes.Storage.Warehouse)]
 public class ShelfController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public ShelfController(ISession session)
     {
@@ -27,15 +27,12 @@ public class ShelfController : Controller
     [Route("/admin/shelf/{warehouseId:int}")]
     public IActionResult Index(int warehouseId)
     {
-        WarehouseInfo warehouseInfo = session.Get<WarehouseInfo>(warehouseId);
-        if (warehouseInfo == null)
-        {
-            return Content("指定的仓库不存在！");
-        }
+        var warehouseInfo = session.Get<WarehouseInfo>(warehouseId);
+        if (warehouseInfo == null) return Content("指定的仓库不存在！");
 
-        IList<ShelfType> shelfTypeList = ShelfType.GetList();
+        var shelfTypeList = ShelfType.GetList();
 
-        ShelfIndexModel model = new ShelfIndexModel();
+        var model = new ShelfIndexModel();
         model.WarehouseId = warehouseId;
         model.Warehouse = warehouseInfo;
         model.ShelfTypeList = shelfTypeList;
@@ -59,26 +56,26 @@ public class ShelfController : Controller
     [Route("/admin/shelf/list")]
     public IActionResult List(ShelfListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<ShelfInfo> shelfList = GetListCriteria(queryParam)
+        var shelfList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<ShelfInfo>();
 
-        foreach (ShelfInfo shelfInfo in shelfList)
+        foreach (var shelfInfo in shelfList)
         {
             // shelfInfo.StatusName = ShelfStatus.GetById(shelfInfo.StatusId).Name;
             // shelfInfo.TypeName = ShelfType.GetById(shelfInfo.TypeId).Name;
         }
 
-        ShelfListModel model = new ShelfListModel(listPager);
+        var model = new ShelfListModel(listPager);
         model.ShelfList = shelfList;
 
         return View("ShelfList", model);
@@ -87,21 +84,18 @@ public class ShelfController : Controller
     [NonAction]
     private ICriteria GetListCriteria(ShelfListQueryParam queryParam)
     {
-        int warehouseId = queryParam.WarehouseId;
-        ShelfType shelfTypeQuery = queryParam.ShelfTypeQuery ?? ShelfType.None;
-        string codeQuery = queryParam.CodeQuery ?? string.Empty;
-        string nameQuery = queryParam.NameQuery ?? string.Empty;
+        var warehouseId = queryParam.WarehouseId;
+        var shelfTypeQuery = queryParam.ShelfTypeQuery ?? ShelfType.None;
+        var codeQuery = queryParam.CodeQuery ?? string.Empty;
+        var nameQuery = queryParam.NameQuery ?? string.Empty;
 
-        ICriteria criteria = session.CreateCriteria<ShelfInfo>();
+        var criteria = session.CreateCriteria<ShelfInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.Add(Restrictions.Where<ShelfInfo>(e => e.Warehouse.Id == warehouseId));
 
-        if (shelfTypeQuery != null && shelfTypeQuery != ShelfType.None)
-        {
-            criteria = criteria.Add(Restrictions.Where<ShelfInfo>(e => e.Type == shelfTypeQuery));
-        }
+        if (shelfTypeQuery != null && shelfTypeQuery != ShelfType.None) criteria = criteria.Add(Restrictions.Where<ShelfInfo>(e => e.Type == shelfTypeQuery));
 
         if (string.IsNullOrWhiteSpace(codeQuery) == false)
         {
@@ -122,8 +116,8 @@ public class ShelfController : Controller
     [Route("/admin/shelf/detail")]
     public IActionResult Detail(ShelfDetailModel model)
     {
-        int shelfId = model.Id;
-        int warehouseId = model.WarehouseId;
+        var shelfId = model.Id;
+        var warehouseId = model.WarehouseId;
 
         ShelfInfo shelf;
 
@@ -135,10 +129,7 @@ public class ShelfController : Controller
         else
         {
             shelf = session.Get<ShelfInfo>(shelfId);
-            if (shelf == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (shelf == null) throw new ValidationException("指定的数据项不存在！");
         }
 
         model.Shelf = shelf;
@@ -155,26 +146,19 @@ public class ShelfController : Controller
     [Transactional]
     public IActionResult Save(ShelfDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        ShelfInfo shelfFromUi = model.Shelf;
-        int shelfId = shelfFromUi.Id;
+        var shelfFromUi = model.Shelf;
+        var shelfId = shelfFromUi.Id;
 
-        bool isCreate = shelfId == 0;
+        var isCreate = shelfId == 0;
 
         ShelfInfo shelf;
 
         if (isCreate)
-        {
             shelf = new ShelfInfo();
-        }
         else
-        {
             shelf = session.Get<ShelfInfo>(shelfId);
-        }
 
         shelf.Code = shelfFromUi.Code;
         shelf.Name = shelfFromUi.Name;
@@ -185,17 +169,13 @@ public class ShelfController : Controller
         shelf.Warehouse = session.Get<WarehouseInfo>(model.WarehouseId);
 
         if (isCreate)
-        {
             session.Save(shelf);
-        }
         else
-        {
             session.Update(shelf);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -219,17 +199,17 @@ public class ShelfController : Controller
         }
         */
 
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            ShelfInfo shelf = session.Load<ShelfInfo>(id);
+            var shelf = session.Load<ShelfInfo>(id);
             session.Delete(shelf);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

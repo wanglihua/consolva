@@ -6,5 +6,5 @@ public class GroupMemberIndexModel
 {
     public int GroupId { get; set; }
 
-    public GroupInfo Group { get; set; } = new GroupInfo();
+    public GroupInfo Group { get; set; } = new();
 }

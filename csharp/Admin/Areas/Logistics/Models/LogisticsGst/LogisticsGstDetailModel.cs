@@ -5,7 +5,7 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsGst;
 
 public class LogisticsGstDetailModel
 {
-    public LogisticsGstInfo LogisticsGst { get; set; } = new LogisticsGstInfo();
+    public LogisticsGstInfo LogisticsGst { get; set; } = new();
 
     [BindNever]
     public IList<FeeCalcBaseType> FeeCalcBaseTypeList { get; set; } = new List<FeeCalcBaseType>();

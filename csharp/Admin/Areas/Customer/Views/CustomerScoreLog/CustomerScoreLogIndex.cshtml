@@ -24,7 +24,7 @@
 *@
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询" />&nbsp;
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
     <label for="customerScoreTypeQuery">积分类型</label>&nbsp;
     <select id="customerScoreTypeQuery" name="customerScoreTypeQuery" style="width: 100px; height: 30px;">
         <option value="">积分类型</option>
@@ -33,7 +33,7 @@
             <option value="@(scoreType.Id)">@(scoreType.Name)</option>
         }
     </select>&nbsp;
-    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号精确查询" />&nbsp;
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号精确查询"/>&nbsp;
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerScoreLogList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>

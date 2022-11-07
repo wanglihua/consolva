@@ -1,6 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Domain.Customer
-@model shunda.Admin.Areas.OrderFee.Models.ManualChargeReason.ManualChargeReasonDetailModel
+@model shunda.Admin.Areas.Fee.Models.ManualChargeReason.ManualChargeReasonDetailModel
 @{
     Layout = null;
 }
@@ -30,7 +29,7 @@
                                 <label asp-for="ManualChargeReason.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="ManualChargeReason.Status" type="text" class="input-sm form-control">
-                                        @foreach (ManualChargeReasonStatus status in Model.ReasonStatusList)
+                                        @foreach (var status in Model.ReasonStatusList)
                                         {
                                             <option value="@(status.Id)">@(status.Name)</option>
                                         }

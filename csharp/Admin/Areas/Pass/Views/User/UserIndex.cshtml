@@ -1,7 +1,7 @@
 @using shunda.Admin.Areas.Pass.Models.User
+@using shunda.Core
 @using shunda.Core.Web
 @using shunda.Domain.Pass
-@using shunda.Core
 @model shunda.Admin.Areas.Pass.Models.User.UserIndexModel
 @{
     ViewData[ViewDataKey.Title] = "用户列表";
@@ -18,31 +18,31 @@
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    
+
     <button type="button" class="btn btn-success btn-sm" onclick="showUserDetail(0)">
         <i class="ace-icon fa fa-plus"></i>
         新增
     </button>
-    
+
     <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser()">
         <i class="ace-icon fa fa-trash-o"></i>
         删除
     </button>
-    
+
     <button type="button" class="btn btn-warning btn-sm" onclick="freezeUser()">
         <i class="ace-icon fa fa-trash-o"></i>
         冻结
     </button>
-    
+
     <button type="button" class="btn btn-warning btn-sm" onclick="unfreezeUser()">
         <i class="ace-icon fa fa-trash-o"></i>
         解冻
-    </button>    
+    </button>
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <label for="loginNameQuery">登录名</label>&nbsp;<input id="loginNameQuery" name="loginNameQuery" style="width: 100px; height: 30px;" placeholder="登录名查询" />&nbsp;
-    <label for="userNameQuery">用户名</label>&nbsp;<input id="userNameQuery" name="userNameQuery" style="width: 100px; height: 30px;" placeholder="用户名查询" />&nbsp;
+    <label for="loginNameQuery">登录名</label>&nbsp;<input id="loginNameQuery" name="loginNameQuery" style="width: 100px; height: 30px;" placeholder="登录名查询"/>&nbsp;
+    <label for="userNameQuery">用户名</label>&nbsp;<input id="userNameQuery" name="userNameQuery" style="width: 100px; height: 30px;" placeholder="用户名查询"/>&nbsp;
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadUserList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>

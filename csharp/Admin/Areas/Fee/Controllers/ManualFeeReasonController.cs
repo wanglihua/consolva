@@ -1,23 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using shunda.Admin.Areas.OrderFee.Models.ManualFeeReason;
+using shunda.Admin.Areas.Fee.Models.ManualFeeReason;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Fee;
-using shunda.Domain.Order;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.OrderFee.Controllers;
+namespace shunda.Admin.Areas.Fee.Controllers;
 
 [OrderFeeArea]
 [AdminAuth(PassRes.OrderFee.ManualFeeReason)]
 public class ManualFeeReasonController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public ManualFeeReasonController(ISession session)
     {
@@ -28,7 +27,7 @@ public class ManualFeeReasonController : Controller
     [Route("/admin/manual/fee/reason")]
     public IActionResult Index()
     {
-        ManualFeeReasonIndexModel model = new ManualFeeReasonIndexModel();
+        var model = new ManualFeeReasonIndexModel();
         model.FeeTypeList = ManualFeeType.GetList();
         model.StatusList = ManualFeeReasonStatus.GetList();
 
@@ -39,25 +38,25 @@ public class ManualFeeReasonController : Controller
     [Route("/admin/manual/fee/reason/list")]
     public IActionResult List(ManualFeeReasonListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<ManualFeeReasonInfo> manualFeeReasonList = GetListCriteria(queryParam)
+        var manualFeeReasonList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<ManualFeeReasonInfo>();
 
-        foreach (ManualFeeReasonInfo manualFeeReasonInfo in manualFeeReasonList)
+        foreach (var manualFeeReasonInfo in manualFeeReasonList)
         {
             // manualFeeReasonInfo
         }
 
-        ManualFeeReasonListModel model = new ManualFeeReasonListModel(listPager);
+        var model = new ManualFeeReasonListModel(listPager);
         model.ManualFeeReasonList = manualFeeReasonList;
 
         return View("ManualFeeReasonList", model);
@@ -66,21 +65,15 @@ public class ManualFeeReasonController : Controller
     [NonAction]
     private ICriteria GetListCriteria(ManualFeeReasonListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<ManualFeeReasonInfo>();
+        var criteria = session.CreateCriteria<ManualFeeReasonInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
-        ManualFeeType? feeTypeQuery = queryParam.FeeTypeQuery;
-        if (feeTypeQuery != null && feeTypeQuery != ManualFeeType.None)
-        {
-            criteria = criteria.Add(Restrictions.Where<ManualFeeReasonInfo>(e => e.FeeType == feeTypeQuery));
-        }
+        var feeTypeQuery = queryParam.FeeTypeQuery;
+        if (feeTypeQuery != null && feeTypeQuery != ManualFeeType.None) criteria = criteria.Add(Restrictions.Where<ManualFeeReasonInfo>(e => e.FeeType == feeTypeQuery));
 
-        ManualFeeReasonStatus? statusQuery = queryParam.StatusQuery;
-        if (statusQuery != null && statusQuery != ManualFeeReasonStatus.None)
-        {
-            criteria = criteria.Add(Restrictions.Where<ManualFeeReasonInfo>(e => e.Status == statusQuery));
-        }
+        var statusQuery = queryParam.StatusQuery;
+        if (statusQuery != null && statusQuery != ManualFeeReasonStatus.None) criteria = criteria.Add(Restrictions.Where<ManualFeeReasonInfo>(e => e.Status == statusQuery));
 
         return criteria;
     }
@@ -100,13 +93,10 @@ public class ManualFeeReasonController : Controller
         else
         {
             manualFeeReason = session.Get<ManualFeeReasonInfo>(id.Value);
-            if (manualFeeReason == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (manualFeeReason == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        ManualFeeReasonDetailModel model = new ManualFeeReasonDetailModel();
+        var model = new ManualFeeReasonDetailModel();
         model.FeeTypeList = ManualFeeType.GetList();
         model.StatusList = ManualFeeReasonStatus.GetList();
 
@@ -120,43 +110,32 @@ public class ManualFeeReasonController : Controller
     [Transactional]
     public IActionResult Save(ManualFeeReasonDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        ManualFeeReasonInfo manualFeeReasonFromUi = model.ManualFeeReason;
-        int manualFeeReasonId = manualFeeReasonFromUi.Id;
+        var manualFeeReasonFromUi = model.ManualFeeReason;
+        var manualFeeReasonId = manualFeeReasonFromUi.Id;
 
-        bool isCreate = manualFeeReasonId == 0;
+        var isCreate = manualFeeReasonId == 0;
 
         ManualFeeReasonInfo manualFeeReason;
 
         if (isCreate)
-        {
             manualFeeReason = new ManualFeeReasonInfo();
-        }
         else
-        {
             manualFeeReason = session.Get<ManualFeeReasonInfo>(manualFeeReasonId);
-        }
 
         manualFeeReason.FeeType = manualFeeReasonFromUi.FeeType;
         manualFeeReason.Content = manualFeeReasonFromUi.Content;
         manualFeeReason.Status = manualFeeReasonFromUi.Status;
 
         if (isCreate)
-        {
             session.Save(manualFeeReason);
-        }
         else
-        {
             session.Update(manualFeeReason);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -168,7 +147,7 @@ public class ManualFeeReasonController : Controller
     public IActionResult Delete(int[] idList)
     {
         IList<ManualFeeReasonInfo> feeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => idList.Contains(e.Id)).ToList();
-        foreach (ManualFeeReasonInfo feeReason in feeReasonList)
+        foreach (var feeReason in feeReasonList)
         {
             /*
              todo 后面补上
@@ -191,17 +170,17 @@ public class ManualFeeReasonController : Controller
             */
         }
 
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            ManualFeeReasonInfo manualFeeReason = session.Load<ManualFeeReasonInfo>(id);
+            var manualFeeReason = session.Load<ManualFeeReasonInfo>(id);
             session.Delete(manualFeeReason);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

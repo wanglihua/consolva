@@ -1,5 +1,4 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerVipDiscount.CustomerVipDiscountDetailModel
 @{
     Layout = null;
@@ -24,7 +23,7 @@
                                     {
                                         <select asp-for="Rank" required="required" class="input-sm form-control">
                                             <option value="">会员VIP等级</option>
-                                            @foreach (CustomerVipRank rank in Model.CustomerVipRankList)
+                                            @foreach (var rank in Model.CustomerVipRankList)
                                             {
                                                 <option value="@(rank.Id)">@(rank.Name)</option>
                                             }
@@ -35,7 +34,7 @@
                                         <input type="hidden" asp-for="Rank"/>
                                         <select asp-for="Rank" required="required" class="input-sm form-control" disabled="disabled">
                                             <option value="">会员VIP等级</option>
-                                            @foreach (CustomerVipRank rank in Model.CustomerVipRankList)
+                                            @foreach (var rank in Model.CustomerVipRankList)
                                             {
                                                 <option value="@(rank.Id)">@(rank.Name)</option>
                                             }

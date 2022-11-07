@@ -7,9 +7,9 @@ namespace shunda.Admin.Components;
 
 public class SidebarViewComponent : ViewComponent
 {
+    private readonly LoginUserService loginUserService;
     private ISession session;
-    private LoginUserService loginUserService;
-    private SidebarStateService sidebarStateService;
+    private readonly SidebarStateService sidebarStateService;
 
     public SidebarViewComponent(
         ISession session,
@@ -24,9 +24,9 @@ public class SidebarViewComponent : ViewComponent
     public IViewComponentResult Invoke()
     {
         // int loginUserId = loginUserService.GetLoginUserId();
-        bool isAdmin = loginUserService.IsAdmin;
+        var isAdmin = loginUserService.IsAdmin;
 
-        SidebarModel model = new SidebarModel();
+        var model = new SidebarModel();
         model.IsAdmin = isAdmin;
         model.PassResIdMap = loginUserService.GetPassResIdMap();
 

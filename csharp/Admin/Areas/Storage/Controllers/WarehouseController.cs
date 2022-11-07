@@ -16,7 +16,7 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 [AdminAuth(PassRes.Storage.Warehouse)]
 public class WarehouseController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public WarehouseController(ISession session)
     {
@@ -27,7 +27,7 @@ public class WarehouseController : Controller
     [Route("/admin/warehouse")]
     public IActionResult Index()
     {
-        WarehouseIndexModel model = new WarehouseIndexModel();
+        var model = new WarehouseIndexModel();
 
         /*
          todo 这个后面补上
@@ -49,20 +49,20 @@ public class WarehouseController : Controller
     [Route("/admin/warehouse/list")]
     public IActionResult List(WarehouseListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<WarehouseInfo> warehouseList = GetListCriteria(queryParam)
+        var warehouseList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<WarehouseInfo>();
 
-        WarehouseListModel model = new WarehouseListModel(listPager);
+        var model = new WarehouseListModel(listPager);
         model.WarehouseList = warehouseList;
 
         return View("WarehouseList", model);
@@ -71,10 +71,10 @@ public class WarehouseController : Controller
     [NonAction]
     private ICriteria GetListCriteria(WarehouseListQueryParam queryParam)
     {
-        string codeQuery = queryParam.CodeQuery ?? string.Empty;
-        string nameQuery = queryParam.NameQuery ?? string.Empty;
+        var codeQuery = queryParam.CodeQuery ?? string.Empty;
+        var nameQuery = queryParam.NameQuery ?? string.Empty;
 
-        ICriteria criteria = session.CreateCriteria<WarehouseInfo>();
+        var criteria = session.CreateCriteria<WarehouseInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
@@ -106,15 +106,12 @@ public class WarehouseController : Controller
         else
         {
             warehouse = session.Get<WarehouseWithAddressDescriptionInfo>(id.Value);
-            if (warehouse == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (warehouse == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        IList<WarehouseStatus> warehouseStatusList = WarehouseStatus.GetList();
+        var warehouseStatusList = WarehouseStatus.GetList();
 
-        WarehouseDetailModel model = new WarehouseDetailModel();
+        var model = new WarehouseDetailModel();
         model.Warehouse = warehouse;
         model.WarehouseStatusList = warehouseStatusList;
 
@@ -126,27 +123,20 @@ public class WarehouseController : Controller
     [Transactional]
     public IActionResult Save(WarehouseDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        WarehouseWithAddressDescriptionInfo warehouseFromUi = model.Warehouse;
+        var warehouseFromUi = model.Warehouse;
 
-        int warehouseId = warehouseFromUi.Id;
+        var warehouseId = warehouseFromUi.Id;
 
-        bool isCreate = warehouseId == 0;
+        var isCreate = warehouseId == 0;
 
         WarehouseWithAddressDescriptionInfo warehouse;
 
         if (isCreate)
-        {
             warehouse = new WarehouseWithAddressDescriptionInfo();
-        }
         else
-        {
             warehouse = session.Get<WarehouseWithAddressDescriptionInfo>(warehouseId);
-        }
 
         warehouse.Code = warehouseFromUi.Code;
         warehouse.Name = warehouseFromUi.Name;
@@ -158,17 +148,13 @@ public class WarehouseController : Controller
         warehouse.OrderNum = warehouseFromUi.OrderNum;
 
         if (isCreate)
-        {
             session.Save(warehouse);
-        }
         else
-        {
             session.Update(warehouse);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
             { "create", isCreate },
@@ -181,17 +167,17 @@ public class WarehouseController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            WarehouseInfo warehouse = session.Load<WarehouseInfo>(id);
+            var warehouse = session.Load<WarehouseInfo>(id);
             session.Delete(warehouse);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

@@ -1,7 +1,6 @@
 @{
     Layout = null;
 }
-
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.Warehouse.WarehouseListModel
 
@@ -39,8 +38,8 @@
     <tbody>
         @if (Model.WarehouseList != null && Model.WarehouseList.Count() != 0)
         {
-            int order = 1;
-            foreach (WarehouseInfo warehouse in Model.WarehouseList)
+            var order = 1;
+            foreach (var warehouse in Model.WarehouseList)
             {
                 <tr ondblclick="showWarehouseDetail(@(warehouse.Id));">
                     <td style="text-align: center;">

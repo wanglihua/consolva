@@ -4,7 +4,7 @@
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerCharacter.CustomerCharacterListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerCharacterList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerCharacterList" })
 
 <table id="tblCustomerCharacterList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -28,8 +28,8 @@
     <tbody>
         @if (Model.CustomerCharacterList != null && Model.CustomerCharacterList.Count() != 0)
         {
-            int order = 1;
-            foreach (CustomerCharacterInfo customerCharacter in Model.CustomerCharacterList)
+            var order = 1;
+            foreach (var customerCharacter in Model.CustomerCharacterList)
             {
                 <tr ondblclick="showCustomerCharacterDetail(@(customerCharacter.Id));">
                     <td style="text-align: center;">
@@ -54,4 +54,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerCharacterList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerCharacterList" })

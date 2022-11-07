@@ -1,80 +1,79 @@
 @{
     Layout = null;
 }
-@using shunda.Admin.Areas.Pass.Models.UserPassRes
 @using shunda.Domain.Pass
 @model shunda.Admin.Areas.Pass.Models.UserPassRes.UserPassResListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserPassResList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadUserPassResList" })
 
 <table id="tblUserPassResList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
-    <tr>
-        <th style="width: 40px; text-align: center;">
-            <label for="userPassResCheckAll"></label><input id="userPassResCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
-        </th>
-        <th style="width: 50px; text-align: center;">序号</th>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="userPassResCheckAll"></label><input id="userPassResCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
 
-        <th style="width: 120px;">
-            <a field="@($"{Model.PassResCateAlias}.{nameof(PassResCateInfo.Name)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserPassResList">类别</a>
-        </th>
+            <th style="width: 120px;">
+                <a field="@($"{Model.PassResCateAlias}.{nameof(PassResCateInfo.Name)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserPassResList">类别</a>
+            </th>
 
-        <th style="width: 150px;">
-            <a field="@(nameof(PassResInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserPassResList">资源</a>
-        </th>
-        <th style="width: 120px; text-align: center;">
-            操作
-        </th>
-        <th></th>
-    </tr>
+            <th style="width: 150px;">
+                <a field="@(nameof(PassResInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserPassResList">资源</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                操作
+            </th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
-    @if (Model.UserPassResList != null && Model.UserPassResList.Count() != 0)
-    {
-        int order = 1;
-        foreach (UserPassResListItem userPassRes in Model.UserPassResList)
+        @if (Model.UserPassResList != null && Model.UserPassResList.Count() != 0)
         {
-            <tr ondblclick="showUserPassResDetail(@(userPassRes.PassResId));">
-                <td style="text-align: center;">
-                    <label for="userPassResCheck_@(userPassRes.PassResId)"></label><input id="userPassResCheck_@(userPassRes.PassResId)" type="checkbox" class="ace" value="@userPassRes.PassResId"/><span class="lbl"></span>
-                </td>
-                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                <td>@userPassRes.CateName</td>
-                <td>
-                    @if (userPassRes.Granted)
-                    {
-                        <i class="ace-icon fa fa-check" style="color: green;"></i>
-                    }
-                    else
-                    {
-                        <i class="ace-icon fa fa-remove" style="color: red;"></i>
-                    }
-                    &nbsp;@userPassRes.ResName
-                </td>
-                <td style="text-align: center;">
-                    @if (userPassRes.Granted)
-                    {
-                        <button style="border: 0; cursor: pointer;" onclick="revokeUserPassRes(@userPassRes.PassResId)"><i class="ace-icon fa fa-remove" style="color: red;"></i>&nbsp;收权</button>
-                    }
-                    else
-                    {
-                        <button style="border: 0; cursor: pointer;" onclick="grantUserPassRes(@userPassRes.PassResId)"><i class="ace-icon fa fa-check" style="color: green;"></i>&nbsp;授权</button>
-                    }
+            var order = 1;
+            foreach (var userPassRes in Model.UserPassResList)
+            {
+                <tr ondblclick="showUserPassResDetail(@(userPassRes.PassResId));">
+                    <td style="text-align: center;">
+                        <label for="userPassResCheck_@(userPassRes.PassResId)"></label><input id="userPassResCheck_@(userPassRes.PassResId)" type="checkbox" class="ace" value="@userPassRes.PassResId"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@userPassRes.CateName</td>
+                    <td>
+                        @if (userPassRes.Granted)
+                        {
+                            <i class="ace-icon fa fa-check" style="color: green;"></i>
+                        }
+                        else
+                        {
+                            <i class="ace-icon fa fa-remove" style="color: red;"></i>
+                        }
+                        &nbsp;@userPassRes.ResName
+                    </td>
+                    <td style="text-align: center;">
+                        @if (userPassRes.Granted)
+                        {
+                            <button style="border: 0; cursor: pointer;" onclick="revokeUserPassRes(@userPassRes.PassResId)"><i class="ace-icon fa fa-remove" style="color: red;"></i>&nbsp;收权</button>
+                        }
+                        else
+                        {
+                            <button style="border: 0; cursor: pointer;" onclick="grantUserPassRes(@userPassRes.PassResId)"><i class="ace-icon fa fa-check" style="color: green;"></i>&nbsp;授权</button>
+                        }
 
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">
+                    暂时没有数据！
                 </td>
-                <td></td>
             </tr>
         }
-    }
-    else
-    {
-        <tr>
-            <td colspan="6">
-                暂时没有数据！
-            </td>
-        </tr>
-    }
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserPassResList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadUserPassResList" })

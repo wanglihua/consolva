@@ -13,7 +13,7 @@ public class LodopScriptController : Controller
     {
         // LODOP.SET_PRINTER_INDEX(-1); 尝试使用默认打印机
 
-        string script = @"
+        var script = @"
 function getLodopWithLicenses() {
     var LODOP = getLodop();
     LODOP.SET_LICENSES('浙江雅莹服装有限公司', '853717765858688748719056235623', '', '');

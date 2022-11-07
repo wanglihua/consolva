@@ -4,7 +4,7 @@
 @using shunda.Domain.Express
 @model shunda.Admin.Areas.Express.Models.ExpressPhoto.ExpressPhotoListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadExpressPhotoList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressPhotoList" })
 
 <table id="tblExpressPhotoList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -40,8 +40,8 @@
     <tbody>
         @if (Model.ExpressPhotoList != null && Model.ExpressPhotoList.Count() != 0)
         {
-            int order = 1;
-            foreach (ExpressPhotoInfo expressPhoto in Model.ExpressPhotoList)
+            var order = 1;
+            foreach (var expressPhoto in Model.ExpressPhotoList)
             {
                 <tr>
                     <td style="text-align: center;">
@@ -49,14 +49,14 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a href="@Url.Action("Detail", "Customer", new {id = expressPhoto.Customer?.Id})" target="_blank">
+                        <a href="@Url.Action("Detail", "Customer", new { id = expressPhoto.Customer?.Id })" target="_blank">
                             @expressPhoto.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         @if (expressPhoto.Order != null)
                         {
-                            <a href="@Url.Action("Detail", "LogisticsOrder", new {id = expressPhoto.Order.Id})" target="_blank">
+                            <a href="@Url.Action("Detail", "LogisticsOrder", new { id = expressPhoto.Order.Id })" target="_blank">
                                 @expressPhoto.OrderCode
                             </a>
                         }
@@ -97,4 +97,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadExpressPhotoList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressPhotoList" })

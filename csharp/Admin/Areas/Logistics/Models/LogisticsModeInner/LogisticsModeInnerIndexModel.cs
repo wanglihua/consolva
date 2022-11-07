@@ -6,13 +6,13 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsModeInner;
 public class LogisticsModeInnerIndexModel
 {
     /// <summary>
-    /// 物流类型 Id
+    ///     物流类型 Id
     /// </summary>
     [BindNever]
     public int TypeId { get; set; }
 
     /// <summary>
-    /// 物流类型
+    ///     物流类型
     /// </summary>
     [BindNever]
     public LogisticsModeType Type { get; set; } = LogisticsModeType.None;

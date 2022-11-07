@@ -10,5 +10,5 @@ public class GroupPassResListModel : ListModel
 
     public IList<GroupPassResListItem> GroupPassResList { get; set; } = new List<GroupPassResListItem>();
 
-    public string PassResCateAlias { get; set; } = String.Empty;
+    public string PassResCateAlias { get; set; } = string.Empty;
 }

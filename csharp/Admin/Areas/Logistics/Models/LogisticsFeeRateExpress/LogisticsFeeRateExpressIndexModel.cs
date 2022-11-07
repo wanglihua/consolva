@@ -9,5 +9,5 @@ public class LogisticsFeeRateExpressIndexModel : LogisticsFeeRateExpressSaveMode
     public int LogisticsModeId { get; set; }
 
     [BindNever]
-    public LogisticsModeInfo LogisticsMode { get; set; } = new LogisticsModeInfo();
+    public LogisticsModeInfo LogisticsMode { get; set; } = new();
 }

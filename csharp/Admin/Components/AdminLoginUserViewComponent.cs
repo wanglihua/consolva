@@ -8,8 +8,8 @@ namespace shunda.Admin.Components;
 
 public class AdminLoginUserViewComponent : ViewComponent
 {
-    private ISession session;
-    private LoginUserService loginUserService;
+    private readonly LoginUserService loginUserService;
+    private readonly ISession session;
 
     public AdminLoginUserViewComponent(ISession session, LoginUserService loginUserService)
     {
@@ -19,25 +19,21 @@ public class AdminLoginUserViewComponent : ViewComponent
 
     public IViewComponentResult Invoke()
     {
-        AdminLoginUserModel model = new AdminLoginUserModel();
+        var model = new AdminLoginUserModel();
 
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo user = session.Get<UserInfo>(loginUserId);
+        var loginUserId = loginUserService.GetLoginUserId();
+        var user = session.Get<UserInfo>(loginUserId);
 
         if (user == null)
         {
             if (loginUserId == UserInfo.DevUserId)
-            {
-                user = new UserInfo() {
-                    Id = UserInfo.DevUserId, 
-                    LoginName = UserInfo.DevLoginName, 
+                user = new UserInfo {
+                    Id = UserInfo.DevUserId,
+                    LoginName = UserInfo.DevLoginName,
                     UserName = UserInfo.DevLoginName
                 };
-            }
             else
-            {
                 user = new UserInfo();
-            }
         }
 
         model.LoginName = user.LoginName;

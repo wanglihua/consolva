@@ -32,7 +32,7 @@
     <label for="typeQuery">类型</label>&nbsp;
     <select id="typeQuery" name="typeQuery" style="width: 100px; height: 30px;" onchange="loadStorageLocSpecList();">
         <option value="0">类型查询</option>
-        @foreach (ShelfType type in Model.TypeList)
+        @foreach (var type in Model.TypeList)
         {
             <option value="@(type.Id)">@(type.Name)</option>
         }

@@ -18,9 +18,9 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 public class AdminController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
+    private readonly AdminUserService adminUserService;
 
-    private ISession session;
-    private AdminUserService adminUserService;
+    private readonly ISession session;
 
     public AdminController(ISession session, AdminUserService adminUserService)
     {
@@ -32,7 +32,7 @@ public class AdminController : Controller
     [Route("/admin/admin")]
     public IActionResult Index()
     {
-        AdminIndexModel model = new AdminIndexModel();
+        var model = new AdminIndexModel();
         return View("AdminIndex", model);
     }
 
@@ -40,20 +40,20 @@ public class AdminController : Controller
     [Route("/admin/admin/list")]
     public IActionResult List(AdminListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<AdminInfo> adminList = GetListCriteria(queryParam)
+        var adminList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<AdminInfo>();
 
-        AdminListModel model = new AdminListModel(listPager) {
+        var model = new AdminListModel(listPager) {
             AdminList = adminList
         };
 
@@ -63,16 +63,16 @@ public class AdminController : Controller
     [NonAction]
     private ICriteria GetListCriteria(AdminListQueryParam queryParam)
     {
-        string loginNameQuery = queryParam.LoginNameQuery ?? string.Empty;
-        string userNameQuery = queryParam.UserNameQuery ?? string.Empty;
+        var loginNameQuery = queryParam.LoginNameQuery ?? string.Empty;
+        var userNameQuery = queryParam.UserNameQuery ?? string.Empty;
 
-        ICriteria criteria = this.session.CreateCriteria<AdminInfo>();
+        var criteria = session.CreateCriteria<AdminInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.CreateAlias(nameof(AdminInfo.User), nameof(AdminInfo.User));
 
-        string devLoginName = UserInfo.DevLoginName;
+        var devLoginName = UserInfo.DevLoginName;
         criteria = criteria.Add(Restrictions.Not(Restrictions.Eq($"{nameof(AdminInfo.User)}.{nameof(AdminInfo.User.LoginName)}", devLoginName)));
 
         if (string.IsNullOrWhiteSpace(loginNameQuery) == false)
@@ -94,7 +94,7 @@ public class AdminController : Controller
     [Route("/admin/admin/add")]
     public IActionResult Add()
     {
-        AdminAddModel model = new AdminAddModel();
+        var model = new AdminAddModel();
 
         return View("AdminAdd", model);
     }
@@ -104,40 +104,28 @@ public class AdminController : Controller
     [Transactional]
     public IActionResult Save(AdminAddModel model)
     {
-        if (!this.ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        string loginName = model.LoginName.Trim();
+        var loginName = model.LoginName.Trim();
 
         // 检查当前登录名是否已经是管理员
-        int loginNameAdminCount = this.session.Query<AdminInfo>().Where(e => e.User.LoginName == loginName).Count();
-        if (loginNameAdminCount != 0)
-        {
-            throw new ValidationException("用户当前已经是管理员！");
-        }
+        var loginNameAdminCount = session.Query<AdminInfo>().Where(e => e.User.LoginName == loginName).Count();
+        if (loginNameAdminCount != 0) throw new ValidationException("用户当前已经是管理员！");
 
         // 保存为管理员
-        UserInfo? user = this.session.Query<UserInfo>().Where(e => e.LoginName != UserInfo.DevLoginName && e.LoginName == loginName).Take(1).SingleOrDefault();
-        if (user == null)
-        {
-            throw new ValidationException("指定的用户不存在！");
-        }
+        var user = session.Query<UserInfo>().Where(e => e.LoginName != UserInfo.DevLoginName && e.LoginName == loginName).Take(1).SingleOrDefault();
+        if (user == null) throw new ValidationException("指定的用户不存在！");
 
-        if (user.Status == UserStatus.Frozen)
-        {
-            throw new ValidationException("指定的用户已冻结！");
-        }
+        if (user.Status == UserStatus.Frozen) throw new ValidationException("指定的用户已冻结！");
 
-        AdminInfo admin = new AdminInfo {
-            User = user,
+        var admin = new AdminInfo {
+            User = user
         };
 
-        this.session.Save(admin);
-        this.session.Flush();
+        session.Save(admin);
+        session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "管理员添加成功！" }
         });
@@ -148,26 +136,23 @@ public class AdminController : Controller
     [Transactional]
     public IActionResult Remove(int[] idList)
     {
-        string supperAdminLoginName = AdminInfo.SupperAdminLoginName;
+        var supperAdminLoginName = AdminInfo.SupperAdminLoginName;
 
-        int supperAdminCount = this.session.Query<AdminInfo>().Where(e => idList.Contains(e.Id) && e.User.LoginName == supperAdminLoginName).Count();
+        var supperAdminCount = session.Query<AdminInfo>().Where(e => idList.Contains(e.Id) && e.User.LoginName == supperAdminLoginName).Count();
 
-        if (supperAdminCount != 0)
+        if (supperAdminCount != 0) throw new ValidationException("内置管理员 admin 不能移除！");
+
+        foreach (var id in idList)
         {
-            throw new ValidationException("内置管理员 admin 不能移除！");
-        }
-
-        foreach (int id in idList)
-        {
-            AdminInfo admin = this.session.Load<AdminInfo>(id);
+            var admin = session.Load<AdminInfo>(id);
             session.Delete(admin);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 
@@ -177,7 +162,7 @@ public class AdminController : Controller
     {
         adminUserService.CacheAdminUserIdMap();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "管理员资源授权数据缓存刷新成功！" }
         });

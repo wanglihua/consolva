@@ -1,4 +1,3 @@
-@using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.Shelf.ShelfDetailModel
 @{
     Layout = null;
@@ -39,7 +38,7 @@
                                 <label asp-for="Shelf.Type" class="col-xs-2 control-label">货架类型</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Shelf.Type" class="input-sm form-control">
-                                        @foreach (ShelfType shelfType in Model.ShelfTypeList)
+                                        @foreach (var shelfType in Model.ShelfTypeList)
                                         {
                                             <option value="@shelfType.Id">@shelfType.Name</option>
                                         }
@@ -47,27 +46,27 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label asp-for="Shelf.Cate" class="col-xs-2 control-label">货架类别</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Shelf.Cate" class="input-sm form-control">
-                                        @foreach (ShelfCate shelfCate in Model.ShelfCateList)
+                                        @foreach (var shelfCate in Model.ShelfCateList)
                                         {
                                             <option value="@shelfCate.Id">@shelfCate.Name</option>
                                         }
                                     </select>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label asp-for="Shelf.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Shelf.Status" class="input-sm form-control">
-                                        @foreach (ShelfStatus shelfStatusInfo in Model.ShelfStatusList)
+                                        @foreach (var shelfStatusInfo in Model.ShelfStatusList)
                                         {
                                             <option value="@shelfStatusInfo.Id">@shelfStatusInfo.Name</option>
                                         }

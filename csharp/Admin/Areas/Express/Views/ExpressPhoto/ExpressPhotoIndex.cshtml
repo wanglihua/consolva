@@ -2,7 +2,7 @@
 @using shunda.Admin.Areas.Express.Models.ExpressPhoto
 @using shunda.Core
 @using shunda.Domain.Express
-@model ExpressPhotoIndexModel
+@model shunda.Admin.Areas.Express.Models.ExpressPhoto.ExpressPhotoIndexModel
 @{
     ViewBag.Title = "快递单图片";
     Layout = "_AdminLayout";
@@ -38,7 +38,7 @@
     <label for="typeIdQuery">类型</label>&nbsp;
     <select id="typeIdQuery" name="typeIdQuery" style="width: 100px; height: 30px;" placeholder="类型查询">
         <option value="0">类型查询</option>
-        @foreach (ExpressPhotoType photoType in Model.PhotoTypeList)
+        @foreach (var photoType in Model.PhotoTypeList)
         {
             <option value="@(photoType.Id)">@(photoType.Name)</option>
         }
@@ -46,10 +46,10 @@
     <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
     <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
     <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" style="width: 180px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
-    
+
     <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
     <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
-    
+
     <label for="userNameQuery">拍照人</label>&nbsp;<input id="userNameQuery" name="userNameQuery" style="width: 90px; height: 30px;" placeholder="拍照人查询" autocomplete="off"/>&nbsp;
 
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressPhotoList(0)">

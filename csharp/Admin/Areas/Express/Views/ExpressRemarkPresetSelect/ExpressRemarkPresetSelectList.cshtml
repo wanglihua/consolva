@@ -12,7 +12,7 @@
         <tr>
             <th style="width: 40px; text-align: center;">
                 <div>
-                    <label for="expressRemarkPresetSelectCheckAll"></label><input id="expressRemarkPresetSelectCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                    <label for="expressRemarkPresetSelectCheckAll"></label><input id="expressRemarkPresetSelectCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
                 </div>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
@@ -51,13 +51,13 @@
     <tbody>
         @if (Model.ExpressRemarkPresetSelectList.Count != 0)
         {
-            int itemIndex = 0;
-            foreach (ExpressRemarkPresetSelectInfo expressRemarkPresetSelect in Model.ExpressRemarkPresetSelectList)
+            var itemIndex = 0;
+            foreach (var expressRemarkPresetSelect in Model.ExpressRemarkPresetSelectList)
             {
                 <tr ondblclick="showExpressRemarkPresetSelectDetail(@(expressRemarkPresetSelect.Id));">
                     <td style="text-align: center;">
                         <div>
-                            <label for="expressRemarkPresetSelectCheck_@(expressRemarkPresetSelect.Id)"></label><input id="expressRemarkPresetSelectCheck_@(expressRemarkPresetSelect.Id)" type="checkbox" class="ace" value="@expressRemarkPresetSelect.Id" /><span class="lbl"></span>
+                            <label for="expressRemarkPresetSelectCheck_@(expressRemarkPresetSelect.Id)"></label><input id="expressRemarkPresetSelectCheck_@(expressRemarkPresetSelect.Id)" type="checkbox" class="ace" value="@expressRemarkPresetSelect.Id"/><span class="lbl"></span>
                         </div>
                     </td>
                     <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>

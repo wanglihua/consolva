@@ -5,7 +5,7 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate;
 
 public class LogisticsFeeRateDetailModel
 {
-    public LogisticsFeeRateInfo LogisticsFeeRate { get; set; } = new LogisticsFeeRateInfo();
+    public LogisticsFeeRateInfo LogisticsFeeRate { get; set; } = new();
 
     [BindNever]
     public IList<VolumeWeightResultType> VolumeWeightResultTypeList { get; set; } = new List<VolumeWeightResultType>();

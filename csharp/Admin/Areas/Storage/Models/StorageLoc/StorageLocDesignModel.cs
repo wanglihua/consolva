@@ -10,8 +10,8 @@ public class StorageLocDesignModel
     public string DesignContent { get; set; } = string.Empty;
 
     [BindNever]
-    public WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public WarehouseInfo Warehouse { get; set; } = new();
 
     [BindNever]
-    public ShelfInfo Shelf { get; set; } = new ShelfInfo();
+    public ShelfInfo Shelf { get; set; } = new();
 }

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
@@ -19,7 +18,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [AdminAuth(PassRes.Logistics.LogisticsModeList)]
 public class LogisticsModeController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
     // private LogisticsModeService logisticsModeService = null; todo 后面补上
 
     public LogisticsModeController(ISession session /*, LogisticsModeService logisticsModeService*/)
@@ -32,7 +31,7 @@ public class LogisticsModeController : Controller
     [Route("/admin/logistics/mode/{typeId:int}")]
     public IActionResult Index(int typeId)
     {
-        LogisticsModeIndexModel model = new LogisticsModeIndexModel();
+        var model = new LogisticsModeIndexModel();
         model.TypeId = typeId;
         model.Type = LogisticsModeType.GetById(typeId);
 
@@ -46,13 +45,13 @@ public class LogisticsModeController : Controller
     [Route("/admin/logistics/mode/list")]
     public IActionResult List(LogisticsModeListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<LogisticsModeInfo> logisticsModeList = GetListCriteria(queryParam)
+        var logisticsModeList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
@@ -65,18 +64,18 @@ public class LogisticsModeController : Controller
             .Where(e => modeIdList.Contains(e.Mode.Id))
             .ToList();
 
-        foreach (LogisticsModeInfo mode in logisticsModeList)
+        foreach (var mode in logisticsModeList)
         {
-            int modeId = mode.Id;
+            var modeId = mode.Id;
             mode.ModeFeeRateListCache = modeFeeRateList
                 .Where(e => e.Mode.Id == modeId)
                 .OrderBy(e => e.GoodsType.Id) // 显示时按物品类型排序
                 .ToList();
         }
 
-        LogisticsModeListModel model = new LogisticsModeListModel(listPager);
+        var model = new LogisticsModeListModel(listPager);
         model.LogisticsModeList = logisticsModeList;
-        model.ModeType = LogisticsModeType.GetById((queryParam.TypeIdQuery ?? 0));
+        model.ModeType = LogisticsModeType.GetById(queryParam.TypeIdQuery ?? 0);
 
         return View("LogisticsModeList", model);
     }
@@ -84,7 +83,7 @@ public class LogisticsModeController : Controller
     [NonAction]
     private ICriteria GetListCriteria(LogisticsModeListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<LogisticsModeInfo>();
+        var criteria = session.CreateCriteria<LogisticsModeInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
@@ -101,20 +100,20 @@ public class LogisticsModeController : Controller
 
         if (string.IsNullOrWhiteSpace(queryParam.CodeQuery) == false)
         {
-            string codeQuery = queryParam.CodeQuery.Trim();
+            var codeQuery = queryParam.CodeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsModeInfo>(e => e.Code).IsLike(codeQuery, MatchMode.Anywhere));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
         {
-            string nameQuery = queryParam.NameQuery.Trim();
+            var nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsModeInfo>(e => e.Name).IsLike(nameQuery, MatchMode.Anywhere));
         }
 
 
         if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsModeStatus.None)
         {
-            LogisticsModeStatus statusQuery = queryParam.StatusQuery;
+            var statusQuery = queryParam.StatusQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Status == statusQuery));
         }
 
@@ -127,9 +126,9 @@ public class LogisticsModeController : Controller
     {
         session.DefaultReadOnly = true;
 
-        IList<LogisticsModeType> typeList = LogisticsModeType.GetList();
+        var typeList = LogisticsModeType.GetList();
 
-        LogisticsModeDetailModel model = new LogisticsModeDetailModel();
+        var model = new LogisticsModeDetailModel();
 
         LogisticsModeInfo logisticsMode;
         if (id == 0)
@@ -137,13 +136,9 @@ public class LogisticsModeController : Controller
             logisticsMode = new LogisticsModeInfo();
 
             if (typeId.HasValue)
-            {
                 logisticsMode.Type = LogisticsModeType.GetById(typeId.Value);
-            }
             else
-            {
                 logisticsMode.Type = LogisticsModeType.GetById(typeList.First().Id);
-            }
 
             logisticsMode.Channel = LogisticsModeChannel.Other; // 新建时在界面上优先显示其他
 
@@ -156,10 +151,7 @@ public class LogisticsModeController : Controller
         else
         {
             logisticsMode = session.Get<LogisticsModeInfo>(id);
-            if (logisticsMode == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (logisticsMode == null) throw new ValidationException("指定的数据项不存在！");
 
             IList<LogisticsModeRepackTypeInfo> repackTypeList = session
                 .Query<LogisticsModeRepackTypeInfo>()
@@ -199,10 +191,7 @@ public class LogisticsModeController : Controller
 
         model.FeeCalDesc = logisticsMode.FeeCalDesc;
 
-        if (logisticsMode.Warehouse != null)
-        {
-            model.WarehouseId = logisticsMode.Warehouse.Id;
-        }
+        if (logisticsMode.Warehouse != null) model.WarehouseId = logisticsMode.Warehouse.Id;
 
         model.LogisticsModeTypeList = typeList;
         model.PackSizeTypeList = LogisticsModePackSizeType.GetList();
@@ -232,61 +221,40 @@ public class LogisticsModeController : Controller
     [Transactional]
     public IActionResult Save(LogisticsModeDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        IList<int> repackTypeIdList = model.RepackTypeIdList;
-        if (repackTypeIdList == null)
-        {
-            repackTypeIdList = new List<int>();
-        }
+        var repackTypeIdList = model.RepackTypeIdList;
+        if (repackTypeIdList == null) repackTypeIdList = new List<int>();
 
-        IList<int> goodsTypeIdList = model.GoodsTypeIdList;
-        if (goodsTypeIdList == null)
-        {
-            goodsTypeIdList = new List<int>();
-        }
+        var goodsTypeIdList = model.GoodsTypeIdList;
+        if (goodsTypeIdList == null) goodsTypeIdList = new List<int>();
 
-        IList<LogisticsGoodsType> goodsTypeListAll = LogisticsGoodsType.GetCustomerList();
+        var goodsTypeListAll = LogisticsGoodsType.GetCustomerList();
         IList<int> feeRateIdList = new List<int>();
         IDictionary<int, int> goodsTypeFeeRateIdMap = new Dictionary<int, int>();
-        foreach (LogisticsGoodsType goodsType in goodsTypeListAll)
-        {
-            if (Request.Form.TryGetValue(model.GetFeeRateFieldName(goodsType), out StringValues feeRateIdStrs) == true)
-            {
+        foreach (var goodsType in goodsTypeListAll)
+            if (Request.Form.TryGetValue(model.GetFeeRateFieldName(goodsType), out var feeRateIdStrs))
                 if (feeRateIdStrs.Count > 0 && string.IsNullOrWhiteSpace(feeRateIdStrs[0]) == false)
-                {
-                    if (int.TryParse(feeRateIdStrs[0], out int feeRateId) == true)
+                    if (int.TryParse(feeRateIdStrs[0], out var feeRateId))
                     {
                         feeRateIdList.Add(feeRateId);
                         goodsTypeFeeRateIdMap[goodsType.Id] = feeRateId;
                     }
-                }
-            }
-        }
 
-        foreach (int goodsTypeId in goodsTypeIdList)
-        {
-            if (goodsTypeFeeRateIdMap.TryGetValue(goodsTypeId, out int feeRateId) == false)
-            {
+        foreach (var goodsTypeId in goodsTypeIdList)
+            if (goodsTypeFeeRateIdMap.TryGetValue(goodsTypeId, out var feeRateId) == false)
                 throw new ValidationException($"物流方式选择了物品类型{LogisticsGoodsType.GetById(goodsTypeId).Name}，但没有设置对应的通用费率！");
-            }
-        }
 
         IList<LogisticsFeeRateInfo> feeRateListFromUi = session.Query<LogisticsFeeRateInfo>()
             .Where(e => feeRateIdList.Contains(e.Id))
             .ToList();
-        foreach (int feeRateId in feeRateIdList)
+        foreach (var feeRateId in feeRateIdList)
         {
-            LogisticsFeeRateInfo? feeRate = feeRateListFromUi
+            var feeRate = feeRateListFromUi
                 .Where(e => e.Id == feeRateId)
                 .Take(1).SingleOrDefault();
             if (feeRate == null) // 一般情况下是不会发生的
-            {
                 throw new ValidationException($"指定的通用费率#{feeRateId}不存在！");
-            }
         }
 
         // if (string.IsNullOrWhiteSpace(model.ExpressCompanyName))
@@ -299,27 +267,20 @@ public class LogisticsModeController : Controller
         //     throw new ValidationException("快递公司网址不能为空！");
         // }
 
-        int logisticsModeId = model.Id;
+        var logisticsModeId = model.Id;
 
-        bool isCreate = logisticsModeId == 0;
+        var isCreate = logisticsModeId == 0;
 
         LogisticsModeInfo logisticsMode;
 
         if (isCreate)
-        {
             logisticsMode = new LogisticsModeInfo();
-        }
         else
-        {
             logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
-        }
 
         logisticsMode.Type = model.Type;
 
-        if (model.PackSizeType == null)
-        {
-            model.PackSizeType = LogisticsModePackSizeType.None;
-        }
+        if (model.PackSizeType == null) model.PackSizeType = LogisticsModePackSizeType.None;
 
         logisticsMode.PackSizeType = model.PackSizeType;
 
@@ -336,34 +297,21 @@ public class LogisticsModeController : Controller
 
         logisticsMode.FeeCalDesc = model.FeeCalDesc;
 
-        if (model.WarehouseId == 0)
-        {
-            throw new ValidationException("收货仓库不能为空！");
-        }
+        if (model.WarehouseId == 0) throw new ValidationException("收货仓库不能为空！");
 
         var warehouse = session.Get<WarehouseInfo>(model.WarehouseId);
-        if (warehouse == null)
-        {
-            throw new ValidationException($"指定的收货仓库#{model.WarehouseId}不存在！");
-        }
+        if (warehouse == null) throw new ValidationException($"指定的收货仓库#{model.WarehouseId}不存在！");
 
         logisticsMode.Warehouse = warehouse;
 
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         logisticsMode.InnerModeId = model.InnerModeId;
 
         if (isCreate)
-        {
             session.Save(logisticsMode);
-        }
         else
-        {
             session.Update(logisticsMode);
-        }
 
         session.Flush();
 
@@ -382,11 +330,11 @@ public class LogisticsModeController : Controller
         // 界面上有数据库里面没有的添加保存
         foreach (var repackTypeId in repackTypeIdList)
         {
-            LogisticsRepackType repackType = LogisticsRepackType.GetById(repackTypeId);
+            var repackType = LogisticsRepackType.GetById(repackTypeId);
 
             if (repackTypeListInDb.Contains(repackType) == false)
             {
-                LogisticsModeRepackTypeInfo logisticsModeRepackTypeInfo = new LogisticsModeRepackTypeInfo();
+                var logisticsModeRepackTypeInfo = new LogisticsModeRepackTypeInfo();
                 logisticsModeRepackTypeInfo.LogisticsMode = logisticsMode;
                 logisticsModeRepackTypeInfo.RepackType = repackType;
 
@@ -398,15 +346,11 @@ public class LogisticsModeController : Controller
 
         // 数据库里面有界面上没有的删除
         foreach (var repackType in repackTypeListInDb)
-        {
             if (repackTypeIdList.Contains(repackType.Id) == false)
-            {
                 session.Query<LogisticsModeRepackTypeInfo>()
                     .Where(e => e.LogisticsMode.Id == modeId
                                 && e.RepackType == repackType)
                     .Delete();
-            }
-        }
 
         session.Flush();
 
@@ -421,13 +365,13 @@ public class LogisticsModeController : Controller
             .ToList();
 
         // 物品类型关联 界面上有数据库里面没有的添加保存
-        foreach (int goodsTypeId in goodsTypeIdList)
+        foreach (var goodsTypeId in goodsTypeIdList)
         {
-            LogisticsGoodsType goodsType = LogisticsGoodsType.GetById(goodsTypeId);
+            var goodsType = LogisticsGoodsType.GetById(goodsTypeId);
 
             if (goodsTypeListInDb.Contains(goodsType) == false)
             {
-                LogisticsModeGoodsTypeInfo logisticsModeGoodsType = new LogisticsModeGoodsTypeInfo();
+                var logisticsModeGoodsType = new LogisticsModeGoodsTypeInfo();
                 logisticsModeGoodsType.LogisticsMode = logisticsMode;
                 logisticsModeGoodsType.GoodsType = goodsType;
 
@@ -436,15 +380,11 @@ public class LogisticsModeController : Controller
         }
 
         // 物品类型关联 数据库里面有界面上没有的删除
-        foreach (LogisticsGoodsType goodsType in goodsTypeListInDb)
-        {
+        foreach (var goodsType in goodsTypeListInDb)
             if (goodsTypeIdList.Contains(goodsType.Id) == false)
-            {
                 session.Query<LogisticsModeGoodsTypeInfo>()
                     .Where(e => e.LogisticsMode.Id == modeId && e.GoodsType == goodsType)
                     .Delete();
-            }
-        }
 
         session.Flush();
 
@@ -454,14 +394,14 @@ public class LogisticsModeController : Controller
         IList<LogisticsModeFeeRateInfo> modeFeeRateListInDb = session.Query<LogisticsModeFeeRateInfo>()
             .Where(e => e.Mode.Id == modeId)
             .ToList();
-        foreach (LogisticsGoodsType goodsType in goodsTypeListAll)
+        foreach (var goodsType in goodsTypeListAll)
         {
-            LogisticsModeFeeRateInfo? modeFeeRateInDb = modeFeeRateListInDb
+            var modeFeeRateInDb = modeFeeRateListInDb
                 .Where(e => e.GoodsType == goodsType)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (goodsTypeFeeRateIdMap.TryGetValue(goodsType.Id, out int feeRateId) == true)
+            if (goodsTypeFeeRateIdMap.TryGetValue(goodsType.Id, out var feeRateId))
             {
                 if (modeFeeRateInDb == null) // 数据库里面没有，但界面上有
                 {
@@ -476,15 +416,13 @@ public class LogisticsModeController : Controller
             else
             {
                 if (modeFeeRateInDb != null) // 数据里有，但界面上没有
-                {
                     session.Delete(modeFeeRateInDb);
-                }
             }
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
             { "create", isCreate },
@@ -497,29 +435,23 @@ public class LogisticsModeController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int modeId in idList)
+        foreach (var modeId in idList)
         {
-            LogisticsModeInfo logisticsMode = session.Get<LogisticsModeInfo>(modeId);
+            var logisticsMode = session.Get<LogisticsModeInfo>(modeId);
 
-            if (logisticsMode == null)
-            {
-                throw new ValidationException($"指定的物流方式#{modeId}不存在！");
-            }
+            if (logisticsMode == null) throw new ValidationException($"指定的物流方式#{modeId}不存在！");
 
             // 先删除关联的费率数据
-            if (logisticsMode.Type == LogisticsModeType.CnAuExpress)
-            {
-                session.Query<LogisticsFeeRateExpressInfo>().Where(e => e.LogisticsModeId == modeId).Delete();
-            }
+            if (logisticsMode.Type == LogisticsModeType.CnAuExpress) session.Query<LogisticsFeeRateExpressInfo>().Where(e => e.LogisticsModeId == modeId).Delete();
 
             session.Delete(logisticsMode);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

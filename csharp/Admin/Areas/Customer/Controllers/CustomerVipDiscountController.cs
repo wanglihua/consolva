@@ -22,9 +22,9 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerVipDiscountController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
+    private readonly LoginUserService loginUserService;
 
-    private ISession session;
-    private LoginUserService loginUserService;
+    private readonly ISession session;
 
     public CustomerVipDiscountController(ISession session, LoginUserService loginUserService)
     {
@@ -36,7 +36,7 @@ public class CustomerVipDiscountController : Controller
     [Route("/admin/customer/vip/discount")]
     public IActionResult Index()
     {
-        CustomerVipDiscountIndexModel model = new CustomerVipDiscountIndexModel();
+        var model = new CustomerVipDiscountIndexModel();
         return View("CustomerVipDiscountIndex", model);
     }
 
@@ -44,20 +44,20 @@ public class CustomerVipDiscountController : Controller
     [Route("/admin/customer/vip/discount/list")]
     public IActionResult List(CustomerVipDiscountListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<CustomerVipDiscountInfo> customerVipDiscountList = GetListCriteria(queryParam)
+        var customerVipDiscountList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerVipDiscountInfo>();
 
-        CustomerVipDiscountListModel model = new CustomerVipDiscountListModel(listPager);
+        var model = new CustomerVipDiscountListModel(listPager);
         model.CustomerVipDiscountList = customerVipDiscountList;
 
         return View("CustomerVipDiscountList", model);
@@ -66,7 +66,7 @@ public class CustomerVipDiscountController : Controller
     [NonAction]
     private ICriteria GetListCriteria(CustomerVipDiscountListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<CustomerVipDiscountInfo>();
+        var criteria = session.CreateCriteria<CustomerVipDiscountInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
@@ -81,7 +81,7 @@ public class CustomerVipDiscountController : Controller
 
         CustomerVipDiscountInfo customerVipDiscount;
 
-        bool isCreate = false;
+        var isCreate = false;
         if (id == null || id.Value == 0)
         {
             isCreate = true;
@@ -93,13 +93,10 @@ public class CustomerVipDiscountController : Controller
             isCreate = false;
 
             customerVipDiscount = session.Get<CustomerVipDiscountInfo>(id.Value);
-            if (customerVipDiscount == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (customerVipDiscount == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        CustomerVipDiscountDetailModel model = new CustomerVipDiscountDetailModel();
+        var model = new CustomerVipDiscountDetailModel();
         model.CustomerVipDiscountId = customerVipDiscount.Id;
         model.Rank = customerVipDiscount.Rank;
         model.Score = customerVipDiscount.Score;
@@ -115,52 +112,40 @@ public class CustomerVipDiscountController : Controller
     [Transactional]
     public IActionResult Save(CustomerVipDiscountDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        CustomerVipRank rank = model.Rank;
+        var rank = model.Rank;
 
-        if (rank == null || rank == CustomerVipRank.None)
-        {
-            throw new ValidationException("指定的客户VIP级别不存在！");
-        }
+        if (rank == null || rank == CustomerVipRank.None) throw new ValidationException("指定的客户VIP级别不存在！");
 
-        UserInfo loginUser = session.Load<UserInfo>(loginUserService.GetLoginUserId());
+        var loginUser = session.Load<UserInfo>(loginUserService.GetLoginUserId());
 
-        int customerVipDiscountId = model.CustomerVipDiscountId;
+        var customerVipDiscountId = model.CustomerVipDiscountId;
 
-        bool isCreate = customerVipDiscountId == 0;
+        var isCreate = customerVipDiscountId == 0;
 
         CustomerVipDiscountInfo customerVipDiscount;
 
         if (isCreate)
         {
-            CustomerVipDiscountInfo? vipDiscount = session.Query<CustomerVipDiscountInfo>()
+            var vipDiscount = session.Query<CustomerVipDiscountInfo>()
                 .Where(e => e.Rank == rank)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (vipDiscount != null)
-            {
-                throw new ValidationException($"指定的客户VIP级别#{rank.Name}折扣设置已经存在！");
-            }
+            if (vipDiscount != null) throw new ValidationException($"指定的客户VIP级别#{rank.Name}折扣设置已经存在！");
 
             customerVipDiscount = new CustomerVipDiscountInfo();
             customerVipDiscount.Rank = model.Rank; // 编辑时这个级别不能修改，所以只在新建时设置保存
         }
         else
         {
-            CustomerVipDiscountInfo? vipDiscount = session.Query<CustomerVipDiscountInfo>()
+            var vipDiscount = session.Query<CustomerVipDiscountInfo>()
                 .Where(e => e.Rank == rank && e.Id != customerVipDiscountId)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (vipDiscount != null)
-            {
-                throw new ValidationException($"指定的客户VIP级别#{rank.Name}折扣设置已经存在！");
-            }
+            if (vipDiscount != null) throw new ValidationException($"指定的客户VIP级别#{rank.Name}折扣设置已经存在！");
 
             customerVipDiscount = session.Get<CustomerVipDiscountInfo>(customerVipDiscountId);
         }
@@ -170,17 +155,13 @@ public class CustomerVipDiscountController : Controller
         customerVipDiscount.User = loginUser;
 
         if (isCreate)
-        {
             session.Save(customerVipDiscount);
-        }
         else
-        {
             session.Update(customerVipDiscount);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -191,17 +172,17 @@ public class CustomerVipDiscountController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            CustomerVipDiscountInfo customerVipDiscount = session.Load<CustomerVipDiscountInfo>(id);
+            var customerVipDiscount = session.Load<CustomerVipDiscountInfo>(id);
             session.Delete(customerVipDiscount);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 
@@ -209,30 +190,30 @@ public class CustomerVipDiscountController : Controller
     [Route("/admin/customer/vip/discount/export")]
     public IActionResult Export()
     {
-        string fileName = "VIP折扣设置.xlsx";
-        string sheetName = "VIP折扣设置";
+        var fileName = "VIP折扣设置.xlsx";
+        var sheetName = "VIP折扣设置";
 
         IWorkbook workbook = new XSSFWorkbook();
-        ISheet sheet = workbook.CreateSheet(sheetName);
+        var sheet = workbook.CreateSheet(sheetName);
 
         IList<CustomerVipDiscountInfo> vipDiscountList = session
             .Query<CustomerVipDiscountInfo>()
             .OrderBy(e => e.Id)
             .ToList();
 
-        int rowHeight = 22;
-        ICellStyle headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
-        ICellStyle contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
+        var rowHeight = 22;
+        var headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
+        var contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
 
         // 会员VIP等级    历史总积分    折扣
 
-        int rowIndex = 0;
+        var rowIndex = 0;
 
-        IRow row = sheet.CreateRow(rowIndex++);
+        var row = sheet.CreateRow(rowIndex++);
         row.HeightInPoints = rowHeight;
 
-        int cellIndex = 0;
-        ICell cell = row.CreateCell(cellIndex++);
+        var cellIndex = 0;
+        var cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
         cell.SetCellType(CellType.String);
         cell.SetCellValue("会员VIP等级");
@@ -247,7 +228,7 @@ public class CustomerVipDiscountController : Controller
         cell.SetCellType(CellType.String);
         cell.SetCellValue("折扣%");
 
-        foreach (CustomerVipDiscountInfo vipDiscount in vipDiscountList)
+        foreach (var vipDiscount in vipDiscountList)
         {
             row = sheet.CreateRow(rowIndex++);
             row.HeightInPoints = rowHeight;
@@ -273,7 +254,7 @@ public class CustomerVipDiscountController : Controller
             cell.SetCellValue(vipDiscount.Discount.ToString("#0.00"));
         }
 
-        MemoryStream memoryStream = new MemoryStream();
+        var memoryStream = new MemoryStream();
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
@@ -284,43 +265,31 @@ public class CustomerVipDiscountController : Controller
     [Route("/admin/customer/vip/discount/import")]
     public IActionResult Import(IFormFile excelFile)
     {
-        if (excelFile == null)
-        {
-            throw new ValidationException("导入失败，文件未上传！");
-        }
+        if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
-        ISheet sheet = workbook.GetSheetAt(0);
-        if (sheet == null)
-        {
-            throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
-        }
+        var sheet = workbook.GetSheetAt(0);
+        if (sheet == null) throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
 
-        UserInfo user = session.Load<UserInfo>(loginUserService.GetLoginUserId());
+        var user = session.Load<UserInfo>(loginUserService.GetLoginUserId());
 
         IList<CustomerVipDiscountInfo> vipDiscountList = new List<CustomerVipDiscountInfo>();
 
         // 略过标题行，所以 rowIndex = 1 开始
-        int lastRowNum = sheet.LastRowNum;
-        for (int rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
+        var lastRowNum = sheet.LastRowNum;
+        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
         {
-            IRow row = sheet.GetRow(rowIndex);
+            var row = sheet.GetRow(rowIndex);
 
-            if (row == null)
-            {
-                break;
-            }
+            if (row == null) break;
 
             // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
-            int cellIndex = 0;
+            var cellIndex = 0;
             int lastCellNum = row.LastCellNum;
             for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++)
             {
-                ICell cell = row.GetCell(cellIndex);
-                if (cell == null)
-                {
-                    cell = row.CreateCell(cellIndex);
-                }
+                var cell = row.GetCell(cellIndex);
+                if (cell == null) cell = row.CreateCell(cellIndex);
 
                 cell.SetCellType(CellType.String);
             }
@@ -328,43 +297,25 @@ public class CustomerVipDiscountController : Controller
             cellIndex = 0;
 
             // 会员VIP等级
-            string rankName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(rankName))
-            {
-                break;
-            }
+            var rankName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(rankName)) break;
 
-            CustomerVipRank rank = CustomerVipRank.GetByName(rankName);
-            if (rank == CustomerVipRank.None)
-            {
-                throw new ValidationException($"第{rowIndex}行数据 会员VIP等级 为空或数据不合法，导入失败！");
-            }
+            var rank = CustomerVipRank.GetByName(rankName);
+            if (rank == CustomerVipRank.None) throw new ValidationException($"第{rowIndex}行数据 会员VIP等级 为空或数据不合法，导入失败！");
 
             // 历史总积分
-            string scoreStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(scoreStr))
-            {
-                throw new ValidationException($"第{rowIndex}行数据 历史总积分 不能为空，导入失败！");
-            }
+            var scoreStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(scoreStr)) throw new ValidationException($"第{rowIndex}行数据 历史总积分 不能为空，导入失败！");
 
-            if (decimal.TryParse(scoreStr, out decimal score) == false)
-            {
-                throw new ValidationException($"第{rowIndex}行数据 历史总积分 数据格式有误，导入失败！");
-            }
+            if (decimal.TryParse(scoreStr, out var score) == false) throw new ValidationException($"第{rowIndex}行数据 历史总积分 数据格式有误，导入失败！");
 
             // 折扣
-            string discountStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(discountStr))
-            {
-                throw new ValidationException($"第{rowIndex}行数据 折扣 不能为空，导入失败！");
-            }
+            var discountStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(discountStr)) throw new ValidationException($"第{rowIndex}行数据 折扣 不能为空，导入失败！");
 
-            if (decimal.TryParse(discountStr, out decimal Discount) == false)
-            {
-                throw new ValidationException($"第{rowIndex}行数据 折扣 数据格式有误，导入失败！");
-            }
+            if (decimal.TryParse(discountStr, out var Discount) == false) throw new ValidationException($"第{rowIndex}行数据 折扣 数据格式有误，导入失败！");
 
-            CustomerVipDiscountInfo vipDiscount = new CustomerVipDiscountInfo();
+            var vipDiscount = new CustomerVipDiscountInfo();
             vipDiscount.Rank = rank;
             vipDiscount.Score = score;
             vipDiscount.Discount = Discount;
@@ -374,9 +325,9 @@ public class CustomerVipDiscountController : Controller
         }
 
 
-        foreach (CustomerVipDiscountInfo vipDiscount in vipDiscountList)
+        foreach (var vipDiscount in vipDiscountList)
         {
-            CustomerVipDiscountInfo? vipDiscountInDb = session.Query<CustomerVipDiscountInfo>()
+            var vipDiscountInDb = session.Query<CustomerVipDiscountInfo>()
                 .Where(e => e.Rank == vipDiscount.Rank)
                 .Take(1)
                 .SingleOrDefault();
@@ -396,9 +347,9 @@ public class CustomerVipDiscountController : Controller
         session.Flush();
 
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "导入成功！" },
+            { "message", "导入成功！" }
         });
     }
 }

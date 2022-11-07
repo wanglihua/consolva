@@ -7,7 +7,7 @@ public class MiniProfilerLinkViewComponent : ViewComponent
 {
     public IViewComponentResult Invoke()
     {
-        MiniProfilerLinkModel model = new MiniProfilerLinkModel();
+        var model = new MiniProfilerLinkModel();
         return View("MiniProfilerLink", model);
     }
 }

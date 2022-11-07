@@ -16,8 +16,8 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [AdminAuth(PassRes.Customer.CustomerScoreLog)]
 public class CustomerScoreLogController : Controller
 {
-    private ISession session;
-    private CustomerCodeService customerCodeService;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly ISession session;
 
     public CustomerScoreLogController(ISession session, CustomerCodeService customerCodeService)
     {
@@ -29,7 +29,7 @@ public class CustomerScoreLogController : Controller
     [Route("/admin/customer/score/log")]
     public IActionResult Index()
     {
-        CustomerScoreLogIndexModel model = new CustomerScoreLogIndexModel();
+        var model = new CustomerScoreLogIndexModel();
         model.ScoreTypeList = CustomerScoreType.GetList();
 
         return View("CustomerScoreLogIndex", model);
@@ -39,20 +39,20 @@ public class CustomerScoreLogController : Controller
     [Route("/admin/customer/score/log/list")]
     public IActionResult List(CustomerScoreLogListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<CustomerScoreLogInfo> customerScoreLogList = GetListCriteria(queryParam)
-            .AddOrder(new NHibernate.Criterion.Order(listPager.SortField, listPager.IsAscending))
-            .AddOrder(NHibernate.Criterion.Order.Desc(nameof(Entity.Id)))
+        var customerScoreLogList = GetListCriteria(queryParam)
+            .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
+            .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerScoreLogInfo>();
 
-        CustomerScoreLogListModel model = new CustomerScoreLogListModel(listPager);
+        var model = new CustomerScoreLogListModel(listPager);
         model.CustomerScoreLogList = customerScoreLogList;
 
         return View("CustomerScoreLogList", model);
@@ -61,31 +61,28 @@ public class CustomerScoreLogController : Controller
     [NonAction]
     private ICriteria GetListCriteria(CustomerScoreLogListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<CustomerScoreLogInfo>();
+        var criteria = session.CreateCriteria<CustomerScoreLogInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
         {
-            int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
+            var customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.Customer.Id == customerIdQuery));
         }
 
-        if (queryParam.ScoreTypeQuery != null && queryParam.ScoreTypeQuery != CustomerScoreType.None)
-        {
-            criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.ScoreType == queryParam.ScoreTypeQuery));
-        }
+        if (queryParam.ScoreTypeQuery != null && queryParam.ScoreTypeQuery != CustomerScoreType.None) criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.ScoreType == queryParam.ScoreTypeQuery));
 
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
-            string orderCode = queryParam.OrderCodeQuery.Trim();
-            LogisticsOrderInfo? logisticsOrder = session.Query<LogisticsOrderInfo>()
+            var orderCode = queryParam.OrderCodeQuery.Trim();
+            var logisticsOrder = session.Query<LogisticsOrderInfo>()
                 .Where(e => e.Code == orderCode)
                 .Take(1)
                 .SingleOrDefault();
 
-            int orderId = logisticsOrder?.Id ?? 0;
-            criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e =>  e.LogisticsOrder!.Id == orderId));
+            var orderId = logisticsOrder?.Id ?? 0;
+            criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.LogisticsOrder!.Id == orderId));
         }
 
         return criteria;

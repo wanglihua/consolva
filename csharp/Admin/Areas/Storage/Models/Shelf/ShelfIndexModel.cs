@@ -9,7 +9,7 @@ public class ShelfIndexModel
     public int WarehouseId { get; set; }
 
     [BindNever]
-    public WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public WarehouseInfo Warehouse { get; set; } = new();
 
     [BindNever]
     public IList<ShelfType> ShelfTypeList { get; set; } = new List<ShelfType>();

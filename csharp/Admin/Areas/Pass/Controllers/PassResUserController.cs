@@ -16,8 +16,9 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 [PassArea]
 public class PassResUserController : Controller
 {
-    private ISession session;
-    private PassResService passResService;
+    private static readonly string userAlias = "u";
+    private readonly PassResService passResService;
+    private readonly ISession session;
 
     public PassResUserController(ISession session, PassResService passResService)
     {
@@ -29,13 +30,10 @@ public class PassResUserController : Controller
     [Route("/admin/pass/res/user/{passResId:int}")]
     public IActionResult Index(int passResId)
     {
-        PassResInfo passRes = this.session.Get<PassResInfo>(passResId);
-        if (passRes == null)
-        {
-            return Content("指定的资源不存在！");
-        }
+        var passRes = session.Get<PassResInfo>(passResId);
+        if (passRes == null) return Content("指定的资源不存在！");
 
-        PassResUserIndexModel model = new PassResUserIndexModel();
+        var model = new PassResUserIndexModel();
         model.PassResId = passResId;
         model.PassRes = passRes;
 
@@ -46,34 +44,32 @@ public class PassResUserController : Controller
     [Route("/admin/pass/res/user/list")]
     public IActionResult List(PassResUserListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<UserPassResInfo> userPassResList = GetListCriteria(queryParam)
+        var userPassResList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<UserPassResInfo>();
 
-        PassResUserListModel model = new PassResUserListModel(listPager);
+        var model = new PassResUserListModel(listPager);
         model.UserPassResList = userPassResList;
         model.UserAlias = userAlias;
 
         return View("PassResUserList", model);
     }
 
-    private static readonly string userAlias = "u";
-
     [NonAction]
     private ICriteria GetListCriteria(PassResUserListQueryParam queryParam)
     {
-        int passResId = queryParam.PassResId;
+        var passResId = queryParam.PassResId;
 
-        ICriteria criteria = this.session.CreateCriteria<UserPassResInfo>();
+        var criteria = session.CreateCriteria<UserPassResInfo>();
 
         criteria = criteria.CreateAlias(nameof(UserPassResInfo.User), userAlias);
 
@@ -88,13 +84,10 @@ public class PassResUserController : Controller
     [Route("/admin/pass/res/user/add/{passResId:int}")]
     public IActionResult Add(int passResId)
     {
-        PassResInfo passRes = this.session.Get<PassResInfo>(passResId);
-        if (passRes == null)
-        {
-            throw new ValidationException("指定的资源不存在！");
-        }
+        var passRes = session.Get<PassResInfo>(passResId);
+        if (passRes == null) throw new ValidationException("指定的资源不存在！");
 
-        PassResUserAddModel model = new PassResUserAddModel();
+        var model = new PassResUserAddModel();
         model.PassResId = passResId;
         model.PassRes = passRes;
 
@@ -106,55 +99,40 @@ public class PassResUserController : Controller
     [Transactional]
     public IActionResult AddSave(PassResUserAddModel model)
     {
-        if (!this.ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        int passResId = model.PassResId;
-        PassResInfo passRes = this.session.Get<PassResInfo>(passResId);
-        if (passRes == null)
-        {
-            throw new ValidationException("指定的资源不存在！");
-        }
+        var passResId = model.PassResId;
+        var passRes = session.Get<PassResInfo>(passResId);
+        if (passRes == null) throw new ValidationException("指定的资源不存在！");
 
-        string loginName = model.LoginName;
-        UserInfo? user = this.session.Query<UserInfo>()
+        var loginName = model.LoginName;
+        var user = session.Query<UserInfo>()
             .Where(e => e.LoginName != UserInfo.DevLoginName && e.LoginName == loginName)
             .Take(1)
             .SingleOrDefault();
 
-        if (user == null)
-        {
-            throw new ValidationException("指定的用户不存在！");
-        }
+        if (user == null) throw new ValidationException("指定的用户不存在！");
 
-        if (user.Status == UserStatus.Frozen)
-        {
-            throw new ValidationException("指定的用户已冻结！");
-        }
+        if (user.Status == UserStatus.Frozen) throw new ValidationException("指定的用户已冻结！");
 
-        int userId = user.Id;
+        var userId = user.Id;
 
-        var userPassResInDb = this.session.Query<UserPassResInfo>()
+        var userPassResInDb = session.Query<UserPassResInfo>()
             .Where(e => e.PassRes.Id == passResId && e.User.Id == userId)
             .Take(1)
             .SingleOrDefault();
-        if (userPassResInDb != null)
-        {
-            throw new ValidationException("该资源已经授权给指定的用户！");
-        }
+        if (userPassResInDb != null) throw new ValidationException("该资源已经授权给指定的用户！");
 
-        UserPassResInfo userPassRes = new UserPassResInfo();
-        userPassRes.User = this.session.Load<UserInfo>(userId);
-        userPassRes.PassRes = this.session.Load<PassResInfo>(passResId);
+        var userPassRes = new UserPassResInfo();
+        userPassRes.User = session.Load<UserInfo>(userId);
+        userPassRes.PassRes = session.Load<PassResInfo>(passResId);
 
-        this.session.Save(userPassRes);
-        this.session.Flush();
+        session.Save(userPassRes);
+        session.Flush();
 
         passResService.CachePassResIdMapForAllUser();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -165,19 +143,19 @@ public class PassResUserController : Controller
     [Transactional]
     public IActionResult Remove(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            UserPassResInfo userPassRes = this.session.Load<UserPassResInfo>(id);
-            this.session.Delete(userPassRes);
+            var userPassRes = session.Load<UserPassResInfo>(id);
+            session.Delete(userPassRes);
         }
 
-        this.session.Flush();
+        session.Flush();
 
         passResService.CachePassResIdMapForAllUser();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

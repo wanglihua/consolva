@@ -27,7 +27,6 @@
 
     @if (Model.CanImportTestCustomer)
     {
-
         <button id="btnImportTestCustomer" class="btn btn-purple btn-sm">
             <i class="ace-icon fa fa-file-excel-o"></i>
             导入测试客户
@@ -47,8 +46,8 @@
         {
             <option value="@(vip.Item1)">@(vip.Item2)</option>
         }
-    </select>&nbsp;  
-    
+    </select>&nbsp;
+
     <label for="statusQuery">状态查询</label>&nbsp;
     <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;">
         <option value="">状态查询</option>
@@ -56,11 +55,11 @@
         {
             <option value="@(status.Id)">@(status.Name)</option>
         }
-    </select>&nbsp; 
-    
+    </select>&nbsp;
+
     <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="注册时间起始" autocomplete="off"/>&nbsp;
-    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="注册时间截止" autocomplete="off"/>&nbsp;    
-    
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="注册时间截止" autocomplete="off"/>&nbsp;
+
     <label for="characterQuery">会员性质</label>&nbsp;
     <select id="characterQuery" name="characterQuery" style="width: 100px; height: 30px;">
         <option value="">会员性质</option>
@@ -68,8 +67,8 @@
         {
             <option value="@(character.Content)">@(character.Content)</option>
         }
-    </select>&nbsp;     
-    
+    </select>&nbsp;
+
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
@@ -156,7 +155,7 @@
     }
 
     function showCustomerDetail(id) {
-        var url = "@Url.Action("Detail", "Customer", new {id = 88888})";
+        var url = "@Url.Action("Detail", "Customer", new { id = 88888 })";
         url = url.replace(/88888/, id);
         window.open(url, "customer_detail");
     }

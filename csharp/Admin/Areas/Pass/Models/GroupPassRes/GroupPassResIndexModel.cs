@@ -9,5 +9,5 @@ public class GroupPassResIndexModel
     public int GroupId { get; set; }
 
     [BindNever]
-    public GroupInfo Group { get; set; } = new GroupInfo();
+    public GroupInfo Group { get; set; } = new();
 }

@@ -4,72 +4,72 @@
 @using shunda.Domain.Fee
 @model shunda.Admin.Areas.Setting.Models.ExchangeRate.ExchangeRateListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadExchangeRateList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExchangeRateList" })
 
 <table id="tblExchangeRateList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
-    <tr>
-        <th style="width: 50px; text-align: center;">序号</th>
-        <th style="width: 100px;">
-            <a field="@(nameof(ExchangeRateInfo.FromCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">原货币代码</a>
-        </th>
-        <th style="width: 100px; text-align: center;">
-            <a field="@(nameof(ExchangeRateInfo.FromCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">原货币名称</a>
-        </th>
-        <th style="width: 110px; text-align: center;">
-            <a field="@(nameof(ExchangeRateInfo.ToCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">折算货币代码</a>
-        </th>
-        <th style="width: 110px; text-align: center;">
-            <a field="@(nameof(ExchangeRateInfo.ToCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">折算货币名称</a>
-        </th>
-        <th style="width: 90px; text-align: right;">
-            <a field="@(nameof(ExchangeRateInfo.Rate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">汇率</a>
-        </th>
-        <th style="width: 90px; text-align: right;">
-            <a field="@(nameof(ExchangeRateInfo.RateFix))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">汇率修正</a>
-        </th>
-        <th style="width: 90px; text-align: right;">
-            <span>最终汇率</span>
-        </th>
-        <th style="width: 120px; text-align: center;">
-            <a field="@(nameof(ExchangeRateInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">更新时间</a>
-        </th>
-        <th>
-            &nbsp;
-        </th>
-    </tr>
+        <tr>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 100px;">
+                <a field="@(nameof(ExchangeRateInfo.FromCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">原货币代码</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(ExchangeRateInfo.FromCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">原货币名称</a>
+            </th>
+            <th style="width: 110px; text-align: center;">
+                <a field="@(nameof(ExchangeRateInfo.ToCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">折算货币代码</a>
+            </th>
+            <th style="width: 110px; text-align: center;">
+                <a field="@(nameof(ExchangeRateInfo.ToCurrency))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">折算货币名称</a>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <a field="@(nameof(ExchangeRateInfo.Rate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">汇率</a>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <a field="@(nameof(ExchangeRateInfo.RateFix))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">汇率修正</a>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <span>最终汇率</span>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(ExchangeRateInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExchangeRateList">更新时间</a>
+            </th>
+            <th>
+                &nbsp;
+            </th>
+        </tr>
     </thead>
     <tbody>
-    @if (Model.ExchangeRateList != null && Model.ExchangeRateList.Count() != 0)
-    {
-        int order = 1;
-        foreach (ExchangeRateInfo exchangeRate in Model.ExchangeRateList)
+        @if (Model.ExchangeRateList != null && Model.ExchangeRateList.Count() != 0)
         {
-            <tr ondblclick="showExchangeRateDetail(@(exchangeRate.Id));">
-                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                <td style="text-align: center;">@exchangeRate.FromCurrency.Code</td>
-                <td style="text-align: center;">@exchangeRate.FromCurrency.Name</td>
-                <td style="text-align: center;">@exchangeRate.ToCurrency.Code</td>
-                <td style="text-align: center;">@exchangeRate.ToCurrency.Name</td>
-                <td style="text-align: right;">@exchangeRate.Rate</td>
-                <td style="text-align: right;">@exchangeRate.RateFix</td>
-                <td style="text-align: right;">@exchangeRate.GetFinalRate()</td>
-                <td style="text-align: center;">@exchangeRate.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>
-                    &nbsp;
+            var order = 1;
+            foreach (var exchangeRate in Model.ExchangeRateList)
+            {
+                <tr ondblclick="showExchangeRateDetail(@(exchangeRate.Id));">
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">@exchangeRate.FromCurrency.Code</td>
+                    <td style="text-align: center;">@exchangeRate.FromCurrency.Name</td>
+                    <td style="text-align: center;">@exchangeRate.ToCurrency.Code</td>
+                    <td style="text-align: center;">@exchangeRate.ToCurrency.Name</td>
+                    <td style="text-align: right;">@exchangeRate.Rate</td>
+                    <td style="text-align: right;">@exchangeRate.RateFix</td>
+                    <td style="text-align: right;">@exchangeRate.GetFinalRate()</td>
+                    <td style="text-align: center;">@exchangeRate.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
                 </td>
             </tr>
         }
-    }
-    else
-    {
-        <tr>
-            <td colspan="10">
-                暂时没有数据！
-            </td>
-        </tr>
-    }
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadExchangeRateList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExchangeRateList" })

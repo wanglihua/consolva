@@ -10,8 +10,8 @@ public class HomeController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private SidebarStateService sidebarStateService;
-    
+    private readonly SidebarStateService sidebarStateService;
+
     public HomeController(SidebarStateService sidebarStateService)
     {
         this.sidebarStateService = sidebarStateService;
@@ -30,7 +30,7 @@ public class HomeController : Controller
     [Route("/admin")]
     public IActionResult AdminIndex()
     {
-        HomeAdminIndexModel model = new HomeAdminIndexModel();
+        var model = new HomeAdminIndexModel();
 
         return View("HomeAdminIndex", model);
     }
@@ -42,9 +42,9 @@ public class HomeController : Controller
     {
         sidebarStateService.SetState(isMin);
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "Sidebar状态设置成功！" }
         });
-    }    
+    }
 }

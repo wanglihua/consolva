@@ -15,7 +15,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [AdminAuth(PassRes.Logistics.Insurance)]
 public class LogisticsInsuranceController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public LogisticsInsuranceController(ISession session)
     {
@@ -26,7 +26,7 @@ public class LogisticsInsuranceController : Controller
     [Route("/admin/logistics/insurance")]
     public IActionResult Index()
     {
-        LogisticsInsuranceIndexModel model = new LogisticsInsuranceIndexModel();
+        var model = new LogisticsInsuranceIndexModel();
         return View("LogisticsInsuranceIndex", model);
     }
 
@@ -34,20 +34,20 @@ public class LogisticsInsuranceController : Controller
     [Route("/admin/logistics/insurance/list")]
     public IActionResult List(LogisticsInsuranceListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<LogisticsInsuranceInfo> logisticsInsuranceList = GetListCriteria(queryParam)
+        var logisticsInsuranceList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsInsuranceInfo>();
 
-        LogisticsInsuranceListModel model = new LogisticsInsuranceListModel(listPager);
+        var model = new LogisticsInsuranceListModel(listPager);
         model.LogisticsInsuranceList = logisticsInsuranceList;
 
         return View("LogisticsInsuranceList", model);
@@ -56,13 +56,13 @@ public class LogisticsInsuranceController : Controller
     [NonAction]
     private ICriteria GetListCriteria(LogisticsInsuranceListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<LogisticsInsuranceInfo>();
+        var criteria = session.CreateCriteria<LogisticsInsuranceInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
         {
-            string nameQuery = queryParam.NameQuery.Trim();
+            var nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsInsuranceInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
 
@@ -82,13 +82,10 @@ public class LogisticsInsuranceController : Controller
         else
         {
             logisticsInsurance = session.Get<LogisticsInsuranceInfo>(id.Value);
-            if (logisticsInsurance == null)
-            {
-                return Content("指定的数据项不存在！");
-            }
+            if (logisticsInsurance == null) return Content("指定的数据项不存在！");
         }
 
-        LogisticsInsuranceDetailModel model = new LogisticsInsuranceDetailModel();
+        var model = new LogisticsInsuranceDetailModel();
         model.LogisticsInsurance = logisticsInsurance;
 
         model.FeeCalcBaseTypeList = FeeCalcBaseType.GetList();
@@ -102,26 +99,19 @@ public class LogisticsInsuranceController : Controller
     [Route("/admin/logistics/insurance/save")]
     public IActionResult Save(LogisticsInsuranceDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        LogisticsInsuranceInfo logisticsInsuranceFromUi = model.LogisticsInsurance;
-        int logisticsInsuranceId = logisticsInsuranceFromUi.Id;
+        var logisticsInsuranceFromUi = model.LogisticsInsurance;
+        var logisticsInsuranceId = logisticsInsuranceFromUi.Id;
 
-        bool isCreate = logisticsInsuranceId == 0;
+        var isCreate = logisticsInsuranceId == 0;
 
         LogisticsInsuranceInfo logisticsInsurance;
 
         if (isCreate)
-        {
             logisticsInsurance = new LogisticsInsuranceInfo();
-        }
         else
-        {
             logisticsInsurance = session.Get<LogisticsInsuranceInfo>(logisticsInsuranceId);
-        }
 
         logisticsInsurance.Name = logisticsInsuranceFromUi.Name;
         logisticsInsurance.Content = logisticsInsuranceFromUi.Content;
@@ -132,17 +122,13 @@ public class LogisticsInsuranceController : Controller
         logisticsInsurance.Status = logisticsInsuranceFromUi.Status;
 
         if (isCreate)
-        {
             session.Save(logisticsInsurance);
-        }
         else
-        {
             session.Update(logisticsInsurance);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
             { "create", isCreate },
@@ -154,17 +140,17 @@ public class LogisticsInsuranceController : Controller
     [Route("/admin/logistics/insurance/delete")]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            LogisticsInsuranceInfo logisticsInsurance = session.Load<LogisticsInsuranceInfo>(id);
+            var logisticsInsurance = session.Load<LogisticsInsuranceInfo>(id);
             session.Delete(logisticsInsurance);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

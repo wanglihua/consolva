@@ -4,5 +4,5 @@ namespace shunda.Admin.Areas.Customer.Models.CustomerCharacter;
 
 public class CustomerCharacterDetailModel
 {
-    public CustomerCharacterInfo CustomerCharacter { get; set; } = new CustomerCharacterInfo();
+    public CustomerCharacterInfo CustomerCharacter { get; set; } = new();
 }

@@ -7,5 +7,4 @@ public class ExpressRemarkPresetSelectIndexModel
 {
     [BindNever]
     public IList<ExpressRemarkType> TypeList { get; set; } = new List<ExpressRemarkType>();
-
 }

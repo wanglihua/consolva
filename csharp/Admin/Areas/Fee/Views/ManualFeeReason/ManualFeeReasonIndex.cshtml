@@ -1,9 +1,9 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Admin.Areas.OrderFee.Models.ManualFeeReason
+@using shunda.Admin.Areas.Fee.Models.ManualFeeReason
 @using shunda.Core
 @using shunda.Core.Web
 @using shunda.Domain.Fee
-@model shunda.Admin.Areas.OrderFee.Models.ManualFeeReason.ManualFeeReasonIndexModel
+@model shunda.Admin.Areas.Fee.Models.ManualFeeReason.ManualFeeReasonIndexModel
 @{
     ViewData[ViewDataKey.Title] = "增减核销费用原因";
     Layout = "_AdminLayout";
@@ -33,21 +33,21 @@
     <label for="feeTypeQuery">费用类型</label>&nbsp;
     <select id="feeTypeQuery" name="feeTypeQuery" style="width: 120px; height: 30px;" onchange="loadManualFeeReasonList(0)">
         <option value="">费用类型</option>
-        @foreach (ManualFeeType feeType in Model.FeeTypeList)
+        @foreach (var feeType in Model.FeeTypeList)
         {
             <option value="@(feeType.Id)">@(feeType.Name)</option>
         }
     </select>&nbsp;
-    
+
     <label for="statusQuery">状态</label>&nbsp;
     <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;" onchange="loadManualFeeReasonList(0)">
         <option value="">状态</option>
-        @foreach (ManualFeeReasonStatus status in Model.StatusList)
+        @foreach (var status in Model.StatusList)
         {
             <option value="@(status.Id)">@(status.Name)</option>
         }
     </select>&nbsp;
-    
+
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadManualFeeReasonList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>

@@ -1,6 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Core.Web
-@using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsModeInner.LogisticsModeInnerDetailModel
 
 @{
@@ -84,7 +83,7 @@
                                 <div class="col-xs-10">
                                     <select asp-for="CommonFeeRateId" class="input-sm form-control">
                                         <option value=""></option>
-                                        @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
+                                        @foreach (var feeRate in Model.LogisticsFeeRateList)
                                         {
                                             <option value="@feeRate.Id">@feeRate.Name</option>
                                         }
@@ -99,7 +98,7 @@
                                 <div class="col-xs-10">
                                     <select asp-for="SpecialFeeRateId" class="input-sm form-control">
                                         <option value=""></option>
-                                        @foreach (LogisticsFeeRateInfo feeRate in Model.LogisticsFeeRateList)
+                                        @foreach (var feeRate in Model.LogisticsFeeRateList)
                                         {
                                             <option value="@feeRate.Id">@feeRate.Name</option>
                                         }

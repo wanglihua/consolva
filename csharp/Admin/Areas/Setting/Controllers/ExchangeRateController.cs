@@ -6,7 +6,6 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
-using shunda.Domain;
 using shunda.Domain.Fee;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service;
@@ -18,8 +17,8 @@ namespace shunda.Admin.Areas.Setting.Controllers;
 [AdminAuth(PassRes.SystemSetting.ExchangeRate)]
 public class ExchangeRateController : Controller
 {
-    private ISession session;
-    private ExchangeRateService exchangeRateService;
+    private readonly ExchangeRateService exchangeRateService;
+    private readonly ISession session;
 
     public ExchangeRateController(ISession session, ExchangeRateService exchangeRateService)
     {
@@ -31,7 +30,7 @@ public class ExchangeRateController : Controller
     [Route("/admin/exchange/rate")]
     public IActionResult Index()
     {
-        ExchangeRateIndexModel model = new ExchangeRateIndexModel();
+        var model = new ExchangeRateIndexModel();
         return View("ExchangeRateIndex", model);
     }
 
@@ -39,20 +38,20 @@ public class ExchangeRateController : Controller
     [Route("/admin/exchange/rate/list")]
     public IActionResult List(ExchangeRateListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<ExchangeRateInfo> exchangeRateList = GetListCriteria(queryParam)
+        var exchangeRateList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<ExchangeRateInfo>();
 
-        ExchangeRateListModel model = new ExchangeRateListModel(listPager);
+        var model = new ExchangeRateListModel(listPager);
         model.ExchangeRateList = exchangeRateList;
 
         return View("ExchangeRateList", model);
@@ -60,7 +59,7 @@ public class ExchangeRateController : Controller
 
     private ICriteria GetListCriteria(ExchangeRateListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<ExchangeRateInfo>();
+        var criteria = session.CreateCriteria<ExchangeRateInfo>();
         criteria = criteria.SetReadOnly(true);
 
         return criteria;
@@ -72,13 +71,10 @@ public class ExchangeRateController : Controller
     {
         session.DefaultReadOnly = true;
 
-        ExchangeRateInfo? exchangeRate = session.Get<ExchangeRateInfo>(param.Id);
-        if (exchangeRate == null)
-        {
-            throw new ValidationException($"指定的汇率数据项#{param.Id}不存在！");
-        }
+        var exchangeRate = session.Get<ExchangeRateInfo>(param.Id);
+        if (exchangeRate == null) throw new ValidationException($"指定的汇率数据项#{param.Id}不存在！");
 
-        ExchangeRateDetailModel model = new ExchangeRateDetailModel();
+        var model = new ExchangeRateDetailModel();
         model.ExchangeRate = exchangeRate;
 
         model.ExchangeRateId = exchangeRate.Id;
@@ -92,25 +88,19 @@ public class ExchangeRateController : Controller
     [Transactional]
     public IActionResult Save(ExchangeRateSaveModel model)
     {
-        if (!this.ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        int exchangeRateId = model.ExchangeRateId;
+        var exchangeRateId = model.ExchangeRateId;
 
-        ExchangeRateInfo? exchangeRate = session.Get<ExchangeRateInfo>(exchangeRateId);
-        if (exchangeRate == null)
-        {
-            throw new ValidationException($"指定的汇率数据项#{exchangeRateId}不存在！");
-        }
+        var exchangeRate = session.Get<ExchangeRateInfo>(exchangeRateId);
+        if (exchangeRate == null) throw new ValidationException($"指定的汇率数据项#{exchangeRateId}不存在！");
 
         exchangeRate.RateFix = model.RateFix;
 
         session.Update(exchangeRate);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -121,11 +111,11 @@ public class ExchangeRateController : Controller
     // trans in exchangeRateService.RefreshRate();
     public IActionResult Refresh()
     {
-        exchangeRateService.RefreshRate(useInnerTransaction: true);
+        exchangeRateService.RefreshRate(true);
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "更新成功！" },
+            { "message", "更新成功！" }
         });
     }
 }

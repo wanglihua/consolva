@@ -8,7 +8,7 @@ namespace shunda.Admin.Areas.Customer.Models.Customer;
 public class CustomerDetailModel
 {
     [BindNever]
-    public CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public CustomerInfo Customer { get; set; } = new();
 
     [BindNever]
     public IList<LogisticsOrderInfo> CustomerOrderList { get; set; } = new List<LogisticsOrderInfo>();

@@ -1,7 +1,5 @@
 @using shunda.Admin.Areas.Pass.Models.PassRes
-@using shunda.Core
 @using shunda.Core.Web
-@using shunda.Domain.Pass
 @model shunda.Admin.Areas.Pass.Models.PassRes.PassResIndexModel
 @{
     ViewData[ViewDataKey.Title] = "权限资源";
@@ -25,19 +23,19 @@
     <button type="button" class="btn btn-purple btn-sm" onclick="refreshCache()">
         <i class="ace-icon fa fa-gears"></i>
         刷新资源授权缓存
-    </button>    
+    </button>
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
     <label for="cateIdQuery">类别</label>&nbsp;
     <select id="cateIdQuery" style="width: 150px; height: 30px;" onchange="loadPassResList()">
         <option value="0">资源类别查询</option>
-        @foreach (PassResCateInfo cate in Model.CateList)
+        @foreach (var cate in Model.CateList)
         {
             <option value="@(cate.Id)">@(cate.Name)</option>
         }
     </select>
-    <label for="nameQuery">名称</label>&nbsp;<input id="nameQuery" name="nameQuery" style="width: 150px; height: 30px;" placeholder="名称查询" />&nbsp;
+    <label for="nameQuery">名称</label>&nbsp;<input id="nameQuery" name="nameQuery" style="width: 150px; height: 30px;" placeholder="名称查询"/>&nbsp;
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadPassResList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>

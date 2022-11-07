@@ -16,10 +16,10 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerSupperPasswordController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
+    private readonly CustomerCodeService customerCodeService;
+    private readonly CustomerSupperPasswordService customerSupperPasswordService;
 
-    private ISession session;
-    private CustomerSupperPasswordService customerSupperPasswordService;
-    private CustomerCodeService customerCodeService;
+    private readonly ISession session;
 
     public CustomerSupperPasswordController(
         ISession session,
@@ -35,7 +35,7 @@ public class CustomerSupperPasswordController : Controller
     [Route("/admin/customer/supper/password")]
     public IActionResult Index()
     {
-        CustomerSupperPasswordIndexModel model = new CustomerSupperPasswordIndexModel();
+        var model = new CustomerSupperPasswordIndexModel();
         model.PasswordExpireMinutes = customerSupperPasswordService.GetPasswordExpireMinutes();
 
         return View("CustomerSupperPasswordIndex", model);
@@ -46,24 +46,18 @@ public class CustomerSupperPasswordController : Controller
     [Transactional]
     public IActionResult Generate(string customerCode)
     {
-        if (string.IsNullOrWhiteSpace(customerCode) == true)
-        {
-            throw new ValidationException("客户ID不能为空！");
-        }
+        if (string.IsNullOrWhiteSpace(customerCode)) throw new ValidationException("客户ID不能为空！");
 
-        int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCode);
+        var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCode);
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
-            throw new ValidationException($"指定的 客户ID#{customerCode} 不存在！");
-        }
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) throw new ValidationException($"指定的 客户ID#{customerCode} 不存在！");
 
-        string supperPassword = customerSupperPasswordService.GenerateNewPassword(customerId);
+        var supperPassword = customerSupperPasswordService.GenerateNewPassword(customerId);
 
-        string customerDescription = $"客户ID：{customerCodeService.GetCustomerCode(customerId)}";
+        var customerDescription = $"客户ID：{customerCodeService.GetCustomerCode(customerId)}";
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "超级密码生成成功！" },
             { "password", supperPassword },

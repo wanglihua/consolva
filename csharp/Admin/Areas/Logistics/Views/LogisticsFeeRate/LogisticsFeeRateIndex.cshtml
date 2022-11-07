@@ -1,7 +1,7 @@
 @using shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate
-@using shunda.Domain.Logistics
 @using shunda.Core
 @using shunda.Core.Web
+@using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate.LogisticsFeeRateIndexModel
 @{
     ViewData[ViewDataKey.Title] = "通用费率";
@@ -33,7 +33,7 @@
     <label for="statusQuery">状态</label>&nbsp;
     <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;" onchange="loadLogisticsFeeRateList()">
         <option value="0">状态查询</option>
-        @foreach (LogisticsFeeRateStatus status in Model.StatusList)
+        @foreach (var status in Model.StatusList)
         {
             <option value="@status.Id">@status.Name</option>
         }
@@ -124,7 +124,7 @@
         });
         *@
 
-        var url = "@Url.Action("Detail", "LogisticsFeeRate", new {id = 88888})";
+        var url = "@Url.Action("Detail", "LogisticsFeeRate", new { id = 88888 })";
         url = url.replace("88888", id);
         window.location.href = url;
     }

@@ -5,20 +5,20 @@ namespace shunda.Admin.Models.Sidebar;
 public class SidebarModel
 {
     /// <summary>
-    /// Sidebar 是不是被折叠的
+    ///     Sidebar 是不是被折叠的
     /// </summary>
     public bool IsSidebarMin { get; set; } = true;
 
     /// <summary>
-    /// 是否是管理员
+    ///     是否是管理员
     /// </summary>
     public bool IsAdmin { get; set; }
 
-    public Dictionary<int, bool> PassResIdMap { get; set; } = new Dictionary<int, bool>();
+    public Dictionary<int, bool> PassResIdMap { get; set; } = new();
 
     /// <summary>
-    /// 是否有对某资源的授权
-    /// 应预先对 PassResIdMap 设值
+    ///     是否有对某资源的授权
+    ///     应预先对 PassResIdMap 设值
     /// </summary>
     /// <param name="passResId"></param>
     /// <returns></returns>
@@ -28,8 +28,8 @@ public class SidebarModel
     }
 
     /// <summary>
-    /// 是否有对其中某个资源的授权
-    /// 应预先对 PassResIdMap 设值
+    ///     是否有对其中某个资源的授权
+    ///     应预先对 PassResIdMap 设值
     /// </summary>
     /// <param name="passResIds"></param>
     /// <returns></returns>

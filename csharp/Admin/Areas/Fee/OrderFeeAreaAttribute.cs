@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace shunda.Admin.Areas.OrderFee;
+namespace shunda.Admin.Areas.Fee;
 
 public class OrderFeeAreaAttribute : AreaAttribute
 {

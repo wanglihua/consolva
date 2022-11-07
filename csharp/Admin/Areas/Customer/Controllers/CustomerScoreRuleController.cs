@@ -14,7 +14,7 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [AdminAuth(PassRes.Customer.CustomerScoreRule)]
 public class CustomerScoreRuleController : Controller
 {
-    private ISession session ;
+    private readonly ISession session;
 
     public CustomerScoreRuleController(ISession session)
     {
@@ -25,13 +25,13 @@ public class CustomerScoreRuleController : Controller
     [Route("/admin/customer/score/rule")]
     public IActionResult Index()
     {
-        CustomerScoreRuleIndexModel model = new CustomerScoreRuleIndexModel();
+        var model = new CustomerScoreRuleIndexModel();
 
         var ruleList = session.Query<CustomerScoreRuleInfo>().ToList();
 
         // Promotion
         var promotionRule = ruleList
-            .Where(e =>  e.Type == CustomerScoreType.Promotion)
+            .Where(e => e.Type == CustomerScoreType.Promotion)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -46,7 +46,7 @@ public class CustomerScoreRuleController : Controller
 
         // LogisticsConsume
         var logisticsConsumeRule = ruleList
-            .Where(e =>  e.Type == CustomerScoreType.LogisticsConsume)
+            .Where(e => e.Type == CustomerScoreType.LogisticsConsume)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -61,7 +61,7 @@ public class CustomerScoreRuleController : Controller
 
         // ScoreToBalance
         var scoreToBalanceRule = ruleList
-            .Where(e =>  e.Type == CustomerScoreType.ScoreToBalance)
+            .Where(e => e.Type == CustomerScoreType.ScoreToBalance)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -82,16 +82,13 @@ public class CustomerScoreRuleController : Controller
     [Transactional]
     public IActionResult Save(CustomerScoreRuleIndexModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var ruleList = session.Query<CustomerScoreRuleInfo>().ToList();
 
         // Promotion
         var promotionRule = ruleList
-            .Where(e =>  e.Type == CustomerScoreType.Promotion)
+            .Where(e => e.Type == CustomerScoreType.Promotion)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -109,7 +106,7 @@ public class CustomerScoreRuleController : Controller
 
         // LogisticsConsume
         var logisticsConsumeRule = ruleList
-            .Where(e =>  e.Type == CustomerScoreType.LogisticsConsume)
+            .Where(e => e.Type == CustomerScoreType.LogisticsConsume)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -127,7 +124,7 @@ public class CustomerScoreRuleController : Controller
 
         // ScoreToBalance
         var scoreToBalanceRule = ruleList
-            .Where(e =>  e.Type == CustomerScoreType.ScoreToBalance)
+            .Where(e => e.Type == CustomerScoreType.ScoreToBalance)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -145,7 +142,7 @@ public class CustomerScoreRuleController : Controller
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });

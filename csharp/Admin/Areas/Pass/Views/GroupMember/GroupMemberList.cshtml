@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="groupMemberCheckAll"></label><input id="groupMemberCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                <label for="groupMemberCheckAll"></label><input id="groupMemberCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 120px;">
@@ -28,12 +28,12 @@
     <tbody>
         @if (Model.GroupMemberList != null && Model.GroupMemberList.Count() != 0)
         {
-            int order = 1;
-            foreach (GroupMemberInfo groupMember in Model.GroupMemberList)
+            var order = 1;
+            foreach (var groupMember in Model.GroupMemberList)
             {
                 <tr>
                     <td style="text-align: center;">
-                        <label for="groupMemberCheck_@(groupMember.Id)"></label><input id="groupMemberCheck_@(groupMember.Id)" type="checkbox" class="ace" value="@groupMember.Id" /><span class="lbl"></span>
+                        <label for="groupMemberCheck_@(groupMember.Id)"></label><input id="groupMemberCheck_@(groupMember.Id)" type="checkbox" class="ace" value="@groupMember.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td>@groupMember.User?.LoginName</td>

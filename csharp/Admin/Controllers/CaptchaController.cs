@@ -7,7 +7,7 @@ namespace shunda.Admin.Controllers;
 [NoLoginRequired]
 public class CaptchaController : Controller
 {
-    private CaptchaService captchaService;
+    private readonly CaptchaService captchaService;
 
     public CaptchaController(CaptchaService captchaService)
     {
@@ -18,8 +18,8 @@ public class CaptchaController : Controller
     [Route("/admin/captcha")]
     public IActionResult Index()
     {
-        MemoryStream memoryStream = captchaService.Create();
-        byte[] bytes = memoryStream.GetBuffer();
+        var memoryStream = captchaService.Create();
+        var bytes = memoryStream.GetBuffer();
         memoryStream.Close();
 
         Response.Body.Dispose();

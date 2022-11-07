@@ -23,29 +23,20 @@ public class AdminAuthActionFilter : IActionFilter
     {
         // log.Trace("AdminAuthActionFilter OnActionExecuting");
 
-        ControllerActionDescriptor? actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
-        if (actionDescriptor == null)
-        {
-            return;
-        }
+        var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+        if (actionDescriptor == null) return;
 
         #region 登录判断
 
         // 如果有 NoLoginRequiredAttribute 标记，就不用进行登录检查
-        object[] controllerNoLoginRequiredAttributes = actionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(NoLoginRequiredAttribute), true);
-        if ((controllerNoLoginRequiredAttributes?.Length ?? 0) != 0)
-        {
-            return;
-        }
+        var controllerNoLoginRequiredAttributes = actionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(NoLoginRequiredAttribute), true);
+        if ((controllerNoLoginRequiredAttributes?.Length ?? 0) != 0) return;
 
-        object[] actionNoLoginRequiredAttributes = actionDescriptor.MethodInfo.GetCustomAttributes(typeof(NoLoginRequiredAttribute), true);
-        if ((actionNoLoginRequiredAttributes?.Length ?? 0) != 0)
-        {
-            return;
-        }
+        var actionNoLoginRequiredAttributes = actionDescriptor.MethodInfo.GetCustomAttributes(typeof(NoLoginRequiredAttribute), true);
+        if ((actionNoLoginRequiredAttributes?.Length ?? 0) != 0) return;
 
         // 如果 没有 NoLoginRequiredAttribute 标记， 并且用户没登录，就提示未登录错误
-        if (this.loginUserService.IsLogined == false)
+        if (loginUserService.IsLogined == false)
         {
             ShowLogin(context);
             return;
@@ -59,23 +50,19 @@ public class AdminAuthActionFilter : IActionFilter
         // Action 方法上设置的 passResId 中的有一个是已授权的，就是 Action 级别已授权。就是这里的各个 passResId 是 "或 or" 的关系
         // Controller 级别（如果有）已授权 和 Action 级别（如果有）已授权，同时满足，这个Action才能正常访问。就是 Controller级别 和 Action级别 是 "且 and" 的关系
 
-        object[] controllerAdminAuthAttributes = actionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(AdminAuthAttribute), true);
-        object[] actionAdminAuthAttributes = actionDescriptor.MethodInfo.GetCustomAttributes(typeof(AdminAuthAttribute), true);
+        var controllerAdminAuthAttributes = actionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(AdminAuthAttribute), true);
+        var actionAdminAuthAttributes = actionDescriptor.MethodInfo.GetCustomAttributes(typeof(AdminAuthAttribute), true);
 
-        bool isAdmin = this.loginUserService.IsAdmin;
+        var isAdmin = loginUserService.IsAdmin;
 
         // 如果当前是管理员登录，接下来的权限判断也就用不着了
-        if (isAdmin)
-        {
-            return;
-        }
+        if (isAdmin) return;
 
-        Dictionary<int, bool> passResIdMap = this.loginUserService.GetPassResIdMap();
+        var passResIdMap = loginUserService.GetPassResIdMap();
 
         // 下面的两个循环，表名Controller 和 Action 上的PassRes是并且的关系
 
-        foreach (object adminAuthAttributeObj in controllerAdminAuthAttributes)
-        {
+        foreach (var adminAuthAttributeObj in controllerAdminAuthAttributes)
             if (adminAuthAttributeObj is AdminAuthAttribute adminAuthAttribute)
             {
                 // 判断是否是管理员登录
@@ -94,10 +81,8 @@ public class AdminAuthActionFilter : IActionFilter
                     return;
                 }
             }
-        }
 
-        foreach (object adminAuthAttributeObj in actionAdminAuthAttributes)
-        {
+        foreach (var adminAuthAttributeObj in actionAdminAuthAttributes)
             if (adminAuthAttributeObj is AdminAuthAttribute adminAuthAttribute)
             {
                 // 判断是否是管理员登录
@@ -116,7 +101,6 @@ public class AdminAuthActionFilter : IActionFilter
                     return;
                 }
             }
-        }
 
         #endregion
     }
@@ -130,15 +114,11 @@ public class AdminAuthActionFilter : IActionFilter
     {
         var request = context.HttpContext.Request;
         if (WebUtil.ShouldShowJson(request))
-        {
             context.Result = new JsonResult(new {
                 success = false,
-                message = "用户未登录，或登录会话过期，请重新登录！",
+                message = "用户未登录，或登录会话过期，请重新登录！"
             });
-        }
         else
-        {
             context.Result = new RedirectResult(loginUserService.GetUserLoginUrl());
-        }
     }
 }

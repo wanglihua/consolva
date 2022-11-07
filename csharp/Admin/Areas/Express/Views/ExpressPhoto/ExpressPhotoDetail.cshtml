@@ -1,5 +1,4 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Domain.Express
 @model shunda.Admin.Areas.Express.Models.ExpressPhoto.ExpressPhotoDetailModel
 @{
     Layout = null;
@@ -39,7 +38,7 @@
                                 <label asp-for="PhotoType" class="col-xs-2 control-label">类型</label>
                                 <div class="col-xs-10">
                                     <select asp-for="PhotoType" type="text" class="input-sm form-control">
-                                        @foreach (ExpressPhotoType photoType in Model.PhotoTypeList)
+                                        @foreach (var photoType in Model.PhotoTypeList)
                                         {
                                             if (Model.PhotoType == photoType)
                                             {
@@ -79,7 +78,7 @@
                                 <div class="col-xs-10" style="vert-align: top;">
                                     <span>&nbsp;&nbsp;</span>
                                     @{
-                                        string fullImageUrl = Model.FullImageUrl;
+                                        var fullImageUrl = Model.FullImageUrl;
                                         if (string.IsNullOrWhiteSpace(fullImageUrl))
                                         {
                                             fullImageUrl = "/static/images/noimg.jpg";

@@ -9,10 +9,10 @@ public class StorageLocPreviewModel
     public int ShelfId { get; set; }
 
     [BindNever]
-    public WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public WarehouseInfo Warehouse { get; set; } = new();
 
     [BindNever]
-    public ShelfInfo Shelf { get; set; } = new ShelfInfo();
+    public ShelfInfo Shelf { get; set; } = new();
 
     [BindNever]
     public IList<StorageLocInfo> StorageLocList { get; set; } = new List<StorageLocInfo>();

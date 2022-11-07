@@ -5,7 +5,7 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsInsurance;
 
 public class LogisticsInsuranceDetailModel
 {
-    public LogisticsInsuranceInfo LogisticsInsurance { get; set; } = new LogisticsInsuranceInfo();
+    public LogisticsInsuranceInfo LogisticsInsurance { get; set; } = new();
 
     [BindNever]
     public IList<FeeCalcBaseType> FeeCalcBaseTypeList { get; set; } = new List<FeeCalcBaseType>();

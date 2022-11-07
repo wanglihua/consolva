@@ -61,8 +61,8 @@
     <tbody>
         @if (Model.LogisticsModeList != null && Model.LogisticsModeList.Count() != 0)
         {
-            int order = 1;
-            foreach (LogisticsModeInfo logisticsMode in Model.LogisticsModeList)
+            var order = 1;
+            foreach (var logisticsMode in Model.LogisticsModeList)
             {
                 <tr ondblclick="showLogisticsModeDetail(@(logisticsMode.Id));">
                     <td class="center">
@@ -86,7 +86,7 @@
                     </td>
 
                     <td>
-                        @foreach (LogisticsModeFeeRateInfo modeFeeRate in logisticsMode.ModeFeeRateListCache)
+                        @foreach (var modeFeeRate in logisticsMode.ModeFeeRateListCache)
                         {
                             <div>
                                 <span>@(modeFeeRate.GoodsType.Name)</span>

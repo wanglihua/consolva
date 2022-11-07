@@ -1,5 +1,4 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsGst.LogisticsGstDetailModel
 @{
     Layout = null;
@@ -44,7 +43,7 @@
                                 <label asp-for="LogisticsGst.StartAmount" class="col-xs-2 control-label">启征金额</label>
                                 <div class="col-xs-10">
                                     <div class="input-group">
-                                        <input asp-for="LogisticsGst.StartAmount" type="number" step="1" required="required" class="input-sm form-control" />
+                                        <input asp-for="LogisticsGst.StartAmount" type="number" step="1" required="required" class="input-sm form-control"/>
                                         <span class="input-group-addon">RMB</span>
                                     </div>
                                 </div>
@@ -56,7 +55,7 @@
                                 <label asp-for="LogisticsGst.FeeRate" class="col-xs-2 control-label">费率</label>
                                 <div class="col-xs-10">
                                     <div class="input-group">
-                                        <input asp-for="LogisticsGst.FeeRate" type="number" step="1" required="required" class="input-sm form-control" />
+                                        <input asp-for="LogisticsGst.FeeRate" type="number" step="1" required="required" class="input-sm form-control"/>
                                         <span class="input-group-addon">%</span>
                                     </div>
                                 </div>
@@ -77,7 +76,7 @@
                                 <label asp-for="LogisticsGst.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="LogisticsGst.Status" class="input-sm form-control">
-                                        @foreach (LogisticsGstStatus logisticsGstStatus in Model.GstStatusList)
+                                        @foreach (var logisticsGstStatus in Model.GstStatusList)
                                         {
                                             <option value="@logisticsGstStatus.Id">@logisticsGstStatus.Name</option>
                                         }

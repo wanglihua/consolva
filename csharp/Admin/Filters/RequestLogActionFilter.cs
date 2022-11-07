@@ -6,11 +6,11 @@ using shunda.Service;
 namespace shunda.Admin.Filters;
 
 /// <summary>
-/// 这个只用于记录网站请求记录
+///     这个只用于记录网站请求记录
 /// </summary>
 public class RequestLogActionFilter : IActionFilter
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private SiteRequestLogService siteRequestLogService;
 
@@ -32,23 +32,21 @@ public class RequestLogActionFilter : IActionFilter
 
         if (context.HttpContext.Items["request_begin_time"] != null)
         {
-            DateTime requestBeginTime = (DateTime)(context.HttpContext.Items["request_begin_time"] ?? DateTime.Now);
-            DateTime requestEndTime = DateTime.Now;
+            var requestBeginTime = (DateTime)(context.HttpContext.Items["request_begin_time"] ?? DateTime.Now);
+            var requestEndTime = DateTime.Now;
 
-            double requestTotalSeconds = (requestEndTime - requestBeginTime).TotalSeconds;
+            var requestTotalSeconds = (requestEndTime - requestBeginTime).TotalSeconds;
 
             // 网站请求数据库日志
             try
             {
                 var request = context.HttpContext.Request;
 
-                string relativeUrl = request.GetEncodedPathAndQuery();
+                var relativeUrl = request.GetEncodedPathAndQuery();
                 if (relativeUrl != "/"
                     && relativeUrl != "/favicon.ico"
                     && relativeUrl.StartsWith("/admin") == false)
-                {
                     log.Error($"url 没有以 /admin 开头: {relativeUrl}");
-                }
 
                 // siteRequestLogService.NewSiteRequest(request, (decimal)requestTotalSeconds, useInnerTransaction: false);
             }

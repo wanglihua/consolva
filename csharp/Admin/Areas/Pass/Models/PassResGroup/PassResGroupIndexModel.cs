@@ -9,5 +9,5 @@ public class PassResGroupIndexModel
     public int PassResId { get; set; }
 
     [BindNever]
-    public PassResInfo PassRes { get; set; } = new PassResInfo();
+    public PassResInfo PassRes { get; set; } = new();
 }

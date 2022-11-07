@@ -1,10 +1,9 @@
-
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Admin.Areas.OrderFee.Models.CustomerCharge
+@using shunda.Admin.Areas.Fee.Models.CustomerCharge
 @using shunda.Core
 @using shunda.Core.Web
 @using shunda.Domain.Customer
-@model shunda.Admin.Areas.OrderFee.Models.CustomerCharge.CustomerChargeIndexModel
+@model shunda.Admin.Areas.Fee.Models.CustomerCharge.CustomerChargeIndexModel
 @{
     ViewData[ViewDataKey.Title] = "余额充值";
     Layout = "_AdminLayout";
@@ -26,7 +25,7 @@
         <button type="button" class="btn btn-pink btn-sm" onclick="showCustomerChargeDetail(0)">
             <i class="ace-icon fa fa-plus"></i>
             手工充值
-        </button>     
+        </button>
 
         <button id="btnImportSea" class="btn btn-success btn-sm">
             <i class="ace-icon fa fa-plus"></i>
@@ -49,7 +48,7 @@
     <label for="chargeTypeQuery">充值方式</label>&nbsp;
     <select id="chargeTypeQuery" name="chargeTypeQuery" style="width: 100px; height: 30px;">
         <option value="">充值方式</option>
-        @foreach (CustomerChargeType chargeType in Model.ChargeTypeList)
+        @foreach (var chargeType in Model.ChargeTypeList)
         {
             <option value="@(chargeType.Id)">@(chargeType.Name)</option>
         }

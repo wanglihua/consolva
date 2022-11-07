@@ -1,5 +1,4 @@
 @using shunda.Core.Web
-@using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.Warehouse.WarehouseDetailModel
 
 @{
@@ -75,7 +74,7 @@
                                 <label asp-for="Warehouse.OuterStatus" class="col-xs-2 control-label">对外状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Warehouse.OuterStatus" class="input-sm form-control">
-                                        @foreach (WarehouseStatus warehouseStatus in Model.WarehouseStatusList)
+                                        @foreach (var warehouseStatus in Model.WarehouseStatusList)
                                         {
                                             if (Model.Warehouse.OuterStatus == warehouseStatus)
                                             {
@@ -96,7 +95,7 @@
                                 <label asp-for="Warehouse.InnerStatus" class="col-xs-2 control-label">对内状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Warehouse.InnerStatus" class="input-sm form-control">
-                                        @foreach (WarehouseStatus warehouseStatus in Model.WarehouseStatusList)
+                                        @foreach (var warehouseStatus in Model.WarehouseStatusList)
                                         {
                                             if (Model.Warehouse.InnerStatus == warehouseStatus)
                                             {
@@ -174,7 +173,7 @@
     }
 
     function showWarehouseDetail(id) {
-        var url = "@Url.Action("Detail", "Warehouse", new {id = 88888})";
+        var url = "@Url.Action("Detail", "Warehouse", new { id = 88888 })";
         url = url.replace("88888", id);
         window.location.href = url;
     }

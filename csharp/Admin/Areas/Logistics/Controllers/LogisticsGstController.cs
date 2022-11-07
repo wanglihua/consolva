@@ -16,7 +16,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [AdminAuth(PassRes.Logistics.Gst)]
 public class LogisticsGstController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public LogisticsGstController(ISession session)
     {
@@ -27,7 +27,7 @@ public class LogisticsGstController : Controller
     [Route("/admin/logistics/gst")]
     public IActionResult Index()
     {
-        LogisticsGstIndexModel model = new LogisticsGstIndexModel();
+        var model = new LogisticsGstIndexModel();
         return View("LogisticsGstIndex", model);
     }
 
@@ -35,21 +35,21 @@ public class LogisticsGstController : Controller
     [Route("/admin/logistics/gst/list")]
     public IActionResult List(LogisticsGstListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<LogisticsGstInfo> logisticsGstList = GetListCriteria(queryParam)
+        var logisticsGstList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsGstInfo>();
-        
 
-        LogisticsGstListModel model = new LogisticsGstListModel(listPager);
+
+        var model = new LogisticsGstListModel(listPager);
         model.GstList = logisticsGstList;
 
         return View("LogisticsGstList", model);
@@ -58,13 +58,13 @@ public class LogisticsGstController : Controller
     [NonAction]
     private ICriteria GetListCriteria(LogisticsGstListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<LogisticsGstInfo>();
+        var criteria = session.CreateCriteria<LogisticsGstInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
         {
-            string nameQuery = queryParam.NameQuery.Trim();
+            var nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsGstInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
 
@@ -84,13 +84,10 @@ public class LogisticsGstController : Controller
         else
         {
             logisticsGst = session.Get<LogisticsGstInfo>(id.Value);
-            if (logisticsGst == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (logisticsGst == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        LogisticsGstDetailModel model = new LogisticsGstDetailModel();
+        var model = new LogisticsGstDetailModel();
         model.LogisticsGst = logisticsGst;
 
         model.FeeCalcBaseTypeList = FeeCalcBaseType.GetList();
@@ -104,26 +101,19 @@ public class LogisticsGstController : Controller
     [Transactional]
     public IActionResult Save(LogisticsGstDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        LogisticsGstInfo logisticsGstFromUi = model.LogisticsGst;
-        int logisticsGstId = logisticsGstFromUi.Id;
+        var logisticsGstFromUi = model.LogisticsGst;
+        var logisticsGstId = logisticsGstFromUi.Id;
 
-        bool isCreate = logisticsGstId == 0;
+        var isCreate = logisticsGstId == 0;
 
         LogisticsGstInfo logisticsGst;
 
         if (isCreate)
-        {
             logisticsGst = new LogisticsGstInfo();
-        }
         else
-        {
             logisticsGst = session.Get<LogisticsGstInfo>(logisticsGstId);
-        }
 
         logisticsGst.Name = logisticsGstFromUi.Name;
         logisticsGst.CalcBaseType = logisticsGstFromUi.CalcBaseType;
@@ -133,17 +123,13 @@ public class LogisticsGstController : Controller
         logisticsGst.Status = logisticsGstFromUi.Status;
 
         if (isCreate)
-        {
             session.Save(logisticsGst);
-        }
         else
-        {
             session.Update(logisticsGst);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -154,17 +140,17 @@ public class LogisticsGstController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            LogisticsGstInfo logisticsGst = session.Load<LogisticsGstInfo>(id);
+            var logisticsGst = session.Load<LogisticsGstInfo>(id);
             session.Delete(logisticsGst);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

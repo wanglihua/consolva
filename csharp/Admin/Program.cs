@@ -15,7 +15,6 @@ using shunda.Core.Log;
 using shunda.Domain;
 using shunda.Service;
 using StackExchange.Profiling;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Admin;
 
@@ -96,12 +95,12 @@ public class Program
         services.AddAppServices();
 
         // 必须 Singleton
-        services.AddSingleton<ISessionFactory>((provider) =>
-            HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, (new DomainMock()).GetType().Assembly)
+        services.AddSingleton(provider =>
+            HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly)
         );
 
         // 必须 Scoped 
-        services.AddScoped<ISession>((provider) => {
+        services.AddScoped(provider => {
                 // ISessionFactory sessionFactory = provider.GetService<ISessionFactory>()!;
                 // return sessionFactory.OpenSession();
                 return HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!);
@@ -138,12 +137,12 @@ public class Program
 
         app.UseEndpoints(endpoints => {
             endpoints.MapControllerRoute(
-                name: "defaultWithArea",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                "defaultWithArea",
+                "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                "default",
+                "{controller=Home}/{action=Index}/{id?}");
 
             // endpoints.MapHub<HandleHub>("/hub/handle");
         });

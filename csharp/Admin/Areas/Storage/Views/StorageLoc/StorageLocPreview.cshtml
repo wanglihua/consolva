@@ -3,9 +3,9 @@
 @{
     Layout = null;
 
-    int maxColNumInAll = Model.StorageLocList.Max(e => e.ColNum);
+    var maxColNumInAll = Model.StorageLocList.Max(e => e.ColNum);
 
-    int dialogWidth = 840 + (maxColNumInAll - 17) * 45;
+    var dialogWidth = 840 + (maxColNumInAll - 17) * 45;
 }
 
 <style type="text/css">
@@ -80,15 +80,15 @@
                     <div id="preview">
                         <div id="storageLocList">
                             @{
-                                int maxRowNum = Model.StorageLocList.Max(e => e.RowNum);
+                                var maxRowNum = Model.StorageLocList.Max(e => e.RowNum);
 
                                 <div class="storageLocRow">
                                     <div class="colorBox" style="background-color: white;">
                                         <span></span>
                                     </div>
-                                    @for (int numRowIndex = 0; numRowIndex < maxColNumInAll; numRowIndex++)
+                                    @for (var numRowIndex = 0; numRowIndex < maxColNumInAll; numRowIndex++)
                                     {
-                                        int rowNum = numRowIndex + 1;
+                                        var rowNum = numRowIndex + 1;
 
                                         <div class="colorBox" style="background-color: white; color: #393939;">
                                             <span>@(rowNum)</span>
@@ -97,9 +97,9 @@
                                     <div style="clear: both;"></div>
                                 </div>
 
-                                for (int rowIndex = 0; rowIndex < maxRowNum; rowIndex++)
+                                for (var rowIndex = 0; rowIndex < maxRowNum; rowIndex++)
                                 {
-                                    int rowNum = rowIndex + 1;
+                                    var rowNum = rowIndex + 1;
                                     IList<StorageLocInfo> locListInRow = Model.StorageLocList.Where(e => e.RowNum == rowNum).ToList();
                                     <div class="storageLocRow">
                                         <div class="colorBox" style="background-color: white; color: #393939;">
@@ -114,12 +114,12 @@
                                         }
                                         else
                                         {
-                                            int maxColNumInRow = locListInRow.Max(e => e.ColNum);
+                                            var maxColNumInRow = locListInRow.Max(e => e.ColNum);
 
-                                            for (int colIndex = 0; colIndex < maxColNumInRow; colIndex++)
+                                            for (var colIndex = 0; colIndex < maxColNumInRow; colIndex++)
                                             {
-                                                int colNum = colIndex + 1;
-                                                StorageLocInfo? loc = locListInRow.Where(e => e.ColNum == colNum).Take(1).SingleOrDefault();
+                                                var colNum = colIndex + 1;
+                                                var loc = locListInRow.Where(e => e.ColNum == colNum).Take(1).SingleOrDefault();
 
                                                 if (loc != null)
                                                 {
@@ -141,7 +141,6 @@
                                                     </div>
                                                 }
                                             }
-
                                         }
                                         <div style="clear: both;"></div>
                                     </div>
@@ -151,7 +150,7 @@
                         </div>
 
                         <div id="storageLocSpecList">
-                            @foreach (StorageLocSpecInfo spec in Model.StorageLocSpecList)
+                            @foreach (var spec in Model.StorageLocSpecList)
                             {
                                 <div class="item">
                                     <div class="colorItem">

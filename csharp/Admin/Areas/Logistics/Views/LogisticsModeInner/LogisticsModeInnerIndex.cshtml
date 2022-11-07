@@ -36,9 +36,9 @@
 
 <div style="margin-bottom: 8px;">
     <ul class="nav nav-tabs">
-        @foreach (LogisticsModeType type in Model.LogisticsModeTypeList)
+        @foreach (var type in Model.LogisticsModeTypeList)
         {
-            string activeClass = "";
+            var activeClass = "";
             if (type.Id == Model.TypeId)
             {
                 activeClass = " active ";

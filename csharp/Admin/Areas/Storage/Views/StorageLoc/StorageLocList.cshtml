@@ -1,11 +1,10 @@
 @{
     Layout = null;
 }
-
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadStorageLocList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadStorageLocList" })
 
 <table id="tblStorageLocList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -52,8 +51,8 @@
     <tbody>
         @if (Model.StorageLocList != null && Model.StorageLocList.Count() != 0)
         {
-            int order = 1;
-            foreach (StorageLocInfo storageLoc in Model.StorageLocList)
+            var order = 1;
+            foreach (var storageLoc in Model.StorageLocList)
             {
                 <tr ondblclick="showStorageLocDetail(@(storageLoc.Id));">
                     <td style="text-align: center;">
@@ -69,7 +68,7 @@
                             <span>@storageLoc.Spec.Length</span>*<span>@storageLoc.Spec.Width</span>*<span>@storageLoc.Spec.Height</span><span>cm<sup>3</sup></span>
                         </span>
                     </td>
-                    <td style="text-align: center;">@(storageLoc.Id.ToString() + "@" + storageLoc.Shelf.Id.ToString())</td>
+                    <td style="text-align: center;">@(storageLoc.Id + "@" + storageLoc.Shelf.Id)</td>
                     <td style="text-align: center;">@storageLoc.Status.Name</td>
                     <td style="text-align: center;">@storageLoc.OrderNum</td>
                     <td style="text-align: center;">@storageLoc.OffShelfOrderNum</td>
@@ -94,4 +93,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadStorageLocList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadStorageLocList" })

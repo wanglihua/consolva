@@ -39,7 +39,7 @@
     <label for="shelfTypeIdQuery">货架类型</label>&nbsp;
     <select id="shelfTypeIdQuery" name="shelfTypeIdQuery" style="width: 100px; height: 30px;" onchange="loadShelfList();">
         <option value="0">货架类型</option>
-        @foreach (ShelfType shelfTypeInfo in Model.ShelfTypeList)
+        @foreach (var shelfTypeInfo in Model.ShelfTypeList)
         {
             <option value="@shelfTypeInfo.Id">@shelfTypeInfo.Name</option>
         }

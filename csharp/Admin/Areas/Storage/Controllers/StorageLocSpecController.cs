@@ -17,7 +17,7 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 [AdminAuth(PassRes.Storage.StorageLocSpec)]
 public class StorageLocSpecController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public StorageLocSpecController(ISession session)
     {
@@ -28,7 +28,7 @@ public class StorageLocSpecController : Controller
     [Route("/admin/storage/loc/spec")]
     public IActionResult Index()
     {
-        StorageLocSpecIndexModel model = new StorageLocSpecIndexModel();
+        var model = new StorageLocSpecIndexModel();
         model.TypeList = ShelfType.GetList();
 
         return View("StorageLocSpecIndex", model);
@@ -38,20 +38,20 @@ public class StorageLocSpecController : Controller
     [Route("/admin/storage/loc/spec/list")]
     public IActionResult List(StorageLocSpecListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<StorageLocSpecInfo> storageLocSpecList = GetListCriteria(queryParam)
+        var storageLocSpecList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<StorageLocSpecInfo>();
 
-        StorageLocSpecListModel model = new StorageLocSpecListModel(listPager);
+        var model = new StorageLocSpecListModel(listPager);
         model.StorageLocSpecList = storageLocSpecList;
 
         return View("StorageLocSpecList", model);
@@ -60,24 +60,21 @@ public class StorageLocSpecController : Controller
     [NonAction]
     private ICriteria GetListCriteria(StorageLocSpecListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<StorageLocSpecInfo>();
+        var criteria = session.CreateCriteria<StorageLocSpecInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
-        ShelfType shelfTypeQuery = queryParam.TypeQuery ?? ShelfType.None;
-        if (shelfTypeQuery != ShelfType.None)
-        {
-            criteria = criteria.Add(Restrictions.Where<StorageLocSpecInfo>(e => e.ShelfType == shelfTypeQuery));
-        }
+        var shelfTypeQuery = queryParam.TypeQuery ?? ShelfType.None;
+        if (shelfTypeQuery != ShelfType.None) criteria = criteria.Add(Restrictions.Where<StorageLocSpecInfo>(e => e.ShelfType == shelfTypeQuery));
 
-        string codeQuery = queryParam.CodeQuery ?? string.Empty;
+        var codeQuery = queryParam.CodeQuery ?? string.Empty;
         if (string.IsNullOrWhiteSpace(codeQuery) == false)
         {
             codeQuery = codeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<StorageLocSpecInfo>(e => e.Code).IsInsensitiveLike(codeQuery, MatchMode.Anywhere));
         }
 
-        string nameQuery = queryParam.NameQuery ?? string.Empty;
+        var nameQuery = queryParam.NameQuery ?? string.Empty;
         if (string.IsNullOrWhiteSpace(nameQuery) == false)
         {
             nameQuery = nameQuery.Trim();
@@ -100,13 +97,10 @@ public class StorageLocSpecController : Controller
         else
         {
             storageLocSpec = session.Get<StorageLocSpecInfo>(id.Value);
-            if (storageLocSpec == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (storageLocSpec == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        StorageLocSpecDetailModel model = new StorageLocSpecDetailModel();
+        var model = new StorageLocSpecDetailModel();
         model.StorageLocSpec = storageLocSpec;
         model.TypeList = ShelfType.GetList();
         model.ColorList = WebColor.GetColorList();
@@ -119,15 +113,12 @@ public class StorageLocSpecController : Controller
     [Transactional]
     public IActionResult Save(StorageLocSpecDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        StorageLocSpecInfo storageLocSpecFromUi = model.StorageLocSpec;
-        int storageLocSpecId = storageLocSpecFromUi.Id;
+        var storageLocSpecFromUi = model.StorageLocSpec;
+        var storageLocSpecId = storageLocSpecFromUi.Id;
 
-        bool isCreate = storageLocSpecId == 0;
+        var isCreate = storageLocSpecId == 0;
 
         StorageLocSpecInfo storageLocSpec;
 
@@ -138,16 +129,13 @@ public class StorageLocSpecController : Controller
             var storageLocSpecType = storageLocSpecFromUi.ShelfType;
             var code = storageLocSpecFromUi.Code;
 
-            int count = session
+            var count = session
                 .Query<StorageLocSpecInfo>()
                 .Where(e => e.ShelfType == storageLocSpecType
                             && e.Code == code)
                 .Count();
 
-            if (count != 0)
-            {
-                throw new ValidationException($"{storageLocSpecType.Name}类型中已有编号为{code}的库位规格！");
-            }
+            if (count != 0) throw new ValidationException($"{storageLocSpecType.Name}类型中已有编号为{code}的库位规格！");
         }
         else
         {
@@ -156,27 +144,21 @@ public class StorageLocSpecController : Controller
             var storageLocSpecType = storageLocSpecFromUi.ShelfType;
             var code = storageLocSpecFromUi.Code;
 
-            int count = session
+            var count = session
                 .Query<StorageLocSpecInfo>()
                 .Where(e => e.Id != storageLocSpecId
                             && e.ShelfType == storageLocSpecType
                             && e.Code == code)
                 .Count();
 
-            if (count != 0)
-            {
-                throw new ValidationException($"{storageLocSpecType.Name}类型中已有编号为{code}的库位规格！");
-            }
+            if (count != 0) throw new ValidationException($"{storageLocSpecType.Name}类型中已有编号为{code}的库位规格！");
         }
 
         storageLocSpec.ShelfType = storageLocSpecFromUi.ShelfType;
         storageLocSpec.Code = storageLocSpecFromUi.Code;
 
         storageLocSpec.Name = storageLocSpecFromUi.Name;
-        if (storageLocSpec.Name == null)
-        {
-            storageLocSpec.Name = string.Empty;
-        }
+        if (storageLocSpec.Name == null) storageLocSpec.Name = string.Empty;
 
         storageLocSpec.Width = storageLocSpecFromUi.Width;
         storageLocSpec.Height = storageLocSpecFromUi.Height;
@@ -184,17 +166,13 @@ public class StorageLocSpecController : Controller
         storageLocSpec.Color = storageLocSpecFromUi.Color;
 
         if (isCreate)
-        {
             session.Save(storageLocSpec);
-        }
         else
-        {
             session.Update(storageLocSpec);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -205,28 +183,25 @@ public class StorageLocSpecController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int specId in idList)
+        foreach (var specId in idList)
         {
-            StorageLocSpecInfo storageLocSpec = session.Get<StorageLocSpecInfo>(specId);
+            var storageLocSpec = session.Get<StorageLocSpecInfo>(specId);
 
-            int count = session.Query<StorageLocInfo>().Where(e => e.Spec.Id == specId).Count();
-            if (count != 0)
-            {
-                throw new ValidationException($"仓位规格{storageLocSpec.Name}有仓位正在使用中，删除失败！");
-            }
+            var count = session.Query<StorageLocInfo>().Where(e => e.Spec.Id == specId).Count();
+            if (count != 0) throw new ValidationException($"仓位规格{storageLocSpec.Name}有仓位正在使用中，删除失败！");
         }
 
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            StorageLocSpecInfo storageLocSpec = session.Load<StorageLocSpecInfo>(id);
+            var storageLocSpec = session.Load<StorageLocSpecInfo>(id);
             session.Delete(storageLocSpec);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

@@ -16,7 +16,7 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 [PassArea]
 public class GroupMemberController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public GroupMemberController(ISession session)
     {
@@ -27,13 +27,10 @@ public class GroupMemberController : Controller
     [Route("/admin/group/member/{groupId:int}")]
     public IActionResult Index(int groupId)
     {
-        GroupInfo group = this.session.Get<GroupInfo>(groupId);
-        if (group == null)
-        {
-            return Content("指定的群组不存在！");
-        }
+        var group = session.Get<GroupInfo>(groupId);
+        if (group == null) return Content("指定的群组不存在！");
 
-        GroupMemberIndexModel model = new GroupMemberIndexModel();
+        var model = new GroupMemberIndexModel();
         model.GroupId = groupId;
         model.Group = group;
 
@@ -44,20 +41,20 @@ public class GroupMemberController : Controller
     [Route("/admin/group/member/list")]
     public IActionResult List(GroupMemberListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<GroupMemberInfo> groupMemberList = GetListCriteria(queryParam)
+        var groupMemberList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<GroupMemberInfo>();
 
-        GroupMemberListModel model = new GroupMemberListModel(listPager);
+        var model = new GroupMemberListModel(listPager);
         model.GroupMemberList = groupMemberList;
 
         return View("GroupMemberList", model);
@@ -66,25 +63,25 @@ public class GroupMemberController : Controller
     [NonAction]
     private ICriteria GetListCriteria(GroupMemberListQueryParam queryParam)
     {
-        ICriteria criteria = this.session.CreateCriteria<GroupMemberInfo>();
+        var criteria = session.CreateCriteria<GroupMemberInfo>();
 
-        string userProp = nameof(GroupMemberInfo.User);
+        var userProp = nameof(GroupMemberInfo.User);
         criteria = criteria.CreateAlias(userProp, userProp, JoinType.InnerJoin);
 
         criteria = criteria.SetReadOnly(true);
 
-        int groupId = queryParam.GroupId;
+        var groupId = queryParam.GroupId;
         criteria = criteria.Add(Restrictions.Where<GroupMemberInfo>(e => e.Group.Id == groupId));
 
         if (string.IsNullOrWhiteSpace(queryParam.LoginNameQuery) == false)
         {
-            string loginNameQuery = queryParam.LoginNameQuery.Trim();
+            var loginNameQuery = queryParam.LoginNameQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"{userProp}.{nameof(UserInfo.LoginName)}", loginNameQuery, MatchMode.Anywhere));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
         {
-            string userNameQuery = queryParam.UserNameQuery.Trim();
+            var userNameQuery = queryParam.UserNameQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"{userProp}.{nameof(UserInfo.UserName)}", userNameQuery, MatchMode.Anywhere));
         }
 
@@ -95,14 +92,11 @@ public class GroupMemberController : Controller
     [Route("/admin/group/member/add/{groupId:int}")]
     public IActionResult Add(int groupId)
     {
-        GroupInfo group = this.session.Get<GroupInfo>(groupId);
+        var group = session.Get<GroupInfo>(groupId);
 
-        if (group == null)
-        {
-            throw new ValidationException("指定的数据项不存在！");
-        }
+        if (group == null) throw new ValidationException("指定的数据项不存在！");
 
-        GroupMemberAddModel model = new GroupMemberAddModel();
+        var model = new GroupMemberAddModel();
         model.GroupId = groupId;
         model.Group = group;
 
@@ -114,55 +108,40 @@ public class GroupMemberController : Controller
     [Transactional]
     public IActionResult AddSave(GroupMemberAddModel model)
     {
-        if (!this.ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        int groupId = model.GroupId;
-        GroupInfo group = this.session.Get<GroupInfo>(groupId);
+        var groupId = model.GroupId;
+        var group = session.Get<GroupInfo>(groupId);
 
-        if (group == null)
-        {
-            throw new ValidationException("指定的群组不存在！");
-        }
+        if (group == null) throw new ValidationException("指定的群组不存在！");
 
-        string loginName = model.LoginName;
-        UserInfo? user = this.session.Query<UserInfo>()
+        var loginName = model.LoginName;
+        var user = session.Query<UserInfo>()
             .Where(e => e.LoginName != UserInfo.DevLoginName && e.LoginName == loginName)
             .Take(1)
             .SingleOrDefault();
 
-        if (user == null)
-        {
-            throw new ValidationException("指定的用户不存在！");
-        }
+        if (user == null) throw new ValidationException("指定的用户不存在！");
 
-        if (user.Status == UserStatus.Frozen)
-        {
-            throw new ValidationException("指定的用户已冻结！");
-        }
+        if (user.Status == UserStatus.Frozen) throw new ValidationException("指定的用户已冻结！");
 
         // 检查是不是已经是群组的成员
-        int userId = user.Id;
-        int groupMemberIdExist = this.session.Query<GroupMemberInfo>()
+        var userId = user.Id;
+        var groupMemberIdExist = session.Query<GroupMemberInfo>()
             .Where(e => e.Group.Id == groupId && e.User.Id == userId)
             .Select(e => e.Id)
             .Take(1)
             .SingleOrDefault();
-        if (groupMemberIdExist != 0)
-        {
-            throw new ValidationException("指定的用户已经是该群组的成员！");
-        }
+        if (groupMemberIdExist != 0) throw new ValidationException("指定的用户已经是该群组的成员！");
 
-        GroupMemberInfo groupMember = new GroupMemberInfo();
+        var groupMember = new GroupMemberInfo();
         groupMember.Group = session.Load<GroupInfo>(groupId);
         groupMember.User = user;
 
-        this.session.Save(groupMember);
-        this.session.Flush();
+        session.Save(groupMember);
+        session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -173,17 +152,17 @@ public class GroupMemberController : Controller
     [Transactional]
     public IActionResult Remove(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            GroupMemberInfo groupMember = this.session.Load<GroupMemberInfo>(id);
-            this.session.Delete(groupMember);
+            var groupMember = session.Load<GroupMemberInfo>(id);
+            session.Delete(groupMember);
         }
 
-        this.session.Flush();
+        session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 }

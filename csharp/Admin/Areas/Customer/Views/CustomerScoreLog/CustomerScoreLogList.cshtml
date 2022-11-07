@@ -1,7 +1,6 @@
 @{
     Layout = null;
 }
-
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerScoreLog.CustomerScoreLogListModel
 
@@ -11,7 +10,7 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="customerScoreLogCheckAll"></label><input id="customerScoreLogCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                <label for="customerScoreLogCheckAll"></label><input id="customerScoreLogCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 80px; text-align: center;">
@@ -47,12 +46,12 @@
     <tbody>
         @if (Model.CustomerScoreLogList != null && Model.CustomerScoreLogList.Count() != 0)
         {
-            int order = 1;
-            foreach (CustomerScoreLogInfo customerScoreLog in Model.CustomerScoreLogList)
+            var order = 1;
+            foreach (var customerScoreLog in Model.CustomerScoreLogList)
             {
                 <tr>
                     <td style="text-align: center;">
-                        <label for="customerScoreLogCheck_@(customerScoreLog.Id)"></label><input id="customerScoreLogCheck_@(customerScoreLog.Id)" type="checkbox" class="ace" value="@customerScoreLog.Id" /><span class="lbl"></span>
+                        <label for="customerScoreLogCheck_@(customerScoreLog.Id)"></label><input id="customerScoreLogCheck_@(customerScoreLog.Id)" type="checkbox" class="ace" value="@customerScoreLog.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">@customerScoreLog.Customer?.Id</td>
@@ -70,7 +69,7 @@
                     </td>
 
                     <td style="text-align: center;">
-                        <a asp-area="Order" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(customerScoreLog.LogisticsOrder?.Id)"  target="_blank">
+                        <a asp-area="Order" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(customerScoreLog.LogisticsOrder?.Id)" target="_blank">
                             @customerScoreLog.LogisticsOrderCode
                         </a>
                     </td>

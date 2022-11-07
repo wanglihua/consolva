@@ -4,7 +4,7 @@ using NHibernate.Criterion;
 using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using shunda.Admin.Areas.OrderFee.Models.CustomerCharge;
+using shunda.Admin.Areas.Fee.Models.CustomerCharge;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -16,18 +16,18 @@ using shunda.Service;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.OrderFee.Controllers;
+namespace shunda.Admin.Areas.Fee.Controllers;
 
 [OrderFeeArea]
 [AdminAuth(PassRes.OrderFee.CustomerCharge)]
 public class CustomerChargeController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
+    private readonly CustomerChargeService customerChargeService;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly LoginUserService loginUserService;
 
-    private ISession session;
-    private CustomerCodeService customerCodeService;
-    private CustomerChargeService customerChargeService;
-    private LoginUserService loginUserService;
+    private readonly ISession session;
 
     public CustomerChargeController(
         ISession session,
@@ -45,7 +45,7 @@ public class CustomerChargeController : Controller
     [Route("/admin/customer/charge")]
     public IActionResult Index()
     {
-        CustomerChargeIndexModel model = new CustomerChargeIndexModel();
+        var model = new CustomerChargeIndexModel();
         model.ChargeTypeList = CustomerChargeType.GetList();
         model.HasManualChargePass = PassUtil.HasPassRes(loginUserService.GetPassResIdMap(), loginUserService.IsAdmin, PassRes.OrderFee.CustomerChargeManualCharge);
 
@@ -56,25 +56,25 @@ public class CustomerChargeController : Controller
     [Route("/admin/customer/charge/list")]
     public IActionResult List(CustomerChargeListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<CustomerChargeInfo> customerChargeList = GetListCriteria(queryParam)
+        var customerChargeList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerChargeInfo>();
 
-        foreach (CustomerChargeInfo customerChargeInfo in customerChargeList)
+        foreach (var customerChargeInfo in customerChargeList)
         {
             // customerChargeInfo
         }
 
-        CustomerChargeListModel model = new CustomerChargeListModel(listPager);
+        var model = new CustomerChargeListModel(listPager);
         model.CustomerChargeList = customerChargeList;
 
         return View("CustomerChargeList", model);
@@ -83,7 +83,7 @@ public class CustomerChargeController : Controller
     [NonAction]
     private ICriteria GetListCriteria(CustomerChargeListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<CustomerChargeInfo>();
+        var criteria = session.CreateCriteria<CustomerChargeInfo>();
 
         criteria.SetReadOnly(true);
 
@@ -91,14 +91,14 @@ public class CustomerChargeController : Controller
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
         {
-            string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
-            int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
+            var customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
+            var customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
             criteria = criteria.Add(Restrictions.Where<CustomerChargeInfo>(e => e.Customer.Id == customerIdQuery));
         }
 
         if (queryParam.ChargeTypeQuery != null && queryParam.ChargeTypeQuery != CustomerChargeType.None)
         {
-            CustomerChargeType chargeTypeQuery = queryParam.ChargeTypeQuery;
+            var chargeTypeQuery = queryParam.ChargeTypeQuery;
             criteria = criteria.Add(Restrictions.Where<CustomerChargeInfo>(e => e.ChargeType == chargeTypeQuery));
         }
 
@@ -110,7 +110,7 @@ public class CustomerChargeController : Controller
     [AdminAuth(PassRes.OrderFee.CustomerChargeManualCharge)]
     public IActionResult ManualCharge()
     {
-        CustomerChargeDetailModel model = new CustomerChargeDetailModel();
+        var model = new CustomerChargeDetailModel();
         model.ChargeReasonList = session.Query<ManualChargeReasonInfo>().Where(e => e.Status == ManualChargeReasonStatus.Enabled).ToList();
 
         return View("CustomerChargeDetail", model);
@@ -122,29 +122,20 @@ public class CustomerChargeController : Controller
     [Transactional]
     public IActionResult ManualChargeSave(CustomerChargeDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        int loginUserId = loginUserService.GetLoginUserId();
+        var loginUserId = loginUserService.GetLoginUserId();
 
-        int customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode);
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        var customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode);
+        var customer = session.Get<CustomerInfo>(customerId);
 
-        if (customer == null)
-        {
-            throw new ValidationException("指定的会员ID不存在！");
-        }
+        if (customer == null) throw new ValidationException("指定的会员ID不存在！");
 
-        if (model.Amount == 0)
-        {
-            throw new ValidationException("充值金额不能为0！");
-        }
+        if (model.Amount == 0) throw new ValidationException("充值金额不能为0！");
 
-        decimal amount = model.Amount;
+        var amount = model.Amount;
 
-        CustomerChargeInfo customerCharge = new CustomerChargeInfo();
+        var customerCharge = new CustomerChargeInfo();
         customerCharge.ChargeType = CustomerChargeType.Manual;
         customerCharge.Customer = customer;
         customerCharge.Amount = model.Amount;
@@ -157,19 +148,10 @@ public class CustomerChargeController : Controller
 
         customerChargeService.CompleteCharge(customerCharge, amount, CustomerChargeType.Manual);
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "手工充值成功！" },
+            { "message", "手工充值成功！" }
         });
-    }
-
-    private class CustomerChargeImportItem
-    {
-        public string CustomerCode { get; set; } = String.Empty;
-
-        public CustomerInfo Customer { get; set; } = new CustomerInfo();
-
-        public decimal Amount { get; set; }
     }
 
     [HttpPost]
@@ -177,81 +159,54 @@ public class CustomerChargeController : Controller
     // 内部用事务处理
     public IActionResult Import(IFormFile excelFile)
     {
-        if (excelFile == null)
-        {
-            throw new ValidationException("导入失败，文件未上传！");
-        }
+        if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
 
-        int loginUserId = loginUserService.GetLoginUserId();
+        var loginUserId = loginUserService.GetLoginUserId();
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
-        ISheet sheet = workbook.GetSheetAt(0);
-        if (sheet == null)
-        {
-            throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
-        }
+        var sheet = workbook.GetSheetAt(0);
+        if (sheet == null) throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
 
         IList<CustomerChargeImportItem> importItemList = new List<CustomerChargeImportItem>();
 
         // 略过标题行，所以 rowIndex = 1 开始
-        int lastRowNum = sheet.LastRowNum;
-        for (int rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
+        var lastRowNum = sheet.LastRowNum;
+        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
         {
-            IRow row = sheet.GetRow(rowIndex);
+            var row = sheet.GetRow(rowIndex);
 
-            if (row == null)
-            {
-                break;
-            }
+            if (row == null) break;
 
             // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
-            int cellIndex = 0;
+            var cellIndex = 0;
             int lastCellNum = row.LastCellNum;
-            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++)
-            {
-                row.GetCell(cellIndex)?.SetCellType(CellType.String);
-            }
+            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++) row.GetCell(cellIndex)?.SetCellType(CellType.String);
 
             // 客户ID 充值金额
 
             cellIndex = 0;
 
-            CustomerChargeImportItem importItem = new CustomerChargeImportItem();
+            var importItem = new CustomerChargeImportItem();
 
             // 客户ID
-            string customerCode = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(customerCode))
-            {
-                break;
-            }
+            var customerCode = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(customerCode)) break;
 
             importItem.CustomerCode = customerCode;
-            int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCode);
-            if (customerId == 0)
-            {
-                throw new ValidationException($"导入的第 {rowIndex} 行，客户ID输入有误！");
-            }
+            var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCode);
+            if (customerId == 0) throw new ValidationException($"导入的第 {rowIndex} 行，客户ID输入有误！");
 
-            CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-            if (customer == null)
-            {
-                throw new ValidationException($"导入的第 {rowIndex} 行，指定的客户ID {customerCode} 不存在！");
-            }
+            var customer = session.Get<CustomerInfo>(customerId);
+            if (customer == null) throw new ValidationException($"导入的第 {rowIndex} 行，指定的客户ID {customerCode} 不存在！");
 
             importItem.Customer = customer;
 
             // 充值金额
-            string amountStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            var amountStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
 
-            if (decimal.TryParse(amountStr, out decimal amount) == false)
-            {
-                throw new ValidationException($"导入的第 {rowIndex} 行，充值金额输入有误！");
-            }
+            if (decimal.TryParse(amountStr, out var amount) == false) throw new ValidationException($"导入的第 {rowIndex} 行，充值金额输入有误！");
 
-            if (amount <= 0)
-            {
-                throw new ValidationException($"导入的第 {rowIndex} 行，充值金额应大于0！");
-            }
+            if (amount <= 0) throw new ValidationException($"导入的第 {rowIndex} 行，充值金额应大于0！");
 
             importItem.Amount = amount;
 
@@ -263,19 +218,16 @@ public class CustomerChargeController : Controller
         {
             transaction = session.BeginTransaction();
 
-            int dataIndex = 1;
-            foreach (CustomerChargeImportItem importItem in importItemList)
+            var dataIndex = 1;
+            foreach (var importItem in importItemList)
             {
-                CustomerInfo customer = importItem.Customer;
+                var customer = importItem.Customer;
 
-                if (customer == null)
-                {
-                    throw new ValidationException($"导入的第 {dataIndex} 行，编号为 {importItem.CustomerCode} 的会员不存在！");
-                }
+                if (customer == null) throw new ValidationException($"导入的第 {dataIndex} 行，编号为 {importItem.CustomerCode} 的会员不存在！");
 
-                decimal amount = importItem.Amount;
+                var amount = importItem.Amount;
 
-                CustomerChargeInfo customerCharge = new CustomerChargeInfo();
+                var customerCharge = new CustomerChargeInfo();
                 customerCharge.ChargeType = CustomerChargeType.Manual;
                 customerCharge.Customer = customer;
                 customerCharge.Amount = amount;
@@ -303,9 +255,18 @@ public class CustomerChargeController : Controller
             throw;
         }
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "导入成功！" },
+            { "message", "导入成功！" }
         });
+    }
+
+    private class CustomerChargeImportItem
+    {
+        public string CustomerCode { get; set; } = string.Empty;
+
+        public CustomerInfo Customer { get; set; } = new();
+
+        public decimal Amount { get; set; }
     }
 }

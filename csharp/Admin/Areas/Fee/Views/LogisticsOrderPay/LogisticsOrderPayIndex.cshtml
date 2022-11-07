@@ -1,10 +1,9 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay
+@using shunda.Admin.Areas.Fee.Models.LogisticsOrderPay
 @using shunda.Core
 @using shunda.Core.Web
 @using shunda.Domain.Fee
-@using shunda.Domain.Logistics
-@model shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay.LogisticsOrderPayIndexModel
+@model shunda.Admin.Areas.Fee.Models.LogisticsOrderPay.LogisticsOrderPayIndexModel
 
 @{
     ViewData[ViewDataKey.Title] = "实时收入";
@@ -22,7 +21,7 @@
     <label for="firstLogisticsModeTypeQuery">头程物流</label>&nbsp;
     <select id="firstLogisticsModeTypeQuery" name="firstLogisticsModeTypeQuery" style="width: 80px; height: 30px;">
         <option value="0">头程物流</option>
-        @foreach (LogisticsModeType modeType in Model.LogisticsModeTypeList)
+        @foreach (var modeType in Model.LogisticsModeTypeList)
         {
             <option value="@modeType.Id">@modeType.Name</option>
         }
@@ -44,7 +43,7 @@
 <div id="logisticsOrderPayList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderPayInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
 </div>
 
-<div id="dateStatList" data-page-index="0"  style="font-family: Consolas, monospace, 'Courier New', serif"></div>
+<div id="dateStatList" data-page-index="0" style="font-family: Consolas, monospace, 'Courier New', serif"></div>
 
 <script type="text/javascript">
 

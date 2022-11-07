@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Customer;
 
-namespace shunda.Admin.Areas.OrderFee.Models.CustomerCharge;
+namespace shunda.Admin.Areas.Fee.Models.CustomerCharge;
 
 public class CustomerChargeDetailModel
 {
@@ -13,7 +13,7 @@ public class CustomerChargeDetailModel
     public decimal Amount { get; set; } = 0;
 
     [Required(ErrorMessage = "手工充值原因不能为空！")]
-    public string ChargeReason { get; set; } = String.Empty;
+    public string ChargeReason { get; set; } = string.Empty;
 
     [BindNever]
     public IList<ManualChargeReasonInfo> ChargeReasonList { get; set; } = new List<ManualChargeReasonInfo>();

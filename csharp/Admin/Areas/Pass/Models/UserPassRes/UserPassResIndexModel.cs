@@ -8,5 +8,5 @@ public class UserPassResIndexModel
     public int UserId { get; set; }
 
     [BindNever]
-    public UserInfo User { get; set; } = new UserInfo();
+    public UserInfo User { get; set; } = new();
 }

@@ -12,5 +12,5 @@ public class StorageLocSpecDetailModel
     [BindNever]
     public IList<WebColor> ColorList { get; set; } = new List<WebColor>();
 
-    public StorageLocSpecInfo StorageLocSpec { get; set; } = new StorageLocSpecInfo();
+    public StorageLocSpecInfo StorageLocSpec { get; set; } = new();
 }

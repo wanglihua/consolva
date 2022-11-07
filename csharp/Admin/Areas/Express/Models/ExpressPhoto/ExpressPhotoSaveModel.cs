@@ -17,9 +17,9 @@ public class ExpressPhotoSaveModel
 
     // [Required(ErrorMessage = "图片储存路径不能为空！")]
     [Required(ErrorMessage = "图片不能为空！")]
-    public string StorePath { get; set; } = String.Empty;
+    public string StorePath { get; set; } = string.Empty;
 
     // [Required(ErrorMessage = "图片存储名称不能为空！")]
     [Required(ErrorMessage = "图片不能为空！")]
-    public string StoreName { get; set; } = String.Empty;
+    public string StoreName { get; set; } = string.Empty;
 }

@@ -1,78 +1,77 @@
 @{
     Layout = null;
 }
-
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsInsurance.LogisticsInsuranceListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsInsuranceList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsInsuranceList" })
 
 <table id="tblLogisticsInsuranceList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
-    <tr>
-        <th style="width: 40px; text-align: center;">
-            <label for="logisticsInsuranceCheckAll"></label><input id="logisticsInsuranceCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
-        </th>
-        <th style="width: 50px; text-align: center;">序号</th>
-        <th style="width: 200px;">
-            <a field="@(nameof(LogisticsInsuranceInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">名称</a>
-        </th>
-        <th style="width: 100px;">
-            <a field="@(nameof(LogisticsInsuranceInfo.CalcBaseType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">计算基数</a>
-        </th>
-        <th style="width: 100px; text-align: center;">
-            <a field="@(nameof(LogisticsInsuranceInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">费用类型</a>
-        </th>
-        <th style="width: 120px; text-align: right;">
-            <a field="@(nameof(LogisticsInsuranceInfo.FeeRate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">费率/金额</a>
-        </th>
-        <th style="width: 80px; text-align: center;">
-            <a field="@(nameof(LogisticsInsuranceInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">排序</a>
-        </th>
-        <th style="width: 80px; text-align: center;">
-            <a field="@(nameof(LogisticsInsuranceInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">状态</a>
-        </th>
-        <th style="width: 120px; text-align: center;">
-            <a field="@(nameof(LogisticsInsuranceInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">创建时间</a>
-        </th>
-        <th style="width: 120px; text-align: center;">
-            <a field="@(nameof(LogisticsInsuranceInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">修改时间</a>
-        </th>
-        <th></th>
-    </tr>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="logisticsInsuranceCheckAll"></label><input id="logisticsInsuranceCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 200px;">
+                <a field="@(nameof(LogisticsInsuranceInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">名称</a>
+            </th>
+            <th style="width: 100px;">
+                <a field="@(nameof(LogisticsInsuranceInfo.CalcBaseType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">计算基数</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(LogisticsInsuranceInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">费用类型</a>
+            </th>
+            <th style="width: 120px; text-align: right;">
+                <a field="@(nameof(LogisticsInsuranceInfo.FeeRate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">费率/金额</a>
+            </th>
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(LogisticsInsuranceInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">排序</a>
+            </th>
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(LogisticsInsuranceInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">状态</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(LogisticsInsuranceInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">创建时间</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(LogisticsInsuranceInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsInsuranceList">修改时间</a>
+            </th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
-    @if (Model.LogisticsInsuranceList != null && Model.LogisticsInsuranceList.Count() != 0)
-    {
-        int order = 1;
-        foreach (LogisticsInsuranceInfo logisticsInsurance in Model.LogisticsInsuranceList)
+        @if (Model.LogisticsInsuranceList != null && Model.LogisticsInsuranceList.Count() != 0)
         {
-            <tr ondblclick="showLogisticsInsuranceDetail(@(logisticsInsurance.Id));">
-                <td style="text-align: center;">
-                    <label for="logisticsInsuranceCheck_@(logisticsInsurance.Id)"></label><input id="logisticsInsuranceCheck_@(logisticsInsurance.Id)" type="checkbox" class="ace" value="@logisticsInsurance.Id"/><span class="lbl"></span>
+            var order = 1;
+            foreach (var logisticsInsurance in Model.LogisticsInsuranceList)
+            {
+                <tr ondblclick="showLogisticsInsuranceDetail(@(logisticsInsurance.Id));">
+                    <td style="text-align: center;">
+                        <label for="logisticsInsuranceCheck_@(logisticsInsurance.Id)"></label><input id="logisticsInsuranceCheck_@(logisticsInsurance.Id)" type="checkbox" class="ace" value="@logisticsInsurance.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@logisticsInsurance.Name</td>
+                    <td style="text-align: center;">@logisticsInsurance.CalcBaseType.Name</td>
+                    <td style="text-align: center;">@logisticsInsurance.Type.Name</td>
+                    <td style="text-align: right;">@logisticsInsurance.FeeRate.ToString("F2")</td>
+                    <td style="text-align: center;">@logisticsInsurance.OrderNum</td>
+                    <td style="text-align: center;">@logisticsInsurance.Status.Name</td>
+                    <td style="text-align: center;">@logisticsInsurance.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@logisticsInsurance.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
                 </td>
-                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                <td>@logisticsInsurance.Name</td>
-                <td style="text-align: center;">@logisticsInsurance.CalcBaseType.Name</td>
-                <td style="text-align: center;">@logisticsInsurance.Type.Name</td>
-                <td style="text-align: right;">@logisticsInsurance.FeeRate.ToString("F2")</td>
-                <td style="text-align: center;">@logisticsInsurance.OrderNum</td>
-                <td style="text-align: center;">@logisticsInsurance.Status.Name</td>
-                <td style="text-align: center;">@logisticsInsurance.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                <td style="text-align: center;">@logisticsInsurance.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                <td></td>
             </tr>
         }
-    }
-    else
-    {
-        <tr>
-            <td colspan="11">
-                暂时没有数据！
-            </td>
-        </tr>
-    }
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsInsuranceList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsInsuranceList" })

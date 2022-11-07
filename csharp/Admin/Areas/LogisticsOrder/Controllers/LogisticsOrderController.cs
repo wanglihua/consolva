@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Core.Web;
-using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;

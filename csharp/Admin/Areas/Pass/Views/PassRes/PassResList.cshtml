@@ -1,7 +1,6 @@
 @{
     Layout = null;
 }
-@using shunda.Domain.Pass
 @model shunda.Admin.Areas.Pass.Models.PassRes.PassResListModel
 
 @await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadPassResList" })
@@ -29,8 +28,8 @@
     <tbody>
         @if (Model.PassResList != null && Model.PassResList.Count() != 0)
         {
-            int order = 1;
-            foreach (PassResInfo passRes in Model.PassResList)
+            var order = 1;
+            foreach (var passRes in Model.PassResList)
             {
                 <tr ondblclick="showPassResDetail(@(passRes.Id));">
                     <td style="text-align: center;">

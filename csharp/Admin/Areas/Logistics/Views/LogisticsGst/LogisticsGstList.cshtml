@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="logisticsGstCheckAll"></label><input id="logisticsGstCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                <label for="logisticsGstCheckAll"></label><input id="logisticsGstCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 350px;">
@@ -43,18 +43,22 @@
     <tbody>
         @if (Model.GstList != null && Model.GstList.Count() != 0)
         {
-            int order = 1;
-            foreach (LogisticsGstInfo logisticsGst in Model.GstList)
+            var order = 1;
+            foreach (var logisticsGst in Model.GstList)
             {
                 <tr ondblclick="showLogisticsGstDetail(@(logisticsGst.Id));">
                     <td style="text-align: center;">
-                        <label for="logisticsGstCheck_@(logisticsGst.Id)"></label><input id="logisticsGstCheck_@(logisticsGst.Id)" type="checkbox" class="ace" value="@logisticsGst.Id" /><span class="lbl"></span>
+                        <label for="logisticsGstCheck_@(logisticsGst.Id)"></label><input id="logisticsGstCheck_@(logisticsGst.Id)" type="checkbox" class="ace" value="@logisticsGst.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td class="break-word">@logisticsGst.Name</td>
                     <td style="text-align: center;">@logisticsGst.CalcBaseType.Name</td>
-                    <td style="text-align: right;">@logisticsGst.StartAmount<span>&nbsp;</span><span>RMB</span></td>
-                    <td style="text-align: right;">@logisticsGst.FeeRate.ToString("#0.00")<span>&nbsp;</span><span>%</span></td>
+                    <td style="text-align: right;">
+                        @logisticsGst.StartAmount<span>&nbsp;</span><span>RMB</span>
+                    </td>
+                    <td style="text-align: right;">
+                        @logisticsGst.FeeRate.ToString("#0.00")<span>&nbsp;</span><span>%</span>
+                    </td>
                     <td style="text-align: center;">@logisticsGst.OrderNum</td>
                     <td style="text-align: center;">@logisticsGst.Status.Name</td>
                     <td style="text-align: center;">@logisticsGst.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>

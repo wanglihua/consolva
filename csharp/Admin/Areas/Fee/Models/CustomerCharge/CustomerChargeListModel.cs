@@ -1,7 +1,7 @@
 using shunda.Core;
 using shunda.Domain.Customer;
 
-namespace shunda.Admin.Areas.OrderFee.Models.CustomerCharge;
+namespace shunda.Admin.Areas.Fee.Models.CustomerCharge;
 
 public class CustomerChargeListModel : ListModel
 {

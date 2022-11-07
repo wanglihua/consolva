@@ -1,12 +1,11 @@
 @{
     Layout = null;
 }
-
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerAccountEntry.CustomerAccountEntryListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerAccountEntryList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerAccountEntryList" })
 
 <table id="tblCustomerAccountEntryList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -39,8 +38,8 @@
     <tbody>
         @if (Model.CustomerAccountEntryList != null && Model.CustomerAccountEntryList.Count() != 0)
         {
-            int order = 1;
-            foreach (CustomerAccountEntryInfo customerAccountEntry in Model.CustomerAccountEntryList)
+            var order = 1;
+            foreach (var customerAccountEntry in Model.CustomerAccountEntryList)
             {
                 <tr>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
@@ -70,4 +69,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerAccountEntryList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerAccountEntryList" })

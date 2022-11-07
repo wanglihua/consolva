@@ -2,9 +2,9 @@
     Layout = null;
 }
 @using shunda.Domain.Customer
-@model shunda.Admin.Areas.OrderFee.Models.ManualChargeReason.ManualChargeReasonListModel
+@model shunda.Admin.Areas.Fee.Models.ManualChargeReason.ManualChargeReasonListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualChargeReasonList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadManualChargeReasonList" })
 
 <table id="tblManualChargeReasonList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -31,8 +31,8 @@
     <tbody>
         @if (Model.ManualChargeReasonList != null && Model.ManualChargeReasonList.Count() != 0)
         {
-            int order = 1;
-            foreach (ManualChargeReasonInfo manualChargeReason in Model.ManualChargeReasonList)
+            var order = 1;
+            foreach (var manualChargeReason in Model.ManualChargeReasonList)
             {
                 <tr ondblclick="showManualChargeReasonDetail(@(manualChargeReason.Id));">
                     <td style="text-align: center;">
@@ -58,4 +58,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualChargeReasonList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadManualChargeReasonList" })

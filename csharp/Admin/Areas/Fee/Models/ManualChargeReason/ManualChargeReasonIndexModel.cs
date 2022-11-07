@@ -1,4 +1,4 @@
-namespace shunda.Admin.Areas.OrderFee.Models.ManualChargeReason;
+namespace shunda.Admin.Areas.Fee.Models.ManualChargeReason;
 
 public class ManualChargeReasonIndexModel
 {

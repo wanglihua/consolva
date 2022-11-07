@@ -1,7 +1,7 @@
 @{
     Layout = null;
 }
-@model shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay.LogisticsOrderPayDateStatListModel
+@model shunda.Admin.Areas.Fee.Models.LogisticsOrderPay.LogisticsOrderPayDateStatListModel
 
 <table id="tblDateStatList" class="data-list-table table table-striped table-bordered table-hover">
     <caption>按日期汇总</caption>
@@ -28,14 +28,14 @@
             </th>
             <th style="width: 110px; text-align: right;">
                 总金额
-            </th>            
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @if (Model.DateStatList != null && Model.DateStatList.Count != 0)
         {
-            int order = 1;
+            var order = 1;
             foreach (var  dateStat in Model.DateStatList)
             {
                 <tr>
@@ -64,4 +64,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadDateStatList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadDateStatList" })

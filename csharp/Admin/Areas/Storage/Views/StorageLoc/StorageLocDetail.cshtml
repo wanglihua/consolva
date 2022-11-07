@@ -1,4 +1,3 @@
-@using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.StorageLoc.StorageLocDetailModel
 @{
     Layout = null;
@@ -20,7 +19,7 @@
                             <div class="form-group">
                                 <label asp-for="StorageLoc.Name" class="col-xs-2 control-label">名称</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="StorageLoc.Name" type="text" class="input-sm form-control" disabled="disabled" />
+                                    <input asp-for="StorageLoc.Name" type="text" class="input-sm form-control" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -30,7 +29,8 @@
                                 <label asp-for="StorageLoc.RowNum" class="col-xs-2 control-label">层</label>
                                 <div class="col-xs-10">
                                     <select asp-for="StorageLoc.RowNum" class="input-sm form-control">
-                                        @for(int index = 1 ;index <= 10; index ++){
+                                        @for (var index = 1; index <= 10; index++)
+                                        {
                                             <option value="@index">@index</option>
                                         }
                                     </select>
@@ -43,7 +43,8 @@
                                 <label asp-for="StorageLoc.ColNum" class="col-xs-2 control-label">列</label>
                                 <div class="col-xs-10">
                                     <select asp-for="StorageLoc.ColNum" class="input-sm form-control">
-                                        @for(int index = 1 ;index <= 50; index ++){
+                                        @for (var index = 1; index <= 50; index++)
+                                        {
                                             <option value="@index">@index</option>
                                         }
                                     </select>
@@ -56,7 +57,7 @@
                                 <label asp-for="SpecId" class="col-xs-2 control-label">规格</label>
                                 <div class="col-xs-10">
                                     <select asp-for="SpecId" class="input-sm form-control">
-                                        @foreach (StorageLocSpecInfo storageLocSpecInfo in Model.StorageLocSpecList)
+                                        @foreach (var storageLocSpecInfo in Model.StorageLocSpecList)
                                         {
                                             <option value="@storageLocSpecInfo.Id">
                                                 @storageLocSpecInfo.Code&nbsp;@storageLocSpecInfo.Name&nbsp;
@@ -72,7 +73,7 @@
                                 <label asp-for="StorageLoc.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="StorageLoc.Status" class="input-sm form-control">
-                                        @foreach (StorageLocStatus storageLocStatus in Model.StorageLocStatusList)
+                                        @foreach (var storageLocStatus in Model.StorageLocStatusList)
                                         {
                                             <option value="@storageLocStatus.Id">@storageLocStatus.Name</option>
                                         }
@@ -89,7 +90,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label asp-for="StorageLoc.OffShelfOrderNum" class="col-xs-2 control-label">下架顺序</label>
@@ -97,7 +98,7 @@
                                     <input asp-for="StorageLoc.OffShelfOrderNum" type="text" class="input-sm form-control"/>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
 
                     </div>
                 </form>

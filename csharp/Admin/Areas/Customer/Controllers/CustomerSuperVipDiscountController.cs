@@ -23,10 +23,10 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerSuperVipDiscountController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
+    private readonly CustomerCodeService customerCodeService;
+    private readonly LoginUserService loginUserService;
 
-    private ISession session;
-    private CustomerCodeService customerCodeService;
-    private LoginUserService loginUserService;
+    private readonly ISession session;
 
     public CustomerSuperVipDiscountController(ISession session, CustomerCodeService customerCodeService, LoginUserService loginUserService)
     {
@@ -39,7 +39,7 @@ public class CustomerSuperVipDiscountController : Controller
     [Route("/admin/customer/super/vip/discount")]
     public IActionResult Index()
     {
-        CustomerSuperVipDiscountIndexModel model = new CustomerSuperVipDiscountIndexModel();
+        var model = new CustomerSuperVipDiscountIndexModel();
         return View("CustomerSuperVipDiscountIndex", model);
     }
 
@@ -47,25 +47,22 @@ public class CustomerSuperVipDiscountController : Controller
     [Route("/admin/customer/super/vip/discount/list")]
     public IActionResult List(CustomerSuperVipDiscountListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<CustomerSuperVipDiscountInfo> customerSuperVipDiscountList = GetListCriteria(queryParam)
+        var customerSuperVipDiscountList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerSuperVipDiscountInfo>();
 
-        foreach (CustomerSuperVipDiscountInfo customerSuperVipDiscount in customerSuperVipDiscountList)
-        {
-            customerSuperVipDiscount.CustomerCodeCache = customerCodeService.GetCustomerCode(customerSuperVipDiscount.Customer?.Id ?? 0);
-        }
+        foreach (var customerSuperVipDiscount in customerSuperVipDiscountList) customerSuperVipDiscount.CustomerCodeCache = customerCodeService.GetCustomerCode(customerSuperVipDiscount.Customer?.Id ?? 0);
 
-        CustomerSuperVipDiscountListModel model = new CustomerSuperVipDiscountListModel(listPager);
+        var model = new CustomerSuperVipDiscountListModel(listPager);
         model.CustomerSuperVipDiscountList = customerSuperVipDiscountList;
 
         return View("CustomerSuperVipDiscountList", model);
@@ -74,13 +71,13 @@ public class CustomerSuperVipDiscountController : Controller
     [NonAction]
     private ICriteria GetListCriteria(CustomerSuperVipDiscountListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<CustomerSuperVipDiscountInfo>();
+        var criteria = session.CreateCriteria<CustomerSuperVipDiscountInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCode) == false)
         {
-            int customerId = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCode);
+            var customerId = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCode);
             criteria = criteria.Add(Restrictions.Where<CustomerSuperVipDiscountInfo>(e => e.Customer.Id == customerId));
         }
 
@@ -95,7 +92,7 @@ public class CustomerSuperVipDiscountController : Controller
 
         CustomerSuperVipDiscountInfo customerSuperVipDiscount;
 
-        CustomerSuperVipDiscountDetailModel model = new CustomerSuperVipDiscountDetailModel();
+        var model = new CustomerSuperVipDiscountDetailModel();
 
         if (id == null || id.Value == 0)
         {
@@ -104,10 +101,7 @@ public class CustomerSuperVipDiscountController : Controller
         else
         {
             customerSuperVipDiscount = session.Get<CustomerSuperVipDiscountInfo>(id.Value);
-            if (customerSuperVipDiscount == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            if (customerSuperVipDiscount == null) throw new ValidationException("指定的数据项不存在！");
 
             customerSuperVipDiscount.CustomerCodeCache = customerCodeService.GetCustomerCode(customerSuperVipDiscount.Customer?.Id ?? 0);
         }
@@ -121,55 +115,40 @@ public class CustomerSuperVipDiscountController : Controller
     [Route("/admin/customer/super/vip/discount/save")]
     public IActionResult Save(CustomerSuperVipDiscountDetailModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        CustomerSuperVipDiscountInfo customerSuperVipDiscountFromUi = model.CustomerSuperVipDiscount;
-        int customerSuperVipDiscountId = customerSuperVipDiscountFromUi.Id;
+        var customerSuperVipDiscountFromUi = model.CustomerSuperVipDiscount;
+        var customerSuperVipDiscountId = customerSuperVipDiscountFromUi.Id;
 
-        int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerSuperVipDiscountFromUi.CustomerCodeCache);
-        if (customerId == 0)
-        {
-            throw new ValidationException("指定的客户ID格式不对或客户ID未指定！");
-        }
+        var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerSuperVipDiscountFromUi.CustomerCodeCache);
+        if (customerId == 0) throw new ValidationException("指定的客户ID格式不对或客户ID未指定！");
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
-            throw new ValidationException("指定的客户不存在！");
-        }
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) throw new ValidationException("指定的客户不存在！");
 
-        bool isCreate = customerSuperVipDiscountId == 0;
+        var isCreate = customerSuperVipDiscountId == 0;
 
         CustomerSuperVipDiscountInfo customerSuperVipDiscount;
 
         if (isCreate)
         {
-            CustomerSuperVipDiscountInfo? customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
+            var customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
                 .Where(e => e.Customer.Id == customerId)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (customerSuperVipDiscountExist != null)
-            {
-                throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
-            }
+            if (customerSuperVipDiscountExist != null) throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
 
             customerSuperVipDiscount = new CustomerSuperVipDiscountInfo();
         }
         else
         {
-            CustomerSuperVipDiscountInfo? customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
+            var customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
                 .Where(e => e.Customer.Id == customerId && e.Id != customerSuperVipDiscountId)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (customerSuperVipDiscountExist != null)
-            {
-                throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
-            }
+            if (customerSuperVipDiscountExist != null) throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
 
             customerSuperVipDiscount = session.Get<CustomerSuperVipDiscountInfo>(customerSuperVipDiscountId);
         }
@@ -180,17 +159,13 @@ public class CustomerSuperVipDiscountController : Controller
         customerSuperVipDiscount.User = session.Load<UserInfo>(loginUserService.GetLoginUserId());
 
         if (isCreate)
-        {
             session.Save(customerSuperVipDiscount);
-        }
         else
-        {
             session.Update(customerSuperVipDiscount);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -201,17 +176,17 @@ public class CustomerSuperVipDiscountController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            CustomerSuperVipDiscountInfo customerSuperVipDiscount = session.Load<CustomerSuperVipDiscountInfo>(id);
+            var customerSuperVipDiscount = session.Load<CustomerSuperVipDiscountInfo>(id);
             session.Delete(customerSuperVipDiscount);
         }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 
@@ -219,31 +194,31 @@ public class CustomerSuperVipDiscountController : Controller
     [Route("/admin/customer/super/vip/discount/export")]
     public IActionResult Export()
     {
-        string fileName = "超级VIP折扣.xlsx";
-        string sheetName = "超级VIP折扣";
+        var fileName = "超级VIP折扣.xlsx";
+        var sheetName = "超级VIP折扣";
 
         //NPOI.xs book = new NPOI.HSSF.UserModel.HSSFWorkbook();
         IWorkbook workbook = new XSSFWorkbook();
-        ISheet sheet = workbook.CreateSheet(sheetName);
+        var sheet = workbook.CreateSheet(sheetName);
 
         IList<CustomerSuperVipDiscountInfo> superVipDiscountList = session
             .Query<CustomerSuperVipDiscountInfo>()
             .OrderBy(e => e.Id)
             .ToList();
 
-        int rowHeight = 22;
-        ICellStyle headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
-        ICellStyle contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
+        var rowHeight = 22;
+        var headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
+        var contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
 
         // 会员 备注 折扣
 
-        int rowIndex = 0;
+        var rowIndex = 0;
 
-        IRow row = sheet.CreateRow(rowIndex++);
+        var row = sheet.CreateRow(rowIndex++);
         row.HeightInPoints = rowHeight;
 
-        int cellIndex = 0;
-        ICell cell = row.CreateCell(cellIndex++);
+        var cellIndex = 0;
+        var cell = row.CreateCell(cellIndex++);
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell.CellStyle = headerCellStyle;
         cell.SetCellType(CellType.String);
@@ -261,7 +236,7 @@ public class CustomerSuperVipDiscountController : Controller
         cell.SetCellType(CellType.String);
         cell.SetCellValue("折扣%");
 
-        foreach (CustomerSuperVipDiscountInfo superVipDiscount in superVipDiscountList)
+        foreach (var superVipDiscount in superVipDiscountList)
         {
             row = sheet.CreateRow(rowIndex++);
             row.HeightInPoints = rowHeight;
@@ -287,7 +262,7 @@ public class CustomerSuperVipDiscountController : Controller
             cell.SetCellValue(superVipDiscount.Discount.ToString("#0.00"));
         }
 
-        MemoryStream memoryStream = new MemoryStream();
+        var memoryStream = new MemoryStream();
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
@@ -299,45 +274,33 @@ public class CustomerSuperVipDiscountController : Controller
     [Transactional]
     public IActionResult Import(IFormFile excelFile)
     {
-        if (excelFile == null)
-        {
-            throw new ValidationException("导入失败，文件未上传！");
-        }
+        if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
-        ISheet sheet = workbook.GetSheetAt(0);
-        if (sheet == null)
-        {
-            throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
-        }
+        var sheet = workbook.GetSheetAt(0);
+        if (sheet == null) throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
 
-        UserInfo user = session.Load<UserInfo>(loginUserService.GetLoginUserId());
+        var user = session.Load<UserInfo>(loginUserService.GetLoginUserId());
 
         IList<CustomerSuperVipDiscountInfo> superVipDiscountList = new List<CustomerSuperVipDiscountInfo>();
 
         // 会员  备注  折扣 
 
         // 略过标题行，所以 rowIndex = 1 开始
-        int lastRowNum = sheet.LastRowNum;
-        for (int rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
+        var lastRowNum = sheet.LastRowNum;
+        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
         {
-            IRow row = sheet.GetRow(rowIndex);
+            var row = sheet.GetRow(rowIndex);
 
-            if (row == null)
-            {
-                break;
-            }
+            if (row == null) break;
 
             // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
-            int cellIndex = 0;
+            var cellIndex = 0;
             int lastCellNum = row.LastCellNum;
             for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++)
             {
-                ICell cell = row.GetCell(cellIndex);
-                if (cell == null)
-                {
-                    cell = row.CreateCell(cellIndex);
-                }
+                var cell = row.GetCell(cellIndex);
+                if (cell == null) cell = row.CreateCell(cellIndex);
 
                 cell?.SetCellType(CellType.String);
             }
@@ -345,41 +308,26 @@ public class CustomerSuperVipDiscountController : Controller
             cellIndex = 0;
 
             // 会员
-            string customerIdStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(customerIdStr))
-            {
-                break;
-            }
+            var customerIdStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(customerIdStr)) break;
 
-            int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerIdStr);
-            if (customerId == 0)
-            {
-                throw new ValidationException($"第{rowIndex}行数据 会员 数据格式有误，导入失败！");
-            }
+            var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerIdStr);
+            if (customerId == 0) throw new ValidationException($"第{rowIndex}行数据 会员 数据格式有误，导入失败！");
 
-            CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-            if (customer == null)
-            {
-                throw new ValidationException($"第{rowIndex}行数据 会员 不存在，导入失败！");
-            }
+            var customer = session.Get<CustomerInfo>(customerId);
+            if (customer == null) throw new ValidationException($"第{rowIndex}行数据 会员 不存在，导入失败！");
 
             // 备注
-            string description = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            var description = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
 
             // 折扣
-            string mallDiscountStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(mallDiscountStr))
-            {
-                throw new ValidationException($"第{rowIndex}行数据 折扣 不能为空，导入失败！");
-            }
+            var mallDiscountStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(mallDiscountStr)) throw new ValidationException($"第{rowIndex}行数据 折扣 不能为空，导入失败！");
 
-            if (decimal.TryParse(mallDiscountStr, out decimal discount) == false)
-            {
-                throw new ValidationException($"第{rowIndex}行数据 折扣 数据格式有误 不能为空，导入失败！");
-            }
+            if (decimal.TryParse(mallDiscountStr, out var discount) == false) throw new ValidationException($"第{rowIndex}行数据 折扣 数据格式有误 不能为空，导入失败！");
 
 
-            CustomerSuperVipDiscountInfo customerSuperVipDiscount = new CustomerSuperVipDiscountInfo();
+            var customerSuperVipDiscount = new CustomerSuperVipDiscountInfo();
             customerSuperVipDiscount.Customer = customer;
             customerSuperVipDiscount.Description = description;
             customerSuperVipDiscount.Discount = discount;
@@ -388,9 +336,9 @@ public class CustomerSuperVipDiscountController : Controller
             superVipDiscountList.Add(customerSuperVipDiscount);
         }
 
-        foreach (CustomerSuperVipDiscountInfo discount in superVipDiscountList)
+        foreach (var discount in superVipDiscountList)
         {
-            CustomerSuperVipDiscountInfo? vipDiscountInDb = session.Query<CustomerSuperVipDiscountInfo>()
+            var vipDiscountInDb = session.Query<CustomerSuperVipDiscountInfo>()
                 .Where(e => e.Customer.Id == discount.Customer.Id)
                 .Take(1)
                 .SingleOrDefault();
@@ -408,9 +356,9 @@ public class CustomerSuperVipDiscountController : Controller
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "导入成功！" },
+            { "message", "导入成功！" }
         });
     }
 }

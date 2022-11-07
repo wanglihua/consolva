@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="adminCheckAll"></label><input id="adminCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                <label for="adminCheckAll"></label><input id="adminCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 120px;">
@@ -28,12 +28,12 @@
     <tbody>
         @if (Model.AdminList != null && Model.AdminList.Count() != 0)
         {
-            int order = 1;
-            foreach (AdminInfo admin in Model.AdminList)
+            var order = 1;
+            foreach (var admin in Model.AdminList)
             {
                 <tr>
                     <td style="text-align: center;">
-                        <label for="adminCheck_@(admin.Id)"></label><input id="adminCheck_@(admin.Id)" type="checkbox" class="ace" value="@admin.Id" /><span class="lbl"></span>
+                        <label for="adminCheck_@(admin.Id)"></label><input id="adminCheck_@(admin.Id)" type="checkbox" class="ace" value="@admin.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td>@admin.User.LoginName</td>

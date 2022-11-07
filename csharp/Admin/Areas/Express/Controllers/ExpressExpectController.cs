@@ -14,16 +14,19 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Express.Controllers;
 
 /// <summary>
-/// 快递单号预报 控制器
+///     快递单号预报 控制器
 /// </summary>
 [ExpressArea]
 [AdminAuth(PassRes.Express.ExpressExpect)]
 public class ExpressExpectController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
+    private CustomerInfo? customerAlias = null;
+    private readonly CustomerCodeService customerCodeService;
 
-    private ISession session;
-    private CustomerCodeService customerCodeService;
+    private ExpressExpectInfo? expressExpectAlias = null;
+
+    private readonly ISession session;
 
     public ExpressExpectController(ISession session, CustomerCodeService customerCodeService)
     {
@@ -35,7 +38,7 @@ public class ExpressExpectController : Controller
     [Route("/admin/express/express/expect")]
     public IActionResult Index()
     {
-        ExpressExpectIndexModel model = new ExpressExpectIndexModel();
+        var model = new ExpressExpectIndexModel();
 
         model.StatusList = ExpressExpectStatus.GetList();
 
@@ -46,35 +49,28 @@ public class ExpressExpectController : Controller
     [Route("/admin/express/express/expect/list")]
     public IActionResult List(ExpressExpectListQueryParam queryParam)
     {
-        int totalCount = GetQueryOver(queryParam)
+        var totalCount = GetQueryOver(queryParam)
             .Select(Projections.Count<ExpressExpectInfo>(e => expressExpectAlias!.Id))
             .SingleOrDefault<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
         var listQuery = GetQueryOver(queryParam);
         if (listPager.IsAscending)
-        {
             listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        }
         else
-        {
             listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
 
         listQuery = listQuery.ThenByAlias(() => expressExpectAlias!.Id).Desc;
 
-        IList<ExpressExpectInfo> expressExpectList = listQuery
+        var expressExpectList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
             .List<ExpressExpectInfo>();
 
-        foreach (ExpressExpectInfo expressExpect in expressExpectList)
-        {
-            expressExpect.CustomerCodeCache = customerCodeService.GetCustomerCode(expressExpect.Customer.Id);
-        }
+        foreach (var expressExpect in expressExpectList) expressExpect.CustomerCodeCache = customerCodeService.GetCustomerCode(expressExpect.Customer.Id);
 
-        ExpressExpectListModel model = new ExpressExpectListModel(listPager);
+        var model = new ExpressExpectListModel(listPager);
         model.ExpressExpectList = expressExpectList;
 
         model.ExpressExpectAlias = nameof(expressExpectAlias);
@@ -84,27 +80,23 @@ public class ExpressExpectController : Controller
         return View("ExpressExpectList", model);
     }
 
-    private ExpressExpectInfo? expressExpectAlias = null;
-    private CustomerInfo? customerAlias = null;
-
     [NonAction]
     private IQueryOver<ExpressExpectInfo, ExpressExpectInfo> GetQueryOver(ExpressExpectListQueryParam queryParam)
     {
-        var query = session.QueryOver<ExpressExpectInfo>(() => expressExpectAlias!);
-            // .JoinAlias(() => expressExpectAlias!.Customer, () => customerAlias); 不加这个感觉也可以
+        var query = session.QueryOver(() => expressExpectAlias!);
+        // .JoinAlias(() => expressExpectAlias!.Customer, () => customerAlias); 不加这个感觉也可以
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
         {
-            int customerId = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery.Trim());
+            var customerId = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery.Trim());
             query = query.Where(e => expressExpectAlias!.Customer.Id == customerId);
-
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
         {
-            string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
+            var trackingNoQuery = queryParam.TrackingNoQuery.Trim();
             query = query.Where(e => expressExpectAlias!.TrackingNo == trackingNoQuery);
-        }        
+        }
 
         return query;
     }

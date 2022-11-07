@@ -14,7 +14,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [AdminAuth(PassRes.Logistics.ExpressReturnFeeRate)]
 public class ExpressReturnFeeRateController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public ExpressReturnFeeRateController(ISession session)
     {
@@ -25,9 +25,9 @@ public class ExpressReturnFeeRateController : Controller
     [Route("/admin/express/return/fee/rate")]
     public IActionResult Index()
     {
-        ExpressReturnFeeRateIndexModel model = new ExpressReturnFeeRateIndexModel();
+        var model = new ExpressReturnFeeRateIndexModel();
 
-        ExpressReturnFeeRateInfo? expressReturnFeeRate = session.Query<ExpressReturnFeeRateInfo>()
+        var expressReturnFeeRate = session.Query<ExpressReturnFeeRateInfo>()
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -42,27 +42,21 @@ public class ExpressReturnFeeRateController : Controller
     [Transactional]
     public IActionResult Save(ExpressReturnFeeRateIndexModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        ExpressReturnFeeRateInfo? expressReturnFeeRate = session.Query<ExpressReturnFeeRateInfo>()
+        var expressReturnFeeRate = session.Query<ExpressReturnFeeRateInfo>()
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
 
-        if (expressReturnFeeRate == null)
-        {
-            expressReturnFeeRate = new ExpressReturnFeeRateInfo();
-        }
+        if (expressReturnFeeRate == null) expressReturnFeeRate = new ExpressReturnFeeRateInfo();
 
         expressReturnFeeRate.FeePerExpress = model.FeePerExpress;
 
         session.SaveOrUpdate(expressReturnFeeRate);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });

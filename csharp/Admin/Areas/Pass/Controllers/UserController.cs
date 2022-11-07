@@ -16,8 +16,8 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 [PassArea]
 public class UserController : Controller
 {
-    private ISession session;
-    private PasswordService passwordService;
+    private readonly PasswordService passwordService;
+    private readonly ISession session;
 
     public UserController(ISession session, PasswordService passwordService)
     {
@@ -29,7 +29,7 @@ public class UserController : Controller
     [Route("/admin/user")]
     public IActionResult Index()
     {
-        UserIndexModel model = new UserIndexModel();
+        var model = new UserIndexModel();
         return View("UserIndex", model);
     }
 
@@ -37,33 +37,29 @@ public class UserController : Controller
     [Route("/admin/user/list")]
     public IActionResult List(UserListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
         var listCriteria = GetListCriteria(queryParam);
 
         if (listPager.SortField != nameof(UserInfo.Status))
-        {
             listCriteria = listCriteria
                 .AddOrder(new Order(nameof(UserInfo.Status), true))
                 .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
                 .AddOrder(Order.Desc(nameof(Entity.Id)));
-        }
         else
-        {
             listCriteria = listCriteria.AddOrder(new Order(listPager.SortField, listPager.IsAscending))
                 .AddOrder(Order.Desc(nameof(Entity.Id)));
-        }
 
-        IList<UserInfo> userList = listCriteria
+        var userList = listCriteria
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<UserInfo>();
 
-        UserListModel model = new UserListModel(listPager);
+        var model = new UserListModel(listPager);
         model.UserList = userList;
 
         return View("UserList", model);
@@ -72,21 +68,21 @@ public class UserController : Controller
     [NonAction]
     private ICriteria GetListCriteria(UserListQueryParam queryParam)
     {
-        ICriteria criteria = this.session.CreateCriteria<UserInfo>();
+        var criteria = session.CreateCriteria<UserInfo>();
         criteria = criteria.SetReadOnly(true);
 
-        string devLoginName = UserInfo.DevLoginName;
+        var devLoginName = UserInfo.DevLoginName;
         criteria = criteria.Add(Restrictions.Where<UserInfo>(e => e.LoginName != devLoginName));
 
         if (string.IsNullOrWhiteSpace(queryParam.LoginNameQuery) == false)
         {
-            string loginNameQuery = queryParam.LoginNameQuery.Trim();
+            var loginNameQuery = queryParam.LoginNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<UserInfo>(e => e.LoginName).IsInsensitiveLike(loginNameQuery, MatchMode.Anywhere));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
         {
-            string userNameQuery = queryParam.UserNameQuery.Trim();
+            var userNameQuery = queryParam.UserNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<UserInfo>(e => e.UserName).IsInsensitiveLike(userNameQuery, MatchMode.Anywhere));
         }
 
@@ -105,14 +101,11 @@ public class UserController : Controller
         }
         else
         {
-            user = this.session.Get<UserInfo>(id.Value);
-            if (user == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
+            user = session.Get<UserInfo>(id.Value);
+            if (user == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        UserDetailModel model = new UserDetailModel();
+        var model = new UserDetailModel();
         model.UserId = user.Id;
         model.LoginName = user.LoginName;
         model.UserName = user.UserName;
@@ -126,19 +119,13 @@ public class UserController : Controller
     [Transactional]
     public IActionResult Save(UserDetailModel model)
     {
-        int userId = model.UserId;
+        var userId = model.UserId;
 
-        bool isCreate = userId == 0;
+        var isCreate = userId == 0;
 
-        if (isCreate && string.IsNullOrWhiteSpace(model.Password))
-        {
-            this.ModelState.AddModelError(nameof(UserInfo.Password), "密码不能为空！");
-        }
+        if (isCreate && string.IsNullOrWhiteSpace(model.Password)) ModelState.AddModelError(nameof(UserInfo.Password), "密码不能为空！");
 
-        if (!this.ModelState.IsValid)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         UserInfo user;
 
@@ -149,30 +136,23 @@ public class UserController : Controller
         }
         else
         {
-            user = this.session.Get<UserInfo>(userId);
+            user = session.Get<UserInfo>(userId);
         }
 
         user.LoginName = model.LoginName;
         user.UserName = model.UserName;
         // user.LastLoginTime = DateTime.Now;
 
-        if (string.IsNullOrWhiteSpace(model.Password) == false)
-        {
-            user.Password = this.passwordService.Encrypt(model.Password.Trim()); //略去密码的前后端的空格
-        }
+        if (string.IsNullOrWhiteSpace(model.Password) == false) user.Password = passwordService.Encrypt(model.Password.Trim()); //略去密码的前后端的空格
 
         if (isCreate)
-        {
             session.Save(user);
-        }
         else
-        {
             session.Update(user);
-        }
 
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
         });
@@ -185,17 +165,17 @@ public class UserController : Controller
     {
         // throw new ValidationException("出错了，测试用的！");
 
-        foreach (int id in idList)
+        foreach (var id in idList)
         {
-            UserInfo user = this.session.Load<UserInfo>(id);
-            this.session.Delete(user);
+            var user = session.Load<UserInfo>(id);
+            session.Delete(user);
         }
 
-        this.session.Flush();
+        session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "删除成功！" },
+            { "message", "删除成功！" }
         });
     }
 
@@ -204,26 +184,20 @@ public class UserController : Controller
     [Transactional]
     public IActionResult Unfreeze(int id)
     {
-        int userId = id;
+        var userId = id;
 
-        UserInfo userInfo = session.Get<UserInfo>(userId);
-        if (userInfo == null)
-        {
-            throw new ValidationException("指定的用户不存在！");
-        }
+        var userInfo = session.Get<UserInfo>(userId);
+        if (userInfo == null) throw new ValidationException("指定的用户不存在！");
 
-        if (userInfo.Status != UserStatus.Frozen)
-        {
-            throw new ValidationException("用户当前不是冻结状态！");
-        }
+        if (userInfo.Status != UserStatus.Frozen) throw new ValidationException("用户当前不是冻结状态！");
 
         userInfo.Status = UserStatus.Normal;
         session.Update(userInfo);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "用户解冻成功！" },
+            { "message", "用户解冻成功！" }
         });
     }
 
@@ -232,26 +206,20 @@ public class UserController : Controller
     [Transactional]
     public IActionResult Freeze(int id)
     {
-        int userId = id;
+        var userId = id;
 
-        UserInfo userInfo = session.Get<UserInfo>(userId);
-        if (userInfo == null)
-        {
-            throw new ValidationException("指定的用户不存在！");
-        }
+        var userInfo = session.Get<UserInfo>(userId);
+        if (userInfo == null) throw new ValidationException("指定的用户不存在！");
 
-        if (userInfo.Status == UserStatus.Frozen)
-        {
-            throw new ValidationException("用户已经是冻结状态！");
-        }
+        if (userInfo.Status == UserStatus.Frozen) throw new ValidationException("用户已经是冻结状态！");
 
         userInfo.Status = UserStatus.Frozen;
         session.Update(userInfo);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "用户冻结成功！" },
+            { "message", "用户冻结成功！" }
         });
     }
 }

@@ -1,8 +1,8 @@
+@using shunda.Admin.Areas.Express.Models.ExpressExpect
 @using shunda.Core
 @using shunda.Core.Web
 @using shunda.Domain.Express
-@model ExpressExpectIndexModel
-@using shunda.Admin.Areas.Express.Models.ExpressExpect
+@model shunda.Admin.Areas.Express.Models.ExpressExpect.ExpressExpectIndexModel
 @{
     ViewData[ViewDataKey.Title] = "预报单号";
     Layout = "_AdminLayout";
@@ -15,7 +15,7 @@
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
     <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询" autocomplete="off"/>&nbsp;
-    <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" style="width: 180px; height: 30px;" placeholder="快递单号查询" autocomplete="off"/>&nbsp;    
+    <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" style="width: 180px; height: 30px;" placeholder="快递单号查询" autocomplete="off"/>&nbsp;
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressExpectList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>

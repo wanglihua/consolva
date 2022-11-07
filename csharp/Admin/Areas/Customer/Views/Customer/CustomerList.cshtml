@@ -1,12 +1,11 @@
 @{
     Layout = null;
 }
-
 @using shunda.Core.Web
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.Customer.CustomerListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerList" })
 
 <table id="tblCustomerList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -68,8 +67,8 @@
     <tbody>
         @if (Model.CustomerList != null && Model.CustomerList.Count() != 0)
         {
-            int order = 1;
-            foreach (CustomerInfo customer in Model.CustomerList)
+            var order = 1;
+            foreach (var customer in Model.CustomerList)
             {
                 <tr ondblclick="showCustomerDetail(@customer.Id)">
                     <td style="text-align: center;">
@@ -106,7 +105,7 @@
                             @(customer.Level.Name)
                         </div>
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = customer.Id})">查看详细</a>
+                            <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = customer.Id })">查看详细</a>
                         </div>
                     </td>
 
@@ -168,12 +167,12 @@
 
                     <td style="text-align: center;">
                         <div>
-                            <a target="_blank" href="@Url.Action("Index", "CustomerAddress", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;客户地址</a>&nbsp;
-                            <a target="_blank" href="@Url.Action("Index", "CustomerAccountEntryCustomer", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;余额明细</a>
+                            <a target="_blank" href="@Url.Action("Index", "CustomerAddress", new { customerId = customer.Id })"><i class="fa fa-bars"></i>&nbsp;客户地址</a>&nbsp;
+                            <a target="_blank" href="@Url.Action("Index", "CustomerAccountEntryCustomer", new { customerId = customer.Id })"><i class="fa fa-bars"></i>&nbsp;余额明细</a>
                         </div>
                         <div>
-                            <a target="_blank" href="@Url.Action("Index", "LogisticsOrderPayCustomer", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;支付明细</a>&nbsp;
-                            <a target="_blank" href="@Url.Action("Index", "CustomerScoreLogCustomer", new {customerId = customer.Id})"><i class="fa fa-bars"></i>&nbsp;积分明细</a>
+                            <a target="_blank" href="@Url.Action("Index", "LogisticsOrderPayCustomer", new { customerId = customer.Id })"><i class="fa fa-bars"></i>&nbsp;支付明细</a>&nbsp;
+                            <a target="_blank" href="@Url.Action("Index", "CustomerScoreLogCustomer", new { customerId = customer.Id })"><i class="fa fa-bars"></i>&nbsp;积分明细</a>
                         </div>
                     </td>
 
@@ -192,4 +191,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerList" })

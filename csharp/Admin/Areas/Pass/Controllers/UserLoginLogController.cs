@@ -13,7 +13,7 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 [PassArea]
 public class UserLoginLogController : Controller
 {
-    private ISession session;
+    private readonly ISession session;
 
     public UserLoginLogController(ISession session)
     {
@@ -24,7 +24,7 @@ public class UserLoginLogController : Controller
     [Route("/admin/user/login/log")]
     public IActionResult Index()
     {
-        UserLoginLogIndexModel model = new UserLoginLogIndexModel();
+        var model = new UserLoginLogIndexModel();
         return View("UserLoginLogIndex", model);
     }
 
@@ -32,25 +32,25 @@ public class UserLoginLogController : Controller
     [Route("/admin/user/login/log/list")]
     public IActionResult List(UserLoginLogListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<UserLoginLogInfo> userLoginLogList = GetListCriteria(queryParam)
+        var userLoginLogList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<UserLoginLogInfo>();
 
-        foreach (UserLoginLogInfo userLoginLogInfo in userLoginLogList)
+        foreach (var userLoginLogInfo in userLoginLogList)
         {
             // userLoginLogInfo
         }
 
-        UserLoginLogListModel model = new UserLoginLogListModel(listPager);
+        var model = new UserLoginLogListModel(listPager);
         model.UserLoginLogList = userLoginLogList;
 
         return View("UserLoginLogList", model);
@@ -59,12 +59,12 @@ public class UserLoginLogController : Controller
     [NonAction]
     private ICriteria GetListCriteria(UserLoginLogListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<UserLoginLogInfo>();
+        var criteria = session.CreateCriteria<UserLoginLogInfo>();
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.CreateAlias(nameof(UserLoginLogInfo.User), nameof(UserLoginLogInfo.User));
 
-        string userQuery = queryParam.UserQuery ?? string.Empty;
+        var userQuery = queryParam.UserQuery ?? string.Empty;
         if (string.IsNullOrWhiteSpace(userQuery) == false)
         {
             userQuery = userQuery.Trim();

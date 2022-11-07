@@ -1,8 +1,6 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.SqlCommand;
 using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -12,10 +10,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
-using shunda.Domain.Order;
-using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
-using shunda.Domain.Storage;
 using shunda.Service;
 using shunda.Service.Customer;
 using shunda.Service.Pass;
@@ -27,15 +22,15 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [AdminAuth(PassRes.Customer.CustomerList)]
 public class CustomerController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static readonly int NoVipRankId = -100;
     public static readonly int SuperVipRankId = -200;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly LoginUserService loginUserService;
+    private readonly PasswordService passwordService;
 
-    private ISession session;
-    private CustomerCodeService customerCodeService;
-    private LoginUserService loginUserService;
-    private PasswordService passwordService;
+    private readonly ISession session;
 
     public CustomerController(ISession session,
         CustomerCodeService customerCodeService,
@@ -53,24 +48,21 @@ public class CustomerController : Controller
     [Route("/admin/customer")]
     public IActionResult Index()
     {
-        CustomerIndexModel model = new CustomerIndexModel();
+        var model = new CustomerIndexModel();
 
         IList<Tuple<int, string>> vipLevelList = new List<Tuple<int, string>>();
         vipLevelList.Add(Tuple.Create(NoVipRankId, "无VIP"));
         vipLevelList.Add(Tuple.Create(SuperVipRankId, "超级VIP"));
 
         IList<CustomerVipDiscountInfo> customerVipDiscountList = session.Query<CustomerVipDiscountInfo>().OrderBy(e => e.Id).ToList();
-        foreach (var customerVipDiscount in customerVipDiscountList)
-        {
-            vipLevelList.Add(Tuple.Create(customerVipDiscount.Rank.Id, customerVipDiscount.Rank.Name));
-        }
+        foreach (var customerVipDiscount in customerVipDiscountList) vipLevelList.Add(Tuple.Create(customerVipDiscount.Rank.Id, customerVipDiscount.Rank.Name));
 
         model.VipLevelList = vipLevelList;
         model.StatusList = CustomerStatus.GetList();
         model.CharacterList = session.Query<CustomerCharacterInfo>().OrderBy(e => e.Content).ToList();
 
-        bool isAdmin = loginUserService.IsAdmin;
-        Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
+        var isAdmin = loginUserService.IsAdmin;
+        var passResIdMap = loginUserService.GetPassResIdMap();
         model.CanImportTestCustomer = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Customer.ImportTestCustomer);
 
         return View("CustomerIndex", model);
@@ -80,25 +72,22 @@ public class CustomerController : Controller
     [Route("/admin/customer/list")]
     public IActionResult List(CustomerListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(queryParam)
+        var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
 
-        ListPager listPager = new ListPager(queryParam, totalCount);
+        var listPager = new ListPager(queryParam, totalCount);
 
-        IList<CustomerInfo> customerList = GetListCriteria(queryParam)
+        var customerList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerInfo>();
 
-        foreach (CustomerInfo customer in customerList)
-        {
-            customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
-        }
+        foreach (var customer in customerList) customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
 
-        CustomerListModel model = new CustomerListModel(listPager);
+        var model = new CustomerListModel(listPager);
         model.CustomerList = customerList;
 
         return View("CustomerList", model);
@@ -107,19 +96,19 @@ public class CustomerController : Controller
     [NonAction]
     private ICriteria GetListCriteria(CustomerListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<CustomerInfo>();
+        var criteria = session.CreateCriteria<CustomerInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
         {
-            int customerId = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
+            var customerId = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Id == customerId));
         }
 
         if ((queryParam.VipLevelQuery ?? 0) != 0)
         {
-            int vipLevelQuery = queryParam.VipLevelQuery ?? 0;
+            var vipLevelQuery = queryParam.VipLevelQuery ?? 0;
 
             if (vipLevelQuery == NoVipRankId)
             {
@@ -131,32 +120,29 @@ public class CustomerController : Controller
             }
             else
             {
-                CustomerVipRank vipRank = CustomerVipRank.GetById(vipLevelQuery);
+                var vipRank = CustomerVipRank.GetById(vipLevelQuery);
                 criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Level == CustomerLevel.Vip && e.VipRank == vipRank));
             }
         }
 
-        CustomerStatus statusQuery = queryParam.StatusQuery ?? CustomerStatus.None;
-        if (statusQuery != CustomerStatus.None)
-        {
-            criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Status == statusQuery));
-        }
+        var statusQuery = queryParam.StatusQuery ?? CustomerStatus.None;
+        if (statusQuery != CustomerStatus.None) criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Status == statusQuery));
 
         if (queryParam.BeginDateQuery != null)
         {
-            DateTime beginDateQueryValue = queryParam.BeginDateQuery.Value;
+            var beginDateQueryValue = queryParam.BeginDateQuery.Value;
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.RegTime >= beginDateQueryValue));
         }
 
         if (queryParam.EndDateQuery != null)
         {
-            DateTime endDateQueryValue = queryParam.EndDateQuery.Value.AddDays(1);
+            var endDateQueryValue = queryParam.EndDateQuery.Value.AddDays(1);
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.RegTime < endDateQueryValue));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CharacterQuery) == false)
         {
-            string characterQuery = queryParam.CharacterQuery.Trim();
+            var characterQuery = queryParam.CharacterQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.CustomerCharacter == characterQuery));
         }
 
@@ -168,15 +154,12 @@ public class CustomerController : Controller
     [AdminAuth(PassRes.Customer.CustomerList)]
     public IActionResult Detail(int id)
     {
-        int customerId = id;
+        var customerId = id;
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
-            throw new ValidationException("指定的数据项不存在！");
-        }
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) throw new ValidationException("指定的数据项不存在！");
 
-        CustomerDetailModel model = new CustomerDetailModel();
+        var model = new CustomerDetailModel();
         model.Customer = customer;
 
         /*
@@ -361,17 +344,14 @@ public class CustomerController : Controller
         }
         */
 
-        bool isAdmin = loginUserService.IsAdmin;
-        Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
+        var isAdmin = loginUserService.IsAdmin;
+        var passResIdMap = loginUserService.GetPassResIdMap();
         model.CanFreezeCustomer = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Customer.CustomerFreeze);
         model.CanResetPassword = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Customer.CustomerResetPassword);
         model.CanEditCharacter = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Customer.CustomerCharacter);
 
         IList<CustomerCharacterInfo> customerCharacterList = session.Query<CustomerCharacterInfo>().ToList();
-        if (customerCharacterList.Where(e => e.Content == customer.CustomerCharacter).Count() == 0)
-        {
-            customerCharacterList.Insert(0, new CustomerCharacterInfo() { Content = customer.CustomerCharacter });
-        }
+        if (customerCharacterList.Where(e => e.Content == customer.CustomerCharacter).Count() == 0) customerCharacterList.Insert(0, new CustomerCharacterInfo { Content = customer.CustomerCharacter });
 
         model.CustomerCharacterList = customerCharacterList;
 
@@ -385,26 +365,20 @@ public class CustomerController : Controller
     [Transactional]
     public IActionResult Unfreeze(int id)
     {
-        int customerId = id;
+        var customerId = id;
 
-        CustomerInfo customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null)
-        {
-            throw new ValidationException("指定的客户不存在！");
-        }
+        var customerInfo = session.Get<CustomerInfo>(customerId);
+        if (customerInfo == null) throw new ValidationException("指定的客户不存在！");
 
-        if (customerInfo.Status != CustomerStatus.Frozen)
-        {
-            throw new ValidationException("客户当前不是冻结状态！");
-        }
+        if (customerInfo.Status != CustomerStatus.Frozen) throw new ValidationException("客户当前不是冻结状态！");
 
         customerInfo.Status = CustomerStatus.Normal;
         session.Update(customerInfo);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "客户解冻成功！" },
+            { "message", "客户解冻成功！" }
         });
     }
 
@@ -414,26 +388,20 @@ public class CustomerController : Controller
     [Transactional]
     public IActionResult Freeze(int id)
     {
-        int customerId = id;
+        var customerId = id;
 
-        CustomerInfo customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null)
-        {
-            throw new ValidationException("指定的客户不存在！");
-        }
+        var customerInfo = session.Get<CustomerInfo>(customerId);
+        if (customerInfo == null) throw new ValidationException("指定的客户不存在！");
 
-        if (customerInfo.Status == CustomerStatus.Frozen)
-        {
-            throw new ValidationException("客户已经是冻结状态！");
-        }
+        if (customerInfo.Status == CustomerStatus.Frozen) throw new ValidationException("客户已经是冻结状态！");
 
         customerInfo.Status = CustomerStatus.Frozen;
         session.Update(customerInfo);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "客户冻结成功！" },
+            { "message", "客户冻结成功！" }
         });
     }
 
@@ -443,24 +411,21 @@ public class CustomerController : Controller
     [Transactional]
     public IActionResult ResetPassword(int id)
     {
-        int customerId = id;
+        var customerId = id;
 
-        CustomerInfo customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null)
-        {
-            throw new ValidationException("指定的客户不存在！");
-        }
+        var customerInfo = session.Get<CustomerInfo>(customerId);
+        if (customerInfo == null) throw new ValidationException("指定的客户不存在！");
 
-        string salt = passwordService.GenerateSalt();
+        var salt = passwordService.GenerateSalt();
         customerInfo.Salt = salt;
         customerInfo.Password = passwordService.Encrypt(CustomerInfo.DefaultPassword, salt);
 
         session.Update(customerInfo);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "重设客户密码成功！" },
+            { "message", "重设客户密码成功！" }
         });
     }
 
@@ -470,11 +435,8 @@ public class CustomerController : Controller
     [Transactional]
     public IActionResult EditCharacter(int customerId, string character)
     {
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
-            throw new ValidationException("指定的客户不存在！");
-        }
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) throw new ValidationException("指定的客户不存在！");
 
         // if (character != null && character.Length > 5)
         // {
@@ -486,9 +448,9 @@ public class CustomerController : Controller
         session.Save(customer);
         session.Flush();
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "客户性质修改成功！" },
+            { "message", "客户性质修改成功！" }
         });
     }
 
@@ -500,9 +462,9 @@ public class CustomerController : Controller
     {
         // customerCodeService.UpdateAllCustomerVip(); todo 这个这里还没实现
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "更新客户VIP成功！" },
+            { "message", "更新客户VIP成功！" }
         });
     }
 
@@ -512,59 +474,41 @@ public class CustomerController : Controller
     // 内部有数据库事务
     public IActionResult ImportTestCustomer(IFormFile excelFile)
     {
-        if (excelFile == null)
-        {
-            throw new ValidationException("导入失败，文件未上传！");
-        }
+        if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
-        ISheet sheet = workbook.GetSheetAt(0);
-        if (sheet == null)
-        {
-            throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
-        }
+        var sheet = workbook.GetSheetAt(0);
+        if (sheet == null) throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
 
         IList<CustomerInfo> customerList = new List<CustomerInfo>();
 
         // 略过标题行，所以 rowIndex = 1 开始
-        int lastRowNum = sheet.LastRowNum;
-        for (int rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
+        var lastRowNum = sheet.LastRowNum;
+        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
         {
-            IRow row = sheet.GetRow(rowIndex);
+            var row = sheet.GetRow(rowIndex);
 
-            if (row == null)
-            {
-                break;
-            }
+            if (row == null) break;
 
             // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
-            int cellIndex = 0;
+            var cellIndex = 0;
             int lastCellNum = row.LastCellNum;
-            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++)
-            {
-                row.GetCell(cellIndex)?.SetCellType(CellType.String);
-            }
+            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++) row.GetCell(cellIndex)?.SetCellType(CellType.String);
 
             // 手机号码 密码
 
             cellIndex = 0;
 
             // 手机号码
-            string mobile = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(mobile))
-            {
-                break;
-            }
+            var mobile = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(mobile)) break;
 
-            CustomerInfo customer = new CustomerInfo();
+            var customer = new CustomerInfo();
             customer.Mobile = mobile.Trim();
 
             // 密码
-            string password = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(password) && password.Trim().Length < 6)
-            {
-                throw new ValidationException("密码不能为空，且不能少于6位！");
-            }
+            var password = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(password) && password.Trim().Length < 6) throw new ValidationException("密码不能为空，且不能少于6位！");
 
             customer.Password = password;
 
@@ -575,7 +519,7 @@ public class CustomerController : Controller
             // 判断 导入部分的 mobile 重复情况
             IDictionary<string, int> dictImportMobile = new Dictionary<string, int>();
 
-            int customerIndex = 0;
+            var customerIndex = 0;
             foreach (var customer in customerList)
             {
                 if (dictImportMobile.ContainsKey(customer.Mobile) == false)
@@ -584,7 +528,7 @@ public class CustomerController : Controller
                 }
                 else
                 {
-                    int preMobileIndex = dictImportMobile[customer.Mobile];
+                    var preMobileIndex = dictImportMobile[customer.Mobile];
                     throw new ValidationException($"Excel中 第 {customerIndex + 1} 行手机号码 {customer.Mobile} 与 第 {preMobileIndex + 1} 行手机号码 重复！");
                 }
 
@@ -597,10 +541,7 @@ public class CustomerController : Controller
                 .Where(e => importMobileList.Contains(e.Mobile))
                 .ToList();
             IList<string> mobileListInDb = customerListInDb.Select(e => e.Mobile).ToList();
-            if (mobileListInDb.Count != 0)
-            {
-                throw new ValidationException($"Excel中手机号码 {string.Join(",", mobileListInDb)} 数据库中已经存在！");
-            }
+            if (mobileListInDb.Count != 0) throw new ValidationException($"Excel中手机号码 {string.Join(",", mobileListInDb)} 数据库中已经存在！");
         }
 
         ITransaction? transaction = null;
@@ -613,14 +554,14 @@ public class CustomerController : Controller
                 customer.CustomerCharacter = "测试账户";
                 customer.MobileValidated = true;
 
-                string salt = passwordService.GenerateSalt();
+                var salt = passwordService.GenerateSalt();
                 customer.Salt = salt;
                 customer.Password = passwordService.Encrypt(customer.Password, salt);
                 customer.PayPassword = "";
 
                 customer.RegTime = DateTime.Now;
                 customer.LastLogin = DateTime.Now;
-                customer.LastIp = String.Empty;
+                customer.LastIp = string.Empty;
 
                 customer.Account = 0m;
                 customer.TotalConsume = 0m;
@@ -646,9 +587,9 @@ public class CustomerController : Controller
             throw;
         }
 
-        return Json(new Dictionary<string, object>() {
+        return Json(new Dictionary<string, object> {
             { "success", true },
-            { "message", "导入创建测试客户成功！" },
+            { "message", "导入创建测试客户成功！" }
         });
     }
 }

@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="groupCheckAll"></label><input id="groupCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                <label for="groupCheckAll"></label><input id="groupCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 100px;">
@@ -33,12 +33,12 @@
     <tbody>
         @if (Model.GroupList != null && Model.GroupList.Count() != 0)
         {
-            int order = 1;
-            foreach (GroupInfo group in Model.GroupList)
+            var order = 1;
+            foreach (var group in Model.GroupList)
             {
                 <tr ondblclick="showGroupDetail(@(group.Id));">
                     <td style="text-align: center;">
-                        <label for="groupCheck_@(group.Id)"></label><input id="groupCheck_@(group.Id)" type="checkbox" class="ace" value="@group.Id" /><span class="lbl"></span>
+                        <label for="groupCheck_@(group.Id)"></label><input id="groupCheck_@(group.Id)" type="checkbox" class="ace" value="@group.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td>@group.Code</td>

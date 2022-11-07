@@ -1,7 +1,7 @@
 @using shunda.Admin.Areas.Storage.Models.Warehouse
-@using shunda.Domain.Storage
 @using shunda.Core
 @using shunda.Core.Web
+@using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.Warehouse.WarehouseIndexModel
 
 @{
@@ -125,7 +125,7 @@
     }
 
     function showWarehouseDetail(id) {
-        var url = "@Url.Action("Detail", "Warehouse", new { id = 88888})";
+        var url = "@Url.Action("Detail", "Warehouse", new { id = 88888 })";
         url = url.replace("88888", id);
         window.location.href = url;
     }

@@ -1,6 +1,6 @@
 using shunda.Domain.Logistics;
 
-namespace shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay;
+namespace shunda.Admin.Areas.Fee.Models.LogisticsOrderPay;
 
 public class LogisticsOrderPayIndexModel
 {

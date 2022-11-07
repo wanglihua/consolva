@@ -1,7 +1,6 @@
 @{
     Layout = null;
 }
-
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Storage.Models.StorageLocSpec.StorageLocSpecListModel
 
@@ -50,8 +49,8 @@
     <tbody>
         @if (Model.StorageLocSpecList != null && Model.StorageLocSpecList.Count() != 0)
         {
-            int order = 1;
-            foreach (StorageLocSpecInfo storageLocSpec in Model.StorageLocSpecList)
+            var order = 1;
+            foreach (var storageLocSpec in Model.StorageLocSpecList)
             {
                 <tr ondblclick="showStorageLocSpecDetail(@(storageLocSpec.Id));">
                     <td style="text-align: center;">
