@@ -214,6 +214,19 @@ public class ExpressStatus : CodeTypeBase
     }
 
     /// <summary>
+    /// 订单未创建的快递单号状态
+    /// </summary>
+    private static readonly IReadOnlyList<ExpressStatus> codeTypeListNoOrder = new List<ExpressStatus>() {
+        WaitPick,
+        Expect,
+        CheckIn,
+        WaitReturn,
+        Returned,
+        ThrowAway,
+        WaitOrder,
+    };
+
+    /// <summary>
     /// 是不是已建单及后续状态
     /// </summary>
     /// <param name="status"></param>
@@ -225,72 +238,13 @@ public class ExpressStatus : CodeTypeBase
             return false;
         }
 
-        // 如果状态有添加的话，这里的逻辑也要对应修改一下
-
-        if (status == WaitPick)
+        foreach (ExpressStatus statusNoOrder in codeTypeListNoOrder)
         {
-            return false;
+            if (statusNoOrder == status)
+            {
+                return false;
+            }
         }
-
-        if (status == CheckIn)
-        {
-            return false;
-        }
-
-        if (status == WaitOrder)
-        {
-            return false;
-        }
-
-        if (status == Order)
-        {
-            return true;
-        }
-
-        if (status == WaitPack)
-        {
-            return true;
-        }
-
-        if (status == PartOffShelf)
-        {
-            return true;
-        }
-
-        if (status == OffShelf)
-        {
-            return true;
-        }
-
-        if (status == PartPacking)
-        {
-            return true;
-        }
-
-        if (status == Packing)
-        {
-            return true;
-        }
-
-        if (status == Pack)
-        {
-            return true;
-        }
-
-        if (status == WaitReturn)
-        {
-            return false;
-        }
-
-        if (status == Returned)
-        {
-            return false;
-        }
-
-        // if (status == ReturnSuccess)
-        // {
-        //     return false;
-        // }
 
         return true;
     }
@@ -302,7 +256,6 @@ public class ExpressStatus : CodeTypeBase
             Expect,
             CheckIn,
             WaitReturn,
-            ThrowAway,
             WaitOrder,
             Order,
             WaitPack,
