@@ -2,12 +2,9 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Core;
 using shunda.Domain.Customer;
+using shunda.Domain.Express;
 
 namespace shunda.Domain.Order;
-
-/*
- 
- todo 待完成
 
 public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
 {
@@ -16,9 +13,9 @@ public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
         Table("tbl_express_return_pay");
 
         ManyToOne(
-            x => x.Claim,
+            x => x.Express,
             map => {
-                map.Class(typeof(LogisticsClaimGoodsInfo));
+                map.Class(typeof(ExpressInfo));
                 map.Column("claim_id");
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
@@ -83,4 +80,3 @@ public class ExpressReturnPayInfoMapping : EntityMapping<ExpressReturnPayInfo>
         );
     }
 }
-*/
