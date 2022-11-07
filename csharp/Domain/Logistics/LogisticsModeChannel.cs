@@ -8,12 +8,32 @@ namespace shunda.Domain.Logistics;
 public class LogisticsModeChannel : CodeTypeBase
 {
     /// <summary>
-    /// EMS, 1000
+    /// 普货专线, 1000
     /// </summary>
-    public static readonly LogisticsModeChannel Ems = new LogisticsModeChannel(1000, "EMS", "EMS");
+    public static readonly LogisticsModeChannel Common = new LogisticsModeChannel(1000, "普货专线", "普货专线");
 
     /// <summary>
-    /// 其他, 100_000
+    /// 化妆品渠道, 2000
+    /// </summary>
+    public static readonly LogisticsModeChannel Cosmetics = new LogisticsModeChannel(2000, "化妆品渠道", "化妆品渠道");
+
+    /// <summary>
+    /// 化妆品渠道, 3000
+    /// </summary>
+    public static readonly LogisticsModeChannel Electric = new LogisticsModeChannel(3000, "化妆品渠道", "化妆品渠道");
+
+    /// <summary>
+    /// EMS渠道, 4000
+    /// </summary>
+    public static readonly LogisticsModeChannel Ems = new LogisticsModeChannel(4000, "EMS渠道", "EMS渠道");
+
+    /// <summary>
+    /// FedEx-联邦渠道, 5000
+    /// </summary>
+    public static readonly LogisticsModeChannel FedEx = new LogisticsModeChannel(5000, "FedEx-联邦渠道", "FedEx-联邦渠道");
+
+    /// <summary>
+    /// 其他, 100000
     /// </summary>
     public static readonly LogisticsModeChannel Other = new LogisticsModeChannel(100_000, "其他", "其他");
 
@@ -23,7 +43,11 @@ public class LogisticsModeChannel : CodeTypeBase
     public static readonly LogisticsModeChannel None = new LogisticsModeChannel(0, "", "");
 
     private static readonly IReadOnlyList<LogisticsModeChannel> codeTypeList = new List<LogisticsModeChannel>() {
+        Common,
+        Cosmetics,
+        Electric,
         Ems,
+        FedEx,
         Other,
     };
 
@@ -39,7 +63,7 @@ public class LogisticsModeChannel : CodeTypeBase
         return None;
     }
 
-    public static IList<LogisticsModeChannel> GetList()
+    public static List<LogisticsModeChannel> GetList()
     {
         return codeTypeList.ToList();
     }
