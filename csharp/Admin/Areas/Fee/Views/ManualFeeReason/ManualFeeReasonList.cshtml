@@ -1,7 +1,7 @@
 @{
     Layout = null;
 }
-@using shunda.Domain.Order
+@using shunda.Domain.Fee
 @model shunda.Admin.Areas.OrderFee.Models.ManualFeeReason.ManualFeeReasonListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualFeeReasonList"})

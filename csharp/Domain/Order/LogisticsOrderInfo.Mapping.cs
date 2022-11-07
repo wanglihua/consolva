@@ -2,6 +2,7 @@ using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Domain.Customer;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.Storage;
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain;
+using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.OrderFee.Models.ExpressReturnPay;
 

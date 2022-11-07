@@ -1,5 +1,6 @@
 using shunda.Core;
 using shunda.Domain;
+using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.Setting.Models.ExchangeRate;
 

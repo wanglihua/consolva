@@ -1,7 +1,7 @@
 @{
     Layout = null;
 }
-@using shunda.Domain
+@using shunda.Domain.Fee
 @model shunda.Admin.Areas.Setting.Models.ExchangeRate.ExchangeRateListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadExchangeRateList"})

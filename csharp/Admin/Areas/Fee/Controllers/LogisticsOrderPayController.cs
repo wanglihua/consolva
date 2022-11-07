@@ -8,7 +8,7 @@ using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay;
 using shunda.Core;
 using shunda.Core.Web;
-using shunda.Domain;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.Order;
 using shunda.Domain.Pass.PassRes;

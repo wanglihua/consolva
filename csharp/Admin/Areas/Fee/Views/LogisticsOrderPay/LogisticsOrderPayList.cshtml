@@ -1,7 +1,8 @@
 @{
     Layout = null;
 }
-@using shunda.Domain.Order
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Fee
 @model shunda.Admin.Areas.OrderFee.Models.LogisticsOrderPay.LogisticsOrderPayListModel
 
 @await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderPayList" })

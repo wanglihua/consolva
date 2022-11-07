@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Customer;
+using shunda.Domain.Fee;
 using shunda.Domain.Order;
 
 namespace shunda.Admin.Areas.Customer.Models.Customer;

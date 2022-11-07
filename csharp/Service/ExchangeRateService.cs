@@ -5,6 +5,7 @@ using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain;
+using shunda.Domain.Fee;
 
 namespace shunda.Service;
 

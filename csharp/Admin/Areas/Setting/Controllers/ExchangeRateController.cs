@@ -7,6 +7,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
+using shunda.Domain.Fee;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service;
 using ISession = NHibernate.ISession;
