@@ -30,7 +30,7 @@ public class CouponBatchController : Controller
 
     [HttpGet]
     [Route("/admin/coupon/batch")]
-    // [NoHibernateAutoTransaction] 需要数据库事务
+    [Transactional] // 需要事务
     public IActionResult Index()
     {
         CouponBatchIndexModel model = new CouponBatchIndexModel();

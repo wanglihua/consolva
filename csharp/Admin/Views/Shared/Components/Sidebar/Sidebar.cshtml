@@ -223,60 +223,6 @@
                         </li>
                     }
 
-                    @if (Model.HasPassRes(PassRes.Fee.ArrearsFeeList))
-                    {
-                        <li id="fee-logistics-order-arrears-index-menu">
-                            <a href="@Url.Action("Index", "LogisticsOrderArrears")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                欠费清单
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
-                    @if (Model.HasPassRes(PassRes.Fee.LogisticsOrderPay))
-                    {
-                        <li id="fee-logistics-order-pay-index-menu">
-                            <a href="@Url.Action("Index", "LogisticsOrderPay")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                实时收入
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
-                    @if (Model.HasPassRes(PassRes.Fee.CustomerCharge))
-                    {
-                        <li id="fee-customer-charge-index-menu">
-                            <a href="@Url.Action("Index", "CustomerCharge")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                余额充值
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
-                    @if (Model.HasPassRes(PassRes.Fee.Coupon))
-                    {
-                        <li id="fee-coupon-batch-index-menu">
-                            <a href="@Url.Action("Index", "CouponBatch")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                优惠券批次
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
-                    @if (Model.HasPassRes(PassRes.Fee.Coupon))
-                    {
-                        <li id="fee-coupon-index-menu">
-                            <a href="@Url.Action("Index", "Coupon")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                优惠券总览
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
                     *@
 
 
@@ -330,6 +276,28 @@
                             <a asp-area="Fee" asp-controller="ExpressReturnPay" asp-action="Index">
                                 <i class="menu-icon fa fa-caret-right"></i>
                                 退运支付
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.Fee.Coupon))
+                    {
+                        <li id="fee-coupon-batch-index-menu">
+                            <a asp-area="Fee" asp-controller="CouponBatch" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                优惠券批次
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
+                    @if (Model.HasPassRes(PassRes.Fee.Coupon))
+                    {
+                        <li id="fee-coupon-index-menu">
+                            <a asp-area="Fee" asp-controller="Coupon" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                优惠券总览
                             </a>
                             <b class="arrow"></b>
                         </li>
