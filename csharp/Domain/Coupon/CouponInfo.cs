@@ -27,7 +27,7 @@ public class CouponInfo : Entity
     /// <summary>
     /// 订单，可空
     /// </summary>
-    public virtual LogisticsOrderInfo Order { get; set; } = new();
+    public virtual LogisticsOrderInfo? Order { get; set; }
 
     /// <summary>
     /// 实际优惠金额，非空

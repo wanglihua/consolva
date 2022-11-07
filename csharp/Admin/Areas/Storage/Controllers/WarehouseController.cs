@@ -30,7 +30,7 @@ public class WarehouseController : Controller
         var model = new WarehouseIndexModel();
 
         /*
-         todo 这个后面补上
+         todo b 这个后面补上
         IList<ShelfDuplicateInfo> shelfDuplicateList = session.Query<ShelfDuplicateInfo>()
             .OrderBy(e => e.WarehouseName).ThenBy(e => e.ShelfName)
             .ToList();
