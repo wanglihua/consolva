@@ -32,7 +32,7 @@ public class LogisticsOrderAirExpressStatus : CodeTypeBase
     /// </summary>
     public static readonly LogisticsOrderAirExpressStatus None = new LogisticsOrderAirExpressStatus(0, "", "");
 
-    private static readonly List<LogisticsOrderAirExpressStatus> codeTypeList = new List<LogisticsOrderAirExpressStatus>() {
+    private static readonly IReadOnlyList<LogisticsOrderAirExpressStatus> codeTypeList = new List<LogisticsOrderAirExpressStatus>() {
         ToSend,
         Transiting,
         Returned,
@@ -53,7 +53,7 @@ public class LogisticsOrderAirExpressStatus : CodeTypeBase
 
     public static IList<LogisticsOrderAirExpressStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsOrderAirExpressStatus(int id, string name, string description) : base(id, name, description)

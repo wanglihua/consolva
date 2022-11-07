@@ -52,7 +52,7 @@ public class CustomerAccountChangeType : CodeTypeBase
     /// </summary>
     public static readonly CustomerAccountChangeType None = new CustomerAccountChangeType(0, "", "");
 
-    private static readonly List<CustomerAccountChangeType> codeTypeList = new List<CustomerAccountChangeType>() {
+    private static readonly IReadOnlyList<CustomerAccountChangeType> codeTypeList = new List<CustomerAccountChangeType>() {
         Charge,
         Withdraw,
         Pay,
@@ -77,7 +77,7 @@ public class CustomerAccountChangeType : CodeTypeBase
 
     public static IList<CustomerAccountChangeType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerAccountChangeType(int id, string name, string description) : base(id, name, description)

@@ -19,7 +19,7 @@ public class LogisticsFeeRateStatus : CodeTypeBase
     /// </summary>
     public static readonly LogisticsFeeRateStatus None = new LogisticsFeeRateStatus(0, "", "");
 
-    private static readonly List<LogisticsFeeRateStatus> codeTypeList = new List<LogisticsFeeRateStatus>() {
+    private static readonly IReadOnlyList<LogisticsFeeRateStatus> codeTypeList = new List<LogisticsFeeRateStatus>() {
         Enabled,
         Disabled,
     };
@@ -32,7 +32,7 @@ public class LogisticsFeeRateStatus : CodeTypeBase
     /// <returns></returns>
     public static IList<LogisticsFeeRateStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     /// <summary>

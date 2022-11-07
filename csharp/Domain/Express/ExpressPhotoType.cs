@@ -74,7 +74,7 @@ public class ExpressPhotoType : CodeTypeBase
     /// </summary>
     public static readonly ExpressPhotoType None = new ExpressPhotoType(0, "", "");
 
-    private static readonly List<ExpressPhotoType> codeTypeList = new List<ExpressPhotoType>() {
+    private static readonly IReadOnlyList<ExpressPhotoType> codeTypeList = new List<ExpressPhotoType>() {
         SignIn,
         CheckIn,
         Pack,
@@ -108,7 +108,7 @@ public class ExpressPhotoType : CodeTypeBase
     /// <returns></returns>
     public static IList<ExpressPhotoType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ExpressPhotoType(int id, string name, string description) : base(id, name, description)

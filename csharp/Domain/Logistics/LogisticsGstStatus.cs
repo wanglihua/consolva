@@ -22,7 +22,7 @@ public class LogisticsGstStatus : CodeTypeBase
     /// </summary>
     public static readonly LogisticsGstStatus None = new LogisticsGstStatus(0, "", "");
 
-    private static readonly List<LogisticsGstStatus> codeTypeList = new List<LogisticsGstStatus>() {
+    private static readonly IReadOnlyList<LogisticsGstStatus> codeTypeList = new List<LogisticsGstStatus>() {
         Enabled,
         Disabled,
     };
@@ -41,7 +41,7 @@ public class LogisticsGstStatus : CodeTypeBase
 
     public static IList<LogisticsGstStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsGstStatus(int id, string name, string description) : base(id, name, description)

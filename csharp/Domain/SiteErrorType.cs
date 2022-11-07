@@ -27,7 +27,7 @@ public class SiteErrorType : CodeTypeBase
     /// </summary>
     public static readonly SiteErrorType None = new SiteErrorType(0, "", "");
 
-    private static List<SiteErrorType> codeTypeList = new List<SiteErrorType>() {
+    private static readonly IReadOnlyList<SiteErrorType> codeTypeList = new List<SiteErrorType>() {
         SmsSend,
         FreightEstimate,
         ExchangeRate,
@@ -47,7 +47,7 @@ public class SiteErrorType : CodeTypeBase
 
     public static IList<SiteErrorType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private SiteErrorType(int id, string name, string description) : base(id, name, description)

@@ -44,7 +44,7 @@ public class PayType : CodeTypeBase
     /// </summary>
     public static readonly PayType None = new PayType(0, "", "");
 
-    private static readonly List<PayType> codeTypeList = new List<PayType>() {
+    private static readonly IReadOnlyList<PayType> codeTypeList = new List<PayType>() {
         Balance,
         Wechat,
         AliPay,
@@ -54,7 +54,7 @@ public class PayType : CodeTypeBase
         WriteOff,
     };
 
-    private static readonly List<PayType> customerCodeTypeList = new List<PayType>() {
+    private static readonly IReadOnlyList<PayType> customerCodeTypeList = new List<PayType>() {
         Balance,
         Wechat,
         AliPay,
@@ -80,7 +80,7 @@ public class PayType : CodeTypeBase
     /// <returns></returns>
     public static IList<PayType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class PayType : CodeTypeBase
     /// <returns></returns>
     public static IList<PayType> GetCustomerPayTypeList()
     {
-        return customerCodeTypeList;
+        return customerCodeTypeList.ToList();
     }
 
     private PayType(int id, string name, string description) : base(id, name, description)

@@ -22,7 +22,7 @@ public class LogisticsModeCate : CodeTypeBase
     /// </summary>
     public static readonly LogisticsModeCate None = new LogisticsModeCate(0, "", "");
 
-    private static readonly List<LogisticsModeCate> codeTypeList = new List<LogisticsModeCate>() {
+    private static readonly IReadOnlyList<LogisticsModeCate> codeTypeList = new List<LogisticsModeCate>() {
         Customer,
         Inner,
     };
@@ -41,7 +41,7 @@ public class LogisticsModeCate : CodeTypeBase
 
     public static IList<LogisticsModeCate> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsModeCate(int id, string name, string description) : base(id, name, description)

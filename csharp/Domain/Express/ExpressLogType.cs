@@ -246,7 +246,7 @@ public class ExpressLogType : CodeTypeBase
     /// </summary>
     public static readonly ExpressLogType None = new ExpressLogType(0, "", "");
 
-    private static readonly List<ExpressLogType> codeTypeList = new List<ExpressLogType>() {
+    private static readonly IReadOnlyList<ExpressLogType> codeTypeList = new List<ExpressLogType>() {
         Checkin,
         CheckinEdit,
         ManualPrintLabel,
@@ -316,7 +316,7 @@ public class ExpressLogType : CodeTypeBase
 
     public static IList<ExpressLogType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ExpressLogType(int id, string name, string description) : base(id, name, description)

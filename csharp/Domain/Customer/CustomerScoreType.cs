@@ -27,7 +27,7 @@ public class CustomerScoreType : CodeTypeBase
     /// </summary>
     public static readonly CustomerScoreType None = new CustomerScoreType(0, "", "");
 
-    private static readonly List<CustomerScoreType> codeTypeList = new List<CustomerScoreType>() {
+    private static readonly IReadOnlyList<CustomerScoreType> codeTypeList = new List<CustomerScoreType>() {
         Promotion,
         LogisticsConsume,
         ScoreToBalance,
@@ -47,7 +47,7 @@ public class CustomerScoreType : CodeTypeBase
 
     public static IList<CustomerScoreType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerScoreType(int id, string name, string description) : base(id, name, description)

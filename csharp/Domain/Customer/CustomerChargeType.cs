@@ -58,7 +58,7 @@ public class CustomerChargeType : CodeTypeBase
     /// <returns></returns>
     public static IList<CustomerChargeType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerChargeType(int id, string name, string description) : base(id, name, description)

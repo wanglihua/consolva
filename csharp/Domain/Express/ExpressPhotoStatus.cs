@@ -20,7 +20,7 @@ public class ExpressPhotoStatus : CodeTypeBase
     /// </summary>
     public static readonly ExpressPhotoStatus None = new ExpressPhotoStatus(0, "", "");
 
-    private static readonly List<ExpressPhotoStatus> codeTypeList = new List<ExpressPhotoStatus>() {
+    private static readonly IReadOnlyList<ExpressPhotoStatus> codeTypeList = new List<ExpressPhotoStatus>() {
         Normal,
         Invalid,
     };
@@ -39,7 +39,7 @@ public class ExpressPhotoStatus : CodeTypeBase
 
     public static IList<ExpressPhotoStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ExpressPhotoStatus(int id, string name, string description) : base(id, name, description)

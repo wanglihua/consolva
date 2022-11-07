@@ -22,7 +22,7 @@ public class LogisticsOrderCreateMethod : CodeTypeBase
     /// </summary>
     public static readonly LogisticsOrderCreateMethod None = new LogisticsOrderCreateMethod(0, "", "");
 
-    private static readonly List<LogisticsOrderCreateMethod> codeTypeList = new List<LogisticsOrderCreateMethod>() {
+    private static readonly IReadOnlyList<LogisticsOrderCreateMethod> codeTypeList = new List<LogisticsOrderCreateMethod>() {
         CustomerCreate,
         UserImport,
     };
@@ -41,7 +41,7 @@ public class LogisticsOrderCreateMethod : CodeTypeBase
 
     public static IList<LogisticsOrderCreateMethod> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsOrderCreateMethod(int id, string name, string description) : base(id, name, description)

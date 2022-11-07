@@ -27,7 +27,7 @@ public class LogisticsRepackType : CodeTypeBase
     /// </summary>
     public static readonly LogisticsRepackType None = new LogisticsRepackType(0, "", "");
 
-    private static readonly IList<LogisticsRepackType> codeTypeList = new List<LogisticsRepackType>() {
+    private static readonly IReadOnlyList<LogisticsRepackType> codeTypeList = new List<LogisticsRepackType>() {
         DirectPacking, 
         RemoveExpressPackage, 
         RemoveProductPackage
@@ -51,7 +51,7 @@ public class LogisticsRepackType : CodeTypeBase
 
     public static IList<LogisticsRepackType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsRepackType(int id, string name, string description) : base(id, name, description)

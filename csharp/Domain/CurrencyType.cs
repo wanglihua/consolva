@@ -47,7 +47,7 @@ public class CurrencyType : StringCodeTypeBase
     /// </summary>
     public static readonly CurrencyType None = new CurrencyType("", "", "");
 
-    private static readonly List<CurrencyType> codeTypeList = new List<CurrencyType>() {
+    private static readonly IReadOnlyList<CurrencyType> codeTypeList = new List<CurrencyType>() {
         CNY,
         AUD,
         USD,
@@ -62,7 +62,7 @@ public class CurrencyType : StringCodeTypeBase
 
     public static IList<CurrencyType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     public static CurrencyType GetByCode(string code)

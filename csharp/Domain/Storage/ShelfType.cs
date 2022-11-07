@@ -34,7 +34,7 @@ public class ShelfType : CodeTypeBase
     /// </summary>
     public static readonly ShelfType None = new ShelfType(0, "", "");
 
-    private static readonly List<ShelfType> codeTypeList = new List<ShelfType>() {
+    private static readonly IReadOnlyList<ShelfType> codeTypeList = new List<ShelfType>() {
         Normal,
         Return,
         Pack,
@@ -56,7 +56,7 @@ public class ShelfType : CodeTypeBase
 
     public static IList<ShelfType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ShelfType(int id, string name, string description) : base(id, name, description)

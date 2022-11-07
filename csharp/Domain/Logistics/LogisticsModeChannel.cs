@@ -22,7 +22,7 @@ public class LogisticsModeChannel : CodeTypeBase
     /// </summary>
     public static readonly LogisticsModeChannel None = new LogisticsModeChannel(0, "", "");
 
-    private static readonly List<LogisticsModeChannel> codeTypeList = new List<LogisticsModeChannel>() {
+    private static readonly IReadOnlyList<LogisticsModeChannel> codeTypeList = new List<LogisticsModeChannel>() {
         Ems,
         Other,
     };
@@ -41,7 +41,7 @@ public class LogisticsModeChannel : CodeTypeBase
 
     public static IList<LogisticsModeChannel> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsModeChannel(int id, string name, string description) : base(id, name, description)

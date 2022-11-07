@@ -195,7 +195,7 @@ public class CustomerMessageType : CodeTypeBase
     /// </summary>
     public static readonly CustomerMessageType None = new CustomerMessageType(0, "", "");
 
-    private static readonly IList<CustomerMessageType> codeTypeList = new List<CustomerMessageType>() {
+    private static readonly IReadOnlyList<CustomerMessageType> codeTypeList = new List<CustomerMessageType>() {
             Manual,
             AllMember,
             HelpMeMakeMoney,
@@ -248,7 +248,7 @@ public class CustomerMessageType : CodeTypeBase
 
     public static IList<CustomerMessageType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerMessageType(int id, string name, string description) : base(id, name, description)

@@ -22,7 +22,7 @@ public class LogisticsInsuranceType : CodeTypeBase
     /// </summary>
     public static readonly LogisticsInsuranceType None = new LogisticsInsuranceType(0, "", "");
 
-    private static readonly List<LogisticsInsuranceType> codeTypeList = new List<LogisticsInsuranceType>() {
+    private static readonly IReadOnlyList<LogisticsInsuranceType> codeTypeList = new List<LogisticsInsuranceType>() {
         FixedFee,
         PercentFee,
     };
@@ -41,7 +41,7 @@ public class LogisticsInsuranceType : CodeTypeBase
 
     public static IList<LogisticsInsuranceType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsInsuranceType(int id, string name, string description) : base(id, name, description)

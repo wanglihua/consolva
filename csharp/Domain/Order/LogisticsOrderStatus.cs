@@ -57,7 +57,7 @@ public class LogisticsOrderStatus : CodeTypeBase
     /// </summary>
     public static readonly LogisticsOrderStatus None = new LogisticsOrderStatus(0, "", "");
 
-    private static readonly List<LogisticsOrderStatus> codeTypeList = new List<LogisticsOrderStatus>() {
+    private static readonly IReadOnlyList<LogisticsOrderStatus> codeTypeList = new List<LogisticsOrderStatus>() {
         Create,
         WaitPack,
         Packed,
@@ -83,7 +83,7 @@ public class LogisticsOrderStatus : CodeTypeBase
 
     public static IList<LogisticsOrderStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     public static IList<LogisticsOrderStatus> GetBeforeSubmitPackStatusList()

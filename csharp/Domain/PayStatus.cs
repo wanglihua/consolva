@@ -37,7 +37,7 @@ public class PayStatus : CodeTypeBase
     /// </summary>
     public static readonly PayStatus None = new PayStatus(0, "", "");
 
-    private static readonly List<PayStatus> codeTypeList = new List<PayStatus>() {
+    private static readonly IReadOnlyList<PayStatus> codeTypeList = new List<PayStatus>() {
         NotPaid,
         Paid,
         PartPaid,
@@ -59,7 +59,7 @@ public class PayStatus : CodeTypeBase
 
     public static IList<PayStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private PayStatus(int id, string name, string description) : base(id, name, description)

@@ -22,7 +22,7 @@ public class CustomerCreateMethod : CodeTypeBase
     /// </summary>
     public static readonly CustomerCreateMethod None = new CustomerCreateMethod(0, "", "");
 
-    private static readonly List<CustomerCreateMethod> codeTypeList = new List<CustomerCreateMethod>() {
+    private static readonly IReadOnlyList<CustomerCreateMethod> codeTypeList = new List<CustomerCreateMethod>() {
         Register,
         Import,
     };
@@ -41,7 +41,7 @@ public class CustomerCreateMethod : CodeTypeBase
 
     public static List<CustomerCreateMethod> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerCreateMethod(int id, string name, string description) : base(id, name, description)

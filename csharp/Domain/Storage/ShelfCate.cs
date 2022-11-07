@@ -22,7 +22,7 @@ public class ShelfCate : CodeTypeBase
     /// </summary>
     public static readonly ShelfCate None = new ShelfCate(0, "", "");
 
-    private static readonly List<ShelfCate> codeTypeList = new List<ShelfCate>() {
+    private static readonly IReadOnlyList<ShelfCate> codeTypeList = new List<ShelfCate>() {
         Normal,
         Ground,
     };
@@ -41,7 +41,7 @@ public class ShelfCate : CodeTypeBase
 
     public static IList<ShelfCate> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ShelfCate(int id, string name, string description) : base(id, name, description)

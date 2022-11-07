@@ -22,7 +22,7 @@ public class LogisticsModePackSizeType : CodeTypeBase
     /// </summary>
     public static readonly LogisticsModePackSizeType None = new LogisticsModePackSizeType(0, "", "");
 
-    private static readonly List<LogisticsModePackSizeType> codeTypeList = new List<LogisticsModePackSizeType>() {
+    private static readonly IReadOnlyList<LogisticsModePackSizeType> codeTypeList = new List<LogisticsModePackSizeType>() {
         Small,
         Big,
     };
@@ -41,7 +41,7 @@ public class LogisticsModePackSizeType : CodeTypeBase
 
     public static IList<LogisticsModePackSizeType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsModePackSizeType(int id, string name, string description) : base(id, name, description)

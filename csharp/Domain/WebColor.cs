@@ -29,10 +29,10 @@ public class WebColor
 
     public static IList<WebColor> GetColorList()
     {
-        return colorList;
+        return colorList.ToList();
     }
 
-    private static readonly IList<WebColor> colorList = new List<WebColor>() {
+    private static readonly IReadOnlyList<WebColor> colorList = new List<WebColor>() {
         new WebColor("black", "黑色", "#000000"),
         new WebColor("navy", "海军色", "#000080"),
         new WebColor("darkblue", "暗蓝色", "#00008b"),

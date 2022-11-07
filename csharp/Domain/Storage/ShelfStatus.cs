@@ -19,7 +19,7 @@ public class ShelfStatus : CodeTypeBase
     /// </summary>
     public static readonly ShelfStatus None = new ShelfStatus(0, "", "");
 
-    private static readonly List<ShelfStatus> codeTypeList = new List<ShelfStatus>() {
+    private static readonly IReadOnlyList<ShelfStatus> codeTypeList = new List<ShelfStatus>() {
         Enabled,
         Disabled,
     };
@@ -38,7 +38,7 @@ public class ShelfStatus : CodeTypeBase
 
     public static IList<ShelfStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ShelfStatus(int id, string name, string description) : base(id, name, description)

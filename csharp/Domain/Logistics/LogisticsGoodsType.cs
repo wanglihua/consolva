@@ -49,7 +49,7 @@ public class LogisticsGoodsType : CodeTypeBase
     /// </summary>
     public static readonly LogisticsGoodsType None = new LogisticsGoodsType(0, "", "", "", "");
 
-    private static readonly List<LogisticsGoodsType> codeTypeListCustomer = new List<LogisticsGoodsType>() {
+    private static readonly IReadOnlyList<LogisticsGoodsType> codeTypeListCustomer = new List<LogisticsGoodsType>() {
         Common,
         Brand,
         LiquidPowder,
@@ -57,7 +57,7 @@ public class LogisticsGoodsType : CodeTypeBase
         Electric,
     };
 
-    private static readonly List<LogisticsGoodsType> codeTypeListInner = new List<LogisticsGoodsType>() {
+    private static readonly IReadOnlyList<LogisticsGoodsType> codeTypeListInner = new List<LogisticsGoodsType>() {
         Common,
         Brand,
         LiquidPowder,
@@ -97,7 +97,7 @@ public class LogisticsGoodsType : CodeTypeBase
     /// <returns></returns>
     public static IList<LogisticsGoodsType> GetCustomerList()
     {
-        return codeTypeListCustomer;
+        return codeTypeListCustomer.ToList();
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class LogisticsGoodsType : CodeTypeBase
     /// <returns></returns>
     public static IList<LogisticsGoodsType> GetInnerList()
     {
-        return codeTypeListInner;
+        return codeTypeListInner.ToList();
     }
 
     private LogisticsGoodsType(int id, string code, string name, string checkinLabelShortName, string description) : base(id, name, description)

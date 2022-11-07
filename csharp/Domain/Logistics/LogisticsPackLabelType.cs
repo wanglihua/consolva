@@ -27,7 +27,7 @@ public class LogisticsPackLabelType : CodeTypeBase
     /// </summary>
     public static readonly LogisticsPackLabelType None = new LogisticsPackLabelType(0, "", "");
 
-    private static readonly List<LogisticsPackLabelType> codeTypeList = new List<LogisticsPackLabelType>() {
+    private static readonly IReadOnlyList<LogisticsPackLabelType> codeTypeList = new List<LogisticsPackLabelType>() {
         NoLabel,
         SizeW10H15,
         SizeW10H5,
@@ -47,7 +47,7 @@ public class LogisticsPackLabelType : CodeTypeBase
 
     public static IList<LogisticsPackLabelType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsPackLabelType(int id, string name, string description) : base(id, name, description)

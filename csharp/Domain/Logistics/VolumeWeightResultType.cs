@@ -27,7 +27,7 @@ public class VolumeWeightResultType : CodeTypeBase
     /// </summary>
     public static readonly VolumeWeightResultType None = new VolumeWeightResultType(0, "", "");
 
-    private static readonly IList<VolumeWeightResultType> codeTypeList = new List<VolumeWeightResultType>() {
+    private static readonly IReadOnlyList<VolumeWeightResultType> codeTypeList = new List<VolumeWeightResultType>() {
         Big,
         Middle,
         Small,
@@ -48,7 +48,7 @@ public class VolumeWeightResultType : CodeTypeBase
 
     public static IList<VolumeWeightResultType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private VolumeWeightResultType(int id, string name, string description) : base(id, name, description)

@@ -29,7 +29,7 @@ public class FeeCalcBaseType : CodeTypeBase
     /// </summary>
     public static readonly FeeCalcBaseType None = new FeeCalcBaseType(0, "", "");
 
-    private static readonly List<FeeCalcBaseType> codeTypeList = new List<FeeCalcBaseType>() {
+    private static readonly IReadOnlyList<FeeCalcBaseType> codeTypeList = new List<FeeCalcBaseType>() {
         Fee,
         Amount,
         FeeAndAmount,
@@ -49,7 +49,7 @@ public class FeeCalcBaseType : CodeTypeBase
 
     public static List<FeeCalcBaseType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private FeeCalcBaseType(int id, string name, string description) : base(id, name, description)

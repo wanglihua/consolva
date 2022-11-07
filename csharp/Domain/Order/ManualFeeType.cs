@@ -27,7 +27,7 @@ public class ManualFeeType : CodeTypeBase
     /// </summary>
     public static readonly ManualFeeType None = new ManualFeeType(0, "None", "None");
 
-    private static readonly List<ManualFeeType> codeTypeList = new List<ManualFeeType>() {
+    private static readonly IReadOnlyList<ManualFeeType> codeTypeList = new List<ManualFeeType>() {
         ManualIncrease,
         ManualDecrease,
         WriteOffFee,
@@ -47,7 +47,7 @@ public class ManualFeeType : CodeTypeBase
 
     public static IList<ManualFeeType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ManualFeeType(int id, string name, string description) : base(id, name, description)

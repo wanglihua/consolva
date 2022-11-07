@@ -112,7 +112,7 @@ public class CustomerVipRank : CodeTypeBase
     /// </summary>
     public static readonly CustomerVipRank None = new CustomerVipRank(0, "", "");
 
-    private static readonly List<CustomerVipRank> codeTypeList = new List<CustomerVipRank>() {
+    private static readonly IReadOnlyList<CustomerVipRank> codeTypeList = new List<CustomerVipRank>() {
         VIP1,
         VIP2,
         VIP3,
@@ -168,7 +168,7 @@ public class CustomerVipRank : CodeTypeBase
 
     public static List<CustomerVipRank> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerVipRank(int id, string name, string description) : base(id, name, description)

@@ -22,7 +22,7 @@ public class LogisticsModeType : CodeTypeBase
     /// </summary>
     public static readonly LogisticsModeType None = new LogisticsModeType(0, "", "");
 
-    private static readonly IList<LogisticsModeType> typeList = new List<LogisticsModeType>() {
+    private static readonly IReadOnlyList<LogisticsModeType> typeList = new List<LogisticsModeType>() {
         CnAuExpress,
         CnUsExpress,
     };
@@ -41,7 +41,7 @@ public class LogisticsModeType : CodeTypeBase
 
     public static IList<LogisticsModeType> GetList()
     {
-        return typeList;
+        return typeList.ToList();
     }
 
     private LogisticsModeType(int id, string name, string description) : base(id, name, description)

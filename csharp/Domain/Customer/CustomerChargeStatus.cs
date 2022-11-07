@@ -22,7 +22,7 @@ public class CustomerChargeStatus : CodeTypeBase
     /// </summary>
     public static readonly CustomerChargeStatus None = new CustomerChargeStatus(0, "", "");
 
-    private static readonly List<CustomerChargeStatus> codeTypeList = new List<CustomerChargeStatus>() {
+    private static readonly IReadOnlyList<CustomerChargeStatus> codeTypeList = new List<CustomerChargeStatus>() {
         New,
         Complete,
     };
@@ -41,7 +41,7 @@ public class CustomerChargeStatus : CodeTypeBase
 
     public static IList<CustomerChargeStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerChargeStatus(int id, string name, string description) : base(id, name, description)

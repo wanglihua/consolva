@@ -22,7 +22,7 @@ public class StorageLocStatus : CodeTypeBase
     /// </summary>
     public static readonly StorageLocStatus None = new StorageLocStatus(0, "", "");
 
-    private static readonly IList<StorageLocStatus> codeTypeList = new List<StorageLocStatus>() {
+    private static readonly IReadOnlyList<StorageLocStatus> codeTypeList = new List<StorageLocStatus>() {
         Enabled,
         Disabled,
     };
@@ -41,7 +41,7 @@ public class StorageLocStatus : CodeTypeBase
 
     public static IList<StorageLocStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private StorageLocStatus(int id, string name, string description) : base(id, name, description)

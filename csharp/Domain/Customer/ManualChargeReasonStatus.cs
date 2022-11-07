@@ -22,7 +22,7 @@ public class ManualChargeReasonStatus : CodeTypeBase
     /// </summary>
     public static readonly ManualChargeReasonStatus None = new ManualChargeReasonStatus(0, "", "");
 
-    private static readonly List<ManualChargeReasonStatus> codeTypeList = new List<ManualChargeReasonStatus>() {
+    private static readonly IReadOnlyList<ManualChargeReasonStatus> codeTypeList = new List<ManualChargeReasonStatus>() {
         Enabled,
         Disabled,
     };
@@ -41,7 +41,7 @@ public class ManualChargeReasonStatus : CodeTypeBase
 
     public static IList<ManualChargeReasonStatus> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ManualChargeReasonStatus(int id, string name, string description) : base(id, name, description)

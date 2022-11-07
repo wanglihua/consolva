@@ -22,7 +22,7 @@ public class ExpressPhotoStoreLoc : CodeTypeBase
     /// </summary>
     public static readonly ExpressPhotoStoreLoc None = new ExpressPhotoStoreLoc(0, "", "");
 
-    private static readonly List<ExpressPhotoStoreLoc> codeTypeList = new List<ExpressPhotoStoreLoc>() {
+    private static readonly IReadOnlyList<ExpressPhotoStoreLoc> codeTypeList = new List<ExpressPhotoStoreLoc>() {
         Ecs,
         Oss,
     };
@@ -41,7 +41,7 @@ public class ExpressPhotoStoreLoc : CodeTypeBase
 
     public static List<ExpressPhotoStoreLoc> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ExpressPhotoStoreLoc(int id, string name, string description) : base(id, name, description)

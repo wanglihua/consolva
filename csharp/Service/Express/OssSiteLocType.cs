@@ -19,7 +19,7 @@ public class OssSiteLocType : CodeTypeBase
     /// </summary>
     private static readonly OssSiteLocType None = new OssSiteLocType(0, "", "");
 
-    private static readonly List<OssSiteLocType> codeTypeList = new List<OssSiteLocType>() {
+    private static readonly IReadOnlyList<OssSiteLocType> codeTypeList = new List<OssSiteLocType>() {
         HongKong,
         China,
     };
@@ -38,7 +38,7 @@ public class OssSiteLocType : CodeTypeBase
 
     public static IList<OssSiteLocType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private OssSiteLocType(int id, string name, string description) : base(id, name, description)

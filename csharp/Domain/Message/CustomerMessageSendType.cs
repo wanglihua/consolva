@@ -27,7 +27,7 @@ public class CustomerMessageSendType : CodeTypeBase
     /// </summary>
     public static readonly CustomerMessageSendType None = new CustomerMessageSendType(0, "", "");
 
-    private static readonly List<CustomerMessageSendType> codeTypeList = new List<CustomerMessageSendType>() {
+    private static readonly IReadOnlyList<CustomerMessageSendType> codeTypeList = new List<CustomerMessageSendType>() {
         Manual,
         CycleTiming,
         RealTime,
@@ -47,7 +47,7 @@ public class CustomerMessageSendType : CodeTypeBase
 
     public static IList<CustomerMessageSendType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private CustomerMessageSendType(int id, string name, string description) : base(id, name, description)

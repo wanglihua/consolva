@@ -28,7 +28,7 @@ public class PayCate : CodeTypeBase
     public static readonly PayCate None = new PayCate(0, "", "");
 
 
-    private static readonly List<PayCate> codeTypeList = new List<PayCate>() {
+    private static readonly IReadOnlyList<PayCate> codeTypeList = new List<PayCate>() {
         Order,
         Charge,
         ExpressReturn,
@@ -48,7 +48,7 @@ public class PayCate : CodeTypeBase
 
     public static IList<PayCate> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private PayCate(int id, string name, string description) : base(id, name, description)

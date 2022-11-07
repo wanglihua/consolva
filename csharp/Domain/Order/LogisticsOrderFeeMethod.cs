@@ -22,7 +22,7 @@ public class LogisticsOrderFeeMethod : CodeTypeBase
     /// </summary>
     public static readonly LogisticsOrderFeeMethod None = new LogisticsOrderFeeMethod(0, "", "");
 
-    private static readonly List<LogisticsOrderFeeMethod> codeTypeList = new List<LogisticsOrderFeeMethod>() {
+    private static readonly IReadOnlyList<LogisticsOrderFeeMethod> codeTypeList = new List<LogisticsOrderFeeMethod>() {
         Pack,
         Express,
     };
@@ -41,7 +41,7 @@ public class LogisticsOrderFeeMethod : CodeTypeBase
 
     public static IList<LogisticsOrderFeeMethod> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private LogisticsOrderFeeMethod(int id, string name, string description) : base(id, name, description)

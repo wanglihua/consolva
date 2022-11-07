@@ -22,7 +22,7 @@ public class ExpressRemarkType : CodeTypeBase
     /// </summary>
     public static readonly ExpressRemarkType None = new ExpressRemarkType(0, "", "");
 
-    private static readonly List<ExpressRemarkType> codeTypeList = new List<ExpressRemarkType>() {
+    private static readonly IReadOnlyList<ExpressRemarkType> codeTypeList = new List<ExpressRemarkType>() {
         Customer,
         Checkin,
     };
@@ -41,7 +41,7 @@ public class ExpressRemarkType : CodeTypeBase
 
     public static List<ExpressRemarkType> GetList()
     {
-        return codeTypeList;
+        return codeTypeList.ToList();
     }
 
     private ExpressRemarkType(int id, string name, string description) : base(id, name, description)
