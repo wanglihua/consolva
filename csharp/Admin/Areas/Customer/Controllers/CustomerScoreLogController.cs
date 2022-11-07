@@ -85,7 +85,7 @@ public class CustomerScoreLogController : Controller
                 .SingleOrDefault();
 
             int orderId = logisticsOrder?.Id ?? 0;
-            criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.LogisticsOrder != null && e.LogisticsOrder.Id == orderId));
+            criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e =>  e.LogisticsOrder!.Id == orderId));
         }
 
         return criteria;

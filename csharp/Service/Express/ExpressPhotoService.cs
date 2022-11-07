@@ -86,7 +86,7 @@ public class ExpressPhotoService
         }
 
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
-            .Where(e => e.Express != null && e.Express.Id == expressId)
+            .Where(e =>  e.Express!.Id == expressId)
             .ToList();
 
         foreach (ExpressPhotoInfo expressPhoto in expressPhotoList)
@@ -117,7 +117,7 @@ public class ExpressPhotoService
     public void UnbindPhotoFromExpress(int expressId)
     {
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
-            .Where(e => e.Express != null && e.Express.Id == expressId)
+            .Where(e => e.Express!.Id == expressId)
             .ToList();
 
         foreach (ExpressPhotoInfo expressPhoto in expressPhotoList)

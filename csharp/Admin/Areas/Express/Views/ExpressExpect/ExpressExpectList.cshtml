@@ -1,0 +1,134 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Express.Models.ExpressExpect.ExpressExpectListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressExpectList" }))
+
+<table id="tblExpressExpectList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="expressExpectCheckAll"></label><input id="expressExpectCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerAlias).@(nameof(ExpressExpectInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressExpectList">客户</a>
+                </div>
+            </th>
+
+            <th style="width: 150px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressExpectAlias).@(nameof(ExpressExpectInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressExpectList">快递单号</a>
+                </div>
+            </th>
+
+            <th style="width: 280px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressExpectAlias).@(nameof(ExpressExpectInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressExpectList">备注</a>
+                </div>
+            </th>
+
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressExpectAlias).@(nameof(ExpressExpectInfo.OverdueMsgSent))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressExpectList">超期未入库提醒</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressExpectAlias).@(nameof(ExpressExpectInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressExpectList">状态</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressExpectAlias).@(nameof(ExpressExpectInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressExpectList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressExpectAlias).@(nameof(ExpressExpectInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressExpectList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ExpressExpectList.Count != 0)
+        {
+            int itemIndex = 0;
+            foreach (ExpressExpectInfo expressExpect in Model.ExpressExpectList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="expressExpectCheck_@(expressExpect.Id)"></label><input id="expressExpectCheck_@(expressExpect.Id)" type="checkbox" class="ace" value="@expressExpect.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressExpect.CustomerCodeCache)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressExpect.TrackingNo)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressExpect.Description)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressExpect.OverdueMsgSent)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressExpect.Status.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @expressExpect.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @expressExpect.LastEditTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressExpectList" }))

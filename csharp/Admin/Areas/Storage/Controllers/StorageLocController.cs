@@ -509,7 +509,7 @@ public class StorageLocController : Controller
 
         foreach (StorageLocInfo loc in storageLocList)
         {
-            loc.HasGoodsCache = orderGoodsListHasStorageLoc.Where(e => e.StorageLoc != null && e.StorageLoc.Id == loc.Id).Count() != 0;
+            loc.HasGoodsCache = orderGoodsListHasStorageLoc.Where(e => e.StorageLoc!.Id == loc.Id).Count() != 0;
         }
         */
 

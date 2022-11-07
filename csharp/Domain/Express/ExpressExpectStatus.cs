@@ -59,7 +59,7 @@ public class ExpressExpectStatus : CodeTypeBase
     }
 }
 
-public class LogisticsExpressExpectStatusHibernateType : CodeHibernateTypeBase<ExpressExpectStatus>
+public class ExpressExpectStatusHibernateType : CodeHibernateTypeBase<ExpressExpectStatus>
 {
     protected override ExpressExpectStatus GetCodeTypeById(int id)
     {
@@ -67,7 +67,7 @@ public class LogisticsExpressExpectStatusHibernateType : CodeHibernateTypeBase<E
     }
 }
 
-public class LogisticsExpressExpectStatusModelBinder : CodeTypeModelBinderBase<ExpressExpectStatus>
+public class ExpressExpectStatusModelBinder : CodeTypeModelBinderBase<ExpressExpectStatus>
 {
     protected override ExpressExpectStatus GetCodeTypeById(int id)
     {

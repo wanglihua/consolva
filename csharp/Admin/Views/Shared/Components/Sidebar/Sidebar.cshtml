@@ -27,6 +27,16 @@
                 <b class="arrow"></b>
                 <ul class="submenu">
 
+                    @if (Model.HasPassRes(PassRes.Express.ExpressExpect))
+                    {
+                        <li id="express-express-expect-menu">
+                            <a asp-area="Express" asp-controller="ExpressExpect" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>预报单号
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
+
                     @if (Model.HasPassRes(PassRes.Express.ExpressPhoto))
                     {
                         <li id="express-photo-index-menu">

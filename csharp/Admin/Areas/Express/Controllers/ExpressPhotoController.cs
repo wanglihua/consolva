@@ -161,7 +161,7 @@ public class ExpressPhotoController : Controller
         {
             string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
-            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.Customer != null && e.Customer.Id == customerIdQuery));
+            criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.Customer!.Id == customerIdQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)

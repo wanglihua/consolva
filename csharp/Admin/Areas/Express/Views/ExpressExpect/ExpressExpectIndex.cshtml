@@ -1,0 +1,81 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model ExpressExpectIndexModel
+@using shunda.Admin.Areas.Express.Models.ExpressExpect
+@{
+    ViewData[ViewDataKey.Title] = "预报单号";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="express-menu">快递管理</li>
+    <li class="active" data-menu="express-express-expect-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+    <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" style="width: 180px; height: 30px;" placeholder="快递单号查询"/>&nbsp;    
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressExpectList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="expressExpectList" data-page-index="0" data-sort-field="@(nameof(ExpressExpectInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="expressExpectDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadExpressExpectList();
+    });
+
+    function sortExpressExpectList(sortField, sortDir) {
+        var list = $('#expressExpectList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExpressExpectList();
+    }
+
+    function loadExpressExpectList(pageIndex) {
+        var list = $('#expressExpectList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExpressExpect")",
+            type: "POST",
+            data: {
+                "@(nameof(ExpressExpectListQueryParam.CustomerCodeQuery))": $('#customerCodeQuery').val(),
+                "@(nameof(ExpressExpectListQueryParam.TrackingNoQuery))": $('#trackingNoQuery').val(),
+                "@(nameof(ExpressExpectListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ExpressExpectListQueryParam.SortField))": sortField,
+                "@(nameof(ExpressExpectListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#expressExpectList').html(data);
+
+                initListTable("#tblExpressExpectList");
+            }
+        });
+    }
+
+</script>
