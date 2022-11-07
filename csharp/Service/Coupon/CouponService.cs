@@ -44,8 +44,7 @@ public class CouponService
         var coupponStatusPick = CouponStatus.Pick;
         var coupon = session.Query<CouponInfo>()
             .Where(e => e.Customer.Id == customerId
-                        && e.Status == coupponStatusPick
-                        && e.Batch.HasFirstMode == false)
+                        && e.Status == coupponStatusPick)
             .Take(1)
             .SingleOrDefault();
 

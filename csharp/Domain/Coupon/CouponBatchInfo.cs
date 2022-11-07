@@ -1,5 +1,4 @@
 using shunda.Core;
-using shunda.Domain.Logistics;
 
 namespace shunda.Domain.Coupon;
 
@@ -17,27 +16,6 @@ public  class CouponBatchInfo : Entity
     /// 类型，非空
     /// </summary>
     public virtual CouponType Type { get; set; } = CouponType.None;
-
-    /// <summary>
-    /// 头程类型，这个字段后来基本没用，只是存储了数据，但数据基本没用起来
-    /// </summary>
-    public virtual LogisticsModeType FirstType { get; set; } = LogisticsModeType.None;
-
-    /// <summary>
-    /// 头程物流
-    /// 这个字段后来也没用起来，用另外一张表来存储了
-    /// </summary>
-    public virtual LogisticsModeInfo FirstMode { get; set; } = new();
-
-    /// <summary>
-    /// 头程物流描述
-    /// </summary>
-    public virtual string FirstModeDesc { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 是否有关联的头程物流
-    /// </summary>
-    public virtual bool HasFirstMode { get; set; } = false;
 
     /// <summary>
     /// 有效期，非空
