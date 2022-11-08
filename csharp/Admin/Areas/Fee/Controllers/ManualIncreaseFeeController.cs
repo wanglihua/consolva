@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using shunda.Admin.Areas.Fee.Models.ManualIncreaseFee;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -11,6 +12,7 @@ using shunda.Domain.Fee;
 using shunda.Domain.Order;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
@@ -19,17 +21,20 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 [AdminAuth(PassRes.Fee.ManualIncreaseFee)]
 public class ManualIncreaseFeeController : Controller
 {
-    private ISession session;
-    private CustomerCodeService customerCodeService;
-    // private LogisticsOrderManualFeeService logisticsOrderManualFeeService;
+    private readonly ISession session;
+    private readonly LoginUserService loginUserService;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly LogisticsOrderManualFeeService logisticsOrderManualFeeService;
 
     public ManualIncreaseFeeController(ISession session,
-        CustomerCodeService customerCodeService)
-        //LogisticsOrderManualFeeService logisticsOrderManualFeeService)
+        CustomerCodeService customerCodeService,
+        LoginUserService loginUserService,
+        LogisticsOrderManualFeeService logisticsOrderManualFeeService)
     {
         this.session = session;
+        this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
-        // this.logisticsOrderManualFeeService = logisticsOrderManualFeeService;
+        this.logisticsOrderManualFeeService = logisticsOrderManualFeeService;
     }
 
     [HttpGet]
@@ -183,8 +188,8 @@ public class ManualIncreaseFeeController : Controller
             throw new ValidationException("手工增加费用不能小于0！");
         }
 
-        // todo a 编译需要后面补上
-        // logisticsOrderManualFeeService.AddManualIncreaseFee(logisticsOrder, customer, model.Fee, model.ManualReasonId, model.Description ?? string.Empty);
+        int loginUserId = loginUserService.GetLoginUserId();
+        logisticsOrderManualFeeService.AddManualIncreaseFee(logisticsOrder, customer, model.Fee, model.ManualReasonId, model.Description ?? string.Empty, loginUserId);
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
