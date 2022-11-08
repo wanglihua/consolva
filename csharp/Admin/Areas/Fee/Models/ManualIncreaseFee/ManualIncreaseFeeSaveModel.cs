@@ -4,8 +4,6 @@ namespace shunda.Admin.Areas.Fee.Models.ManualIncreaseFee;
 
 public class ManualIncreaseFeeSaveModel
 {
-    public int FeeId { get; set; }
-
     /// <summary>
     /// 订单编号
     /// </summary>

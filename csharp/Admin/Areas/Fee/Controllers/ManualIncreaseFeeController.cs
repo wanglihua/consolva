@@ -109,37 +109,12 @@ public class ManualIncreaseFeeController : Controller
     }
 
     [HttpPost]
-    [Route("/admin/manual/increase/fee/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
+    [Route("/admin/manual/increase/fee/detail")]
+    public IActionResult Detail()
     {
         session.DefaultReadOnly = true;
 
-        LogisticsOrderFeeInfo logisticsOrderFee;
-
         ManualIncreaseFeeDetailModel model = new ManualIncreaseFeeDetailModel();
-
-        if (id == null || id.Value == 0)
-        {
-            logisticsOrderFee = new LogisticsOrderFeeInfo();
-        }
-        else
-        {
-            logisticsOrderFee = session.Get<LogisticsOrderFeeInfo>(id.Value);
-            if (logisticsOrderFee == null)
-            {
-                throw new ValidationException("指定的数据项不存在！");
-            }
-
-            model.OrderCode = logisticsOrderFee.Order?.Code ?? string.Empty;
-            model.CustomerCode = customerCodeService.GetCustomerCode(logisticsOrderFee.Customer.Id);
-            model.Fee = logisticsOrderFee.Fee;
-            model.ManualReasonId = logisticsOrderFee.ManualReason?.Id ?? 0;
-            model.Description = logisticsOrderFee.Description;
-        }
-
-
-        model.FeeId = id ?? 0;
-
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.ManualIncrease).ToList();
 
         return View("ManualIncreaseFeeDetail", model);
