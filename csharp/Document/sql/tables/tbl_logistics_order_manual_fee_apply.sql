@@ -12,7 +12,7 @@ CREATE TABLE tbl_logistics_order_manual_fee_apply
     manual_reason_content VARCHAR(300)                NOT NULL COMMENT '增减核销费用原因content',
     apply_user_id         INT                         NOT NULL COMMENT '申请用户',
     approve_user_id       INT                         NULL COMMENT '审核用户',
-    status_id             INT                         NOT NULL COMMENT '审核状态',
+    status_id             INT                         NOT NULL COMMENT '审核状态#type:LogisticsOrderManualFeeApplyStatus',
     create_time           DATETIME                    NOT NULL COMMENT '创建时间',
     update_time           DATETIME                    NOT NULL COMMENT '更新时间',
 
