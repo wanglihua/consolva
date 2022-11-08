@@ -3,6 +3,7 @@ using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using shunda.Domain.Customer;
+using shunda.Domain.Logistics;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
 
@@ -26,6 +27,14 @@ public class LogisticsOrderFeeInfo : Entity
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
     public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+
+    /// <summary>
+    /// 物品类型，非空
+    /// </summary>
+    [Required(ErrorMessage = "物品类型不能为空！")]
+    [JsonProperty("goodsType")]
+    [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
+    public virtual LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
     /// 费用类型，非空

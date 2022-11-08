@@ -2,6 +2,7 @@ using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Domain.Customer;
+using shunda.Domain.Logistics;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
 
@@ -32,6 +33,15 @@ public class LogisticsOrderFeeInfoMapping : EntityMapping<LogisticsOrderFeeInfo>
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.GoodsType,
+            map => {
+                map.Type<LogisticsGoodsTypeHibernateType>();
+                map.Column("goods_type_id");
+                map.NotNullable(true);
             }
         );
 
@@ -92,6 +102,5 @@ public class LogisticsOrderFeeInfoMapping : EntityMapping<LogisticsOrderFeeInfo>
                 map.Fetch(FetchKind.Select);
             }
         );
-
     }
 }

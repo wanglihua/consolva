@@ -46,14 +46,14 @@ public class LogisticsOrderManualFeeService
         string reasonContent = manualReason?.Content ?? string.Empty;
 
         UserInfo? user = null;
-        if(userId> 0)
+        if (userId > 0)
         {
             user = session.Get<UserInfo>(userId);
         }
 
         logisticsOrderFee.Order = logisticsOrder;
         logisticsOrderFee.Customer = customer;
-        // logisticsOrderFee.GoodsType = LogisticsGoodsType.None; // todo a
+        logisticsOrderFee.GoodsType = LogisticsGoodsType.None;
         logisticsOrderFee.Type = LogisticsOrderFeeType.ManualIncrease;
         logisticsOrderFee.Fee = amount;
         logisticsOrderFee.Description = description ?? ""; // 这个字段是非空的
@@ -99,7 +99,7 @@ public class LogisticsOrderManualFeeService
 
         logisticsOrderFee.Order = logisticsOrder;
         logisticsOrderFee.Customer = customer;
-        // logisticsOrderFee.GoodsType = LogisticsGoodsType.None; // todo a
+        logisticsOrderFee.GoodsType = LogisticsGoodsType.None;
         logisticsOrderFee.Type = LogisticsOrderFeeType.ManualDecrease;
         logisticsOrderFee.Fee = -amount; // 存储的时候，就存成是负的了，否则订单费用计算的时候会出错
         logisticsOrderFee.Description = description ?? ""; // 这个字段是非空的

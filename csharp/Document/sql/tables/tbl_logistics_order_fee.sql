@@ -1,8 +1,11 @@
+# DROP TABLE IF EXISTS tbl_logistics_order_fee;
+
 CREATE TABLE tbl_logistics_order_fee
 (
     id                    INT                         NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
     customer_id           INT                         NOT NULL COMMENT ' 客户',
     order_id              INT                         NOT NULL COMMENT '订单',
+    goods_type_id         INT            DEFAULT 0    NOT NULL COMMENT '物品类型#type:LogisticsGoodsType',
     type_id               INT            DEFAULT 0    NOT NULL COMMENT '费用类型#type:LogisticsOrderFeeType',
     fee                   DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '金额',
     description           VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '描述',
@@ -16,10 +19,6 @@ CREATE TABLE tbl_logistics_order_fee
     CONSTRAINT fk_logistics_order_fee_order_id FOREIGN KEY (order_id) REFERENCES tbl_logistics_order (id),
     CONSTRAINT fk_logistics_order_fee_manual_reason_id FOREIGN KEY (manual_reason_id) REFERENCES tbl_manual_fee_reason (id),
     CONSTRAINT fk_logistics_order_fee_manual_user_id FOREIGN KEY (manual_user_id) REFERENCES tbl_user (id),
-    
+
     INDEX ix_logistics_order_fee_type_id (type_id)
 ) COMMENT '订单费用';
-
-
-
-
