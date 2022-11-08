@@ -1,0 +1,94 @@
+@{
+    Layout = null;
+}
+@using Domain
+@using Domain.LogisticsOrder
+@model Web.Areas.Admin.Models.WriteOffFee.WriteOffFeeListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderPayList" })
+
+<table id="tblLogisticsOrderPayList" class="data-list-table table table-striped table-bordered table-hover">
+    <caption style="margin: 10px 0; color: #393939;">
+        <span>汇总信息，</span>
+        <span>客户数量：</span><span style="color:blue;">@(Model.CustomerCount)</span>，
+        <span>订单数量：</span><span style="color: blue;">@(Model.OrderCount)</span>，
+        <span>金额合计：</span><span style="color: blue;">@(Model.AmountSum.ToString("#0.00"))</span>
+    </caption>
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="logisticsOrderPayCheckAll"></label><input id="logisticsOrderPayCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 150px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderPayInfo.Order))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">订单</a>
+            </th>
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderPayInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">客户</a>
+            </th>
+            <th style="width: 110px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderPayInfo.PayType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">支付类型</a>
+            </th>
+            <th style="width: 100px; text-align: right;">
+                <a field="@(nameof(LogisticsOrderPayInfo.Amount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">支付金额</a>
+            </th>
+            <th style="width: 130px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderPayInfo.WriteOffReasonId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">核销原因</a>
+            </th>
+            <th style="width: 150px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderPayInfo.User))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">操作用户</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderPayInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">状态</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderPayInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">生成时间</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsOrderPayList != null && Model.LogisticsOrderPayList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsOrderPayInfo logisticsOrderPay in Model.LogisticsOrderPayList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="logisticsOrderPayCheck_@(logisticsOrderPay.Id)"></label><input id="logisticsOrderPayCheck_@(logisticsOrderPay.Id)" type="checkbox" class="ace" value="@logisticsOrderPay.Id" /><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;" class="break-word">
+                        <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderPay.Order?.Id})">
+                            @logisticsOrderPay.Order?.Code
+                        </a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = logisticsOrderPay.Customer?.Id})">
+                            @logisticsOrderPay.Customer?.CustomerCode
+                        </a>
+                    </td>
+                    <td style="text-align: center;">@logisticsOrderPay.PayType?.Name</td>
+                    <td style="text-align: right;">@logisticsOrderPay.Amount</td>
+                    <td style="text-align: center;" class="break-word">@logisticsOrderPay.WriteOffReasonContent</td>
+                    <td style="text-align: center;" class="break-word">
+                        @(logisticsOrderPay.User?.LoginName)(@(logisticsOrderPay.User?.UserName))
+                    </td>
+                    <td style="text-align: center;">@logisticsOrderPay.Status?.Name</td>
+                    <td style="text-align: center;">@logisticsOrderPay.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="12">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderPayList" })

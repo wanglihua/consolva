@@ -1,0 +1,199 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.WriteOffFee
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.WriteOffFee.WriteOffFeeIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "费用核销";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="order-fee-menu">费用管理</li>
+    <li class="parent" data-menu="order-fee-write-off-fee-menu">费用核销</li>
+    <li class="active" data-menu="order-fee-write-off-fee-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+@*
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderPayList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsOrderPayDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsOrderPay()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+*@
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="manualReasonIdQuery">核销费用原因</label>&nbsp;
+    <select id="manualReasonIdQuery" name="manualReasonIdQuery" style="width: 150px; height: 30px;">
+        <option value="0">核销费用原因</option>
+        @foreach (ManualFeeReasonInfo feeReason in Model.FeeReasonList)
+        {
+            <option value="@(feeReason.Id)">@(feeReason.Content)</option>
+        }
+    </select>&nbsp;
+
+    <label for="orderCodeQuery">订单编号</label>&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+
+    <label for="customerIdQuery">客户ID</label>&nbsp;
+    <input id="customerIdQuery" name="customerIdQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+    
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
+    
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderPayList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+    <button class="btn btn-purple btn-sm" style="margin-bottom: 3px; height: 30px;" onclick="exportExcel()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>      
+</div>
+
+
+<div id="logisticsOrderPayList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderPayInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsOrderPayDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#beginDateQuery").on("dp.change", function (e) {
+            $('#endDateQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#endDateQuery").on("dp.change", function (e) {
+            $('#beginDateQuery').data("DateTimePicker").maxDate(e.date);
+        });
+        
+        loadLogisticsOrderPayList();
+    });
+
+    function sortLogisticsOrderPayList(sortField, sortDir) {
+        var list = $('#logisticsOrderPayList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsOrderPayList();
+    }
+
+    function loadLogisticsOrderPayList(pageIndex) {
+        var list = $('#logisticsOrderPayList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "WriteOffFee")",
+            type: "POST",
+            data: {
+                '@(nameof(WriteOffFeeListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(WriteOffFeeListQueryParam.SortField))': sortField,
+                '@(nameof(WriteOffFeeListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderPayList').html(data);
+
+                initListTable("#tblLogisticsOrderPayList");
+            }
+        });
+    }
+
+    function orderSelectChange() {
+        $("#OrderCode").val($("#orderSelect").val());
+    }
+
+    function customerCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerRecentOrderSelect", "FeeCommon")',
+            type: "POST",
+            data: {
+                "customerCode": $("#CustomerCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#orderSelectWrapper").html(data);
+                    return;
+                }
+            }
+        });        
+    }
+
+    function orderCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerCodeByOrderCode", "FeeCommon")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#CustomerCode").val(data.customerCode);
+                    return;
+                }
+            }
+        }); 
+    }
+    
+    function exportExcel() {
+        var params = $.param({
+                '@(nameof(WriteOffFeeListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(WriteOffFeeListQueryParam.EndDateQuery))': $('#endDateQuery').val()
+        });
+
+        var url = '@Url.Action("Export", "WriteOffFee")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }      
+
+</script>
