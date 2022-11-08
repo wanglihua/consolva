@@ -60,7 +60,7 @@ public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
                 map.Type(NHibernateUtil.String);
                 map.Column("paypal_payment_id");
                 map.Length(50);
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -107,7 +107,7 @@ public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("write_off_reason_content");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
     }

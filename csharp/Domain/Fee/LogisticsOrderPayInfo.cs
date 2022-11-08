@@ -36,12 +36,12 @@ public class LogisticsOrderPayInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "支付订单编号不能为空！")]
     [MaxLength(25, ErrorMessage = "支付订单编号长度不能大于25！")]
-    public virtual string? OutTradeNo { get; set; }
+    public virtual string OutTradeNo { get; set; } = string.Empty;
 
     /// <summary>
     /// PayPal Payment Id
     /// </summary>
-    public virtual string? PayPalPaymentId { get; set; }
+    public virtual string PayPalPaymentId { get; set; } = string.Empty;
 
     /// <summary>
     /// 支付金额
@@ -69,5 +69,5 @@ public class LogisticsOrderPayInfo : Entity
     /// <summary>
     /// 核销原因
     /// </summary>
-    public virtual string? WriteOffReasonContent { get; set; }
+    public virtual string WriteOffReasonContent { get; set; } = string.Empty;
 }
