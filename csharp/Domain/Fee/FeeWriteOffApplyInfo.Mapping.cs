@@ -6,9 +6,9 @@ using shunda.Domain.Order;
 
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderFeeWriteOffApplyInfoMapping : EntityMapping<LogisticsOrderFeeWriteOffApplyInfo>
+public class FeeWriteOffApplyInfoMapping : EntityMapping<FeeWriteOffApplyInfo>
 {
-    public LogisticsOrderFeeWriteOffApplyInfoMapping()
+    public FeeWriteOffApplyInfoMapping()
     {
         Table("tbl_fee_write_off_apply");
 
@@ -93,7 +93,7 @@ public class LogisticsOrderFeeWriteOffApplyInfoMapping : EntityMapping<Logistics
         Property(
             x => x.Status,
             map => {
-                map.Type<LogisticsOrderFeeWriteOffApplyStatusHibernateType>();
+                map.Type<FeeWriteOffApplyStatusHibernateType>();
                 map.Column("status_id");
                 map.NotNullable(true);
             }

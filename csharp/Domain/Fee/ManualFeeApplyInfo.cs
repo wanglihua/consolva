@@ -11,7 +11,7 @@ namespace shunda.Domain.Fee;
 /// <summary>
 /// 订单手工费用申请
 /// </summary>
-public class LogisticsOrderManualFeeApplyInfo : Entity
+public class ManualFeeApplyInfo : Entity
 {
     /// <summary>
     ///  客户，非空
@@ -83,7 +83,7 @@ public class LogisticsOrderManualFeeApplyInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "审核状态不能为空！")]
     [JsonProperty("status")]
-    [ModelBinder(typeof(LogisticsOrderManualFeeApplyStatusModelBinder))]
-    public virtual LogisticsOrderManualFeeApplyStatus Status { get; set; } = LogisticsOrderManualFeeApplyStatus.None;
+    [ModelBinder(typeof(ManualFeeApplyStatusModelBinder))]
+    public virtual ManualFeeApplyStatus Status { get; set; } = ManualFeeApplyStatus.None;
 
 }

@@ -1,6 +1,6 @@
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderFeeWriteOffApplyCountInfo
+public class FeeWriteOffApplyCountInfo
 {
     public virtual int OrderId { get; set; }
 

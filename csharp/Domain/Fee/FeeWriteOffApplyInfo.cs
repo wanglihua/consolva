@@ -10,7 +10,7 @@ namespace shunda.Domain.Fee;
 /// <summary>
 /// 订单费用核销申请
 /// </summary>
-public class LogisticsOrderFeeWriteOffApplyInfo : Entity
+public class FeeWriteOffApplyInfo : Entity
 {
     /// <summary>
     /// 客户，非空
@@ -73,7 +73,7 @@ public class LogisticsOrderFeeWriteOffApplyInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "审核状态不能为空！")]
     [JsonProperty("status")]
-    [ModelBinder(typeof(LogisticsOrderFeeWriteOffApplyStatusModelBinder))]
-    public virtual LogisticsOrderFeeWriteOffApplyStatus Status { get; set; } = LogisticsOrderFeeWriteOffApplyStatus.None;
+    [ModelBinder(typeof(FeeWriteOffApplyStatusModelBinder))]
+    public virtual FeeWriteOffApplyStatus Status { get; set; } = FeeWriteOffApplyStatus.None;
 
 }

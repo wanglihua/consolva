@@ -7,9 +7,9 @@ using shunda.Domain.Pass;
 
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderManualFeeApplyInfoMapping : EntityMapping<LogisticsOrderManualFeeApplyInfo>
+public class ManualFeeApplyInfoMapping : EntityMapping<ManualFeeApplyInfo>
 {
-    public LogisticsOrderManualFeeApplyInfoMapping()
+    public ManualFeeApplyInfoMapping()
     {
         Table("tbl_manual_fee_apply");
 
@@ -107,7 +107,7 @@ public class LogisticsOrderManualFeeApplyInfoMapping : EntityMapping<LogisticsOr
         Property(
             x => x.Status,
             map => {
-                map.Type<LogisticsOrderManualFeeApplyStatusHibernateType>();
+                map.Type<ManualFeeApplyStatusHibernateType>();
                 map.Column("status_id");
                 map.NotNullable(true);
             }

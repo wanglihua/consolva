@@ -4,9 +4,9 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderFeeWriteOffApplyCountInfoMapping : ClassMapping<LogisticsOrderFeeWriteOffApplyCountInfo>
+public class FeeWriteOffApplyCountInfoMapping : ClassMapping<FeeWriteOffApplyCountInfo>
 {
-    public LogisticsOrderFeeWriteOffApplyCountInfoMapping()
+    public FeeWriteOffApplyCountInfoMapping()
     {
         Mutable(false);
 
