@@ -70,4 +70,10 @@ public class LogisticsOrderPayInfo : Entity
     /// 核销原因
     /// </summary>
     public virtual string WriteOffReasonContent { get; set; } = string.Empty;
+
+    #region Cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

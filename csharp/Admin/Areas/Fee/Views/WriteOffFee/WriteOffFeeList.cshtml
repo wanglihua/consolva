@@ -1,9 +1,8 @@
 @{
     Layout = null;
 }
-@using Domain
-@using Domain.LogisticsOrder
-@model Web.Areas.Admin.Models.WriteOffFee.WriteOffFeeListModel
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.WriteOffFee.WriteOffFeeListModel
 
 @await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderPayList" })
 
@@ -59,13 +58,13 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
-                        <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderPay.Order?.Id})">
+                        <a target="_blank" asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Order?.Id)">
                             @logisticsOrderPay.Order?.Code
                         </a>
                     </td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = logisticsOrderPay.Customer?.Id})">
-                            @logisticsOrderPay.Customer?.CustomerCode
+                        <a target="_blank" asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Customer?.Id)">
+                            @logisticsOrderPay.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;">@logisticsOrderPay.PayType?.Name</td>
