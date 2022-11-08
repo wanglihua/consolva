@@ -14,15 +14,15 @@ public class LogisticsOrderManualFeeService
 {
     private readonly ISession session;
 
-    // private readonly LogisticsOrderFeeService logisticsOrderFeeService; todo a
+    private readonly LogisticsOrderFeeService logisticsOrderFeeService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
 
     public LogisticsOrderManualFeeService(ISession session,
-        // LogisticsOrderFeeService logisticsOrderFeeService,
+        LogisticsOrderFeeService logisticsOrderFeeService,
         LogisticsOrderActionService logisticsOrderActionService)
     {
         this.session = session;
-        // this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.logisticsOrderFeeService = logisticsOrderFeeService;
         this.logisticsOrderActionService = logisticsOrderActionService;
     }
 
@@ -68,7 +68,7 @@ public class LogisticsOrderManualFeeService
 
         PayStatus payStatusBefore = logisticsOrder.PayStatus;
 
-        // logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder); todo a
+        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder);
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 
@@ -118,7 +118,7 @@ public class LogisticsOrderManualFeeService
 
         PayStatus payStatusBefore = logisticsOrder.PayStatus;
 
-        // logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder); todo a
+        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder);
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 
