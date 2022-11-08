@@ -11,7 +11,7 @@ public class LogisticsOrderManualFeeApplyInfoMapping : EntityMapping<LogisticsOr
 {
     public LogisticsOrderManualFeeApplyInfoMapping()
     {
-        Table("tbl_logistics_order_manual_fee_apply");
+        Table("tbl_manual_fee_apply");
 
         ManyToOne(
             x => x.Customer,

@@ -12,7 +12,7 @@ public class LogisticsOrderManualFeeApplyCountInfoMapping : ClassMapping<Logisti
 
         Cache(x => x.Usage(CacheUsage.ReadOnly));
 
-        Table("view_logistics_order_manual_fee_apply_count");
+        Table("view_manual_fee_apply_count");
 
         Id(
             x => x.OrderId,
