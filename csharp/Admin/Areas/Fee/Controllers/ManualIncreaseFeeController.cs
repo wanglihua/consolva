@@ -148,7 +148,7 @@ public class ManualIncreaseFeeController : Controller
     [HttpPost]
     [Route("/admin/manual/increase/fee/save")]
     [Transactional]
-    public IActionResult Save(ManualIncreaseFeeDetailModel model)
+    public IActionResult Save(ManualIncreaseFeeSaveModel model)
     {
         if (!ModelState.IsValid)
         {

@@ -53,6 +53,7 @@
                                 <label asp-for="ManualReasonId" class="col-xs-2 control-label">增加费用原因</label>
                                 <div class="col-xs-10">
                                     <select asp-for="ManualReasonId" required="required" class="input-sm form-control">
+                                        <option value=""></option>
                                         @foreach (ManualFeeReasonInfo feeReason in Model.FeeReasonList)
                                         {
                                             <option value="@(feeReason.Id)">@(feeReason.Content)</option>
