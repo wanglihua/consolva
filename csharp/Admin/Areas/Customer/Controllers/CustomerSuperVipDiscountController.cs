@@ -5,6 +5,7 @@ using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Customer.Models.CustomerSuperVipDiscount;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -23,6 +24,7 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerSuperVipDiscountController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
+
     private readonly CustomerCodeService customerCodeService;
     private readonly LoginUserService loginUserService;
 

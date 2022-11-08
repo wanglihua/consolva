@@ -12,6 +12,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Hibernate.MiniProfilerMySql;
 using shunda.Core.Json;
 using shunda.Core.Log;
+using shunda.Core.Service;
 using shunda.Domain;
 using shunda.Service;
 using StackExchange.Profiling;
@@ -93,6 +94,9 @@ public class Program
 
         // 添加 Service 项目中的 service
         services.AddAppServices();
+
+        // 添加 Admin 项目中的 service
+        ServiceUtil.AddAssemblyService(services, typeof(Program).Assembly);
 
         // 必须 Singleton
         services.AddSingleton(provider =>

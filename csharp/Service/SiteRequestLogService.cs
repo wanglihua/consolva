@@ -8,7 +8,6 @@ using shunda.Core.Service;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
-using shunda.Domain.Pass;
 
 namespace shunda.Service;
 
@@ -22,33 +21,28 @@ public class SiteRequestLogService
 
     private ISessionFactory sessionFactory;
     private WebSessionService webSessionService;
-    private LoginUserService loginUserService;
 
     public SiteRequestLogService(ISessionFactory sessionFactory,
-        WebSessionService webSessionService,
-        LoginUserService loginUserService)
+        WebSessionService webSessionService)
     {
         this.sessionFactory = sessionFactory;
         this.webSessionService = webSessionService;
-        this.loginUserService = loginUserService;
     }
 
-    public void NewSiteRequest(HttpRequest request, decimal totalSeconds, bool useInnerTransaction)
+    public void NewSiteRequest(HttpRequest request, int userId, decimal totalSeconds, bool useInnerTransaction)
     {
         if (SiteConfig.RequestLogEnabled == false)
         {
             return;
         }
 
-        int loginUserId = loginUserService.GetLoginUserId();
-
 #if !DEBUG
-        if (loginUserId == UserInfo.DevUserId)
+        if (userId == shunda.Domain.Pass.UserInfo.DevUserId)
         {
             return;
         }
 
-        if (loginUserId != UserInfo.AdminUserId) // 只记录管理员的
+        if (userId != shunda.Domain.Pass.UserInfo.AdminUserId) // 只记录管理员的
         {
             return;
         }
@@ -95,9 +89,9 @@ public class SiteRequestLogService
             SiteRequestLogInfo siteRequestLog = new SiteRequestLogInfo();
             siteRequestLog.SessionId = sessionId;
             siteRequestLog.IpAddress = ipAddress;
-            if (loginUserId != 0)
+            if (userId != 0)
             {
-                siteRequestLog.UserId = loginUserId;
+                siteRequestLog.UserId = userId;
             }
             else
             {

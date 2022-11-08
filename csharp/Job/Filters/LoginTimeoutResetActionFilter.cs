@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using NLog;
-using shunda.Service;
+using shunda.Admin.Services;
 
 namespace shunda.Job.Filters;
 

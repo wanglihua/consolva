@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Admin.Models.Home;
+using shunda.Admin.Services;
 using shunda.Core.Web;
 using shunda.Service;
 
@@ -11,10 +12,13 @@ public class HomeController : Controller
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly SidebarStateService sidebarStateService;
+    private readonly LoginUserService loginUserService;
 
-    public HomeController(SidebarStateService sidebarStateService)
+    public HomeController(SidebarStateService sidebarStateService,
+        LoginUserService loginUserService)
     {
         this.sidebarStateService = sidebarStateService;
+        this.loginUserService = loginUserService;
     }
 
     [NoLoginRequired]
@@ -40,7 +44,8 @@ public class HomeController : Controller
     [Route("/admin/home/set/sidebar/state")]
     public IActionResult SetSidebarState(bool isMin)
     {
-        sidebarStateService.SetState(isMin);
+        int loginUserId = loginUserService.GetLoginUserId();
+        sidebarStateService.SetState(loginUserId, isMin);
 
         return Json(new Dictionary<string, object> {
             { "success", true },

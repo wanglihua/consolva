@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Models.AdminLoginUser;
+using shunda.Admin.Services;
 using shunda.Domain.Pass;
-using shunda.Service;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Components;

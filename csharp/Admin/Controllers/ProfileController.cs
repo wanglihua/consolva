@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Models.Profile;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Pass;
-using shunda.Service;
 using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 

@@ -5,6 +5,7 @@ using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Customer.Models.CustomerVipDiscount;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;

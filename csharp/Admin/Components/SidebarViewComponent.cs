@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Models.Sidebar;
+using shunda.Admin.Services;
 using shunda.Service;
 using ISession = NHibernate.ISession;
 
@@ -8,7 +9,7 @@ namespace shunda.Admin.Components;
 public class SidebarViewComponent : ViewComponent
 {
     private readonly LoginUserService loginUserService;
-    private ISession session;
+    private  readonly ISession session;
     private readonly SidebarStateService sidebarStateService;
 
     public SidebarViewComponent(
@@ -25,13 +26,14 @@ public class SidebarViewComponent : ViewComponent
     {
         // int loginUserId = loginUserService.GetLoginUserId();
         var isAdmin = loginUserService.IsAdmin;
+        var loginUserId = loginUserService.GetLoginUserId();
 
         var model = new SidebarModel();
         model.IsAdmin = isAdmin;
         model.PassResIdMap = loginUserService.GetPassResIdMap();
 
 
-        model.IsSidebarMin = sidebarStateService.GetMinState();
+        model.IsSidebarMin = sidebarStateService.GetMinState(loginUserId);
 
         return View("Sidebar", model);
     }

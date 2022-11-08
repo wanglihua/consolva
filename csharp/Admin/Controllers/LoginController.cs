@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Models.Login;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
-using shunda.Service;
 
 namespace shunda.Admin.Controllers;
 

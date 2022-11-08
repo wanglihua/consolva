@@ -5,6 +5,7 @@ using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Fee.Models.CustomerCharge;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -12,7 +13,6 @@ using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
-using shunda.Service;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 

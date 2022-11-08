@@ -5,6 +5,7 @@ using NHibernate.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Storage.Models.StorageLoc;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
