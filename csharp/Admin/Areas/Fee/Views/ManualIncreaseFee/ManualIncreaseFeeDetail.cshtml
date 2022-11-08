@@ -29,7 +29,7 @@
                             <div class="form-group">
                                 <label asp-for="OrderCode" class="col-xs-2 control-label">订单编号</label>
                                 <div class="col-xs-5">
-                                    <input asp-for="OrderCode" type="text" class="input-sm form-control" onchange="orderCodeChange()" />
+                                    <input asp-for="OrderCode" type="text" class="input-sm form-control" required="required" onchange="orderCodeChange()" />
                                 </div>
                                 <div class="col-xs-5" id="orderSelectWrapper">
                                     <select class="input-sm form-control">
@@ -43,7 +43,7 @@
                             <div class="form-group">
                                 <label asp-for="Fee" class="col-xs-2 control-label">金额</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Fee" type="text" class="input-sm form-control" />
+                                    <input asp-for="Fee" type="number" required="required" min="0" step="1" class="input-sm form-control" />
                                 </div>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                             <div class="form-group">
                                 <label asp-for="ManualReasonId" class="col-xs-2 control-label">增加费用原因</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="ManualReasonId" class="input-sm form-control">
+                                    <select asp-for="ManualReasonId" required="required" class="input-sm form-control">
                                         @foreach (ManualFeeReasonInfo feeReason in Model.FeeReasonList)
                                         {
                                             <option value="@(feeReason.Id)">@(feeReason.Content)</option>
@@ -66,7 +66,7 @@
                             <div class="form-group">
                                 <label asp-for="Description" class="col-xs-2 control-label">描述</label>
                                 <div class="col-xs-10">
-                                    <textarea asp-for="Description" rows="3" class="input-sm form-control"></textarea>
+                                    <textarea asp-for="Description" rows="3" maxlength="255" class="input-sm form-control"></textarea>
                                 </div>
                             </div>
                         </div>

@@ -135,23 +135,7 @@
 
     function saveLogisticsOrderFee() {
         var form = $("#logisticsOrderFeeDetailForm");
-        var valid = validate(form,
-            {
-                'OrderCode': {
-                    required: true
-                },
-                'LogisticsOrderFee.Fee': {
-                    required: true
-                },
-                'LogisticsOrderFee.ManualReasonId': {
-                    required: true,
-                    digits: true 
-                },
-                'LogisticsOrderFee.Description': {
-                    required: false,
-                    maxlength: 255
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");
@@ -175,44 +159,13 @@
         }
     }
 
-    @*
-    function deleteLogisticsOrderFee() {
-        var idList = getSelectIdList('#tblLogisticsOrderFeeList');
-
-        if (idList.length === 0) {
-            $.msg.alert("请选择数据！");
-            return;
-        }
-
-        $.msg.confirm("确认要删除吗？",
-            function() {
-                $.ajax({
-                    url: '@Url.Action("Delete", "ManualIncreaseFee")',
-                    type: "POST",
-                    data: { "idList": idList },
-                    success: function(data) {
-                        if (data.success === false) {
-                            $.msg.error(data.message);
-                            return;
-                        } else {
-                            $.msg.show(data.message);
-                        }
-
-                        loadLogisticsOrderFeeList();
-                    }
-                });
-            }
-        );
-    }
-    *@
-
     function orderSelectChange() {
         $("#OrderCode").val($("#orderSelect").val());
     }
 
     function customerCodeChange() {
         $.ajax({
-            url: '@Url.Action("GetCustomerRecentOrderSelect", "CommonInfo")',
+            url: '@Url.Action("GetCustomerRecentOrderSelect", "FeeCommon")',
             type: "POST",
             data: {
                 "customerCode": $("#CustomerCode").val()
@@ -231,7 +184,7 @@
 
     function orderCodeChange() {
         $.ajax({
-            url: '@Url.Action("GetCustomerCodeByOrderCode", "CommonInfo")',
+            url: '@Url.Action("GetCustomerCodeByOrderCode", "FeeCommon")',
             type: "POST",
             data: {
                 "orderCode": $("#OrderCode").val()

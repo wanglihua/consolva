@@ -73,17 +73,6 @@
                 <ul class="submenu">
 
                     @*
-                    @if (Model.HasPassRes(PassRes.Fee.ManualIncreaseFee))
-                    {
-                        <li id="fee-manual-increase-fee-index-menu">
-                            <a href="@Url.Action("Index", "ManualIncreaseFee")">
-                                <i class="menu-icon fa fa-caret-right"></i>
-                                增加费用
-                            </a>
-                            <b class="arrow"></b>
-                        </li>
-                    }
-
                     @if (Model.HasOneOfPassRes(PassRes.Fee.ManualDecreaseFeeApply, PassRes.Fee.ManualDecreaseFeeApprove, PassRes.Fee.ManualDecreaseFee))
                     {
                         <li id="fee-manual-decrease-fee-menu">
@@ -225,6 +214,16 @@
 
                     *@
 
+                    @if (Model.HasPassRes(PassRes.Fee.ManualIncreaseFee))
+                    {
+                        <li id="fee-manual-increase-fee-index-menu">
+                            <a asp-area="Fee" asp-controller="ManualIncreaseFee" asp-action="Index">
+                                <i class="menu-icon fa fa-caret-right"></i>
+                                增加费用
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    }
 
                     @if (Model.HasPassRes(PassRes.Fee.ManualFeeReason))
                     {
