@@ -1,0 +1,108 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.ManualDecreaseFee.ManualDecreaseFeeListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderFeeList"})
+
+<table id="tblLogisticsOrderFeeList" class="data-list-table table table-striped table-bordered table-hover">
+    <caption style="margin: 10px 0; color: #393939;">
+        <span>汇总信息，</span>
+        <span>客户数量：</span><span style="color:blue;">@(Model.CustomerCount)</span>，
+        <span>订单数量：</span><span style="color: blue;">@(Model.OrderCount)</span>，
+        <span>金额合计：</span><span style="color: blue;">@(Model.FeeSum.ToString("#0.00"))</span>
+    </caption>
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="logisticsOrderFeeCheckAll"></label><input id="logisticsOrderFeeCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderFeeInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList"> 客户</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderFeeInfo.Order))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList">订单</a>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderFeeInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList">费用类型</a>
+            </th>
+            <th style="width: 90px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderFeeInfo.Fee))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList">金额</a>
+            </th>
+            <th style="width: 230px;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderFeeInfo.ManualReasonContent))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList">减少费用原因</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderFeeInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList">描述</a>
+                </div>
+            </th>
+            <th style="width: 150px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderFeeInfo.ManualUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList">操作用户</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderFeeInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFeeList">生成时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsOrderFeeList != null && Model.LogisticsOrderFeeList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsOrderFeeInfo logisticsOrderFee in Model.LogisticsOrderFeeList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="logisticsOrderFeeCheck_@(logisticsOrderFee.Id)"></label><input id="logisticsOrderFeeCheck_@(logisticsOrderFee.Id)" type="checkbox" class="ace" value="@logisticsOrderFee.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <a target="_blank" asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(logisticsOrderFee.Customer.Id)" >
+                            @logisticsOrderFee.CustomerCodeCache
+                        </a>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <a target="_blank" asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(logisticsOrderFee.Order.Id)">
+                            @logisticsOrderFee.Order?.Code
+                        </a>
+                    </td>
+                    <td style="text-align: center;">@logisticsOrderFee.Type?.Name</td>
+                    <td style="text-align: center;">@logisticsOrderFee.Fee</td>
+                    <td class="break-word">
+                        <div style="color: blue;">
+                            @logisticsOrderFee.ManualReasonContent
+                        </div>
+                        <div>
+                            @logisticsOrderFee.Description
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @(logisticsOrderFee.ManualUser?.LoginName)(@(logisticsOrderFee.ManualUser?.UserName))
+                        </div>
+                        <div>
+                            @logisticsOrderFee.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderFeeList"})
