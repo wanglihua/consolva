@@ -38,19 +38,19 @@ public class LogisticsOrderStatus : CodeTypeBase
     public static readonly LogisticsOrderStatus Delivered = new LogisticsOrderStatus(6000, "已妥投", "已妥投");
 
     /// <summary>
-    /// 已作废
+    /// 正常结束
     /// </summary>
-    public static readonly LogisticsOrderStatus Canceled = new LogisticsOrderStatus(9_8000, "已作废", "已作废");
+    public static readonly LogisticsOrderStatus Completed = new LogisticsOrderStatus(88_0000, "正常结束", "正常结束");
 
     /// <summary>
     /// 异常结束
     /// </summary>
-    public static readonly LogisticsOrderStatus Abend = new LogisticsOrderStatus(9_9000, "异常结束", "异常结束");
+    public static readonly LogisticsOrderStatus Abend = new LogisticsOrderStatus(89_000, "异常结束", "异常结束");
 
     /// <summary>
-    /// 正常结束
+    /// 已作废
     /// </summary>
-    public static readonly LogisticsOrderStatus Completed = new LogisticsOrderStatus(10_0000, "正常结束", "正常结束");
+    public static readonly LogisticsOrderStatus Canceled = new LogisticsOrderStatus(90_000, "已作废", "已作废");
 
     /// <summary>
     /// None
@@ -64,9 +64,9 @@ public class LogisticsOrderStatus : CodeTypeBase
         WaitTransfer,
         Transferred,
         Delivered,
-        Canceled,
-        Abend,
         Completed,
+        Abend,
+        Canceled,
     };
 
     private static readonly Dictionary<int, LogisticsOrderStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
