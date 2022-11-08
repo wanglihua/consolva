@@ -17,7 +17,7 @@ public class LogisticsOrderActionService
         this.session = session;
     }
 
-    #region 订单状态和支付状态都没变动
+    #region 订单状态和支付状态都没变动可能
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType)
     {
@@ -87,7 +87,7 @@ public class LogisticsOrderActionService
 
     #endregion
 
-    #region 订单状态有变动和支付状态没变动
+    #region 订单状态有变动可能，支付状态没变动可能
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter)
     {
@@ -156,8 +156,78 @@ public class LogisticsOrderActionService
     }
 
     #endregion
-    
-    #region 订单状态和支付状态都变动
+
+    #region 订单状态没变动可能，支付状态有变动可能
+
+    public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter)
+    {
+        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null)
+        {
+            throw new Exception($"指定的订单#{orderId}不存在！");
+        }
+
+        NewAction(orderId, actionType, order.OrderStatus, order.OrderStatus, payStatusBefore, payStatusAfter, string.Empty, 0, 0);
+    }
+
+    public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, string actionDesc)
+    {
+        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null)
+        {
+            throw new Exception($"指定的订单#{orderId}不存在！");
+        }
+
+        NewAction(orderId, actionType, order.OrderStatus, order.OrderStatus, payStatusBefore, payStatusAfter, actionDesc, 0, 0);
+    }
+
+    public void NewActionUser(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, int userId)
+    {
+        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null)
+        {
+            throw new Exception($"指定的订单#{orderId}不存在！");
+        }
+
+        NewAction(orderId, actionType, order.OrderStatus, order.OrderStatus, payStatusBefore, payStatusAfter, string.Empty, userId, 0);
+    }
+
+    public void NewActionUser(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, string actionDesc, int userId)
+    {
+        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null)
+        {
+            throw new Exception($"指定的订单#{orderId}不存在！");
+        }
+
+        NewAction(orderId, actionType, order.OrderStatus, order.OrderStatus, payStatusBefore, payStatusAfter, actionDesc, userId, 0);
+    }
+
+    public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, int customerId)
+    {
+        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null)
+        {
+            throw new Exception($"指定的订单#{orderId}不存在！");
+        }
+
+        NewAction(orderId, actionType, order.OrderStatus, order.OrderStatus, payStatusBefore, payStatusAfter, string.Empty, 0, customerId);
+    }
+
+    public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, string actionDesc, int customerId)
+    {
+        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null)
+        {
+            throw new Exception($"指定的订单#{orderId}不存在！");
+        }
+
+        NewAction(orderId, actionType, order.OrderStatus, order.OrderStatus, payStatusBefore, payStatusAfter, actionDesc, 0, customerId);
+    }
+
+    #endregion
+
+    #region 订单状态和支付状态都有变动可能
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter, PayStatus payStatusBefore, PayStatus payStatusAfter)
     {

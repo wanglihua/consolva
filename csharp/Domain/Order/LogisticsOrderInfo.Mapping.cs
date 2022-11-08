@@ -160,15 +160,6 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
         );
 
         Property(
-            x => x.UserAccount,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("user_account");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
             x => x.OrderAmount,
             map => {
                 map.Type(NHibernateUtil.Decimal);

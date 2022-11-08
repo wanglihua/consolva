@@ -128,13 +128,6 @@ public class LogisticsOrderInfo : Entity
     public virtual decimal GoodsPrice { get; set; } = 0m;
 
     /// <summary>
-    /// 使用余额，非空
-    /// </summary>
-    [Required(ErrorMessage = "使用余额不能为空！")]
-    [JsonProperty("userAccount")]
-    public virtual decimal UserAccount { get; set; } = 0m;
-
-    /// <summary>
     /// 应付款金额，非空
     /// </summary>
     [Required(ErrorMessage = "应付款金额不能为空！")]
@@ -228,5 +221,4 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [JsonProperty("deliveredTime")]
     public virtual DateTime? DeliveredTime { get; set; } = null;
-
 }

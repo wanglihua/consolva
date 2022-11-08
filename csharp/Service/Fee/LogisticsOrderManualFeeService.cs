@@ -5,23 +5,25 @@ using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
+using shunda.Service.Order;
 
 namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderManualFeeService
 {
-    private ISession session;
-    // private LogisticsOrderFeeService logisticsOrderFeeService; todo a
-    // private LogisticsOrderActionService logisticsOrderActionService; todo a
+    private readonly ISession session;
 
-    public LogisticsOrderManualFeeService(ISession session)
+    // private readonly LogisticsOrderFeeService logisticsOrderFeeService; todo a
+    private readonly LogisticsOrderActionService logisticsOrderActionService;
+
+    public LogisticsOrderManualFeeService(ISession session,
         // LogisticsOrderFeeService logisticsOrderFeeService,
-        // LogisticsOrderActionService logisticsOrderActionService)
+        LogisticsOrderActionService logisticsOrderActionService)
     {
         this.session = session;
         // this.logisticsOrderFeeService = logisticsOrderFeeService;
-        // this.logisticsOrderActionService = logisticsOrderActionService;
+        this.logisticsOrderActionService = logisticsOrderActionService;
     }
 
     /// <summary>
@@ -64,10 +66,14 @@ public class LogisticsOrderManualFeeService
         session.Save(logisticsOrderFee);
         session.Flush();
 
+        PayStatus payStatusBefore = logisticsOrder.PayStatus;
+
         // logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder); todo a
 
-        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description ?? ""}";
-        // logisticsOrderActionService.NewAction(logisticsOrder, LogisticsOrderActionType.ManualIncreaseFee, orderActionDesc); todo a
+        PayStatus payStatusAfter = logisticsOrder.PayStatus;
+
+        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description ?? string.Empty}";
+        logisticsOrderActionService.NewActionUser(logisticsOrder.Id, LogisticsOrderActionType.ManualIncreaseFee, payStatusBefore, payStatusAfter, orderActionDesc, userId);
     }
 
     /// <summary>
@@ -110,9 +116,13 @@ public class LogisticsOrderManualFeeService
         session.Save(logisticsOrderFee);
         session.Flush();
 
+        PayStatus payStatusBefore = logisticsOrder.PayStatus;
+
         // logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder); todo a
 
-        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description ?? ""}";
-        // logisticsOrderActionService.NewAction(logisticsOrder, LogisticsOrderActionType.ManualDecreaseFee, orderActionDesc);  todo a
+        PayStatus payStatusAfter = logisticsOrder.PayStatus;
+
+        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description ?? string.Empty}";
+        logisticsOrderActionService.NewActionUser(logisticsOrder.Id, LogisticsOrderActionType.ManualDecreaseFee, payStatusBefore, payStatusAfter, orderActionDesc, userId);
     }
 }
