@@ -70,4 +70,10 @@ public class LogisticsOrderFeeInfo : Entity
     [JsonProperty("manualUser")]
     public virtual UserInfo? ManualUser { get; set; } = null;
 
+
+    #region Cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

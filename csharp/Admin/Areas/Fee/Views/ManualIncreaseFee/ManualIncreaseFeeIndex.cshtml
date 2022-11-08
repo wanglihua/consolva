@@ -1,0 +1,251 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.ManualIncreaseFee
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.ManualIncreaseFee.ManualIncreaseFeeIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "手工增加订单费用";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="fee-menu">费用管理</li>
+    <li class="active" data-menu="fee-manual-increase-fee-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderFeeList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsOrderFeeDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    @*
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsOrderFee()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    *@
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="manualReasonIdQuery">增加费用原因</label>&nbsp;
+    <select id="manualReasonIdQuery" name="manualReasonIdQuery" style="width: 150px; height: 30px;">
+        <option value="0">增加费用原因</option>
+        @foreach (ManualFeeReasonInfo feeReason in Model.FeeReasonList)
+        {
+            <option value="@(feeReason.Id)">@(feeReason.Content)</option>
+        }
+    </select>&nbsp;
+    
+    <label for="orderCodeQuery">订单编号</label>&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询" />&nbsp;
+
+    <label for="customerIdQuery">客户ID</label>&nbsp;
+    <input id="customerIdQuery" name="customerIdQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询" />&nbsp;    
+    
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderFeeList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsOrderFeeList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderFeeInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsOrderFeeDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsOrderFeeList();
+    });
+
+    function sortLogisticsOrderFeeList(sortField, sortDir) {
+        var list = $('#logisticsOrderFeeList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsOrderFeeList();
+    }
+
+    function loadLogisticsOrderFeeList(pageIndex) {
+        var list = $('#logisticsOrderFeeList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ManualIncreaseFee")",
+            type: "POST",
+            data: {
+                '@(nameof(ManualIncreaseFeeListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(ManualIncreaseFeeListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(ManualIncreaseFeeListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(ManualIncreaseFeeListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ManualIncreaseFeeListQueryParam.SortField))': sortField,
+                '@(nameof(ManualIncreaseFeeListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderFeeList').html(data);
+
+                initListTable("#tblLogisticsOrderFeeList");
+            }
+        });
+    }
+
+    function showLogisticsOrderFeeDetail(id) {
+        $("#logisticsOrderFeeDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsOrderFeeDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ManualIncreaseFee")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsOrderFeeDetailDialogWrapper").html(data);
+                $("#logisticsOrderFeeDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveLogisticsOrderFee() {
+        var form = $("#logisticsOrderFeeDetailForm");
+        var valid = validate(form,
+            {
+                'OrderCode': {
+                    required: true
+                },
+                'LogisticsOrderFee.Fee': {
+                    required: true
+                },
+                'LogisticsOrderFee.ManualReasonId': {
+                    required: true,
+                    digits: true 
+                },
+                'LogisticsOrderFee.Description': {
+                    required: false,
+                    maxlength: 255
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ManualIncreaseFee")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#logisticsOrderFeeDetailDialog').modal('hide');
+                        loadLogisticsOrderFeeList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    @*
+    function deleteLogisticsOrderFee() {
+        var idList = getSelectIdList('#tblLogisticsOrderFeeList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "ManualIncreaseFee")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadLogisticsOrderFeeList();
+                    }
+                });
+            }
+        );
+    }
+    *@
+
+    function orderSelectChange() {
+        $("#OrderCode").val($("#orderSelect").val());
+    }
+
+    function customerCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerRecentOrderSelect", "CommonInfo")',
+            type: "POST",
+            data: {
+                "customerCode": $("#CustomerCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#orderSelectWrapper").html(data);
+                    return;
+                }
+            }
+        });        
+    }
+
+    function orderCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerCodeByOrderCode", "CommonInfo")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#CustomerCode").val(data.customerCode);
+                    return;
+                }
+            }
+        }); 
+    }
+
+</script>

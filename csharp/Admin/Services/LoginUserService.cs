@@ -11,7 +11,7 @@ using shunda.Domain.Pass;
 using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service;
+namespace shunda.Admin.Services;
 
 /// <summary>
 /// 这里面只是把登录用户的Id保存到Redis中，别的用户的信息都直接从数据库中读取。

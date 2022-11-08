@@ -1,0 +1,194 @@
+using Microsoft.AspNetCore.Mvc;
+using NHibernate;
+using NHibernate.Criterion;
+using shunda.Admin.Areas.Fee.Models.ManualIncreaseFee;
+using shunda.Core;
+using shunda.Core.Hibernate;
+using shunda.Core.Util;
+using shunda.Core.Web;
+using shunda.Domain.Customer;
+using shunda.Domain.Fee;
+using shunda.Domain.Order;
+using shunda.Domain.Pass.PassRes;
+using shunda.Service.Customer;
+using ISession = NHibernate.ISession;
+
+namespace shunda.Admin.Areas.Fee.Controllers;
+
+[FeeArea]
+[AdminAuth(PassRes.Fee.ManualIncreaseFee)]
+public class ManualIncreaseFeeController : Controller
+{
+    private ISession session;
+    private CustomerCodeService customerCodeService;
+    // private LogisticsOrderManualFeeService logisticsOrderManualFeeService;
+
+    public ManualIncreaseFeeController(ISession session,
+        CustomerCodeService customerCodeService)
+        //LogisticsOrderManualFeeService logisticsOrderManualFeeService)
+    {
+        this.session = session;
+        this.customerCodeService = customerCodeService;
+        // this.logisticsOrderManualFeeService = logisticsOrderManualFeeService;
+    }
+
+    [HttpGet]
+    [Route("/admin/manual/increase/fee")]
+    public IActionResult Index()
+    {
+        ManualIncreaseFeeIndexModel model = new ManualIncreaseFeeIndexModel();
+
+        model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.ManualIncrease).ToList();
+
+        return View("ManualIncreaseFeeIndex", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/manual/increase/fee/list")]
+    public IActionResult List(ManualIncreaseFeeListQueryParam queryParam)
+    {
+        int totalCount = GetListCriteria(queryParam)
+            .SetProjection(Projections.RowCount())
+            .UniqueResult<int>();
+
+        ListPager listPager = new ListPager(queryParam, totalCount);
+
+        IList<LogisticsOrderFeeInfo> logisticsOrderFeeList = GetListCriteria(queryParam)
+            .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
+            .AddOrder(Order.Desc(nameof(Entity.Id)))
+            .SetFirstResult(listPager.PageIndex * listPager.PageSize)
+            .SetMaxResults(listPager.PageSize)
+            .List<LogisticsOrderFeeInfo>();
+
+        foreach (LogisticsOrderFeeInfo orderFee in logisticsOrderFeeList)
+        {
+            orderFee.CustomerCodeCache = customerCodeService.GetCustomerCode(orderFee.Customer.Id);
+        }
+
+        ManualIncreaseFeeListModel model = new ManualIncreaseFeeListModel(listPager);
+        model.LogisticsOrderFeeList = logisticsOrderFeeList;
+
+        return View("ManualIncreaseFeeList", model);
+    }
+
+    [NonAction]
+    private ICriteria GetListCriteria(ManualIncreaseFeeListQueryParam queryParam)
+    {
+        ICriteria criteria = session.CreateCriteria<LogisticsOrderFeeInfo>();
+
+        criteria = criteria.CreateAlias(nameof(LogisticsOrderFeeInfo.Order), nameof(LogisticsOrderFeeInfo.Order));
+        // criteria = criteria.CreateAlias(nameof(LogisticsOrderFeeInfo.Customer), nameof(LogisticsOrderFeeInfo.Customer));
+
+        criteria = criteria.Add(Restrictions.Where<LogisticsOrderFeeInfo>(e => e.Type == LogisticsOrderFeeType.ManualIncrease));
+
+        criteria = criteria.SetReadOnly(true);
+
+        if (queryParam.ManualReasonIdQuery != 0)
+        {
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderFeeInfo>(e => e.ManualReason!.Id == queryParam.ManualReasonIdQuery));
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            criteria = criteria.Add(Restrictions.Like($"{nameof(LogisticsOrderFeeInfo.Order)}.{nameof(LogisticsOrderFeeInfo.Order.Code)}", orderCodeQuery, MatchMode.Anywhere));
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
+        {
+            int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsOrderFeeInfo.Customer)}.{nameof(LogisticsOrderFeeInfo.Customer.Id)}", customerIdQuery));
+        }
+
+        return criteria;
+    }
+
+    [HttpPost]
+    [Route("/admin/manual/increase/fee/detail/{id:int?}")]
+    public IActionResult Detail(int? id)
+    {
+        session.DefaultReadOnly = true;
+
+        LogisticsOrderFeeInfo logisticsOrderFee;
+
+        ManualIncreaseFeeDetailModel model = new ManualIncreaseFeeDetailModel();
+
+        if (id == null || id.Value == 0)
+        {
+            logisticsOrderFee = new LogisticsOrderFeeInfo();
+        }
+        else
+        {
+            logisticsOrderFee = session.Get<LogisticsOrderFeeInfo>(id.Value);
+            if (logisticsOrderFee == null)
+            {
+                throw new ValidationException("指定的数据项不存在！");
+            }
+
+            model.OrderCode = logisticsOrderFee.Order?.Code ?? string.Empty;
+            model.CustomerCode = customerCodeService.GetCustomerCode(logisticsOrderFee.Customer.Id);
+            model.Fee = logisticsOrderFee.Fee;
+            model.ManualReasonId = logisticsOrderFee.ManualReason?.Id ?? 0;
+            model.Description = logisticsOrderFee.Description;
+        }
+
+
+        model.FeeId = id ?? 0;
+
+        model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.ManualIncrease).ToList();
+
+        return View("ManualIncreaseFeeDetail", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/manual/increase/fee/save")]
+    [Transactional]
+    public IActionResult Save(ManualIncreaseFeeDetailModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
+
+        LogisticsOrderInfo? logisticsOrder = session.Query<LogisticsOrderInfo>()
+            .Where(e => e.Code == model.OrderCode)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (logisticsOrder == null)
+        {
+            throw new ValidationException("指定的订单编号不存在！");
+        }
+
+        // 客户
+        int customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode);
+        if (customerId == 0)
+        {
+            throw new ValidationException("客户ID输入格式有误！");
+        }
+
+        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null)
+        {
+            throw new ValidationException("指定的客户不存在！");
+        }
+
+        if (logisticsOrder.Customer.Id != customer.Id)
+        {
+            throw new ValidationException("指定的订单和客户不匹配！");
+        }
+
+        if (model.Fee < 0)
+        {
+            throw new ValidationException("手工增加费用不能小于0！");
+        }
+
+        // todo a 编译需要后面补上
+        // logisticsOrderManualFeeService.AddManualIncreaseFee(logisticsOrder, customer, model.Fee, model.ManualReasonId, model.Description ?? string.Empty);
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "保存成功！" }
+        });
+    }
+}
