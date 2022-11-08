@@ -7,7 +7,7 @@ using shunda.Domain.Pass;
 
 namespace shunda.Domain.Order;
 
-public class LogisticsOrderActionInfoMapping : EntityMapping<LogisticsOrderActionInfo>
+public class LogisticsOrderActionInfoMapping : EntityNoUpdateMapping<LogisticsOrderActionInfo>
 {
     public LogisticsOrderActionInfoMapping()
     {

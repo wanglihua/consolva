@@ -11,7 +11,7 @@ namespace shunda.Domain.Order;
 /// <summary>
 /// 订单操作日志
 /// </summary>
-public class LogisticsOrderActionInfo : Entity
+public class LogisticsOrderActionInfo : EntityNoUpdate
 {
     /// <summary>
     /// 订单，非空
