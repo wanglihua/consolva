@@ -47,6 +47,11 @@ public class LogisticsOrderManualFeeService
 
         string reasonContent = manualReason?.Content ?? string.Empty;
 
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            description = string.Empty;
+        }
+
         UserInfo? user = null;
         if (userId > 0)
         {
@@ -58,7 +63,7 @@ public class LogisticsOrderManualFeeService
         logisticsOrderFee.GoodsType = LogisticsGoodsType.None;
         logisticsOrderFee.Type = LogisticsOrderFeeType.ManualIncrease;
         logisticsOrderFee.Fee = amount;
-        logisticsOrderFee.Description = description ?? ""; // 这个字段是非空的
+        logisticsOrderFee.Description = description;
         logisticsOrderFee.ManualReason = manualReason;
         logisticsOrderFee.ManualReasonContent = reasonContent;
         logisticsOrderFee.ManualUser = user;
@@ -72,7 +77,7 @@ public class LogisticsOrderManualFeeService
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 
-        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description ?? string.Empty}";
+        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description}";
         logisticsOrderActionService.NewActionUser(logisticsOrder.Id, LogisticsOrderActionType.ManualIncreaseFee, payStatusBefore, payStatusAfter, orderActionDesc, userId);
     }
 
@@ -97,6 +102,11 @@ public class LogisticsOrderManualFeeService
 
         string reasonContent = manualReason?.Content ?? string.Empty;
 
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            description = string.Empty;
+        }
+
         UserInfo? user = null;
         if (userId > 0)
         {
@@ -108,7 +118,7 @@ public class LogisticsOrderManualFeeService
         logisticsOrderFee.GoodsType = LogisticsGoodsType.None;
         logisticsOrderFee.Type = LogisticsOrderFeeType.ManualDecrease;
         logisticsOrderFee.Fee = -amount; // 存储的时候，就存成是负的了，否则订单费用计算的时候会出错
-        logisticsOrderFee.Description = description ?? ""; // 这个字段是非空的
+        logisticsOrderFee.Description = description;
         logisticsOrderFee.ManualReason = manualReason;
         logisticsOrderFee.ManualReasonContent = reasonContent;
         logisticsOrderFee.ManualUser = user;
@@ -122,7 +132,7 @@ public class LogisticsOrderManualFeeService
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 
-        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description ?? string.Empty}";
+        string orderActionDesc = $"金额:{amount}，原因:{reasonContent}，描述:{description}";
         logisticsOrderActionService.NewActionUser(logisticsOrder.Id, LogisticsOrderActionType.ManualDecreaseFee, payStatusBefore, payStatusAfter, orderActionDesc, userId);
     }
 }
