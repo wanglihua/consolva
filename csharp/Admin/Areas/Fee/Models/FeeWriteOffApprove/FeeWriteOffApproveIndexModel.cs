@@ -4,7 +4,7 @@ using shunda.Domain.Pass;
 
 namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 
-public class LogisticsOrderFeeWriteOffApproveIndexModel
+public class FeeWriteOffApproveIndexModel
 {
     /// <summary>
     /// 核销费用原因列表

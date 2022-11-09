@@ -3,9 +3,9 @@ using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 
-public class LogisticsOrderFeeWriteOffApproveListModel : ListModel
+public class FeeWriteOffApproveListModel : ListModel
 {
-    public LogisticsOrderFeeWriteOffApproveListModel(ListPager listPager) : base(listPager)
+    public FeeWriteOffApproveListModel(ListPager listPager) : base(listPager)
     {
     }
 

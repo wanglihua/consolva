@@ -1,25 +1,19 @@
-using System;
-using System.Collections.Generic;
-using Domain;
-using Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.Fee.Models.ManualFeeApply;
 
-namespace Web.Areas.Admin.Models.ManualFeeApply
+public class ManualFeeApplyIndexModel
 {
-    public class ManualFeeApplyIndexModel
-    {
-        /// <summary>
-        /// 手工费用原因列表
-        /// </summary>
-        [BindNever]
-        public IList<ManualFeeReasonInfo> FeeReasonList { get; set; }
+    /// <summary>
+    /// 手工费用原因列表
+    /// </summary>
+    [BindNever]
+    public IList<ManualFeeReasonInfo> FeeReasonList { get; set; } = new List<ManualFeeReasonInfo>();
 
-        [BindNever]
-        public IList<ManualFeeApplyStatus> ApplyStatusList { get; set; }
-        
-        [BindNever]
-        public IList<FeeApplyDataViewScope> ScopeList { get; set; }
-    }
+    [BindNever]
+    public IList<ManualFeeApplyStatus> ApplyStatusList { get; set; } = ManualFeeApplyStatus.GetList();
+
+    [BindNever]
+    public IList<FeeApplyDataViewScope> ScopeList { get; set; } = FeeApplyDataViewScope.GetList();
 }

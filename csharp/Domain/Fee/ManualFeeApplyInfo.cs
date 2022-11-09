@@ -86,4 +86,9 @@ public class ManualFeeApplyInfo : Entity
     [ModelBinder(typeof(ManualFeeApplyStatusModelBinder))]
     public virtual ManualFeeApplyStatus Status { get; set; } = ManualFeeApplyStatus.None;
 
+    #region Cache
+
+    public virtual int OrderApplyCountCache { get; set; }
+
+    #endregion
 }

@@ -3,7 +3,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 using NLog;
-using shunda.Admin.Areas.Fee.Models.LogisticsOrderFeeWriteOffApprove.Web.Areas.Admin.Models.LogisticsOrderFeeWriteOffApprove;
+using shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -20,7 +20,7 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.WriteOffFeeApprove)]
-public class LogisticsOrderFeeWriteOffApproveController : Controller
+public class FeeWriteOffApproveController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
@@ -29,28 +29,25 @@ public class LogisticsOrderFeeWriteOffApproveController : Controller
     private LoginUserService loginUserService = null;
     private WriteOffFeeService writeOffFeeService = null;
     private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService = null;
-    private LogisticsOrderService logisticsOrderService = null;
 
-    public LogisticsOrderFeeWriteOffApproveController(ISession session,
+    public FeeWriteOffApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         WriteOffFeeService writeOffFeeService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService,
-        LogisticsOrderService logisticsOrderService)
+        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
         this.writeOffFeeService = writeOffFeeService;
         this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
-        this.logisticsOrderService = logisticsOrderService;
     }
 
     [HttpGet]
     [Route("/admin/fee/write/off/approve")]
     public IActionResult Index()
     {
-        LogisticsOrderFeeWriteOffApproveIndexModel model = new LogisticsOrderFeeWriteOffApproveIndexModel();
+        FeeWriteOffApproveIndexModel model = new FeeWriteOffApproveIndexModel();
 
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.WriteOffFee).ToList();
         model.ApplyStatusList = FeeWriteOffApplyStatus.GetApproveViewList();
@@ -62,12 +59,12 @@ public class LogisticsOrderFeeWriteOffApproveController : Controller
             .Distinct()
             .ToList();
 
-        return View("LogisticsOrderFeeWriteOffApproveIndex", model);
+        return View("FeeWriteOffApproveIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/fee/write/off/approve/list")]
-    public IActionResult List(LogisticsOrderFeeWriteOffApproveListQueryParam queryParam)
+    public IActionResult List(FeeWriteOffApproveListQueryParam queryParam)
     {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
@@ -108,14 +105,14 @@ public class LogisticsOrderFeeWriteOffApproveController : Controller
             }
         }
 
-        LogisticsOrderFeeWriteOffApproveListModel model = new LogisticsOrderFeeWriteOffApproveListModel(listPager);
+        FeeWriteOffApproveListModel model = new FeeWriteOffApproveListModel(listPager);
         model.FeeWriteOffApplyList = logisticsOrderFeeWriteOffApplyList;
 
-        return View("LogisticsOrderFeeWriteOffApproveList", model);
+        return View("FeeWriteOffApproveList", model);
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(LogisticsOrderFeeWriteOffApproveListQueryParam queryParam)
+    private ICriteria GetListCriteria(FeeWriteOffApproveListQueryParam queryParam)
     {
         ICriteria criteria = session.CreateCriteria<FeeWriteOffApplyInfo>();
 
@@ -178,10 +175,10 @@ public class LogisticsOrderFeeWriteOffApproveController : Controller
             }
         }
 
-        LogisticsOrderFeeWriteOffApproveDetailModel model = new LogisticsOrderFeeWriteOffApproveDetailModel();
+        FeeWriteOffApproveDetailModel model = new FeeWriteOffApproveDetailModel();
         model.FeeWriteOffApply = logisticsOrderFeeWriteOffApply;
 
-        return View("LogisticsOrderFeeWriteOffApproveDetail", model);
+        return View("FeeWriteOffApproveDetail", model);
     }
 
     [HttpPost]
@@ -232,83 +229,34 @@ public class LogisticsOrderFeeWriteOffApproveController : Controller
             throw new ValidationException("请选择要审核的数据项！");
         }
 
-        IList<FeeWriteOffApplyInfo> applyList = null;
+        IList<FeeWriteOffApplyInfo> applyList = session
+            .Query<FeeWriteOffApplyInfo>()
+            .Fetch(e => e.Order)
+            .Fetch(e => e.Customer)
+            .Where(e => idList.Contains(e.Id))
+            .ToList();
 
-        ITransaction transaction = null;
-        try
+        foreach (FeeWriteOffApplyInfo apply in applyList)
         {
-            transaction = session.BeginTransaction();
-
-            applyList = session
-                .Query<FeeWriteOffApplyInfo>()
-                .Fetch(e => e.Order)
-                .Fetch(e => e.Customer)
-                .Where(e => idList.Contains(e.Id))
-                .ToList();
-
-            foreach (FeeWriteOffApplyInfo apply in applyList)
+            if (apply.Status != FeeWriteOffApplyStatus.Submitted)
             {
-                if (apply.Status != FeeWriteOffApplyStatus.Submitted)
-                {
-                    throw new ValidationException("只能审核【已提交】的申请！");
-                }
+                throw new ValidationException("只能审核【已提交】的申请！");
             }
-
-            foreach (FeeWriteOffApplyInfo apply in applyList)
-            {
-                writeOffFeeService.AddWriteOffFee(apply.Order, apply.Customer, apply.Amount, apply.WriteOffReasonId);
-            }
-
-            foreach (FeeWriteOffApplyInfo apply in applyList)
-            {
-                apply.Status = FeeWriteOffApplyStatus.Approved;
-                apply.ApproveUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
-                session.Update(apply);
-            }
-
-            session.Flush();
-            transaction.Commit();
-        }
-        catch (Exception exp)
-        {
-            log.Error(exp);
-            transaction?.Rollback();
-
-            throw; // 重新抛出异常
         }
 
-        // 支付成功后提交打包
-
-        if (applyList != null)
+        foreach (FeeWriteOffApplyInfo apply in applyList)
         {
-            foreach (FeeWriteOffApplyInfo apply in applyList)
-            {
-                try
-                {
-                    transaction = session.BeginTransaction();
-
-                    LogisticsOrderInfo order = apply.Order;
-
-                    if (order.Cate == LogisticsOrderCate.Sea
-                        && order.OrderStatus == LogisticsOrderStatus.CnAllCheckin
-                        && order.FeeMethod == LogisticsOrderFeeMethod.Express
-                        && order.ArrearsAmountNative <= 0)
-                    {
-                        logisticsOrderService.SubmitPackWhenPaid(order?.Id ?? 0);
-                    }
-
-                    transaction.Commit();
-                }
-                catch (Exception exp)
-                {
-                    transaction?.Rollback();
-
-                    log.Error(exp);
-
-                    // 这里不重新抛出异常
-                }
-            }
+            writeOffFeeService.AddWriteOffFee(apply.Order, apply.Customer, apply.Amount, apply.WriteOffReasonId);
         }
+
+        foreach (FeeWriteOffApplyInfo apply in applyList)
+        {
+            apply.Status = FeeWriteOffApplyStatus.Approved;
+            apply.ApproveUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
+            session.Update(apply);
+        }
+
+        session.Flush();
 
         return Json(new Dictionary<string, object>() {
             { "success", true },

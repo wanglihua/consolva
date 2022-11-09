@@ -1,16 +1,18 @@
-@using Domain
-@using Domain.LogisticsOrder
-@model LogisticsOrderFeeWriteOffApproveIndexModel
-@using Web.Areas.Admin.Models.LogisticsOrderFeeWriteOffApprove
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove.FeeWriteOffApproveIndexModel
 @{
-    ViewBag.Title = "费用核销审核";
+    ViewData[ViewDataKey.Title] = "费用核销审核";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="pparent" data-menu="fee-menu">费用管理</li>
-    <li class="parent" data-menu="fee-write-off-fee-menu">费用管理</li>
-    <li class="active" data-menu="fee-write-off-approve-index-menu">费用核销审核</li>
+    <li class="parent" data-menu="fee-write-off-fee-menu">费用核销</li>
+    <li class="active" data-menu="fee-write-off-approve-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
@@ -121,17 +123,17 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "LogisticsOrderFeeWriteOffApprove")",
+            url: "@Url.Action("List", "FeeWriteOffApprove")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.StatusQuery))': $('#statusQuery').val(), 
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.ApplyUserIdQuery))': $('#applyUserQuery').val(),                
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.SortField))': sortField,
-                '@(nameof(LogisticsOrderFeeWriteOffApproveListQueryParam.SortDir))': sortDir
+                '@(nameof(FeeWriteOffApproveListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(FeeWriteOffApproveListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(FeeWriteOffApproveListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(FeeWriteOffApproveListQueryParam.StatusQuery))': $('#statusQuery').val(), 
+                '@(nameof(FeeWriteOffApproveListQueryParam.ApplyUserIdQuery))': $('#applyUserQuery').val(),                
+                '@(nameof(FeeWriteOffApproveListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(FeeWriteOffApproveListQueryParam.SortField))': sortField,
+                '@(nameof(FeeWriteOffApproveListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();
@@ -182,7 +184,7 @@
         $.msg.confirm("确认要回退吗？",
             function() {
                 $.ajax({
-                    url: '@Url.Action("Back", "LogisticsOrderFeeWriteOffApprove")',
+                    url: '@Url.Action("Back", "FeeWriteOffApprove")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {
@@ -211,7 +213,7 @@
         $.msg.confirm("确认要审核吗？",
             function() {
                 $.ajax({
-                    url: '@Url.Action("Approve", "LogisticsOrderFeeWriteOffApprove")',
+                    url: '@Url.Action("Approve", "FeeWriteOffApprove")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {

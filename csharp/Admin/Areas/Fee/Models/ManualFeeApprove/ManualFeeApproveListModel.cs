@@ -1,20 +1,13 @@
-using System;
-using Domain;
-using System.Collections.Generic;
-using Core;
-using Domain.LogisticsOrder;
-using Web.Models;
+using shunda.Core;
+using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.Fee.Models.ManualFeeApprove;
 
-namespace Web.Areas.Admin.Models.ManualFeeApprove
+public class ManualFeeApproveListModel : ListModel
 {
-    public class ManualFeeApproveListModel : ListModel
+    public ManualFeeApproveListModel(ListPager listPager) : base(listPager)
     {
-        public ManualFeeApproveListModel(ListPager listPager) : base(listPager)
-        {
-        }
-
-        public IList<ManualFeeApplyInfo> ManualFeeApplyList { get; set; }
     }
+
+    public IList<ManualFeeApplyInfo> ManualFeeApplyList { get; set; } = new List<ManualFeeApplyInfo>();
 }

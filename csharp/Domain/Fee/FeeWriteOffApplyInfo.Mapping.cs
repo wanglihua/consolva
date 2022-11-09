@@ -3,6 +3,7 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Domain.Customer;
 using shunda.Domain.Order;
+using shunda.Domain.Pass;
 
 namespace shunda.Domain.Fee;
 
@@ -72,21 +73,25 @@ public class FeeWriteOffApplyInfoMapping : EntityMapping<FeeWriteOffApplyInfo>
             }
         );
 
-        Property(
-            x => x.ApplyUserId,
+        ManyToOne(
+            x => x.ApplyUser,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Class(typeof(UserInfo));
                 map.Column("apply_user_id");
                 map.NotNullable(true);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 
-        Property(
-            x => x.ApproveUserId,
+        ManyToOne(
+            x => x.ApproveUser,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Class(typeof(UserInfo));
                 map.Column("approve_user_id");
                 map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
-using shunda.Admin.Areas.Fee.Models.ManualFeeApply.Web.Areas.Admin.Models.ManualFeeApply;
+using shunda.Admin.Areas.Fee.Models.ManualFeeApply;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;

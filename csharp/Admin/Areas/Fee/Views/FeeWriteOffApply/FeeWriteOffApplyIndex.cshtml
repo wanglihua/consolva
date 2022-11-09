@@ -1,16 +1,18 @@
-@using Domain
-@using Domain.LogisticsOrder
-@model FeeWriteOffApplyIndexModel
-@using Web.Areas.Admin.Models.FeeWriteOffApply
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.FeeWriteOffApply
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.FeeWriteOffApply.FeeWriteOffApplyIndexModel
 @{
-    ViewBag.Title = "费用核销申请";
+    ViewData[ViewDataKey.Title] = "费用核销申请";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="pparent" data-menu="fee-menu">费用管理</li>
-    <li class="parent" data-menu="fee-write-off-fee-menu">费用管理</li>
-    <li class="active" data-menu="fee-write-off-apply-index-menu">费用核销申请</li>
+    <li class="parent" data-menu="fee-write-off-fee-menu">费用核销</li>
+    <li class="active" data-menu="fee-write-off-apply-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
@@ -44,10 +46,10 @@
     </select>&nbsp;
 
     <label for="orderCodeQuery">订单编号</label>&nbsp;
-    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询" />&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
 
     <label for="customerIdQuery">客户ID</label>&nbsp;
-    <input id="customerIdQuery" name="customerIdQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询" />&nbsp;
+    <input id="customerIdQuery" name="customerIdQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
 
     <label for="statusQuery">状态</label>
     <select id="statusQuery" name="statusQuery" style="width: 120px; height: 30px;">

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using shunda.Domain.Customer;
 using shunda.Domain.Order;
+using shunda.Domain.Pass;
 
 namespace shunda.Domain.Fee;
 
@@ -60,13 +61,13 @@ public class FeeWriteOffApplyInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "申请用户不能为空！")]
     [JsonProperty("applyUserId")]
-    public virtual int ApplyUserId { get; set; } = 0;
+    public virtual UserInfo ApplyUser { get; set; } = new UserInfo();
 
     /// <summary>
     /// 审核用户，可空
     /// </summary>
     [JsonProperty("approveUserId")]
-    public virtual int? ApproveUserId { get; set; } = null;
+    public virtual UserInfo? ApproveUser { get; set; } = null;
 
     /// <summary>
     /// 审核状态，非空
@@ -76,4 +77,9 @@ public class FeeWriteOffApplyInfo : Entity
     [ModelBinder(typeof(FeeWriteOffApplyStatusModelBinder))]
     public virtual FeeWriteOffApplyStatus Status { get; set; } = FeeWriteOffApplyStatus.None;
 
+    #region Cache
+
+    public virtual int OrderApplyCountCache { get; set; }
+
+    #endregion
 }

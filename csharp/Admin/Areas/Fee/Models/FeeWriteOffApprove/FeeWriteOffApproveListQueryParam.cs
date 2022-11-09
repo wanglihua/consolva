@@ -4,7 +4,7 @@ using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 
-public class LogisticsOrderFeeWriteOffApproveListQueryParam : ListQueryParam
+public class FeeWriteOffApproveListQueryParam : ListQueryParam
 {
     public int ApplyUserIdQuery { get; set; }
 

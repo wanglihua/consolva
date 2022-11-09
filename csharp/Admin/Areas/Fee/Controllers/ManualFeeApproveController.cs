@@ -3,15 +3,15 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
-using shunda.Admin.Areas.Fee.Models.ManualFeeApprove.Web.Areas.Admin.Models.ManualFeeApprove;
+using shunda.Admin.Areas.Fee.Models.ManualFeeApprove;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Fee;
-using shunda.Domain.Order;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Customer;
 using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
@@ -24,25 +24,22 @@ public class ManualFeeApproveController : Controller
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
-    private CustomerService customerService;
+    private CustomerCodeService customerCodeService;
     private LoginUserService loginUserService;
     private ManualFeeService manualFeeService;
     private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
-    private LogisticsOrderService logisticsOrderService;
 
     public ManualFeeApproveController(ISession session,
-        CustomerService customerService,
+        CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         ManualFeeService manualFeeService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService,
-        LogisticsOrderService logisticsOrderService)
+        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
     {
         this.session = session;
-        this.customerService = customerService;
+        this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
         this.manualFeeService = manualFeeService;
         this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
-        this.logisticsOrderService = logisticsOrderService;
     }
 
     [HttpGet]
@@ -54,9 +51,8 @@ public class ManualFeeApproveController : Controller
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.ManualDecrease).ToList();
         model.ApplyStatusList = ManualFeeApplyStatus.GetApproveViewList();
 
-        model.ApplyUserList = session.Query<ManualFeeApplyInfo>()
-            .Fetch(e => e.ApplyUser)
-            .OrderBy(e => e.ApplyUser.LoginName)
+        model.ApplyUserList = Queryable.OrderBy<ManualFeeApplyInfo, string>(session.Query<ManualFeeApplyInfo>()
+                .Fetch(e => e.ApplyUser), e => e.ApplyUser.LoginName)
             .Select(e => e.ApplyUser)
             .Distinct()
             .ToList();
@@ -140,7 +136,7 @@ public class ManualFeeApproveController : Controller
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
         {
-            int customerIdQuery = customerService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
+            int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Eq($"{nameof(ManualFeeApplyInfo.Customer)}.{nameof(ManualFeeApplyInfo.Customer.Id)}", customerIdQuery));
         }
 
@@ -232,102 +228,51 @@ public class ManualFeeApproveController : Controller
             throw new ValidationException("请选择要审核的数据项！");
         }
 
-        IList<ManualFeeApplyInfo> applyList = null;
-
-        ITransaction transaction = null;
-        try
-        {
-            transaction = session.BeginTransaction();
-
-            applyList = session
+        IList<ManualFeeApplyInfo> applyList = Queryable.Where<ManualFeeApplyInfo>(session
                 .Query<ManualFeeApplyInfo>()
                 .Fetch(e => e.Order)
-                .Fetch(e => e.Customer)
-                .Where(e => idList.Contains(e.Id))
-                .ToList();
+                .Fetch(e => e.Customer), e => idList.Contains(e.Id))
+            .ToList();
 
-            foreach (ManualFeeApplyInfo apply in applyList)
-            {
-                if (apply.Status != ManualFeeApplyStatus.Submitted)
-                {
-                    throw new ValidationException("只能审核【已提交】的申请！");
-                }
-            }
-
-            foreach (ManualFeeApplyInfo apply in applyList)
-            {
-                if (apply.Type == LogisticsOrderFeeType.ManualIncrease)
-                {
-                    manualFeeService.AddManualIncreaseFee(
-                        apply.Order,
-                        apply.Customer,
-                        apply.Fee,
-                        apply.ManualReasonId,
-                        apply.Description);
-                }
-
-                if (apply.Type == LogisticsOrderFeeType.ManualDecrease)
-                {
-                    manualFeeService.AddManualDecreaseFee(
-                        apply.Order,
-                        apply.Customer,
-                        apply.Fee,
-                        apply.ManualReasonId,
-                        apply.Description);
-                }
-            }
-
-            foreach (ManualFeeApplyInfo apply in applyList)
-            {
-                apply.Status = ManualFeeApplyStatus.Approved;
-                apply.ApproveUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
-                session.Update(apply);
-            }
-
-            session.Flush();
-
-            transaction.Commit();
-        }
-        catch (Exception exp)
+        foreach (ManualFeeApplyInfo apply in applyList)
         {
-            log.Error(exp);
-            transaction?.Rollback();
-
-            throw; // 重新抛出异常
-        }
-
-        // 支付成功后提交打包
-
-        if (applyList != null)
-        {
-            foreach (ManualFeeApplyInfo apply in applyList)
+            if (apply.Status != ManualFeeApplyStatus.Submitted)
             {
-                try
-                {
-                    transaction = session.BeginTransaction();
-
-                    LogisticsOrderInfo order = apply.Order;
-
-                    if (order.Cate == LogisticsOrderCate.Sea
-                        && order.OrderStatus == LogisticsOrderStatus.CnAllCheckin
-                        && order.FeeMethod == LogisticsOrderFeeMethod.Express
-                        && order.ArrearsAmountNative <= 0)
-                    {
-                        logisticsOrderService.SubmitPackWhenPaid(order?.Id ?? 0);
-                    }
-
-                    transaction.Commit();
-                }
-                catch (Exception exp)
-                {
-                    transaction?.Rollback();
-
-                    log.Error(exp);
-
-                    // 这里不重新抛出异常
-                }
+                throw new ValidationException("只能审核【已提交】的申请！");
             }
         }
+
+        foreach (ManualFeeApplyInfo apply in applyList)
+        {
+            if (apply.Type == LogisticsOrderFeeType.ManualIncrease)
+            {
+                manualFeeService.AddManualIncreaseFee(
+                    apply.Order,
+                    apply.Customer,
+                    apply.Fee,
+                    apply.ManualReasonId,
+                    apply.Description);
+            }
+
+            if (apply.Type == LogisticsOrderFeeType.ManualDecrease)
+            {
+                manualFeeService.AddManualDecreaseFee(
+                    apply.Order,
+                    apply.Customer,
+                    apply.Fee,
+                    apply.ManualReasonId,
+                    apply.Description);
+            }
+        }
+
+        foreach (ManualFeeApplyInfo apply in applyList)
+        {
+            apply.Status = ManualFeeApplyStatus.Approved;
+            apply.ApproveUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
+            session.Update(apply);
+        }
+
+        session.Flush();
 
         return Json(new Dictionary<string, object>() {
             { "success", true },

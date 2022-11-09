@@ -1,16 +1,18 @@
-@using Domain
-@using Domain.LogisticsOrder
-@model ManualFeeApplyIndexModel
-@using Web.Areas.Admin.Models.ManualFeeApply
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.ManualFeeApply
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.ManualFeeApply.ManualFeeApplyIndexModel
 @{
-    ViewBag.Title = "减少费用申请";
+    ViewData[ViewDataKey.Title] = "减少费用申请";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="pparent" data-menu="fee-menu">费用管理</li>
     <li class="parent" data-menu="fee-manual-decrease-fee-menu">减少费用</li>
-    <li class="active" data-menu="fee-manual-fee-apply-index-menu">减少费用申请</li>
+    <li class="active" data-menu="fee-manual-fee-apply-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
