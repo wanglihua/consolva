@@ -1,0 +1,76 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Logistics
+@using shunda.Domain.Pass.PassRes
+@model shunda.Admin.Models.Sidebar.SidebarModel
+@{
+    Layout = null;
+}
+@if (Model.HasOneOfPassRes(PassRes.Logistics.All))
+{
+    <li id="logistics-menu">
+        <a href="#" class="dropdown-toggle">
+            <i class="menu-icon fa fa-truck"></i>
+            <span class="menu-text">物流设置</span>
+            <b class="arrow fa fa-angle-down"></b>
+        </a>
+        <b class="arrow"></b>
+        <ul class="submenu">
+
+            @if (Model.HasPassRes(PassRes.Logistics.LogisticsFeeRate))
+            {
+                <li id="logistics-logistics-fee-rate-index-menu">
+                    <a asp-area="Logistics" asp-controller="LogisticsFeeRate" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        通用费率
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Logistics.LogisticsModeList))
+            {
+                <li id="logistics-logistics-mode-index-menu">
+                    <a asp-area="Logistics" asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(LogisticsModeType.CnAuExpress.Id)">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        物流列表
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Logistics.Insurance))
+            {
+                <li id="logistics-logistics-insurance-index-menu">
+                    <a asp-area="Logistics" asp-controller="LogisticsInsurance" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        保险
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Logistics.Gst))
+            {
+                <li id="logistics-logistics-gst-index-menu">
+                    <a asp-area="Logistics" asp-controller="LogisticsGst" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        GST
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Logistics.ExpressReturnFeeRate))
+            {
+                <li id="logistics-express-return-fee-rate-index-menu">
+                    <a asp-area="Logistics" asp-controller="ExpressReturnFeeRate" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        退运费率
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+        </ul>
+    </li>
+}

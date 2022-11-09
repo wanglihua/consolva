@@ -1,0 +1,27 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Models.Sidebar.SidebarModel
+@{
+    Layout = null;
+}
+@if (Model.IsAdmin)
+{
+    <li id="settings-menu">
+        <a href="#" class="dropdown-toggle">
+            <i class="menu-icon fa fa-gears"></i>
+            <span class="menu-text">系统设置</span>
+            <b class="arrow fa fa-angle-down"></b>
+        </a>
+        <b class="arrow"></b>
+        <ul class="submenu">
+
+            <li id="settings-exchange-rate-index-menu">
+                <a asp-area="Setting" asp-controller="ExchangeRate" asp-action="Index">
+                    <i class="menu-icon fa fa-caret-right"></i>
+                    汇率
+                </a>
+                <b class="arrow"></b>
+            </li>
+
+        </ul>
+    </li>
+}
