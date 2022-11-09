@@ -52,6 +52,6 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefundApply
         public IList<LogisticsOrderRefundType> TypeList { get; set; }
 
         [BindNever]
-        public IList<RefundReasonInfo> ReasonList { get; set; }
+        public IList<FeeRefundReasonInfo> ReasonList { get; set; }
     }
 }

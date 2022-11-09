@@ -38,7 +38,7 @@ namespace Domain.LogisticsOrder
         public virtual LogisticsOrderRefundType Type { get; set; }
 
         [Required(ErrorMessage = "退赔原因不能为空！")]
-        public virtual RefundReasonInfo Reason { get; set; }
+        public virtual FeeRefundReasonInfo Reason { get; set; }
 
         /// <summary>
         /// 退赔款原因

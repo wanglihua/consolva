@@ -49,7 +49,7 @@ namespace Domain.LogisticsOrder
             ManyToOne(
                 x => x.Reason,
                 map => {
-                    map.Class(typeof(RefundReasonInfo));
+                    map.Class(typeof(FeeRefundReasonInfo));
                     map.Column("reason_id");
                     map.NotNullable(true);
                     map.Fetch(FetchKind.Select);

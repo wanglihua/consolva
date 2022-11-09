@@ -47,14 +47,14 @@ public class RefundReasonController : Controller
 
         ListPager listPager = new ListPager(queryParam, totalCount);
 
-        IList<RefundReasonInfo> refundReasonList = GetListCriteria(queryParam)
+        IList<FeeRefundReasonInfo> refundReasonList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
-            .List<RefundReasonInfo>();
+            .List<FeeRefundReasonInfo>();
 
-        foreach (RefundReasonInfo refundReasonInfo in refundReasonList)
+        foreach (FeeRefundReasonInfo refundReasonInfo in refundReasonList)
         {
             // refundReasonInfo
         }
@@ -68,7 +68,7 @@ public class RefundReasonController : Controller
     [NonAction]
     private ICriteria GetListCriteria(RefundReasonListQueryParam queryParam)
     {
-        ICriteria criteria = session.CreateCriteria<RefundReasonInfo>();
+        ICriteria criteria = session.CreateCriteria<FeeRefundReasonInfo>();
         criteria.SetReadOnly(true);
 
         return criteria;
@@ -81,15 +81,15 @@ public class RefundReasonController : Controller
     {
         session.DefaultReadOnly = true;
 
-        RefundReasonInfo refundReason = null;
+        FeeRefundReasonInfo refundReason = null;
 
         if (id == null || id.Value == 0)
         {
-            refundReason = new RefundReasonInfo();
+            refundReason = new FeeRefundReasonInfo();
         }
         else
         {
-            refundReason = session.Get<RefundReasonInfo>(id.Value);
+            refundReason = session.Get<FeeRefundReasonInfo>(id.Value);
             if (refundReason == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
@@ -99,7 +99,7 @@ public class RefundReasonController : Controller
         RefundReasonDetailModel model = new RefundReasonDetailModel();
         model.RefundReason = refundReason;
 
-        model.StatusList = RefundReasonStatus.GetList();
+        model.StatusList = FeeRefundReasonStatus.GetList();
 
         return View("RefundReasonDetail", model);
     }
@@ -113,20 +113,20 @@ public class RefundReasonController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
-        RefundReasonInfo refundReasonFromUi = model.RefundReason;
+        FeeRefundReasonInfo refundReasonFromUi = model.RefundReason;
         int refundReasonId = refundReasonFromUi.Id;
 
         bool isCreate = refundReasonId == 0;
 
-        RefundReasonInfo refundReason = null;
+        FeeRefundReasonInfo refundReason = null;
 
         if (isCreate)
         {
-            refundReason = new RefundReasonInfo();
+            refundReason = new FeeRefundReasonInfo();
         }
         else
         {
-            refundReason = session.Get<RefundReasonInfo>(refundReasonId);
+            refundReason = session.Get<FeeRefundReasonInfo>(refundReasonId);
         }
 
         refundReason.Content = refundReasonFromUi.Content;
@@ -155,7 +155,7 @@ public class RefundReasonController : Controller
     {
         foreach (int id in idList)
         {
-            RefundReasonInfo refundReason = session.Load<RefundReasonInfo>(id);
+            FeeRefundReasonInfo refundReason = session.Load<FeeRefundReasonInfo>(id);
             session.Delete(refundReason);
         }
 

@@ -69,7 +69,7 @@
                                 <label asp-for="ReasonId" class="col-xs-2 control-label">退赔原因</label>
                                 <div class="col-xs-10">
                                     <select asp-for="ReasonId" type="text" class="input-sm form-control">
-                                        @foreach (RefundReasonInfo reason in Model.ReasonList)
+                                        @foreach (FeeRefundReasonInfo reason in Model.ReasonList)
                                         {
                                             <option value="@(reason.Id)">@(reason.Content)</option>
                                         }

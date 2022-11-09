@@ -30,7 +30,7 @@
                                 <label asp-for="RefundReason.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="RefundReason.Status" type="text" class="input-sm form-control">
-                                        @foreach (RefundReasonStatus status in Model.StatusList)
+                                        @foreach (FeeRefundReasonStatus status in Model.StatusList)
                                         {
                                             <option value="@(status.Id)">@(status.Name)</option>
                                         }

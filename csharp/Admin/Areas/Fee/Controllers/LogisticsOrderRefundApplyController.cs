@@ -183,8 +183,8 @@ namespace Web.Areas.Admin.Controllers
             model.ApplyId = id ?? 0;
 
             model.TypeList = LogisticsOrderRefundType.GetList();
-            model.ReasonList = session.Query<RefundReasonInfo>()
-                .Where(e => e.Status == RefundReasonStatus.Enabled)
+            model.ReasonList = session.Query<FeeRefundReasonInfo>()
+                .Where(e => e.Status == FeeRefundReasonStatus.Enabled)
                 .OrderBy(e => e.Content)
                 .ToList();
 
@@ -233,7 +233,7 @@ namespace Web.Areas.Admin.Controllers
                 throw new ValidationException("退赔款费用必须大于0！");
             }
 
-            RefundReasonInfo reason = session.Get<RefundReasonInfo>(model.ReasonId);
+            FeeRefundReasonInfo reason = session.Get<FeeRefundReasonInfo>(model.ReasonId);
             if (reason == null)
             {
                 throw new ValidationException("指定的退赔原因不存在！");

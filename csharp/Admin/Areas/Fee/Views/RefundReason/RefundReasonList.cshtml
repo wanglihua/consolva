@@ -15,16 +15,16 @@
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 300px;">
-                <a field="@(nameof(RefundReasonInfo.Content))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">内容</a>
+                <a field="@(nameof(FeeRefundReasonInfo.Content))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">内容</a>
             </th>
             <th style="width: 100px; text-align: center;">
-                <a field="@(nameof(RefundReasonInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">状态</a>
+                <a field="@(nameof(FeeRefundReasonInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">状态</a>
             </th>
             <th style="width: 120px; text-align: center;">
-                <a field="@(nameof(RefundReasonInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">创建时间</a>
+                <a field="@(nameof(FeeRefundReasonInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">创建时间</a>
             </th>
             <th style="width: 120px; text-align: center;">
-                <a field="@(nameof(RefundReasonInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">修改时间</a>
+                <a field="@(nameof(FeeRefundReasonInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortRefundReasonList">修改时间</a>
             </th>
             <th></th>
         </tr>
@@ -33,7 +33,7 @@
         @if (Model.RefundReasonList != null && Model.RefundReasonList.Count() != 0)
         {
             int order = 1;
-            foreach (RefundReasonInfo refundReason in Model.RefundReasonList)
+            foreach (FeeRefundReasonInfo refundReason in Model.RefundReasonList)
             {
                 <tr ondblclick="showRefundReasonDetail(@(refundReason.Id));">
                     <td style="text-align: center;">

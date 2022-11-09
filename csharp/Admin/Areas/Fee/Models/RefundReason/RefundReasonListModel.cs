@@ -13,6 +13,6 @@ namespace Web.Areas.Admin.Models.RefundReason
         {
         }
 
-        public IList<RefundReasonInfo> RefundReasonList { get; set; }
+        public IList<FeeRefundReasonInfo> RefundReasonList { get; set; }
     }
 }
