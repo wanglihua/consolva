@@ -179,49 +179,49 @@ public class ManualDecreaseFeeController : Controller
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         ICell cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("客户");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("订单");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("费用类型");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("金额");
 
         sheet.SetColumnWidth(cellIndex, 50 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("减少费用原因");
 
         sheet.SetColumnWidth(cellIndex, 50 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("描述");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("操作用户");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("生成时间");
 
         foreach (LogisticsOrderFeeInfo fee in feeList)
@@ -235,17 +235,17 @@ public class ManualDecreaseFeeController : Controller
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(fee.CustomerCodeCache);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(fee.Order?.Code);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(fee.Type?.Name);
 
             cell = row.CreateCell(cellIndex++);
@@ -255,22 +255,22 @@ public class ManualDecreaseFeeController : Controller
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(fee.ManualReasonContent);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(fee.Description);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue($"{fee.ManualUser?.LoginName}({fee.ManualUser?.UserName})");
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(fee.CreateTime.ToString("yyyy-MM-dd HH:mm"));
         }
 

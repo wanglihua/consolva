@@ -6,11 +6,11 @@ namespace shunda.Admin.Areas.Fee.Models.FeeRefundApply;
 public class FeeRefundApplyIndexModel
 {
     [BindNever]
-    public IList<FeeRefundType> TypeList { get; set; }
+    public IList<FeeRefundType> TypeList { get; set; } = FeeRefundType.GetList();
 
     [BindNever]
-    public IList<FeeRefundApplyStatus> StatusList { get; set; }
+    public IList<FeeRefundApplyStatus> StatusList { get; set; } = FeeRefundApplyStatus.GetList();
 
     [BindNever]
-    public IList<FeeApplyDataViewScope> ScopeList { get; set; }
+    public IList<FeeApplyDataViewScope> ScopeList { get; set; } = FeeApplyDataViewScope.GetList();
 }

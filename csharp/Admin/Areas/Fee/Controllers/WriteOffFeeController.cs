@@ -183,49 +183,49 @@ public class WriteOffFeeController : Controller
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         ICell cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("订单");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("客户");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("支付类型");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("支付金额");
 
         sheet.SetColumnWidth(cellIndex, 30 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("核销原因");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("操作用户");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("状态");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("生成时间");
 
         foreach (LogisticsOrderPayInfo orderPay in orderPayList)
@@ -239,17 +239,17 @@ public class WriteOffFeeController : Controller
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(orderPay.Order?.Code);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(orderPay.CustomerCodeCache);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(orderPay.PayType?.Name);
 
             cell = row.CreateCell(cellIndex++);
@@ -259,22 +259,22 @@ public class WriteOffFeeController : Controller
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(orderPay.WriteOffReasonContent);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue($"{orderPay.User?.LoginName}({orderPay.User?.UserName})");
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(orderPay.Status?.Name);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(orderPay.CreateTime.ToString("yyyy-MM-dd HH:mm"));
         }
 

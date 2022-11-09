@@ -28,7 +28,7 @@
                             <div class="form-group">
                                 <label for="orderCode" class="col-xs-4 control-label">订单</label>
                                 <div class="col-xs-8">
-                                    <input id="orderCode" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply?.Order?.Code)" disabled="disabled"/>
+                                    <input id="orderCode" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.Order.Code)" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                             <div class="form-group">
                                 <label for="applyType" class="col-xs-4 control-label">类型</label>
                                 <div class="col-xs-8">
-                                    <input id="applyType" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply?.Type?.Name)" disabled="disabled"/>
+                                    <input id="applyType" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.Type.Name)" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                             <div class="form-group">
                                 <label for="amount" class="col-xs-4 control-label">退赔金额</label>
                                 <div class="col-xs-8">
-                                    <input id="amount" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply?.Amount.ToString("0.00"))" disabled="disabled"/>
+                                    <input id="amount" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.Amount.ToString("0.00"))" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                             <div class="form-group">
                                 <label for="payType" class="col-xs-4 control-label">退赔支付方式</label>
                                 <div class="col-xs-8">
-                                    <input id="payType" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.PayType?.Name)" disabled="disabled"/>
+                                    <input id="payType" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.PayType.Name)" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                             <div class="form-group">
                                 <label for="applyStatus" class="col-xs-4 control-label">状态</label>
                                 <div class="col-xs-8">
-                                    <input id="applyStatus" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.Status?.Name)" disabled="disabled"/>
+                                    <input id="applyStatus" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.Status.Name)" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +73,7 @@
                             <div class="form-group">
                                 <label for="applyUser" class="col-xs-4 control-label">申请人</label>
                                 <div class="col-xs-8">
-                                    <input id="applyUser" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.ApplyUser?.UserName)" disabled="disabled"/>
+                                    <input id="applyUser" type="text" class="input-sm form-control" value="@(Model.FeeRefundApply.ApplyUser.UserName)" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>

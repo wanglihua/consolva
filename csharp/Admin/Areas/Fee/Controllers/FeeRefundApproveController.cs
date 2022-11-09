@@ -24,11 +24,11 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 [AdminAuth(PassRes.Fee.FeeRefundApprove)]
 public class FeeRefundApproveController : Controller
 {
-    private ISession session = null;
-    private CustomerCodeService customerCodeService = null;
-    private LoginUserService loginUserService = null;
-    private CustomerAccountService customerAccountService = null;
-    private LogisticsOrderFeeService logisticsOrderFeeService = null;
+    private ISession session;
+    private CustomerCodeService customerCodeService;
+    private LoginUserService loginUserService;
+    private CustomerAccountService customerAccountService;
+    private LogisticsOrderFeeService logisticsOrderFeeService;
     private FeeApplyCountService feeApplyCountService;
 
     public FeeRefundApproveController(ISession session,

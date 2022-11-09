@@ -13,12 +13,12 @@ public class FeeRefundApplySaveModel
     /// </summary>
     [Required(ErrorMessage = "订单编号不能为空！")]
     [MaxLength(100, ErrorMessage = "订单编号长度不能大于100！")]
-    public string OrderCode { get; set; }
+    public string OrderCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 客户编号
     /// </summary>
-    public string CustomerCode { get; set; }
+    public string CustomerCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 金额
@@ -35,12 +35,12 @@ public class FeeRefundApplySaveModel
     /// 申请备注
     /// </summary>
     [MaxLength(255, ErrorMessage = "申请备注长度不能大于255！")]
-    public string ApplyMemo { get; set; }
+    public string ApplyMemo { get; set; } = string.Empty;
 
     /// <summary>
     /// 类型
     /// </summary>
     [Required(ErrorMessage = "类型不能为空！")]
     [ModelBinder(typeof(FeeRefundTypeModelBinder))]
-    public FeeRefundType Type { get; set; }
+    public FeeRefundType Type { get; set; } = FeeRefundType.None;
 }

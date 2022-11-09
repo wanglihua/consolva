@@ -100,7 +100,7 @@ public class FeeRefundReasonController : Controller
     [HttpPost]
     [Route("/admin/fee/refund/reason/save")]
     [Transactional]
-    public IActionResult Save(FeeRefundReasonDetailModel model)
+    public IActionResult Save(FeeRefundReasonSaveModel model)
     {
         if (!ModelState.IsValid)
         {

@@ -9,5 +9,5 @@ public class FeeRefundReasonListModel : ListModel
     {
     }
 
-    public IList<FeeRefundReasonInfo> RefundReasonList { get; set; }
+    public IList<FeeRefundReasonInfo> RefundReasonList { get; set; } = new List<FeeRefundReasonInfo>();
 }

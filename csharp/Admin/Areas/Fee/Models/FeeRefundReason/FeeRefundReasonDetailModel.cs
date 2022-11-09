@@ -2,9 +2,7 @@ using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.Fee.Models.FeeRefundReason;
 
-public class FeeRefundReasonDetailModel
+public class FeeRefundReasonDetailModel : FeeRefundReasonSaveModel
 {
-    public FeeRefundReasonInfo RefundReason { get; set; }
-
-    public IList<FeeRefundReasonStatus> StatusList { get; set; }
+    public IList<FeeRefundReasonStatus> StatusList { get; set; } = new List<FeeRefundReasonStatus>();
 }

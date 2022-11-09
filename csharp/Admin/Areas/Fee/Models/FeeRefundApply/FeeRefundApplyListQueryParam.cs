@@ -7,17 +7,17 @@ namespace shunda.Admin.Areas.Fee.Models.FeeRefundApply;
 public class FeeRefundApplyListQueryParam : ListQueryParam
 {
     [ModelBinder(typeof(FeeRefundTypeModelBinder))]
-    public FeeRefundType TypeQuery { get; set; }
+    public FeeRefundType? TypeQuery { get; set; }
 
-    public string OrderCodeQuery { get; set; }
+    public string? OrderCodeQuery { get; set; }
 
-    public string CustomerCodeQuery { get; set; }
+    public string? CustomerCodeQuery { get; set; }
 
-    public string ReasonQuery { get; set; }
+    public string? ReasonQuery { get; set; }
 
     [ModelBinder(typeof(FeeRefundApplyStatusModelBinder))]
-    public FeeRefundApplyStatus StatusQuery { get; set; }
+    public FeeRefundApplyStatus? StatusQuery { get; set; }
 
     [ModelBinder(typeof(FeeApplyDataViewScopeModelBinder))]
-    public FeeApplyDataViewScope ViewScopeQuery { get; set; }
+    public FeeApplyDataViewScope? ViewScopeQuery { get; set; }
 }
