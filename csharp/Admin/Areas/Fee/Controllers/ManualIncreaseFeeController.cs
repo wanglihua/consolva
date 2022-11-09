@@ -24,17 +24,17 @@ public class ManualIncreaseFeeController : Controller
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
-    private readonly LogisticsOrderManualFeeService logisticsOrderManualFeeService;
+    private readonly ManualFeeService manualFeeService;
 
     public ManualIncreaseFeeController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
-        LogisticsOrderManualFeeService logisticsOrderManualFeeService)
+        ManualFeeService manualFeeService)
     {
         this.session = session;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
-        this.logisticsOrderManualFeeService = logisticsOrderManualFeeService;
+        this.manualFeeService = manualFeeService;
     }
 
     [HttpGet]
@@ -164,7 +164,7 @@ public class ManualIncreaseFeeController : Controller
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        logisticsOrderManualFeeService.AddManualIncreaseFee(logisticsOrder, customer, model.Fee, model.ManualReasonId, model.Description ?? string.Empty, loginUserId);
+        manualFeeService.AddManualIncreaseFee(logisticsOrder, customer, model.Fee, model.ManualReasonId, model.Description ?? string.Empty, loginUserId);
 
         return Json(new Dictionary<string, object>() {
             { "success", true },

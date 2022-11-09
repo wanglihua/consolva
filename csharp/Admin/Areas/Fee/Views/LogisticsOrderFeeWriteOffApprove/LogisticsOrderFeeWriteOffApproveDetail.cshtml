@@ -1,0 +1,78 @@
+@using Domain
+@model Web.Areas.Admin.Models.LogisticsOrderFeeWriteOffApprove.LogisticsOrderFeeWriteOffApproveDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsOrderFeeWriteOffApplyDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">费用核销审核详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsOrderFeeWriteOffApplyDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="FeeWriteOffApply.Id" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FeeWriteOffApply.Order" class="col-xs-2 control-label">订单</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="FeeWriteOffApply.Order" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FeeWriteOffApply.Customer" class="col-xs-2 control-label">客户</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="FeeWriteOffApply.Customer" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FeeWriteOffApply.Amount" class="col-xs-2 control-label">金额</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="FeeWriteOffApply.Amount" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FeeWriteOffApply.WriteOffReasonId" class="col-xs-2 control-label">核销原因</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="FeeWriteOffApply.WriteOffReasonId" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FeeWriteOffApply.Status" class="col-xs-2 control-label">审核状态</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="FeeWriteOffApply.Status" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveFeeWriteOffApply();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

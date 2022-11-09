@@ -1,0 +1,349 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model FeeWriteOffApplyIndexModel
+@using Web.Areas.Admin.Models.FeeWriteOffApply
+@{
+    ViewBag.Title = "费用核销申请";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="fee-menu">费用管理</li>
+    <li class="parent" data-menu="fee-write-off-fee-menu">费用管理</li>
+    <li class="active" data-menu="fee-write-off-apply-index-menu">费用核销申请</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadFeeWriteOffApplyList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showFeeWriteOffApplyDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteFeeWriteOffApply()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+
+    <button type="button" class="btn btn-pink btn-sm" onclick="submitFeeWriteOffApply()">
+        <i class="ace-icon fa fa-reply fa-flip-horizontal"></i>
+        提交
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="manualReasonIdQuery">核销费用原因</label>&nbsp;
+    <select id="manualReasonIdQuery" name="manualReasonIdQuery" style="width: 150px; height: 30px;">
+        <option value="0">核销费用原因</option>
+        @foreach (ManualFeeReasonInfo feeReason in Model.FeeReasonList)
+        {
+            <option value="@(feeReason.Id)">@(feeReason.Content)</option>
+        }
+    </select>&nbsp;
+
+    <label for="orderCodeQuery">订单编号</label>&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询" />&nbsp;
+
+    <label for="customerIdQuery">客户ID</label>&nbsp;
+    <input id="customerIdQuery" name="customerIdQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询" />&nbsp;
+
+    <label for="statusQuery">状态</label>
+    <select id="statusQuery" name="statusQuery" style="width: 120px; height: 30px;">
+        <option value="">状态查询</option>
+        @foreach (FeeWriteOffApplyStatus status in Model.ApplyStatusList)
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>&nbsp;
+
+    <label for="viewScopeQuery">查看范围</label>
+    <select id="viewScopeQuery" name="viewScopeQuery" style="width: 120px; height: 30px;">
+        @foreach (var scope in Model.ScopeList)
+        {
+            <option value="@(scope.Id)">@(scope.Name)</option>
+        }
+    </select>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadFeeWriteOffApplyList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsOrderFeeWriteOffApplyList" data-page-index="0" data-sort-field="@(nameof(FeeWriteOffApplyInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsOrderFeeWriteOffApplyDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadFeeWriteOffApplyList();
+    });
+
+    function sortFeeWriteOffApplyList(sortField, sortDir) {
+        var list = $('#logisticsOrderFeeWriteOffApplyList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadFeeWriteOffApplyList();
+    }
+    
+    function loadListByOrderCode(orderCode) {
+        $('#manualReasonIdQuery').val("");
+        $('#orderCodeQuery').val(orderCode);
+        $('#customerIdQuery').val("");
+        $('#statusQuery').val("");
+        $('#viewScopeQuery').val("");
+        
+        loadFeeWriteOffApplyList(0);
+    }    
+
+    function loadFeeWriteOffApplyList(pageIndex) {
+        var list = $('#logisticsOrderFeeWriteOffApplyList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "FeeWriteOffApply")",
+            type: "POST",
+            data: {
+                '@(nameof(FeeWriteOffApplyListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(FeeWriteOffApplyListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(FeeWriteOffApplyListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(FeeWriteOffApplyListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(FeeWriteOffApplyListQueryParam.ViewScopeQuery))': $('#viewScopeQuery').val(),
+                '@(nameof(FeeWriteOffApplyListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(FeeWriteOffApplyListQueryParam.SortField))': sortField,
+                '@(nameof(FeeWriteOffApplyListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderFeeWriteOffApplyList').html(data);
+
+                initListTable("#tblFeeWriteOffApplyList");
+            }
+        });
+    }
+
+    function showFeeWriteOffApplyDetail(id) {
+        $("#logisticsOrderFeeWriteOffApplyDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsOrderFeeWriteOffApplyDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "FeeWriteOffApply")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsOrderFeeWriteOffApplyDetailDialogWrapper").html(data);
+                $("#logisticsOrderFeeWriteOffApplyDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveFeeWriteOffApply() {
+        $.ajax({
+            url: '@Url.Action("CheckOrder", "FeeWriteOffApply")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    $.msg.confirm(data.message + "确认要继续吗？",
+                        function() {
+                            saveFeeWriteOffApplyInternal();
+                        }
+                    );
+                } else {
+                    saveFeeWriteOffApplyInternal();
+                }
+            }
+        });
+    }
+
+    function saveFeeWriteOffApplyInternal() {
+        var form = $("#logisticsOrderFeeWriteOffApplyDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerCode': {
+                    required: true
+                },
+                'OrderCode': {
+                    required: true
+                },
+                'Amount': {
+                    required: true,
+                    number: true
+                },
+                'FeeReasonId': {
+                    required: true,
+                    digits: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "FeeWriteOffApply")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#logisticsOrderFeeWriteOffApplyDetailDialog').modal('hide');
+                        loadFeeWriteOffApplyList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteFeeWriteOffApply() {
+        var idList = getSelectIdList('#tblFeeWriteOffApplyList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "FeeWriteOffApply")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadFeeWriteOffApplyList();
+                    }
+                });
+            }
+        );
+    }
+
+    function submitFeeWriteOffApply() {
+        var idList = getSelectIdList('#tblFeeWriteOffApplyList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要提交吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Submit", "FeeWriteOffApply")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadFeeWriteOffApplyList();
+                    }
+                });
+            }
+        );
+    }
+
+    function orderSelectChange() {
+        $("#OrderCode").val($("#orderSelect").val());
+    }
+
+    function customerCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerRecentOrderSelect", "CommonInfo")',
+            type: "POST",
+            data: {
+                "customerCode": $("#CustomerCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#orderSelectWrapper").html(data);
+                    return;
+                }
+            }
+        });
+    }
+
+    function orderCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerCodeByOrderCode", "CommonInfo")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#CustomerCode").val(data.customerCode);
+                    return;
+                }
+            }
+        });
+        
+        checkOrder();
+    }
+    
+    function checkOrder() {
+        $.ajax({
+            url: '@Url.Action("CheckOrder", "FeeWriteOffApply")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    $("#applyCheckMessage").html(data.message);
+                } else {
+                    $("#applyCheckMessage").html("");
+                }
+            }
+        });
+    }
+
+</script>

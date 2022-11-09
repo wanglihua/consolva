@@ -1,0 +1,350 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model ManualFeeApplyIndexModel
+@using Web.Areas.Admin.Models.ManualFeeApply
+@{
+    ViewBag.Title = "减少费用申请";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="fee-menu">费用管理</li>
+    <li class="parent" data-menu="fee-manual-decrease-fee-menu">减少费用</li>
+    <li class="active" data-menu="fee-manual-fee-apply-index-menu">减少费用申请</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadManualFeeApplyList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showManualFeeApplyDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteManualFeeApply()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+
+    <button type="button" class="btn btn-pink btn-sm" onclick="submitManualFeeApply()">
+        <i class="ace-icon fa fa-reply fa-flip-horizontal"></i>
+        提交
+    </button>
+
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="manualReasonIdQuery">减少费用原因</label>&nbsp;
+    <select id="manualReasonIdQuery" name="manualReasonIdQuery" style="width: 150px; height: 30px;">
+        <option value="0">减少费用原因</option>
+        @foreach (ManualFeeReasonInfo feeReason in Model.FeeReasonList)
+        {
+            <option value="@(feeReason.Id)">@(feeReason.Content)</option>
+        }
+    </select>&nbsp;
+
+    <label for="orderCodeQuery">订单编号</label>&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+
+    <label for="customerIdQuery">客户ID</label>&nbsp;
+    <input id="customerIdQuery" name="customerIdQuery" style="width: 120px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+    
+    <label for="statusQuery">状态</label>
+    <select id="statusQuery" name="statusQuery" style="width: 120px; height: 30px;">
+        <option value="">状态查询</option>
+        @foreach (var status in Model.ApplyStatusList)
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>&nbsp; 
+    
+    <label for="viewScopeQuery">查看范围</label>
+    <select id="viewScopeQuery" name="viewScopeQuery" style="width: 120px; height: 30px;">
+        @foreach (var scope in Model.ScopeList)
+        {
+            <option value="@(scope.Id)">@(scope.Name)</option>
+        }
+    </select>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadManualFeeApplyList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsOrderManualFeeApplyList" data-page-index="0" data-sort-field="@(nameof(ManualFeeApplyInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsOrderManualFeeApplyDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadManualFeeApplyList();
+    });
+
+    function sortManualFeeApplyList(sortField, sortDir) {
+        var list = $('#logisticsOrderManualFeeApplyList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadManualFeeApplyList();
+    }
+    
+    function loadListByOrderCode(orderCode) {
+        $('#manualReasonIdQuery').val("");
+        $('#orderCodeQuery').val(orderCode);
+        $('#customerIdQuery').val("");
+        $('#statusQuery').val("");
+        $('#viewScopeQuery').val("");
+        
+        loadManualFeeApplyList(0);
+    }
+
+    function loadManualFeeApplyList(pageIndex) {
+        var list = $('#logisticsOrderManualFeeApplyList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ManualFeeApply")",
+            type: "POST",
+            data: {
+                '@(nameof(ManualFeeApplyListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(ManualFeeApplyListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(ManualFeeApplyListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(ManualFeeApplyListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(ManualFeeApplyListQueryParam.ViewScopeQuery))': $('#viewScopeQuery').val(),
+                '@(nameof(ManualFeeApplyListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ManualFeeApplyListQueryParam.SortField))': sortField,
+                '@(nameof(ManualFeeApplyListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderManualFeeApplyList').html(data);
+
+                initListTable("#tblManualFeeApplyList");
+            }
+        });
+    }
+
+    function showManualFeeApplyDetail(id) {
+        $("#logisticsOrderManualFeeApplyDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsOrderManualFeeApplyDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ManualFeeApply")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsOrderManualFeeApplyDetailDialogWrapper").html(data);
+                $("#logisticsOrderManualFeeApplyDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveManualFeeApply() {
+        $.ajax({
+            url: '@Url.Action("CheckOrder", "ManualFeeApply")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    $.msg.confirm(data.message + "确认要继续吗？",
+                        function() {
+                            saveManualFeeApplyInternal();
+                        }
+                    );                    
+                } else {
+                    saveManualFeeApplyInternal();
+                }
+            }
+        });  
+    }
+    
+    function saveManualFeeApplyInternal() {
+        var form = $("#logisticsOrderManualFeeApplyDetailForm");
+        var valid = validate(form,
+            {                
+                'CustomerCode': {
+                    required: true
+                },
+                'OrderCode': {
+                    required: true
+                },
+                'Amount': {
+                    required: true,
+                    number: true
+                },
+                'ManualReasonId': {
+                    required: true,
+                    digits: true
+                } 
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ManualFeeApply")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#logisticsOrderManualFeeApplyDetailDialog').modal('hide');
+                        loadManualFeeApplyList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }    
+
+    function deleteManualFeeApply() {
+        var idList = getSelectIdList('#tblManualFeeApplyList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "ManualFeeApply")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadManualFeeApplyList();
+                    }
+                });
+            }
+        );
+    }
+    
+    function submitManualFeeApply() {
+        var idList = getSelectIdList('#tblManualFeeApplyList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要提交吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Submit", "ManualFeeApply")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadManualFeeApplyList();
+                    }
+                });
+            }
+        );
+    }    
+    
+    function orderSelectChange() {
+        $("#OrderCode").val($("#orderSelect").val());
+    }
+
+    function customerCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerRecentOrderSelect", "CommonInfo")',
+            type: "POST",
+            data: {
+                "customerCode": $("#CustomerCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#orderSelectWrapper").html(data);
+                    return;
+                }
+            }
+        });        
+    }
+
+    function orderCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerCodeByOrderCode", "CommonInfo")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#CustomerCode").val(data.customerCode);
+                    return;
+                }
+            }
+        }); 
+        
+        checkOrder();
+    }
+    
+    function checkOrder() {
+        $.ajax({
+            url: '@Url.Action("CheckOrder", "ManualFeeApply")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    $("#applyCheckMessage").html(data.message);
+                } else {
+                    $("#applyCheckMessage").html("");
+                }
+            }
+        });      
+    }
+
+</script>

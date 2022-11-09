@@ -86,7 +86,7 @@
                                 @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFeeApply))
                                 {
                                     <li id="fee-manual-fee-apply-index-menu">
-                                        <a href="@Url.Action("Index", "LogisticsOrderManualFeeApply")">
+                                        <a href="@Url.Action("Index", "ManualFeeApply")">
                                             <i class="menu-icon fa fa-caret-right"></i>
                                             减少费用申请
                                         </a>
@@ -97,7 +97,7 @@
                                 @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFeeApprove))
                                 {
                                     <li id="fee-manual-fee-approve-index-menu">
-                                        <a href="@Url.Action("Index", "LogisticsOrderManualFeeApprove")">
+                                        <a href="@Url.Action("Index", "ManualFeeApprove")">
                                             <i class="menu-icon fa fa-caret-right"></i>
                                             减少费用审核
                                         </a>
@@ -133,7 +133,7 @@
                                 @if (Model.HasPassRes(PassRes.Fee.WriteOffFeeApply))
                                 {
                                     <li id="fee-write-off-apply-index-menu">
-                                        <a href="@Url.Action("Index", "LogisticsOrderFeeWriteOffApply")">
+                                        <a href="@Url.Action("Index", "FeeWriteOffApply")">
                                             <i class="menu-icon fa fa-caret-right"></i>
                                             费用核销申请
                                         </a>

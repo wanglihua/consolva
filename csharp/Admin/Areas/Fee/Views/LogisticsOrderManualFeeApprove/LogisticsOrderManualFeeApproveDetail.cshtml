@@ -1,0 +1,96 @@
+@using Domain
+@model Web.Areas.Admin.Models.ManualFeeApprove.ManualFeeApproveDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsOrderManualFeeApplyDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">减少费用审核详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsOrderManualFeeApplyDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="ManualFeeApply.Id" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualFeeApply.Customer" class="col-xs-2 control-label"> 客户</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ManualFeeApply.Customer" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualFeeApply.Order" class="col-xs-2 control-label">订单</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ManualFeeApply.Order" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualFeeApply.Type" class="col-xs-2 control-label">费用类型</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ManualFeeApply.Type" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualFeeApply.Fee" class="col-xs-2 control-label">金额</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ManualFeeApply.Fee" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualFeeApply.Description" class="col-xs-2 control-label">描述</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ManualFeeApply.Description" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualFeeApply.ManualReasonId" class="col-xs-2 control-label">增减费用原因</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ManualFeeApply.ManualReasonId" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualFeeApply.Status" class="col-xs-2 control-label">审核状态</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ManualFeeApply.Status" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveManualFeeApply();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

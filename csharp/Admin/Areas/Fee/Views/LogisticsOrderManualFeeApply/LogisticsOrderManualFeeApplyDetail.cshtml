@@ -1,0 +1,100 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model Web.Areas.Admin.Models.ManualFeeApply.ManualFeeApplyDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsOrderManualFeeApplyDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">减少费用申请详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsOrderManualFeeApplyDetailForm" class="form-horizontal" role="form">
+                    <div id="applyCheckMessage" style="padding: 5px; color: red;"></div>
+                    <input asp-for="ApplyId" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerCode" class="col-xs-2 control-label"> 客户</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CustomerCode" type="text" class="input-sm form-control" onchange="customerCodeChange();"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="OrderCode" class="col-xs-2 control-label">订单编号</label>
+                                <div class="col-xs-5">
+                                    <input asp-for="OrderCode" type="text" class="input-sm form-control" onchange="orderCodeChange()"/>
+                                </div>
+                                <div class="col-xs-5" id="orderSelectWrapper">
+                                    <select class="input-sm form-control">
+                                        <option value="">选择订单编号</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Fee" class="col-xs-2 control-label">金额</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Fee" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ManualReasonId" class="col-xs-2 control-label">减少费用原因</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="ManualReasonId" class="input-sm form-control">
+                                        <option value="">请选择减少费用原因</option>
+                                        @foreach (ManualFeeReasonInfo feeReason in Model.FeeReasonList)
+                                        {
+                                            <option value="@(feeReason.Id)">@(feeReason.Content)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Description" class="col-xs-2 control-label">描述</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="Description" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveManualFeeApply();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.ApplyId != 0)
+{
+    <script type="text/javascript">
+        $(function() {
+            checkOrder();
+        });
+    </script>
+}

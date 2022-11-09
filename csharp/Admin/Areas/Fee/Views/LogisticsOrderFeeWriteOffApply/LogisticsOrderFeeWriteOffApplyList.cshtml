@@ -1,0 +1,129 @@
+@{
+    Layout = null;
+}
+@using Domain
+@using Domain.LogisticsOrder
+@model Web.Areas.Admin.Models.FeeWriteOffApply.FeeWriteOffApplyListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeWriteOffApplyList"})
+
+<table id="tblFeeWriteOffApplyList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="logisticsOrderFeeWriteOffApplyCheckAll"></label><input id="logisticsOrderFeeWriteOffApplyCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(FeeWriteOffApplyInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">客户</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(FeeWriteOffApplyInfo.Order))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">订单</a>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <a field="@(nameof(FeeWriteOffApplyInfo.Amount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">金额RMB</a>
+            </th>
+            <th style="width: 90px; text-align: center;">
+                <div>
+                    <a field="@(nameof(FeeWriteOffApplyInfo.ApplyUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">申请用户</a>
+                </div>
+                <div>
+                    <a field="@(nameof(FeeWriteOffApplyInfo.ApproveUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">审核用户</a>
+                </div>
+            </th>
+            <th style="width: 300px;">
+                <div>
+                    <a field="@(nameof(FeeWriteOffApplyInfo.WriteOffReasonContent))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">核销原因</a>
+                </div>
+                <div>
+                    <a field="@(nameof(FeeWriteOffApplyInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">描述</a>
+                </div>
+            </th>
+            <th style="width: 90px; text-align: center;">
+                <a field="@(nameof(FeeWriteOffApplyInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">审核状态</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(FeeWriteOffApplyInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">创建时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(FeeWriteOffApplyInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeWriteOffApplyList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.FeeWriteOffApplyList != null && Model.FeeWriteOffApplyList.Count() != 0)
+        {
+            int order = 1;
+            foreach (FeeWriteOffApplyInfo logisticsOrderFeeWriteOffApply in Model.FeeWriteOffApplyList)
+            {
+                string applyCountStyleColor = "";
+                if (logisticsOrderFeeWriteOffApply.OrderApplyCountCache > 1)
+                {
+                    applyCountStyleColor = "color: red;";
+                }
+                
+                <tr ondblclick="showFeeWriteOffApplyDetail(@(logisticsOrderFeeWriteOffApply.Id));">
+                    <td style="text-align: center;">
+                        <label for="logisticsOrderFeeWriteOffApplyCheck_@(logisticsOrderFeeWriteOffApply.Id)"></label><input id="logisticsOrderFeeWriteOffApplyCheck_@(logisticsOrderFeeWriteOffApply.Id)" type="checkbox" class="ace" value="@logisticsOrderFeeWriteOffApply.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = logisticsOrderFeeWriteOffApply.Customer?.Id})">
+                            @logisticsOrderFeeWriteOffApply.Customer?.CustomerCode
+                        </a>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrderFeeWriteOffApply.Order.Id})">
+                                @logisticsOrderFeeWriteOffApply.Order?.Code
+                            </a>
+                        </div>
+                        <div>
+                            <a href="javascript:loadListByOrderCode('@(logisticsOrderFeeWriteOffApply.Order?.Code)')">
+                                订单共<span style="@(applyCountStyleColor)">@(logisticsOrderFeeWriteOffApply.OrderApplyCountCache)</span>条申请
+                            </a>
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        @logisticsOrderFeeWriteOffApply.Amount
+                    </td>
+                    <td style="text-align: center;">
+                        @ListDataUtil.RenderStringWithDiv(logisticsOrderFeeWriteOffApply.ApplyUser?.UserName)
+                        @ListDataUtil.RenderStringWithDiv(logisticsOrderFeeWriteOffApply.ApproveUser?.UserName)
+                    </td>
+                    <td class="break-word">
+                        @ListDataUtil.RenderStringWithDiv(logisticsOrderFeeWriteOffApply.WriteOffReasonContent)
+                        <div style="color: #08008c;">
+                            @ListDataUtil.RenderStringWithDiv(logisticsOrderFeeWriteOffApply.Description)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        @(logisticsOrderFeeWriteOffApply.Status?.Name)
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsOrderFeeWriteOffApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                        <div>
+                            @logisticsOrderFeeWriteOffApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeWriteOffApplyList"})
