@@ -47,7 +47,7 @@ public class ManualFeeApplyController : Controller
 
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.ManualDecrease).ToList();
         model.ApplyStatusList = ManualFeeApplyStatus.GetList();
-        model.ScopeList = ApplyDataViewScope.GetList();
+        model.ScopeList = FeeApplyDataViewScope.GetList();
 
         return View("ManualFeeApplyIndex", model);
     }
@@ -112,7 +112,7 @@ public class ManualFeeApplyController : Controller
         criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.ApplyUser), nameof(ManualFeeApplyInfo.ApplyUser));
         criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.ApproveUser), nameof(ManualFeeApplyInfo.ApproveUser), JoinType.LeftOuterJoin);
 
-        if (queryParam.ViewScopeQuery == ApplyDataViewScope.MySelf)
+        if (queryParam.ViewScopeQuery == FeeApplyDataViewScope.MySelf)
         {
             int loginUserId = loginUserService.GetLoginUserId();
             criteria = criteria.Add(Restrictions.Where<ManualFeeApplyInfo>(e => e.ApplyUser.Id == loginUserId));

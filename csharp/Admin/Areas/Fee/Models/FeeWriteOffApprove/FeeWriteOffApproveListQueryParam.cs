@@ -1,23 +1,19 @@
-using System;
-using Core;
-using Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc;
+using shunda.Core;
+using shunda.Domain.Fee;
 
-namespace shunda.Admin.Areas.Fee.Models.LogisticsOrderFeeWriteOffApprove;
+namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderFeeWriteOffApprove
+public class LogisticsOrderFeeWriteOffApproveListQueryParam : ListQueryParam
 {
-    public class LogisticsOrderFeeWriteOffApproveListQueryParam : ListQueryParam
-    {
-        public int ApplyUserIdQuery { get; set; }
-        
-        public int ManualReasonIdQuery { get; set; }
+    public int ApplyUserIdQuery { get; set; }
 
-        public string OrderCodeQuery { get; set; }
+    public int ManualReasonIdQuery { get; set; }
 
-        public string CustomerCodeQuery { get; set; }
+    public string? OrderCodeQuery { get; set; }
 
-        [ModelBinder(typeof(FeeWriteOffApplyStatusModelBinder))]
-        public FeeWriteOffApplyStatus StatusQuery { get; set; }
-    }
+    public string? CustomerCodeQuery { get; set; }
+
+    [ModelBinder(typeof(FeeWriteOffApplyStatusModelBinder))]
+    public FeeWriteOffApplyStatus? StatusQuery { get; set; }
 }

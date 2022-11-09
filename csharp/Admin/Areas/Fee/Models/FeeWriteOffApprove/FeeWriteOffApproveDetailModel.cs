@@ -1,13 +1,9 @@
-using System;
-using Domain;
-using Domain.LogisticsOrder;
+using shunda.Domain.Fee;
 
-namespace shunda.Admin.Areas.Fee.Models.LogisticsOrderFeeWriteOffApprove;
+namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderFeeWriteOffApprove
+public class LogisticsOrderFeeWriteOffApproveDetailModel
 {
-    public class LogisticsOrderFeeWriteOffApproveDetailModel
-    {
-        public FeeWriteOffApplyInfo FeeWriteOffApply { get; set; }
-    }
+    // todo 这个是不是改成字段放入 model 的做法
+    public FeeWriteOffApplyInfo FeeWriteOffApply { get; set; } = new FeeWriteOffApplyInfo();
 }

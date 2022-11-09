@@ -1,20 +1,13 @@
-using System;
-using Domain;
-using System.Collections.Generic;
-using Core;
-using Domain.LogisticsOrder;
-using Web.Models;
+using shunda.Core;
+using shunda.Domain.Fee;
 
-namespace shunda.Admin.Areas.Fee.Models.LogisticsOrderFeeWriteOffApprove;
+namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderFeeWriteOffApprove
+public class LogisticsOrderFeeWriteOffApproveListModel : ListModel
 {
-    public class LogisticsOrderFeeWriteOffApproveListModel : ListModel
+    public LogisticsOrderFeeWriteOffApproveListModel(ListPager listPager) : base(listPager)
     {
-        public LogisticsOrderFeeWriteOffApproveListModel(ListPager listPager) : base(listPager)
-        {
-        }
-
-        public IList<FeeWriteOffApplyInfo> FeeWriteOffApplyList { get; set; }
     }
+
+    public IList<FeeWriteOffApplyInfo> FeeWriteOffApplyList { get; set; } = new List<FeeWriteOffApplyInfo>();
 }

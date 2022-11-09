@@ -1,25 +1,20 @@
-using System;
-using System.Collections.Generic;
-using Domain.LogisticsOrder;
-using Domain.Pass;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Fee;
+using shunda.Domain.Pass;
 
-namespace shunda.Admin.Areas.Fee.Models.LogisticsOrderFeeWriteOffApprove;
+namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderFeeWriteOffApprove
+public class LogisticsOrderFeeWriteOffApproveIndexModel
 {
-    public class LogisticsOrderFeeWriteOffApproveIndexModel
-    {
-        /// <summary>
-        /// 核销费用原因列表
-        /// </summary>
-        [BindNever]
-        public IList<ManualFeeReasonInfo> FeeReasonList { get; set; }
+    /// <summary>
+    /// 核销费用原因列表
+    /// </summary>
+    [BindNever]
+    public IList<ManualFeeReasonInfo> FeeReasonList { get; set; } = new List<ManualFeeReasonInfo>();
 
-        [BindNever]
-        public IList<FeeWriteOffApplyStatus> ApplyStatusList { get; set; }
-        
-        [BindNever]
-        public IList<UserInfo> ApplyUserList { get; set; }        
-    }
+    [BindNever]
+    public IList<FeeWriteOffApplyStatus> ApplyStatusList { get; set; } = FeeWriteOffApplyStatus.GetList();
+
+    [BindNever]
+    public IList<UserInfo> ApplyUserList { get; set; } = new List<UserInfo>();
 }

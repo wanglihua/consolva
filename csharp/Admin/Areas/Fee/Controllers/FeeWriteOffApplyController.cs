@@ -46,7 +46,7 @@ public class FeeWriteOffApplyController : Controller
 
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.WriteOffFee).ToList();
         model.ApplyStatusList = FeeWriteOffApplyStatus.GetList();
-        model.ScopeList = ApplyDataViewScope.GetList();
+        model.ScopeList = FeeApplyDataViewScope.GetList();
 
         return View("FeeWriteOffApplyIndex", model);
     }
@@ -111,7 +111,7 @@ public class FeeWriteOffApplyController : Controller
         criteria = criteria.CreateAlias(nameof(FeeWriteOffApplyInfo.Customer), nameof(FeeWriteOffApplyInfo.Customer));
 
 
-        if (queryParam.ViewScopeQuery == ApplyDataViewScope.MySelf)
+        if (queryParam.ViewScopeQuery == FeeApplyDataViewScope.MySelf)
         {
             int loginUserId = loginUserService.GetLoginUserId();
             criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.ApplyUser.Id == loginUserId));

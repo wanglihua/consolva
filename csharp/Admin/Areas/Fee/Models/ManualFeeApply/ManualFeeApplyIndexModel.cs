@@ -20,6 +20,6 @@ namespace Web.Areas.Admin.Models.ManualFeeApply
         public IList<ManualFeeApplyStatus> ApplyStatusList { get; set; }
         
         [BindNever]
-        public IList<ApplyDataViewScope> ScopeList { get; set; }
+        public IList<FeeApplyDataViewScope> ScopeList { get; set; }
     }
 }

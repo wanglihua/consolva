@@ -19,7 +19,7 @@ namespace Web.Areas.Admin.Models.ManualFeeApply
         [ModelBinder(typeof(ManualFeeApplyStatusModelBinder))]
         public ManualFeeApplyStatus StatusQuery { get; set; }
 
-        [ModelBinder(typeof(ApplyDataViewScopeModelBinder))]
-        public ApplyDataViewScope ViewScopeQuery { get; set; }
+        [ModelBinder(typeof(FeeApplyDataViewScopeModelBinder))]
+        public FeeApplyDataViewScope ViewScopeQuery { get; set; }
     }
 }

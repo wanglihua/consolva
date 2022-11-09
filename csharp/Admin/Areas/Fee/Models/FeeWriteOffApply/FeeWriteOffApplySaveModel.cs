@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using shunda.Domain.Fee;
 
 namespace shunda.Admin.Areas.Fee.Models.FeeWriteOffApply;
 
