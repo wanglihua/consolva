@@ -3,9 +3,9 @@ using Domain.LogisticsOrder;
 using Domain.Pass;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
+namespace Web.Areas.Admin.Models.FeeRefundApprove
 {
-    public class LogisticsOrderRefundApproveIndexModel
+    public class FeeRefundApproveIndexModel
     {
         [BindNever]
         public IList<FeeRefundType> TypeList { get; set; }

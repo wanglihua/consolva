@@ -5,11 +5,11 @@ using Core;
 using Domain.LogisticsOrder;
 using Web.Models;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
+namespace Web.Areas.Admin.Models.FeeRefundApprove
 {
-    public class LogisticsOrderRefundApproveListModel : ListModel
+    public class FeeRefundApproveListModel : ListModel
     {
-        public LogisticsOrderRefundApproveListModel(ListPager listPager) : base(listPager)
+        public FeeRefundApproveListModel(ListPager listPager) : base(listPager)
         {
         }
 

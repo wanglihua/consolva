@@ -6,9 +6,9 @@ using shunda.Domain.Order;
 
 namespace shunda.Domain.Fee;
 
-    public class LogisticsOrderRefundInfoMapping : EntityMapping<LogisticsOrderRefundInfo>
+    public class FeeRefundInfoMapping : EntityMapping<FeeRefundInfo>
     {
-        public LogisticsOrderRefundInfoMapping()
+        public FeeRefundInfoMapping()
         {
             Table("tbl_fee_refund");
 

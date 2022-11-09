@@ -4,9 +4,9 @@ using Domain;
 using Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
+namespace Web.Areas.Admin.Models.FeeRefundApprove
 {
-    public class LogisticsOrderRefundApproveDetailModel
+    public class FeeRefundApproveDetailModel
     {
         [BindNever]
         public FeeRefundApplyInfo FeeRefundApply { get; set; }

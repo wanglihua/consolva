@@ -3,9 +3,9 @@ using Core;
 using Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
+namespace Web.Areas.Admin.Models.FeeRefundApprove
 {
-    public class LogisticsOrderRefundApproveListQueryParam : ListQueryParam
+    public class FeeRefundApproveListQueryParam : ListQueryParam
     {
         public int ApplyUserIdQuery { get; set; }
         

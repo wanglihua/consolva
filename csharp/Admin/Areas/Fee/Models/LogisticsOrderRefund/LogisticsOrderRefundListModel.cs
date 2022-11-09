@@ -6,16 +6,16 @@ using Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Web.Models;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefund
+namespace Web.Areas.Admin.Models.FeeRefund
 {
-    public class LogisticsOrderRefundListModel : ListModel
+    public class FeeRefundListModel : ListModel
     {
-        public LogisticsOrderRefundListModel(ListPager listPager) : base(listPager)
+        public FeeRefundListModel(ListPager listPager) : base(listPager)
         {
         }
 
         [BindNever]
-        public IList<LogisticsOrderRefundInfo> LogisticsOrderRefundList { get; set; }
+        public IList<FeeRefundInfo> FeeRefundList { get; set; }
 
         [BindNever]
         public int CustomerCount { get; set; }

@@ -9,7 +9,7 @@ namespace shunda.Domain.Fee;
 /// <summary>
 /// 订单退赔款
 /// </summary>
-public class LogisticsOrderRefundInfo : Entity
+public class FeeRefundInfo : Entity
 {
     /// <summary>
     /// 物流订单

@@ -1,7 +1,7 @@
 @using Domain
 @using Domain.LogisticsOrder
-@model LogisticsOrderRefundApproveIndexModel
-@using Web.Areas.Admin.Models.LogisticsOrderRefundApprove
+@model FeeRefundApproveIndexModel
+@using Web.Areas.Admin.Models.FeeRefundApprove
 @{
     ViewBag.Title = "退赔款审核";
     Layout = "_AdminLayout";
@@ -117,18 +117,18 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "LogisticsOrderRefundApprove")",
+            url: "@Url.Action("List", "FeeRefundApprove")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.TypeQuery))': $('#typeQuery').val(),
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.ReasonQuery))': $('#reasonQuery').val(),
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.StatusQuery))': $('#statusQuery').val(),
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.ApplyUserIdQuery))': $('#applyUserQuery').val(),
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.SortField))': sortField,
-                '@(nameof(LogisticsOrderRefundApproveListQueryParam.SortDir))': sortDir
+                '@(nameof(FeeRefundApproveListQueryParam.TypeQuery))': $('#typeQuery').val(),
+                '@(nameof(FeeRefundApproveListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(FeeRefundApproveListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(FeeRefundApproveListQueryParam.ReasonQuery))': $('#reasonQuery').val(),
+                '@(nameof(FeeRefundApproveListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(FeeRefundApproveListQueryParam.ApplyUserIdQuery))': $('#applyUserQuery').val(),
+                '@(nameof(FeeRefundApproveListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(FeeRefundApproveListQueryParam.SortField))': sortField,
+                '@(nameof(FeeRefundApproveListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();
@@ -164,7 +164,7 @@
         // $("#logisticsOrderRefundApplyDetailForm").clearValidation();
 
         $.ajax({
-            url: '@Url.Action("Detail", "LogisticsOrderRefundApprove")',
+            url: '@Url.Action("Detail", "FeeRefundApprove")',
             type: "POST",
             data: { "id": id },
             success: function(data) {
@@ -197,7 +197,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Back", "LogisticsOrderRefundApprove")',
+                url: '@Url.Action("Back", "FeeRefundApprove")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -233,7 +233,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Approve", "LogisticsOrderRefundApprove")',
+                url: '@Url.Action("Approve", "FeeRefundApprove")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {

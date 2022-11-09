@@ -15,6 +15,6 @@ namespace Web.Areas.Admin.Models.FeeRefundApply
         public IList<FeeRefundApplyStatus> StatusList { get; set; }
 
         [BindNever]
-        public IList<ApplyDataViewScope> ScopeList { get; set; }
+        public IList<FeeApplyDataViewScope> ScopeList { get; set; }
     }
 }

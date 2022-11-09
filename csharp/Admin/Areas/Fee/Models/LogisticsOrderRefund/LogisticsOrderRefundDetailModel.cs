@@ -2,10 +2,10 @@ using System;
 using Domain;
 using Domain.LogisticsOrder;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefund
+namespace Web.Areas.Admin.Models.FeeRefund
 {
-    public class LogisticsOrderRefundDetailModel
+    public class FeeRefundDetailModel
     {
-        public LogisticsOrderRefundInfo LogisticsOrderRefund { get; set; }
+        public FeeRefundInfo FeeRefund { get; set; }
     }
 }

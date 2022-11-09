@@ -21,6 +21,6 @@ namespace Web.Areas.Admin.Models.FeeRefundApply
         public FeeRefundApplyStatus StatusQuery { get; set; }
 
         [ModelBinder(typeof(ApplyDataViewScopeModelBinder))]
-        public ApplyDataViewScope ViewScopeQuery { get; set; }
+        public FeeApplyDataViewScope ViewScopeQuery { get; set; }
     }
 }

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Domain.LogisticsOrder;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefund
+namespace Web.Areas.Admin.Models.FeeRefund
 {
-    public class LogisticsOrderRefundIndexModel
+    public class FeeRefundIndexModel
     {
         public IList<FeeRefundType> TypeList { get; set; }
 
