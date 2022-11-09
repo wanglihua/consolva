@@ -1,0 +1,57 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model Web.Areas.Admin.Models.RefundReason.RefundReasonDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="refundReasonDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">退赔原因详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="refundReasonDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="RefundReason.Id" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="RefundReason.Content" class="col-xs-2 control-label">内容</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="RefundReason.Content" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="RefundReason.Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="RefundReason.Status" type="text" class="input-sm form-control">
+                                        @foreach (RefundReasonStatus status in Model.StatusList)
+                                        {
+                                            <option value="@(status.Id)">@(status.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveRefundReason();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

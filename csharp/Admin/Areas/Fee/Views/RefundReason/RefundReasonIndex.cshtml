@@ -1,0 +1,173 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model RefundReasonIndexModel
+@using Web.Areas.Admin.Models.RefundReason
+@{
+    ViewBag.Title = "退赔原因";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-refund-reason-index-menu">退赔原因</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadRefundReasonList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showRefundReasonDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteRefundReason()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="refundReasonList" data-page-index="0" data-sort-field="@(nameof(RefundReasonInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="refundReasonDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadRefundReasonList();
+    });
+
+    function sortRefundReasonList(sortField, sortDir) {
+        var list = $('#refundReasonList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadRefundReasonList();
+    }
+
+    function loadRefundReasonList(pageIndex) {
+        var list = $('#refundReasonList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "RefundReason")",
+            type: "POST",
+            data: {
+                '@(nameof(RefundReasonListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(RefundReasonListQueryParam.SortField))': sortField,
+                '@(nameof(RefundReasonListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#refundReasonList').html(data);
+
+                initListTable("#tblRefundReasonList");
+            }
+        });
+    }
+
+    function showRefundReasonDetail(id) {
+        $("#refundReasonDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#refundReasonDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "RefundReason")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#refundReasonDetailDialogWrapper").html(data);
+                $("#refundReasonDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveRefundReason() {
+        var form = $("#refundReasonDetailForm");
+        var valid = validate(form,
+            {
+                'RefundReason.Content': {
+                    required: true,
+                    maxlength: 300
+                },
+                'RefundReason.StatusId': {
+                    required: true,
+                    digits: true 
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "RefundReason")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#refundReasonDetailDialog').modal('hide');
+                        loadRefundReasonList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+    function deleteRefundReason() {
+        var idList = getSelectIdList('#tblRefundReasonList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "RefundReason")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadRefundReasonList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
