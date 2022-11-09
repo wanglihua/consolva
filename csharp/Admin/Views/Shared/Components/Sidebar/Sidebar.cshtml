@@ -14,15 +14,13 @@
 <div id="sidebar" class="sidebar responsive @(sidebarMinClassStr)">
     <ul class="nav nav-list">
 
-        @(await Html.PartialAsync("SidebarExpress", Model))
-
-        <partial name="SidebarExpress" model="Model"/>
-        <partial name="SidebarFee" model="Model"/>
-        <partial name="SidebarCustomer" model="Model"/>
-        <partial name="SidebarStorage" model="Model"/>
-        <partial name="SidebarLogistics" model="Model"/>
-        <partial name="SidebarPass" model="Model"/>
-        <partial name="SidebarSetting" model="Model"/>
+        <partial name="Components/Sidebar/SidebarExpress" model="Model"/>
+        <partial name="Components/Sidebar/SidebarFee" model="Model"/>
+        <partial name="Components/Sidebar/SidebarCustomer" model="Model"/>
+        <partial name="Components/Sidebar/SidebarStorage" model="Model"/>
+        <partial name="Components/Sidebar/SidebarLogistics" model="Model"/>
+        <partial name="Components/Sidebar/SidebarPass" model="Model"/>
+        <partial name="Components/Sidebar/SidebarSetting" model="Model"/>
     </ul>
 
     <div id="sidebar-collapse" class="sidebar-toggle sidebar-collapse" onclick="toggleSidebar()">
