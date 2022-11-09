@@ -14,7 +14,7 @@ public class ErrorController : Controller
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [Route(SiteConfig.ErrorHandlerUrl)]
+    [Route(SiteConfig.AdminErrorHandlerUrl)]
     public IActionResult Error()
     {
         var feature = HttpContext.Features.Get<IExceptionHandlerFeature>() ?? new ExceptionHandlerFeature();

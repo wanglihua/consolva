@@ -124,7 +124,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.UseExceptionHandler(SiteConfig.ErrorHandlerUrl);
+        app.UseExceptionHandler(SiteConfig.AdminErrorHandlerUrl);
 
         // app.UseHttpsRedirection();
         app.UseStaticFiles();
