@@ -10,14 +10,14 @@ using shunda.Service.Order;
 namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
-public class LogisticsOrderManualFeeService
+public class ManualFeeService
 {
     private readonly ISession session;
 
     private readonly LogisticsOrderFeeService logisticsOrderFeeService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
 
-    public LogisticsOrderManualFeeService(ISession session,
+    public ManualFeeService(ISession session,
         LogisticsOrderFeeService logisticsOrderFeeService,
         LogisticsOrderActionService logisticsOrderActionService)
     {
