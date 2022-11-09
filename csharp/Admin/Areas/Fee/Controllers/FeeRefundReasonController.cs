@@ -1,45 +1,39 @@
-using Domain;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Domain.LogisticsOrder;
+using shunda.Admin.Areas.Fee.Models.FeeRefundReason;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Fee;
 using shunda.Domain.Pass.PassRes;
-using Web.Areas.Admin.Models.RefundReason;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.FeeRefundReason)]
-public class RefundReasonController : Controller
+public class FeeRefundReasonController : Controller
 {
-    private ISession session = null;
+    private ISession session;
 
-    public RefundReasonController(ISession session)
+    public FeeRefundReasonController(ISession session)
     {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/fee/refund/reason")]
-    [NoHibernateAutoTransaction]
     public IActionResult Index()
     {
-        RefundReasonIndexModel model = new RefundReasonIndexModel();
-        return View("RefundReasonIndex", model);
+        FeeRefundReasonIndexModel model = new FeeRefundReasonIndexModel();
+        return View("FeeRefundReasonIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/fee/refund/reason/list")]
-    [NoHibernateAutoTransaction]
-    public IActionResult List(RefundReasonListQueryParam queryParam)
+    public IActionResult List(FeeRefundReasonListQueryParam queryParam)
     {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
@@ -59,14 +53,14 @@ public class RefundReasonController : Controller
             // refundReasonInfo
         }
 
-        RefundReasonListModel model = new RefundReasonListModel(listPager);
+        FeeRefundReasonListModel model = new FeeRefundReasonListModel(listPager);
         model.RefundReasonList = refundReasonList;
 
-        return View("RefundReasonList", model);
+        return View("FeeRefundReasonList", model);
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(RefundReasonListQueryParam queryParam)
+    private ICriteria GetListCriteria(FeeRefundReasonListQueryParam queryParam)
     {
         ICriteria criteria = session.CreateCriteria<FeeRefundReasonInfo>();
         criteria.SetReadOnly(true);
@@ -76,7 +70,6 @@ public class RefundReasonController : Controller
 
     [HttpPost]
     [Route("/admin/fee/refund/reason/detail/{id:int?}")]
-    [NoHibernateAutoTransaction]
     public IActionResult Detail(int? id)
     {
         session.DefaultReadOnly = true;
@@ -96,17 +89,18 @@ public class RefundReasonController : Controller
             }
         }
 
-        RefundReasonDetailModel model = new RefundReasonDetailModel();
+        FeeRefundReasonDetailModel model = new FeeRefundReasonDetailModel();
         model.RefundReason = refundReason;
 
         model.StatusList = FeeRefundReasonStatus.GetList();
 
-        return View("RefundReasonDetail", model);
+        return View("FeeRefundReasonDetail", model);
     }
 
     [HttpPost]
     [Route("/admin/fee/refund/reason/save")]
-    public IActionResult Save(RefundReasonDetailModel model)
+    [Transactional]
+    public IActionResult Save(FeeRefundReasonDetailModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -151,6 +145,7 @@ public class RefundReasonController : Controller
 
     [HttpPost]
     [Route("/admin/fee/refund/reason/delete")]
+    [Transactional]
     public IActionResult Delete(int[] idList)
     {
         foreach (int id in idList)

@@ -61,7 +61,7 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "RefundReason")",
+            url: "@Url.Action("List", "FeeRefundReason")",
             type: "POST",
             data: {
                 '@(nameof(RefundReasonListQueryParam.PageIndex))': pageIndex,
@@ -90,7 +90,7 @@
         // $("#refundReasonDetailForm").clearValidation();
 
         $.ajax({
-            url: '@Url.Action("Detail", "RefundReason")',
+            url: '@Url.Action("Detail", "FeeRefundReason")',
             type: "POST",
             data: { "id": id },
             success: function(data) {
@@ -123,7 +123,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Save", "RefundReason")',
+                url: '@Url.Action("Save", "FeeRefundReason")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -153,7 +153,7 @@
         $.msg.confirm("确认要删除吗？",
             function() {
                 $.ajax({
-                    url: '@Url.Action("Delete", "RefundReason")',
+                    url: '@Url.Action("Delete", "FeeRefundReason")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {
