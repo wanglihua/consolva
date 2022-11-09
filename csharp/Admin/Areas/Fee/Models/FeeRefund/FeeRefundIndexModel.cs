@@ -4,7 +4,7 @@ namespace shunda.Admin.Areas.Fee.Models.FeeRefund;
 
 public class FeeRefundIndexModel
 {
-    public IList<FeeRefundType> TypeList { get; set; }
+    public IList<FeeRefundType> TypeList { get; set; } = FeeRefundType.GetList();
 
-    public IList<FeeRefundStatus> StatusList { get; set; }
+    public IList<FeeRefundStatus> StatusList { get; set; } = FeeRefundStatus.GetList();
 }

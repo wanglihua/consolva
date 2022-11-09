@@ -81,11 +81,11 @@
                     <td style="text-align: center;" class="break-word">
                         <div>
                             <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = manualFeeApply.Order.Id})">
-                                @manualFeeApply.Order?.Code
+                                @manualFeeApply.Order.Code
                             </a>
                         </div>
                         <div>
-                            <a href="javascript:loadListByOrderCode('@(manualFeeApply.Order?.Code)');">
+                            <a href="javascript:loadListByOrderCode('@(manualFeeApply.Order.Code)');">
                                 订单共<span style="@(applyCountStyleColor)">@(manualFeeApply.OrderApplyCountCache)</span>条申请
                             </a>
                         </div>

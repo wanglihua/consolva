@@ -28,7 +28,7 @@ public class FeeRefundInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "类型不能为空！")]
     [ModelBinder(typeof(FeeRefundTypeModelBinder))]
-    public virtual FeeRefundType Type { get; set; }
+    public virtual FeeRefundType Type { get; set; } = FeeRefundType.None;
 
     [Required(ErrorMessage = "退赔原因不能为空！")]
     public virtual FeeRefundReasonInfo Reason { get; set; } = new FeeRefundReasonInfo();

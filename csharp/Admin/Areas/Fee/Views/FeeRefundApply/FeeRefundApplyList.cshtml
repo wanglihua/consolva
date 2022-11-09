@@ -98,7 +98,7 @@
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeRefundApply.Customer?.Id})">
+                            <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeRefundApply.Customer.Id})">
                                 @(feeRefundApply.CustomerCodeCache)
                             </a>
                         </div>
@@ -108,7 +108,7 @@
                             </a>
                         </div>
                         <div>
-                            <a href="javascript:loadListByOrderCode('@(feeRefundApply.Order?.Code)')">
+                            <a href="javascript:loadListByOrderCode('@(feeRefundApply.Order.Code)')">
                                 订单共<span style="@(applyCountStyleColor)">@(feeRefundApply.OrderApplyCountCache)</span>条申请
                             </a>
                         </div>

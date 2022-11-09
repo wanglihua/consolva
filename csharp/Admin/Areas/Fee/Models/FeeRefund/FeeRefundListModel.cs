@@ -11,7 +11,7 @@ public class FeeRefundListModel : ListModel
     }
 
     [BindNever]
-    public IList<FeeRefundInfo> FeeRefundList { get; set; }
+    public IList<FeeRefundInfo> FeeRefundList { get; set; } = new List<FeeRefundInfo>();
 
     [BindNever]
     public int CustomerCount { get; set; }

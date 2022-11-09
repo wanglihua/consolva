@@ -71,18 +71,18 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeWriteOffApply.Customer?.Id})">
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeWriteOffApply.Customer.Id})">
                             @feeWriteOffApply.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
                             <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = feeWriteOffApply.Order.Id})">
-                                @feeWriteOffApply.Order?.Code
+                                @feeWriteOffApply.Order.Code
                             </a>
                         </div>
                         <div>
-                            <a href="javascript:loadListByOrderCode('@(feeWriteOffApply.Order?.Code)')">
+                            <a href="javascript:loadListByOrderCode('@(feeWriteOffApply.Order.Code)')">
                                 订单共<span style="@(applyCountStyleColor)">@(feeWriteOffApply.OrderApplyCountCache)</span>条申请
                             </a>
                         </div>
@@ -91,7 +91,7 @@
                         @feeWriteOffApply.Amount
                     </td>
                     <td style="text-align: center;">
-                        @ListDataUtil.RenderStringWithDiv(feeWriteOffApply.ApplyUser?.UserName)
+                        @ListDataUtil.RenderStringWithDiv(feeWriteOffApply.ApplyUser.UserName)
                         @ListDataUtil.RenderStringWithDiv(feeWriteOffApply.ApproveUser?.UserName)
                     </td>
                     <td class="break-word">

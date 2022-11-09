@@ -16,7 +16,8 @@ public class ManualFeeApplySaveModel
     /// <summary>
     /// 客户编号
     /// </summary>
-    public string? CustomerCode { get; set; }
+    [Required(ErrorMessage = "客户ID不能为空！")]
+    public string CustomerCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 金额

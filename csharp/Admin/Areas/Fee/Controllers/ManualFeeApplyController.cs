@@ -185,7 +185,7 @@ public class ManualFeeApplyController : Controller
         }
 
         // 客户
-        int customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode); // todo error
+        int customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode);
         if (customerId == 0)
         {
             throw new ValidationException("客户ID输入格式有误！");

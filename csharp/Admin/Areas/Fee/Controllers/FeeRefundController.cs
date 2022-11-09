@@ -108,10 +108,10 @@ public class FeeRefundController : Controller
             criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeRefundInfo.Customer)}.{nameof(FeeRefundInfo.Customer.Id)}", customerIdQuery));
         }
 
-        string reasonQuery = queryParam.ReasonQuery;
-        if (string.IsNullOrWhiteSpace(reasonQuery) == false)
+        
+        if (string.IsNullOrWhiteSpace(queryParam.ReasonQuery) == false)
         {
-            reasonQuery = reasonQuery.Trim();
+            string reasonQuery = queryParam.ReasonQuery.Trim();
             criteria = criteria.Add(Restrictions.On<FeeRefundInfo>(e => e.ReasonContent).IsInsensitiveLike(reasonQuery, MatchMode.Anywhere));
         }
 

@@ -164,23 +164,23 @@ public class ManualFeeApproveController : Controller
     {
         session.DefaultReadOnly = true;
 
-        ManualFeeApplyInfo logisticsOrderManualFeeApply = null;
+        ManualFeeApplyInfo manualFeeApply;
 
         if (id == null || id.Value == 0)
         {
-            logisticsOrderManualFeeApply = new ManualFeeApplyInfo();
+            manualFeeApply = new ManualFeeApplyInfo();
         }
         else
         {
-            logisticsOrderManualFeeApply = session.Get<ManualFeeApplyInfo>(id.Value);
-            if (logisticsOrderManualFeeApply == null)
+            manualFeeApply = session.Get<ManualFeeApplyInfo>(id.Value);
+            if (manualFeeApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
             }
         }
 
         ManualFeeApproveDetailModel model = new ManualFeeApproveDetailModel();
-        model.ManualFeeApply = logisticsOrderManualFeeApply;
+        model.ManualFeeApply = manualFeeApply;
 
         return View("ManualFeeApproveDetail", model);
     }
