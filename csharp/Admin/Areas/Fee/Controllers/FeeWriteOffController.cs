@@ -3,7 +3,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using shunda.Admin.Areas.Fee.Models.WriteOffFee;
+using shunda.Admin.Areas.Fee.Models.FeeWriteOff;
 using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Fee;
@@ -18,13 +18,13 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.WriteOffFee)]
-public class WriteOffFeeController : Controller
+public class FeeWriteOffController : Controller
 {
     private ISession session;
     private CustomerCodeService customerCodeService;
     private LogisticsOrderFeeService logisticsOrderFeeService;
 
-    public WriteOffFeeController(ISession session,
+    public FeeWriteOffController(ISession session,
         CustomerCodeService customerCodeService,
         LogisticsOrderFeeService logisticsOrderFeeService)
     {
@@ -34,19 +34,19 @@ public class WriteOffFeeController : Controller
     }
 
     [HttpGet]
-    [Route("/admin/write/off/fee")]
+    [Route("/admin/fee/write/off")]
     public IActionResult Index()
     {
-        WriteOffFeeIndexModel model = new WriteOffFeeIndexModel();
+        FeeWriteOffIndexModel model = new FeeWriteOffIndexModel();
 
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.WriteOffFee).ToList();
 
-        return View("WriteOffFeeIndex", model);
+        return View("FeeWriteOffIndex", model);
     }
 
     [HttpPost]
-    [Route("/admin/write/off/fee/list")]
-    public IActionResult List(WriteOffFeeListQueryParam queryParam)
+    [Route("/admin/fee/write/off/list")]
+    public IActionResult List(FeeWriteOffListQueryParam queryParam)
     {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
@@ -66,7 +66,7 @@ public class WriteOffFeeController : Controller
             orderPay.CustomerCodeCache = customerCodeService.GetCustomerCode(orderPay.Customer.Id);
         }
 
-        WriteOffFeeListModel model = new WriteOffFeeListModel(listPager);
+        FeeWriteOffListModel model = new FeeWriteOffListModel(listPager);
         model.LogisticsOrderPayList = logisticsOrderPayList;
 
         // 汇总信息
@@ -83,11 +83,11 @@ public class WriteOffFeeController : Controller
         model.OrderCount = (int)sumData[1];
         model.AmountSum = (decimal)(sumData[2] ?? 0m);
 
-        return View("WriteOffFeeList", model);
+        return View("FeeWriteOffList", model);
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(WriteOffFeeListQueryParam queryParam)
+    private ICriteria GetListCriteria(FeeWriteOffListQueryParam queryParam)
     {
         ICriteria criteria = session.CreateCriteria<LogisticsOrderPayInfo>();
 
@@ -130,8 +130,8 @@ public class WriteOffFeeController : Controller
     }
 
     [HttpPost]
-    [Route("/admin/write/off/fee/export")]
-    public IActionResult Export(WriteOffFeeListQueryParam queryParam)
+    [Route("/admin/fee/write/off/export")]
+    public IActionResult Export(FeeWriteOffListQueryParam queryParam)
     {
         IList<LogisticsOrderPayInfo> orderPayList = GetListCriteria(queryParam)
             .AddOrder(new Order($"{nameof(LogisticsOrderPayInfo.Id)}", true))
@@ -292,7 +292,7 @@ public class WriteOffFeeController : Controller
     /// <returns></returns>
     [NoLoginRequired]
     [HttpPost]
-    [Route("/admin/write/off/fee/update/all/write/off/order/pay/status")]
+    [Route("/admin/fee/write/off/update/all/write/off/order/pay/status")]
     public IActionResult UpdateAllWriteOffOrderPayStatus()
     {
         var writeOffOrderList = session.Query<LogisticsOrderPayInfo>()

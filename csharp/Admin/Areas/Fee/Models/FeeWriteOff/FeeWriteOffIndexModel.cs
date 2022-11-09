@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Fee;
 
-namespace shunda.Admin.Areas.Fee.Models.WriteOffFee;
+namespace shunda.Admin.Areas.Fee.Models.FeeWriteOff;
 
-public class WriteOffFeeIndexModel
+public class FeeWriteOffIndexModel
 {
     /// <summary>
     /// 核销费用原因列表

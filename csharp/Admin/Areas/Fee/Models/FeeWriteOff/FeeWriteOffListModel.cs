@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Fee;
 
-namespace shunda.Admin.Areas.Fee.Models.WriteOffFee;
+namespace shunda.Admin.Areas.Fee.Models.FeeWriteOff;
 
-public class WriteOffFeeListModel : ListModel
+public class FeeWriteOffListModel : ListModel
 {
-    public WriteOffFeeListModel(ListPager listPager) : base(listPager)
+    public FeeWriteOffListModel(ListPager listPager) : base(listPager)
     {
     }
 

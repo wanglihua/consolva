@@ -1,8 +1,8 @@
 using shunda.Core;
 
-namespace shunda.Admin.Areas.Fee.Models.WriteOffFee;
+namespace shunda.Admin.Areas.Fee.Models.FeeWriteOff;
 
-public class WriteOffFeeListQueryParam : ListQueryParam
+public class FeeWriteOffListQueryParam : ListQueryParam
 {
     public int ManualReasonIdQuery { get; set; }
 

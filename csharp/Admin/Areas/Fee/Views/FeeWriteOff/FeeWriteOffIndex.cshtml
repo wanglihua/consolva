@@ -1,9 +1,9 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Admin.Areas.Fee.Models.WriteOffFee
+@using shunda.Admin.Areas.Fee.Models.FeeWriteOff
 @using shunda.Core
 @using shunda.Core.Web
 @using shunda.Domain.Fee
-@model shunda.Admin.Areas.Fee.Models.WriteOffFee.WriteOffFeeIndexModel
+@model shunda.Admin.Areas.Fee.Models.FeeWriteOff.FeeWriteOffIndexModel
 @{
     ViewData[ViewDataKey.Title] = "费用核销";
     Layout = "_AdminLayout";
@@ -96,17 +96,17 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "WriteOffFee")",
+            url: "@Url.Action("List", "FeeWriteOff")",
             type: "POST",
             data: {
-                '@(nameof(WriteOffFeeListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(WriteOffFeeListQueryParam.SortField))': sortField,
-                '@(nameof(WriteOffFeeListQueryParam.SortDir))': sortDir
+                '@(nameof(FeeWriteOffListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(FeeWriteOffListQueryParam.SortField))': sortField,
+                '@(nameof(FeeWriteOffListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();
@@ -167,14 +167,14 @@
     
     function exportExcel() {
         var params = $.param({
-                '@(nameof(WriteOffFeeListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
-                '@(nameof(WriteOffFeeListQueryParam.EndDateQuery))': $('#endDateQuery').val()
+                '@(nameof(FeeWriteOffListQueryParam.ManualReasonIdQuery))': $('#manualReasonIdQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(FeeWriteOffListQueryParam.EndDateQuery))': $('#endDateQuery').val()
         });
 
-        var url = '@Url.Action("Export", "WriteOffFee")?' + params;
+        var url = '@Url.Action("Export", "FeeWriteOff")?' + params;
         $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
     }      
 
