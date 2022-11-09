@@ -23,9 +23,9 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 [AdminAuth(PassRes.Fee.ManualDecreaseFeeApply)]
 public class ManualFeeApplyController : Controller
 {
-    private ISession session = null;
-    private CustomerCodeService customerCodeService = null;
-    private LoginUserService loginUserService = null;
+    private ISession session;
+    private CustomerCodeService customerCodeService;
+    private LoginUserService loginUserService;
     private FeeApplyCountService feeApplyCountService;
 
     public ManualFeeApplyController(
@@ -63,30 +63,18 @@ public class ManualFeeApplyController : Controller
 
         ListPager listPager = new ListPager(queryParam, totalCount);
 
-        IList<ManualFeeApplyInfo> logisticsOrderManualFeeApplyList = GetListCriteria(queryParam)
+        IList<ManualFeeApplyInfo> manualFeeApplyList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<ManualFeeApplyInfo>();
 
-        IList<int> orderIdList = logisticsOrderManualFeeApplyList.Select(e => (e.Order?.Id ?? 0)).ToList();
-
-        /*
-        IList<ManualFeeApplyCountInfo> applyCountList = session.Query<ManualFeeApplyCountInfo>()
-            .Where(e => orderIdList.Contains(e.OrderId))
-            .ToList();
-
-        foreach (ManualFeeApplyInfo apply in logisticsOrderManualFeeApplyList)
-        {
-            int orderId = apply.Order?.Id ?? 0;
-            apply.OrderApplyCountCache = applyCountList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.ApplyCount ?? 0;
-        }
-        */
+        IList<int> orderIdList = manualFeeApplyList.Select(e => (e.Order?.Id ?? 0)).ToList();
 
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
-        foreach (ManualFeeApplyInfo apply in logisticsOrderManualFeeApplyList)
+        foreach (ManualFeeApplyInfo apply in manualFeeApplyList)
         {
             int orderId = apply.Order?.Id ?? 0;
             if (dictApplyCount.TryGetValue(orderId, out int applyCount))
@@ -96,7 +84,7 @@ public class ManualFeeApplyController : Controller
         }
 
         ManualFeeApplyListModel model = new ManualFeeApplyListModel(listPager);
-        model.ManualFeeApplyList = logisticsOrderManualFeeApplyList;
+        model.ManualFeeApplyList = manualFeeApplyList;
 
         return View("ManualFeeApplyList", model);
     }
@@ -121,7 +109,7 @@ public class ManualFeeApplyController : Controller
 
         if (queryParam.ManualReasonIdQuery != 0)
         {
-            criteria = criteria.Add(Restrictions.Where<ManualFeeApplyInfo>(e => e.ManualReasonId == queryParam.ManualReasonIdQuery));
+            criteria = criteria.Add(Restrictions.Where<ManualFeeApplyInfo>(e => e.ManualReason.Id == queryParam.ManualReasonIdQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
@@ -154,17 +142,17 @@ public class ManualFeeApplyController : Controller
 
         if (id != null && id.Value != 0)
         {
-            ManualFeeApplyInfo logisticsOrderManualFeeApply = session.Get<ManualFeeApplyInfo>(id.Value);
-            if (logisticsOrderManualFeeApply == null)
+            ManualFeeApplyInfo manualFeeApply = session.Get<ManualFeeApplyInfo>(id.Value);
+            if (manualFeeApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
             }
 
-            model.OrderCode = logisticsOrderManualFeeApply.Order?.Code;
-            model.CustomerCode = logisticsOrderManualFeeApply.Customer?.CustomerCode;
-            model.Fee = logisticsOrderManualFeeApply.Fee;
-            model.ManualReasonId = logisticsOrderManualFeeApply.ManualReasonId;
-            model.Description = logisticsOrderManualFeeApply.Description;
+            model.OrderCode = manualFeeApply.Order.Code;
+            model.CustomerCode = customerCodeService.GetCustomerCode(manualFeeApply.Customer.Id);
+            model.Fee = manualFeeApply.Fee;
+            model.ManualReasonId = manualFeeApply.ManualReason.Id;
+            model.Description = manualFeeApply.Description;
         }
 
         model.ApplyId = id ?? 0;
@@ -177,7 +165,7 @@ public class ManualFeeApplyController : Controller
     [HttpPost]
     [Route("/admin/manual/fee/apply/save")]
     [Transactional]
-    public IActionResult Save(ManualFeeApplyDetailModel model)
+    public IActionResult Save(ManualFeeApplySaveModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -221,52 +209,56 @@ public class ManualFeeApplyController : Controller
 
         bool isCreate = applyId == 0;
 
-        ManualFeeApplyInfo logisticsOrderManualFeeApply = null;
+        ManualFeeApplyInfo manualFeeApply;
 
         if (isCreate)
         {
-            logisticsOrderManualFeeApply = new ManualFeeApplyInfo();
-            logisticsOrderManualFeeApply.Status = ManualFeeApplyStatus.Saved;
+            manualFeeApply = new ManualFeeApplyInfo();
+            manualFeeApply.Status = ManualFeeApplyStatus.Saved;
         }
         else
         {
-            logisticsOrderManualFeeApply = session.Get<ManualFeeApplyInfo>(applyId);
+            manualFeeApply = session.Get<ManualFeeApplyInfo>(applyId);
 
             // 判断状态是不是能修改
-            if (logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Saved
-                && logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Backed)
+            if (manualFeeApply.Status != ManualFeeApplyStatus.Saved
+                && manualFeeApply.Status != ManualFeeApplyStatus.Backed)
             {
                 throw new ValidationException("只有【未提交】和【已回退】状态的申请才能修改！");
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            if (logisticsOrderManualFeeApply.ApplyUser.Id != loginUserId)
+            if (manualFeeApply.ApplyUser.Id != loginUserId)
             {
                 throw new ValidationException("只能修改当前登录人创建的申请！");
             }
         }
 
-        string reasonContent = session.Get<ManualFeeReasonInfo>(model.ManualReasonId)?.Content;
+        ManualFeeReasonInfo manualFeeReason = session.Get<ManualFeeReasonInfo>(model.ManualReasonId);
+        if (manualFeeReason == null)
+        {
+            throw new ValidationException($"指定的减少费用原因#{model.ManualReasonId}不存在！");
+        }
 
-        logisticsOrderManualFeeApply.Order = logisticsOrder;
-        logisticsOrderManualFeeApply.Customer = customer;
-        logisticsOrderManualFeeApply.Type = LogisticsOrderFeeType.ManualDecrease;
-        logisticsOrderManualFeeApply.Fee = model.Fee; // 申请时存储成是正的, 最终记录时存储的是负的
-        logisticsOrderManualFeeApply.Description = model.Description;
-        logisticsOrderManualFeeApply.ManualReasonId = model.ManualReasonId;
-        logisticsOrderManualFeeApply.ManualReasonContent = reasonContent;
-        logisticsOrderManualFeeApply.ApplyUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
+        manualFeeApply.Order = logisticsOrder;
+        manualFeeApply.Customer = customer;
+        manualFeeApply.Type = LogisticsOrderFeeType.ManualDecrease;
+        manualFeeApply.Fee = model.Fee; // 申请时存储成是正的, 最终记录时存储的是负的
+        manualFeeApply.Description = model.Description ?? string.Empty;
+        manualFeeApply.ManualReason = manualFeeReason;
+        manualFeeApply.ManualReasonContent = manualFeeReason.Content;
+        manualFeeApply.ApplyUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
 
         // 不修改申请状态，新建的时候会有个默认的
         // 审核人这里不修改，新增的时候为空，修改的时候保存为原来的。
 
         if (isCreate)
         {
-            session.Save(logisticsOrderManualFeeApply);
+            session.Save(manualFeeApply);
         }
         else
         {
-            session.Update(logisticsOrderManualFeeApply);
+            session.Update(manualFeeApply);
         }
 
         session.Flush();
@@ -289,28 +281,28 @@ public class ManualFeeApplyController : Controller
 
         int loginUserId = loginUserService.GetLoginUserId();
 
-        IList<ManualFeeApplyInfo> logisticsOrderManualFeeApplyList = session
+        IList<ManualFeeApplyInfo> manualFeeApplyList = session
             .Query<ManualFeeApplyInfo>()
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList)
+        foreach (ManualFeeApplyInfo manualFeeApply in manualFeeApplyList)
         {
-            if (logisticsOrderManualFeeApply.ApplyUser.Id != loginUserId)
+            if (manualFeeApply.ApplyUser.Id != loginUserId)
             {
                 throw new ValidationException("只能提交当前登录人保存的申请！");
             }
 
-            if (logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Saved && logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Backed)
+            if (manualFeeApply.Status != ManualFeeApplyStatus.Saved && manualFeeApply.Status != ManualFeeApplyStatus.Backed)
             {
                 throw new ValidationException("只能提交【未提交】的和【已回退】的申请！");
             }
         }
 
-        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList)
+        foreach (ManualFeeApplyInfo manualFeeApply in manualFeeApplyList)
         {
-            logisticsOrderManualFeeApply.Status = ManualFeeApplyStatus.Submitted;
-            session.Update(logisticsOrderManualFeeApply);
+            manualFeeApply.Status = ManualFeeApplyStatus.Submitted;
+            session.Update(manualFeeApply);
         }
 
         session.Flush();
@@ -333,27 +325,27 @@ public class ManualFeeApplyController : Controller
 
         int loginUserId = loginUserService.GetLoginUserId();
 
-        IList<ManualFeeApplyInfo> logisticsOrderManualFeeApplyList = session
+        IList<ManualFeeApplyInfo> manualFeeApplyList = session
             .Query<ManualFeeApplyInfo>()
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList)
+        foreach (ManualFeeApplyInfo manualFeeApply in manualFeeApplyList)
         {
-            if (logisticsOrderManualFeeApply.ApplyUser.Id != loginUserId)
+            if (manualFeeApply.ApplyUser.Id != loginUserId)
             {
                 throw new ValidationException("只能删除当前登录人创建的申请！");
             }
 
-            if (logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Saved && logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Backed)
+            if (manualFeeApply.Status != ManualFeeApplyStatus.Saved && manualFeeApply.Status != ManualFeeApplyStatus.Backed)
             {
                 throw new ValidationException("只能删除【未提交】的和【已回退】的申请！");
             }
         }
 
-        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList)
+        foreach (ManualFeeApplyInfo manualFeeApply in manualFeeApplyList)
         {
-            session.Delete(logisticsOrderManualFeeApply);
+            session.Delete(manualFeeApply);
         }
 
         session.Flush();

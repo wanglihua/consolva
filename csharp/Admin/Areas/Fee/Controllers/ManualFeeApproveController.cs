@@ -225,6 +225,8 @@ public class ManualFeeApproveController : Controller
     [Transactional]
     public IActionResult Approve(int[] idList)
     {
+        int loginUserId = loginUserService.GetLoginUserId();
+
         if (idList == null || idList.Length == 0)
         {
             throw new ValidationException("请选择要审核的数据项！");
@@ -252,8 +254,9 @@ public class ManualFeeApproveController : Controller
                     apply.Order,
                     apply.Customer,
                     apply.Fee,
-                    apply.ManualReasonId,
-                    apply.Description);
+                    apply.ManualReason.Id,
+                    apply.Description,
+                    loginUserId);
             }
 
             if (apply.Type == LogisticsOrderFeeType.ManualDecrease)
@@ -262,8 +265,9 @@ public class ManualFeeApproveController : Controller
                     apply.Order,
                     apply.Customer,
                     apply.Fee,
-                    apply.ManualReasonId,
-                    apply.Description);
+                    apply.ManualReason.Id,
+                    apply.Description,
+                    loginUserId);
             }
         }
 
