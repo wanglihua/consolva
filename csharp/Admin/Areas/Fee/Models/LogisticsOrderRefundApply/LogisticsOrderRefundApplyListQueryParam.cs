@@ -4,9 +4,9 @@ using Domain;
 using Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefundApply
+namespace Web.Areas.Admin.Models.FeeRefundApply
 {
-    public class LogisticsOrderRefundApplyListQueryParam : ListQueryParam
+    public class FeeRefundApplyListQueryParam : ListQueryParam
     {
         [ModelBinder(typeof(FeeRefundTypeModelBinder))]
         public FeeRefundType TypeQuery { get; set; }

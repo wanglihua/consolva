@@ -1,7 +1,7 @@
 @using Domain
 @using Domain.LogisticsOrder
-@model LogisticsOrderRefundApplyIndexModel
-@using Web.Areas.Admin.Models.LogisticsOrderRefundApply
+@model FeeRefundApplyIndexModel
+@using Web.Areas.Admin.Models.FeeRefundApply
 @{
     ViewBag.Title = "退赔款申请";
     Layout = "_AdminLayout";
@@ -14,20 +14,20 @@
 }
 
 <div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderRefundApplyList(0)">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadFeeRefundApplyList(0)">
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsOrderRefundApplyDetail(0)">
+    <button type="button" class="btn btn-success btn-sm" onclick="showFeeRefundApplyDetail(0)">
         <i class="ace-icon fa fa-plus"></i>
         新增
     </button>
-    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsOrderRefundApply()">
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteFeeRefundApply()">
         <i class="ace-icon fa fa-trash-o"></i>
         删除
     </button>
 
-    <button type="button" class="btn btn-pink btn-sm" onclick="sumbitLogisticsOrderRefundApply()">
+    <button type="button" class="btn btn-pink btn-sm" onclick="sumbitFeeRefundApply()">
         <i class="ace-icon fa fa-reply fa-flip-horizontal"></i>
         提交
     </button>
@@ -68,27 +68,27 @@
         }
     </select>&nbsp;   
 
-    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderRefundApplyList(0)">
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadFeeRefundApplyList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
 </div>
 
-<div id="logisticsOrderRefundApplyList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderRefundApplyInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+<div id="logisticsOrderRefundApplyList" data-page-index="0" data-sort-field="@(nameof(FeeRefundApplyInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
 </div>
 
 <div id="logisticsOrderRefundApplyDetailDialogWrapper"></div>
 <script type="text/javascript">
 
     $(function() {
-        loadLogisticsOrderRefundApplyList();
+        loadFeeRefundApplyList();
     });
 
-    function sortLogisticsOrderRefundApplyList(sortField, sortDir) {
+    function sortFeeRefundApplyList(sortField, sortDir) {
         var list = $('#logisticsOrderRefundApplyList');
         list.data('sort-field', sortField);
         list.data('sort-dir', sortDir);
 
-        loadLogisticsOrderRefundApplyList();
+        loadFeeRefundApplyList();
     }
     
     function loadListByOrderCode(orderCode) {
@@ -99,10 +99,10 @@
         $('#statusQuery').val("");
         $('#viewScopeQuery').val("");
         
-        loadLogisticsOrderRefundApplyList(0);
+        loadFeeRefundApplyList(0);
     }      
 
-    function loadLogisticsOrderRefundApplyList(pageIndex) {
+    function loadFeeRefundApplyList(pageIndex) {
         var list = $('#logisticsOrderRefundApplyList');
 
         if (pageIndex === null || pageIndex === undefined) {
@@ -117,18 +117,18 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "LogisticsOrderRefundApply")",
+            url: "@Url.Action("List", "FeeRefundApply")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.TypeQuery))': $('#typeQuery').val(),
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.ReasonQuery))': $('#reasonQuery').val(),
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.StatusQuery))': $('#statusQuery').val(),
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.ViewScopeQuery))': $('#viewScopeQuery').val(),
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.SortField))': sortField,
-                '@(nameof(LogisticsOrderRefundApplyListQueryParam.SortDir))': sortDir
+                '@(nameof(FeeRefundApplyListQueryParam.TypeQuery))': $('#typeQuery').val(),
+                '@(nameof(FeeRefundApplyListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(FeeRefundApplyListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(FeeRefundApplyListQueryParam.ReasonQuery))': $('#reasonQuery').val(),
+                '@(nameof(FeeRefundApplyListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(FeeRefundApplyListQueryParam.ViewScopeQuery))': $('#viewScopeQuery').val(),
+                '@(nameof(FeeRefundApplyListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(FeeRefundApplyListQueryParam.SortField))': sortField,
+                '@(nameof(FeeRefundApplyListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();
@@ -140,19 +140,19 @@
 
                 $('#logisticsOrderRefundApplyList').html(data);
 
-                initListTable("#tblLogisticsOrderRefundApplyList");
+                initListTable("#tblFeeRefundApplyList");
             }
         });
     }
 
-    function showLogisticsOrderRefundApplyDetail(id) {
+    function showFeeRefundApplyDetail(id) {
         $("#logisticsOrderRefundApplyDetailDialogWrapper").html("");
 
         showMask("加载中...");
         // $("#logisticsOrderRefundApplyDetailForm").clearValidation();
 
         $.ajax({
-            url: '@Url.Action("Detail", "LogisticsOrderRefundApply")',
+            url: '@Url.Action("Detail", "FeeRefundApply")',
             type: "POST",
             data: { "id": id },
             success: function(data) {
@@ -168,9 +168,9 @@
         });
     }
 
-    function saveLogisticsOrderRefundApply() {
+    function saveFeeRefundApply() {
         $.ajax({
-            url: '@Url.Action("CheckOrder", "LogisticsOrderRefundApply")',
+            url: '@Url.Action("CheckOrder", "FeeRefundApply")',
             type: "POST",
             data: {
                 "orderCode": $("#OrderCode").val()
@@ -179,17 +179,17 @@
                 if (data.success === false) {
                     $.msg.confirm(data.message + "确认要继续吗？",
                         function() {
-                            saveLogisticsOrderRefundApplyInternal();
+                            saveFeeRefundApplyInternal();
                         }
                     );                    
                 } else {
-                    saveLogisticsOrderRefundApplyInternal();
+                    saveFeeRefundApplyInternal();
                 }
             }
         });        
     }
     
-    function saveLogisticsOrderRefundApplyInternal() {       
+    function saveFeeRefundApplyInternal() {       
         var form = $("#logisticsOrderRefundApplyDetailForm");
         var valid = validate(form,
             {
@@ -216,7 +216,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Save", "LogisticsOrderRefundApply")',
+                url: '@Url.Action("Save", "FeeRefundApply")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -227,7 +227,7 @@
                     } else {
                         $.msg.show(data.message);
                         $('#logisticsOrderRefundApplyDetailDialog').modal('hide');
-                        loadLogisticsOrderRefundApplyList();
+                        loadFeeRefundApplyList();
                         //return;
                     }
                 }
@@ -235,8 +235,8 @@
         }
     }    
 
-    function deleteLogisticsOrderRefundApply() {
-        var idList = getSelectIdList('#tblLogisticsOrderRefundApplyList');
+    function deleteFeeRefundApply() {
+        var idList = getSelectIdList('#tblFeeRefundApplyList');
 
         if (idList.length === 0) {
             $.msg.alert("请选择数据！");
@@ -246,7 +246,7 @@
         $.msg.confirm("确认要删除吗？",
             function() {
                 $.ajax({
-                    url: '@Url.Action("Delete", "LogisticsOrderRefundApply")',
+                    url: '@Url.Action("Delete", "FeeRefundApply")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {
@@ -257,14 +257,14 @@
                             $.msg.show(data.message);
                         }
 
-                        loadLogisticsOrderRefundApplyList();
+                        loadFeeRefundApplyList();
                     }
                 });
             }
         );
     }
-    function sumbitLogisticsOrderRefundApply() {
-        var idList = getSelectIdList('#tblLogisticsOrderRefundApplyList');
+    function sumbitFeeRefundApply() {
+        var idList = getSelectIdList('#tblFeeRefundApplyList');
 
         if (idList.length === 0) {
             $.msg.alert("请选择数据！");
@@ -274,7 +274,7 @@
         $.msg.confirm("确认要提交吗？",
             function() {
                 $.ajax({
-                    url: '@Url.Action("Submit", "LogisticsOrderRefundApply")',
+                    url: '@Url.Action("Submit", "FeeRefundApply")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {
@@ -285,7 +285,7 @@
                             $.msg.show(data.message);
                         }
 
-                        loadLogisticsOrderRefundApplyList();
+                        loadFeeRefundApplyList();
                     }
                 });
             }
@@ -338,7 +338,7 @@
     
     function checkOrder() {
         $.ajax({
-            url: '@Url.Action("CheckOrder", "LogisticsOrderRefundApply")',
+            url: '@Url.Action("CheckOrder", "FeeRefundApply")',
             type: "POST",
             data: {
                 "orderCode": $("#OrderCode").val()

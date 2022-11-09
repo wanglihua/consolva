@@ -13,6 +13,6 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
         {
         }
 
-        public IList<LogisticsOrderRefundApplyInfo> LogisticsOrderRefundApplyList { get; set; }
+        public IList<FeeRefundApplyInfo> FeeRefundApplyList { get; set; }
     }
 }

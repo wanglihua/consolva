@@ -4,15 +4,15 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderRefundApplyCountInfoMapping : ClassMapping<LogisticsOrderRefundApplyCountInfo>
+public class FeeRefundApplyCountInfoMapping : ClassMapping<FeeRefundApplyCountInfo>
 {
-    public LogisticsOrderRefundApplyCountInfoMapping()
+    public FeeRefundApplyCountInfoMapping()
     {
         Mutable(false);
 
         Cache(x => x.Usage(CacheUsage.ReadOnly));
 
-        Table("view_logistics_order_refund_apply_count");
+        Table("view_fee_refund_apply_count");
 
         Id(
             x => x.OrderId,

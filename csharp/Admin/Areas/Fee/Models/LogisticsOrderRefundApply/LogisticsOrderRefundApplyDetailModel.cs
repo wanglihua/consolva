@@ -6,9 +6,9 @@ using Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefundApply
+namespace Web.Areas.Admin.Models.FeeRefundApply
 {
-    public class LogisticsOrderRefundApplyDetailModel
+    public class FeeRefundApplyDetailModel
     {
         public int ApplyId { get; set; }
 

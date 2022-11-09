@@ -1,6 +1,6 @@
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderRefundApplyCountInfo
+public class FeeRefundApplyCountInfo
 {
     public virtual int OrderId { get; set; }
 

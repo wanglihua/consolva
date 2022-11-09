@@ -16,21 +16,21 @@ using PayPal.Api;
 using Service;
 using Service.Customer;
 using Service.LogisticsOrder;
-using Web.Areas.Admin.Models.LogisticsOrderRefundApply;
+using Web.Areas.Admin.Models.FeeRefundApply;
 using Order = NHibernate.Criterion.Order;
 
 namespace Web.Areas.Admin.Controllers
 {
     [AdminArea]
     [AdminAuth(PassRes.OrderFee.RefundApply)]
-    public class LogisticsOrderRefundApplyController : Controller
+    public class FeeRefundApplyController : Controller
     {
         private ISession session = null;
         private CustomerService customerService = null;
         private LoginUserService loginUserService = null;
         private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
 
-        public LogisticsOrderRefundApplyController(
+        public FeeRefundApplyController(
             ISession session,
             CustomerService customerService,
             LoginUserService loginUserService,
@@ -47,19 +47,19 @@ namespace Web.Areas.Admin.Controllers
         [NoHibernateAutoTransaction]
         public IActionResult Index()
         {
-            LogisticsOrderRefundApplyIndexModel model = new LogisticsOrderRefundApplyIndexModel();
+            FeeRefundApplyIndexModel model = new FeeRefundApplyIndexModel();
 
             model.TypeList = FeeRefundType.GetList();
             model.StatusList = FeeRefundApplyStatus.GetList();
             model.ScopeList = ApplyDataViewScope.GetList();
 
-            return View("LogisticsOrderRefundApplyIndex", model);
+            return View("FeeRefundApplyIndex", model);
         }
 
         [HttpPost]
         [Route("/admin/logistics/order/refund/apply/list")]
         [NoHibernateAutoTransaction]
-        public IActionResult List(LogisticsOrderRefundApplyListQueryParam queryParam)
+        public IActionResult List(FeeRefundApplyListQueryParam queryParam)
         {
             int totalCount = GetListCriteria(queryParam)
                 .SetProjection(Projections.RowCount())
@@ -67,22 +67,22 @@ namespace Web.Areas.Admin.Controllers
 
             ListPager listPager = new ListPager(queryParam, totalCount);
 
-            IList<LogisticsOrderRefundApplyInfo> logisticsOrderRefundApplyList = GetListCriteria(queryParam)
+            IList<FeeRefundApplyInfo> logisticsOrderRefundApplyList = GetListCriteria(queryParam)
                 .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
                 .AddOrder(Order.Desc(nameof(Model.Id)))
                 .SetFirstResult(listPager.PageIndex * listPager.PageSize)
                 .SetMaxResults(listPager.PageSize)
-                .List<LogisticsOrderRefundApplyInfo>();
+                .List<FeeRefundApplyInfo>();
 
             IList<int> orderIdList = logisticsOrderRefundApplyList.Select(e => e.Order?.Id ?? 0).ToList();
 
             /*
-            IList<LogisticsOrderRefundApplyCountInfo> applyCountList = session
-                .Query<LogisticsOrderRefundApplyCountInfo>()
+            IList<FeeRefundApplyCountInfo> applyCountList = session
+                .Query<FeeRefundApplyCountInfo>()
                 .Where(e => orderIdList.Contains(e.OrderId))
                 .ToList();
 
-            foreach (LogisticsOrderRefundApplyInfo apply in logisticsOrderRefundApplyList)
+            foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
             {
                 int orderId = apply.Order?.Id ?? 00;
                 apply.OrderApplyCountCache = applyCountList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.ApplyCount ?? 0;
@@ -91,7 +91,7 @@ namespace Web.Areas.Admin.Controllers
 
             IDictionary<int, int> dictApplyCount = logisticsOrderFeeReturnToCustomerService.GetApplyCount(orderIdList);
 
-            foreach (LogisticsOrderRefundApplyInfo apply in logisticsOrderRefundApplyList)
+            foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
             {
                 int orderId = apply.Order?.Id ?? 0;
                 if (dictApplyCount.TryGetValue(orderId, out int applyCount))
@@ -100,57 +100,57 @@ namespace Web.Areas.Admin.Controllers
                 }
             }
 
-            LogisticsOrderRefundApplyListModel model = new LogisticsOrderRefundApplyListModel(listPager);
-            model.LogisticsOrderRefundApplyList = logisticsOrderRefundApplyList;
+            FeeRefundApplyListModel model = new FeeRefundApplyListModel(listPager);
+            model.FeeRefundApplyList = logisticsOrderRefundApplyList;
 
-            return View("LogisticsOrderRefundApplyList", model);
+            return View("FeeRefundApplyList", model);
         }
 
         [NonAction]
-        private ICriteria GetListCriteria(LogisticsOrderRefundApplyListQueryParam queryParam)
+        private ICriteria GetListCriteria(FeeRefundApplyListQueryParam queryParam)
         {
-            ICriteria criteria = session.CreateCriteria<LogisticsOrderRefundApplyInfo>();
+            ICriteria criteria = session.CreateCriteria<FeeRefundApplyInfo>();
 
             criteria.SetReadOnly(true);
 
-            criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundApplyInfo.Order), nameof(LogisticsOrderRefundApplyInfo.Order));
-            criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundApplyInfo.Customer), nameof(LogisticsOrderRefundApplyInfo.Customer));
-            criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundApplyInfo.ApplyUser), nameof(LogisticsOrderRefundApplyInfo.ApplyUser));
-            criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundApplyInfo.ApproveUser), nameof(LogisticsOrderRefundApplyInfo.ApproveUser), JoinType.LeftOuterJoin);
+            criteria = criteria.CreateAlias(nameof(FeeRefundApplyInfo.Order), nameof(FeeRefundApplyInfo.Order));
+            criteria = criteria.CreateAlias(nameof(FeeRefundApplyInfo.Customer), nameof(FeeRefundApplyInfo.Customer));
+            criteria = criteria.CreateAlias(nameof(FeeRefundApplyInfo.ApplyUser), nameof(FeeRefundApplyInfo.ApplyUser));
+            criteria = criteria.CreateAlias(nameof(FeeRefundApplyInfo.ApproveUser), nameof(FeeRefundApplyInfo.ApproveUser), JoinType.LeftOuterJoin);
 
             if (queryParam.ViewScopeQuery == ApplyDataViewScope.MySelf)
             {
                 int loginUserId = loginUserService.GetLoginUserId();
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.ApplyUser.Id == loginUserId));
+                criteria = criteria.Add(Restrictions.Where<FeeRefundApplyInfo>(e => e.ApplyUser.Id == loginUserId));
             }
 
             if (queryParam.TypeQuery != null && queryParam.TypeQuery != FeeRefundType.None)
             {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.Type == queryParam.TypeQuery));
+                criteria = criteria.Add(Restrictions.Where<FeeRefundApplyInfo>(e => e.Type == queryParam.TypeQuery));
             }
 
             if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
             {
                 string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-                criteria = criteria.Add(Restrictions.Like($"{nameof(LogisticsOrderRefundApplyInfo.Order)}.{nameof(LogisticsOrderRefundApplyInfo.Order.Code)}", orderCodeQuery, MatchMode.Anywhere));
+                criteria = criteria.Add(Restrictions.Like($"{nameof(FeeRefundApplyInfo.Order)}.{nameof(FeeRefundApplyInfo.Order.Code)}", orderCodeQuery, MatchMode.Anywhere));
             }
 
             if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
             {
                 int customerIdQuery = customerService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
-                criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsOrderRefundApplyInfo.Customer)}.{nameof(LogisticsOrderRefundApplyInfo.Customer.Id)}", customerIdQuery));
+                criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeRefundApplyInfo.Customer)}.{nameof(FeeRefundApplyInfo.Customer.Id)}", customerIdQuery));
             }
 
             string reasonQuery = queryParam.ReasonQuery;
             if (string.IsNullOrWhiteSpace(reasonQuery) == false)
             {
                 reasonQuery = reasonQuery.Trim();
-                criteria = criteria.Add(Restrictions.On<LogisticsOrderRefundApplyInfo>(e => e.ReasonContent).IsInsensitiveLike(reasonQuery, MatchMode.Anywhere));
+                criteria = criteria.Add(Restrictions.On<FeeRefundApplyInfo>(e => e.ReasonContent).IsInsensitiveLike(reasonQuery, MatchMode.Anywhere));
             }
 
             if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeRefundApplyStatus.None)
             {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.Status == queryParam.StatusQuery));
+                criteria = criteria.Add(Restrictions.Where<FeeRefundApplyInfo>(e => e.Status == queryParam.StatusQuery));
             }
 
             return criteria;
@@ -162,11 +162,11 @@ namespace Web.Areas.Admin.Controllers
         public IActionResult Detail(int? id)
         {
             session.DefaultReadOnly = true;
-            LogisticsOrderRefundApplyDetailModel model = new LogisticsOrderRefundApplyDetailModel();
+            FeeRefundApplyDetailModel model = new FeeRefundApplyDetailModel();
 
             if (id != null && id.Value != 0)
             {
-                LogisticsOrderRefundApplyInfo logisticsOrderRefundApply = session.Get<LogisticsOrderRefundApplyInfo>(id.Value);
+                FeeRefundApplyInfo logisticsOrderRefundApply = session.Get<FeeRefundApplyInfo>(id.Value);
                 if (logisticsOrderRefundApply == null)
                 {
                     throw new ValidationException("指定的数据项不存在！");
@@ -188,12 +188,12 @@ namespace Web.Areas.Admin.Controllers
                 .OrderBy(e => e.Content)
                 .ToList();
 
-            return View("LogisticsOrderRefundApplyDetail", model);
+            return View("FeeRefundApplyDetail", model);
         }
 
         [HttpPost]
         [Route("/admin/logistics/order/refund/apply/save")]
-        public IActionResult Save(LogisticsOrderRefundApplyDetailModel model)
+        public IActionResult Save(FeeRefundApplyDetailModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -243,16 +243,16 @@ namespace Web.Areas.Admin.Controllers
 
             bool isCreate = applyId == 0;
 
-            LogisticsOrderRefundApplyInfo logisticsOrderRefundApply = null;
+            FeeRefundApplyInfo logisticsOrderRefundApply = null;
 
             if (isCreate)
             {
-                logisticsOrderRefundApply = new LogisticsOrderRefundApplyInfo();
+                logisticsOrderRefundApply = new FeeRefundApplyInfo();
                 logisticsOrderRefundApply.Status = FeeRefundApplyStatus.Saved;
             }
             else
             {
-                logisticsOrderRefundApply = session.Get<LogisticsOrderRefundApplyInfo>(applyId);
+                logisticsOrderRefundApply = session.Get<FeeRefundApplyInfo>(applyId);
 
                 // 判断状态是不是能修改
                 if (logisticsOrderRefundApply.Status != FeeRefundApplyStatus.Saved
@@ -306,12 +306,12 @@ namespace Web.Areas.Admin.Controllers
 
             int loginUserId = loginUserService.GetLoginUserId();
 
-            IList<LogisticsOrderRefundApplyInfo> applyList = session
-                .Query<LogisticsOrderRefundApplyInfo>()
+            IList<FeeRefundApplyInfo> applyList = session
+                .Query<FeeRefundApplyInfo>()
                 .Where(e => idList.Contains(e.Id))
                 .ToList();
 
-            foreach (LogisticsOrderRefundApplyInfo apply in applyList)
+            foreach (FeeRefundApplyInfo apply in applyList)
             {
                 if (apply.ApplyUser.Id != loginUserId)
                 {
@@ -324,7 +324,7 @@ namespace Web.Areas.Admin.Controllers
                 }
             }
 
-            foreach (LogisticsOrderRefundApplyInfo apply in applyList)
+            foreach (FeeRefundApplyInfo apply in applyList)
             {
                 apply.ApplyTime = DateTime.Now;
                 apply.Status = FeeRefundApplyStatus.Submitted;
@@ -350,11 +350,11 @@ namespace Web.Areas.Admin.Controllers
 
             int loginUserId = loginUserService.GetLoginUserId();
 
-            IList<LogisticsOrderRefundApplyInfo> applyList = session.Query<LogisticsOrderRefundApplyInfo>()
+            IList<FeeRefundApplyInfo> applyList = session.Query<FeeRefundApplyInfo>()
                 .Where(e => idList.Contains(e.Id))
                 .ToList();
 
-            foreach (LogisticsOrderRefundApplyInfo apply in applyList)
+            foreach (FeeRefundApplyInfo apply in applyList)
             {
                 if (apply.ApplyUser.Id != loginUserId)
                 {
@@ -367,7 +367,7 @@ namespace Web.Areas.Admin.Controllers
                 }
             }
 
-            foreach (LogisticsOrderRefundApplyInfo apply in applyList)
+            foreach (FeeRefundApplyInfo apply in applyList)
             {
                 session.Delete(apply);
             }

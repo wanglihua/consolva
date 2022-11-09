@@ -5,14 +5,14 @@ using Core;
 using Domain.LogisticsOrder;
 using Web.Models;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderRefundApply
+namespace Web.Areas.Admin.Models.FeeRefundApply
 {
-    public class LogisticsOrderRefundApplyListModel : ListModel
+    public class FeeRefundApplyListModel : ListModel
     {
-        public LogisticsOrderRefundApplyListModel(ListPager listPager) : base(listPager)
+        public FeeRefundApplyListModel(ListPager listPager) : base(listPager)
         {
         }
 
-        public IList<LogisticsOrderRefundApplyInfo> LogisticsOrderRefundApplyList { get; set; }
+        public IList<FeeRefundApplyInfo> FeeRefundApplyList { get; set; }
     }
 }

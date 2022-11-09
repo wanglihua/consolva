@@ -1,3 +1,5 @@
+# DROP TABLE IF EXISTS tbl_logistics_mode;
+
 CREATE TABLE tbl_logistics_mode
 (
     id                   INT          NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'Id',
@@ -27,5 +29,5 @@ CREATE TABLE tbl_logistics_mode
 
     INDEX ix_logistics_mode_type_id (type_id),
     CONSTRAINT fk_logistics_mode_warehouse_id FOREIGN KEY (warehouse_id) REFERENCES tbl_warehouse (id),
-    CONSTRAINT fk_logistics_mode_inner_mode_id FOREIGN KEY fk_logistics_mode_inner_mode_id (inner_mode_id) REFERENCES tbl_logistics_mode (id)
+    CONSTRAINT fk_logistics_mode_inner_mode_id FOREIGN KEY (inner_mode_id) REFERENCES tbl_logistics_mode (id)
 ) COMMENT '物流方式';

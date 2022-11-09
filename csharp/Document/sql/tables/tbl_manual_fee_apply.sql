@@ -16,11 +16,11 @@ CREATE TABLE tbl_manual_fee_apply
     create_time           DATETIME                    NOT NULL COMMENT '创建时间',
     update_time           DATETIME                    NOT NULL COMMENT '更新时间',
 
-    FOREIGN KEY fk_manual_fee_apply_customer_id (customer_id) REFERENCES tbl_customer (id),
-    FOREIGN KEY fk_manual_fee_apply_order_id (order_id) REFERENCES tbl_logistics_order (id),
-    FOREIGN KEY fk_manual_fee_apply_manual_reason_id (manual_reason_id) REFERENCES tbl_manual_fee_reason (id),
-    FOREIGN KEY fk_manual_fee_apply_apply_user_id (apply_user_id) REFERENCES tbl_user (id),
-    FOREIGN KEY fk_manual_fee_apply_manual_approve_user_id (approve_user_id) REFERENCES tbl_user (id),
+    CONSTRAINT fk_manual_fee_apply_customer_id FOREIGN KEY (customer_id) REFERENCES tbl_customer (id),
+    CONSTRAINT fk_manual_fee_apply_order_id FOREIGN KEY (order_id) REFERENCES tbl_logistics_order (id),
+    CONSTRAINT fk_manual_fee_apply_manual_reason_id FOREIGN KEY (manual_reason_id) REFERENCES tbl_manual_fee_reason (id),
+    CONSTRAINT fk_manual_fee_apply_apply_user_id FOREIGN KEY (apply_user_id) REFERENCES tbl_user (id),
+    CONSTRAINT fk_manual_fee_apply_manual_approve_user_id FOREIGN KEY (approve_user_id) REFERENCES tbl_user (id),
     INDEX ix_manual_fee_apply_status_id (status_id)
 
 ) COMMENT '订单手工费用申请'; # 一般是用于费用减少，费用增加的不用申请了

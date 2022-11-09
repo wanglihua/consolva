@@ -14,11 +14,11 @@
 }
 
 <div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderRefundApplyList(0)">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadFeeRefundApplyList(0)">
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    <button type="button" class="btn btn-pink btn-sm" onclick="showLogisticsOrderRefundApplyDetailBySelect()">
+    <button type="button" class="btn btn-pink btn-sm" onclick="showFeeRefundApplyDetailBySelect()">
         <i class="ace-icon fa fa-reply fa-flip-horizontal"></i>
         审批
     </button>
@@ -68,27 +68,27 @@
     
     </script>    
     
-    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderRefundApplyList(0)">
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadFeeRefundApplyList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
 </div>
 
-<div id="logisticsOrderRefundApplyList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderRefundApplyInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+<div id="logisticsOrderRefundApplyList" data-page-index="0" data-sort-field="@(nameof(FeeRefundApplyInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
 </div>
 
 <div id="logisticsOrderRefundApplyDetailDialogWrapper"></div>
 <script type="text/javascript">
 
     $(function() {
-        loadLogisticsOrderRefundApplyList();
+        loadFeeRefundApplyList();
     });
 
-    function sortLogisticsOrderRefundApplyList(sortField, sortDir) {
+    function sortFeeRefundApplyList(sortField, sortDir) {
         var list = $('#logisticsOrderRefundApplyList');
         list.data('sort-field', sortField);
         list.data('sort-dir', sortDir);
 
-        loadLogisticsOrderRefundApplyList();
+        loadFeeRefundApplyList();
     }
 
     function loadListByOrderCode(orderCode) {
@@ -99,10 +99,10 @@
         $('#statusQuery').val("");
         $('#viewScopeQuery').val("");
         
-        loadLogisticsOrderRefundApplyList(0);
+        loadFeeRefundApplyList(0);
     }   
         
-    function loadLogisticsOrderRefundApplyList(pageIndex) {
+    function loadFeeRefundApplyList(pageIndex) {
         var list = $('#logisticsOrderRefundApplyList');
 
         if (pageIndex === null || pageIndex === undefined) {
@@ -140,24 +140,24 @@
 
                 $('#logisticsOrderRefundApplyList').html(data);
 
-                initListTable("#tblLogisticsOrderRefundApplyList");
+                initListTable("#tblFeeRefundApplyList");
             }
         });
     }
     
-    function showLogisticsOrderRefundApplyDetailBySelect() 
+    function showFeeRefundApplyDetailBySelect() 
     {
-        var idList = getSelectIdList('#tblLogisticsOrderRefundApplyList');
+        var idList = getSelectIdList('#tblFeeRefundApplyList');
 
         if (idList.length !== 1) {
             $.msg.alert("请选择一行数据！");
             return;
         }
         
-        showLogisticsOrderRefundApplyDetail(idList[0]);
+        showFeeRefundApplyDetail(idList[0]);
     }
 
-    function showLogisticsOrderRefundApplyDetail(id) {
+    function showFeeRefundApplyDetail(id) {
         $("#logisticsOrderRefundApplyDetailDialogWrapper").html("");
 
         showMask("加载中...");
@@ -180,7 +180,7 @@
         });
     }
 
-    function backLogisticsOrderRefundApply() {
+    function backFeeRefundApply() {
         var form = $("#logisticsOrderRefundApplyDetailForm");
         var valid = validate(form,
             {
@@ -208,7 +208,7 @@
                     } else {
                         $.msg.show(data.message);
                         $('#logisticsOrderRefundApplyDetailDialog').modal('hide');
-                        loadLogisticsOrderRefundApplyList();
+                        loadFeeRefundApplyList();
                         //return;
                     }
                 }
@@ -216,7 +216,7 @@
         }
     }
     
-    function approveLogisticsOrderRefundApply() {
+    function approveFeeRefundApply() {
         var form = $("#logisticsOrderRefundApplyDetailForm");
         var valid = validate(form,
             {
@@ -244,7 +244,7 @@
                     } else {
                         $.msg.show(data.message);
                         $('#logisticsOrderRefundApplyDetailDialog').modal('hide');
-                        loadLogisticsOrderRefundApplyList();
+                        loadFeeRefundApplyList();
                         //return;
                     }
                 }

@@ -9,7 +9,7 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
     public class LogisticsOrderRefundApproveDetailModel
     {
         [BindNever]
-        public LogisticsOrderRefundApplyInfo LogisticsOrderRefundApply { get; set; }
+        public FeeRefundApplyInfo FeeRefundApply { get; set; }
 
         [Required(ErrorMessage = "退赔款申请单不能为空！")]
         public int ApplyId { get; set; }

@@ -3,11 +3,11 @@
 }
 @using Domain
 @using Domain.LogisticsOrder
-@model Web.Areas.Admin.Models.LogisticsOrderRefundApply.LogisticsOrderRefundApplyListModel
+@model Web.Areas.Admin.Models.FeeRefundApply.FeeRefundApplyListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderRefundApplyList"})
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeRefundApplyList"})
 
-<table id="tblLogisticsOrderRefundApplyList" class="data-list-table table table-striped table-bordered table-hover">
+<table id="tblFeeRefundApplyList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
@@ -16,73 +16,73 @@
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 130px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Customer)).@(nameof(LogisticsOrderRefundApplyInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">客户</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.Customer)).@(nameof(FeeRefundApplyInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">客户</a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Order)).@(nameof(LogisticsOrderRefundApplyInfo.Order.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">订单</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.Order)).@(nameof(FeeRefundApplyInfo.Order.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">订单</a>
                 </div>
             </th>
             <th style="width: 80px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">类型</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">类型</a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">状态</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">状态</a>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: right;">
-                <a field="@(nameof(LogisticsOrderRefundApplyInfo.Amount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">退赔金额</a>
+                <a field="@(nameof(FeeRefundApplyInfo.Amount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">退赔金额</a>
             </th>
             <th style="width: 180px;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.PayType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">退赔支付方式</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.PayType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">退赔支付方式</a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ReasonContent))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">退赔原因</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.ReasonContent))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">退赔原因</a>
                 </div>
             </th>
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApplyUser)).@(nameof(LogisticsOrderRefundApplyInfo.ApplyUser.UserName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">申请人</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.ApplyUser)).@(nameof(FeeRefundApplyInfo.ApplyUser.UserName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">申请人</a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApplyTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">申请时间</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.ApplyTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">申请时间</a>
                 </div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApproveUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">审核人</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.ApproveUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">审核人</a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApproveTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">审核时间</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.ApproveTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">审核时间</a>
                 </div>
             </th>
             <th style="width: 200px;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApplyMemo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">申请备注</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.ApplyMemo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">申请备注</a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApproveMemo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">审核备注</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.ApproveMemo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">审核备注</a>
                 </div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">创建时间</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">创建时间</a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">修改时间</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">修改时间</a>
                 </div>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (Model.LogisticsOrderRefundApplyList != null && Model.LogisticsOrderRefundApplyList.Count() != 0)
+        @if (Model.FeeRefundApplyList != null && Model.FeeRefundApplyList.Count() != 0)
         {
             int order = 1;
-            foreach (LogisticsOrderRefundApplyInfo logisticsOrderRefundApply in Model.LogisticsOrderRefundApplyList)
+            foreach (FeeRefundApplyInfo logisticsOrderRefundApply in Model.FeeRefundApplyList)
             {
                 string applyCountStyleColor = "";
                 if (logisticsOrderRefundApply.OrderApplyCountCache > 1)
@@ -90,7 +90,7 @@
                     applyCountStyleColor = "color: red;";
                 }
                 
-                <tr ondblclick="showLogisticsOrderRefundApplyDetail(@(logisticsOrderRefundApply.Id));">
+                <tr ondblclick="showFeeRefundApplyDetail(@(logisticsOrderRefundApply.Id));">
                     <td style="text-align: center;">
                         <label for="logisticsOrderRefundApplyCheck_@(logisticsOrderRefundApply.Id)"></label><input id="logisticsOrderRefundApplyCheck_@(logisticsOrderRefundApply.Id)" type="checkbox" class="ace" value="@logisticsOrderRefundApply.Id"/><span class="lbl"></span>
                     </td>
@@ -174,4 +174,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderRefundApplyList"})
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeRefundApplyList"})

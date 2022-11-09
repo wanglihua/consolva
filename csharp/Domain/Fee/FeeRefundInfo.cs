@@ -1,24 +1,27 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using shunda.Core;
+using shunda.Domain.Customer;
+using shunda.Domain.Order;
 
 namespace shunda.Domain.Fee;
 
 /// <summary>
 /// 订单退赔款
 /// </summary>
-public class LogisticsOrderRefundInfo : Model
+public class LogisticsOrderRefundInfo : Entity
 {
     /// <summary>
     /// 物流订单
     /// </summary>
     [Required(ErrorMessage = "物流订单不能为空！")]
-    public virtual LogisticsOrderInfo Order { get; set; }
+    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     /// <summary>
     /// 会员
     /// </summary>
     [Required(ErrorMessage = "会员不能为空！")]
-    public virtual CustomerInfo Customer { get; set; }
+    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
 
     /// <summary>
     /// 类型
@@ -28,14 +31,14 @@ public class LogisticsOrderRefundInfo : Model
     public virtual FeeRefundType Type { get; set; }
 
     [Required(ErrorMessage = "退赔原因不能为空！")]
-    public virtual FeeRefundReasonInfo Reason { get; set; }
+    public virtual FeeRefundReasonInfo Reason { get; set; } = new FeeRefundReasonInfo();
 
     /// <summary>
     /// 退赔款原因
     /// </summary>
     [Required(ErrorMessage = "退赔款原因不能为空！")]
     [MaxLength(300, ErrorMessage = "退赔款原因长度不能大于300！")]
-    public virtual string ReasonContent { get; set; }
+    public virtual string ReasonContent { get; set; } = string.Empty;
 
     /// <summary>
     /// 退赔金额
@@ -48,18 +51,18 @@ public class LogisticsOrderRefundInfo : Model
     /// </summary>
     [Required(ErrorMessage = "退赔支付方式不能为空！")]
     [ModelBinder(typeof(FeeRefundPayTypeModelBinder))]
-    public virtual FeeRefundPayType PayType { get; set; }
+    public virtual FeeRefundPayType PayType { get; set; } = FeeRefundPayType.None;
 
     /// <summary>
     /// 状态
     /// </summary>
     [Required(ErrorMessage = "状态不能为空！")]
     [ModelBinder(typeof(FeeRefundStatusModelBinder))]
-    public virtual FeeRefundStatus Status { get; set; }
+    public virtual FeeRefundStatus Status { get; set; } = FeeRefundStatus.None;
 
     /// <summary>
     /// 对应申请
     /// </summary>
     [Required(ErrorMessage = "对应申请不能为空！")]
-    public virtual LogisticsOrderRefundApplyInfo Apply { get; set; }
+    public virtual FeeRefundApplyInfo Apply { get; set; } = new FeeRefundApplyInfo();
 }

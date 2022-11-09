@@ -1,18 +1,16 @@
-using System;
-using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
-using Core;
-using Domain.Customer;
+using shunda.Core;
+using shunda.Domain.Customer;
+using shunda.Domain.Order;
 
 namespace shunda.Domain.Fee;
 
-    public class LogisticsOrderRefundInfoMapping : ModelMapping<LogisticsOrderRefundInfo>
+    public class LogisticsOrderRefundInfoMapping : EntityMapping<LogisticsOrderRefundInfo>
     {
         public LogisticsOrderRefundInfoMapping()
         {
-            Table("tbl_logistics_order_refund");
+            Table("tbl_fee_refund");
 
             ManyToOne(
                 x => x.Order,
@@ -96,7 +94,7 @@ namespace shunda.Domain.Fee;
             ManyToOne(
                 x => x.Apply,
                 map => {
-                    map.Class(typeof(LogisticsOrderRefundApplyInfo));
+                    map.Class(typeof(FeeRefundApplyInfo));
                     map.Column("apply_id");
                     map.NotNullable(true);
                     map.Fetch(FetchKind.Select);
