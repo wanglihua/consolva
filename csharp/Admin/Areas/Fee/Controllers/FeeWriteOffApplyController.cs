@@ -70,19 +70,6 @@ public class FeeWriteOffApplyController : Controller
 
         IList<int> orderIdList = logisticsOrderFeeWriteOffApplyList.Select(e => e.Order?.Id ?? 0).ToList();
 
-        /*
-        IList<FeeWriteOffApplyCountInfo> applyCountList = session
-            .Query<FeeWriteOffApplyCountInfo>()
-            .Where(e => orderIdList.Contains(e.OrderId))
-            .ToList();
-
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
-        {
-            int orderId = apply.Order?.Id ?? 0;
-            apply.OrderApplyCountCache = applyCountList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.ApplyCount ?? 0;
-        }
-        */
-
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
@@ -119,7 +106,7 @@ public class FeeWriteOffApplyController : Controller
 
         if (queryParam.ManualReasonIdQuery != 0)
         {
-            criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.WriteOffReasonId == queryParam.ManualReasonIdQuery));
+            criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.WriteOffReason.Id == queryParam.ManualReasonIdQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
@@ -150,22 +137,22 @@ public class FeeWriteOffApplyController : Controller
 
         FeeWriteOffApplyDetailModel model = new FeeWriteOffApplyDetailModel();
 
-        FeeWriteOffApplyInfo logisticsOrderFeeWriteOffApply = null;
+        FeeWriteOffApplyInfo feeWriteOffApply;
 
         if (id != null && id.Value != 0)
         {
-            logisticsOrderFeeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(id.Value);
-            if (logisticsOrderFeeWriteOffApply == null)
+            feeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(id.Value);
+            if (feeWriteOffApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
             }
 
-            model.ApplyId = logisticsOrderFeeWriteOffApply.Id;
-            model.OrderCode = logisticsOrderFeeWriteOffApply.Order?.Code;
-            model.CustomerCode = logisticsOrderFeeWriteOffApply.Customer?.Id.ToString();
-            model.Amount = logisticsOrderFeeWriteOffApply.Amount;
-            model.FeeReasonId = logisticsOrderFeeWriteOffApply.WriteOffReasonId;
-            model.Description = logisticsOrderFeeWriteOffApply.Description;
+            model.ApplyId = feeWriteOffApply.Id;
+            model.OrderCode = feeWriteOffApply.Order.Code;
+            model.CustomerCode = customerCodeService.GetCustomerCode(feeWriteOffApply.Customer.Id);
+            model.Amount = feeWriteOffApply.Amount;
+            model.FeeReasonId = feeWriteOffApply.WriteOffReason.Id;
+            model.Description = feeWriteOffApply.Description;
         }
 
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.WriteOffFee).ToList();
@@ -226,51 +213,55 @@ public class FeeWriteOffApplyController : Controller
 
         bool isCreate = applyId == 0;
 
-        FeeWriteOffApplyInfo logisticsOrderFeeWriteOffApply = null;
+        FeeWriteOffApplyInfo feeWriteOffApply;
 
         if (isCreate)
         {
-            logisticsOrderFeeWriteOffApply = new FeeWriteOffApplyInfo();
-            logisticsOrderFeeWriteOffApply.Status = FeeWriteOffApplyStatus.Saved;
+            feeWriteOffApply = new FeeWriteOffApplyInfo();
+            feeWriteOffApply.Status = FeeWriteOffApplyStatus.Saved;
         }
         else
         {
-            logisticsOrderFeeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(applyId);
+            feeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(applyId);
 
             // 判断状态是不是能修改
-            if (logisticsOrderFeeWriteOffApply.Status != FeeWriteOffApplyStatus.Saved
-                && logisticsOrderFeeWriteOffApply.Status != FeeWriteOffApplyStatus.Backed)
+            if (feeWriteOffApply.Status != FeeWriteOffApplyStatus.Saved
+                && feeWriteOffApply.Status != FeeWriteOffApplyStatus.Backed)
             {
                 throw new ValidationException("只有【未提交】和【已回退】状态的申请才能修改！");
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            if (logisticsOrderFeeWriteOffApply.ApplyUser.Id != loginUserId)
+            if (feeWriteOffApply.ApplyUser.Id != loginUserId)
             {
                 throw new ValidationException("只能修改当前登录人创建的申请！");
             }
         }
 
-        string reasonContent = session.Get<ManualFeeReasonInfo>(model.FeeReasonId)?.Content;
+        ManualFeeReasonInfo manualFeeReason = session.Get<ManualFeeReasonInfo>(model.FeeReasonId);
+        if (manualFeeReason == null)
+        {
+            throw new ValidationException($"指定的核销费用原因#{model.FeeReasonId}不存在！");
+        }
 
-        logisticsOrderFeeWriteOffApply.Order = logisticsOrder;
-        logisticsOrderFeeWriteOffApply.Customer = customer;
-        logisticsOrderFeeWriteOffApply.Amount = model.Amount ?? 0;
-        logisticsOrderFeeWriteOffApply.ApplyUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
-        logisticsOrderFeeWriteOffApply.WriteOffReasonId = model.FeeReasonId;
-        logisticsOrderFeeWriteOffApply.WriteOffReasonContent = reasonContent;
-        logisticsOrderFeeWriteOffApply.Description = model.Description;
+        feeWriteOffApply.Order = logisticsOrder;
+        feeWriteOffApply.Customer = customer;
+        feeWriteOffApply.Amount = model.Amount ?? 0;
+        feeWriteOffApply.ApplyUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
+        feeWriteOffApply.WriteOffReason = manualFeeReason;
+        feeWriteOffApply.WriteOffReasonContent = manualFeeReason.Content;
+        feeWriteOffApply.Description = model.Description;
 
         // 不修改申请状态，新建的时候会有个默认的
         // 审核人这里不修改，新增的时候为空，修改的时候保存为原来的。
 
         if (isCreate)
         {
-            session.Save(logisticsOrderFeeWriteOffApply);
+            session.Save(feeWriteOffApply);
         }
         else
         {
-            session.Update(logisticsOrderFeeWriteOffApply);
+            session.Update(feeWriteOffApply);
         }
 
         session.Flush();
@@ -293,12 +284,12 @@ public class FeeWriteOffApplyController : Controller
 
         int loginUserId = loginUserService.GetLoginUserId();
 
-        IList<FeeWriteOffApplyInfo> logisticsOrderFeeWriteOffApplyList = session
+        IList<FeeWriteOffApplyInfo> feeWriteOffApplyList = session
             .Query<FeeWriteOffApplyInfo>()
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
+        foreach (FeeWriteOffApplyInfo apply in feeWriteOffApplyList)
         {
             if (apply.ApplyUser.Id != loginUserId)
             {
@@ -311,7 +302,7 @@ public class FeeWriteOffApplyController : Controller
             }
         }
 
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
+        foreach (FeeWriteOffApplyInfo apply in feeWriteOffApplyList)
         {
             apply.Status = FeeWriteOffApplyStatus.Submitted;
             session.Update(apply);
@@ -337,12 +328,12 @@ public class FeeWriteOffApplyController : Controller
 
         int loginUserId = loginUserService.GetLoginUserId();
 
-        IList<FeeWriteOffApplyInfo> logisticsOrderFeeWriteOffApplyList = session
+        IList<FeeWriteOffApplyInfo> feeWriteOffApplyList = session
             .Query<FeeWriteOffApplyInfo>()
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
+        foreach (FeeWriteOffApplyInfo apply in feeWriteOffApplyList)
         {
             if (apply.ApplyUser.Id != loginUserId)
             {
@@ -355,7 +346,7 @@ public class FeeWriteOffApplyController : Controller
             }
         }
 
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
+        foreach (FeeWriteOffApplyInfo apply in feeWriteOffApplyList)
         {
             session.Delete(apply);
         }

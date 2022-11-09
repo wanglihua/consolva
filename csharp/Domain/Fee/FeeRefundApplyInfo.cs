@@ -93,4 +93,10 @@ public class FeeRefundApplyInfo : Entity
     /// </summary>
     [MaxLength(300, ErrorMessage = "审核备注长度不能大于300！")]
     public virtual string ApproveMemo { get; set; } = string.Empty;
+
+    #region Cache
+
+    public virtual int OrderApplyCountCache { get; set; }
+
+    #endregion
 }

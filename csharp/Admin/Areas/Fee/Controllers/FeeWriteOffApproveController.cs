@@ -80,19 +80,6 @@ public class FeeWriteOffApproveController : Controller
 
         IList<int> orderIdList = logisticsOrderFeeWriteOffApplyList.Select(e => e.Order?.Id ?? 0).ToList();
 
-        /*
-        IList<FeeWriteOffApplyCountInfo> applyCountList = session
-            .Query<FeeWriteOffApplyCountInfo>()
-            .Where(e => orderIdList.Contains(e.OrderId))
-            .ToList();
-
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
-        {
-            int orderId = apply.Order?.Id ?? 0;
-            apply.OrderApplyCountCache = applyCountList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.ApplyCount ?? 0;
-        }
-        */
-
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
@@ -124,7 +111,7 @@ public class FeeWriteOffApproveController : Controller
 
         if (queryParam.ManualReasonIdQuery != 0)
         {
-            criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.WriteOffReasonId == queryParam.ManualReasonIdQuery));
+            criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.WriteOffReason.Id == queryParam.ManualReasonIdQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
@@ -228,6 +215,8 @@ public class FeeWriteOffApproveController : Controller
             throw new ValidationException("请选择要审核的数据项！");
         }
 
+        int loginUserId = loginUserService.GetLoginUserId();
+
         IList<FeeWriteOffApplyInfo> applyList = session
             .Query<FeeWriteOffApplyInfo>()
             .Fetch(e => e.Order)
@@ -245,7 +234,7 @@ public class FeeWriteOffApproveController : Controller
 
         foreach (FeeWriteOffApplyInfo apply in applyList)
         {
-            writeOffFeeService.AddWriteOffFee(apply.Order, apply.Customer, apply.Amount, apply.WriteOffReasonId);
+            writeOffFeeService.AddWriteOffFee(apply.Order, apply.Customer, apply.Amount, apply.WriteOffReason.Id, loginUserId);
         }
 
         foreach (FeeWriteOffApplyInfo apply in applyList)

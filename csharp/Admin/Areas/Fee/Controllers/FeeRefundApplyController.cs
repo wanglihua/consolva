@@ -23,9 +23,9 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 [AdminAuth(PassRes.Fee.FeeRefundApply)]
 public class FeeRefundApplyController : Controller
 {
-    private ISession session = null;
-    private CustomerCodeService customerCodeService = null;
-    private LoginUserService loginUserService = null;
+    private ISession session;
+    private CustomerCodeService customerCodeService;
+    private LoginUserService loginUserService;
     private FeeApplyCountService feeApplyCountService;
 
     public FeeRefundApplyController(
@@ -63,31 +63,18 @@ public class FeeRefundApplyController : Controller
 
         ListPager listPager = new ListPager(queryParam, totalCount);
 
-        IList<FeeRefundApplyInfo> logisticsOrderRefundApplyList = GetListCriteria(queryParam)
+        IList<FeeRefundApplyInfo> feeRefundApplyList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<FeeRefundApplyInfo>();
 
-        IList<int> orderIdList = logisticsOrderRefundApplyList.Select(e => e.Order?.Id ?? 0).ToList();
-
-        /*
-        IList<FeeRefundApplyCountInfo> applyCountList = session
-            .Query<FeeRefundApplyCountInfo>()
-            .Where(e => orderIdList.Contains(e.OrderId))
-            .ToList();
-
-        foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
-        {
-            int orderId = apply.Order?.Id ?? 00;
-            apply.OrderApplyCountCache = applyCountList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.ApplyCount ?? 0;
-        }
-        */
+        IList<int> orderIdList = feeRefundApplyList.Select(e => e.Order?.Id ?? 0).ToList();
 
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
-        foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
+        foreach (FeeRefundApplyInfo apply in feeRefundApplyList)
         {
             int orderId = apply.Order?.Id ?? 0;
             if (dictApplyCount.TryGetValue(orderId, out int applyCount))
@@ -97,7 +84,7 @@ public class FeeRefundApplyController : Controller
         }
 
         FeeRefundApplyListModel model = new FeeRefundApplyListModel(listPager);
-        model.FeeRefundApplyList = logisticsOrderRefundApplyList;
+        model.FeeRefundApplyList = feeRefundApplyList;
 
         return View("FeeRefundApplyList", model);
     }
@@ -161,18 +148,18 @@ public class FeeRefundApplyController : Controller
 
         if (id != null && id.Value != 0)
         {
-            FeeRefundApplyInfo logisticsOrderRefundApply = session.Get<FeeRefundApplyInfo>(id.Value);
-            if (logisticsOrderRefundApply == null)
+            FeeRefundApplyInfo feeRefundApply = session.Get<FeeRefundApplyInfo>(id.Value);
+            if (feeRefundApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
             }
 
-            model.OrderCode = logisticsOrderRefundApply.Order?.Code;
-            model.CustomerCode = logisticsOrderRefundApply.Customer?.CustomerCode;
-            model.Type = logisticsOrderRefundApply.Type;
-            model.Amount = logisticsOrderRefundApply.Amount;
-            model.ReasonId = logisticsOrderRefundApply.Reason?.Id ?? 0;
-            model.ApplyMemo = logisticsOrderRefundApply.ApplyMemo;
+            model.OrderCode = feeRefundApply.Order.Code;
+            model.CustomerCode = customerCodeService.GetCustomerCode(feeRefundApply.Customer.Id);
+            model.Type = feeRefundApply.Type;
+            model.Amount = feeRefundApply.Amount;
+            model.ReasonId = feeRefundApply.Reason?.Id ?? 0;
+            model.ApplyMemo = feeRefundApply.ApplyMemo;
         }
 
         model.ApplyId = id ?? 0;
@@ -239,48 +226,48 @@ public class FeeRefundApplyController : Controller
 
         bool isCreate = applyId == 0;
 
-        FeeRefundApplyInfo logisticsOrderRefundApply = null;
+        FeeRefundApplyInfo feeRefundApply;
 
         if (isCreate)
         {
-            logisticsOrderRefundApply = new FeeRefundApplyInfo();
-            logisticsOrderRefundApply.Status = FeeRefundApplyStatus.Saved;
+            feeRefundApply = new FeeRefundApplyInfo();
+            feeRefundApply.Status = FeeRefundApplyStatus.Saved;
         }
         else
         {
-            logisticsOrderRefundApply = session.Get<FeeRefundApplyInfo>(applyId);
+            feeRefundApply = session.Get<FeeRefundApplyInfo>(applyId);
 
             // 判断状态是不是能修改
-            if (logisticsOrderRefundApply.Status != FeeRefundApplyStatus.Saved
-                && logisticsOrderRefundApply.Status != FeeRefundApplyStatus.Backed)
+            if (feeRefundApply.Status != FeeRefundApplyStatus.Saved
+                && feeRefundApply.Status != FeeRefundApplyStatus.Backed)
             {
                 throw new ValidationException("只有【未提交】和【已回退】状态的申请才能修改！");
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            if (logisticsOrderRefundApply.ApplyUser.Id != loginUserId)
+            if (feeRefundApply.ApplyUser.Id != loginUserId)
             {
                 throw new ValidationException("只能修改当前登录人创建的申请！");
             }
         }
 
-        logisticsOrderRefundApply.Order = logisticsOrder;
-        logisticsOrderRefundApply.Customer = customer;
-        logisticsOrderRefundApply.Type = model.Type;
-        logisticsOrderRefundApply.Reason = reason;
-        logisticsOrderRefundApply.ReasonContent = reason.Content ?? "";
-        logisticsOrderRefundApply.Amount = model.Amount;
-        logisticsOrderRefundApply.PayType = FeeRefundPayType.Charge;
-        logisticsOrderRefundApply.ApplyUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
-        logisticsOrderRefundApply.ApplyMemo = model.ApplyMemo;
+        feeRefundApply.Order = logisticsOrder;
+        feeRefundApply.Customer = customer;
+        feeRefundApply.Type = model.Type;
+        feeRefundApply.Reason = reason;
+        feeRefundApply.ReasonContent = reason.Content ?? "";
+        feeRefundApply.Amount = model.Amount;
+        feeRefundApply.PayType = FeeRefundPayType.Charge;
+        feeRefundApply.ApplyUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
+        feeRefundApply.ApplyMemo = model.ApplyMemo;
 
         if (isCreate)
         {
-            session.Save(logisticsOrderRefundApply);
+            session.Save(feeRefundApply);
         }
         else
         {
-            session.Update(logisticsOrderRefundApply);
+            session.Update(feeRefundApply);
         }
 
         session.Flush();
