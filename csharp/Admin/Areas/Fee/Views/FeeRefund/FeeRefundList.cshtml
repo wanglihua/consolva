@@ -1,11 +1,12 @@
 @{
     Layout = null;
 }
-@using Domain
-@using Domain.LogisticsOrder
-@model Web.Areas.Admin.Models.FeeRefund.FeeRefundListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeRefundList"})
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.FeeRefund.FeeRefundListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadFeeRefundList" })
 
 <table id="tblFeeRefundList" class="data-list-table table table-striped table-bordered table-hover">
     <caption style="margin: 10px 0; color: #393939;">
@@ -59,12 +60,12 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = logisticsOrderRefund.Customer?.Id})">
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = logisticsOrderRefund.Customer?.Id })">
                             @logisticsOrderRefund.Customer?.CustomerCode
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
-                        <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderRefund.Order?.Id})">
+                        <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderRefund.Order?.Id })">
                             @logisticsOrderRefund.Order?.Code
                         </a>
                     </td>
@@ -97,4 +98,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeRefundList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadFeeRefundList" })

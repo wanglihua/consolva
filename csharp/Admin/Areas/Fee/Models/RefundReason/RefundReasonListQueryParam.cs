@@ -1,9 +1,7 @@
-using System;
-using Core;
+using shunda.Core;
 
-namespace Web.Areas.Admin.Models.RefundReason
+namespace shunda.Admin.Areas.Fee.Models.RefundReason;
+
+public class RefundReasonListQueryParam : ListQueryParam
 {
-    public class RefundReasonListQueryParam : ListQueryParam
-    {
-    }
 }

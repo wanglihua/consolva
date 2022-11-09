@@ -1,15 +1,16 @@
-@using Domain
-@using Domain.LogisticsOrder
-@model RefundReasonIndexModel
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
 @using Web.Areas.Admin.Models.RefundReason
+@model Web.Areas.Admin.Models.RefundReason.RefundReasonIndexModel
 @{
-    ViewBag.Title = "退赔原因";
+    ViewData[ViewDataKey.Title] = "退赔原因";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
-    <li class="parent" data-menu="settings-menu">系统设置</li>
-    <li class="active" data-menu="settings-refund-reason-index-menu">退赔原因</li>
+    <li class="parent" data-menu="fee-menu">费用管理</li>
+    <li class="active" data-menu="fee-refund-reason-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

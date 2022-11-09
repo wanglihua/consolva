@@ -1,18 +1,13 @@
-using System;
-using Domain;
-using System.Collections.Generic;
-using Core;
-using Domain.LogisticsOrder;
-using Web.Models;
+using shunda.Core;
+using shunda.Domain.Fee;
 
-namespace Web.Areas.Admin.Models.RefundReason
+namespace shunda.Admin.Areas.Fee.Models.RefundReason;
+
+public class RefundReasonListModel : ListModel
 {
-    public class RefundReasonListModel : ListModel
+    public RefundReasonListModel(ListPager listPager) : base(listPager)
     {
-        public RefundReasonListModel(ListPager listPager) : base(listPager)
-        {
-        }
-
-        public IList<FeeRefundReasonInfo> RefundReasonList { get; set; }
     }
+
+    public IList<FeeRefundReasonInfo> RefundReasonList { get; set; }
 }

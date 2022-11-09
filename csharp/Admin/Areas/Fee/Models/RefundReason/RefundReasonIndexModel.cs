@@ -1,8 +1,5 @@
-using System;
+namespace shunda.Admin.Areas.Fee.Models.RefundReason;
 
-namespace Web.Areas.Admin.Models.RefundReason
+public class RefundReasonIndexModel
 {
-    public class RefundReasonIndexModel
-    {
-    }
 }

@@ -1,16 +1,17 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Express.Models.ExpressPhoto
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Express
 @model shunda.Admin.Areas.Express.Models.ExpressPhoto.ExpressPhotoIndexModel
 @{
-    ViewBag.Title = "快递单图片";
+    ViewData[ViewDataKey.Title] = "快递单图片";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="express-menu">快递管理</li>
-    <li class="active" data-menu="express-photo-index-menu">快递单图片</li>
+    <li class="active" data-menu="express-photo-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

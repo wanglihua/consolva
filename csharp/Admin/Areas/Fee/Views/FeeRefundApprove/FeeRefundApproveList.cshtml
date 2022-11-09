@@ -1,9 +1,9 @@
 @{
     Layout = null;
 }
-@using Domain
-@using Domain.LogisticsOrder
-@model Web.Areas.Admin.Models.FeeRefundApprove.FeeRefundApproveListModel
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.FeeRefundApprove.FeeRefundApproveListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeRefundApplyList"})
 

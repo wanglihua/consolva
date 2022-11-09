@@ -1,16 +1,18 @@
-@using Domain
-@using Domain.LogisticsOrder
-@model FeeRefundApproveIndexModel
-@using Web.Areas.Admin.Models.FeeRefundApprove
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Fee.Models.FeeRefundApprove
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Fee.Models.FeeRefundApprove.FeeRefundApproveIndexModel
 @{
-    ViewBag.Title = "退赔款审核";
+    ViewData[ViewDataKey.Title] = "退赔款审核";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="pparent" data-menu="order-fee-menu">费用管理</li>
     <li class="parent" data-menu="order-fee-refund-menu">退赔款</li>
-    <li class="active" data-menu="order-fee-refund-approve-index-menu">退赔款审核</li>
+    <li class="active" data-menu="order-fee-refund-approve-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
