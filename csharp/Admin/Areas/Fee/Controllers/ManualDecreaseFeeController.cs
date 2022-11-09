@@ -76,7 +76,7 @@ public class ManualDecreaseFeeController : Controller
 
         model.CustomerCount = (int)sumData[0];
         model.OrderCount = (int)sumData[1];
-        model.FeeSum = (decimal)sumData[2];
+        model.FeeSum = (decimal)(sumData[2] ?? 0m);
 
         return View("ManualDecreaseFeeList", model);
     }

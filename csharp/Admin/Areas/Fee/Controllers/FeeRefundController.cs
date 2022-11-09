@@ -76,7 +76,7 @@ public class FeeRefundController : Controller
 
         model.CustomerCount = (int)sumData[0];
         model.OrderCount = (int)sumData[1];
-        model.AmountSum = (decimal)sumData[2];
+        model.AmountSum = (decimal)(sumData[2] ?? 0m);
 
         return View("FeeRefundList", model);
     }
@@ -108,7 +108,7 @@ public class FeeRefundController : Controller
             criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeRefundInfo.Customer)}.{nameof(FeeRefundInfo.Customer.Id)}", customerIdQuery));
         }
 
-        
+
         if (string.IsNullOrWhiteSpace(queryParam.ReasonQuery) == false)
         {
             string reasonQuery = queryParam.ReasonQuery.Trim();
