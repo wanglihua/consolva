@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
+using shunda.Admin.Areas.Fee.Models.FeeRefundApply;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -13,7 +14,7 @@ using shunda.Domain.Order;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
-using Web.Areas.Admin.Models.FeeRefundApply;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
@@ -25,18 +26,18 @@ public class FeeRefundApplyController : Controller
     private ISession session = null;
     private CustomerCodeService customerCodeService = null;
     private LoginUserService loginUserService = null;
-    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
+    private FeeApplyCountService feeApplyCountService;
 
     public FeeRefundApplyController(
         ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
+        FeeApplyCountService feeApplyCountService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
-        this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
+        this.feeApplyCountService = feeApplyCountService;
     }
 
     [HttpGet]
@@ -84,7 +85,7 @@ public class FeeRefundApplyController : Controller
         }
         */
 
-        IDictionary<int, int> dictApplyCount = logisticsOrderFeeReturnToCustomerService.GetApplyCount(orderIdList);
+        IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
         {
@@ -406,7 +407,7 @@ public class FeeRefundApplyController : Controller
 
         int orderId = logisticsOrder?.Id ?? 0;
 
-        IList<string> applyCountDescList = logisticsOrderFeeReturnToCustomerService.GetApplyCountDescList(orderId);
+        IList<string> applyCountDescList = feeApplyCountService.GetApplyCountDescList(orderId);
 
         if (applyCountDescList.Count > 0)
         {

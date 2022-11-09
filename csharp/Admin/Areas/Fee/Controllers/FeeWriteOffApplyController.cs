@@ -13,6 +13,7 @@ using shunda.Domain.Order;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
@@ -24,17 +25,17 @@ public class FeeWriteOffApplyController : Controller
     private ISession session;
     private CustomerCodeService customerCodeService;
     private LoginUserService loginUserService;
-    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
+    private FeeApplyCountService feeApplyCountService;
 
     public FeeWriteOffApplyController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
+        FeeApplyCountService feeApplyCountService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
-        this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
+        this.feeApplyCountService = feeApplyCountService;
     }
 
     [HttpGet]
@@ -82,7 +83,7 @@ public class FeeWriteOffApplyController : Controller
         }
         */
 
-        IDictionary<int, int> dictApplyCount = logisticsOrderFeeReturnToCustomerService.GetApplyCount(orderIdList);
+        IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
         {
@@ -395,7 +396,7 @@ public class FeeWriteOffApplyController : Controller
 
         int orderId = logisticsOrder?.Id ?? 0;
 
-        IList<string> applyCountDescList = logisticsOrderFeeReturnToCustomerService.GetApplyCountDescList(orderId);
+        IList<string> applyCountDescList = feeApplyCountService.GetApplyCountDescList(orderId);
 
         if (applyCountDescList.Count > 0)
         {

@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.SqlCommand;
 using NHibernate.Linq;
+using NHibernate.SqlCommand;
+using shunda.Admin.Areas.Fee.Models.FeeRefundApprove;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -15,7 +16,6 @@ using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using shunda.Service.Fee;
-using Web.Areas.Admin.Models.FeeRefundApprove;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
@@ -29,21 +29,21 @@ public class FeeRefundApproveController : Controller
     private LoginUserService loginUserService = null;
     private CustomerAccountService customerAccountService = null;
     private LogisticsOrderFeeService logisticsOrderFeeService = null;
-    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
+    private FeeApplyCountService feeApplyCountService;
 
     public FeeRefundApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         CustomerAccountService customerAccountService,
         LogisticsOrderFeeService logisticsOrderFeeService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
+        FeeApplyCountService feeApplyCountService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
         this.customerAccountService = customerAccountService;
         this.logisticsOrderFeeService = logisticsOrderFeeService;
-        this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
+        this.feeApplyCountService = feeApplyCountService;
     }
 
     [HttpGet]
@@ -97,7 +97,7 @@ public class FeeRefundApproveController : Controller
         }
         */
 
-        IDictionary<int, int> dictApplyCount = logisticsOrderFeeReturnToCustomerService.GetApplyCount(orderIdList);
+        IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
         {

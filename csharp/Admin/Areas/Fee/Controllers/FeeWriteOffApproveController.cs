@@ -27,19 +27,19 @@ public class FeeWriteOffApproveController : Controller
     private CustomerCodeService customerCodeService;
     private LoginUserService loginUserService;
     private WriteOffFeeService writeOffFeeService;
-    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
+    private FeeApplyCountService feeApplyCountService;
 
     public FeeWriteOffApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         WriteOffFeeService writeOffFeeService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
+        FeeApplyCountService feeApplyCountService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
         this.writeOffFeeService = writeOffFeeService;
-        this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
+        this.feeApplyCountService = feeApplyCountService;
     }
 
     [HttpGet]
@@ -93,7 +93,7 @@ public class FeeWriteOffApproveController : Controller
         }
         */
 
-        IDictionary<int, int> dictApplyCount = logisticsOrderFeeReturnToCustomerService.GetApplyCount(orderIdList);
+        IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
         {

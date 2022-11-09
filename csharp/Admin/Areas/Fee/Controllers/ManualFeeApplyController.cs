@@ -14,6 +14,7 @@ using shunda.Domain.Order;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Fee.Controllers;
@@ -25,18 +26,18 @@ public class ManualFeeApplyController : Controller
     private ISession session = null;
     private CustomerCodeService customerCodeService = null;
     private LoginUserService loginUserService = null;
-    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
+    private FeeApplyCountService feeApplyCountService;
 
     public ManualFeeApplyController(
         ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
+        FeeApplyCountService feeApplyCountService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
-        this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
+        this.feeApplyCountService = feeApplyCountService;
     }
 
     [HttpGet]
@@ -83,7 +84,7 @@ public class ManualFeeApplyController : Controller
         }
         */
 
-        IDictionary<int, int> dictApplyCount = logisticsOrderFeeReturnToCustomerService.GetApplyCount(orderIdList);
+        IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (ManualFeeApplyInfo apply in logisticsOrderManualFeeApplyList)
         {
@@ -391,7 +392,7 @@ public class ManualFeeApplyController : Controller
 
         int orderId = logisticsOrder?.Id ?? 0;
 
-        IList<string> applyCountDescList = logisticsOrderFeeReturnToCustomerService.GetApplyCountDescList(orderId);
+        IList<string> applyCountDescList = feeApplyCountService.GetApplyCountDescList(orderId);
 
         if (applyCountDescList.Count > 0)
         {

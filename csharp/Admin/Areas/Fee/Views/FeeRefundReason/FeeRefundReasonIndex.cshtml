@@ -1,8 +1,8 @@
+@using shunda.Admin.Areas.Fee.Models.FeeRefundReason
 @using shunda.Core
 @using shunda.Core.Web
 @using shunda.Domain.Fee
-@using Web.Areas.Admin.Models.RefundReason
-@model Web.Areas.Admin.Models.RefundReason.RefundReasonIndexModel
+@model shunda.Admin.Areas.Fee.Models.FeeRefundReason.FeeRefundReasonIndexModel
 @{
     ViewData[ViewDataKey.Title] = "退赔原因";
     Layout = "_AdminLayout";
@@ -64,9 +64,9 @@
             url: "@Url.Action("List", "FeeRefundReason")",
             type: "POST",
             data: {
-                '@(nameof(RefundReasonListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(RefundReasonListQueryParam.SortField))': sortField,
-                '@(nameof(RefundReasonListQueryParam.SortDir))': sortDir
+                '@(nameof(FeeRefundReasonListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(FeeRefundReasonListQueryParam.SortField))': sortField,
+                '@(nameof(FeeRefundReasonListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();

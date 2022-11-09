@@ -28,19 +28,19 @@ public class ManualFeeApproveController : Controller
     private CustomerCodeService customerCodeService;
     private LoginUserService loginUserService;
     private ManualFeeService manualFeeService;
-    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
+    private FeeApplyCountService feeApplyCountService;
 
     public ManualFeeApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         ManualFeeService manualFeeService,
-        LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService)
+        FeeApplyCountService feeApplyCountService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
         this.manualFeeService = manualFeeService;
-        this.logisticsOrderFeeReturnToCustomerService = logisticsOrderFeeReturnToCustomerService;
+        this.feeApplyCountService = feeApplyCountService;
     }
 
     [HttpGet]
@@ -93,7 +93,7 @@ public class ManualFeeApproveController : Controller
         }
         */
 
-        IDictionary<int, int> dictApplyCount = logisticsOrderFeeReturnToCustomerService.GetApplyCount(orderIdList);
+        IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (ManualFeeApplyInfo apply in logisticsOrderManualFeeApplyList)
         {
