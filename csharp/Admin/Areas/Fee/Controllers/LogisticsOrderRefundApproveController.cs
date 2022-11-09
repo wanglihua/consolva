@@ -53,8 +53,8 @@ namespace Web.Areas.Admin.Controllers
         {
             LogisticsOrderRefundApproveIndexModel model = new LogisticsOrderRefundApproveIndexModel();
 
-            model.TypeList = LogisticsOrderRefundType.GetList();
-            model.StatusList = LogisticsOrderRefundApplyStatus.GetApproveViewList();
+            model.TypeList = FeeRefundType.GetList();
+            model.StatusList = FeeRefundApplyStatus.GetApproveViewList();
 
             model.ApplyUserList = session.Query<LogisticsOrderRefundApplyInfo>()
                 .Fetch(e => e.ApplyUser)
@@ -128,9 +128,9 @@ namespace Web.Areas.Admin.Controllers
             criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundApplyInfo.ApplyUser), nameof(LogisticsOrderRefundApplyInfo.ApplyUser));
             criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundApplyInfo.ApproveUser), nameof(LogisticsOrderRefundApplyInfo.ApproveUser), JoinType.LeftOuterJoin);
 
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.Status != LogisticsOrderRefundApplyStatus.Saved && e.Status != LogisticsOrderRefundApplyStatus.Backed));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.Status != FeeRefundApplyStatus.Saved && e.Status != FeeRefundApplyStatus.Backed));
 
-            if (queryParam.TypeQuery != null && queryParam.TypeQuery != LogisticsOrderRefundType.None)
+            if (queryParam.TypeQuery != null && queryParam.TypeQuery != FeeRefundType.None)
             {
                 var typeQuery = queryParam.TypeQuery;
                 criteria = criteria.Add(Restrictions.Eq(nameof(LogisticsOrderRefundApplyInfo.Type), typeQuery));
@@ -155,7 +155,7 @@ namespace Web.Areas.Admin.Controllers
                 criteria = criteria.Add(Restrictions.On<LogisticsOrderRefundApplyInfo>(e => e.ReasonContent).IsInsensitiveLike(reasonQuery, MatchMode.Anywhere));
             }
 
-            if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsOrderRefundApplyStatus.None)
+            if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeRefundApplyStatus.None)
             {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.Status == queryParam.StatusQuery));
             }
@@ -208,7 +208,7 @@ namespace Web.Areas.Admin.Controllers
                 throw new ValidationException("指定的申请单不存在！");
             }
 
-            if (refundApply.Status != LogisticsOrderRefundApplyStatus.Submitted)
+            if (refundApply.Status != FeeRefundApplyStatus.Submitted)
             {
                 throw new ValidationException("当前申请单不是 已提交 状态，不能审核！");
             }
@@ -216,7 +216,7 @@ namespace Web.Areas.Admin.Controllers
             refundApply.ApproveMemo = approveMemo;
             refundApply.ApproveTime = DateTime.Now;
             refundApply.ApproveUser = session.Load<UserInfo>(loginUserService.GetLoginUserId());
-            refundApply.Status = LogisticsOrderRefundApplyStatus.Approved;
+            refundApply.Status = FeeRefundApplyStatus.Approved;
 
             session.Update(refundApply);
             session.Flush();
@@ -231,13 +231,13 @@ namespace Web.Areas.Admin.Controllers
             refund.ReasonContent = refundApply.ReasonContent;
             refund.Amount = refundApply.Amount;
             refund.PayType = refundApply.PayType;
-            refund.Status = LogisticsOrderRefundStatus.Paid;
+            refund.Status = FeeRefundStatus.Paid;
             refund.Apply = refundApply;
 
             session.Save(refund);
             session.Flush();
 
-            if (refund.Type == LogisticsOrderRefundType.Refund) // 如果是【退】款的，需要加一条抵充；如果是【赔】款的，就不需要加上一条抵充了。
+            if (refund.Type == FeeRefundType.Refund) // 如果是【退】款的，需要加一条抵充；如果是【赔】款的，就不需要加上一条抵充了。
             {
                 // 记录订单费用
                 // 如果是退款的话，一般是客户多付了，退给他们后，需要增加一条费用平衡原来多付的。
@@ -284,13 +284,13 @@ namespace Web.Areas.Admin.Controllers
                 throw new ValidationException("指定的申请单不存在！");
             }
 
-            if (refundApply.Status != LogisticsOrderRefundApplyStatus.Submitted)
+            if (refundApply.Status != FeeRefundApplyStatus.Submitted)
             {
                 throw new ValidationException("当前申请单不是 已提交 状态，不能回退 ！");
             }
 
             refundApply.ApproveMemo = approveMemo;
-            refundApply.Status = LogisticsOrderRefundApplyStatus.Backed;
+            refundApply.Status = FeeRefundApplyStatus.Backed;
 
             session.Update(refundApply);
             session.Flush();

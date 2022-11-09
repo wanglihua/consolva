@@ -45,11 +45,11 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefundApply
         /// 类型
         /// </summary>
         [Required(ErrorMessage = "类型不能为空！")]
-        [ModelBinder(typeof(LogisticsOrderRefundTypeModelBinder))]
-        public LogisticsOrderRefundType Type { get; set; }
+        [ModelBinder(typeof(FeeRefundTypeModelBinder))]
+        public FeeRefundType Type { get; set; }
 
         [BindNever]
-        public IList<LogisticsOrderRefundType> TypeList { get; set; }
+        public IList<FeeRefundType> TypeList { get; set; }
 
         [BindNever]
         public IList<FeeRefundReasonInfo> ReasonList { get; set; }

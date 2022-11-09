@@ -49,8 +49,8 @@ namespace Web.Areas.Admin.Controllers
         {
             LogisticsOrderRefundApplyIndexModel model = new LogisticsOrderRefundApplyIndexModel();
 
-            model.TypeList = LogisticsOrderRefundType.GetList();
-            model.StatusList = LogisticsOrderRefundApplyStatus.GetList();
+            model.TypeList = FeeRefundType.GetList();
+            model.StatusList = FeeRefundApplyStatus.GetList();
             model.ScopeList = ApplyDataViewScope.GetList();
 
             return View("LogisticsOrderRefundApplyIndex", model);
@@ -124,7 +124,7 @@ namespace Web.Areas.Admin.Controllers
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.ApplyUser.Id == loginUserId));
             }
 
-            if (queryParam.TypeQuery != null && queryParam.TypeQuery != LogisticsOrderRefundType.None)
+            if (queryParam.TypeQuery != null && queryParam.TypeQuery != FeeRefundType.None)
             {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.Type == queryParam.TypeQuery));
             }
@@ -148,7 +148,7 @@ namespace Web.Areas.Admin.Controllers
                 criteria = criteria.Add(Restrictions.On<LogisticsOrderRefundApplyInfo>(e => e.ReasonContent).IsInsensitiveLike(reasonQuery, MatchMode.Anywhere));
             }
 
-            if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsOrderRefundApplyStatus.None)
+            if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeRefundApplyStatus.None)
             {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundApplyInfo>(e => e.Status == queryParam.StatusQuery));
             }
@@ -182,7 +182,7 @@ namespace Web.Areas.Admin.Controllers
 
             model.ApplyId = id ?? 0;
 
-            model.TypeList = LogisticsOrderRefundType.GetList();
+            model.TypeList = FeeRefundType.GetList();
             model.ReasonList = session.Query<FeeRefundReasonInfo>()
                 .Where(e => e.Status == FeeRefundReasonStatus.Enabled)
                 .OrderBy(e => e.Content)
@@ -248,15 +248,15 @@ namespace Web.Areas.Admin.Controllers
             if (isCreate)
             {
                 logisticsOrderRefundApply = new LogisticsOrderRefundApplyInfo();
-                logisticsOrderRefundApply.Status = LogisticsOrderRefundApplyStatus.Saved;
+                logisticsOrderRefundApply.Status = FeeRefundApplyStatus.Saved;
             }
             else
             {
                 logisticsOrderRefundApply = session.Get<LogisticsOrderRefundApplyInfo>(applyId);
 
                 // 判断状态是不是能修改
-                if (logisticsOrderRefundApply.Status != LogisticsOrderRefundApplyStatus.Saved
-                    && logisticsOrderRefundApply.Status != LogisticsOrderRefundApplyStatus.Backed)
+                if (logisticsOrderRefundApply.Status != FeeRefundApplyStatus.Saved
+                    && logisticsOrderRefundApply.Status != FeeRefundApplyStatus.Backed)
                 {
                     throw new ValidationException("只有【未提交】和【已回退】状态的申请才能修改！");
                 }
@@ -274,7 +274,7 @@ namespace Web.Areas.Admin.Controllers
             logisticsOrderRefundApply.Reason = reason;
             logisticsOrderRefundApply.ReasonContent = reason.Content ?? "";
             logisticsOrderRefundApply.Amount = model.Amount;
-            logisticsOrderRefundApply.PayType = LogisticsOrderRefundPayType.Charge;
+            logisticsOrderRefundApply.PayType = FeeRefundPayType.Charge;
             logisticsOrderRefundApply.ApplyUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
             logisticsOrderRefundApply.ApplyMemo = model.ApplyMemo;
 
@@ -318,7 +318,7 @@ namespace Web.Areas.Admin.Controllers
                     throw new ValidationException("只能提交当前登录人保存的申请！");
                 }
 
-                if (apply.Status != LogisticsOrderRefundApplyStatus.Saved && apply.Status != LogisticsOrderRefundApplyStatus.Backed)
+                if (apply.Status != FeeRefundApplyStatus.Saved && apply.Status != FeeRefundApplyStatus.Backed)
                 {
                     throw new ValidationException("只能提交【未提交】的和【已回退】的申请！");
                 }
@@ -327,7 +327,7 @@ namespace Web.Areas.Admin.Controllers
             foreach (LogisticsOrderRefundApplyInfo apply in applyList)
             {
                 apply.ApplyTime = DateTime.Now;
-                apply.Status = LogisticsOrderRefundApplyStatus.Submitted;
+                apply.Status = FeeRefundApplyStatus.Submitted;
                 session.Update(apply);
             }
 
@@ -361,7 +361,7 @@ namespace Web.Areas.Admin.Controllers
                     throw new ValidationException("只能删除当前登录人创建的申请！");
                 }
 
-                if (apply.Status != LogisticsOrderRefundApplyStatus.Saved && apply.Status != LogisticsOrderRefundApplyStatus.Backed)
+                if (apply.Status != FeeRefundApplyStatus.Saved && apply.Status != FeeRefundApplyStatus.Backed)
                 {
                     throw new ValidationException("只能删除【未提交】的和【已回退】的申请！");
                 }

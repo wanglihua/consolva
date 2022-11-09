@@ -7,8 +7,8 @@ using Core;
 using Domain.Customer;
 using Domain.Pass;
 
-namespace Domain.LogisticsOrder
-{
+namespace shunda.Domain.Fee;
+
     public class LogisticsOrderRefundApplyInfoMapping : ModelMapping<LogisticsOrderRefundApplyInfo>
     {
         public LogisticsOrderRefundApplyInfoMapping()
@@ -40,7 +40,7 @@ namespace Domain.LogisticsOrder
             Property(
                 x => x.Type,
                 map => {
-                    map.Type<LogisticsOrderRefundTypeHibernateType>();
+                    map.Type<FeeRefundTypeHibernateType>();
                     map.Column("type_id");
                     map.NotNullable(true);
                 }
@@ -79,7 +79,7 @@ namespace Domain.LogisticsOrder
             Property(
                 x => x.PayType,
                 map => {
-                    map.Type<LogisticsOrderRefundPayTypeHibernateType>();
+                    map.Type<FeeRefundPayTypeHibernateType>();
                     map.Column("pay_type_id");
                     map.NotNullable(true);
                 }
@@ -88,7 +88,7 @@ namespace Domain.LogisticsOrder
             Property(
                 x => x.Status,
                 map => {
-                    map.Type<LogisticsOrderRefundApplyStatusHibernateType>();
+                    map.Type<FeeRefundApplyStatusHibernateType>();
                     map.Column("status_id");
                     map.NotNullable(true);
                 }
@@ -150,4 +150,3 @@ namespace Domain.LogisticsOrder
             );
         }
     }
-}

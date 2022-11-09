@@ -6,8 +6,8 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefund
 {
     public class LogisticsOrderRefundIndexModel
     {
-        public IList<LogisticsOrderRefundType> TypeList { get; set; }
+        public IList<FeeRefundType> TypeList { get; set; }
 
-        public IList<LogisticsOrderRefundStatus> StatusList { get; set; }
+        public IList<FeeRefundStatus> StatusList { get; set; }
     }
 }

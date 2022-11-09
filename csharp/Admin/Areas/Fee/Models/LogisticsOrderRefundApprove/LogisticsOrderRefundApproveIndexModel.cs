@@ -8,10 +8,10 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
     public class LogisticsOrderRefundApproveIndexModel
     {
         [BindNever]
-        public IList<LogisticsOrderRefundType> TypeList { get; set; }
+        public IList<FeeRefundType> TypeList { get; set; }
 
         [BindNever]
-        public IList<LogisticsOrderRefundApplyStatus> StatusList { get; set; }
+        public IList<FeeRefundApplyStatus> StatusList { get; set; }
         
         [BindNever]
         public IList<UserInfo> ApplyUserList { get; set; }        

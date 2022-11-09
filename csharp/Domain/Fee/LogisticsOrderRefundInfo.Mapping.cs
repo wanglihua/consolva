@@ -6,8 +6,8 @@ using NHibernate.Mapping.ByCode.Conformist;
 using Core;
 using Domain.Customer;
 
-namespace Domain.LogisticsOrder
-{
+namespace shunda.Domain.Fee;
+
     public class LogisticsOrderRefundInfoMapping : ModelMapping<LogisticsOrderRefundInfo>
     {
         public LogisticsOrderRefundInfoMapping()
@@ -39,7 +39,7 @@ namespace Domain.LogisticsOrder
             Property(
                 x => x.Type,
                 map => {
-                    map.Type<LogisticsOrderRefundTypeHibernateType>();
+                    map.Type<FeeRefundTypeHibernateType>();
                     map.Column("type_id");
                     map.NotNullable(true);
                 }
@@ -78,7 +78,7 @@ namespace Domain.LogisticsOrder
             Property(
                 x => x.PayType,
                 map => {
-                    map.Type<LogisticsOrderRefundPayTypeHibernateType>();
+                    map.Type<FeeRefundPayTypeHibernateType>();
                     map.Column("pay_type_id");
                     map.NotNullable(true);
                 }
@@ -87,7 +87,7 @@ namespace Domain.LogisticsOrder
             Property(
                 x => x.Status,
                 map => {
-                    map.Type<LogisticsOrderRefundStatusHibernateType>();
+                    map.Type<FeeRefundStatusHibernateType>();
                     map.Column("status_id");
                     map.NotNullable(true);
                 }
@@ -105,4 +105,3 @@ namespace Domain.LogisticsOrder
             );
         }
     }
-}

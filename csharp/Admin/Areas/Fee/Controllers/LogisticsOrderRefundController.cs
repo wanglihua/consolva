@@ -39,8 +39,8 @@ namespace Web.Areas.Admin.Controllers
         {
             LogisticsOrderRefundIndexModel model = new LogisticsOrderRefundIndexModel();
 
-            model.TypeList = LogisticsOrderRefundType.GetList();
-            model.StatusList = LogisticsOrderRefundStatus.GetList();
+            model.TypeList = FeeRefundType.GetList();
+            model.StatusList = FeeRefundStatus.GetList();
 
             return View("LogisticsOrderRefundIndex", model);
         }
@@ -98,7 +98,7 @@ namespace Web.Areas.Admin.Controllers
             criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundInfo.Customer), nameof(LogisticsOrderRefundInfo.Customer));
             criteria = criteria.CreateAlias(nameof(LogisticsOrderRefundInfo.Order), nameof(LogisticsOrderRefundInfo.Order));
 
-            if (queryParam.TypeQuery != null && queryParam.TypeQuery != LogisticsOrderRefundType.None)
+            if (queryParam.TypeQuery != null && queryParam.TypeQuery != FeeRefundType.None)
             {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundInfo>(e => e.Type == queryParam.TypeQuery));
             }
@@ -122,7 +122,7 @@ namespace Web.Areas.Admin.Controllers
                 criteria = criteria.Add(Restrictions.On<LogisticsOrderRefundInfo>(e => e.ReasonContent).IsInsensitiveLike(reasonQuery, MatchMode.Anywhere));
             }
 
-            if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsOrderRefundStatus.None)
+            if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeRefundStatus.None)
             {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderRefundInfo>(e => e.Status == queryParam.StatusQuery));
             }

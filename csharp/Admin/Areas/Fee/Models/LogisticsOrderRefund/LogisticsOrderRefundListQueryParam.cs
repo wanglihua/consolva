@@ -7,8 +7,8 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefund
 {
     public class LogisticsOrderRefundListQueryParam : ListQueryParam
     {
-        [ModelBinder(typeof(LogisticsOrderRefundTypeModelBinder))]
-        public LogisticsOrderRefundType TypeQuery { get; set; }
+        [ModelBinder(typeof(FeeRefundTypeModelBinder))]
+        public FeeRefundType TypeQuery { get; set; }
 
         public string OrderCodeQuery { get; set; }
 
@@ -16,8 +16,8 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefund
 
         public string ReasonQuery { get; set; }
 
-        [ModelBinder(typeof(LogisticsOrderRefundStatusModelBinder))]
-        public LogisticsOrderRefundStatus StatusQuery { get; set; }
+        [ModelBinder(typeof(FeeRefundStatusModelBinder))]
+        public FeeRefundStatus StatusQuery { get; set; }
 
         public DateTime? BeginDateQuery { get; set; }
 

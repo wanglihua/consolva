@@ -9,8 +9,8 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
     {
         public int ApplyUserIdQuery { get; set; }
         
-        [ModelBinder(typeof(LogisticsOrderRefundTypeModelBinder))]
-        public LogisticsOrderRefundType TypeQuery { get; set; }
+        [ModelBinder(typeof(FeeRefundTypeModelBinder))]
+        public FeeRefundType TypeQuery { get; set; }
 
         public string OrderCodeQuery { get; set; }
 
@@ -18,7 +18,7 @@ namespace Web.Areas.Admin.Models.LogisticsOrderRefundApprove
 
         public string ReasonQuery { get; set; }
 
-        [ModelBinder(typeof(LogisticsOrderRefundApplyStatusModelBinder))]
-        public LogisticsOrderRefundApplyStatus StatusQuery { get; set; }
+        [ModelBinder(typeof(FeeRefundApplyStatusModelBinder))]
+        public FeeRefundApplyStatus StatusQuery { get; set; }
     }
 }

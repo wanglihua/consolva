@@ -45,7 +45,7 @@
                                 <label asp-for="Type" class="col-xs-2 control-label">类型</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Type" class="input-sm form-control">
-                                        @foreach (LogisticsOrderRefundType refundType in Model.TypeList)
+                                        @foreach (FeeRefundType refundType in Model.TypeList)
                                         {
                                             <option value="@(refundType.Id)">@(refundType.Name)-@(refundType.Description)</option>
                                         }
