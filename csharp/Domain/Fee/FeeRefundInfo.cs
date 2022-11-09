@@ -65,4 +65,10 @@ public class FeeRefundInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "对应申请不能为空！")]
     public virtual FeeRefundApplyInfo Apply { get; set; } = new FeeRefundApplyInfo();
+
+    #region Cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

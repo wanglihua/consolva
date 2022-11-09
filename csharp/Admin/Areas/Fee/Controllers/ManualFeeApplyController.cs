@@ -81,6 +81,8 @@ public class ManualFeeApplyController : Controller
             {
                 apply.OrderApplyCountCache = applyCount;
             }
+
+            apply.CustomerCodeCache = customerCodeService.GetCustomerCode(apply.Customer.Id);
         }
 
         ManualFeeApplyListModel model = new ManualFeeApplyListModel(listPager);

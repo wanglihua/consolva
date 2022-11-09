@@ -89,6 +89,8 @@ public class FeeWriteOffApproveController : Controller
             {
                 apply.OrderApplyCountCache = applyCount;
             }
+
+            apply.CustomerCodeCache = customerCodeService.GetCustomerCode(apply.Customer.Id);
         }
 
         FeeWriteOffApproveListModel model = new FeeWriteOffApproveListModel(listPager);
@@ -140,6 +142,9 @@ public class FeeWriteOffApproveController : Controller
         return criteria;
     }
 
+    /// <summary>
+    /// 这个现在好像还没用起来
+    /// </summary>
     [HttpPost]
     [Route("/admin/fee/write/off/approve/detail/{id:int?}")]
     public IActionResult Detail(int? id)

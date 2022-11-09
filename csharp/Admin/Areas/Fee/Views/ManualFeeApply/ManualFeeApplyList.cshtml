@@ -60,67 +60,67 @@
         @if (Model.ManualFeeApplyList != null && Model.ManualFeeApplyList.Count() != 0)
         {
             int order = 1;
-            foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in Model.ManualFeeApplyList)
+            foreach (ManualFeeApplyInfo manualFeeApply in Model.ManualFeeApplyList)
             {
                 string applyCountStyleColor = "";
-                if (logisticsOrderManualFeeApply.OrderApplyCountCache > 1)
+                if (manualFeeApply.OrderApplyCountCache > 1)
                 {
                     applyCountStyleColor = "color: red;";
                 }
                 
-                <tr ondblclick="showManualFeeApplyDetail(@(logisticsOrderManualFeeApply.Id));">
+                <tr ondblclick="showManualFeeApplyDetail(@(manualFeeApply.Id));">
                     <td style="text-align: center;">
-                        <label for="logisticsOrderManualFeeApplyCheck_@(logisticsOrderManualFeeApply.Id)"></label><input id="logisticsOrderManualFeeApplyCheck_@(logisticsOrderManualFeeApply.Id)" type="checkbox" class="ace" value="@logisticsOrderManualFeeApply.Id"/><span class="lbl"></span>
+                        <label for="logisticsOrderManualFeeApplyCheck_@(manualFeeApply.Id)"></label><input id="logisticsOrderManualFeeApplyCheck_@(manualFeeApply.Id)" type="checkbox" class="ace" value="@manualFeeApply.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = logisticsOrderManualFeeApply.Customer?.Id})">
-                            @logisticsOrderManualFeeApply.Customer?.CustomerCode
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = manualFeeApply.Customer?.Id})">
+                            @manualFeeApply.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrderManualFeeApply.Order.Id})">
-                                @logisticsOrderManualFeeApply.Order?.Code
+                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = manualFeeApply.Order.Id})">
+                                @manualFeeApply.Order?.Code
                             </a>
                         </div>
                         <div>
-                            <a href="javascript:loadListByOrderCode('@(logisticsOrderManualFeeApply.Order?.Code)');">
-                                订单共<span style="@(applyCountStyleColor)">@(logisticsOrderManualFeeApply.OrderApplyCountCache)</span>条申请
+                            <a href="javascript:loadListByOrderCode('@(manualFeeApply.Order?.Code)');">
+                                订单共<span style="@(applyCountStyleColor)">@(manualFeeApply.OrderApplyCountCache)</span>条申请
                             </a>
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @logisticsOrderManualFeeApply.Type?.Name
+                        @manualFeeApply.Type?.Name
                     </td>
                     <td style="text-align: right;">
-                        @logisticsOrderManualFeeApply.Fee
+                        @manualFeeApply.Fee
                     </td>
                     <td class="break-word">
                         <div>
-                            @logisticsOrderManualFeeApply.ManualReasonContent
+                            @manualFeeApply.ManualReasonContent
                         </div>
                         <div style="color: #08008c;">
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrderManualFeeApply.Description)
+                            @ListDataUtil.RenderStringWithDiv(manualFeeApply.Description)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @logisticsOrderManualFeeApply.ApplyUser?.UserName
+                            @manualFeeApply.ApplyUser?.UserName
                         </div>
                         <div>
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrderManualFeeApply.ApproveUser?.UserName)
+                            @ListDataUtil.RenderStringWithDiv(manualFeeApply.ApproveUser?.UserName)
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @logisticsOrderManualFeeApply.Status?.Name
+                        @manualFeeApply.Status?.Name
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @logisticsOrderManualFeeApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                            @manualFeeApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                         <div>
-                            @logisticsOrderManualFeeApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                            @manualFeeApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
                     <td></td>

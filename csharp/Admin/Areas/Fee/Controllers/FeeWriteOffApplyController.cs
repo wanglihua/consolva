@@ -79,6 +79,8 @@ public class FeeWriteOffApplyController : Controller
             {
                 apply.OrderApplyCountCache = applyCount;
             }
+
+            apply.CustomerCodeCache = customerCodeService.GetCustomerCode(apply.Customer.Id);
         }
 
         FeeWriteOffApplyListModel model = new FeeWriteOffApplyListModel(listPager);

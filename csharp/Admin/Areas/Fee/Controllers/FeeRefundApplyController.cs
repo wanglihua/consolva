@@ -70,6 +70,11 @@ public class FeeRefundApplyController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<FeeRefundApplyInfo>();
 
+        foreach (FeeRefundApplyInfo feeRefundApply in feeRefundApplyList)
+        {
+            feeRefundApply.CustomerCodeCache = customerCodeService.GetCustomerCode(feeRefundApply.Customer.Id);
+        }
+
         IList<int> orderIdList = feeRefundApplyList.Select(e => e.Order?.Id ?? 0).ToList();
 
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);

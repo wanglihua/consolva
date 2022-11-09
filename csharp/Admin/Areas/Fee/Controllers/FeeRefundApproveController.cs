@@ -84,19 +84,6 @@ public class FeeRefundApproveController : Controller
 
         IList<int> orderIdList = logisticsOrderRefundApplyList.Select(e => e.Order?.Id ?? 0).ToList();
 
-        /*
-        IList<FeeRefundApplyCountInfo> applyCountList = session
-            .Query<FeeRefundApplyCountInfo>()
-            .Where(e => orderIdList.Contains(e.OrderId))
-            .ToList();
-
-        foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
-        {
-            int orderId = apply.Order?.Id ?? 00;
-            apply.OrderApplyCountCache = applyCountList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.ApplyCount ?? 0;
-        }
-        */
-
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
         foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
@@ -106,6 +93,8 @@ public class FeeRefundApproveController : Controller
             {
                 apply.OrderApplyCountCache = applyCount;
             }
+
+            apply.CustomerCodeCache = customerCodeService.GetCustomerCode(apply.Customer.Id);
         }
 
         FeeRefundApproveListModel model = new FeeRefundApproveListModel(listPager);
@@ -173,16 +162,18 @@ public class FeeRefundApproveController : Controller
     {
         session.DefaultReadOnly = true;
 
-        FeeRefundApplyInfo logisticsOrderRefundApply = session.Get<FeeRefundApplyInfo>(id);
-        if (logisticsOrderRefundApply == null)
+        FeeRefundApplyInfo feeRefundApply = session.Get<FeeRefundApplyInfo>(id);
+        if (feeRefundApply == null)
         {
             throw new ValidationException("指定的数据项不存在！");
         }
 
+        feeRefundApply.CustomerCodeCache = customerCodeService.GetCustomerCode(feeRefundApply.Customer.Id);
+
         FeeRefundApproveDetailModel model = new FeeRefundApproveDetailModel();
-        model.FeeRefundApply = logisticsOrderRefundApply;
-        model.ApplyId = logisticsOrderRefundApply.Id;
-        model.ApproveMemo = logisticsOrderRefundApply.ApproveMemo;
+        model.FeeRefundApply = feeRefundApply;
+        model.ApplyId = feeRefundApply.Id;
+        model.ApproveMemo = feeRefundApply.ApproveMemo;
 
         return View("FeeRefundApproveDetail", model);
     }

@@ -90,5 +90,7 @@ public class ManualFeeApplyInfo : Entity
 
     public virtual int OrderApplyCountCache { get; set; }
 
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
     #endregion
 }

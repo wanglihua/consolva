@@ -56,9 +56,9 @@ public class FeeRefundController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<FeeRefundInfo>();
 
-        foreach (FeeRefundInfo logisticsOrderRefundInfo in logisticsOrderRefundList)
+        foreach (FeeRefundInfo feeRefund in logisticsOrderRefundList)
         {
-            // logisticsOrderRefundInfo
+            feeRefund.CustomerCodeCache = customerCodeService.GetCustomerCode(feeRefund.Customer.Id);
         }
 
         FeeRefundListModel model = new FeeRefundListModel(listPager);
@@ -184,49 +184,49 @@ public class FeeRefundController : Controller
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         ICell cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("客户");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("订单");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("类型");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("退赔金额");
 
         sheet.SetColumnWidth(cellIndex, 50 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("退赔款原因");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("退赔支付方式");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("状态");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("生成时间");
 
         foreach (FeeRefundInfo refund in refundList)
@@ -240,17 +240,17 @@ public class FeeRefundController : Controller
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
-            cell.SetCellValue(refund.Customer?.CustomerCode);
+            cell.SetCellType(CellType.String);
+            cell.SetCellValue(customerCodeService.GetCustomerCode(refund.Customer.Id));
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(refund.Order?.Code);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(refund.Type?.Name);
 
             cell = row.CreateCell(cellIndex++);
@@ -260,22 +260,22 @@ public class FeeRefundController : Controller
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(refund.ReasonContent);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(refund.PayType?.Name);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(refund.Status?.Name);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(refund.CreateTime.ToString("yyyy-MM-dd HH:mm"));
         }
 

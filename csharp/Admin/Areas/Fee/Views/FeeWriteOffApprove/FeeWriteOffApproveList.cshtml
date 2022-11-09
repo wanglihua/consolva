@@ -57,51 +57,51 @@
         @if (Model.FeeWriteOffApplyList != null && Model.FeeWriteOffApplyList.Count() != 0)
         {
             int order = 1;
-            foreach (FeeWriteOffApplyInfo logisticsOrderFeeWriteOffApply in Model.FeeWriteOffApplyList)
+            foreach (FeeWriteOffApplyInfo feeWriteOffApply in Model.FeeWriteOffApplyList)
             {
                 string applyCountStyleColor = "";
-                if (logisticsOrderFeeWriteOffApply.OrderApplyCountCache > 1)
+                if (feeWriteOffApply.OrderApplyCountCache > 1)
                 {
                     applyCountStyleColor = "color: red;";
                 }
 
                 <tr>
                     <td style="text-align: center;">
-                        <label for="logisticsOrderFeeWriteOffApplyCheck_@(logisticsOrderFeeWriteOffApply.Id)"></label><input id="logisticsOrderFeeWriteOffApplyCheck_@(logisticsOrderFeeWriteOffApply.Id)" type="checkbox" class="ace" value="@logisticsOrderFeeWriteOffApply.Id"/><span class="lbl"></span>
+                        <label for="logisticsOrderFeeWriteOffApplyCheck_@(feeWriteOffApply.Id)"></label><input id="logisticsOrderFeeWriteOffApplyCheck_@(feeWriteOffApply.Id)" type="checkbox" class="ace" value="@feeWriteOffApply.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = logisticsOrderFeeWriteOffApply.Customer?.Id})">
-                            @logisticsOrderFeeWriteOffApply.Customer?.CustomerCode
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = feeWriteOffApply.Customer?.Id})">
+                            @feeWriteOffApply.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrderFeeWriteOffApply.Order?.Id})">
-                                @logisticsOrderFeeWriteOffApply.Order?.Code
+                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = feeWriteOffApply.Order?.Id})">
+                                @feeWriteOffApply.Order?.Code
                             </a>
                         </div>
                         <div>
-                            <a href="javascript:loadListByOrderCode('@(logisticsOrderFeeWriteOffApply.Order?.Code)')">
-                                订单共<span style="@(applyCountStyleColor)">@(logisticsOrderFeeWriteOffApply.OrderApplyCountCache)</span>条申请
+                            <a href="javascript:loadListByOrderCode('@(feeWriteOffApply.Order?.Code)')">
+                                订单共<span style="@(applyCountStyleColor)">@(feeWriteOffApply.OrderApplyCountCache)</span>条申请
                             </a>
                         </div>
                     </td>
                     <td style="text-align: right;">
-                        @logisticsOrderFeeWriteOffApply.Amount
+                        @feeWriteOffApply.Amount
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            @(logisticsOrderFeeWriteOffApply.ApplyUser?.LoginName)
+                            @(feeWriteOffApply.ApplyUser?.LoginName)
                             <span>&nbsp;</span>
-                            @(logisticsOrderFeeWriteOffApply.ApplyUser?.UserName)
+                            @(feeWriteOffApply.ApplyUser?.UserName)
                         </div>
                         <div style="color: #08008c;">
-                            @if (logisticsOrderFeeWriteOffApply.ApproveUser != null)
+                            @if (feeWriteOffApply.ApproveUser != null)
                             {
-                                @(logisticsOrderFeeWriteOffApply.ApproveUser?.LoginName)
+                                @(feeWriteOffApply.ApproveUser?.LoginName)
                                 <span>&nbsp;</span>
-                                @(logisticsOrderFeeWriteOffApply.ApproveUser?.UserName)
+                                @(feeWriteOffApply.ApproveUser?.UserName)
                             }
                             else
                             {
@@ -110,20 +110,20 @@
                         </div>
                     </td>
                     <td class="break-word">
-                        @ListDataUtil.RenderStringWithDiv(logisticsOrderFeeWriteOffApply.WriteOffReasonContent)
+                        @ListDataUtil.RenderStringWithDiv(feeWriteOffApply.WriteOffReasonContent)
                         <div style="color: #08008c;">
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrderFeeWriteOffApply.Description)
+                            @ListDataUtil.RenderStringWithDiv(feeWriteOffApply.Description)
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @(logisticsOrderFeeWriteOffApply.Status?.Name)
+                        @(feeWriteOffApply.Status?.Name)
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @logisticsOrderFeeWriteOffApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                            @feeWriteOffApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                         <div>
-                            @logisticsOrderFeeWriteOffApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                            @feeWriteOffApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
                     <td></td>

@@ -82,92 +82,92 @@
         @if (Model.FeeRefundApplyList != null && Model.FeeRefundApplyList.Count() != 0)
         {
             int order = 1;
-            foreach (FeeRefundApplyInfo logisticsOrderRefundApply in Model.FeeRefundApplyList)
+            foreach (FeeRefundApplyInfo feeRefundApply in Model.FeeRefundApplyList)
             {
                 string applyCountStyleColor = "";
-                if (logisticsOrderRefundApply.OrderApplyCountCache > 1)
+                if (feeRefundApply.OrderApplyCountCache > 1)
                 {
                     applyCountStyleColor = "color: red;";
                 }
                 
-                <tr ondblclick="showFeeRefundApplyDetail(@(logisticsOrderRefundApply.Id));">
+                <tr ondblclick="showFeeRefundApplyDetail(@(feeRefundApply.Id));">
                     <td style="text-align: center;">
-                        <label for="logisticsOrderRefundApplyCheck_@(logisticsOrderRefundApply.Id)"></label><input id="logisticsOrderRefundApplyCheck_@(logisticsOrderRefundApply.Id)" type="checkbox" class="ace" value="@logisticsOrderRefundApply.Id"/><span class="lbl"></span>
+                        <label for="logisticsOrderRefundApplyCheck_@(feeRefundApply.Id)"></label><input id="logisticsOrderRefundApplyCheck_@(feeRefundApply.Id)" type="checkbox" class="ace" value="@feeRefundApply.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = logisticsOrderRefundApply.Customer?.Id})">
-                                @(logisticsOrderRefundApply.Customer?.CustomerCode)
+                            <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = feeRefundApply.Customer?.Id})">
+                                @(feeRefundApply.CustomerCodeCache)
                             </a>
                         </div>
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrderRefundApply.Order?.Id})">
-                                @(logisticsOrderRefundApply.Order?.Code)
+                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = feeRefundApply.Order?.Id})">
+                                @(feeRefundApply.Order?.Code)
                             </a>
                         </div>
                         <div>
-                            <a href="javascript:loadListByOrderCode('@(logisticsOrderRefundApply.Order?.Code)')">
-                                订单共<span style="@(applyCountStyleColor)">@(logisticsOrderRefundApply.OrderApplyCountCache)</span>条申请
+                            <a href="javascript:loadListByOrderCode('@(feeRefundApply.Order?.Code)')">
+                                订单共<span style="@(applyCountStyleColor)">@(feeRefundApply.OrderApplyCountCache)</span>条申请
                             </a>
                         </div>                        
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @(logisticsOrderRefundApply.Type.Name)
+                            @(feeRefundApply.Type.Name)
                         </div>
                         <div>
-                            @(logisticsOrderRefundApply.Status.Name)
+                            @(feeRefundApply.Status.Name)
                         </div>
                     </td>
                     <td style="text-align: right;">
-                        @logisticsOrderRefundApply.Amount
+                        @feeRefundApply.Amount
                     </td>
                     <td class="break-word">
                         <div>
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.PayType?.Name)
+                            @ListDataUtil.RenderStringWithDiv(feeRefundApply.PayType?.Name)
                         </div>
                         <div style="color: #08008c;">
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.ReasonContent)
+                            @ListDataUtil.RenderStringWithDiv(feeRefundApply.ReasonContent)
                         </div>
                     </td>
                     <td style="text-align: center;" class="break-word">
                          <div style="color: #08008c;">
-                            @(logisticsOrderRefundApply.ApplyUser?.LoginName)<span>&nbsp;</span>@(logisticsOrderRefundApply.ApplyUser?.UserName)
+                            @(feeRefundApply.ApplyUser?.LoginName)<span>&nbsp;</span>@(feeRefundApply.ApplyUser?.UserName)
                         </div>
                         <div>
-                            @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderRefundApply.ApplyTime)
+                            @ListDataUtil.RenderDateTimeWithDiv(feeRefundApply.ApplyTime)
                         </div>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div style="color: #08008c;">
-                            @if (logisticsOrderRefundApply.ApproveUser != null)
+                            @if (feeRefundApply.ApproveUser != null)
                             {
-                                @(logisticsOrderRefundApply.ApproveUser?.LoginName)
+                                @(feeRefundApply.ApproveUser?.LoginName)
                                 <span>&nbsp;</span>
-                                @(logisticsOrderRefundApply.ApproveUser?.UserName)
+                                @(feeRefundApply.ApproveUser?.UserName)
                             }
                             else
                             {
                                 <span>-</span>
                             }
                         </div>                        
-                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderRefundApply.ApproveTime)
+                        @ListDataUtil.RenderDateTimeWithDiv(feeRefundApply.ApproveTime)
                     </td>
                     <td class="break-word">
                         <div>
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.ApplyMemo)
+                            @ListDataUtil.RenderStringWithDiv(feeRefundApply.ApplyMemo)
                         </div>
                         <div style="color: #08008c;">
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.ApproveMemo)
+                            @ListDataUtil.RenderStringWithDiv(feeRefundApply.ApproveMemo)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @logisticsOrderRefundApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                            @feeRefundApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                         <div>
-                            @logisticsOrderRefundApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                            @feeRefundApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
                     <td></td>

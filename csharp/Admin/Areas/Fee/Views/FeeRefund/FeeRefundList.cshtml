@@ -52,37 +52,37 @@
         @if (Model.FeeRefundList != null && Model.FeeRefundList.Count() != 0)
         {
             int order = 1;
-            foreach (FeeRefundInfo logisticsOrderRefund in Model.FeeRefundList)
+            foreach (FeeRefundInfo feeRefund in Model.FeeRefundList)
             {
                 <tr>
                     <td style="text-align: center;">
-                        <label for="logisticsOrderRefundCheck_@(logisticsOrderRefund.Id)"></label><input id="logisticsOrderRefundCheck_@(logisticsOrderRefund.Id)" type="checkbox" class="ace" value="@logisticsOrderRefund.Id"/><span class="lbl"></span>
+                        <label for="logisticsOrderRefundCheck_@(feeRefund.Id)"></label><input id="logisticsOrderRefundCheck_@(feeRefund.Id)" type="checkbox" class="ace" value="@feeRefund.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = logisticsOrderRefund.Customer?.Id })">
-                            @logisticsOrderRefund.Customer?.CustomerCode
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeRefund.Customer?.Id })">
+                            @feeRefund.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
-                        <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderRefund.Order?.Id })">
-                            @logisticsOrderRefund.Order?.Code
+                        <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new { id = feeRefund.Order?.Id })">
+                            @feeRefund.Order?.Code
                         </a>
                     </td>
                     <td style="text-align: center;">
-                        @logisticsOrderRefund.Type?.Name
+                        @feeRefund.Type?.Name
                     </td>
-                    <td style="text-align: right;">@logisticsOrderRefund.Amount</td>
+                    <td style="text-align: right;">@feeRefund.Amount</td>
                     <td class="break-word">
-                        @ListDataUtil.RenderStringWithDiv(logisticsOrderRefund.ReasonContent)
+                        @ListDataUtil.RenderStringWithDiv(feeRefund.ReasonContent)
                     </td>
                     <td style="text-align: center;">
-                        @logisticsOrderRefund.PayType?.Name
+                        @feeRefund.PayType.Name
                     </td>
                     <td style="text-align: center;">
-                        @logisticsOrderRefund.Status?.Name
+                        @feeRefund.Status.Name
                     </td>
-                    <td style="text-align: center;">@logisticsOrderRefund.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@feeRefund.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td></td>
                 </tr>
             }
