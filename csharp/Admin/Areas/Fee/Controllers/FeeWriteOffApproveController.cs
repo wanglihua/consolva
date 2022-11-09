@@ -9,7 +9,6 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Fee;
-using shunda.Domain.Order;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
@@ -24,11 +23,11 @@ public class FeeWriteOffApproveController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
-    private CustomerCodeService customerCodeService = null;
-    private LoginUserService loginUserService = null;
-    private WriteOffFeeService writeOffFeeService = null;
-    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService = null;
+    private ISession session;
+    private CustomerCodeService customerCodeService;
+    private LoginUserService loginUserService;
+    private WriteOffFeeService writeOffFeeService;
+    private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
 
     public FeeWriteOffApproveController(ISession session,
         CustomerCodeService customerCodeService,
@@ -160,7 +159,7 @@ public class FeeWriteOffApproveController : Controller
     {
         session.DefaultReadOnly = true;
 
-        FeeWriteOffApplyInfo logisticsOrderFeeWriteOffApply = null;
+        FeeWriteOffApplyInfo logisticsOrderFeeWriteOffApply;
 
         if (id == null || id.Value == 0)
         {

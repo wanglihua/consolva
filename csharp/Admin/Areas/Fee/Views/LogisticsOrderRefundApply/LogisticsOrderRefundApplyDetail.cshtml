@@ -1,0 +1,114 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model Web.Areas.Admin.Models.LogisticsOrderRefundApply.LogisticsOrderRefundApplyDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsOrderRefundApplyDetailDialog">
+    <div class="modal-dialog" style="width: 720px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">订单退赔款申请详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsOrderRefundApplyDetailForm" class="form-horizontal" role="form">
+                    <div id="applyCheckMessage" style="padding: 5px; color: red;"></div>                    
+                    <input asp-for="ApplyId" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerCode" class="col-xs-2 control-label"> 客户</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CustomerCode" type="text" class="input-sm form-control" onchange="customerCodeChange();"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="OrderCode" class="col-xs-2 control-label">订单编号</label>
+                                <div class="col-xs-5">
+                                    <input asp-for="OrderCode" type="text" class="input-sm form-control" onchange="orderCodeChange()"/>
+                                </div>
+                                <div class="col-xs-5" id="orderSelectWrapper">
+                                    <select class="input-sm form-control">
+                                        <option value="">选择订单编号</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Type" class="col-xs-2 control-label">类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Type" class="input-sm form-control">
+                                        @foreach (LogisticsOrderRefundType refundType in Model.TypeList)
+                                        {
+                                            <option value="@(refundType.Id)">@(refundType.Name)-@(refundType.Description)</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Amount" class="col-xs-2 control-label">退赔金额</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Amount" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ReasonId" class="col-xs-2 control-label">退赔原因</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="ReasonId" type="text" class="input-sm form-control">
+                                        @foreach (RefundReasonInfo reason in Model.ReasonList)
+                                        {
+                                            <option value="@(reason.Id)">@(reason.Content)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ApplyMemo" class="col-xs-2 control-label">申请备注</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="ApplyMemo" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsOrderRefundApply();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.ApplyId != 0)
+{
+    <script type="text/javascript">
+        $(function() {
+            checkOrder();
+        });
+    </script>
+}

@@ -1,0 +1,188 @@
+@{
+    Layout = null;
+}
+@using Domain
+@using Domain.LogisticsOrder
+@model Web.Areas.Admin.Models.LogisticsOrderRefundApprove.LogisticsOrderRefundApproveListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderRefundApplyList"})
+
+<table id="tblLogisticsOrderRefundApplyList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="logisticsOrderRefundApplyCheckAll"></label><input id="logisticsOrderRefundApplyCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Customer)).@(nameof(LogisticsOrderRefundApplyInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">客户</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Order)).@(nameof(LogisticsOrderRefundApplyInfo.Order.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">订单</a>
+                </div>
+            </th>
+            <th style="width: 80px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">类型</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">状态</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: right;">
+                <a field="@(nameof(LogisticsOrderRefundApplyInfo.Amount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">退赔金额</a>
+            </th>
+            <th style="width: 180px;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.PayType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">退赔支付方式</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ReasonContent))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">退赔原因</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApplyUser)).@(nameof(LogisticsOrderRefundApplyInfo.ApplyUser.UserName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">申请人</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApplyTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">申请时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApproveUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">审核人</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApproveTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">审核时间</a>
+                </div>
+            </th>
+            <th style="width: 200px;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApplyMemo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">申请备注</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.ApproveMemo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">审核备注</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">创建时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderRefundApplyInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRefundApplyList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsOrderRefundApplyList != null && Model.LogisticsOrderRefundApplyList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsOrderRefundApplyInfo logisticsOrderRefundApply in Model.LogisticsOrderRefundApplyList)
+            {
+                string applyCountStyleColor = "";
+                if (logisticsOrderRefundApply.OrderApplyCountCache > 1)
+                {
+                    applyCountStyleColor = "color: red;";
+                }
+                
+                <tr ondblclick="showLogisticsOrderRefundApplyDetail(@(logisticsOrderRefundApply.Id));">
+                    <td style="text-align: center;">
+                        <label for="logisticsOrderRefundApplyCheck_@(logisticsOrderRefundApply.Id)"></label><input id="logisticsOrderRefundApplyCheck_@(logisticsOrderRefundApply.Id)" type="checkbox" class="ace" value="@logisticsOrderRefundApply.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = logisticsOrderRefundApply.Customer?.Id})">
+                                @(logisticsOrderRefundApply.Customer?.CustomerCode)
+                            </a>
+                        </div>
+                        <div>
+                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrderRefundApply.Order?.Id})">
+                                @(logisticsOrderRefundApply.Order?.Code)
+                            </a>
+                        </div>
+                        <div>
+                            <a href="javascript:loadListByOrderCode('@(logisticsOrderRefundApply.Order?.Code)')">
+                                订单共<span style="@(applyCountStyleColor)">@(logisticsOrderRefundApply.OrderApplyCountCache)</span>条申请
+                            </a>
+                        </div>                        
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @(logisticsOrderRefundApply.Type.Name)
+                        </div>
+                        <div>
+                            @(logisticsOrderRefundApply.Status.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        @logisticsOrderRefundApply.Amount
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.PayType?.Name)
+                        </div>
+                        <div style="color: #08008c;">
+                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.ReasonContent)
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                         <div style="color: #08008c;">
+                            @(logisticsOrderRefundApply.ApplyUser?.LoginName)<span>&nbsp;</span>@(logisticsOrderRefundApply.ApplyUser?.UserName)
+                        </div>
+                        <div>
+                            @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderRefundApply.ApplyTime)
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div style="color: #08008c;">
+                            @if (logisticsOrderRefundApply.ApproveUser != null)
+                            {
+                                @(logisticsOrderRefundApply.ApproveUser?.LoginName)
+                                <span>&nbsp;</span>
+                                @(logisticsOrderRefundApply.ApproveUser?.UserName)
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>                        
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderRefundApply.ApproveTime)
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.ApplyMemo)
+                        </div>
+                        <div style="color: #08008c;">
+                            @ListDataUtil.RenderStringWithDiv(logisticsOrderRefundApply.ApproveMemo)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsOrderRefundApply.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                        <div>
+                            @logisticsOrderRefundApply.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderRefundApplyList"})

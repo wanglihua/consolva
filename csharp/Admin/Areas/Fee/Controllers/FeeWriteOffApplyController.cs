@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using shunda.Admin.Areas.Fee.Models.FeeWriteOffApply;
-using shunda.Admin.Areas.Fee.Models.FeeWriteOffApply.Web.Areas.Admin.Models.FeeWriteOffApply;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -22,9 +21,9 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 [AdminAuth(PassRes.Fee.WriteOffFeeApply)]
 public class FeeWriteOffApplyController : Controller
 {
-    private ISession session = null;
-    private CustomerCodeService customerCodeService = null;
-    private LoginUserService loginUserService = null;
+    private ISession session;
+    private CustomerCodeService customerCodeService;
+    private LoginUserService loginUserService;
     private LogisticsOrderFeeReturnToCustomerService logisticsOrderFeeReturnToCustomerService;
 
     public FeeWriteOffApplyController(ISession session,

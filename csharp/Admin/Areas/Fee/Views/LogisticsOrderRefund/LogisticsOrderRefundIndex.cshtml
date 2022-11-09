@@ -1,0 +1,151 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model LogisticsOrderRefundIndexModel
+@using Web.Areas.Admin.Models.LogisticsOrderRefund
+@{
+    ViewBag.Title = "退赔款";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="order-fee-menu">费用管理</li>
+    <li class="parent" data-menu="order-fee-refund-menu">退赔款</li>
+    <li class="active" data-menu="order-fee-refund-index-menu">退赔款</li>
+}
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="typeQuery">类型</label>
+    <select id="typeQuery" name="typeQuery" style="width: 90px; height: 30px;">
+        <option value="">类型查询</option>
+        @foreach (var type in Model.TypeList)
+        {
+            <option value="@(type.Id)">@(type.Name)</option>
+        }
+    </select>&nbsp;
+
+    <label for="orderCodeQuery">订单编号</label>&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询" />&nbsp;
+
+    <label for="customerIdQuery">客户ID</label>&nbsp;
+    <input id="customerIdQuery" name="customerIdQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询" />&nbsp;
+
+    <label for="reasonQuery">退赔款原因</label>&nbsp;<input id="reasonQuery" name="reasonQuery" style="width: 100px; height: 30px;" placeholder="退赔款原因查询"/>&nbsp;
+
+    <label for="statusQuery">状态</label>
+    <select id="statusQuery" name="statusQuery" style="width: 90px; height: 30px;">
+        <option value="">状态查询</option>
+        @foreach (var status in Model.StatusList)
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>&nbsp;
+    
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderRefundList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+    <button class="btn btn-purple btn-sm" style="margin-bottom: 3px; height: 30px;" onclick="exportExcel()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>    
+</div>
+
+<div id="logisticsOrderRefundList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderRefundInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsOrderRefundDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#beginDateQuery").on("dp.change", function (e) {
+            $('#endDateQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#endDateQuery").on("dp.change", function (e) {
+            $('#beginDateQuery').data("DateTimePicker").maxDate(e.date);
+        });
+        
+        loadLogisticsOrderRefundList();
+    });
+
+    function sortLogisticsOrderRefundList(sortField, sortDir) {
+        var list = $('#logisticsOrderRefundList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsOrderRefundList();
+    }
+
+    function loadLogisticsOrderRefundList(pageIndex) {
+        var list = $('#logisticsOrderRefundList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsOrderRefund")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsOrderRefundListQueryParam.TypeQuery))': $('#typeQuery').val(),
+                '@(nameof(LogisticsOrderRefundListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(LogisticsOrderRefundListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(LogisticsOrderRefundListQueryParam.ReasonQuery))': $('#reasonQuery').val(),
+                '@(nameof(LogisticsOrderRefundListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(LogisticsOrderRefundListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(LogisticsOrderRefundListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
+                '@(nameof(LogisticsOrderRefundListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsOrderRefundListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsOrderRefundListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderRefundList').html(data);
+
+                initListTable("#tblLogisticsOrderRefundList");
+            }
+        });
+    }
+    
+    function exportExcel() {
+        var params = $.param({
+                "@(nameof(LogisticsOrderRefundListQueryParam.TypeQuery))": $("#typeQuery").val(),
+                "@(nameof(LogisticsOrderRefundListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(LogisticsOrderRefundListQueryParam.CustomerCodeQuery))": $("#customerIdQuery").val(),
+                "@(nameof(LogisticsOrderRefundListQueryParam.ReasonQuery))": $("#reasonQuery").val(),
+                "@(nameof(LogisticsOrderRefundListQueryParam.StatusQuery))": $("#statusQuery").val(),
+                "@(nameof(LogisticsOrderRefundListQueryParam.BeginDateQuery))": $("#beginDateQuery").val(),
+                "@(nameof(LogisticsOrderRefundListQueryParam.EndDateQuery))": $("#endDateQuery").val()
+        });
+
+        var url = '@Url.Action("Export", "LogisticsOrderRefund")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }    
+
+</script>

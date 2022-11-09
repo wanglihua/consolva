@@ -1,0 +1,356 @@
+@using Domain
+@using Domain.LogisticsOrder
+@model LogisticsOrderRefundApplyIndexModel
+@using Web.Areas.Admin.Models.LogisticsOrderRefundApply
+@{
+    ViewBag.Title = "退赔款申请";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="order-fee-menu">费用管理</li>
+    <li class="parent" data-menu="order-fee-refund-menu">退赔款</li>
+    <li class="active" data-menu="order-fee-refund-apply-index-menu">退赔款申请</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderRefundApplyList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsOrderRefundApplyDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsOrderRefundApply()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+
+    <button type="button" class="btn btn-pink btn-sm" onclick="sumbitLogisticsOrderRefundApply()">
+        <i class="ace-icon fa fa-reply fa-flip-horizontal"></i>
+        提交
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <label for="typeQuery">类型</label>
+    <select id="typeQuery" name="typeQuery" style="width: 90px; height: 30px;">
+        <option value="">类型查询</option>
+        @foreach (var type in Model.TypeList)
+        {
+            <option value="@(type.Id)">@(type.Name)</option>
+        }
+    </select>&nbsp;
+
+    <label for="orderCodeQuery">订单编号</label>&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询" />&nbsp;
+
+    <label for="customerIdQuery">客户ID</label>&nbsp;
+    <input id="customerIdQuery" name="customerIdQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+
+    <label for="reasonQuery">退赔款原因</label>&nbsp;<input id="reasonQuery" name="reasonQuery" style="width: 100px; height: 30px;" placeholder="退赔款原因查询"/>&nbsp;
+
+    <label for="statusQuery">状态</label>
+    <select id="statusQuery" name="statusQuery" style="width: 90px; height: 30px;">
+        <option value="">状态查询</option>
+        @foreach (var status in Model.StatusList)
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>&nbsp;
+    
+    <select id="viewScopeQuery" name="viewScopeQuery" style="width: 120px; height: 30px;">
+        @foreach (var scope in Model.ScopeList)
+        {
+            <option value="@(scope.Id)">@(scope.Name)</option>
+        }
+    </select>&nbsp;   
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderRefundApplyList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsOrderRefundApplyList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderRefundApplyInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsOrderRefundApplyDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsOrderRefundApplyList();
+    });
+
+    function sortLogisticsOrderRefundApplyList(sortField, sortDir) {
+        var list = $('#logisticsOrderRefundApplyList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsOrderRefundApplyList();
+    }
+    
+    function loadListByOrderCode(orderCode) {
+        $('#typeQuery').val("");
+        $('#orderCodeQuery').val(orderCode);
+        $('#customerIdQuery').val("");
+        $('#reasonQuery').val("");
+        $('#statusQuery').val("");
+        $('#viewScopeQuery').val("");
+        
+        loadLogisticsOrderRefundApplyList(0);
+    }      
+
+    function loadLogisticsOrderRefundApplyList(pageIndex) {
+        var list = $('#logisticsOrderRefundApplyList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsOrderRefundApply")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.TypeQuery))': $('#typeQuery').val(),
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.CustomerCodeQuery))': $('#customerIdQuery').val(),
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.ReasonQuery))': $('#reasonQuery').val(),
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.ViewScopeQuery))': $('#viewScopeQuery').val(),
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsOrderRefundApplyListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderRefundApplyList').html(data);
+
+                initListTable("#tblLogisticsOrderRefundApplyList");
+            }
+        });
+    }
+
+    function showLogisticsOrderRefundApplyDetail(id) {
+        $("#logisticsOrderRefundApplyDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsOrderRefundApplyDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "LogisticsOrderRefundApply")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsOrderRefundApplyDetailDialogWrapper").html(data);
+                $("#logisticsOrderRefundApplyDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveLogisticsOrderRefundApply() {
+        $.ajax({
+            url: '@Url.Action("CheckOrder", "LogisticsOrderRefundApply")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    $.msg.confirm(data.message + "确认要继续吗？",
+                        function() {
+                            saveLogisticsOrderRefundApplyInternal();
+                        }
+                    );                    
+                } else {
+                    saveLogisticsOrderRefundApplyInternal();
+                }
+            }
+        });        
+    }
+    
+    function saveLogisticsOrderRefundApplyInternal() {       
+        var form = $("#logisticsOrderRefundApplyDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerCode': {
+                    required: true
+                },
+                'OrderCode': {
+                    required: true
+                },
+                'Fee': {
+                    required: true,
+                    number: true
+                },
+                'Reason': {
+                    required: true,
+                    maxlength: 300
+                },
+                'Description': {
+                    required: false,
+                    maxlength: 300
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsOrderRefundApply")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#logisticsOrderRefundApplyDetailDialog').modal('hide');
+                        loadLogisticsOrderRefundApplyList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }    
+
+    function deleteLogisticsOrderRefundApply() {
+        var idList = getSelectIdList('#tblLogisticsOrderRefundApplyList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Delete", "LogisticsOrderRefundApply")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadLogisticsOrderRefundApplyList();
+                    }
+                });
+            }
+        );
+    }
+    function sumbitLogisticsOrderRefundApply() {
+        var idList = getSelectIdList('#tblLogisticsOrderRefundApplyList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要提交吗？",
+            function() {
+                $.ajax({
+                    url: '@Url.Action("Submit", "LogisticsOrderRefundApply")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadLogisticsOrderRefundApplyList();
+                    }
+                });
+            }
+        );
+    }        
+    
+    function orderSelectChange() {
+        $("#OrderCode").val($("#orderSelect").val());
+    }
+
+    function customerCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerRecentOrderSelect", "CommonInfo")',
+            type: "POST",
+            data: {
+                "customerCode": $("#CustomerCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#orderSelectWrapper").html(data);
+                    return;
+                }
+            }
+        });        
+    }
+
+    function orderCodeChange() {
+        $.ajax({
+            url: '@Url.Action("GetCustomerCodeByOrderCode", "CommonInfo")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    // $.msg.error(data.message);
+                    return;
+                } else {
+                    $("#CustomerCode").val(data.customerCode);
+                    return;
+                }
+            }
+        }); 
+       
+        checkOrder();
+    }
+    
+    function checkOrder() {
+        $.ajax({
+            url: '@Url.Action("CheckOrder", "LogisticsOrderRefundApply")',
+            type: "POST",
+            data: {
+                "orderCode": $("#OrderCode").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    $("#applyCheckMessage").html(data.message);
+                } else {
+                    $("#applyCheckMessage").html("");
+                }
+            }
+        });
+    }
+
+</script>

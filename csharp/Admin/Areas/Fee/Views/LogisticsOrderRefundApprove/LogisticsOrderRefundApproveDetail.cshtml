@@ -1,0 +1,137 @@
+@using Domain
+@model Web.Areas.Admin.Models.LogisticsOrderRefundApprove.LogisticsOrderRefundApproveDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsOrderRefundApplyDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">订单退赔款申请详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsOrderRefundApplyDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="ApplyId" type="hidden" />
+                    <div class="row">
+                        
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="customerCode" class="col-xs-4 control-label">客户</label>
+                                <div class="col-xs-8">
+                                    <input id="customerCode" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply?.Customer?.CustomerCode)" disabled="disabled" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="orderCode" class="col-xs-4 control-label">订单</label>
+                                <div class="col-xs-8">
+                                    <input id="orderCode" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply?.Order?.Code)" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="applyType" class="col-xs-4 control-label">类型</label>
+                                <div class="col-xs-8">
+                                    <input id="applyType" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply?.Type?.Name)" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="amount" class="col-xs-4 control-label">退赔金额</label>
+                                <div class="col-xs-8">
+                                    <input id="amount" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply?.Amount.ToString("0.00"))" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="payType" class="col-xs-4 control-label">退赔支付方式</label>
+                                <div class="col-xs-8">
+                                    <input id="payType" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply.PayType?.Name)" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="applyStatus" class="col-xs-4 control-label">状态</label>
+                                <div class="col-xs-8">
+                                    <input id="applyStatus" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply.Status?.Name)" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="applyUser" class="col-xs-4 control-label">申请人</label>
+                                <div class="col-xs-8">
+                                    <input id="applyUser" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply.ApplyUser?.UserName)" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="applyTime" class="col-xs-4 control-label">申请时间</label>
+                                <div class="col-xs-8">
+                                    <input id="applyTime" type="text" class="input-sm form-control" value="@(Model.LogisticsOrderRefundApply.ApplyTime?.ToString("yyyy-MM-dd"))" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsOrderRefundApply.ReasonContent" class="col-xs-2 control-label">退赔款原因</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LogisticsOrderRefundApply.ReasonContent" type="text" class="input-sm form-control" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>                        
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsOrderRefundApply.ApplyMemo" class="col-xs-2 control-label">申请备注</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="LogisticsOrderRefundApply.ApplyMemo" type="text" class="input-sm form-control" rows="3" disabled="disabled"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ApproveMemo" class="col-xs-2 control-label">审核备注</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="ApproveMemo" type="text" class="input-sm form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-pink btn-sm" onclick="backLogisticsOrderRefundApply()">
+                    <i class="ace-icon fa fa-reply"></i>
+                    回退
+                </button>
+
+                <button type="button" class="btn btn-purple btn-sm" onclick="approveLogisticsOrderRefundApply()">
+                    <i class="ace-icon fa fa-reply fa-flip-horizontal"></i>
+                    审核
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

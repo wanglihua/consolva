@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
+using NHibernate.Linq;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
@@ -51,8 +52,9 @@ public class ManualFeeApproveController : Controller
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.ManualDecrease).ToList();
         model.ApplyStatusList = ManualFeeApplyStatus.GetApproveViewList();
 
-        model.ApplyUserList = Queryable.OrderBy<ManualFeeApplyInfo, string>(session.Query<ManualFeeApplyInfo>()
-                .Fetch(e => e.ApplyUser), e => e.ApplyUser.LoginName)
+        model.ApplyUserList = session.Query<ManualFeeApplyInfo>()
+            .Fetch(e => e.ApplyUser)
+            .OrderBy(e => e.ApplyUser.LoginName)
             .Select(e => e.ApplyUser)
             .Distinct()
             .ToList();
