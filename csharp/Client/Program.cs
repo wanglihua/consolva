@@ -1,9 +1,10 @@
-
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using NHibernate;
 using NLog.Web;
+using shunda.Client.Filters;
+using shunda.Client.Middlewares;
 using shunda.Core;
 using shunda.Core.Binder;
 using shunda.Core.Config;
@@ -37,31 +38,23 @@ public class Program
 
         // Add services to the container.
         var services = builder.Services;
-        
-        /*
 
         services.AddScoped<RequestLogActionFilter>();
         services.AddScoped<LoginTimeoutResetActionFilter>();
         services.AddScoped<HibernateActionFilter>();
         services.AddScoped<HeaderActionFilter>();
-        services.AddScoped<AdminAuthActionFilter>();
+        // services.AddScoped<ClientAuthActionFilter>(); 这里没必要这个
         services.AddScoped<ExceptionFilter>();
-
-         */
 
         var mvcBuilder = services.AddControllersWithViews()
             .AddMvcOptions(options => {
                 // 执行顺序是从上到下的
-                /*
-
                 options.Filters.AddService<RequestLogActionFilter>(); // 这个Filter执行时 sessionId 应该已经有了
                 options.Filters.AddService<LoginTimeoutResetActionFilter>(); // 这个Filter执行时 sessionId 应该已经有了
                 options.Filters.AddService<HibernateActionFilter>();
                 options.Filters.AddService<HeaderActionFilter>();
-                options.Filters.AddService<AdminAuthActionFilter>();
+                // options.Filters.AddService<AdminAuthActionFilter>(); 这里没必要这个
                 options.Filters.AddService<ExceptionFilter>();
-
-                 */
 
                 // 数据绑定相关
                 options.ModelBindingMessageProvider.SetMissingBindRequiredValueAccessor(name => $"{name}为必填项！");
@@ -111,9 +104,7 @@ public class Program
         );
 
         // 必须 Scoped 
-        services.AddScoped(provider => {
-                return HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!);
-            }
+        services.AddScoped(provider => { return HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!); }
         );
 
 #if DEBUG
@@ -135,12 +126,10 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
-
-        /*
+        
         app.UseMiddleware<SessionIdCookieMiddleware>();
         app.UseMiddleware<RequestLogMiddleware>(); // 还是放在有了 sessionId 后放心点
         app.UseMiddleware<HibernateMiddleware>();
-        */
 
 #if DEBUG
         app.UseMiniProfiler();
@@ -158,6 +147,6 @@ public class Program
             // endpoints.MapHub<HandleHub>("/hub/handle");
         });
 
-        app.Run();        
+        app.Run();
     }
 }

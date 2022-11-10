@@ -31,7 +31,7 @@ public class ExceptionFilter : IExceptionFilter
 
         if (exp.InnerException != null) model.Message = model.Message + exp.InnerException.Message;
 
-        if (exp is StaleObjectStateException) model.Message = "并发冲突，另一个操作已更改数据，或该操作已成功！请重试确认！";
+        // if (exp is StaleObjectStateException) model.Message = "并发冲突，另一个操作已更改数据，或该操作已成功！请重试确认！"; 现在这个一般不会发生
 
         var request = context.HttpContext.Request;
         if (WebUtil.ShouldShowJson(request))
