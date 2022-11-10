@@ -107,24 +107,18 @@ public class CaptchaService
     public string RandNum(int codeLength = defaultCodeLength)
     {
         string code = ""; //产生的随机数
-        int temp = -1; //记录上次随机数值，尽量避避免生产几个一样的随机数
+        Dictionary<int, bool> codeIndexMap = new Dictionary<int, bool>();
         Random rand = new Random();
-        //采用一个简单的算法以保证生成随机数的不同
-        for (int i = 1; i < codeLength + 1; i++)
+        for (int i = 0; i < codeLength; i++)
         {
-            if (temp != -1)
+            int codeIndex = rand.Next(captchaCharArray.Length);
+            while (codeIndexMap.ContainsKey(codeIndex))
             {
-                rand = new Random(i * temp * unchecked((int)DateTime.Now.Ticks)); //初始化随机类
+                codeIndex = rand.Next(captchaCharArray.Length);
             }
-
-            int t = rand.Next(captchaCharArray.Length - 1); //获取随机数，这里其实不用 -1 的
-            if (temp != -1 && temp == t)
-            {
-                return RandNum(codeLength); //如果获取的随机数重复，则递归调用
-            }
-
-            temp = t; //把本次产生的随机数记录起来
-            code += captchaCharArray[t]; //随机数的位数加一
+            
+            code += captchaCharArray[codeIndex]; //随机数的位数加一
+            codeIndexMap.Add(codeIndex, true);
         }
 
         return code;

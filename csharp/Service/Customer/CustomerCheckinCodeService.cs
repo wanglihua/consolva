@@ -35,9 +35,9 @@ public class CustomerCheckinCodeService
 
     /// <summary>
     /// 生成一个跟现有的不相重的入库校验码
+    /// 新客户保存成功后，调用这个方法生成入库校验码，再更新刚刚的客户信息。
     /// </summary>
-    /// <returns></returns>
-    public string GenerateNewCheckinCode()
+    public string GenerateNewCheckinCode(int customerId)
     {
         if (checkinCodeCustomerIdMap.Count == 0)
         {
@@ -54,7 +54,6 @@ public class CustomerCheckinCodeService
         string code = ""; //产生的随机数
         Dictionary<int, bool> codeIndexMap = new Dictionary<int, bool>();
         Random rand = new Random();
-        //采用一个简单的算法以保证生成随机数的不同
         for (int i = 0; i < CODE_LENGTH; i++)
         {
             int codeIndex = rand.Next(checkinCodeCharArray.Length);
