@@ -104,7 +104,7 @@ public class CaptchaService
     private static readonly string captchaChars = "a,b,c,d,e,f,g,h,j,k,m,n,p,r,s,t,u,v,w,x,y";
     private static readonly string[] captchaCharArray = captchaChars.Split(new Char[] { ',' });
 
-    private string RandNum(int codeLength = defaultCodeLength)
+    public string RandNum(int codeLength = defaultCodeLength)
     {
         string code = ""; //产生的随机数
         int temp = -1; //记录上次随机数值，尽量避避免生产几个一样的随机数
