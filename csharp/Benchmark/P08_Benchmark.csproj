@@ -5,7 +5,17 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Benchmark</RootNamespace>
+        <RootNamespace>shunda.Benchmark</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Core\P06_Core.csproj" />
+      <ProjectReference Include="..\Domain\P03_Domain.csproj" />
+      <ProjectReference Include="..\Service\P02_Service.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+    </ItemGroup>
 
 </Project>

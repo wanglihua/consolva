@@ -1,0 +1,1 @@
+dotnet run --project P08_Benchmark.csproj -c Release

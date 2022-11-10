@@ -36,6 +36,7 @@
 /csharp/Benchmark/bin/
 /csharp/Benchmark/obj/
 /csharp/Benchmark/Logs/
+/csharp/Benchmark/BenchmarkDotNet.Artifacts
 
 /csharp/.idea/
 
