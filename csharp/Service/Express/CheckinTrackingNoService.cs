@@ -49,7 +49,6 @@ public class CheckinTrackingNoService
                 yearLabel = GetYearLetter(year);
                 monthLabel = GetMonthLetter(month);
 
-
                 sessionLocal.Flush();
                 transaction.Commit();
             }

@@ -25,7 +25,13 @@
     update_time        DATETIME                     NOT NULL COMMENT '更新时间',
 
     INDEX ix_customer_mobile (mobile),
-    INDEX ix_customer_open_id (open_id)
+    INDEX ix_customer_open_id (open_id),
+    UNIQUE INDEX ix_customer_checkin_code (checkin_code)
     # INDEX ix_customer_customer_character (customer_character), 这个很少查询 
     # INDEX ix_customer_create_time (create_time) 很少按这个查询 
 ) COMMENT '客户';
+
+DROP VIEW IF EXISTS view_customer_checkin_code;
+CREATE VIEW view_customer_checkin_code AS
+SELECT c.id, c.checkin_code
+FROM tbl_customer c;

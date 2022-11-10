@@ -100,12 +100,12 @@ public class CaptchaService
         }
     }
 
+    // string captchaChars = "3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,j,k,m,n,p,r,s,t,u,v,w,x,y,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,U,V,W,X,Y";
+    private static readonly string captchaChars = "a,b,c,d,e,f,g,h,j,k,m,n,p,r,s,t,u,v,w,x,y";
+    private static readonly string[] captchaCharArray = captchaChars.Split(new Char[] { ',' });
+
     private string RandNum(int codeLength = defaultCodeLength)
     {
-        // string vcChars = "3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,j,k,m,n,p,r,s,t,u,v,w,x,y,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,U,V,W,X,Y";
-        string vcChars = "a,b,c,d,e,f,g,h,j,k,m,n,p,r,s,t,u,v,w,x,y";
-        string[] vcCharArray = vcChars.Split(new Char[] { ',' });
-
         string code = ""; //产生的随机数
         int temp = -1; //记录上次随机数值，尽量避避免生产几个一样的随机数
         Random rand = new Random();
@@ -117,14 +117,14 @@ public class CaptchaService
                 rand = new Random(i * temp * unchecked((int)DateTime.Now.Ticks)); //初始化随机类
             }
 
-            int t = rand.Next(vcCharArray.Length - 1); //获取随机数
+            int t = rand.Next(captchaCharArray.Length - 1); //获取随机数，这里其实不用 -1 的
             if (temp != -1 && temp == t)
             {
                 return RandNum(codeLength); //如果获取的随机数重复，则递归调用
             }
 
             temp = t; //把本次产生的随机数记录起来
-            code += vcCharArray[t]; //随机数的位数加一
+            code += captchaCharArray[t]; //随机数的位数加一
         }
 
         return code;
