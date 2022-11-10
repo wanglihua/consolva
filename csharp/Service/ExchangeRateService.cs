@@ -3,6 +3,7 @@ using NHibernate;
 using NLog;
 using shunda.Core;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using shunda.Domain;
 using shunda.Domain.Fee;
@@ -14,7 +15,7 @@ public class ExchangeRateService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session ;
+    private ISession session;
     private HttpRequestService httpRequestService;
     private SiteErrorService siteErrorService;
 
@@ -34,7 +35,6 @@ public class ExchangeRateService
     /// <exception cref="Exception"></exception>
     public decimal GetAudRate()
     {
-
         ExchangeRateInfo? exchangeRateInfo = session.Query<ExchangeRateInfo>()
             .Where(e => e.FromCurrency == CurrencyType.AUD && e.ToCurrency == CurrencyType.CNY)
             .Take(1)
@@ -122,27 +122,27 @@ public class ExchangeRateService
         return usdRate;
     }
 
-    public void RefreshRate(bool useInnerTransaction)
+    public void RefreshRate()
     {
-        RefreshSingleRate(CurrencyType.AUD, CurrencyType.CNY, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.USD, CurrencyType.CNY, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.EUR, CurrencyType.CNY, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.HKD, CurrencyType.CNY, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.JPY, CurrencyType.CNY, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.KRW, CurrencyType.CNY, useInnerTransaction);
+        RefreshSingleRate(CurrencyType.AUD, CurrencyType.CNY);
+        RefreshSingleRate(CurrencyType.USD, CurrencyType.CNY);
+        RefreshSingleRate(CurrencyType.EUR, CurrencyType.CNY);
+        RefreshSingleRate(CurrencyType.HKD, CurrencyType.CNY);
+        RefreshSingleRate(CurrencyType.JPY, CurrencyType.CNY);
+        RefreshSingleRate(CurrencyType.KRW, CurrencyType.CNY);
 
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.AUD, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.USD, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.EUR, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.HKD, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.JPY, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.KRW, useInnerTransaction);
+        RefreshSingleRate(CurrencyType.CNY, CurrencyType.AUD);
+        RefreshSingleRate(CurrencyType.CNY, CurrencyType.USD);
+        RefreshSingleRate(CurrencyType.CNY, CurrencyType.EUR);
+        RefreshSingleRate(CurrencyType.CNY, CurrencyType.HKD);
+        RefreshSingleRate(CurrencyType.CNY, CurrencyType.JPY);
+        RefreshSingleRate(CurrencyType.CNY, CurrencyType.KRW);
 
-        RefreshSingleRate(CurrencyType.AUD, CurrencyType.HKD, useInnerTransaction);
-        RefreshSingleRate(CurrencyType.HKD, CurrencyType.AUD, useInnerTransaction);
+        RefreshSingleRate(CurrencyType.AUD, CurrencyType.HKD);
+        RefreshSingleRate(CurrencyType.HKD, CurrencyType.AUD);
     }
 
-    public void RefreshSingleRate(CurrencyType currencyTypeFrom, CurrencyType currencyTypeTo, bool useInnerTransaction)
+    public void RefreshSingleRate(CurrencyType currencyTypeFrom, CurrencyType currencyTypeTo)
     {
         if (currencyTypeFrom == null || currencyTypeFrom == CurrencyType.None)
         {
@@ -180,14 +180,7 @@ public class ExchangeRateService
             .Take(1)
             .SingleOrDefault();
 
-        ITransaction? transaction = null;
-        try
-        {
-            if (useInnerTransaction)
-            {
-                transaction = session.BeginTransaction();
-            }
-
+        Transactional.Wrap(session, () => {
             if (exchangeRate == null)
             {
                 exchangeRate = new ExchangeRateInfo();
@@ -208,23 +201,7 @@ public class ExchangeRateService
             }
 
             session.Flush();
-
-            if (useInnerTransaction)
-            {
-                transaction?.Commit();
-            }
-        }
-        catch (Exception exp)
-        {
-            if (useInnerTransaction)
-            {
-                transaction?.Rollback();
-            }
-
-            log.Error(exp);
-
-            throw;
-        }
+        });
     }
 
     // {"status":"0","msg":"ok","result":{"from":"AUD","to":"CNY","fromname":"澳大利亚元","toname":"人民币","updatetime":"2019-01-04 20:40:00","rate":"4.8348","camount":"4.8348"}}

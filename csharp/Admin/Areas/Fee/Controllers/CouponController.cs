@@ -266,6 +266,7 @@ public class CouponController : Controller
 
     [HttpPost]
     [Route("/admin/coupon/import/grant")]
+    // 内部有事务 
     public IActionResult ImportGrant(int batchId, IFormFile excelFile)
     {
         if (excelFile == null)
@@ -374,11 +375,7 @@ public class CouponController : Controller
 
         // 发放
 
-        ITransaction? transaction = null;
-        try
-        {
-            transaction = session.BeginTransaction();
-
+        Transactional.Wrap(session, () => {
             var now = DateTime.Now;
             IList<CouponInfo> couponList = new List<CouponInfo>();
             foreach (var importItem in importItemList)
@@ -412,29 +409,20 @@ public class CouponController : Controller
 
             session.Flush();
 
-            transaction.Commit();
-        }
-        catch (Exception exp)
-        {
-            transaction?.Rollback();
+            // 更新批次已领取总数量
+            couponBatchService.SumAndSaveBatchTotalPicked(batchId);
 
-            log.Error(exp);
-            throw;
-        }
-
-        // 更新批次已领取总数量
-        couponBatchService.SumAndSaveBatchTotalPicked(batchId);
-
-        if (batch.Status == CouponBatchStatus.Release) // 发布状态才设置
-        {
-            if (batch.TotalQuantity <= batch.PickQuantity)
+            if (batch.Status == CouponBatchStatus.Release) // 发布状态才设置
             {
-                batch.Status = CouponBatchStatus.Picked;
-                session.Update(batch);
+                if (batch.TotalQuantity <= batch.PickQuantity)
+                {
+                    batch.Status = CouponBatchStatus.Picked;
+                    session.Update(batch);
 
-                session.Flush();
+                    session.Flush();
+                }
             }
-        }
+        });
 
         return Json(new {
             success = true,

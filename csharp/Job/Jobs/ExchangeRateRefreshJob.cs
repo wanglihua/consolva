@@ -51,7 +51,7 @@ public class ExchangeRateRefreshJob : IJob
                 new SiteErrorService(session)
             );
 
-            exchangeRateService.RefreshRate(useInnerTransaction: true); // 内部有事务处理
+            exchangeRateService.RefreshRate(); // 内部有事务处理
 
             session.Flush();
         }

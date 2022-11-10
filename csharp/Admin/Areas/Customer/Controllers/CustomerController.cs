@@ -544,11 +544,7 @@ public class CustomerController : Controller
             if (mobileListInDb.Count != 0) throw new ValidationException($"Excel中手机号码 {string.Join(",", mobileListInDb)} 数据库中已经存在！");
         }
 
-        ITransaction? transaction = null;
-        try
-        {
-            transaction = session.BeginTransaction();
-
+        Transactional.Wrap(session, () => {
             foreach (var customer in customerList)
             {
                 customer.CustomerCharacter = "测试账户";
@@ -576,16 +572,7 @@ public class CustomerController : Controller
             }
 
             session.Flush();
-
-            transaction.Commit();
-        }
-        catch (Exception exp)
-        {
-            transaction?.Rollback();
-
-            log.Error(exp);
-            throw;
-        }
+        });
 
         return Json(new Dictionary<string, object> {
             { "success", true },

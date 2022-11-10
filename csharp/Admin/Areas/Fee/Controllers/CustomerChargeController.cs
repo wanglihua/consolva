@@ -213,11 +213,7 @@ public class CustomerChargeController : Controller
             importItemList.Add(importItem);
         }
 
-        ITransaction? transaction = null;
-        try
-        {
-            transaction = session.BeginTransaction();
-
+        Transactional.Wrap(session, () => {
             var dataIndex = 1;
             foreach (var importItem in importItemList)
             {
@@ -244,16 +240,7 @@ public class CustomerChargeController : Controller
             }
 
             session.Flush();
-
-            transaction.Commit();
-        }
-        catch (Exception exp)
-        {
-            transaction?.Rollback();
-
-            log.Error(exp);
-            throw;
-        }
+        });
 
         return Json(new Dictionary<string, object> {
             { "success", true },

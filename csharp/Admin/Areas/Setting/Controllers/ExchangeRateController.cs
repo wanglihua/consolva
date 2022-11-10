@@ -111,7 +111,7 @@ public class ExchangeRateController : Controller
     // trans in exchangeRateService.RefreshRate();
     public IActionResult Refresh()
     {
-        exchangeRateService.RefreshRate(true);
+        exchangeRateService.RefreshRate();
 
         return Json(new Dictionary<string, object> {
             { "success", true },
