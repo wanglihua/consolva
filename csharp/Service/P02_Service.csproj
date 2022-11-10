@@ -1,19 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <AssemblyName>shunda.Client</AssemblyName>
-        <RootNamespace>shunda.Client</RootNamespace>
+        <Nullable>enable</Nullable>
+        <AssemblyName>shunda.Service</AssemblyName>
+        <RootNamespace>shunda.Service</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.13.0" />
         <PackageReference Include="CSRedisCore" Version="3.8.669" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.10" />
-        <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
         <PackageReference Include="MySql.Data" Version="8.0.31" />
         <PackageReference Include="NETCore.Encrypt" Version="2.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -29,9 +27,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Core\Core.csproj" />
-        <ProjectReference Include="..\Domain\Domain.csproj" />
-        <ProjectReference Include="..\Service\Service.csproj" />
+        <ProjectReference Include="..\Core\P06_Core.csproj" />
+        <ProjectReference Include="..\Domain\P03_Domain.csproj" />
     </ItemGroup>
-
+    
 </Project>

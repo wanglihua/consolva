@@ -7,6 +7,8 @@ namespace shunda.Service.Customer;
 [Service(ServiceType.Scoped)]
 public class CustomerCheckinCodeService
 {
+    private const int CODE_LENGTH = 5;
+
     private readonly ISession session;
 
     public CustomerCheckinCodeService(ISession session)
@@ -47,13 +49,13 @@ public class CustomerCheckinCodeService
         return string.Empty;
     }
 
-    private string RandCode(int codeLength)
+    public string RandCode()
     {
         string code = ""; //产生的随机数
         Dictionary<int, bool> codeIndexMap = new Dictionary<int, bool>();
         Random rand = new Random();
         //采用一个简单的算法以保证生成随机数的不同
-        for (int i = 0; i < codeLength; i++)
+        for (int i = 0; i < CODE_LENGTH; i++)
         {
             int codeIndex = rand.Next(checkinCodeCharArray.Length);
             while (codeIndexMap.ContainsKey(codeIndex))

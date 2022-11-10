@@ -4,8 +4,8 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <AssemblyName>shunda.Admin</AssemblyName>
-        <RootNamespace>shunda.Admin</RootNamespace>
+        <AssemblyName>shunda.Client</AssemblyName>
+        <RootNamespace>shunda.Client</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,9 +29,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Core\Core.csproj" />
-        <ProjectReference Include="..\Domain\Domain.csproj" />
-        <ProjectReference Include="..\Service\Service.csproj" />
+        <ProjectReference Include="..\Core\P06_Core.csproj" />
+        <ProjectReference Include="..\Domain\P03_Domain.csproj" />
+        <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
 
 </Project>

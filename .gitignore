@@ -33,6 +33,10 @@
 /csharp/Job/obj/
 /csharp/Job/Logs/
 
+/csharp/Benchmark/bin/
+/csharp/Benchmark/obj/
+/csharp/Benchmark/Logs/
+
 /csharp/.idea/
 
 /csharp/Document/temp.txt

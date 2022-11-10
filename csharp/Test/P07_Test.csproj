@@ -14,6 +14,7 @@
 
     <ItemGroup>
         <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.13.0" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -30,11 +31,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Admin\Admin.csproj" />
-        <ProjectReference Include="..\Client\Client.csproj" />
-        <ProjectReference Include="..\Core\Core.csproj" />
-        <ProjectReference Include="..\Domain\Domain.csproj" />
-        <ProjectReference Include="..\Service\Service.csproj" />
+        <ProjectReference Include="..\Admin\P01_Admin.csproj" />
+        <ProjectReference Include="..\Client\P04_Client.csproj" />
+        <ProjectReference Include="..\Core\P06_Core.csproj" />
+        <ProjectReference Include="..\Domain\P03_Domain.csproj" />
+        <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>    
 
 </Project>

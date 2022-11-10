@@ -9,10 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Admin\Admin.csproj" />
-      <ProjectReference Include="..\Core\Core.csproj" />
-      <ProjectReference Include="..\Domain\Domain.csproj" />
-      <ProjectReference Include="..\Service\Service.csproj" />
+      <ProjectReference Include="..\Admin\P01_Admin.csproj" />
+      <ProjectReference Include="..\Core\P06_Core.csproj" />
+      <ProjectReference Include="..\Domain\P03_Domain.csproj" />
+      <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
 
     <ItemGroup>
