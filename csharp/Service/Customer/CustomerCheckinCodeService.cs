@@ -35,7 +35,6 @@ public class CustomerCheckinCodeService
 
     /// <summary>
     /// 生成一个跟现有的不相重的入库校验码
-    /// 新客户保存成功后，调用这个方法生成入库校验码，再更新刚刚的客户信息。
     /// </summary>
     public string GenerateNewCheckinCode(int customerId)
     {
@@ -44,9 +43,23 @@ public class CustomerCheckinCodeService
             LoadAllCustomerCheckinCode();
         }
 
-        Random random = new Random();
+        string checkinCode = RandCode();
+        while (checkinCodeCustomerIdMap.ContainsKey(checkinCode))
+        {
+            checkinCode = RandCode();
+        }
 
-        return string.Empty;
+        return checkinCode;
+    }
+
+    /// <summary>
+    /// 新客户保存成功后，调用这个方法保存到缓存中
+    /// </summary>
+    /// <param name="checkinCode"></param>
+    /// <param name="customerId"></param>
+    public void SaveCheckinCodeToCache(string checkinCode, int customerId)
+    {
+        checkinCodeCustomerIdMap[checkinCode] = customerId;
     }
 
     public string RandCode()
