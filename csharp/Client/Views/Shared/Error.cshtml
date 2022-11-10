@@ -1,0 +1,25 @@
+﻿@model shunda.Client.Models.Error.ErrorViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>系统错误</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+</head>
+<body>
+    <div style="margin: 20px">
+        <div style="color: brown;">
+            系统出现错误，请联系管理员！
+        </div>
+
+        <div style="color: red;">@Model.Message</div>
+        <pre style="color: blue;">
+@Model.Message
+@Model.StackTrace
+</pre>
+    </div>
+</body>

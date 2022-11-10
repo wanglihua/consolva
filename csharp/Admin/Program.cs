@@ -105,8 +105,6 @@ public class Program
 
         // 必须 Scoped 
         services.AddScoped(provider => {
-                // ISessionFactory sessionFactory = provider.GetService<ISessionFactory>()!;
-                // return sessionFactory.OpenSession();
                 return HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!);
             }
         );
@@ -150,10 +148,6 @@ public class Program
 
             // endpoints.MapHub<HandleHub>("/hub/handle");
         });
-
-        // var quartz = new QuartzStartup(app.Services);
-        // app.Lifetime.ApplicationStarted.Register(quartz.Start);
-        // app.Lifetime.ApplicationStopping.Register(quartz.Stop);
 
         app.Run();
     }
