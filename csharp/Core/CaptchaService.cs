@@ -1,11 +1,10 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using CSRedis;
+using NLog;
 using shunda.Core.Redis;
 using shunda.Core.Service;
-using shunda.Core.Util;
 using shunda.Core.Web;
-using NLog;
 
 namespace shunda.Core;
 
@@ -138,13 +137,7 @@ public class CaptchaService
         }
 
         code = code.ToUpper(); // 比较时，忽略大小写
-
-        // string codeInSession = string.Empty;
-        // if (memoryCache.TryGetValue(GetCaptchaSessionKey(), out codeInSession) == false)
-        // {
-        //     return false;
-        // }
-
+        
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
         string codeInSession = redisClient.Get(GetCaptchaSessionKey());
         // 从redis中取得captcha后，应该马上把redis中的失效掉，
@@ -157,7 +150,7 @@ public class CaptchaService
             return false;
         }
 
-        if (Md5Util.Encrypt(code) != codeInSession)
+        if (code != codeInSession)
         {
             return false;
         }
@@ -175,10 +168,8 @@ public class CaptchaService
     {
         code = code.ToUpper(); // 放入Session时，忽略大小写
 
-        // memoryCache.Set(GetCaptchaSessionKey(), Md5Util.Encrypt(code), DateTimeOffset.Now.AddMinutes(30));
-
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
-        redisClient.Set(GetCaptchaSessionKey(), Md5Util.Encrypt(code), TimeSpan.FromMinutes(30));
+        redisClient.Set(GetCaptchaSessionKey(), code, TimeSpan.FromMinutes(30));
     }
 
     private string GetCaptchaSessionKey()

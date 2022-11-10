@@ -57,13 +57,10 @@ public class LoginUserService
 
     public int GetLoginUserId()
     {
-        // IDatabase redisDatabase = RedisDatabaseUtil.GetRedisDatabase();
-        // string loginUserIdStrEncrypted = redisDatabase.StringGet(GetLoginUserIdRedisKey());
-
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
         string loginUserIdStrEncrypted = redisClient.Get(GetLoginUserIdRedisKey());
 
-        if (loginUserIdStrEncrypted == null || string.IsNullOrEmpty(loginUserIdStrEncrypted))
+        if (string.IsNullOrWhiteSpace(loginUserIdStrEncrypted))
         {
             return 0;
         }
@@ -75,7 +72,7 @@ public class LoginUserService
         }
 
         // 滑动过期时间
-        // SetLoginUserId(loginUserId); 这个改成在 ActionFilter 里面做了
+        SetLoginUserId(loginUserId); // 这个在 ActionFilter 里面已经做了，但在这里做一下也没事，不会造成系统负担
 
         return loginUserId;
     }
@@ -179,7 +176,6 @@ public class LoginUserService
 
             userLoginLogService.AddLog(userInfo, request);
         }
-
 #else
             // 更新用户最后登录时间
             // 不是Dev，也不是God密码登录
@@ -192,7 +188,6 @@ public class LoginUserService
 
                 userLoginLogService.AddLog(userInfo, request);
             }
-
 #endif
 
         SetLoginUserId(userInfo.Id);
@@ -246,10 +241,8 @@ public class LoginUserService
     private void SetLoginUserId(int loginUserId)
     {
         var loginUserIdStrEncrypted = EncryptProvider.AESEncrypt(loginUserId.ToString(), aesKey, aesIv);
-        // IDatabase redisDatabase = RedisDatabaseUtil.GetRedisDatabase();
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
 
-        // redisDatabase.StringSet(GetLoginUserIdRedisKey(), loginUserIdStrEncrypted, SessionTimeout);
         redisClient.Set(GetLoginUserIdRedisKey(), loginUserIdStrEncrypted, SessionTimeout);
     }
 
@@ -289,10 +282,11 @@ public class LoginUserService
 
     private string GetLoginUserIdRedisKey()
     {
-        // string keyPrefix = RedisDatabaseUtil.RedisKeyPrefix;
         string keyPrefix = RedisClientUtil.RedisKeyPrefix;
         string webSessionId = this.webSessionService.SessionId;
-        string key = $"{keyPrefix}:LoginUser:" + webSessionId.Substring(12) + Md5Util.Encrypt(webSessionId + "613484a0c7b9f336f57ae9ca06dea900_jxhuadu.com");
+        
+        // lu, login user
+        string key = $"{keyPrefix}:lu:" + webSessionId.Substring(12) + Md5Util.Encrypt(webSessionId + "613484a0c7b9f336f57ae9ca06dea900_jxhuadu.com");
         return key;
     }
 

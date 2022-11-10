@@ -36,6 +36,7 @@ public class RedisClientUtil
     /// </summary>
     public static string RedisKeyPrefix
     {
-        get { return "shunda"; }
+        // get { return "shunda"; }
+        get { return "sd"; } // 能短一点就短一点
     }
 }
