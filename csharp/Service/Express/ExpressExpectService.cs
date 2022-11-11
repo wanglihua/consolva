@@ -3,19 +3,19 @@ using shunda.Domain;
 using NLog;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service;
+namespace shunda.Service.Express;
 
 /// <summary>
-/// 物流方式通用费率 服务类
+/// 快递单号预报 服务类
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class LogisticsModeFeeRateService
+public class ExpressExpectService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
 
-    public LogisticsModeFeeRateService(ISession session)
+    public ExpressExpectService(ISession session)
     {
         this.session = session;
     }

@@ -3,7 +3,7 @@ using shunda.Domain;
 using NLog;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service;
+namespace shunda.Service.Express;
 
 /// <summary>
 /// 快递单备注预设 服务类

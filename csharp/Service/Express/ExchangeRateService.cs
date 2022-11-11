@@ -8,7 +8,7 @@ using shunda.Core.Service;
 using shunda.Domain;
 using shunda.Domain.Fee;
 
-namespace shunda.Service;
+namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
 public class ExchangeRateService

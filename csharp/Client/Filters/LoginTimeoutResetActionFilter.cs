@@ -7,6 +7,7 @@ public class LoginTimeoutResetActionFilter : IActionFilter
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
+    // todo 加上 loginCustomer的逻辑
     // private readonly LoginUserService loginUserService;
     //
     // public LoginTimeoutResetActionFilter(LoginUserService loginUserService)

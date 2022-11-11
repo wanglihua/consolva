@@ -43,7 +43,7 @@ public class Program
         services.AddScoped<LoginTimeoutResetActionFilter>();
         services.AddScoped<HibernateActionFilter>();
         services.AddScoped<HeaderActionFilter>();
-        // services.AddScoped<ClientAuthActionFilter>(); 这里没必要这个
+        // services.AddScoped<ClientAuthActionFilter>(); todo 加上这个
         services.AddScoped<ExceptionFilter>();
 
         var mvcBuilder = services.AddControllersWithViews()
@@ -53,7 +53,7 @@ public class Program
                 options.Filters.AddService<LoginTimeoutResetActionFilter>(); // 这个Filter执行时 sessionId 应该已经有了
                 options.Filters.AddService<HibernateActionFilter>();
                 options.Filters.AddService<HeaderActionFilter>();
-                // options.Filters.AddService<AdminAuthActionFilter>(); 这里没必要这个
+                // options.Filters.AddService<ClientAuthActionFilter>(); todo 加上这个
                 options.Filters.AddService<ExceptionFilter>();
 
                 // 数据绑定相关
