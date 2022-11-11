@@ -283,8 +283,7 @@ public class LoginUserService
         string keyPrefix = RedisClientUtil.RedisKeyPrefix;
         string webSessionId = this.webSessionService.SessionId;
         
-        string key = $"{keyPrefix}:loginUser:" + webSessionId;
-        return key;
+        return $"{keyPrefix}:user:" + webSessionId;
     }
 
     /// <summary>
