@@ -36,7 +36,7 @@ public class WebSessionService
         }
 
         // 通过这样的加密，1、redis被攻破的时候也相对安全些，2、这个 session id 被拿到别的设备上，就不一定能用了
-        this.SessionId = sessionIdOrigin.Substring(0, 12) + Md5Util.Encrypt(sessionIdOrigin + SESSION_ID_SALT + userAgent); 
+        this.SessionId = Md5Util.Encrypt(sessionIdOrigin + SESSION_ID_SALT + userAgent); 
     }
 
     public string GetSessionIdFromRequest(HttpRequest request)
