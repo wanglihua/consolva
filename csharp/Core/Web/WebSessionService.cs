@@ -1,5 +1,7 @@
 using shunda.Core.Service;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
+using shunda.Core.Util;
 
 namespace shunda.Core.Web;
 
@@ -16,6 +18,7 @@ namespace shunda.Core.Web;
 public class WebSessionService
 {
     private static readonly string SESSION_ID_COOKIE_KEY = "shunda_session_id";
+    private static readonly string SESSION_ID_HEADER_KEY = "session-id";
     private static readonly string SESSION_ID_SALT = "E9ADB9C0D30208FEA38B359924D5D58D";
 
     /// <summary>
@@ -25,11 +28,20 @@ public class WebSessionService
 
     public void SetSessionId(string sessionIdOrigin, HttpRequest request)
     {
-        this.SessionId = sessionIdOrigin;
+        // 把原始的 session id 加密
+        string userAgent = string.Empty;
+        if (request.Headers.ContainsKey(HeaderNames.UserAgent) && request.Headers[HeaderNames.UserAgent].Count != 0)
+        {
+            userAgent = request.Headers[HeaderNames.UserAgent][0];
+        }
+
+        // 通过这样的加密，1、redis被攻破的时候也相对安全些，2、这个 session id 被拿到别的设备上，就不一定能用了
+        this.SessionId = sessionIdOrigin.Substring(0, 12) + Md5Util.Encrypt(sessionIdOrigin + SESSION_ID_SALT + userAgent); 
     }
 
     public string GetSessionIdFromRequest(HttpRequest request)
     {
+        // 先从 cookie 中获取
         string sessionId = request.Cookies[SESSION_ID_COOKIE_KEY] ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(sessionId) == false && sessionId.Contains(","))
@@ -40,11 +52,20 @@ public class WebSessionService
                 .ToList()
                 .MaxBy(e => e) ?? string.Empty;
         }
+        
+        // 如果没有获取到，就试图从 header 中获取
+        if (string.IsNullOrWhiteSpace(sessionId))
+        {
+            if (request.Headers.ContainsKey(SESSION_ID_HEADER_KEY) && request.Headers[SESSION_ID_HEADER_KEY].Count != 0)
+            {
+                sessionId = request.Headers[SESSION_ID_HEADER_KEY][0];
+            }
+        }
 
         return sessionId;
     }
 
-    public string SetNewSessionIdToResponse(HttpRequest request, HttpResponse response)
+    public string PutNewSessionIdToResponse(HttpRequest request, HttpResponse response)
     {
         string sessionId = NewSessionId();
         SetSessionId(sessionId, request);
@@ -84,6 +105,7 @@ public class WebSessionService
     public void PutSessionIdToResponse(HttpRequest request, HttpResponse response, string sessionId)
     {
 #if DEBUG
+        // 放到 cookie 中
         response.Cookies.Append(SESSION_ID_COOKIE_KEY, sessionId, new CookieOptions() {
             HttpOnly = true,
             IsEssential = true,
@@ -92,13 +114,19 @@ public class WebSessionService
             MaxAge = TimeSpan.FromDays(100)
         });
 
+        // 同时放到 header 中
+        response.Headers[SESSION_ID_HEADER_KEY] = sessionId;
 #else
-            response.Cookies.Append(SessionIdCookieKey, sessionId, new CookieOptions() {
-                HttpOnly = true,
-                IsEssential = true,
-                Expires = DateTimeOffset.Now.AddHours(1), // 这个时间应该稍微大于 登陆过期时间，就是登录标志的 redis 过期时间
-                MaxAge = TimeSpan.FromHours(1)
-            });
+        // 放到 cookie 中
+        response.Cookies.Append(SessionIdCookieKey, sessionId, new CookieOptions() {
+            HttpOnly = true,
+            IsEssential = true,
+            Expires = DateTimeOffset.Now.AddHours(1), // 这个时间应该稍微大于 登陆过期时间，就是登录标志的 redis 过期时间
+            MaxAge = TimeSpan.FromHours(1)
+        });
+
+        // 同时放到 header 中
+        response.Headers[SESSION_ID_HEADER_KEY] = sessionId;
 #endif
     }
 }

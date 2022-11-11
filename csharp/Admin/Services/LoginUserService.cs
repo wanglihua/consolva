@@ -270,7 +270,7 @@ public class LoginUserService
 
         // 一定要把 session id 的 cookie 过期掉，否则会有问题
         // 换个 session id，就是再新生成一个就行
-        this.webSessionService.SetNewSessionIdToResponse(request, response);
+        this.webSessionService.PutNewSessionIdToResponse(request, response);
     }
 
     public string GetUserLoginUrl()

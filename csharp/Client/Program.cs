@@ -127,7 +127,7 @@ public class Program
 
         app.UseRouting();
         
-        app.UseMiddleware<SessionIdCookieMiddleware>();
+        app.UseMiddleware<SessionIdMiddleware>();
         app.UseMiddleware<RequestLogMiddleware>(); // 还是放在有了 sessionId 后放心点
         app.UseMiddleware<HibernateMiddleware>();
 
