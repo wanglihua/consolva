@@ -1,11 +1,9 @@
 using CSRedis;
-using Microsoft.AspNetCore.Http;
 using NETCore.Encrypt;
 using NLog;
 using shunda.Core;
 using shunda.Core.Redis;
 using shunda.Core.Service;
-using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Pass;
 using shunda.Service.Pass;
@@ -286,7 +284,7 @@ public class LoginUserService
         string webSessionId = this.webSessionService.SessionId;
         
         // lu, login user
-        string key = $"{keyPrefix}:lu:" + webSessionId.Substring(12) + Md5Util.Encrypt(webSessionId + "613484a0c7b9f336f57ae9ca06dea900_jxhuadu.com");
+        string key = $"{keyPrefix}:lu:" + webSessionId;
         return key;
     }
 

@@ -22,9 +22,9 @@ public class SessionIdCookieMiddleware
 
         if (webSessionService.IsValiadSessionId(sessionId) == false) sessionId = WebSessionService.NewSessionId();
 
-        webSessionService.SetSessionIdToResponse(context.Request, context.Response, sessionId);
+        webSessionService.PutSessionIdToResponse(context.Request, context.Response, sessionId);
 
-        webSessionService.SessionId = sessionId; // 下面的逻辑中已经在使用这个 WebSessionService.SessionId，所以应该放在下面的逻辑之前
+        webSessionService.SetSessionId(sessionId, context.Request); // 下面的逻辑中已经在使用这个 WebSessionService.SessionId，所以应该放在下面的逻辑之前
 
         await next.Invoke(context);
     }

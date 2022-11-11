@@ -15,13 +15,22 @@ namespace shunda.Core.Web;
 [Service(ServiceType.Scoped)]
 public class WebSessionService
 {
-    private string SessionIdCookieKey = "shunda_session_id";
+    private static readonly string SESSION_ID_COOKIE_KEY = "shunda_session_id";
+    private static readonly string SESSION_ID_SALT = "E9ADB9C0D30208FEA38B359924D5D58D";
 
-    public string SessionId { get; set; } = string.Empty;
+    /// <summary>
+    /// 这里存储的是跟和客户端传过来的原始 session id 不同的，是进行二次加密过的
+    /// </summary>
+    public string SessionId { get; private set; } = string.Empty;
+
+    public void SetSessionId(string sessionIdOrigin, HttpRequest request)
+    {
+        this.SessionId = sessionIdOrigin;
+    }
 
     public string GetSessionIdFromRequest(HttpRequest request)
     {
-        string sessionId = request.Cookies[SessionIdCookieKey] ?? string.Empty;
+        string sessionId = request.Cookies[SESSION_ID_COOKIE_KEY] ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(sessionId) == false && sessionId.Contains(","))
         {
@@ -38,19 +47,18 @@ public class WebSessionService
     public string SetNewSessionIdToResponse(HttpRequest request, HttpResponse response)
     {
         string sessionId = NewSessionId();
-        SessionId = sessionId;
-        SetSessionIdToResponse(request, response, sessionId);
+        SetSessionId(sessionId, request);
+        PutSessionIdToResponse(request, response, sessionId);
 
         return sessionId;
     }
 
     public static string NewSessionId()
     {
-        string sessionId = DateTime.Now.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N");
-        return sessionId;
+        return DateTime.Now.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N");
     }
 
-    private int sessionIdLength = NewSessionId().Length;
+    private static readonly int SESSION_ID_LENGTH = NewSessionId().Length;
 
     public bool IsValiadSessionId(string sessionId)
     {
@@ -59,7 +67,7 @@ public class WebSessionService
             return false;
         }
 
-        if (sessionId.Length < sessionIdLength)
+        if (sessionId.Length < SESSION_ID_LENGTH)
         {
             return false;
         }
@@ -70,13 +78,13 @@ public class WebSessionService
     /// <summary>
     /// 在cookie中，添加新的 session id，同时也清除和失效了原来的 session id
     /// </summary>
-    /// <param name="sessionId"></param>
     /// <param name="request"></param>
     /// <param name="response"></param>
-    public void SetSessionIdToResponse(HttpRequest request, HttpResponse response, string sessionId)
+    /// <param name="sessionId"></param>
+    public void PutSessionIdToResponse(HttpRequest request, HttpResponse response, string sessionId)
     {
 #if DEBUG
-        response.Cookies.Append(SessionIdCookieKey, sessionId, new CookieOptions() {
+        response.Cookies.Append(SESSION_ID_COOKIE_KEY, sessionId, new CookieOptions() {
             HttpOnly = true,
             IsEssential = true,
             Path = "/",
