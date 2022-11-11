@@ -16,6 +16,8 @@
 
     <ItemGroup>
       <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+      <PackageReference Include="RestSharp" Version="108.0.2" />
+      <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="108.0.2" />
     </ItemGroup>
 
 </Project>
