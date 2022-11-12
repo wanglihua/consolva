@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Core;
+using shunda.Core.Web;
 
 namespace shunda.Admin.Controllers;
 
+[NoLoginRequired]
 public class FaviconController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();

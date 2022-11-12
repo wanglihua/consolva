@@ -97,6 +97,11 @@ public class LoginCustomerService
         }
     }
 
+    public string GetCustomerLoginUrl()
+    {
+        return "/client/login";
+    }
+
     /// <summary>
     /// 使用用户名和密码登录
     /// </summary>
