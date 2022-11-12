@@ -11,6 +11,7 @@ using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Service.Customer;
 using shunda.Service.Pass;
+using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Services;
@@ -36,30 +37,27 @@ public class LoginCustomerService
     private static string aesIv = "XHK4nB5iWlQhRNzu";
 
     private ISession session;
-    private ISessionFactory sessionFactory;
     private WebSessionService webSessionService;
     private PasswordService passwordService;
     private CustomerSupperPasswordService customerSupperPasswordService;
     private CustomerCodeService customerCodeService;
-    private WeiXinSessionService weiXinSessionService;
+    private WechatSessionService wechatSessionService;
     private CustomerLoginLogService customerLoginLogService;
 
     public LoginCustomerService(ISession session,
-        ISessionFactory sessionFactory,
         WebSessionService webSessionService,
         PasswordService passwordService,
         CustomerSupperPasswordService customerSupperPasswordService,
         CustomerCodeService customerCodeService,
-        WeiXinSessionService weiXinSessionService,
+        WechatSessionService wechatSessionService,
         CustomerLoginLogService customerLoginLogService)
     {
         this.session = session;
-        this.sessionFactory = sessionFactory;
         this.webSessionService = webSessionService;
         this.passwordService = passwordService;
         this.customerSupperPasswordService = customerSupperPasswordService;
         this.customerCodeService = customerCodeService;
-        this.weiXinSessionService = weiXinSessionService;
+        this.wechatSessionService = wechatSessionService;
         this.customerLoginLogService = customerLoginLogService;
     }
 
@@ -171,14 +169,14 @@ public class LoginCustomerService
             if (WebUtil.IsWeiXinRequest(request))
             {
                 // 这是一个事务
-                weiXinSessionService.BindOpenIdToCustomerAndValidatePromotionNewThread(customerId);
+                wechatSessionService.BindOpenIdToCustomerAndValidatePromotionNewThread(customerId);
             }
         }
 
         LoginInternal(customerId, request, response);
 
         // 客户端登录日志
-        customerLoginLogService.AddManualLog(customerId, request);
+        customerLoginLogService.AddLog(CustomerLoginStage.WebManualLogin, customerId, request);
 
         return new LoginResult(LoginResultCode.Success, customer);
     }
@@ -212,7 +210,7 @@ public class LoginCustomerService
         LoginInternal(customerId, request, response);
 
         // 客户端登录日志
-        customerLoginLogService.AddAutoLog(customerId, request);
+        customerLoginLogService.AddLog(CustomerLoginStage.WechatOfficalAccountLogin, customerId, request);
 
         return new LoginResult(LoginResultCode.Success, customer);
     }
@@ -278,10 +276,10 @@ public class LoginCustomerService
         }
 
         // openid 也一定要滑动，否则 jsapi支付 会出错
-        string openId = weiXinSessionService.GetOpenId();
+        string openId = wechatSessionService.GetOpenId();
         if (string.IsNullOrWhiteSpace(openId) == false)
         {
-            weiXinSessionService.SetOpenId(openId);
+            wechatSessionService.SetOpenId(openId);
         }
     }
 }

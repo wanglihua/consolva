@@ -11,7 +11,6 @@ public class WechatSessionService
 {
     public WechatSessionService()
     {
-        
     }
 
     public void SetOpenId(string openId)
@@ -21,5 +20,9 @@ public class WechatSessionService
     public string GetOpenId()
     {
         return string.Empty;
+    }
+
+    public void BindOpenIdToCustomerAndValidatePromotionNewThread(int customerId)
+    {
     }
 }

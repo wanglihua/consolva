@@ -30,7 +30,7 @@ public class CustomerLoginLogService
         this.wechatSessionService = wechatSessionService;
     }
 
-    private void AddLogInternal(CustomerLoginStage stage, int customerId, HttpRequest request)
+    public void AddLog(CustomerLoginStage stage, int customerId, HttpRequest request)
     {
         if (stage == null)
         {
