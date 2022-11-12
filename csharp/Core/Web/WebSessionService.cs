@@ -39,6 +39,11 @@ public class WebSessionService
         this.SessionId = Md5Util.Encrypt(sessionIdOrigin + SESSION_ID_SALT + userAgent); 
     }
 
+    /// <summary>
+    /// 这里获取的是客户端的，原始的session id，跟服务器上实际存储的还是有差别的
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns>客户端原始 session id</returns>
     public string GetSessionIdFromRequest(HttpRequest request)
     {
         // 先从 cookie 中获取
@@ -65,6 +70,12 @@ public class WebSessionService
         return sessionId;
     }
 
+    /// <summary>
+    /// 设置到客户端的是原始的 session id，跟服务器上实际存储的还是有差别的
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="response"></param>
+    /// <returns></returns>
     public string PutNewSessionIdToResponse(HttpRequest request, HttpResponse response)
     {
         string sessionId = NewSessionId();
@@ -73,7 +84,11 @@ public class WebSessionService
 
         return sessionId;
     }
-
+    
+    /// <summary>
+    /// 生成一个原始的，存储在客户的的 session id
+    /// </summary>
+    /// <returns>客户端原始 session id</returns>
     public static string NewSessionId()
     {
         return DateTime.Now.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N");
@@ -81,6 +96,11 @@ public class WebSessionService
 
     private static readonly int SESSION_ID_LENGTH = NewSessionId().Length;
 
+    /// <summary>
+    /// 客户端原始 session id 是不是有效的
+    /// </summary>
+    /// <param name="sessionId">客户端原始 session id</param>
+    /// <returns></returns>
     public bool IsValiadSessionId(string sessionId)
     {
         if (string.IsNullOrWhiteSpace(sessionId))
@@ -98,10 +118,11 @@ public class WebSessionService
 
     /// <summary>
     /// 在cookie中，添加新的 session id，同时也清除和失效了原来的 session id
+    /// 这里的 session id是原始的客户端的 session id
     /// </summary>
     /// <param name="request"></param>
     /// <param name="response"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">客户端原始 session id</param>
     public void PutSessionIdToResponse(HttpRequest request, HttpResponse response, string sessionId)
     {
 #if DEBUG
