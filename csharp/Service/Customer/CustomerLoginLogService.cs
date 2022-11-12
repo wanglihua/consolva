@@ -50,19 +50,21 @@ public class CustomerLoginLogService
             sessionId = string.Empty;
         }
 
+        string openId = wechatSessionService.GetOpenId();
         if (string.IsNullOrWhiteSpace(openId))
         {
             openId = string.Empty;
         }
 
-        CustomerLoginLogInfo customerLoginLog = new CustomerLoginLogInfo();
-        customerLoginLog.Stage = stage;
-        customerLoginLog.Customer = customer;
-        customerLoginLog.OpenId = openId;
-        customerLoginLog.SessionId = sessionId;
-        customerLoginLog.IpAddress = StringUtil.LimitMaxLength(WebUtil.GetClientIp(request), 180); // not null
-        customerLoginLog.UserAgent = StringUtil.LimitMaxLength(WebUtil.GetUserAgent(request), 280); // not null
-        customerLoginLog.LoginTime = DateTime.Now;
+        CustomerLoginLogInfo customerLoginLog = new CustomerLoginLogInfo {
+            Stage = stage,
+            Customer = customer,
+            OpenId = openId,
+            SessionId = sessionId,
+            IpAddress = StringUtil.LimitMaxLength(WebUtil.GetClientIp(request), 180), // not null
+            UserAgent = StringUtil.LimitMaxLength(WebUtil.GetUserAgent(request), 280), // not null
+            LoginTime = DateTime.Now
+        };
 
         session.Save(customerLoginLog);
         session.Flush();
