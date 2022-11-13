@@ -1,9 +1,7 @@
 using CSRedis;
 using NETCore.Encrypt;
-using NHibernate;
 using NHibernate.Linq;
 using NLog;
-using shunda.Core.Hibernate;
 using shunda.Core.Redis;
 using shunda.Core.Service;
 using shunda.Core.Util;
@@ -108,9 +106,8 @@ public class LoginCustomerService
     /// <param name="loginName"></param>
     /// <param name="password"></param>
     /// <param name="request"></param>
-    /// <param name="response"></param>
     /// <returns></returns>
-    public LoginResult Login(string loginName, string password, HttpRequest request, HttpResponse response)
+    public LoginResult Login(string loginName, string password, HttpRequest request)
     {
         if (string.IsNullOrWhiteSpace(loginName)) // 手机号默认为空，必须防止空的手机号的登录
         {
@@ -178,7 +175,7 @@ public class LoginCustomerService
             }
         }
 
-        LoginInternal(customerId, request, response);
+        LoginInternal(customerId, request);
 
         // 客户端登录日志
         customerLoginLogService.AddLog(CustomerLoginStage.WebManualLogin, customerId, request);
@@ -191,9 +188,8 @@ public class LoginCustomerService
     /// </summary>
     /// <param name="openId"></param>
     /// <param name="request"></param>
-    /// <param name="response"></param>
     /// <returns></returns>
-    public LoginResult Login(string openId, HttpRequest request, HttpResponse response)
+    public LoginResult Login(string openId, HttpRequest request)
     {
         int customerId = 0;
 
@@ -212,7 +208,7 @@ public class LoginCustomerService
 
         customerId = customer.Id;
 
-        LoginInternal(customerId, request, response);
+        LoginInternal(customerId, request);
 
         // 客户端登录日志
         customerLoginLogService.AddLog(CustomerLoginStage.WechatOfficalAccountLogin, customerId, request);
@@ -225,9 +221,8 @@ public class LoginCustomerService
     /// </summary>
     /// <param name="customerId"></param>
     /// <param name="request"></param>
-    /// <param name="response"></param>
     /// <returns></returns>
-    public void LoginInternal(int customerId, HttpRequest request, HttpResponse response)
+    public void LoginInternal(int customerId, HttpRequest request)
     {
         SetLoginCustomerId(customerId);
 

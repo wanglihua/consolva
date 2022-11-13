@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Net.Http.Headers;
 using NLog;
+using shunda.Core.Config;
 
 namespace shunda.Core.Util;
 
@@ -165,25 +166,19 @@ public class WebUtil
     }
 
     /// <summary>
-    /// 是不是 API 调用
+    /// 是不是 通过 http header 传递 session id
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static bool IsApiRequest(HttpRequest request)
+    public static bool IsHeaderSessionIdRequest(HttpRequest request)
     {
-        string url = string.Empty;
-        try
+        if (request.Headers.ContainsKey(WebSessionConfig.SessionIdHeaderKey)
+            && request.Headers[WebSessionConfig.SessionIdHeaderKey].Count != 0)
         {
-            url = request.GetEncodedUrl();
-        }
-        catch(Exception exp)
-        {
-           log.Error(exp);
-        }
-
-        if (string.IsNullOrWhiteSpace(url) == false && url.ToLower().Contains("/api/")) // 【/api/】 【/user/api/】
-        {
-            return true;
+            if (string.IsNullOrWhiteSpace(request.Headers[WebSessionConfig.SessionIdHeaderKey][0]) == false)
+            {
+                return true;
+            }
         }
 
         return false;
@@ -196,7 +191,7 @@ public class WebUtil
     /// <returns></returns>
     public static bool ShouldShowJson(HttpRequest request)
     {
-        if (IsAjaxRequest(request) || IsFileUpload(request) || IsApiRequest(request))
+        if (IsAjaxRequest(request) || IsFileUpload(request) || IsHeaderSessionIdRequest(request))
         {
             return true;
         }

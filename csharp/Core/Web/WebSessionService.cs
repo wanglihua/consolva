@@ -1,6 +1,7 @@
 using shunda.Core.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
+using shunda.Core.Config;
 using shunda.Core.Util;
 
 namespace shunda.Core.Web;
@@ -17,8 +18,6 @@ namespace shunda.Core.Web;
 [Service(ServiceType.Scoped)]
 public class WebSessionService
 {
-    private static readonly string SESSION_ID_COOKIE_KEY = "shunda_session_id";
-    private static readonly string SESSION_ID_HEADER_KEY = "session-id";
     private static readonly string SESSION_ID_SALT = "E9ADB9C0D30208FEA38B359924D5D58D";
 
     /// <summary>
@@ -36,55 +35,9 @@ public class WebSessionService
         }
 
         // 通过这样的加密，1、redis被攻破的时候也相对安全些，2、这个 session id 被拿到别的设备上，就不一定能用了
-        this.SessionId = Md5Util.Encrypt(sessionIdOrigin + SESSION_ID_SALT + userAgent); 
+        this.SessionId = Md5Util.Encrypt(sessionIdOrigin + SESSION_ID_SALT + userAgent);
     }
 
-    /// <summary>
-    /// 这里获取的是客户端的，原始的session id，跟服务器上实际存储的还是有差别的
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns>客户端原始 session id</returns>
-    public string GetSessionIdFromRequest(HttpRequest request)
-    {
-        // 先从 cookie 中获取
-        string sessionId = request.Cookies[SESSION_ID_COOKIE_KEY] ?? string.Empty;
-
-        if (string.IsNullOrWhiteSpace(sessionId) == false && sessionId.Contains(","))
-        {
-            // 发现有一个key有两个值的情况
-
-            sessionId = sessionId.Split(",", StringSplitOptions.RemoveEmptyEntries)
-                .ToList()
-                .MaxBy(e => e) ?? string.Empty;
-        }
-        
-        // 如果没有获取到，就试图从 header 中获取
-        if (string.IsNullOrWhiteSpace(sessionId))
-        {
-            if (request.Headers.ContainsKey(SESSION_ID_HEADER_KEY) && request.Headers[SESSION_ID_HEADER_KEY].Count != 0)
-            {
-                sessionId = request.Headers[SESSION_ID_HEADER_KEY][0];
-            }
-        }
-
-        return sessionId;
-    }
-
-    /// <summary>
-    /// 设置到客户端的是原始的 session id，跟服务器上实际存储的还是有差别的
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="response"></param>
-    /// <returns></returns>
-    public string PutNewSessionIdToResponse(HttpRequest request, HttpResponse response)
-    {
-        string sessionId = NewSessionId();
-        SetSessionId(sessionId, request);
-        PutSessionIdToResponse(request, response, sessionId);
-
-        return sessionId;
-    }
-    
     /// <summary>
     /// 生成一个原始的，存储在客户的的 session id
     /// </summary>
@@ -117,6 +70,37 @@ public class WebSessionService
     }
 
     /// <summary>
+    /// 这里获取的是客户端的，原始的session id，跟服务器上实际存储的还是有差别的
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns>客户端原始 session id</returns>
+    public string GetSessionIdFromRequest(HttpRequest request)
+    {
+        // 先从 cookie 中获取
+        string sessionId = request.Cookies[WebSessionConfig.SessionIdCookieKey] ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(sessionId) == false && sessionId.Contains(","))
+        {
+            // 发现有一个key有两个值的情况
+
+            sessionId = sessionId.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .ToList()
+                .MaxBy(e => e) ?? string.Empty;
+        }
+
+        // 如果没有获取到，就试图从 header 中获取
+        if (string.IsNullOrWhiteSpace(sessionId))
+        {
+            if (request.Headers.ContainsKey(WebSessionConfig.SessionIdHeaderKey) && request.Headers[WebSessionConfig.SessionIdHeaderKey].Count != 0)
+            {
+                sessionId = request.Headers[WebSessionConfig.SessionIdHeaderKey][0];
+            }
+        }
+
+        return sessionId;
+    }
+
+    /// <summary>
     /// 在cookie中，添加新的 session id，同时也清除和失效了原来的 session id
     /// 这里的 session id是原始的客户端的 session id
     /// </summary>
@@ -127,7 +111,7 @@ public class WebSessionService
     {
 #if DEBUG
         // 放到 cookie 中
-        response.Cookies.Append(SESSION_ID_COOKIE_KEY, sessionId, new CookieOptions() {
+        response.Cookies.Append(WebSessionConfig.SessionIdCookieKey, sessionId, new CookieOptions() {
             HttpOnly = true,
             IsEssential = true,
             Path = "/",
@@ -136,7 +120,7 @@ public class WebSessionService
         });
 
         // 同时放到 header 中
-        response.Headers[SESSION_ID_HEADER_KEY] = sessionId;
+        response.Headers[WebSessionConfig.SessionIdHeaderKey] = sessionId;
 #else
         // 放到 cookie 中
         response.Cookies.Append(SessionIdCookieKey, sessionId, new CookieOptions() {
@@ -147,7 +131,22 @@ public class WebSessionService
         });
 
         // 同时放到 header 中
-        response.Headers[SESSION_ID_HEADER_KEY] = sessionId;
+        response.Headers[WebSessionConfig.SessionIdHeaderKey] = sessionId;
 #endif
+    }
+
+    /// <summary>
+    /// 设置到客户端的是原始的 session id，跟服务器上实际存储的还是有差别的
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="response"></param>
+    /// <returns></returns>
+    public string PutNewSessionIdToResponse(HttpRequest request, HttpResponse response)
+    {
+        string sessionId = NewSessionId();
+        SetSessionId(sessionId, request);
+        PutSessionIdToResponse(request, response, sessionId);
+
+        return sessionId;
     }
 }

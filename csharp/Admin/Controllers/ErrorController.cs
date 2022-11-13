@@ -18,7 +18,7 @@ public class ErrorController : Controller
     public IActionResult Error()
     {
         var feature = HttpContext.Features.Get<IExceptionHandlerFeature>() ?? new ExceptionHandlerFeature();
-        var exp = feature?.Error ?? new Exception();
+        var exp = feature.Error ?? new Exception();
 
         log.Error(exp);
 
