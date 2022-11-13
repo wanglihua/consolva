@@ -1,3 +1,5 @@
+# DROP TABLE IF EXISTS tbl_customer_send_address;
+
 CREATE TABLE tbl_customer_send_address
 (
     id          INT                        NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
@@ -15,7 +17,7 @@ CREATE TABLE tbl_customer_send_address
     tfn         VARCHAR(100) DEFAULT ''    NULL COMMENT '税号',
     company     VARCHAR(100) DEFAULT ''    NULL COMMENT '公司',
     is_default  BOOL         DEFAULT FALSE NOT NULL COMMENT '默认收货地址',
-    valid       BOOL         DEFAULT FALSE NOT NULL COMMENT '是否已验证',
+    status_id   INT          DEFAULT 0     NOT NULL COMMENT '状态#type:CustomerAddressStatus',
     create_time DATETIME                   NOT NULL COMMENT '创建时间',
     update_time DATETIME                   NOT NULL COMMENT '更新时间',
 

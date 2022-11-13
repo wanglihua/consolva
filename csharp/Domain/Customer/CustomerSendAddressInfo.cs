@@ -115,10 +115,10 @@ public class CustomerSendAddressInfo : Entity
     public virtual bool IsDefault { get; set; } = false;
 
     /// <summary>
-    /// 是否已验证，非空
+    /// 状态，非空
     /// </summary>
-    [Required(ErrorMessage = "是否已验证不能为空！")]
-    [JsonProperty("valid")]
-    public virtual bool Valid { get; set; } = false;
-
+    [Required(ErrorMessage = "状态不能为空！")]
+    [JsonProperty("status")]
+    [ModelBinder(typeof(CustomerAddressStatusModelBinder))]
+    public virtual CustomerAddressStatus Status { get; set; } = CustomerAddressStatus.None;
 }

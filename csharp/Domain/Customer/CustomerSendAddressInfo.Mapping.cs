@@ -147,10 +147,10 @@ public class CustomerSendAddressInfoMapping : EntityMapping<CustomerSendAddressI
         );
 
         Property(
-            x => x.Valid,
+            x => x.Status,
             map => {
-                map.Type(NHibernateUtil.Boolean);
-                map.Column("valid");
+                map.Type<CustomerAddressStatusHibernateType>();
+                map.Column("status_id");
                 map.NotNullable(true);
             }
         );
