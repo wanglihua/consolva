@@ -43,6 +43,6 @@
         <ProjectReference Include="..\Core\P06_Core.csproj" />
         <ProjectReference Include="..\Domain\P03_Domain.csproj" />
         <ProjectReference Include="..\Service\P02_Service.csproj" />
-    </ItemGroup>    
+    </ItemGroup>
 
 </Project>

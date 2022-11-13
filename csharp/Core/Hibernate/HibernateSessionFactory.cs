@@ -146,7 +146,7 @@ public class HibernateSessionFactory
         return configuration.BuildSessionFactory();
     }
 
-    private static ISessionFactory BuildSessionFactory(Configuration configuration)
+    private static ISessionFactory BuildSessionFactoryFromConfigration(Configuration configuration)
     {
         return configuration.BuildSessionFactory();
     }
@@ -161,7 +161,7 @@ public class HibernateSessionFactory
         NLogConfiguration.Config();
 
         var cfg = BuildConfiguration(DataBaseConfig.DataBaseType.SQLite, mappingTypes);
-        ISessionFactory sessionFactory = BuildSessionFactory(cfg);
+        ISessionFactory sessionFactory = BuildSessionFactoryFromConfigration(cfg);
         ISession session = OpenSession(sessionFactory);
 
 #if DEBUG
@@ -181,7 +181,7 @@ public class HibernateSessionFactory
         NLogConfiguration.Config();
 
         var cfg = BuildConfiguration(DataBaseConfig.DataBaseType.SQLite, mappingAssembly);
-        ISessionFactory sessionFactory = BuildSessionFactory(cfg);
+        ISessionFactory sessionFactory = BuildSessionFactoryFromConfigration(cfg);
         ISession session = OpenSession(sessionFactory);
 
 #if DEBUG
