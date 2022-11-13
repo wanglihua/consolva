@@ -1,0 +1,90 @@
+@using Domain
+@using Domain.Customer
+@model CustomerAccountEntryCustomerIndexModel
+@using Web.Areas.Admin.Models.CustomerAccountEntryCustomer
+@{
+    ViewBag.Title = "客户账户变动明细列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="active" data-menu="customer-customer-index-menu">
+        <a href="@Url.Action("Index","Customer")">会员列表</a>
+    </li>
+    <li>
+        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.Customer.Id})"><span>@Model.Customer.CustomerCode</span></a>
+    </li>
+    <li>余额明细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerAccountEntryList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    @*
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "Customer")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+    *@
+</div>
+
+<div id="customerAccountEntryList" data-page-index="0" data-sort-field="@(nameof(CustomerAccountEntryInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerAccountEntryDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerAccountEntryList();
+    });
+
+    function sortCustomerAccountEntryList(sortField, sortDir) {
+        var list = $('#customerAccountEntryList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerAccountEntryList();
+    }
+
+    function loadCustomerAccountEntryList(pageIndex) {
+        var list = $('#customerAccountEntryList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerAccountEntryCustomer")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerAccountEntryCustomerListQueryParam.CustomerId))': @Model.Customer.Id,
+                '@(nameof(CustomerAccountEntryCustomerListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerAccountEntryCustomerListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerAccountEntryCustomerListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerAccountEntryList').html(data);
+
+                initListTable("#tblCustomerAccountEntryList");
+            }
+        });
+    }
+
+</script>

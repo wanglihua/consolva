@@ -1,0 +1,91 @@
+@using Domain.LogisticsOrder
+@using Web.Areas.Admin.Models.LogisticsOrderPayCustomer
+@model Web.Areas.Admin.Models.LogisticsOrderPayCustomer.LogisticsOrderPayCustomerIndexModel
+@{
+    ViewBag.Title = "会员支付明细";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="active" data-menu="customer-customer-index-menu">
+        <a href="@Url.Action("Index", "Customer")">会员列表</a>
+    </li>    
+    <li>
+        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.CustomerId})">
+            @(Model.Customer?.CustomerCode)
+        </a>
+    </li>
+    <li>会员支付明细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderPayList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 180px; height: 30px;" placeholder="订单编号精确查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderPayList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsOrderPayList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderPayInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsOrderPayList();
+    });
+
+    function sortLogisticsOrderPayList(sortField, sortDir) {
+        var list = $('#logisticsOrderPayList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsOrderPayList();
+    }
+
+    function loadLogisticsOrderPayList(pageIndex) {
+        var list = $('#logisticsOrderPayList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsOrderPayCustomer")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsOrderPayCustomerListQueryParam.CustomerId))': '@(Model.CustomerId)',
+                '@(nameof(LogisticsOrderPayCustomerListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(LogisticsOrderPayCustomerListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsOrderPayCustomerListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsOrderPayCustomerListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderPayList').html(data);
+
+                initListTable("#tblLogisticsOrderPayList");
+            }
+        });
+    }
+
+</script>
