@@ -1,8 +1,10 @@
-@using Domain.LogisticsOrder
-@using Web.Areas.Admin.Models.LogisticsOrderPayCustomer
-@model Web.Areas.Admin.Models.LogisticsOrderPayCustomer.LogisticsOrderPayCustomerIndexModel
+@using shunda.Admin.Areas.Customer.Models.LogisticsOrderPayCustomer
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Customer.Models.LogisticsOrderPayCustomer.LogisticsOrderPayCustomerIndexModel
 @{
-    ViewBag.Title = "会员支付明细";
+    ViewData[ViewDataKey.Title] = "会员支付明细";
     Layout = "_AdminLayout";
 }
 
@@ -13,18 +15,11 @@
     </li>    
     <li>
         <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.CustomerId})">
-            @(Model.Customer?.CustomerCode)
+            @(Model.Customer.CustomerCodeCache)
         </a>
     </li>
-    <li>会员支付明细</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
-
-<div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderPayList(0)">
-        <i class="ace-icon fa fa-refresh"></i>
-        刷新
-    </button>
-</div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
     <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" style="width: 180px; height: 30px;" placeholder="订单编号精确查询"/>&nbsp;

@@ -1,11 +1,8 @@
-using System;
-using Domain;
-using Domain.Customer;
+using shunda.Domain.Customer;
 
-namespace Web.Areas.Admin.Models.CustomerAccountEntryCustomer
+namespace shunda.Admin.Areas.Customer.Models.CustomerAccountEntryCustomer;
+
+public class CustomerAccountEntryCustomerIndexModel
 {
-    public class CustomerAccountEntryCustomerIndexModel
-    {
-        public CustomerInfo Customer { get; set; }
-    }
+    public CustomerInfo Customer { get; set; } = new CustomerInfo();
 }

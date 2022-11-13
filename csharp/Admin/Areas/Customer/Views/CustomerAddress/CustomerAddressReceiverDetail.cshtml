@@ -1,5 +1,5 @@
 @using Domain
-@model Web.Areas.Admin.Models.CustomerAddress.CustomerAddressReceiverDetailModel
+@model Web.Areas.Admin.Models.CustomerAddress.CustomerAddressReceiveDetailModel
 
 @{
     Layout = null;
@@ -16,7 +16,6 @@
 
                 <form id="customerAddressReceiverDetailForm" action="" method="post" class="form-horizontal" role="form">
                     <input asp-for="CustomerAddress.Id" type="hidden"/>
-                    <input asp-for="CustomerAddress.Country" type="hidden" value="@Country.Australia.Id"/>
                     <div class="col-xs-12">
                         <div class="row">
 

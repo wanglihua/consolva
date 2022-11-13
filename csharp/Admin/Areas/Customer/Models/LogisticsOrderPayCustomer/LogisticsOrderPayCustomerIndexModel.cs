@@ -1,11 +1,13 @@
-using Domain.Customer;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Customer;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderPayCustomer
+namespace shunda.Admin.Areas.Customer.Models.LogisticsOrderPayCustomer;
+
+public class LogisticsOrderPayCustomerIndexModel
 {
-    public class LogisticsOrderPayCustomerIndexModel
-    {
-        public int CustomerId { get; set; }
+    [BindNever]
+    public int CustomerId { get; set; }
 
-        public CustomerInfo Customer { get; set; }
-    }
+    [BindNever]
+    public CustomerInfo Customer { get; set; } = new CustomerInfo();
 }

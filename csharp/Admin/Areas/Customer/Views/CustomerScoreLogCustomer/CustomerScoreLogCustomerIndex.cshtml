@@ -1,10 +1,11 @@
-@using Domain
-@using Domain.Customer
-@model Web.Areas.Admin.Models.CustomerScoreLogCustomer.CustomerScoreLogCustomerIndexModel
-@using Web.Areas.Admin.Models.CustomerScoreLog
-@using Web.Areas.Admin.Models.CustomerScoreLogCustomer
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Customer.Models.CustomerScoreLogCustomer
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model CustomerScoreLogCustomerIndexModel
 @{
-    ViewBag.Title = "会员积分日志";
+    ViewData[ViewDataKey.Title] = "会员积分日志";
     Layout = "_AdminLayout";
 }
 
@@ -15,18 +16,11 @@
     </li>    
     <li>
         <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.CustomerId})">
-            @(Model.Customer?.CustomerCode)
+            @(Model.Customer.CustomerCodeCache)
         </a>
     </li>
-    <li>会员积分日志</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
-
-<div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerScoreLogList(0)">
-        <i class="ace-icon fa fa-refresh"></i>
-        刷新
-    </button>
-</div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
     <label for="customerScoreTypeQuery">积分类型</label>&nbsp;

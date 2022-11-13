@@ -1,14 +1,16 @@
-using System.Collections.Generic;
-using Domain.Customer;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Customer;
 
-namespace Web.Areas.Admin.Models.CustomerScoreLogCustomer
+namespace shunda.Admin.Areas.Customer.Models.CustomerScoreLogCustomer;
+
+public class CustomerScoreLogCustomerIndexModel
 {
-    public class CustomerScoreLogCustomerIndexModel
-    {
-        public int CustomerId { get; set; }
+    [BindNever]
+    public int CustomerId { get; set; }
 
-        public CustomerInfo Customer { get; set; }
+    [BindNever]
+    public CustomerInfo Customer { get; set; } = new CustomerInfo();
 
-        public IList<CustomerScoreType> ScoreTypeList { get; set; }
-    }
+    [BindNever]
+    public IList<CustomerScoreType> ScoreTypeList { get; set; } = CustomerScoreType.GetList();
 }

@@ -3,7 +3,7 @@
 @model CustomerAddressIndexModel
 @using Web.Areas.Admin.Models.CustomerAddress
 @{
-    ViewBag.Title = "会员收货地址";
+    ViewData[ViewDataKey.Title] = "会员收发地址";
     Layout = "_AdminLayout";
 }
 
@@ -17,7 +17,7 @@
             <span>@Model.Customer.CustomerCode</span>
         </a>
     </li>
-    <li>会员收货地址</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
 @*

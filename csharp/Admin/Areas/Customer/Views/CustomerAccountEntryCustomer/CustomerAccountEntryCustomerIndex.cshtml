@@ -1,9 +1,10 @@
-@using Domain
-@using Domain.Customer
-@model CustomerAccountEntryCustomerIndexModel
-@using Web.Areas.Admin.Models.CustomerAccountEntryCustomer
+@using shunda.Admin.Areas.Customer.Models.CustomerAccountEntryCustomer
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerAccountEntryCustomer.CustomerAccountEntryCustomerIndexModel
 @{
-    ViewBag.Title = "客户账户变动明细列表";
+    ViewData[ViewDataKey.Title] = "会员余额明细";
     Layout = "_AdminLayout";
 }
 
@@ -13,23 +14,10 @@
         <a href="@Url.Action("Index","Customer")">会员列表</a>
     </li>
     <li>
-        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.Customer.Id})"><span>@Model.Customer.CustomerCode</span></a>
+        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.Customer.Id})"><span>@Model.Customer.CustomerCodeCache</span></a>
     </li>
-    <li>余额明细</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
-
-<div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerAccountEntryList(0)">
-        <i class="ace-icon fa fa-refresh"></i>
-        刷新
-    </button>
-    @*
-    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "Customer")">
-        <i class="ace-icon fa fa-arrow-left"></i>
-        返回
-    </a>
-    *@
-</div>
 
 <div id="customerAccountEntryList" data-page-index="0" data-sort-field="@(nameof(CustomerAccountEntryInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
 </div>

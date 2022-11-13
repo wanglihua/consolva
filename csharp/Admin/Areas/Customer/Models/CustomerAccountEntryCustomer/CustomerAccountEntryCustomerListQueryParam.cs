@@ -1,14 +1,13 @@
-using Core;
-using Domain.Customer;
 using Microsoft.AspNetCore.Mvc;
+using shunda.Core;
+using shunda.Domain.Customer;
 
-namespace Web.Areas.Admin.Models.CustomerAccountEntryCustomer
+namespace shunda.Admin.Areas.Customer.Models.CustomerAccountEntryCustomer;
+
+public class CustomerAccountEntryCustomerListQueryParam : ListQueryParam
 {
-    public class CustomerAccountEntryCustomerListQueryParam : ListQueryParam
-    {
-        public int CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
-        [ModelBinder(typeof(CustomerAccountChangeTypeModelBinder))]
-        public CustomerAccountChangeType ChangeTypeQuery { get; set; }
-    }
+    [ModelBinder(typeof(CustomerAccountChangeTypeModelBinder))]
+    public CustomerAccountChangeType? ChangeTypeQuery { get; set; }
 }

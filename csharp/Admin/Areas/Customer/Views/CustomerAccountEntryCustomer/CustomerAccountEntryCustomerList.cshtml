@@ -1,9 +1,8 @@
 @{
     Layout = null;
 }
-@using Domain
-@using Domain.Customer
-@model Web.Areas.Admin.Models.CustomerAccountEntryCustomer.CustomerAccountEntryCustomerListModel
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerAccountEntryCustomer.CustomerAccountEntryCustomerListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerAccountEntryList"})
 
@@ -14,9 +13,6 @@
             <th style="width: 100px; text-align: center;">
                 <a field="@(nameof(CustomerAccountEntryInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">会员</a>
             </th>
-            <th style="width: 100px; text-align: center;">
-                <a field="@(nameof(CustomerAccountEntryInfo.OrderCate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">订单类别</a>
-            </th>            
             <th style="width: 100px; text-align: center;">
                 <a field="@(nameof(CustomerAccountEntryInfo.ChangeType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerAccountEntryList">变动类型</a>
             </th>
@@ -47,7 +43,6 @@
                 <tr>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">@customerAccountEntry.Customer.Id</td>
-                    <td style="text-align: center;">@customerAccountEntry.OrderCate?.Name</td>
                     <td style="text-align: center;">@customerAccountEntry.ChangeType?.Name</td>
                     <td style="text-align: right;">@customerAccountEntry.Amount</td>
                     <td style="text-align: right;">@customerAccountEntry.AccountBefore</td>
@@ -61,7 +56,7 @@
         else
         {
             <tr>
-                <td colspan="10">
+                <td colspan="9">
                     暂时没有数据！
                 </td>
             </tr>

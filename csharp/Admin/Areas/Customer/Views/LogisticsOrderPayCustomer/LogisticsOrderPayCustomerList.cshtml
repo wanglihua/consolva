@@ -1,10 +1,10 @@
 @{
     Layout = null;
 }
-@using Domain.LogisticsOrder
-@model Web.Areas.Admin.Models.LogisticsOrderPayCustomer.LogisticsOrderPayCustomerListModel
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.Customer.Models.LogisticsOrderPayCustomer.LogisticsOrderPayCustomerListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderPayList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderPayList" })
 
 <table id="tblLogisticsOrderPayList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -15,7 +15,7 @@
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 80px; text-align: center;">
                 <a field="@(nameof(LogisticsOrderPayInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">会员</a>
-            </th>            
+            </th>
             <th style="width: 150px; text-align: center;">
                 <a field="@(nameof(LogisticsOrderPayInfo.Order))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">订单</a>
             </th>
@@ -48,16 +48,16 @@
                         <label for="logisticsOrderPayCheck_@(logisticsOrderPay.Id)"></label><input id="logisticsOrderPayCheck_@(logisticsOrderPay.Id)" type="checkbox" class="ace" value="@logisticsOrderPay.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td style="text-align: center;">@logisticsOrderPay.Customer?.CustomerCode</td>                    
+                    <td style="text-align: center;">@logisticsOrderPay.Customer.CustomerCodeCache</td>
                     <td style="text-align: center;" class="break-word">
                         <a href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderPay.Order?.Id })" target="_blank">
                             @logisticsOrderPay.Order?.Code
                         </a>
                     </td>
-                    <td style="text-align: center;">@logisticsOrderPay.PayType?.Name</td>
+                    <td style="text-align: center;">@logisticsOrderPay.PayType.Name</td>
                     <td style="text-align: right;">@logisticsOrderPay.Amount</td>
                     <td style="text-align: center;">@logisticsOrderPay.User?.UserName</td>
-                    <td style="text-align: center;">@logisticsOrderPay.Status?.Name</td>
+                    <td style="text-align: center;">@logisticsOrderPay.Status.Name</td>
                     <td style="text-align: center;">@logisticsOrderPay.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td></td>
                 </tr>
@@ -74,4 +74,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderPayList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderPayList" })

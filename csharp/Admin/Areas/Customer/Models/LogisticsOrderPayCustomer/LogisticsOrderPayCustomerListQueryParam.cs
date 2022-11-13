@@ -1,11 +1,10 @@
-using Core;
+using shunda.Core;
 
-namespace Web.Areas.Admin.Models.LogisticsOrderPayCustomer
+namespace shunda.Admin.Areas.Customer.Models.LogisticsOrderPayCustomer;
+
+public class LogisticsOrderPayCustomerListQueryParam : ListQueryParam
 {
-    public class LogisticsOrderPayCustomerListQueryParam : ListQueryParam
-    {
-        public int CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
-        public string OrderCodeQuery { get; set; }
-    }
+    public string? OrderCodeQuery { get; set; }
 }

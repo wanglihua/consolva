@@ -1,17 +1,15 @@
-using System.Collections.Generic;
-using Core;
-using Domain.Customer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Core;
+using shunda.Domain.Customer;
 
-namespace Web.Areas.Admin.Models.CustomerScoreLogCustomer
+namespace shunda.Admin.Areas.Customer.Models.CustomerScoreLogCustomer;
+
+public class CustomerScoreLogCustomerListModel : ListModel
 {
-    public class CustomerScoreLogCustomerListModel : ListModel
+    public CustomerScoreLogCustomerListModel(ListPager listPager) : base(listPager)
     {
-        public CustomerScoreLogCustomerListModel(ListPager listPager) : base(listPager)
-        {
-        }
-
-        [BindNever]
-        public IList<CustomerScoreLogInfo> CustomerScoreLogList { get; set; }
     }
+
+    [BindNever]
+    public IList<CustomerScoreLogInfo> CustomerScoreLogList { get; set; } = new List<CustomerScoreLogInfo>();
 }

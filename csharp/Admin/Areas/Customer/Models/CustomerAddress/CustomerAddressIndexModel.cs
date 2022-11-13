@@ -1,14 +1,19 @@
-using System.Collections.Generic;
-using Domain.Customer;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Customer;
 
-namespace Web.Areas.Admin.Models.CustomerAddress
+namespace shunda.Admin.Areas.Customer.Models.CustomerAddress;
+
+public class CustomerAddressIndexModel
 {
-    public class CustomerAddressIndexModel
-    {
-        public CustomerInfo Customer { get; set; }
+    [BindNever]
+    public CustomerInfo Customer { get; set; } = new CustomerInfo();
 
-        public IList<CustomerAddressInfo> CustomerAddressList { get; set; }
+    [BindNever]
+    public IList<CustomerReceiveAddressInfo> CustomerReceiveAddressList { get; set; } = new List<CustomerReceiveAddressInfo>();
 
-        public int CustomerAddressCount { get; set; }
-    }
+    [BindNever]
+    public IList<CustomerSendAddressInfo> CustomerSendAddressList { get; set; } = new List<CustomerSendAddressInfo>();    
+
+    [BindNever]
+    public int CustomerReceiveAddressCount { get; set; }
 }
