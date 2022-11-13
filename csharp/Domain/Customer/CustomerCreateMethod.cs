@@ -13,9 +13,14 @@ public class CustomerCreateMethod : CodeTypeBase
     public static readonly CustomerCreateMethod Register = new CustomerCreateMethod(1000, "前台注册", "前台注册");
 
     /// <summary>
-    /// 后台导入, 2000
+    /// OpenId创建, 2000
     /// </summary>
-    public static readonly CustomerCreateMethod Import = new CustomerCreateMethod(2000, "后台导入", "后台导入");
+    public static readonly CustomerCreateMethod CreateByOpenId = new CustomerCreateMethod(2000, "OpenId创建", "OpenId创建");
+
+    /// <summary>
+    /// 后台导入, 3000
+    /// </summary>
+    public static readonly CustomerCreateMethod Import = new CustomerCreateMethod(3000, "后台导入", "后台导入");
 
     /// <summary>
     /// None
@@ -24,6 +29,7 @@ public class CustomerCreateMethod : CodeTypeBase
 
     private static readonly IReadOnlyList<CustomerCreateMethod> codeTypeList = new List<CustomerCreateMethod>() {
         Register,
+        CreateByOpenId,
         Import,
     };
 

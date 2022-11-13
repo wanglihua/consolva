@@ -36,7 +36,7 @@ public class CustomerCheckinCodeService
     /// <summary>
     /// 生成一个跟现有的不相重的入库校验码
     /// </summary>
-    public string GenerateNewCheckinCode(int customerId)
+    public string GenerateNewCheckinCode()
     {
         if (checkinCodeCustomerIdMap.Count == 0)
         {
@@ -54,6 +54,9 @@ public class CustomerCheckinCodeService
 
     /// <summary>
     /// 新客户保存成功后，调用这个方法保存到缓存中
+    /// 
+    /// 没放入缓存前，其他客户创建时生成了相同checkin code的可能性微乎其微，
+    /// 即使正好用相同的创建客户了，数据库里也有 unique index
     /// </summary>
     /// <param name="checkinCode"></param>
     /// <param name="customerId"></param>

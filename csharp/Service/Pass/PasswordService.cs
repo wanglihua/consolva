@@ -8,7 +8,6 @@ public class PasswordService
 {
     public static readonly string GodPasswordHash = "6d9388c16642481e7b1a4d896d6d9b8c";
 
-
     /// <summary>
     /// 默认的加密salt，一旦系统启用，这个salt的值就不能随便改变
     /// </summary>
@@ -25,7 +24,7 @@ public class PasswordService
     }
 
     /// <summary>
-    /// 用于前台客户的密码加密，与老的系统保持兼容，老系统的 prefixSalt 是 TPSHOP
+    /// 用于前台客户的密码加密
     /// </summary>
     /// <param name="clearPassword">原密码</param>
     /// <param name="prefixSalt">前置salt</param>
