@@ -19,7 +19,7 @@ public class WechatSessionService
 
     public string GetOpenId()
     {
-        return string.Empty;
+        return "open-id-test-0001";
     }
 
     public void BindOpenIdToCustomerAndValidatePromotionNewThread(int customerId)
