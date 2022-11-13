@@ -8,6 +8,7 @@ using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.Order;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Customer.Controllers;
@@ -17,10 +18,12 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class LogisticsOrderPayCustomerController : Controller
 {
     private readonly ISession session;
+    private CustomerCodeService customerCodeService;
 
-    public LogisticsOrderPayCustomerController(ISession session)
+    public LogisticsOrderPayCustomerController(ISession session, CustomerCodeService customerCodeService)
     {
         this.session = session;
+        this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
@@ -28,7 +31,12 @@ public class LogisticsOrderPayCustomerController : Controller
     public IActionResult Index(int customerId)
     {
         var customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null) throw new ValidationException("指定的会员不存在！");
+        if (customer == null)
+        {
+            throw new ValidationException("指定的会员不存在！");
+        }
+
+        customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
 
         var model = new LogisticsOrderPayCustomerIndexModel();
         model.CustomerId = customerId;

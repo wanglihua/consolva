@@ -7,6 +7,7 @@ using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Order;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Customer.Controllers;
@@ -16,10 +17,12 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerScoreLogCustomerController : Controller
 {
     private ISession session;
+    private CustomerCodeService customerCodeService;
 
-    public CustomerScoreLogCustomerController(ISession session)
+    public CustomerScoreLogCustomerController(ISession session, CustomerCodeService customerCodeService)
     {
         this.session = session;
+        this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
@@ -31,6 +34,8 @@ public class CustomerScoreLogCustomerController : Controller
         {
             throw new ValidationException("指定的会员不存在！");
         }
+        
+        customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
 
         CustomerScoreLogCustomerIndexModel model = new CustomerScoreLogCustomerIndexModel();
         model.CustomerId = customerId;

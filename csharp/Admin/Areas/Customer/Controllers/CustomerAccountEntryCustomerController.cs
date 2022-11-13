@@ -6,6 +6,7 @@ using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Customer.Controllers;
@@ -15,10 +16,12 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerAccountEntryCustomerController : Controller
 {
     private ISession session;
+    private CustomerCodeService customerCodeService;
 
-    public CustomerAccountEntryCustomerController(ISession session)
+    public CustomerAccountEntryCustomerController(ISession session, CustomerCodeService customerCodeService)
     {
         this.session = session;
+        this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
@@ -30,6 +33,8 @@ public class CustomerAccountEntryCustomerController : Controller
         {
             return Content("指定的客户Id不存在！");
         }
+
+        customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
 
         CustomerAccountEntryCustomerIndexModel model = new CustomerAccountEntryCustomerIndexModel();
         model.Customer = customer;

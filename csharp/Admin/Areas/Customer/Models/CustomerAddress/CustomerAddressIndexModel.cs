@@ -16,4 +16,7 @@ public class CustomerAddressIndexModel
 
     [BindNever]
     public int CustomerReceiveAddressCount { get; set; }
+
+    [BindNever]
+    public int CustomerSendAddressCount { get; set; }    
 }

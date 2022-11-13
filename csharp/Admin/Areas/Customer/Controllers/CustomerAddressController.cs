@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate.Criterion;
+using shunda.Admin.Areas.Customer.Models.CustomerAddress;
 using shunda.Core;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Pass.PassRes;
-using Web.Areas.Admin.Models.CustomerAddress;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Customer.Controllers;
@@ -21,32 +22,44 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerAddressController : Controller
 {
     private ISession session;
+    private CustomerCodeService customerCodeService;
 
-    public CustomerAddressController(ISession session)
+    public CustomerAddressController(ISession session, CustomerCodeService customerCodeService)
     {
         this.session = session;
+        this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
     [Route("/admin/customer/address/{customerId:int}")]
     public IActionResult Index(int customerId)
     {
-        CustomerInfo customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null)
+        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null)
         {
             return Content("指定的客户Id不存在！");
         }
 
-        IList<CustomerAddressInfo> customerAddressList = session.CreateCriteria<CustomerAddressInfo>()
-            .Add(Restrictions.Where<CustomerAddressInfo>(e => e.Customer.Id == customerId))
-            .AddOrder(new Order(nameof(CustomerAddressInfo.IsDefault), false)) // 默认地址排在前面
-            .AddOrder(new Order(nameof(CustomerAddressInfo.Id), true))
-            .List<CustomerAddressInfo>();
+        customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
+
+        IList<CustomerReceiveAddressInfo> customerReceiveAddressList = session.CreateCriteria<CustomerReceiveAddressInfo>()
+            .Add(Restrictions.Where<CustomerReceiveAddressInfo>(e => e.Customer.Id == customerId))
+            .AddOrder(new Order(nameof(CustomerReceiveAddressInfo.IsDefault), false)) // 默认地址排在前面
+            .AddOrder(new Order(nameof(CustomerReceiveAddressInfo.Id), true))
+            .List<CustomerReceiveAddressInfo>();
+
+        IList<CustomerSendAddressInfo> customerSendAddressList = session.CreateCriteria<CustomerSendAddressInfo>()
+            .Add(Restrictions.Where<CustomerSendAddressInfo>(e => e.Customer.Id == customerId))
+            .AddOrder(new Order(nameof(CustomerSendAddressInfo.IsDefault), false)) // 默认地址排在前面
+            .AddOrder(new Order(nameof(CustomerSendAddressInfo.Id), true))
+            .List<CustomerSendAddressInfo>();
 
         CustomerAddressIndexModel model = new CustomerAddressIndexModel();
-        model.Customer = customerInfo;
-        model.CustomerAddressList = customerAddressList;
-        model.CustomerAddressCount = customerAddressList.Count;
+        model.Customer = customer;
+        model.CustomerReceiveAddressList = customerReceiveAddressList;
+        model.CustomerReceiveAddressCount = customerReceiveAddressList.Count;
+        model.CustomerSendAddressList = customerSendAddressList;
+        model.CustomerSendAddressCount = customerSendAddressList.Count;
 
         return View("CustomerAddressIndex", model);
     }
@@ -86,17 +99,19 @@ public class CustomerAddressController : Controller
             throw new ValidationException($"指定的客户地址#{addressId}不存在！");
         }
 
-        address.Consignee = addressFromUi.Consignee;
+        address.Country = addressFromUi.Country;
+        address.FirstName = addressFromUi.FirstName;
         address.LastName = addressFromUi.LastName;
         address.Mobile = addressFromUi.Mobile;
         address.UnitLoc = addressFromUi.UnitLoc;
-        address.Valid = addressFromUi.Valid;
         address.Address = addressFromUi.Address;
         address.City = addressFromUi.City;
-        address.Province = addressFromUi.Province;
+        address.State = addressFromUi.State;
         address.Zipcode = addressFromUi.Zipcode;
         address.Tfn = addressFromUi.Tfn;
         address.Company = addressFromUi.Company;
+        // address.IsDefault = addressFromUi.IsDefault;
+        // address.Status = addressFromUi.Status;
 
         session.Update(address);
         session.Flush();
