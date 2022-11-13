@@ -93,7 +93,10 @@
                             else
                             {
                                 <span>
-                                    @(customer.CustomerCodeCache)
+                                    <a target="_blank" asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(customer.Id)">
+                                        @ListDataUtil.Render(customer.CustomerCodeCache)
+                                    </a>
+
                                     @if (string.IsNullOrWhiteSpace(customer.CustomerCharacter) == false)
                                     {
                                         <span>(@(customer.CustomerCharacter))</span>
@@ -102,23 +105,16 @@
                             }
                         </div>
                         <div>
-                            @(customer.Level.Name)
+                            @ListDataUtil.Render(customer.Level.Name)
                         </div>
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = customer.Id })">查看详细</a>
+                            <a target="_blank" asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(customer.Id)">查看详细</a>
                         </div>
                     </td>
 
                     <td>
                         <div>
-                            @if (string.IsNullOrWhiteSpace(customer.Mobile))
-                            {
-                                <span>无</span>
-                            }
-                            else
-                            {
-                                @customer.Mobile
-                            }
+                            @ListDataUtil.Render(customer.Mobile)
                         </div>
                         <div>
                             @if (customer.MobileValidated)
@@ -134,16 +130,16 @@
 
                     <td>
                         <div>
-                            @customer.RegTime.ToString("yyyy-MM-dd HH:mm")
+                            @ListDataUtil.Render(customer.RegTime)
                         </div>
                         <div>
-                            @customer.LastLogin.ToString("yyyy-MM-dd HH:mm")
+                            @ListDataUtil.Render(customer.LastLogin)
                         </div>
                     </td>
 
                     <td>
                         <div>
-                            @customer.LastIp
+                            @ListDataUtil.Render(customer.LastIp)
                         </div>
                     </td>
 
