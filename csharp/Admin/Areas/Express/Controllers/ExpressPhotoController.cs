@@ -2,6 +2,7 @@ using Aliyun.OSS;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.SqlCommand;
 using NLog;
 using shunda.Admin.Areas.Express.Models.ExpressPhoto;
@@ -11,6 +12,7 @@ using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
@@ -280,12 +282,28 @@ public class ExpressPhotoController : Controller
                 .Take(1)
                 .SingleOrDefault();
 
-            if (express != null && logisticsOrder != null && (express.Order?.Id ?? 0) != logisticsOrder.Id) throw new ValidationException("指定的快递单号和订单编号不匹配，可能快递单号属于别的订单！");
+            if (express != null && logisticsOrder != null && (express.Order?.Id ?? 0) != logisticsOrder.Id)
+            {
+                throw new ValidationException("指定的快递单号和订单编号不匹配，可能快递单号属于别的订单！");
+            }
+
+            // 这一语句就保证如果订单编号没有录入，但快递单号对应的快递单有订单关联时，就设置成快递单关联订单
+            logisticsOrder = express?.Order; // 也可能是 null。
+        }
+
+        CustomerInfo? customer = null;
+        if (express != null)
+        {
+            customer = express.Customer;
+        }
+        else if (logisticsOrder != null) // 适用订单图片的情形
+        {
+            customer = logisticsOrder.Customer;
         }
 
         expressPhoto.TrackingNo = trackingNo;
         expressPhoto.Express = express;
-        expressPhoto.Customer = express?.Customer;
+        expressPhoto.Customer = customer;
         expressPhoto.Order = logisticsOrder;
         expressPhoto.OrderCode = logisticsOrder?.Code ?? string.Empty;
         expressPhoto.Type = model.PhotoType;
@@ -296,12 +314,40 @@ public class ExpressPhotoController : Controller
         session.Flush();
 
         if (express == null)
+        {
             expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型：{expressPhoto.Type?.Name}", loginUserId);
+        }
         else
+        {
             expressLogService.UserLog(express.Id, ExpressLogType.PhotoUpload, $"类型：{expressPhoto.Type?.Name}", loginUserId);
+        }
 
         expressPhotoFileService.AddWatermark(expressPhoto.StorePath, expressPhoto.StoreName, expressPhoto.Type ?? ExpressPhotoType.None);
         expressPhotoService.SendAddOrderPhotoMessage(expressPhoto);
+
+        // 如果有同单号的快递单号图片，更新他们的关联订单和快递单
+
+        // session.Query<ExpressPhotoInfo>()
+        //     .Where(e => e.TrackingNo == trackingNo)
+        //     .UpdateBuilder()
+        //     .Set(e => e.Express, express)
+        //     .Set(e => e.Customer, customer)
+        //     .Set(e => e.Order, logisticsOrder)
+        //     .Update();
+
+        IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .ToList();
+        foreach (ExpressPhotoInfo ep in expressPhotoList)
+        {
+            ep.Express = express;
+            ep.Customer = customer;
+            ep.Order = logisticsOrder;
+
+            session.Update(ep);
+        }
+
+        session.Flush();
 
         return Json(new Dictionary<string, object> {
             { "success", true },
