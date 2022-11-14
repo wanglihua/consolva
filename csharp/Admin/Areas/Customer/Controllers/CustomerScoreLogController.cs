@@ -52,6 +52,12 @@ public class CustomerScoreLogController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<CustomerScoreLogInfo>();
 
+        foreach (CustomerScoreLogInfo scoreLog in customerScoreLogList)
+        {
+            scoreLog.CustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.Customer.Id);
+            scoreLog.LogisticsOrderCustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.LogisticsOrderCustomer?.Id ?? 0);
+        }
+
         var model = new CustomerScoreLogListModel(listPager);
         model.CustomerScoreLogList = customerScoreLogList;
 

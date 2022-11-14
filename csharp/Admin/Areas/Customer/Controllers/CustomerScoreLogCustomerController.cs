@@ -34,7 +34,7 @@ public class CustomerScoreLogCustomerController : Controller
         {
             throw new ValidationException("指定的会员不存在！");
         }
-        
+
         customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
 
         CustomerScoreLogCustomerIndexModel model = new CustomerScoreLogCustomerIndexModel();
@@ -62,9 +62,10 @@ public class CustomerScoreLogCustomerController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<CustomerScoreLogInfo>();
 
-        foreach (CustomerScoreLogInfo customerScoreLogInfo in customerScoreLogList)
+        foreach (CustomerScoreLogInfo scoreLog in customerScoreLogList)
         {
-            // customerScoreLogInfo
+            scoreLog.CustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.Customer.Id);
+            scoreLog.LogisticsOrderCustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.LogisticsOrderCustomer?.Id ?? 0);
         }
 
         CustomerScoreLogCustomerListModel model = new CustomerScoreLogCustomerListModel(listPager);

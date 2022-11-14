@@ -45,7 +45,7 @@
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
                         <a asp-controller="Customer" asp-action="Detail" asp-route-id="@(customerAccountEntry.Customer.Id)" target="_blank">
-                            @(customerAccountEntry.Customer.CustomerCodeCache)
+                            @(customerAccountEntry.CustomerCodeCache)
                         </a>
                     </td>
                     <td style="text-align: center;">@customerAccountEntry.ChangeType?.Name</td>

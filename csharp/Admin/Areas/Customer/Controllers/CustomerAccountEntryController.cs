@@ -53,7 +53,7 @@ public class CustomerAccountEntryController : Controller
 
         foreach (CustomerAccountEntryInfo accountEntry in accountEntryList)
         {
-            accountEntry
+            accountEntry.CustomerCodeCache = customerCodeService.GetCustomerCode(accountEntry.Customer.Id);
         }
 
         var model = new CustomerAccountEntryListModel(listPager);

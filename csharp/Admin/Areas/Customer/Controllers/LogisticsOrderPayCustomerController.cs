@@ -62,9 +62,9 @@ public class LogisticsOrderPayCustomerController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsOrderPayInfo>();
 
-        foreach (var logisticsOrderPayInfo in logisticsOrderPayList)
+        foreach (LogisticsOrderPayInfo orderPay in logisticsOrderPayList)
         {
-            // logisticsOrderPayInfo
+            orderPay.CustomerCodeCache = customerCodeService.GetCustomerCode(orderPay.Customer.Id);
         }
 
         var model = new LogisticsOrderPayCustomerListModel(listPager);
