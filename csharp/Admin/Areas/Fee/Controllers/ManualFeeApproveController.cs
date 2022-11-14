@@ -135,7 +135,7 @@ public class ManualFeeApproveController : Controller
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-            criteria = criteria.Add(Restrictions.Like($"{nameof(ManualFeeApplyInfo.Order)}.{nameof(ManualFeeApplyInfo.Order.Code)}", orderCodeQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(ManualFeeApplyInfo.Order)}.{nameof(ManualFeeApplyInfo.Order.Code)}", orderCodeQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)

@@ -120,7 +120,7 @@ public class FeeRefundApplyController : Controller
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-            criteria = criteria.Add(Restrictions.Like($"{nameof(FeeRefundApplyInfo.Order)}.{nameof(FeeRefundApplyInfo.Order.Code)}", orderCodeQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeRefundApplyInfo.Order)}.{nameof(FeeRefundApplyInfo.Order.Code)}", orderCodeQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)

@@ -96,7 +96,7 @@ public class ManualIncreaseFeeController : Controller
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-            criteria = criteria.Add(Restrictions.Like($"{nameof(LogisticsOrderFeeInfo.Order)}.{nameof(LogisticsOrderFeeInfo.Order.Code)}", orderCodeQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsOrderFeeInfo.Order)}.{nameof(LogisticsOrderFeeInfo.Order.Code)}", orderCodeQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)

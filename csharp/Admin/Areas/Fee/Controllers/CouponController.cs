@@ -74,6 +74,16 @@ public class CouponController : Controller
     [Route("/admin/coupon/list")]
     public IActionResult List(CouponListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            queryParam.OrderId = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+        }
+
         var listCriteria = GetListCriteria(queryParam);
 
         int totalCount = ((ICriteria)listCriteria.Clone())
@@ -126,14 +136,9 @@ public class CouponController : Controller
             criteria = criteria.Add(Restrictions.Eq($"{nameof(CouponInfo.Customer)}.{nameof(CustomerInfo.Id)}", customerIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        if (queryParam.OrderId != 0)
         {
-            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-            var orderId = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.Code == orderCodeQuery)
-                .Select(e => e.Id)
-                .Take(1)
-                .SingleOrDefault();
+            int orderId = queryParam.OrderId;
             criteria = criteria.Add(Restrictions.Eq($"{nameof(CouponInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}", orderId));
         }
 

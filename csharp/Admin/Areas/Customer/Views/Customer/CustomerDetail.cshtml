@@ -814,7 +814,6 @@
             </div>
             *@
 
-            @*
             <div class="row">
                 <div class="col-xs-12">
                     <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelOrderPay').toggle();">
@@ -866,7 +865,7 @@
                                     {
                                         <tr ondblclick="showLogisticsOrderPayDetail(@(logisticsOrderPay.Id));">
                                             <td style="text-align: center;">@(order++)</td>
-                                            <td style="text-align: center;">@logisticsOrderPay.Customer?.CustomerCode</td>
+                                            <td style="text-align: center;">@logisticsOrderPay.CustomerCode</td>
                                             <td style="text-align: center;" class="break-word">
                                                 <a href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderPay.Order?.Id })" target="_blank">
                                                     @logisticsOrderPay.Order?.Code
@@ -894,7 +893,6 @@
                     </div>
                 </div>
             </div>
-            *@
 
             @*
             <div class="row">

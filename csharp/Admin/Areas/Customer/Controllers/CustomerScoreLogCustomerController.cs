@@ -49,6 +49,18 @@ public class CustomerScoreLogCustomerController : Controller
     [Route("/admin/customer/score/log/customer/list")]
     public IActionResult List(CustomerScoreLogCustomerListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            string orderCode = queryParam.OrderCodeQuery.Trim();
+            int orderId = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCode)
+                .Select(e =>e.Id)
+                .Take(1)
+                .SingleOrDefault();
+
+            queryParam.OrderId = orderId;
+        }
+        
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -88,15 +100,9 @@ public class CustomerScoreLogCustomerController : Controller
             criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.ScoreType == queryParam.ScoreTypeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        if (queryParam.OrderId != 0)
         {
-            string orderCode = queryParam.OrderCodeQuery.Trim();
-            LogisticsOrderInfo? logisticsOrder = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.Code == orderCode)
-                .Take(1)
-                .SingleOrDefault();
-
-            int orderId = logisticsOrder?.Id ?? 0;
+            int orderId = queryParam.OrderId;
             criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.LogisticsOrder!.Id == orderId));
         }
 

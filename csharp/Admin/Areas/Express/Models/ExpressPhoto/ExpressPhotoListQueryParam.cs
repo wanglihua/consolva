@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Express;
 
@@ -13,6 +14,9 @@ public class ExpressPhotoListQueryParam : ListQueryParam
 
     public string? OrderCodeQuery { get; set; }
 
+    [BindNever]
+    public int OrderId { get; set; }
+
     public string? TrackingNoQuery { get; set; }
 
     public DateTime? BeginDateQuery { get; set; }
@@ -20,4 +24,7 @@ public class ExpressPhotoListQueryParam : ListQueryParam
     public DateTime? EndDateQuery { get; set; }
 
     public string? UserNameQuery { get; set; }
+    
+    [BindNever]
+    public int UserId { get; set; }
 }

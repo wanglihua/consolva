@@ -302,7 +302,9 @@ public class CustomerController : Controller
 
         // 余额明细
         {
-            IList<CustomerAccountEntryInfo> customerAccountEntryList = session.CreateCriteria<CustomerAccountEntryInfo>()
+            ICriteria criteria = session.CreateCriteria<CustomerAccountEntryInfo>();
+
+            IList<CustomerAccountEntryInfo> customerAccountEntryList = criteria
                 .Add(Restrictions.Where<CustomerAccountEntryInfo>(e => e.Customer.Id == customerId))
                 .AddOrder(new Order(nameof(CustomerAccountEntryInfo.Id), false)) // id 倒序
                 .SetMaxResults(10)
@@ -310,6 +312,7 @@ public class CustomerController : Controller
 
             foreach (CustomerAccountEntryInfo accountEntry in customerAccountEntryList)
             {
+                accountEntry.CustomerCodeCache = customerCodeService.GetCustomerCode(accountEntry.Customer.Id);
             }
 
             model.CustomerAccountEntryList = customerAccountEntryList;
@@ -317,24 +320,38 @@ public class CustomerController : Controller
 
         // 支付明细
         {
-            IList<LogisticsOrderPayInfo> logisticsOrderPayList = session.CreateCriteria<LogisticsOrderPayInfo>()
+            ICriteria criteria = session.CreateCriteria<LogisticsOrderPayInfo>();
+            criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
+
+            IList<LogisticsOrderPayInfo> orderPayList = criteria
                 .Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId && e.Status == PayStatus.Paid))
                 .AddOrder(new Order(nameof(LogisticsOrderPayInfo.Id), false))
                 .SetMaxResults(10)
                 .List<LogisticsOrderPayInfo>();
 
-            model.LogisticsOrderPayList = logisticsOrderPayList;
+            foreach (LogisticsOrderPayInfo orderPay in orderPayList)
+            {
+                orderPay.CustomerCodeCache = customerCodeService.GetCustomerCode(orderPay.Customer.Id);
+            }
+
+            model.LogisticsOrderPayList = orderPayList;
         }
 
         // 积分明细
         {
-            IList<CustomerScoreLogInfo> customerScoreLogList = session.CreateCriteria<CustomerScoreLogInfo>()
+            IList<CustomerScoreLogInfo> scoreLogList = session.CreateCriteria<CustomerScoreLogInfo>()
                 .Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.Customer.Id == customerId))
                 .AddOrder(new Order(nameof(CustomerScoreLogInfo.Id), false))
                 .SetMaxResults(10)
                 .List<CustomerScoreLogInfo>();
 
-            model.CustomerScoreLogList = customerScoreLogList;
+            foreach (CustomerScoreLogInfo scoreLog in scoreLogList)
+            {
+                scoreLog.CustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.Customer?.Id ?? 0);
+                scoreLog.LogisticsOrderCustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.LogisticsOrderCustomer?.Id ?? 0);
+            }
+
+            model.CustomerScoreLogList = scoreLogList;
         }
 
         /*
@@ -359,7 +376,11 @@ public class CustomerController : Controller
         model.CanEditCharacter = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Customer.CustomerCharacter);
 
         IList<CustomerCharacterInfo> customerCharacterList = session.Query<CustomerCharacterInfo>().ToList();
-        if (customerCharacterList.Where(e => e.Content == customer.CustomerCharacter).Count() == 0) customerCharacterList.Insert(0, new CustomerCharacterInfo { Content = customer.CustomerCharacter });
+        if (customerCharacterList.Where(e => e.Content == customer.CustomerCharacter).Count() == 0)
+        {
+            // 就是保证已经删除掉的 CustomerCharacterInfo，但客户中还在使用的，也能有一个选项。
+            customerCharacterList.Insert(0, new CustomerCharacterInfo { Content = customer.CustomerCharacter });
+        }
 
         model.CustomerCharacterList = customerCharacterList;
 

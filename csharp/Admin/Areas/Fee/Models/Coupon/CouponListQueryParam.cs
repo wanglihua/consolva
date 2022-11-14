@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Coupon;
 
@@ -13,6 +14,9 @@ public class CouponListQueryParam : ListQueryParam
     public string? CustomerCodeQuery { get; set; }
 
     public string? OrderCodeQuery { get; set; }
+    
+    [BindNever]
+    public int OrderId { get; set; }
 
     [ModelBinder(typeof(CouponStatusModelBinder))]
     public CouponStatus? StatusQuery { get; set; }

@@ -114,7 +114,7 @@ public class FeeWriteOffApplyController : Controller
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-            criteria = criteria.Add(Restrictions.Like($"{nameof(FeeWriteOffApplyInfo.Order)}.{nameof(FeeWriteOffApplyInfo.Order.Code)}", orderCodeQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeWriteOffApplyInfo.Order)}.{nameof(FeeWriteOffApplyInfo.Order.Code)}", orderCodeQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)

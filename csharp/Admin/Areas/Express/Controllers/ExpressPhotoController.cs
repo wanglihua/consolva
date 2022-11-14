@@ -70,6 +70,26 @@ public class ExpressPhotoController : Controller
     [Route("/admin/express/photo/list")]
     public IActionResult List(ExpressPhotoListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            var orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            queryParam.OrderId = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
+        {
+            var userNameQuery = queryParam.UserNameQuery.Trim();
+            queryParam.UserId = session.Query<UserInfo>()
+                .Where(e => e.LoginName == userNameQuery || e.UserName == userNameQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+        }
+
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.Count<ExpressPhotoInfo>(e => e.Id))
             .UniqueResult<int>();
@@ -116,27 +136,6 @@ public class ExpressPhotoController : Controller
     [NonAction]
     private ICriteria GetListCriteria(ExpressPhotoListQueryParam queryParam)
     {
-        LogisticsOrderInfo? order = null;
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
-            var orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-            order = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.Code == orderCodeQuery)
-                .Take(1)
-                .SingleOrDefault();
-        }
-
-        UserInfo? user = null;
-        if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
-        {
-            var userNameQuery = queryParam.UserNameQuery.Trim();
-
-            user = session.Query<UserInfo>()
-                .Where(e => e.LoginName == userNameQuery || e.UserName == userNameQuery)
-                .Take(1)
-                .SingleOrDefault();
-        }
-
         var criteria = session.CreateCriteria<ExpressPhotoInfo>();
 
         criteria.SetReadOnly(true);
@@ -144,7 +143,6 @@ public class ExpressPhotoController : Controller
         // criteria = criteria.CreateAlias(nameof(ExpressPhotoInfo.Order), nameof(ExpressPhotoInfo.Order), JoinType.LeftOuterJoin);
         // criteria = criteria.CreateAlias(nameof(ExpressPhotoInfo.Express), nameof(ExpressPhotoInfo.Express), JoinType.LeftOuterJoin);
         // criteria = criteria.CreateAlias(nameof(ExpressPhotoInfo.User), nameof(ExpressPhotoInfo.User), JoinType.LeftOuterJoin);
-
 
         if (queryParam.TypeQuery != null && queryParam.TypeQuery != ExpressPhotoType.None)
         {
@@ -160,7 +158,11 @@ public class ExpressPhotoController : Controller
             criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.Customer!.Id == customerIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressPhotoInfo.Order)}.{nameof(ExpressPhotoInfo.Order.Id)}", order?.Id ?? 0));
+        if (queryParam.OrderId != 0)
+        {
+            int orderId = queryParam.OrderId;
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressPhotoInfo.Order)}.{nameof(ExpressPhotoInfo.Order.Id)}", orderId));
+        }
 
         if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
         {
@@ -180,7 +182,11 @@ public class ExpressPhotoController : Controller
             criteria = criteria.Add(Restrictions.Where<ExpressPhotoInfo>(e => e.CreateTime < endDateQueryValue));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false) criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressPhotoInfo.User)}.{nameof(ExpressPhotoInfo.User.Id)}", user?.Id ?? 0));
+        if (queryParam.UserId != 0)
+        {
+            int userId = queryParam.UserId;
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressPhotoInfo.User)}.{nameof(ExpressPhotoInfo.User.Id)}", userId));
+        }
 
         return criteria;
     }
