@@ -73,4 +73,12 @@ public class CustomerScoreLogInfo : Entity
     /// 订单会员
     /// </summary>
     public virtual CustomerInfo? LogisticsOrderCustomer { get; set; }
+
+    #region cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    public virtual string LogisticsOrderCustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

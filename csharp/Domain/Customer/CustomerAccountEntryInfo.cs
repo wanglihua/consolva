@@ -46,4 +46,10 @@ public class CustomerAccountEntryInfo : Entity
     /// </summary>
     [EntityRequired(ErrorMessage = "客户不能为空！")]
     public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+
+    #region cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

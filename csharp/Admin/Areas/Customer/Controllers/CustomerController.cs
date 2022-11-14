@@ -11,6 +11,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Domain.Fee;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using shunda.Service.Pass;
@@ -297,6 +298,7 @@ public class CustomerController : Controller
 
             model.LogisticsIssueGoodsList = logisticsIssueGoodsList;
         }
+        */
 
         // 余额明细
         {
@@ -305,6 +307,10 @@ public class CustomerController : Controller
                 .AddOrder(new Order(nameof(CustomerAccountEntryInfo.Id), false)) // id 倒序
                 .SetMaxResults(10)
                 .List<CustomerAccountEntryInfo>();
+
+            foreach (CustomerAccountEntryInfo accountEntry in customerAccountEntryList)
+            {
+            }
 
             model.CustomerAccountEntryList = customerAccountEntryList;
         }
@@ -331,6 +337,8 @@ public class CustomerController : Controller
             model.CustomerScoreLogList = customerScoreLogList;
         }
 
+        /*
+         
         //客户地址列表
         {
             IList<CustomerAddressInfo> customerAddressList = session.CreateCriteria<CustomerAddressInfo>()

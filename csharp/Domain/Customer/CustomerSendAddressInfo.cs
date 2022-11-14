@@ -121,4 +121,10 @@ public class CustomerSendAddressInfo : Entity
     [JsonProperty("status")]
     [ModelBinder(typeof(CustomerAddressStatusModelBinder))]
     public virtual CustomerAddressStatus Status { get; set; } = CustomerAddressStatus.None;
+
+    #region cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

@@ -15,8 +15,8 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [AdminAuth(PassRes.Customer.CustomerAccountEntry)]
 public class CustomerAccountEntryController : Controller
 {
-    private readonly CustomerCodeService customerCodeService;
     private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
 
     public CustomerAccountEntryController(ISession session, CustomerCodeService customerCodeService)
     {
@@ -44,15 +44,20 @@ public class CustomerAccountEntryController : Controller
 
         var listPager = new ListPager(queryParam, totalCount);
 
-        var customerAccountEntryList = GetListCriteria(queryParam)
+        var accountEntryList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<CustomerAccountEntryInfo>();
 
+        foreach (CustomerAccountEntryInfo accountEntry in accountEntryList)
+        {
+            accountEntry
+        }
+
         var model = new CustomerAccountEntryListModel(listPager);
-        model.CustomerAccountEntryList = customerAccountEntryList;
+        model.CustomerAccountEntryList = accountEntryList;
 
         return View("CustomerAccountEntryList", model);
     }

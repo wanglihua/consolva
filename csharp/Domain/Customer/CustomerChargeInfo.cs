@@ -78,4 +78,9 @@ public class CustomerChargeInfo : Entity
     [ModelBinder(typeof(CustomerChargeStatusModelBinder))]
     public virtual CustomerChargeStatus Status { get; set; } = CustomerChargeStatus.None;
 
+    #region cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

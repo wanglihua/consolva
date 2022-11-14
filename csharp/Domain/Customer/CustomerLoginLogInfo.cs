@@ -64,4 +64,9 @@ public class CustomerLoginLogInfo : Entity
     [JsonProperty("loginTime")]
     public virtual DateTime LoginTime { get; set; } = DateTime.MinValue;
 
+    #region cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }
