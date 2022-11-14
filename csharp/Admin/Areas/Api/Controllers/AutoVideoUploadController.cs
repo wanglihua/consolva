@@ -27,7 +27,7 @@ public class AutoVideoUploadController : Controller
     }
 
     [HttpPost]
-    [Route("/auto/api/video/upload/camera")]
+    [Route("/admin/api/auto/video/upload/camera")]
     public IActionResult uploadCamera(string storePath, string storeFileName, string expressTrackingNo, string uploaderLoginName)
     {
         // 现在 C++ 客户端也还没加上这个校验的

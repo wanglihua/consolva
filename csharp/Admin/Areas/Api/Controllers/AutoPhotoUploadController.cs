@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -16,22 +17,19 @@ public class AutoPhotoUploadController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
-    private ExpressTrackingNoService expressTrackingNoService = null;
-    private LogisticsOrderPackBoxService logisticsOrderPackBoxService = null;
-    private LogisticsOrderPhotoService logisticsOrderPhotoService = null;
-    private ExpressLogService expressLogService = null;
+    private ISession session;
+    private ExpressTrackingNoService expressTrackingNoService;
+    private ExpressPhotoService expressPhotoService;
+    private ExpressLogService expressLogService;
 
     public AutoPhotoUploadController(ISession session,
         ExpressTrackingNoService expressTrackingNoService,
-        LogisticsOrderPackBoxService logisticsOrderPackBoxService,
-        LogisticsOrderPhotoService logisticsOrderPhotoService,
+        ExpressPhotoService expressPhotoService,
         ExpressLogService expressLogService)
     {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
-        this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
-        this.logisticsOrderPhotoService = logisticsOrderPhotoService;
+        this.expressPhotoService = expressPhotoService;
         this.expressLogService = expressLogService;
     }
 
@@ -45,7 +43,7 @@ public class AutoPhotoUploadController : Controller
     /// <returns></returns>
     /// <exception cref="ValidationException"></exception>
     [HttpPost]
-    [Route("/auto/api/photo/upload/create")]
+    [Route("/admin/api/auto/photo/upload/create")]
     public IActionResult Create(string fileName, string photoUrl, string uploaderLoginName, string type)
     {
         // 现在golang客户端也还没加上这个校验的
@@ -61,26 +59,26 @@ public class AutoPhotoUploadController : Controller
             throw new ValidationException("上传人登录名不能为空！");
         }
 
-        LogisticsOrderPhotoType orderPhotoType = LogisticsOrderPhotoType.SignIn;
+        ExpressPhotoType expressPhotoType = ExpressPhotoType.SignIn;
         if (string.IsNullOrWhiteSpace(type) == false)
         {
             if (type == "sign")
             {
-                orderPhotoType = LogisticsOrderPhotoType.SignIn;
+                expressPhotoType = ExpressPhotoType.SignIn;
             }
 
-            if (type == "load")
-            {
-                orderPhotoType = LogisticsOrderPhotoType.Load;
-            }
+            // if (type == "load") 当前只有sign一种情况
+            // {
+            //     expressPhotoType = ExpressPhotoType.Load;
+            // }
         }
 
         string storePath = Path.GetDirectoryName(photoUrl);
         string storeName = Path.GetFileName(photoUrl);
 
-        LogisticsOrderPhotoInfo orderPhoto = new LogisticsOrderPhotoInfo();
+        ExpressPhotoInfo orderPhoto = new ExpressPhotoInfo();
 
-        if (orderPhotoType == LogisticsOrderPhotoType.SignIn)
+        if (expressPhotoType == ExpressPhotoType.SignIn)
         {
             string expressTrackingNo = fileName;
             if (string.IsNullOrWhiteSpace(expressTrackingNo))
@@ -135,23 +133,25 @@ public class AutoPhotoUploadController : Controller
             orderPhoto.ExpressTrackingNo = expressTrackingNo;
         }
 
-        if (orderPhotoType == LogisticsOrderPhotoType.Load)
-        {
-            string orderPackBoxCode = fileName;
-            LogisticsOrderPackBoxInfo orderPackBox = logisticsOrderPackBoxService.ParseBoxCode(orderPackBoxCode); // 必须可以是小标签
-            if (orderPackBox == null)
-            {
-                throw new ValidationException("指定的箱号不存在！");
-            }
 
-            orderPhoto.Customer = orderPackBox.Customer;
-            orderPhoto.Order = orderPackBox.OrderPack?.Order;
-        }
+        // 这里只有 sign in，还没有 load 的情况 
+        // if (expressPhotoType == ExpressPhotoType.Load)
+        // {
+        //     string orderPackBoxCode = fileName;
+        //     LogisticsOrderPackBoxInfo orderPackBox = logisticsOrderPackBoxService.ParseBoxCode(orderPackBoxCode); // 必须可以是小标签
+        //     if (orderPackBox == null)
+        //     {
+        //         throw new ValidationException("指定的箱号不存在！");
+        //     }
+        //
+        //     orderPhoto.Customer = orderPackBox.Customer;
+        //     orderPhoto.Order = orderPackBox.OrderPack?.Order;
+        // }
 
-        orderPhoto.Type = orderPhotoType;
+        orderPhoto.Type = expressPhotoType;
         orderPhoto.StorePath = storePath;
         orderPhoto.StoreName = storeName;
-        orderPhoto.Status = LogisticsOrderPhotoStatus.None;
+        orderPhoto.Status = ExpressPhotoStatus.None;
         orderPhoto.ExpressComName = String.Empty;
         orderPhoto.StoreOss = true;
 
@@ -164,7 +164,7 @@ public class AutoPhotoUploadController : Controller
         {
             uploaderLoginName = uploaderLoginName.Trim();
 
-            UserInfo uploadUser = session.Query<UserInfo>()
+            UserInfo? uploadUser = session.Query<UserInfo>()
                 .Where(e => e.LoginName == uploaderLoginName)
                 .Take(1)
                 .SingleOrDefault();
@@ -184,18 +184,18 @@ public class AutoPhotoUploadController : Controller
 
         if (orderPhoto.User == null)
         {
-            expressLogService.Log(orderPhoto.ExpressTrackingNo, ExpressLogType.PhotoUpload, $"类型:{orderPhotoType.Name}");
+            expressLogService.Log(orderPhoto.ExpressTrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}");
         }
         else
         {
-            expressLogService.UserLog(orderPhoto.ExpressTrackingNo, ExpressLogType.PhotoUpload, $"类型:{orderPhotoType.Name}", orderPhoto.User?.Id ?? 0);
+            expressLogService.UserLog(orderPhoto.ExpressTrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}", orderPhoto.User?.Id ?? 0);
         }
 
         if (orderPhoto.Order != null)
         {
             try
             {
-                logisticsOrderPhotoService.SendAddOrderPhotoMessage(orderPhoto);
+                expressPhotoService.SendAddOrderPhotoMessage(orderPhoto);
             }
             catch (Exception exp)
             {
@@ -207,7 +207,7 @@ public class AutoPhotoUploadController : Controller
     }
 
     [HttpPost]
-    [Route("/auto/api/photo/upload/camera")]
+    [Route("/admin/api/auto/photo/upload/camera")]
     public IActionResult uploadCamera(string storePath, string storeFileName, string expressTrackingNo, string uploaderLoginName)
     {
         // 现在 C++ 客户端也还没加上这个校验的
@@ -248,7 +248,7 @@ public class AutoPhotoUploadController : Controller
         // 入库操作人
         uploaderLoginName = uploaderLoginName.Trim();
 
-        UserInfo uploadUser = session.Query<UserInfo>()
+        UserInfo? uploadUser = session.Query<UserInfo>()
             .Where(e => e.LoginName == uploaderLoginName)
             .Take(1)
             .SingleOrDefault();
@@ -257,9 +257,9 @@ public class AutoPhotoUploadController : Controller
             throw new ValidationException($"指定的入库操作人登录名#{uploaderLoginName}不存在！");
         }
 
-        LogisticsOrderPhotoType orderPhotoType = LogisticsOrderPhotoType.CheckIn;
+        ExpressPhotoType orderPhotoType = ExpressPhotoType.CheckIn;
 
-        LogisticsOrderPhotoInfo orderPhoto = new LogisticsOrderPhotoInfo();
+        ExpressPhotoInfo orderPhoto = new ExpressPhotoInfo();
         orderPhoto.Customer = null;
         orderPhoto.Order = null; // 3.0 入库时肯定还没订单
         orderPhoto.Express = null;
@@ -268,7 +268,7 @@ public class AutoPhotoUploadController : Controller
         orderPhoto.Type = orderPhotoType;
         orderPhoto.StorePath = storePath;
         orderPhoto.StoreName = storeFileName;
-        orderPhoto.Status = LogisticsOrderPhotoStatus.None;
+        orderPhoto.Status = ExpressPhotoStatus.None;
         orderPhoto.ExpressComName = String.Empty;
         orderPhoto.StoreOss = true;
         orderPhoto.User = uploadUser;

@@ -20,9 +20,9 @@ public class AutoMeasureDataController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
-    private ExpressTrackingNoService expressTrackingNoService = null;
-    private ExpressLogService expressLogService = null;
+    private ISession session;
+    private ExpressTrackingNoService expressTrackingNoService;
+    private ExpressLogService expressLogService;
 
     public AutoMeasureDataController(ISession session, ExpressTrackingNoService expressTrackingNoService, ExpressLogService expressLogService)
     {
@@ -32,7 +32,7 @@ public class AutoMeasureDataController : Controller
     }
 
     [HttpPost]
-    [Route("/auto/api/measure/upload")]
+    [Route("/admin/api/auto/measure/upload")]
     public IActionResult Upload()
     {
         ITransaction transaction = null;
