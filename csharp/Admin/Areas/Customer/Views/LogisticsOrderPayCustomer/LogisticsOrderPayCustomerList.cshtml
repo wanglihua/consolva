@@ -48,7 +48,7 @@
                         <label for="logisticsOrderPayCheck_@(logisticsOrderPay.Id)"></label><input id="logisticsOrderPayCheck_@(logisticsOrderPay.Id)" type="checkbox" class="ace" value="@logisticsOrderPay.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td style="text-align: center;">@logisticsOrderPay.Customer.CustomerCodeCache</td>
+                    <td style="text-align: center;">@logisticsOrderPay.CustomerCodeCache</td>
                     <td style="text-align: center;" class="break-word">
                         <a href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderPay.Order?.Id })" target="_blank">
                             @logisticsOrderPay.Order?.Code

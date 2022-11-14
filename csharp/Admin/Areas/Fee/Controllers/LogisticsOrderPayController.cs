@@ -47,6 +47,18 @@ public class LogisticsOrderPayController : Controller
     [Route("/admin/logistics/order/pay/list")]
     public IActionResult List(LogisticsOrderPayListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            var orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            int orderId = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+
+            queryParam.OrderId = orderId;
+        }
+
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -61,8 +73,10 @@ public class LogisticsOrderPayController : Controller
             .List<LogisticsOrderPayInfo>();
 
         foreach (var orderPay in logisticsOrderPayList)
+        {
             // orderPay.Customer 肯定是非空的
-            orderPay.Customer.CustomerCodeCache = customerCodeService.GetCustomerCode(orderPay.Customer.Id);
+            orderPay.CustomerCodeCache = customerCodeService.GetCustomerCode(orderPay.Customer.Id);
+        }
 
         var model = new LogisticsOrderPayListModel(listPager);
         model.LogisticsOrderPayList = logisticsOrderPayList;
@@ -74,12 +88,11 @@ public class LogisticsOrderPayController : Controller
     private ICriteria GetListCriteria(LogisticsOrderPayListQueryParam queryParam)
     {
         var criteria = session.CreateCriteria<LogisticsOrderPayInfo>();
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Customer), nameof(LogisticsOrderPayInfo.Customer));
+        // criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Customer), nameof(LogisticsOrderPayInfo.Customer));
         criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Status == PayStatus.Paid));
-
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
         {
@@ -89,24 +102,17 @@ public class LogisticsOrderPayController : Controller
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        if (queryParam.OrderId != 0)
         {
-            var orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-
-            var logisticsOrder = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.Code == orderCodeQuery)
-                .Take(1)
-                .SingleOrDefault();
-
-            var orderId = 0;
-            if (logisticsOrder != null) orderId = logisticsOrder.Id;
-
+            var orderId = queryParam.OrderId;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Order.Id == orderId));
         }
 
-
         var firstModeType = LogisticsModeType.GetById(queryParam.LogisticsModeTypeIdQuery ?? 0);
-        if (firstModeType != null && firstModeType != LogisticsModeType.None) criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsOrderPayInfo.Order)}.{nameof(LogisticsOrderPayInfo.Order.LogisticsModeType)}", firstModeType));
+        if (firstModeType != null && firstModeType != LogisticsModeType.None) 
+        {
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsOrderPayInfo.Order)}.{nameof(LogisticsOrderPayInfo.Order.LogisticsModeType)}", firstModeType));
+        }
 
         if (queryParam.PayTimeBeginQuery != null)
         {
@@ -207,6 +213,23 @@ public class LogisticsOrderPayController : Controller
     [Route("/admin/logistics/order/pay/export")]
     public IActionResult Export(LogisticsOrderPayListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            var orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+
+            int orderId = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+
+            queryParam.OrderId = orderId;
+        }
+
+        var orderPayList = GetListCriteria(queryParam)
+            .AddOrder(Order.Asc(nameof(Entity.Id)))
+            .List<LogisticsOrderPayInfo>();
+
         var fileName = "实时收入" + ".xlsx";
         IWorkbook workbook = new XSSFWorkbook();
 
@@ -291,10 +314,6 @@ public class LogisticsOrderPayController : Controller
             cell.CellStyle = headerCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue("完成时间");
-
-            var orderPayList = GetListCriteria(queryParam)
-                .AddOrder(Order.Asc(nameof(Entity.Id)))
-                .List<LogisticsOrderPayInfo>();
 
             foreach (var orderPay in orderPayList)
             {

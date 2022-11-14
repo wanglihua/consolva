@@ -46,39 +46,39 @@
         @if (Model.LogisticsOrderPayList != null && Model.LogisticsOrderPayList.Count != 0)
         {
             var order = 1;
-            foreach (var logisticsOrderPay in Model.LogisticsOrderPayList)
+            foreach (var orderPay in Model.LogisticsOrderPayList)
             {
                 <tr>
                     <td style="text-align: center;">
-                        <label for="logisticsOrderPayCheck_@(logisticsOrderPay.Id)"></label><input id="logisticsOrderPayCheck_@(logisticsOrderPay.Id)" type="checkbox" class="ace" value="@logisticsOrderPay.Id"/><span class="lbl"></span>
+                        <label for="logisticsOrderPayCheck_@(orderPay.Id)"></label><input id="logisticsOrderPayCheck_@(orderPay.Id)" type="checkbox" class="ace" value="@orderPay.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Customer.Id)" target="_blank">
-                            @(logisticsOrderPay.Customer.CustomerCodeCache)
+                        <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(orderPay.Customer.Id)" target="_blank">
+                            @(orderPay.CustomerCodeCache)
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
-                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Order.Id)" target="_blank">
-                            @logisticsOrderPay.Order?.Code
+                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(orderPay.Order.Id)" target="_blank">
+                            @orderPay.Order?.Code
                         </a>
                     </td>
-                    <td style="text-align: center;">@logisticsOrderPay.PayType.Name</td>
+                    <td style="text-align: center;">@orderPay.PayType.Name</td>
                     <td style="text-align: center;">
                         <div>
-                            @(logisticsOrderPay.OutTradeNo)
+                            @(orderPay.OutTradeNo)
                         </div>
-                        @if (string.IsNullOrWhiteSpace(logisticsOrderPay.PayPalPaymentId) == false)
+                        @if (string.IsNullOrWhiteSpace(orderPay.PayPalPaymentId) == false)
                         {
                             <div>
-                                @(logisticsOrderPay.PayPalPaymentId)
+                                @(orderPay.PayPalPaymentId)
                             </div>
                         }
                     </td>
-                    <td style="text-align: right;">@logisticsOrderPay.Amount</td>
-                    <td style="text-align: center;">@logisticsOrderPay.User?.UserName</td>
-                    <td style="text-align: center;">@logisticsOrderPay.Status.Name</td>
-                    <td style="text-align: center;">@logisticsOrderPay.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: right;">@orderPay.Amount</td>
+                    <td style="text-align: center;">@orderPay.User?.UserName</td>
+                    <td style="text-align: center;">@orderPay.Status.Name</td>
+                    <td style="text-align: center;">@orderPay.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td></td>
                 </tr>
             }

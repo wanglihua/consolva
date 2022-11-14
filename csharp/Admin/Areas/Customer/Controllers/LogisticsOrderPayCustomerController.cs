@@ -49,6 +49,19 @@ public class LogisticsOrderPayCustomerController : Controller
     [Route("/admin/logistics/order/pay/customer/list")]
     public IActionResult List(LogisticsOrderPayCustomerListQueryParam queryParam)
     {
+        queryParam.OrderId = 0;
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            var orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            int orderId = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+
+            queryParam.OrderId = orderId;
+        }
+
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -77,7 +90,8 @@ public class LogisticsOrderPayCustomerController : Controller
     private ICriteria GetListCriteria(LogisticsOrderPayCustomerListQueryParam queryParam)
     {
         var criteria = session.CreateCriteria<LogisticsOrderPayInfo>();
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Customer), nameof(LogisticsOrderPayInfo.Customer));
+        // criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Customer), nameof(LogisticsOrderPayInfo.Customer));
+        criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Status == PayStatus.Paid));
@@ -89,15 +103,9 @@ public class LogisticsOrderPayCustomerController : Controller
         var customerId = queryParam.CustomerId;
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId));
 
-        var orderCodeQuery = queryParam.OrderCodeQuery;
-        if (string.IsNullOrWhiteSpace(orderCodeQuery) == false)
+        if (queryParam.OrderId != 0)
         {
-            var logisticsOrder = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.Code == orderCodeQuery)
-                .Take(1)
-                .SingleOrDefault();
-
-            var orderId = logisticsOrder?.Id ?? 0;
+            int orderId = queryParam.OrderId;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Order.Id == orderId));
         }
 
