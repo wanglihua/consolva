@@ -1,7 +1,7 @@
-@using Domain
-@using Domain.Customer
-@model CustomerAddressIndexModel
-@using Web.Areas.Admin.Models.CustomerAddress
+@using shunda.Core.Web
+@using shunda.Domain
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerAddress.CustomerAddressIndexModel
 @{
     ViewData[ViewDataKey.Title] = "会员收发地址";
     Layout = "_AdminLayout";
@@ -13,253 +13,232 @@
         <a href="@Url.Action("Index", "Customer")">会员列表</a>
     </li>
     <li>
-        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.Customer.Id})">
-            <span>@Model.Customer.CustomerCode</span>
+        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = Model.Customer.Id })">
+            <span>@Model.Customer.CustomerCodeCache</span>
         </a>
     </li>
     <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
-@*
-<div class="gridToolBar clearfix">
-    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "Customer")">
-        <i class="ace-icon fa fa-arrow-left"></i>
-        返回
-    </a>
-</div>
-*@
-
-@section Style
-{
-    <style>
-        .valid_address {
-            background-color: green; color: white; display: inline-block; padding: 3px;
-        }
-        
-        .not_valid_address {
-            background-color: red; color: white; display: inline-block; padding: 3px;
-        }
-    </style>
-}
-
 <div id="customerAddressList">
 
-    @if (Model.CustomerAddressList != null && Model.CustomerAddressList.Count() != 0)
+    @if (Model.CustomerReceiveAddressList != null && Model.CustomerReceiveAddressList.Count != 0)
     {
         int index = 1;
-        foreach (CustomerAddressInfo customerAddress in Model.CustomerAddressList)
+        foreach (CustomerReceiveAddressInfo customerAddress in Model.CustomerReceiveAddressList)
         {
-            @if (customerAddress.Country == Country.Australia)
-            {
-                <div class="addressBox">
-                    <div class="order-num">
-                        <span>#@(index++)&nbsp;</span>
-                        <span style="background-color: green; color: white;">澳&nbsp;</span>
-                        <span>
-                            <a href="javascript:receiverDetail('@(customerAddress.Id)');" class="btn btn-minier btn-yellow">
-                                <i class="ace-icon fa fa-pencil"></i>
-                                编辑
-                            </a>
-                        </span>
-                    </div>
-                    <table class="addressTable">
-                        <tr>
-                            <td class="addressLabel">
-                                <span >收货人</span>
-                            </td>
-                            <td class="addressDetail" style="width: 100px;">
-                                <span>@customerAddress.Consignee</span><span>&nbsp;</span><span>@customerAddress.LastName</span>
-                            </td>
-
-                            <td class="addressLabel">
-                                <span>手机</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Mobile</span>
-                            </td>
-
-                            <td class="addressLabel">
-                                <span>邮箱地址</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Email</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="addressLabel">
-                                <span>省份</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Province</span>
-                            </td>
-
-                            <td class="addressLabel">
-                                <span>城市</span>
-                            </td>
-                            <td class="addressDetail" style="width: 200px;">
-                                <span>@customerAddress.City</span>
-                            </td>
-
-                            <td class="addressLabel">
-                                <span>地址</span>
-                            </td>
-                            <td class="addressDetail" style="width: 250px">
-                                @if (string.IsNullOrWhiteSpace(customerAddress.UnitLoc) == false)
-                                {
-                                    <span>@(customerAddress.UnitLoc), </span>
-                                }
-                                <span>@customerAddress.Address</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="addressLabel">
-                                <span>邮政编码</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Zipcode</span>
-                            </td>
-
-                            <td class="addressLabel">
-                                <span>ABN/ACN</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Tfn</span>
-                            </td>
-
-                            <td class="addressLabel">
-                                <span>公司</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Company</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="addressLabel">
-                                <span>默认地址</span>
-                            </td>
-                            <td class="addressDetail">
-                                @if (customerAddress.IsDefault)
-                                {
-                                    <span class="default-address">是</span>
-                                }
-                                else
-                                {
-                                    <span>否</span>
-                                }
-                            </td>
-                            <td class="addressLabel">
-                                <span>地址已验证</span>
-                            </td>
-                            <td class="addressDetail">
-                                @if (customerAddress.Valid)
-                                {
-                                    <span class="valid_address">已验证</span>
-                                }
-                                else
-                                {
-                                    <span class="not_valid_address">未验证</span>
-                                }
-                            </td>
-                        </tr>
-                    </table>
+            <div class="addressBox">
+                <div class="order-num">
+                    <span>#@(index++)&nbsp;</span>
+                    <span style="background-color: green; color: white;">@(customerAddress.Country.Name)&nbsp;</span>
+                    <span>
+                        <a href="javascript:receiveDetail('@(customerAddress.Id)');" class="btn btn-minier btn-yellow">
+                            <i class="ace-icon fa fa-pencil"></i>
+                            编辑
+                        </a>
+                    </span>
                 </div>
-            }
-            else
-            {
-                <div class="addressBox">
-                    <div class="order-num">#@(index++)&nbsp;<span style="background-color: red; color: white;">中</span></div>
-                    <table class="addressTable">
-                        <tr>
-                            <td class="addressLabel">
-                                <span >发货人</span>
-                            </td>
-                            <td class="addressDetail" style="width: 100px;">
-                                <span>@customerAddress.Consignee</span>
-                            </td>
+                <table class="addressTable">
+                    <tr>
+                        <td class="addressLabel">
+                            <span >收货人</span>
+                        </td>
+                        <td class="addressDetail" style="width: 100px;">
+                            <span>@customerAddress.FirstName</span><span>&nbsp;</span><span>@customerAddress.LastName</span>
+                        </td>
 
-                            <td class="addressLabel">
-                                <span>手机</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Mobile</span>
-                            </td>
+                        <td class="addressLabel">
+                            <span>手机</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Mobile</span>
+                        </td>
 
-                            <td class="addressLabel">
-                                <span>邮箱地址</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Email</span>
-                            </td>
-                        </tr>
+                        <td class="addressLabel">
+                            <span></span>
+                        </td>
+                        <td class="addressDetail">
+                            <span></span>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td class="addressLabel">
-                                <span>省份</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Province</span>
-                            </td>
+                    <tr>
+                        <td class="addressLabel">
+                            <span>州</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.State</span>
+                        </td>
 
-                            <td class="addressLabel">
-                                <span>城市</span>
-                            </td>
-                            <td class="addressDetail" style="width: 200px;">
-                                <span>@customerAddress.City</span>
-                            </td>
+                        <td class="addressLabel">
+                            <span>城市</span>
+                        </td>
+                        <td class="addressDetail" style="width: 200px;">
+                            <span>@customerAddress.City</span>
+                        </td>
 
-                            <td class="addressLabel">
-                                <span>地址</span>
-                            </td>
-                            <td class="addressDetail" style="width: 250px">
-                                <span>@customerAddress.Address</span>
-                            </td>
-                        </tr>
+                        <td class="addressLabel">
+                            <span>地址</span>
+                        </td>
+                        <td class="addressDetail" style="width: 250px">
+                            @if (string.IsNullOrWhiteSpace(customerAddress.UnitLoc) == false)
+                            {
+                                <span>@(customerAddress.UnitLoc), </span>
+                            }
+                            <span>@customerAddress.Address</span>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td class="addressLabel">
-                                <span>邮政编码</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Zipcode</span>
-                            </td>
+                    <tr>
+                        <td class="addressLabel">
+                            <span>邮政编码</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Zipcode</span>
+                        </td>
 
-                            <td class="addressLabel">
-                                <span>公司</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>@customerAddress.Company</span>
-                            </td>
+                        <td class="addressLabel">
+                            <span>ABN/ACN</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Tfn</span>
+                        </td>
 
-                            <td class="addressLabel">
-                                <span>&nbsp;</span>
-                            </td>
-                            <td class="addressDetail">
-                                <span>&nbsp;</span>
-                            </td>
+                        <td class="addressLabel">
+                            <span>公司</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Company</span>
+                        </td>
+                    </tr>
 
-                        </tr>
+                    <tr>
+                        <td class="addressLabel">
+                            <span>默认地址</span>
+                        </td>
+                        <td class="addressDetail">
+                            @if (customerAddress.IsDefault)
+                            {
+                                <span class="default-address">是</span>
+                            }
+                            else
+                            {
+                                <span>否</span>
+                            }
+                        </td>
+                        <td class="addressLabel">
+                            <span>地址状态</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@(customerAddress.Status.Name)</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="addressBox">
+            <span>暂时没有数据！</span>
+        </div>
+    }
 
-                        <tr>
-                            <td class="addressLabel">
-                                <span>默认地址</span>
-                            </td>
-                            <td class="addressDetail">
-                                @if (customerAddress.IsDefault)
-                                {
-                                    <span class="default-address">是</span>
-                                }
-                                else
-                                {
-                                    <span>否</span>
-                                }
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            }
+    @if (Model.CustomerSendAddressList != null && Model.CustomerSendAddressList.Count() != 0)
+    {
+        int index = 1;
+        foreach (CustomerSendAddressInfo customerAddress in Model.CustomerSendAddressList)
+        {
+            <div class="addressBox">
+                <div class="order-num">#@(index++)&nbsp;<span style="background-color: red; color: white;">中</span></div>
+                <table class="addressTable">
+                    <tr>
+                        <td class="addressLabel">
+                            <span >发货人</span>
+                        </td>
+                        <td class="addressDetail" style="width: 100px;">
+                            <span>@(customerAddress.LastName)@(customerAddress.FirstName)</span>
+                        </td>
+
+                        <td class="addressLabel">
+                            <span>手机</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Mobile</span>
+                        </td>
+
+                        <td class="addressLabel">
+                            <span></span>
+                        </td>
+                        <td class="addressDetail">
+                            <span></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="addressLabel">
+                            <span>省份</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Province.Name</span>
+                        </td>
+
+                        <td class="addressLabel">
+                            <span>城市</span>
+                        </td>
+                        <td class="addressDetail" style="width: 200px;">
+                            <span>@customerAddress.City.Name</span>
+                        </td>
+
+                        <td class="addressLabel">
+                            <span>地址</span>
+                        </td>
+                        <td class="addressDetail" style="width: 250px">
+                            <span>@customerAddress.Address</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="addressLabel">
+                            <span>邮政编码</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Zipcode</span>
+                        </td>
+
+                        <td class="addressLabel">
+                            <span>公司</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>@customerAddress.Company</span>
+                        </td>
+
+                        <td class="addressLabel">
+                            <span>&nbsp;</span>
+                        </td>
+                        <td class="addressDetail">
+                            <span>&nbsp;</span>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="addressLabel">
+                            <span>默认地址</span>
+                        </td>
+                        <td class="addressDetail">
+                            @if (customerAddress.IsDefault)
+                            {
+                                <span class="default-address">是</span>
+                            }
+                            else
+                            {
+                                <span>否</span>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </div>
         }
     }
     else
@@ -275,13 +254,13 @@
 
 <script type="text/javascript">
 
-    function receiverDetail(id) {
+    function receiveDetail(id) {
         $("#customerAddressReceiverDetailDialogWrapper").html("");
 
         showMask("加载中...");
 
         $.ajax({
-            url: '@Url.Action("ReceiverDetail", "CustomerAddress")',
+            url: '@Url.Action("ReceiveDetail", "CustomerAddress")',
             type: "POST",
             data: { "id": id },
             success: function(data) {
@@ -297,14 +276,14 @@
         });
     }
     
-    function receiverSave() {
+    function receiveSave() {
         var form = $("#customerAddressReceiverDetailForm");
         var valid = validate(form);
         
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("ReceiverSave", "CustomerAddress")',
+                url: '@Url.Action("ReceiveSave", "CustomerAddress")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {

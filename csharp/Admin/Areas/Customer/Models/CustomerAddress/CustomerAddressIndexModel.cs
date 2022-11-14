@@ -12,11 +12,5 @@ public class CustomerAddressIndexModel
     public IList<CustomerReceiveAddressInfo> CustomerReceiveAddressList { get; set; } = new List<CustomerReceiveAddressInfo>();
 
     [BindNever]
-    public IList<CustomerSendAddressInfo> CustomerSendAddressList { get; set; } = new List<CustomerSendAddressInfo>();    
-
-    [BindNever]
-    public int CustomerReceiveAddressCount { get; set; }
-
-    [BindNever]
-    public int CustomerSendAddressCount { get; set; }    
+    public IList<CustomerSendAddressInfo> CustomerSendAddressList { get; set; } = new List<CustomerSendAddressInfo>();
 }

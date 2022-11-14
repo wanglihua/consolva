@@ -57,9 +57,7 @@ public class CustomerAddressController : Controller
         CustomerAddressIndexModel model = new CustomerAddressIndexModel();
         model.Customer = customer;
         model.CustomerReceiveAddressList = customerReceiveAddressList;
-        model.CustomerReceiveAddressCount = customerReceiveAddressList.Count;
         model.CustomerSendAddressList = customerSendAddressList;
-        model.CustomerSendAddressCount = customerSendAddressList.Count;
 
         return View("CustomerAddressIndex", model);
     }
@@ -78,7 +76,7 @@ public class CustomerAddressController : Controller
 
         model.CustomerAddress = customerAddress;
 
-        return View("CustomerAddressReceiverDetail", model);
+        return View("CustomerAddressReceiveDetail", model);
     }
 
     [HttpPost]
