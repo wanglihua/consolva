@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Core.Web
 @using shunda.Domain.Customer
+@using shunda.Domain.Fee
 @model shunda.Admin.Areas.Customer.Models.Customer.CustomerDetailModel
 @{
     ViewData[ViewDataKey.Title] = "会员详细";
@@ -861,21 +862,21 @@
                                 @if (Model.LogisticsOrderPayList != null && Model.LogisticsOrderPayList.Count() != 0)
                                 {
                                     int order = 1;
-                                    foreach (LogisticsOrderPayInfo logisticsOrderPay in Model.LogisticsOrderPayList)
+                                    foreach (LogisticsOrderPayInfo orderPay in Model.LogisticsOrderPayList)
                                     {
-                                        <tr ondblclick="showLogisticsOrderPayDetail(@(logisticsOrderPay.Id));">
+                                        <tr>
                                             <td style="text-align: center;">@(order++)</td>
-                                            <td style="text-align: center;">@logisticsOrderPay.CustomerCode</td>
+                                            <td style="text-align: center;">@orderPay.CustomerCodeCache</td>
                                             <td style="text-align: center;" class="break-word">
-                                                <a href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderPay.Order?.Id })" target="_blank">
-                                                    @logisticsOrderPay.Order?.Code
+                                                <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderPay.Order.Id })" target="_blank">
+                                                    @orderPay.Order?.Code
                                                 </a>
                                             </td>
-                                            <td style="text-align: center;">@logisticsOrderPay.PayType?.Name</td>
-                                            <td style="text-align: right;">@logisticsOrderPay.Amount</td>
-                                            <td style="text-align: center;">@logisticsOrderPay.User?.UserName</td>
-                                            <td style="text-align: center;">@logisticsOrderPay.Status?.Name</td>
-                                            <td style="text-align: center;">@logisticsOrderPay.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                            <td style="text-align: center;">@orderPay.PayType.Name</td>
+                                            <td style="text-align: right;">@orderPay.Amount</td>
+                                            <td style="text-align: center;">@ListDataUtil.Render(orderPay.User?.UserName)</td>
+                                            <td style="text-align: center;">@orderPay.Status.Name</td>
+                                            <td style="text-align: center;">@orderPay.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                                             <td></td>
                                         </tr>
                                     }
@@ -883,7 +884,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="11">
+                                        <td colspan="9">
                                             暂时没有数据！
                                         </td>
                                     </tr>
@@ -894,7 +895,6 @@
                 </div>
             </div>
 
-            @*
             <div class="row">
                 <div class="col-xs-12">
                     <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelCustomerAccountEntry').toggle();">
@@ -930,7 +930,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model.CustomerAccountEntryList != null && Model.CustomerAccountEntryList.Count() != 0)
+                                @if (Model.CustomerAccountEntryList != null && Model.CustomerAccountEntryList.Count != 0)
                                 {
                                     int order = 1;
                                     foreach (CustomerAccountEntryInfo customerAccountEntry in Model.CustomerAccountEntryList)
@@ -958,9 +958,7 @@
                     </div>
                 </div>
             </div>
-            *@
 
-            @*
             <div class="row">
                 <div class="col-xs-12">
                     <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelCustomerScoreLog').toggle();">
@@ -981,9 +979,6 @@
                                 <tr>
                                     <th style="width: 50px; text-align: center;">序号</th>
                                     <th style="width: 100px; text-align: center;">
-                                        订单类别
-                                    </th>
-                                    <th style="width: 100px; text-align: center;">
                                         积分类型
                                     </th>
                                     <th style="width: 90px; text-align: center;">
@@ -997,9 +992,6 @@
                                     </th>
                                     <th style="width: 90px; text-align: center;">
                                         订单会员
-                                    </th>
-                                    <th style="width: 70px; text-align: center;">
-                                        代差
                                     </th>
                                     <th style="width: 90px; text-align: center;">
                                         金额
@@ -1021,8 +1013,7 @@
                                     {
                                         <tr>
                                             <td style="text-align: center;">@(order++)</td>
-                                            <td style="text-align: center;">@customerScoreLog.OrderCate?.Name</td>
-                                            <td style="text-align: center;">@customerScoreLog.ScoreType?.Name</td>
+                                            <td style="text-align: center;">@customerScoreLog.ScoreType.Name</td>
                                             <td style="text-align: center;">@customerScoreLog.Score.ToString("#0.00")</td>
                                             <td style="text-align: center;">
                                                 @if (customerScoreLog.IsValidScore)
@@ -1040,8 +1031,7 @@
                                                     @customerScoreLog.LogisticsOrderCode
                                                 </a>
                                             </td>
-                                            <td style="text-align: center;">@customerScoreLog.LogisticsOrderCustomer?.Id</td>
-                                            <td style="text-align: center;">@customerScoreLog.Gap</td>
+                                            <td style="text-align: center;">@customerScoreLog.LogisticsOrderCustomerCodeCache</td>
                                             <td style="text-align: center;">@customerScoreLog.Amount.ToString("#0.00")</td>
                                             <td>@customerScoreLog.Description</td>
                                             <td style="text-align: center;">@customerScoreLog.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
@@ -1052,7 +1042,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="12">
+                                        <td colspan="10">
                                             暂时没有数据！
                                         </td>
                                     </tr>
@@ -1062,7 +1052,6 @@
                     </div>
                 </div>
             </div>
-            *@
 
             @*
             <div class="row">
