@@ -99,4 +99,11 @@ public class ExpressVideoInfo : Entity
     [ModelBinder(typeof(ExpressVideoStatusModelBinder))]
     public virtual ExpressVideoStatus Status { get; set; } = ExpressVideoStatus.None;
 
+    #region Cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    public virtual string VideoFullUrlCache { get; set; } = string.Empty;
+
+    #endregion
 }
