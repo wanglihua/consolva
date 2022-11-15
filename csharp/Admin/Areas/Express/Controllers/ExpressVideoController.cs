@@ -96,8 +96,8 @@ public class ExpressVideoController : Controller
             .List<int>();
 
         ICriteria listCriteria = session.CreateCriteria<ExpressVideoInfo>();
-        listCriteria = listCriteria.CreateAlias(nameof(ExpressVideoInfo.Customer), nameof(ExpressVideoInfo.Customer), JoinType.LeftOuterJoin);
-        listCriteria = listCriteria.CreateAlias(nameof(ExpressVideoInfo.Order), nameof(ExpressVideoInfo.Order), JoinType.LeftOuterJoin);
+        // listCriteria = listCriteria.CreateAlias(nameof(ExpressVideoInfo.Customer), nameof(ExpressVideoInfo.Customer), JoinType.LeftOuterJoin);
+        // listCriteria = listCriteria.CreateAlias(nameof(ExpressVideoInfo.Order), nameof(ExpressVideoInfo.Order), JoinType.LeftOuterJoin);
         // listCriteria = listCriteria.CreateAlias(nameof(ExpressVideoInfo.Express), nameof(ExpressVideoInfo.Express), JoinType.LeftOuterJoin);
         listCriteria = listCriteria.CreateAlias(nameof(ExpressVideoInfo.User), nameof(ExpressVideoInfo.User), JoinType.LeftOuterJoin);
 
@@ -109,6 +109,7 @@ public class ExpressVideoController : Controller
 
         foreach (ExpressVideoInfo orderVideo in expressVideoList)
         {
+            orderVideo.CustomerCodeCache = customerCodeService.GetCustomerCode(orderVideo.Customer?.Id ?? 0);
             orderVideo.VideoFullUrlCache = expressVideoService.GetVideoFullUrl(orderVideo, OssSiteLocType.China);
         }
 
@@ -124,10 +125,6 @@ public class ExpressVideoController : Controller
         ICriteria criteria = session.CreateCriteria<ExpressVideoInfo>();
 
         criteria.SetReadOnly(true);
-
-        // criteria = criteria.CreateAlias(nameof(ExpressVideoInfo.Order), nameof(ExpressVideoInfo.Order), JoinType.LeftOuterJoin);
-        // criteria = criteria.CreateAlias(nameof(ExpressVideoInfo.Express), nameof(ExpressVideoInfo.Express), JoinType.LeftOuterJoin);
-        criteria = criteria.CreateAlias(nameof(ExpressVideoInfo.User), nameof(ExpressVideoInfo.User), JoinType.LeftOuterJoin);
 
         if (queryParam.TypeQuery != null && queryParam.TypeQuery != ExpressVideoType.None)
         {
