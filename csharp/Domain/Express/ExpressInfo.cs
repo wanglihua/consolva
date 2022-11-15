@@ -26,6 +26,11 @@ public class ExpressInfo : Entity
     public virtual LogisticsOrderInfo? Order { get; set; } = null;
 
     /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;    
+
+    /// <summary>
     /// 客户，可空
     /// </summary>
     [JsonProperty("customer")]

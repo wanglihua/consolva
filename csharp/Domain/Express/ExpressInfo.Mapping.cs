@@ -32,6 +32,15 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo>
             }
         );
 
+        Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
+            }
+        );
+
         ManyToOne(
             x => x.Customer,
             map => {
@@ -42,6 +51,5 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo>
                 map.Fetch(FetchKind.Select);
             }
         );
-
     }
 }

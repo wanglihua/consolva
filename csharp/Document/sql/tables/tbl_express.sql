@@ -13,6 +13,7 @@ CREATE TABLE tbl_express
     id          INT         NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
     tracking_no VARCHAR(30) NOT NULL COMMENT '快递单号',
     order_id    INT         NULL COMMENT '物流订单',
+    order_code VARCHAR(100) DEFAULT '' NOT NULL COMMENT '订单编号',
     customer_id INT         NULL COMMENT '客户',
 
     create_time DATETIME    NOT NULL COMMENT '创建时间',

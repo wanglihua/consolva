@@ -78,6 +78,10 @@ public class CustomerScoreLogInfo : Entity
 
     public virtual string CustomerCodeCache { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 订单客户编号
+    /// 是客户的编号，不是订单的编号
+    /// </summary>
     public virtual string LogisticsOrderCustomerCodeCache { get; set; } = string.Empty;
 
     #endregion
