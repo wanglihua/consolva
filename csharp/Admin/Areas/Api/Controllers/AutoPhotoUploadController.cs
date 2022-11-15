@@ -74,135 +74,102 @@ public class AutoPhotoUploadController : Controller
             // }
         }
 
-        string storePath = Path.GetDirectoryName(photoUrl);
+        string storePath = Path.GetDirectoryName(photoUrl) ?? string.Empty;
         string storeName = Path.GetFileName(photoUrl);
 
-        ExpressPhotoInfo orderPhoto = new ExpressPhotoInfo();
 
-        if (expressPhotoType == ExpressPhotoType.SignIn)
+        string trackingNo = fileName;
+        if (string.IsNullOrWhiteSpace(trackingNo))
         {
-            string expressTrackingNo = fileName;
-            if (string.IsNullOrWhiteSpace(expressTrackingNo))
-            {
-                throw new ValidationException("快递单号不能都为空！");
-            }
-
-            if (string.IsNullOrWhiteSpace(expressTrackingNo) == false)
-            {
-                expressTrackingNo = expressTrackingNo.Trim('\"');
-            }
-
-            // 子母单号，子单号图片放在母单号下面
-            int indexOfMinus = expressTrackingNo.IndexOf("-");
-            if (indexOfMinus >= ExpressTrackingNoConfig.MinTrackingNoLength)
-            {
-                expressTrackingNo = expressTrackingNo.Substring(0, indexOfMinus);
-            }
-
-            if (string.IsNullOrWhiteSpace(expressTrackingNo) == false && expressTrackingNo.Length > 30)
-            {
-                throw new ValidationException("快递单号长度太长！");
-            }
-
-            if (string.IsNullOrEmpty(expressTrackingNo) == false && expressTrackingNoService.IsValidateTrackingNo(expressTrackingNo) == false)
-            {
-                throw new ValidationException("快递单号格式不符合规范！");
-            }
-
-            if (string.IsNullOrWhiteSpace(expressTrackingNo) == false)
-            {
-                expressTrackingNo = expressTrackingNo.Trim().ToUpper();
-            }
-
-
-            LogisticsOrderGoodsExpressInfo orderGoodsExpress = null;
-            if (string.IsNullOrWhiteSpace(expressTrackingNo) == false)
-            {
-                orderGoodsExpress = session.Query<LogisticsOrderGoodsExpressInfo>()
-                    .Fetch(e => e.Order).ThenFetch(e => e.Customer)
-                    .Where(e => e.ExpressTrackingNo == expressTrackingNo
-                                && e.Order.OrderStatus != LogisticsOrderStatus.Draft
-                                && e.Order.OrderStatus != LogisticsOrderStatus.OrderNormalCompleted
-                                && e.Order.OrderStatus != LogisticsOrderStatus.OrderAbnormalCompleted)
-                    .Take(1)
-                    .SingleOrDefault();
-            }
-
-            orderPhoto.Customer = orderGoodsExpress?.Order?.Customer;
-            orderPhoto.Order = orderGoodsExpress?.Order;
-            orderPhoto.Express = orderGoodsExpress;
-            orderPhoto.ExpressTrackingNo = expressTrackingNo;
+            throw new ValidationException("快递单号不能都为空！");
         }
 
+        if (string.IsNullOrWhiteSpace(trackingNo) == false)
+        {
+            trackingNo = trackingNo.Trim('\"');
+        }
 
-        // 这里只有 sign in，还没有 load 的情况 
-        // if (expressPhotoType == ExpressPhotoType.Load)
-        // {
-        //     string orderPackBoxCode = fileName;
-        //     LogisticsOrderPackBoxInfo orderPackBox = logisticsOrderPackBoxService.ParseBoxCode(orderPackBoxCode); // 必须可以是小标签
-        //     if (orderPackBox == null)
-        //     {
-        //         throw new ValidationException("指定的箱号不存在！");
-        //     }
-        //
-        //     orderPhoto.Customer = orderPackBox.Customer;
-        //     orderPhoto.Order = orderPackBox.OrderPack?.Order;
-        // }
+        // 子母单号，子单号图片放在母单号下面
+        int indexOfMinus = trackingNo.IndexOf("-");
+        if (indexOfMinus >= ExpressTrackingNoConfig.MinTrackingNoLength)
+        {
+            trackingNo = trackingNo.Substring(0, indexOfMinus);
+        }
 
-        orderPhoto.Type = expressPhotoType;
-        orderPhoto.StorePath = storePath;
-        orderPhoto.StoreName = storeName;
-        orderPhoto.Status = ExpressPhotoStatus.None;
-        orderPhoto.ExpressComName = String.Empty;
-        orderPhoto.StoreOss = true;
+        if (string.IsNullOrWhiteSpace(trackingNo) == false && trackingNo.Length > 30)
+        {
+            throw new ValidationException("快递单号长度太长！");
+        }
+
+        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false)
+        {
+            throw new ValidationException("快递单号格式不符合规范！");
+        }
+
+        trackingNo = trackingNo.Trim().ToUpper();
 
         // 虚拟上传人
-        if (string.IsNullOrWhiteSpace(uploaderLoginName))
-        {
-            orderPhoto.User = null;
-        }
-        else
+        UserInfo? user = null;
+        if (string.IsNullOrWhiteSpace(uploaderLoginName) == false)
         {
             uploaderLoginName = uploaderLoginName.Trim();
-
-            UserInfo? uploadUser = session.Query<UserInfo>()
+            user = session.Query<UserInfo>()
                 .Where(e => e.LoginName == uploaderLoginName)
                 .Take(1)
                 .SingleOrDefault();
-
-            if (uploadUser == null)
-            {
-                orderPhoto.User = null;
-            }
-            else
-            {
-                orderPhoto.User = uploadUser;
-            }
         }
 
-        session.Save(orderPhoto);
+        ExpressInfo? express = session.Query<ExpressInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .Take(1)
+            .SingleOrDefault();
+
+        CustomerInfo? customer = express?.Customer; // 可能为空
+        LogisticsOrderInfo? order = express?.Order; // 可能为空
+        string orderCode = order?.Code ?? string.Empty;
+
+        ExpressPhotoInfo expressPhoto = new ExpressPhotoInfo();
+
+        expressPhoto.Status = ExpressPhotoStatus.Normal;
+        expressPhoto.User = user;
+
+        expressPhoto.TrackingNo = trackingNo;
+        expressPhoto.ExpressComName = string.Empty;
+        expressPhoto.Express = express;
+        expressPhoto.Customer = customer;
+        expressPhoto.Order = order;
+        expressPhoto.OrderCode = orderCode;
+
+
+        expressPhoto.Type = expressPhotoType;
+        expressPhoto.StoreLoc = ExpressPhotoStoreLoc.Oss;
+        expressPhoto.StorePath = storePath;
+        expressPhoto.StoreName = storeName;
+
+        session.Save(expressPhoto);
         session.Flush();
 
-        if (orderPhoto.User == null)
+        if (expressPhoto.User == null)
         {
-            expressLogService.Log(orderPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}");
+            expressLogService.Log(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}");
         }
         else
         {
-            expressLogService.UserLog(orderPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}", orderPhoto.User?.Id ?? 0);
+            expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}", expressPhoto.User?.Id ?? 0);
         }
 
-        if (orderPhoto.Order != null)
-        {
-            try
-            {
-                expressPhotoService.SendAddOrderPhotoMessage(orderPhoto);
-            }
-            catch (Exception exp)
-            {
-                log.Error(exp);
-            }
-        }
+        // todo a  发送快递单号图片信息
+        // if (expressPhoto.Order != null)
+        // {
+        //     try
+        //     {
+        //         expressPhotoService.SendAddOrderPhotoMessage(expressPhoto);
+        //     }
+        //     catch (Exception exp)
+        //     {
+        //         log.Error(exp);
+        //     }
+        // }
 
         // 同快递单号图片视频绑定
 
@@ -297,6 +264,7 @@ public class AutoPhotoUploadController : Controller
 
         CustomerInfo? customer = express?.Customer; // 可能为空
         LogisticsOrderInfo? order = express?.Order; // 可能为空
+        string orderCode = order?.Code ?? string.Empty;
 
         ExpressPhotoType orderPhotoType = ExpressPhotoType.CheckIn;
 
@@ -314,7 +282,7 @@ public class AutoPhotoUploadController : Controller
         orderPhoto.Express = express;
         orderPhoto.Customer = customer;
         orderPhoto.Order = order;
-        orderPhoto.OrderCode = order?.Code ?? string.Empty;
+        orderPhoto.OrderCode = orderCode;
 
         session.Save(orderPhoto);
         session.Flush();
@@ -330,7 +298,7 @@ public class AutoPhotoUploadController : Controller
             ep.Express = express;
             ep.Customer = customer;
             ep.Order = order;
-            ep.OrderCode = order?.Code ?? string.Empty;
+            ep.OrderCode = orderCode;
 
             session.Update(ep);
         }
@@ -345,7 +313,7 @@ public class AutoPhotoUploadController : Controller
             ev.Express = express;
             ev.Customer = customer;
             ev.Order = order;
-            ev.OrderCode = order?.Code ?? string.Empty;
+            ev.OrderCode = orderCode;
 
             session.Update(ev);
         }

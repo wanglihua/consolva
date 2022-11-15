@@ -87,6 +87,7 @@ public class AutoVideoUploadController : Controller
 
         CustomerInfo? customer = express?.Customer; // 可能为空
         LogisticsOrderInfo? order = express?.Order; // 可能为空
+        string orderCode = order?.Code ?? string.Empty;
 
         ExpressVideoType orderVideoType = ExpressVideoType.CheckIn;
 
@@ -104,7 +105,7 @@ public class AutoVideoUploadController : Controller
         orderVideo.Express = express;
         orderVideo.Customer = customer;
         orderVideo.Order = order;
-        orderVideo.OrderCode = order?.Code ?? string.Empty;
+        orderVideo.OrderCode = orderCode;
 
         session.Save(orderVideo);
         session.Flush();
@@ -120,7 +121,7 @@ public class AutoVideoUploadController : Controller
             ep.Express = express;
             ep.Customer = customer;
             ep.Order = order;
-            ep.OrderCode = order?.Code ?? string.Empty;
+            ep.OrderCode = orderCode;
 
             session.Update(ep);
         }
@@ -135,7 +136,7 @@ public class AutoVideoUploadController : Controller
             ev.Express = express;
             ev.Customer = customer;
             ev.Order = order;
-            ev.OrderCode = order?.Code ?? string.Empty;
+            ev.OrderCode = orderCode;
 
             session.Update(ev);
         }

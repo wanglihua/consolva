@@ -49,10 +49,10 @@ public class AutoMeasureDataController : Controller
             // log.Warn("requestBodyText");
             // log.Warn(requestBodyText);
 
-            AutoMeasureDataUploadRequestModel requestModel = JsonConvert.DeserializeObject<AutoMeasureDataUploadRequestModel>(requestBodyText);
+            AutoMeasureDataUploadRequestModel? requestModel = JsonConvert.DeserializeObject<AutoMeasureDataUploadRequestModel>(requestBodyText);
 
             // 检查数据完整
-            if (requestModel.Data == null)
+            if (requestModel?.Data == null)
             {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS001.Code);
             }
@@ -63,17 +63,12 @@ public class AutoMeasureDataController : Controller
 
             string requestAppKey = requestModel.AppKey;
 
-            AutoMeasureMachineInfo autoMeasureMachine = session
+            AutoMeasureMachineInfo? autoMeasureMachine = session
                 .Query<AutoMeasureMachineInfo>()
                 .Where(e => e.AppKey == requestAppKey)
                 .Take(1)
                 .SingleOrDefault();
-
-            string secret = AutoMeasureMachineConfig.Secret;
-            if (autoMeasureMachine != null)
-            {
-                secret = autoMeasureMachine.Secret;
-            }
+            string secret = autoMeasureMachine?.Secret ?? string.Empty;
 
             StringBuilder sb = new StringBuilder();
             sb.Append("app_key");

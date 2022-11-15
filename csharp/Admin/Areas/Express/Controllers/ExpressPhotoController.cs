@@ -247,26 +247,19 @@ public class ExpressPhotoController : Controller
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var loginUserId = loginUserService.GetLoginUserId();
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
 
 
         if (string.IsNullOrWhiteSpace(model.TrackingNo) == false && expressTrackingNoService.IsValidateTrackingNo(model.TrackingNo) == false) throw new ValidationException("快递单号格式不符合规范！");
 
-        var expressPhoto = new ExpressPhotoInfo();
-
-        expressPhoto.Status = ExpressPhotoStatus.Normal;
-        expressPhoto.ExpressComName = string.Empty;
-        expressPhoto.User = session.Get<UserInfo>(loginUserId);
-
-
         LogisticsOrderInfo? order = null;
 
+        var orderCodeInput = model.OrderCode ?? string.Empty;
 
-        var orderCode = model.OrderCode ?? string.Empty;
-
-        if (string.IsNullOrEmpty(orderCode) == false)
+        if (string.IsNullOrEmpty(orderCodeInput) == false)
         {
             order = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.Code == orderCode)
+                .Where(e => e.Code == orderCodeInput)
                 .Take(1)
                 .SingleOrDefault();
 
@@ -300,13 +293,22 @@ public class ExpressPhotoController : Controller
         {
             customer = order.Customer;
         }
+        
+        string orderCode = order?.Code ?? string.Empty;
+
+        var expressPhoto = new ExpressPhotoInfo();
+
+        expressPhoto.Status = ExpressPhotoStatus.Normal;
+        expressPhoto.User = loginUser;
 
         expressPhoto.TrackingNo = trackingNo;
+        expressPhoto.ExpressComName = string.Empty;
         expressPhoto.Express = express;
         expressPhoto.Customer = customer;
         expressPhoto.Order = order;
-        expressPhoto.OrderCode = order?.Code ?? string.Empty;
+        expressPhoto.OrderCode = orderCode;
         expressPhoto.Type = model.PhotoType;
+        expressPhoto.StoreLoc = ExpressPhotoStoreLoc.Ecs; // 这里暂时是 Ecs 的
         expressPhoto.StorePath = model.StorePath;
         expressPhoto.StoreName = model.StoreName;
 
@@ -344,7 +346,7 @@ public class ExpressPhotoController : Controller
             ep.Express = express;
             ep.Customer = customer;
             ep.Order = order;
-            ep.OrderCode = order?.Code ?? string.Empty;
+            ep.OrderCode = orderCode;
 
             session.Update(ep);
         }
@@ -359,11 +361,11 @@ public class ExpressPhotoController : Controller
             ev.Express = express;
             ev.Customer = customer;
             ev.Order = order;
-            ev.OrderCode = order?.Code ?? string.Empty;
-            
+            ev.OrderCode = orderCode;
+
             session.Update(ev);
         }
-        
+
         session.Flush();
 
         return Json(new Dictionary<string, object> {
