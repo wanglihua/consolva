@@ -269,7 +269,7 @@ public class ExpressStatus : CodeTypeBase
     }
 }
 
-public class LogisticsClaimGoodsStatusHibernateType : CodeHibernateTypeBase<ExpressStatus>
+public class ExpressStatustatusHibernateType : CodeHibernateTypeBase<ExpressStatus>
 {
     protected override ExpressStatus GetCodeTypeById(int id)
     {
@@ -277,7 +277,7 @@ public class LogisticsClaimGoodsStatusHibernateType : CodeHibernateTypeBase<Expr
     }
 }
 
-public class LogisticsClaimGoodsStatusModelBinder : CodeTypeModelBinderBase<ExpressStatus>
+public class ExpressStatusStatusModelBinder : CodeTypeModelBinderBase<ExpressStatus>
 {
     protected override ExpressStatus GetCodeTypeById(int id)
     {
