@@ -1,6 +1,6 @@
+using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using shunda.Core;
 using shunda.Domain.Customer;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
@@ -19,8 +19,8 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
                 map.Class(typeof(CustomerInfo));
                 map.Column("customer_id");
                 map.NotNullable(false);
-                map.Fetch(FetchKind.Select);
                 map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 
@@ -30,8 +30,17 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
                 map.Class(typeof(LogisticsOrderInfo));
                 map.Column("order_id");
                 map.NotNullable(false);
-                map.Fetch(FetchKind.Select);
                 map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
             }
         );
 
@@ -41,17 +50,16 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
                 map.Class(typeof(ExpressInfo));
                 map.Column("express_id");
                 map.NotNullable(false);
-                map.Fetch(FetchKind.Select);
                 map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 
         Property(
-            x => x.ExpressTrackingNo,
+            x => x.TrackingNo,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("express_tracking_no");
-                map.Length(30);
+                map.Column("tracking_no");
                 map.NotNullable(false);
             }
         );
@@ -61,7 +69,6 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("express_com_name");
-                map.Length(100);
                 map.NotNullable(false);
             }
         );
@@ -76,20 +83,10 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
         );
 
         Property(
-            x => x.StoreOss,
-            map => {
-                map.Type(NHibernateUtil.Boolean);
-                map.Column("store_oss");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
             x => x.StorePath,
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("store_path");
-                map.Length(255);
                 map.NotNullable(true);
             }
         );
@@ -99,7 +96,6 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("store_name");
-                map.Length(50);
                 map.NotNullable(true);
             }
         );
@@ -110,8 +106,17 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
                 map.Class(typeof(UserInfo));
                 map.Column("user_id");
                 map.NotNullable(false);
-                map.Fetch(FetchKind.Select);
                 map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.StoreLoc,
+            map => {
+                map.Type<ExpressPhotoStoreLocHibernateType>();
+                map.Column("store_loc_id");
+                map.NotNullable(true);
             }
         );
 
@@ -123,5 +128,6 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
                 map.NotNullable(true);
             }
         );
+
     }
 }

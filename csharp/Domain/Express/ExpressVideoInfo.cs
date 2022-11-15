@@ -1,8 +1,7 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using shunda.Domain.Customer;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
@@ -15,76 +14,89 @@ namespace shunda.Domain.Express;
 public class ExpressVideoInfo : Entity
 {
     /// <summary>
-    /// 客户
+    /// 客户，可空
     /// </summary>
-    [DisplayName("客户")]
-    [BindNever]
-    public virtual CustomerInfo Customer { get; set; }
+    [JsonProperty("customer")]
+    public virtual CustomerInfo? Customer { get; set; } = null;
 
     /// <summary>
-    /// 物流订单
+    /// 物流订单，可空
     /// </summary>
-    [DisplayName("物流订单")]
-    [BindNever]
-    public virtual LogisticsOrderInfo Order { get; set; }
+    [JsonProperty("order")]
+    public virtual LogisticsOrderInfo? Order { get; set; } = null;
 
     /// <summary>
-    /// 快递单号
+    /// 订单编号，非空
     /// </summary>
-    [DisplayName("快递单号")]
-    [BindNever]
-    public virtual ExpressInfo Express { get; set; }
+    [Required(ErrorMessage = "订单编号不能为空！")]
+    [MaxLength(100, ErrorMessage = "订单编号长度不能大于100！")]
+    [JsonProperty("orderCode")]
+    public virtual string OrderCode { get; set; } = string.Empty;
 
     /// <summary>
-    /// 快递单号
+    /// 快递单号，可空
     /// </summary>
-    [DisplayName("快递单号")]
-    public virtual string ExpressTrackingNo { get; set; }
+    [JsonProperty("express")]
+    public virtual ExpressInfo? Express { get; set; } = null;
 
     /// <summary>
-    /// 快递公司
+    /// 快递单号，可空
     /// </summary>
-    [DisplayName("快递公司")]
-    public virtual string ExpressComName { get; set; }
+    [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
+    [JsonProperty("trackingNo")]
+    public virtual string? TrackingNo { get; set; } = null;
 
     /// <summary>
-    /// 类型
+    /// 快递公司，可空
     /// </summary>
-    [DisplayName("类型")]
+    [MaxLength(100, ErrorMessage = "快递公司长度不能大于100！")]
+    [JsonProperty("expressComName")]
+    public virtual string? ExpressComName { get; set; } = null;
+
+    /// <summary>
+    /// 类型，非空
+    /// </summary>
     [Required(ErrorMessage = "类型不能为空！")]
+    [JsonProperty("type")]
     [ModelBinder(typeof(ExpressVideoTypeModelBinder))]
-    public virtual ExpressVideoType Type { get; set; }
+    public virtual ExpressVideoType Type { get; set; } = ExpressVideoType.None;
 
     /// <summary>
-    /// 是否存储在阿里云OSS
+    /// 存储路径，非空
     /// </summary>
-    public virtual bool? StoreOss { get; set; }
-
-    /// <summary>
-    /// 存储路径
-    /// </summary>
-    [DisplayName("存储路径")]
     [Required(ErrorMessage = "存储路径不能为空！")]
     [MaxLength(255, ErrorMessage = "存储路径长度不能大于255！")]
-    public virtual string StorePath { get; set; }
+    [JsonProperty("storePath")]
+    public virtual string StorePath { get; set; } = string.Empty;
 
     /// <summary>
-    /// 存储名称
+    /// 存储名称，非空
     /// </summary>
-    [DisplayName("存储名称")]
     [Required(ErrorMessage = "存储名称不能为空！")]
     [MaxLength(50, ErrorMessage = "存储名称长度不能大于50！")]
-    public virtual string StoreName { get; set; }
+    [JsonProperty("storeName")]
+    public virtual string StoreName { get; set; } = string.Empty;
 
     /// <summary>
-    /// 上传用户
+    /// 上传用户，可空
     /// </summary>
-    public virtual UserInfo User { get; set; }
+    [JsonProperty("user")]
+    public virtual UserInfo? User { get; set; } = null;
 
     /// <summary>
-    /// 状态
+    /// 存储位置，非空
     /// </summary>
-    [DisplayName("状态")]
+    [Required(ErrorMessage = "存储位置不能为空！")]
+    [JsonProperty("storeLoc")]
+    [ModelBinder(typeof(ExpressPhotoStoreLocModelBinder))]
+    public virtual ExpressPhotoStoreLoc StoreLoc { get; set; } = ExpressPhotoStoreLoc.None;
+
+    /// <summary>
+    /// 状态，非空
+    /// </summary>
+    [Required(ErrorMessage = "状态不能为空！")]
+    [JsonProperty("status")]
     [ModelBinder(typeof(ExpressVideoStatusModelBinder))]
-    public virtual ExpressVideoStatus Status { get; set; }
+    public virtual ExpressVideoStatus Status { get; set; } = ExpressVideoStatus.None;
+
 }

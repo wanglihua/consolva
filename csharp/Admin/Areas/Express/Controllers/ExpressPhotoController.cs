@@ -335,16 +335,7 @@ public class ExpressPhotoController : Controller
         expressPhotoFileService.AddWatermark(expressPhoto.StorePath, expressPhoto.StoreName, expressPhoto.Type ?? ExpressPhotoType.None);
         expressPhotoService.SendAddOrderPhotoMessage(expressPhoto);
 
-        // 如果有同单号的快递单号图片，更新他们的关联订单和快递单
-
-        // session.Query<ExpressPhotoInfo>()
-        //     .Where(e => e.TrackingNo == trackingNo)
-        //     .UpdateBuilder()
-        //     .Set(e => e.Express, express)
-        //     .Set(e => e.Customer, customer) 
-        //     .Set(e => e.Order, logisticsOrder)
-        //     .Update();
-
+        // 如果有同单号的快递单号图片或视频，更新他们的关联订单和快递单
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .ToList();
@@ -353,10 +344,26 @@ public class ExpressPhotoController : Controller
             ep.Express = express;
             ep.Customer = customer;
             ep.Order = order;
+            ep.OrderCode = order?.Code ?? string.Empty;
 
             session.Update(ep);
         }
 
+        session.Flush();
+
+        IList<ExpressVideoInfo> expressVideoList = session.Query<ExpressVideoInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .ToList();
+        foreach (ExpressVideoInfo ev in expressVideoList)
+        {
+            ev.Express = express;
+            ev.Customer = customer;
+            ev.Order = order;
+            ev.OrderCode = order?.Code ?? string.Empty;
+            
+            session.Update(ev);
+        }
+        
         session.Flush();
 
         return Json(new Dictionary<string, object> {

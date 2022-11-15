@@ -19,10 +19,10 @@ CREATE TABLE tbl_express_photo
     create_time      DATETIME                NOT NULL COMMENT '创建时间',
     update_time      DATETIME                NOT NULL COMMENT '更新时间',
 
-    INDEX ix_express_photo_tracking_no (tracking_no),
     CONSTRAINT fk_express_photo_customer_id FOREIGN KEY (customer_id) REFERENCES tbl_customer (id),
     CONSTRAINT fk_express_photo_order_id FOREIGN KEY (order_id) REFERENCES tbl_logistics_order (id),
     CONSTRAINT fk_express_photo_express_id FOREIGN KEY (express_id) REFERENCES tbl_express (id),
     CONSTRAINT fk_express_photo_user_id FOREIGN KEY (user_id) REFERENCES tbl_user (id),
+    INDEX ix_express_photo_tracking_no (tracking_no),
     INDEX ix_express_photo_create_time (create_time)
 ) COMMENT '快递单图片';
