@@ -1,0 +1,84 @@
+using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using shunda.Core;
+using shunda.Domain.Pass;
+
+namespace shunda.Domain.Express;
+
+/// <summary>
+/// 快递单尺寸重量
+/// </summary>
+public class ExpressSizeWeightInfo : Entity
+{
+    /// <summary>
+    /// 快递单号，非空
+    /// </summary>
+    [Required(ErrorMessage = "快递单号不能为空！")]
+    [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
+    [JsonProperty("trackingNo")]
+    public virtual string TrackingNo { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 快递单子单号，非空
+    /// </summary>
+    [Required(ErrorMessage = "快递单子单号不能为空！")]
+    [MaxLength(30, ErrorMessage = "快递单子单号长度不能大于30！")]
+    [JsonProperty("trackingNoSub")]
+    public virtual string TrackingNoSub { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 快递单描述，非空
+    /// </summary>
+    [Required(ErrorMessage = "快递单描述不能为空！")]
+    [MaxLength(300, ErrorMessage = "快递单描述长度不能大于300！")]
+    [JsonProperty("description")]
+    public virtual string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 长度cm，非空
+    /// </summary>
+    [Required(ErrorMessage = "长度cm不能为空！")]
+    [JsonProperty("length")]
+    public virtual decimal Length { get; set; } = 0m;
+
+    /// <summary>
+    /// 宽度cm，非空
+    /// </summary>
+    [Required(ErrorMessage = "宽度cm不能为空！")]
+    [JsonProperty("width")]
+    public virtual decimal Width { get; set; } = 0m;
+
+    /// <summary>
+    /// 高度cm，非空
+    /// </summary>
+    [Required(ErrorMessage = "高度cm不能为空！")]
+    [JsonProperty("height")]
+    public virtual decimal Height { get; set; } = 0m;
+
+    /// <summary>
+    /// 重量kg，非空
+    /// </summary>
+    [Required(ErrorMessage = "重量kg不能为空！")]
+    [JsonProperty("weight")]
+    public virtual decimal Weight { get; set; } = 0m;
+
+    /// <summary>
+    /// 入库包裹数，非空
+    /// </summary>
+    [Required(ErrorMessage = "入库包裹数不能为空！")]
+    [JsonProperty("packageCount")]
+    public virtual int PackageCount { get; set; } = 0;
+
+    /// <summary>
+    /// 添加用户，可空
+    /// </summary>
+    [JsonProperty("user")]
+    public virtual UserInfo? User { get; set; } = null;
+
+    /// <summary>
+    /// 自动秤，可空
+    /// </summary>
+    [JsonProperty("machine")]
+    public virtual AutoMeasureMachineInfo? Machine { get; set; } = null;
+
+}
