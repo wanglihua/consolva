@@ -93,7 +93,7 @@ public class FeeWriteOffController : Controller
 
         criteria = criteria.SetReadOnly(true);
 
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
+        // criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
 
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Status == PayStatus.Paid && e.PayType == PayType.WriteOff));
 

@@ -23,6 +23,15 @@ public class LogisticsOrderAirExpressInfoMapping : EntityMapping<LogisticsOrderA
             }
         );
 
+        Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
+            }
+        );
+
         ManyToOne(
             x => x.LogisticsMode,
             map => {

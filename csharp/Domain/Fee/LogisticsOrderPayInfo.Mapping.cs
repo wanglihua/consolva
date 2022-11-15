@@ -24,6 +24,15 @@ public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
             }
         );
 
+        Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
+            }
+        );
+
         ManyToOne(
             x => x.Customer,
             map => {

@@ -28,6 +28,11 @@ public class FeeWriteOffApplyInfo : Entity
     public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 金额，非空
     /// </summary>
     [Required(ErrorMessage = "金额不能为空！")]

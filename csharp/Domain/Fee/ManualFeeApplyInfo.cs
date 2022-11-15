@@ -28,6 +28,11 @@ public class ManualFeeApplyInfo : Entity
     public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 费用类型，非空
     /// </summary>
     [Required(ErrorMessage = "费用类型不能为空！")]

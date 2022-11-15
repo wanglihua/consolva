@@ -5,6 +5,7 @@ CREATE TABLE tbl_manual_fee_apply
     id                    INT                         NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
     customer_id           INT                         NOT NULL COMMENT '客户',
     order_id              INT                         NOT NULL COMMENT '订单',
+    order_code            VARCHAR(100)   DEFAULT ''   NOT NULL COMMENT '订单编号',
     type_id               INT            DEFAULT 0    NOT NULL COMMENT '费用类型#type:LogisticsOrderFeeType', # 用这个字段来区分是增加还是减少
     fee                   DECIMAL(10, 2) DEFAULT 0.00 NOT NULL COMMENT '金额',
     description           VARCHAR(255)   DEFAULT ''   NOT NULL COMMENT '描述',

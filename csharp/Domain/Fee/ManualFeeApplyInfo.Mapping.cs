@@ -36,6 +36,15 @@ public class ManualFeeApplyInfoMapping : EntityMapping<ManualFeeApplyInfo>
         );
 
         Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Type,
             map => {
                 map.Type<LogisticsOrderFeeTypeHibernateType>();

@@ -1,22 +1,23 @@
 CREATE TABLE tbl_logistics_order_air_express
 (
-    id                INT            NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
-    order_id          INT            NULL COMMENT '订单',   # 导入的时候还没关联订单，这样方便，然后后面通过界面或者导入关联订单
-    logistics_mode_id INT            NULL COMMENT '物流方式', # 这个可以和【订单打包】里面存储的物流方式关联起来
-    tracking_no       VARCHAR(30)    NOT NULL COMMENT '国际快递单号',
-    shipping_weight   DECIMAL(10, 3) NULL COMMENT '承运人计费重量Kg',
-    estimate_fee      DECIMAL(10, 2) NULL COMMENT '预估运费支出RMB',
-    shipping_fee      DECIMAL(10, 2) NULL COMMENT '运费支出RMB',
-    channel           VARCHAR(50)    NULL COMMENT '发货渠道',
-    memo              VARCHAR(300)   NULL COMMENT '空运备注',
+    id                INT                     NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
+    order_id          INT                     NULL COMMENT '订单',   # 导入的时候还没关联订单，这样方便，然后后面通过界面或者导入关联订单
+    order_code        VARCHAR(100) DEFAULT '' NOT NULL COMMENT '订单编号',
+    logistics_mode_id INT                     NULL COMMENT '物流方式', # 这个可以和【订单打包】里面存储的物流方式关联起来
+    tracking_no       VARCHAR(30)             NOT NULL COMMENT '国际快递单号',
+    shipping_weight   DECIMAL(10, 3)          NULL COMMENT '承运人计费重量Kg',
+    estimate_fee      DECIMAL(10, 2)          NULL COMMENT '预估运费支出RMB',
+    shipping_fee      DECIMAL(10, 2)          NULL COMMENT '运费支出RMB',
+    channel           VARCHAR(50)             NULL COMMENT '发货渠道',
+    memo              VARCHAR(300)            NULL COMMENT '空运备注',
 
-    import_user_id    INT            NULL COMMENT '导入人',
-    import_time       DATETIME       NULL COMMENT '导入时间',
-    delivered_time    DATETIME       NULL COMMENT '签收时间',
-    status_id         INT DEFAULT 0  NOT NULL COMMENT '状态#type:LogisticsOrderAirExpressStatus',
+    import_user_id    INT                     NULL COMMENT '导入人',
+    import_time       DATETIME                NULL COMMENT '导入时间',
+    delivered_time    DATETIME                NULL COMMENT '签收时间',
+    status_id         INT          DEFAULT 0  NOT NULL COMMENT '状态#type:LogisticsOrderAirExpressStatus',
 
-    create_time       DATETIME       NOT NULL COMMENT '创建时间',
-    update_time       DATETIME       NOT NULL COMMENT '更新时间',
+    create_time       DATETIME                NOT NULL COMMENT '创建时间',
+    update_time       DATETIME                NOT NULL COMMENT '更新时间',
 
     INDEX ix_logistics_order_air_express_tracking_no (tracking_no),
     CONSTRAINT fk_logistics_order_air_express_order_id FOREIGN KEY (order_id) REFERENCES tbl_logistics_order (id),

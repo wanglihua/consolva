@@ -18,6 +18,11 @@ public class FeeRefundInfo : Entity
     public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 会员
     /// </summary>
     [Required(ErrorMessage = "会员不能为空！")]

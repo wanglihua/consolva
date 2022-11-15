@@ -29,6 +29,11 @@ public class LogisticsOrderFeeInfo : Entity
     public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 物品类型，非空
     /// </summary>
     [Required(ErrorMessage = "物品类型不能为空！")]

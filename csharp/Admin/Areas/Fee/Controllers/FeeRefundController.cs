@@ -88,8 +88,8 @@ public class FeeRefundController : Controller
 
         criteria.SetReadOnly(true);
 
-        criteria = criteria.CreateAlias(nameof(FeeRefundInfo.Customer), nameof(FeeRefundInfo.Customer));
-        criteria = criteria.CreateAlias(nameof(FeeRefundInfo.Order), nameof(FeeRefundInfo.Order));
+        // criteria = criteria.CreateAlias(nameof(FeeRefundInfo.Customer), nameof(FeeRefundInfo.Customer));
+        // criteria = criteria.CreateAlias(nameof(FeeRefundInfo.Order), nameof(FeeRefundInfo.Order));
 
         if (queryParam.TypeQuery != null && queryParam.TypeQuery != FeeRefundType.None)
         {

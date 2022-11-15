@@ -37,6 +37,15 @@ public class LogisticsOrderFeeInfoMapping : EntityMapping<LogisticsOrderFeeInfo>
         );
 
         Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.GoodsType,
             map => {
                 map.Type<LogisticsGoodsTypeHibernateType>();

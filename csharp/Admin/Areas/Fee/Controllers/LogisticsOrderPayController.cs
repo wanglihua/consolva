@@ -89,7 +89,7 @@ public class LogisticsOrderPayController : Controller
     {
         var criteria = session.CreateCriteria<LogisticsOrderPayInfo>();
         // criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Customer), nameof(LogisticsOrderPayInfo.Customer));
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
+        // criteria = criteria.CreateAlias(nameof(LogisticsOrderPayInfo.Order), nameof(LogisticsOrderPayInfo.Order));
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Status == PayStatus.Paid));

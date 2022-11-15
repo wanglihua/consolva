@@ -96,9 +96,8 @@ public class FeeWriteOffApplyController : Controller
 
         criteria.SetReadOnly(true);
 
-        criteria = criteria.CreateAlias(nameof(FeeWriteOffApplyInfo.Order), nameof(FeeWriteOffApplyInfo.Order));
-        criteria = criteria.CreateAlias(nameof(FeeWriteOffApplyInfo.Customer), nameof(FeeWriteOffApplyInfo.Customer));
-
+        // criteria = criteria.CreateAlias(nameof(FeeWriteOffApplyInfo.Order), nameof(FeeWriteOffApplyInfo.Order));
+        // criteria = criteria.CreateAlias(nameof(FeeWriteOffApplyInfo.Customer), nameof(FeeWriteOffApplyInfo.Customer));
 
         if (queryParam.ViewScopeQuery == FeeApplyDataViewScope.MySelf)
         {

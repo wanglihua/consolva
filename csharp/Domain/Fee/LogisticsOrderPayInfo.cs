@@ -19,6 +19,11 @@ public class LogisticsOrderPayInfo : Entity
     public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 客户
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]

@@ -20,7 +20,7 @@
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 150px; text-align: center;">
-                <a field="@(nameof(LogisticsOrderPayInfo.Order))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">订单</a>
+                <a field="@(nameof(LogisticsOrderPayInfo.Order)).@(nameof(LogisticsOrderPayInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">订单</a>
             </th>
             <th style="width: 80px; text-align: center;">
                 <a field="@(nameof(LogisticsOrderPayInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderPayList">客户</a>
@@ -59,7 +59,7 @@
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
                         <a target="_blank" asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Order?.Id)">
-                            @logisticsOrderPay.Order?.Code
+                            @logisticsOrderPay.OrderCode
                         </a>
                     </td>
                     <td style="text-align: center;">

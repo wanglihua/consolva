@@ -5,6 +5,7 @@ CREATE TABLE tbl_fee_write_off_apply
     id                       INT                       NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
     customer_id              INT                       NOT NULL COMMENT '客户',
     order_id                 INT                       NOT NULL COMMENT '订单',
+    order_code               VARCHAR(100)   DEFAULT '' NOT NULL COMMENT '订单编号',
     amount                   DECIMAL(10, 2) DEFAULT 0  NOT NULL COMMENT '金额',
     description              VARCHAR(255)   DEFAULT '' NULL COMMENT '描述',
     write_off_reason_id      INT                       NOT NULL COMMENT '核销原因Id',

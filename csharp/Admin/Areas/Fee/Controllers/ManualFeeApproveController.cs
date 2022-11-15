@@ -117,8 +117,8 @@ public class ManualFeeApproveController : Controller
     {
         ICriteria criteria = session.CreateCriteria<ManualFeeApplyInfo>();
 
-        criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.Order), nameof(ManualFeeApplyInfo.Order));
-        criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.Customer), nameof(ManualFeeApplyInfo.Customer));
+        // criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.Order), nameof(ManualFeeApplyInfo.Order));
+        // criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.Customer), nameof(ManualFeeApplyInfo.Customer));
         criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.ApplyUser), nameof(ManualFeeApplyInfo.ApplyUser));
         criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.ApproveUser), nameof(ManualFeeApplyInfo.ApproveUser), JoinType.LeftOuterJoin);
 

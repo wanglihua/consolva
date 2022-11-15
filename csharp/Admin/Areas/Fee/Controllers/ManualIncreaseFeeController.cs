@@ -81,7 +81,7 @@ public class ManualIncreaseFeeController : Controller
     {
         ICriteria criteria = session.CreateCriteria<LogisticsOrderFeeInfo>();
 
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderFeeInfo.Order), nameof(LogisticsOrderFeeInfo.Order));
+        // criteria = criteria.CreateAlias(nameof(LogisticsOrderFeeInfo.Order), nameof(LogisticsOrderFeeInfo.Order));
         // criteria = criteria.CreateAlias(nameof(LogisticsOrderFeeInfo.Customer), nameof(LogisticsOrderFeeInfo.Customer));
 
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderFeeInfo>(e => e.Type == LogisticsOrderFeeType.ManualIncrease));

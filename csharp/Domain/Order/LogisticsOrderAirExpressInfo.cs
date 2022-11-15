@@ -19,6 +19,11 @@ public class LogisticsOrderAirExpressInfo : Entity
     public virtual LogisticsOrderInfo? Order { get; set; } = null;
 
     /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 物流方式，可空
     /// </summary>
     [JsonProperty("logisticsMode")]

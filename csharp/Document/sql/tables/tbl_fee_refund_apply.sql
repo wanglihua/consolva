@@ -4,6 +4,7 @@ CREATE TABLE tbl_fee_refund_apply
 (
     id              INT                     NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
     order_id        INT                     NOT NULL COMMENT '物流订单',
+    order_code      VARCHAR(100) DEFAULT '' NOT NULL COMMENT '订单编号',
     customer_id     INT                     NOT NULL COMMENT '会员',
     type_id         INT                     NOT NULL COMMENT '类型',                           # 退款，赔款
     reason_id       INT                     NOT NULL COMMENT '退赔原因#type:FeeRefundType',

@@ -20,7 +20,7 @@
                     <a field="@(nameof(FeeRefundApplyInfo.Customer)).@(nameof(FeeRefundApplyInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">客户</a>
                 </div>
                 <div>
-                    <a field="@(nameof(FeeRefundApplyInfo.Order)).@(nameof(FeeRefundApplyInfo.Order.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">订单</a>
+                    <a field="@(nameof(FeeRefundApplyInfo.Order)).@(nameof(FeeRefundApplyInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortFeeRefundApplyList">订单</a>
                 </div>
             </th>
             <th style="width: 80px; text-align: center;">
@@ -104,7 +104,7 @@
                         </div>
                         <div>
                             <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = feeRefundApply.Order.Id})">
-                                @feeRefundApply.Order.Code
+                                @feeRefundApply.OrderCode
                             </a>
                         </div>
                         <div>
