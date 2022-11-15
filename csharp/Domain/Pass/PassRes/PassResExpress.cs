@@ -18,6 +18,7 @@ public partial class PassRes
             new PassResInfo() { Id = ExpressExpect, Name = "预报单号", CateIdForCache = CateId },
             new PassResInfo() { Id = ExpressPhoto, Name = "快递单图片", CateIdForCache = CateId },
             new PassResInfo() { Id = ExpressPhotoDelete, Name = "快递单图片删除", CateIdForCache = CateId },
+            new PassResInfo() { Id = ExpressSizeWeight, Name = "快递单尺寸重量", CateIdForCache = CateId },
             new PassResInfo() { Id = ExpressRemarkPresetSelect, Name = "快递备注预设", CateIdForCache = CateId },
         };
 
@@ -26,12 +27,13 @@ public partial class PassRes
         /// <summary>
         /// 快递列表
         /// </summary>
-        public const int ExpressList = CateId + 10000;        
+        public const int ExpressList = CateId + 10000;
 
         /// <summary>
         /// 预报单号
         /// </summary>
         public const int ExpressExpect = CateId + 20000;
+
         /// <summary>
         /// 快递单图片
         /// </summary>
@@ -43,8 +45,13 @@ public partial class PassRes
         public const int ExpressPhotoDelete = CateId + 40000;
 
         /// <summary>
+        /// 快递单尺寸重量
+        /// </summary>
+        public const int ExpressSizeWeight = CateId + 50000;
+
+        /// <summary>
         /// 快递备注预设
         /// </summary>
-        public const int ExpressRemarkPresetSelect = CateId + 50000;
+        public const int ExpressRemarkPresetSelect = CateId + 60000;
     }
 }

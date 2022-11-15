@@ -46,6 +46,17 @@
                 </li>
             }
 
+            @if (Model.HasPassRes(PassRes.Express.ExpressSizeWeight))
+            {
+                <li id="express-size-weight-index-menu">
+                    <a asp-area="Express" asp-controller="ExpressSizeWeight" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        快递单尺寸重量
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
             @if (Model.HasPassRes(PassRes.Express.ExpressRemarkPresetSelect))
             {
                 <li id="express-express-remark-preset-select-menu">

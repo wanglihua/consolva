@@ -102,4 +102,22 @@ public class ExpressSizeWeightInfo : Entity
     [JsonProperty("machine")]
     public virtual AutoMeasureMachineInfo? Machine { get; set; } = null;
 
+    #region cache
+
+    /// <summary>
+    /// 体积重
+    /// </summary>
+    public virtual decimal? VolumeWeightCache { get; set; }
+
+    /// <summary>
+    /// 体积重实际重比值
+    /// </summary>
+    public virtual decimal? VolumeWeightActualWeightRatioCache { get; set; }
+
+    /// <summary>
+    /// 子单号尺寸重量列表
+    /// </summary>
+    public virtual IList<ExpressSizeWeightInfo> ExpressSizeWeightChildListCache { get; set; } = new List<ExpressSizeWeightInfo>();
+
+    #endregion
 }

@@ -1,0 +1,174 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Express.Models.ExpressSizeWeight.ExpressSizeWeightListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressSizeWeightList" })
+
+<table id="tblExpressSizeWeightList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="logisticsExpressCheckAll"></label><input id="logisticsExpressCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: left;">
+                <div>
+                    <a field="@(nameof(ExpressSizeWeightInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressSizeWeightList">快递单号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: right;">
+                <div>
+                    <a field="@(nameof(ExpressSizeWeightInfo.Length))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressSizeWeightList">尺寸cm</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressSizeWeightInfo.Weight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressSizeWeightList">重量kg</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: right;">
+                <div>
+                    体积重kg
+                </div>
+                <div>
+                    体积重/实际重
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressSizeWeightInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressSizeWeightList">签收时间</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressSizeWeightInfo.Order))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressSizeWeightList">订单</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressSizeWeightInfo.PackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressSizeWeightList">入库包裹数</a>
+                </div>
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ExpressSizeWeightList != null && Model.ExpressSizeWeightList.Count != 0)
+        {
+            int order = 1;
+            foreach (ExpressSizeWeightInfo expressSizeWeight in Model.ExpressSizeWeightList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="logisticsExpressCheck_@(expressSizeWeight.Id)"></label><input id="logisticsExpressCheck_@(expressSizeWeight.Id)" type="checkbox" class="ace" value="@expressSizeWeight.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td style="text-align: left;">
+                        <div>
+                            @(expressSizeWeight.TrackingNo)
+                        </div>
+                        @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache)
+                        {
+                            <div>
+                                @(expressChild.TrackingNo)
+                            </div>
+                        }
+
+                    </td>
+
+                    <td style="text-align: right;">
+                        <div>
+                            @(expressSizeWeight.Length)<span>&nbsp;</span>×<span>&nbsp;</span>@(expressSizeWeight.Width)<span>&nbsp;</span>×<span>&nbsp;</span>@(expressSizeWeight.Height)
+                        </div>
+                        <div>
+                            @(expressSizeWeight.Weight)
+                        </div>
+                        @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache)
+                        {
+                            <div>
+                                @(expressChild.Length)<span>&nbsp;</span>×<span>&nbsp;</span>@(expressChild.Width)<span>&nbsp;</span>×<span>&nbsp;</span>@(expressChild.Height)
+                            </div>
+                            <div>
+                                @(expressChild.Weight)
+                            </div>
+                        }
+                    </td>
+
+                    <td style="text-align: right;">
+                        <div>
+                            @ListDataUtil.Render(expressSizeWeight.VolumeWeightCache, "#0.000")
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(expressSizeWeight.VolumeWeightActualWeightRatioCache, "#0.00")
+                        </div>
+
+                        @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache)
+                        {
+                            <div>
+                                @ListDataUtil.Render(expressChild.VolumeWeightCache, "#0.000")
+                            </div>
+                            <div>
+                                @ListDataUtil.Render(expressChild.VolumeWeightActualWeightRatioCache, "#0.00")
+                            </div>
+                        }
+                    </td>
+
+                    <td>
+                        <div>@ListDataUtil.Render(expressSizeWeight.CreateTime)</div>
+                    </td>
+
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(expressSizeWeight.OrderCode)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @(expressSizeWeight.PackageCount)
+                            @{
+                                int rowTotalCount = expressSizeWeight.PackageCount;
+                            }
+                            @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache)
+                            {
+                                rowTotalCount += expressChild.PackageCount;
+
+                                <span>+</span>
+                                <span>@(expressChild.PackageCount)</span>
+                            }
+                            @if (expressSizeWeight.ExpressSizeWeightChildListCache.Count > 0)
+                            {
+                                <span>=</span>
+                                <span>@(rowTotalCount)</span>
+                            }
+                        </div>
+                    </td>
+
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressSizeWeightList" })

@@ -1,0 +1,144 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Express.Models.ExpressSizeWeight
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Express.Models.ExpressSizeWeight.ExpressSizeWeightIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "快递单尺寸重量";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="express-menu">快递管理</li>
+    <li class="active" data-menu="express-size-weight-index-menu">@(ViewData[ViewDataKey.Title])</li>
+    
+    <li id="headerMessage">平均体积重和实际重比值：@(Model.AvgVolumeWeightActualWeightRatio)</li>
+}
+
+@section Style {
+
+    <style type="text/css">
+        li#headerMessage:before {
+            content: '';
+        }
+        
+        li#headerMessage {
+            padding-left: 20px;
+        }     
+    </style>
+}
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" style="width: 180px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
+    
+    <label for="signBeginDateQuery">签收起始日期</label>&nbsp;<input id="signBeginDateQuery" name="signBeginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    
+    <label for="signEndDateQuery">签收截止日期</label>&nbsp;<input id="signEndDateQuery" name="signEndDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
+    
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressSizeWeightList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsExpressList" data-page-index="0" data-sort-field="@(nameof(ExpressSizeWeightInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsExpressDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        
+        $('#signBeginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#signEndDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+        
+        loadExpressSizeWeightList();
+    });
+
+    function sortExpressSizeWeightList(sortField, sortDir) {
+        var list = $('#logisticsExpressList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExpressSizeWeightList();
+    }
+
+    function loadExpressSizeWeightList(pageIndex) {
+        var list = $('#logisticsExpressList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExpressSizeWeight")",
+            type: "POST",
+            data: {
+                '@(nameof(ExpressSizeWeightListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+                '@(nameof(ExpressSizeWeightListQueryParam.CreateDateBeginQuery))': $('#signBeginDateQuery').val(),
+                '@(nameof(ExpressSizeWeightListQueryParam.CreateDateEndQuery))': $('#signEndDateQuery').val(),
+                '@(nameof(ExpressSizeWeightListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ExpressSizeWeightListQueryParam.SortField))': sortField,
+                '@(nameof(ExpressSizeWeightListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsExpressList').html(data);
+
+                initListTable("#tblExpressSizeWeightList");
+            }
+        });
+    }
+
+    function deleteExpressSizeWeight() {
+        var idList = getSelectIdList('#tblExpressSizeWeightList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ExpressSizeWeight")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadExpressSizeWeightList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
