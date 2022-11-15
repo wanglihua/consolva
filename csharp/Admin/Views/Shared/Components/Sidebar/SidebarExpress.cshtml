@@ -35,6 +35,17 @@
                 </li>
             }
 
+            @if (Model.HasPassRes(PassRes.Express.ExpressPhoto))
+            {
+                <li id="express-video-index-menu">
+                    <a asp-area="Express" asp-controller="ExpressVideo" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        快递单视频
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
             @if (Model.HasPassRes(PassRes.Express.ExpressRemarkPresetSelect))
             {
                 <li id="express-express-remark-preset-select-menu">
