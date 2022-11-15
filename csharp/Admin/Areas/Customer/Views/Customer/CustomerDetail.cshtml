@@ -869,7 +869,7 @@
                                             <td style="text-align: center;">@orderPay.CustomerCodeCache</td>
                                             <td style="text-align: center;" class="break-word">
                                                 <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderPay.Order.Id })" target="_blank">
-                                                    @orderPay.Order?.Code
+                                                    @orderPay.Order.Code
                                                 </a>
                                             </td>
                                             <td style="text-align: center;">@orderPay.PayType.Name</td>

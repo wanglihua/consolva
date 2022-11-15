@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using shunda.Core;
+using shunda.Domain.Order;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
@@ -10,6 +11,26 @@ namespace shunda.Domain.Express;
 /// </summary>
 public class ExpressSizeWeightInfo : Entity
 {
+    /// <summary>
+    /// 快递单，可空
+    /// </summary>
+    [JsonProperty("express")]
+    public virtual ExpressInfo? Express { get; set; } = null;
+
+    /// <summary>
+    /// 订单，可空
+    /// </summary>
+    [JsonProperty("order")]
+    public virtual LogisticsOrderInfo? Order { get; set; } = null;
+
+    /// <summary>
+    /// 订单编号，非空
+    /// </summary>
+    [Required(ErrorMessage = "订单编号不能为空！")]
+    [MaxLength(100, ErrorMessage = "订单编号长度不能大于100！")]
+    [JsonProperty("orderCode")]
+    public virtual string OrderCode { get; set; } = string.Empty;
+
     /// <summary>
     /// 快递单号，非空
     /// </summary>
@@ -30,7 +51,7 @@ public class ExpressSizeWeightInfo : Entity
     /// 快递单描述，非空
     /// </summary>
     [Required(ErrorMessage = "快递单描述不能为空！")]
-    [MaxLength(300, ErrorMessage = "快递单描述长度不能大于300！")]
+    [MaxLength(200, ErrorMessage = "快递单描述长度不能大于200！")]
     [JsonProperty("description")]
     public virtual string Description { get; set; } = string.Empty;
 

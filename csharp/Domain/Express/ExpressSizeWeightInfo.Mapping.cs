@@ -1,6 +1,7 @@
 using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Domain.Order;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
@@ -10,6 +11,37 @@ public class ExpressSizeWeightInfoMapping : EntityMapping<ExpressSizeWeightInfo>
     public ExpressSizeWeightInfoMapping()
     {
         Table("tbl_express_size_weight");
+
+        ManyToOne(
+            x => x.Express,
+            map => {
+                map.Class(typeof(ExpressInfo));
+                map.Column("express_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        ManyToOne(
+            x => x.Order,
+            map => {
+                map.Class(typeof(LogisticsOrderInfo));
+                map.Column("order_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
+            }
+        );
 
         Property(
             x => x.TrackingNo,
