@@ -258,19 +258,19 @@ public class ExpressPhotoController : Controller
         expressPhoto.User = session.Get<UserInfo>(loginUserId);
 
 
-        LogisticsOrderInfo? logisticsOrder = null;
+        LogisticsOrderInfo? order = null;
 
 
         var orderCode = model.OrderCode ?? string.Empty;
 
         if (string.IsNullOrEmpty(orderCode) == false)
         {
-            logisticsOrder = session.Query<LogisticsOrderInfo>()
+            order = session.Query<LogisticsOrderInfo>()
                 .Where(e => e.Code == orderCode)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (logisticsOrder == null) throw new ValidationException("指定的订单编号不存在！");
+            if (order == null) throw new ValidationException("指定的订单编号不存在！");
         }
 
         ExpressInfo? express = null;
@@ -282,13 +282,13 @@ public class ExpressPhotoController : Controller
                 .Take(1)
                 .SingleOrDefault();
 
-            if (express != null && logisticsOrder != null && (express.Order?.Id ?? 0) != logisticsOrder.Id)
+            if (express != null && order != null && (express.Order?.Id ?? 0) != order.Id)
             {
                 throw new ValidationException("指定的快递单号和订单编号不匹配，可能快递单号属于别的订单！");
             }
 
             // 这一语句就保证如果订单编号没有录入，但快递单号对应的快递单有订单关联时，就设置成快递单关联订单
-            logisticsOrder = express?.Order; // 也可能是 null。
+            order = express?.Order; // 也可能是 null。
         }
 
         CustomerInfo? customer = null;
@@ -296,16 +296,16 @@ public class ExpressPhotoController : Controller
         {
             customer = express.Customer;
         }
-        else if (logisticsOrder != null) // 适用订单图片的情形
+        else if (order != null) // 适用订单图片的情形
         {
-            customer = logisticsOrder.Customer;
+            customer = order.Customer;
         }
 
         expressPhoto.TrackingNo = trackingNo;
         expressPhoto.Express = express;
         expressPhoto.Customer = customer;
-        expressPhoto.Order = logisticsOrder;
-        expressPhoto.OrderCode = logisticsOrder?.Code ?? string.Empty;
+        expressPhoto.Order = order;
+        expressPhoto.OrderCode = order?.Code ?? string.Empty;
         expressPhoto.Type = model.PhotoType;
         expressPhoto.StorePath = model.StorePath;
         expressPhoto.StoreName = model.StoreName;
@@ -321,6 +321,16 @@ public class ExpressPhotoController : Controller
         {
             expressLogService.UserLog(express.Id, ExpressLogType.PhotoUpload, $"类型：{expressPhoto.Type?.Name}", loginUserId);
         }
+
+        // 这里已经把这个逻辑给做了，就不用调用这些绑定method了
+        // if (express != null)
+        // {
+        //     expressPhotoService.BindPhotoToExpress(expressPhoto.Id, express);
+        // }
+        // else if (logisticsOrder != null)
+        // {
+        //     expressPhotoService.BindPhotoToOrder(expressPhoto.Id, logisticsOrder);
+        // }
 
         expressPhotoFileService.AddWatermark(expressPhoto.StorePath, expressPhoto.StoreName, expressPhoto.Type ?? ExpressPhotoType.None);
         expressPhotoService.SendAddOrderPhotoMessage(expressPhoto);
@@ -342,7 +352,7 @@ public class ExpressPhotoController : Controller
         {
             ep.Express = express;
             ep.Customer = customer;
-            ep.Order = logisticsOrder;
+            ep.Order = order;
 
             session.Update(ep);
         }

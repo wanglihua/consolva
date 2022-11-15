@@ -4,6 +4,7 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.Message;
+using shunda.Domain.Order;
 
 namespace shunda.Service.Express;
 
@@ -46,6 +47,23 @@ public class ExpressPhotoService
             .Take(1)
             .SingleOrDefault();
 
+        BindPhotoToExpress(photoId, express);
+    }
+
+    /// <summary>
+    /// 绑定图片到快递单号，添加和更新图片时调用
+    /// express == null 时，也可以用来解绑
+    /// </summary>
+    /// <param name="photoId"></param>
+    /// <param name="express">可以为空</param>
+    public void BindPhotoToExpress(int photoId, ExpressInfo? express)
+    {
+        ExpressPhotoInfo expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
+        if (expressPhoto == null)
+        {
+            throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
+        }
+
         if (express == null)
         {
             expressPhoto.Express = null;
@@ -72,6 +90,27 @@ public class ExpressPhotoService
         session.Flush();
     }
 
+    /// <summary>
+    /// 绑定图片到订单，用于订单图片的情形，就是 express 为空时
+    /// </summary>
+    /// <param name="photoId"></param>
+    /// <param name="order"></param>
+    public void BindPhotoToOrder(int photoId, LogisticsOrderInfo order)
+    {
+        ExpressPhotoInfo expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
+        if (expressPhoto == null)
+        {
+            throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
+        }
+
+        expressPhoto.Order = order;
+        expressPhoto.OrderCode = order?.Code ?? string.Empty;
+        expressPhoto.Customer = order?.Customer;
+
+        session.Save(expressPhoto);
+        session.Flush();
+    }
+
     // todo b 调用
     /// <summary>
     /// 绑定快递单号到图片，添加和更新快递单时调用
@@ -85,8 +124,10 @@ public class ExpressPhotoService
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
+        string trackingNo = express.TrackingNo.Trim();
+
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
-            .Where(e =>  e.Express!.Id == expressId)
+            .Where(e => e.TrackingNo == trackingNo)
             .ToList();
 
         foreach (ExpressPhotoInfo expressPhoto in expressPhotoList)
@@ -96,7 +137,7 @@ public class ExpressPhotoService
             expressPhoto.Order = express.Order; // 有可能为 null，也有可能不是
             if (express.Order != null)
             {
-                expressPhoto.OrderCode = express.Order?.Code ?? string.Empty;
+                expressPhoto.OrderCode = express.Order.Code ?? string.Empty;
             }
             else
             {
