@@ -55,6 +55,15 @@ public class CouponInfoMapping : EntityMapping<CouponInfo>
         );
 
         Property(
+            x => x.OrderCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_code");
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.ActualDiscountAmount,
             map => {
                 map.Type(NHibernateUtil.Decimal);

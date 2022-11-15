@@ -30,6 +30,12 @@ public class CouponInfo : Entity
     public virtual LogisticsOrderInfo? Order { get; set; }
 
     /// <summary>
+    /// 订单编号，非空
+    /// 设置 Order的时候记得设置 orderCode
+    /// </summary>
+    public virtual string OrderCode { get; set; } = string.Empty;
+
+    /// <summary>
     /// 实际优惠金额，非空
     /// </summary>
     public virtual decimal ActualDiscountAmount { get; set; }

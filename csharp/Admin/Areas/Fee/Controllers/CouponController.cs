@@ -101,6 +101,7 @@ public class CouponController : Controller
 
         foreach (CouponInfo coupon in couponList)
         {
+            coupon.CustomerCodeCache = customerCodeService.GetCustomerCode(coupon.Customer.Id);
         }
 
         CouponListModel model = new CouponListModel(listPager);
@@ -116,8 +117,8 @@ public class CouponController : Controller
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.CreateAlias(nameof(CouponInfo.Batch), nameof(CouponInfo.Batch));
-        criteria = criteria.CreateAlias(nameof(CouponInfo.Customer), nameof(CouponInfo.Customer), JoinType.LeftOuterJoin);
-        criteria = criteria.CreateAlias(nameof(CouponInfo.Order), nameof(CouponInfo.Order), JoinType.LeftOuterJoin);
+        // criteria = criteria.CreateAlias(nameof(CouponInfo.Customer), nameof(CouponInfo.Customer), JoinType.LeftOuterJoin);
+        criteria = criteria.CreateAlias(nameof(CouponInfo.Order), nameof(CouponInfo.Order), JoinType.LeftOuterJoin); // 要显示订单金额，还是要关联表。todo e 或者可以把订单金额也放到优惠券中
 
         if (queryParam.BatchId != 0)
         {
