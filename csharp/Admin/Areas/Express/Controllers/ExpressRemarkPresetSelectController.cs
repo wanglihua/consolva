@@ -13,7 +13,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Express.Controllers;
 
 /// <summary>
-///     快递单备注预设 控制器
+/// 快递单备注预设 控制器
 /// </summary>
 [ExpressArea]
 // [ExpressAuth(PassRes.XXX.ExpressRemarkPresetSelect)]
@@ -31,7 +31,7 @@ public class ExpressRemarkPresetSelectController : Controller
     }
 
     [HttpGet]
-    [Route("/shop/express/express/remark/preset/select")]
+    [Route("/admin/express/remark/preset/select")]
     public IActionResult Index()
     {
         var model = new ExpressRemarkPresetSelectIndexModel();
@@ -42,7 +42,7 @@ public class ExpressRemarkPresetSelectController : Controller
     }
 
     [HttpPost]
-    [Route("/shop/express/express/remark/preset/select/list")]
+    [Route("/admin/express/remark/preset/select/list")]
     public IActionResult List(ExpressRemarkPresetSelectListQueryParam queryParam)
     {
         var totalCount = GetQueryOver(queryParam)
@@ -87,7 +87,7 @@ public class ExpressRemarkPresetSelectController : Controller
     }
 
     [HttpPost]
-    [Route("/shop/express/express/remark/preset/select/detail")]
+    [Route("/admin/express/remark/preset/select/detail")]
     public IActionResult Detail(IdParam param)
     {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
@@ -119,7 +119,7 @@ public class ExpressRemarkPresetSelectController : Controller
     }
 
     [HttpPost]
-    [Route("/shop/express/express/remark/preset/select/save")]
+    [Route("/admin/express/remark/preset/select/save")]
     [Transactional]
     public IActionResult Save(ExpressRemarkPresetSelectSaveModel model)
     {
@@ -159,7 +159,7 @@ public class ExpressRemarkPresetSelectController : Controller
     }
 
     [HttpPost]
-    [Route("/shop/express/express/remark/preset/select/delete")]
+    [Route("/admin/express/remark/preset/select/delete")]
     [Transactional]
     public IActionResult Delete(IdListParam param)
     {
