@@ -27,14 +27,14 @@ public class ShelfController : Controller
     [Route("/admin/shelf/{warehouseId:int}")]
     public IActionResult Index(int warehouseId)
     {
-        var warehouseInfo = session.Get<WarehouseInfo>(warehouseId);
-        if (warehouseInfo == null) return Content("指定的仓库不存在！");
+        var warehouse = session.Get<WarehouseInfo>(warehouseId);
+        if (warehouse == null) return Content("指定的仓库不存在！");
 
         var shelfTypeList = ShelfType.GetList();
 
         var model = new ShelfIndexModel();
         model.WarehouseId = warehouseId;
-        model.Warehouse = warehouseInfo;
+        model.Warehouse = warehouse;
         model.ShelfTypeList = shelfTypeList;
 
         /*
@@ -119,7 +119,7 @@ public class ShelfController : Controller
         var shelfId = model.Id;
         var warehouseId = model.WarehouseId;
 
-        ShelfInfo shelf;
+        ShelfInfo? shelf;
 
         if (shelfId == 0)
         {
@@ -153,7 +153,7 @@ public class ShelfController : Controller
 
         var isCreate = shelfId == 0;
 
-        ShelfInfo shelf;
+        ShelfInfo? shelf;
 
         if (isCreate)
             shelf = new ShelfInfo();
@@ -186,18 +186,20 @@ public class ShelfController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        /*
         foreach (int shelfId in idList)
         {
-            ShelfInfo shelf = session.Get<ShelfInfo>(shelfId);
+            ShelfInfo? shelf = session.Get<ShelfInfo>(shelfId);
 
-            int storageLocCount = session.Query<StorageLocInfo>().Where(e => e.Shelf.Id == shelfId).Count();
-            if (storageLocCount != 0)
+            int storageLocId = session.Query<StorageLocInfo>()
+                .Where(e => e.Shelf.Id == shelfId)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+            if (storageLocId != 0)
             {
                 throw new ValidationException($"货架{shelf.Name}下面有定义的仓位，请删除仓位后再删除货架！");
             }
         }
-        */
 
         foreach (var id in idList)
         {

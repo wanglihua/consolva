@@ -88,7 +88,7 @@ public class LogisticsFeeRateController : Controller
     [Route("/admin/logistics/fee/rate/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        LogisticsFeeRateInfo logisticsFeeRate;
+        LogisticsFeeRateInfo? logisticsFeeRate;
 
         if (id == null || id.Value == 0)
         {

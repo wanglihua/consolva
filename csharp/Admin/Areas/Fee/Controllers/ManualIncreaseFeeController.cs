@@ -147,7 +147,7 @@ public class ManualIncreaseFeeController : Controller
             throw new ValidationException("客户ID输入格式有误！");
         }
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的客户不存在！");

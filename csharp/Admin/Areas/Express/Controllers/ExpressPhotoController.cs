@@ -247,7 +247,7 @@ public class ExpressPhotoController : Controller
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
 
         if (string.IsNullOrWhiteSpace(model.TrackingNo) == false && expressTrackingNoService.IsValidateTrackingNo(model.TrackingNo) == false) throw new ValidationException("快递单号格式不符合规范！");

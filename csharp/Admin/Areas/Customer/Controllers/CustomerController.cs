@@ -157,7 +157,7 @@ public class CustomerController : Controller
     {
         var customerId = id;
 
-        var customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) throw new ValidationException("指定的数据项不存在！");
 
         var model = new CustomerDetailModel();
@@ -396,13 +396,13 @@ public class CustomerController : Controller
     {
         var customerId = id;
 
-        var customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null) throw new ValidationException("指定的客户不存在！");
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) throw new ValidationException("指定的客户不存在！");
 
-        if (customerInfo.Status != CustomerStatus.Frozen) throw new ValidationException("客户当前不是冻结状态！");
+        if (customer.Status != CustomerStatus.Frozen) throw new ValidationException("客户当前不是冻结状态！");
 
-        customerInfo.Status = CustomerStatus.Normal;
-        session.Update(customerInfo);
+        customer.Status = CustomerStatus.Normal;
+        session.Update(customer);
         session.Flush();
 
         return Json(new Dictionary<string, object> {
@@ -419,13 +419,13 @@ public class CustomerController : Controller
     {
         var customerId = id;
 
-        var customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null) throw new ValidationException("指定的客户不存在！");
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) throw new ValidationException("指定的客户不存在！");
 
-        if (customerInfo.Status == CustomerStatus.Frozen) throw new ValidationException("客户已经是冻结状态！");
+        if (customer.Status == CustomerStatus.Frozen) throw new ValidationException("客户已经是冻结状态！");
 
-        customerInfo.Status = CustomerStatus.Frozen;
-        session.Update(customerInfo);
+        customer.Status = CustomerStatus.Frozen;
+        session.Update(customer);
         session.Flush();
 
         return Json(new Dictionary<string, object> {
@@ -442,14 +442,14 @@ public class CustomerController : Controller
     {
         var customerId = id;
 
-        var customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null) throw new ValidationException("指定的客户不存在！");
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) throw new ValidationException("指定的客户不存在！");
 
         var salt = passwordService.GenerateSalt();
-        customerInfo.Salt = salt;
-        customerInfo.Password = passwordService.Encrypt(CustomerInfo.DefaultPassword, salt);
+        customer.Salt = salt;
+        customer.Password = passwordService.Encrypt(CustomerInfo.DefaultPassword, salt);
 
-        session.Update(customerInfo);
+        session.Update(customer);
         session.Flush();
 
         return Json(new Dictionary<string, object> {

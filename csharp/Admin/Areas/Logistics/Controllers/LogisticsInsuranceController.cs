@@ -73,7 +73,7 @@ public class LogisticsInsuranceController : Controller
     [Route("/admin/logistics/insurance/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        LogisticsInsuranceInfo logisticsInsurance;
+        LogisticsInsuranceInfo? logisticsInsurance;
 
         if (id == null || id.Value == 0)
         {
@@ -106,7 +106,7 @@ public class LogisticsInsuranceController : Controller
 
         var isCreate = logisticsInsuranceId == 0;
 
-        LogisticsInsuranceInfo logisticsInsurance;
+        LogisticsInsuranceInfo? logisticsInsurance;
 
         if (isCreate)
             logisticsInsurance = new LogisticsInsuranceInfo();

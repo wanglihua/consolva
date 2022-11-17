@@ -32,13 +32,13 @@ public class CouponRuleDeductController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CouponBatchInfo batch = session.Get<CouponBatchInfo>(batchId);
+        CouponBatchInfo? batch = session.Get<CouponBatchInfo>(batchId);
         if (batch == null)
         {
             throw new ValidationException($"优惠券批次#{batchId}不存在！");
         }
 
-        CouponRuleDeductInfo couponRuleDeduct;
+        CouponRuleDeductInfo? couponRuleDeduct;
 
         if (id == 0)
         {
@@ -77,7 +77,7 @@ public class CouponRuleDeductController : Controller
 
         bool isCreate = couponRuleDeductId == 0;
 
-        CouponRuleDeductInfo rule;
+        CouponRuleDeductInfo? rule;
 
         if (isCreate)
         {
@@ -92,7 +92,7 @@ public class CouponRuleDeductController : Controller
             }
         }
 
-        CouponBatchInfo batch = session.Get<CouponBatchInfo>(model.BatchId);
+        CouponBatchInfo? batch = session.Get<CouponBatchInfo>(model.BatchId);
         if (batch == null)
         {
             throw new ValidationException($"优惠券批次#{model.BatchId}不存在！");

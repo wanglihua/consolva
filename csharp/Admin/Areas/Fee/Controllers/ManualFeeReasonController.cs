@@ -84,7 +84,7 @@ public class ManualFeeReasonController : Controller
     {
         session.DefaultReadOnly = true;
 
-        ManualFeeReasonInfo manualFeeReason;
+        ManualFeeReasonInfo? manualFeeReason;
 
         if (id == null || id.Value == 0)
         {
@@ -117,7 +117,7 @@ public class ManualFeeReasonController : Controller
 
         var isCreate = manualFeeReasonId == 0;
 
-        ManualFeeReasonInfo manualFeeReason;
+        ManualFeeReasonInfo? manualFeeReason;
 
         if (isCreate)
             manualFeeReason = new ManualFeeReasonInfo();

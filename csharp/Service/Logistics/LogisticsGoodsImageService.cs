@@ -129,7 +129,7 @@ public class LogisticsGoodsImageService
     /// <returns></returns>
     public bool HasGoodsImage(int goodsId)
     {
-        LogisticsGoodsInfo logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsId);
+        LogisticsGoodsInfo? logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsId);
         if (logisticsGoods != null && string.IsNullOrWhiteSpace(logisticsGoods.CreateExpressTrackingNo) == false)
         {
             string createExpressTrackingNo = logisticsGoods.CreateExpressTrackingNo.Trim();

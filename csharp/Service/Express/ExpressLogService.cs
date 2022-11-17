@@ -63,7 +63,7 @@ public class ExpressLogService
 
         if (expressId != 0)
         {
-            ExpressInfo express = session.Get<ExpressInfo>(expressId);
+            ExpressInfo? express = session.Get<ExpressInfo>(expressId);
             if (express == null)
             {
                 throw new ValidationException($"指定的申领件#{expressId}不存在！");
@@ -84,13 +84,13 @@ public class ExpressLogService
 
         if (userId != 0)
         {
-            UserInfo user = session.Get<UserInfo>(userId);
+            UserInfo? user = session.Get<UserInfo>(userId);
             log.User = user;
         }
 
         if (customerId != 0)
         {
-            CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+            CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
             log.Customer = customer;
         }
 

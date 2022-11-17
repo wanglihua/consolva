@@ -95,7 +95,7 @@ public class GroupController : Controller
     [Route("/admin/group/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        GroupInfo group;
+        GroupInfo? group;
 
         if (id == null || id.Value == 0)
         {
@@ -127,7 +127,7 @@ public class GroupController : Controller
 
         var isCreate = groupId == 0;
 
-        GroupInfo group;
+        GroupInfo? group;
 
         if (isCreate)
             group = new GroupInfo();

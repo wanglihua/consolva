@@ -334,7 +334,7 @@ public class CouponController : Controller
                 throw new ValidationException($"导入的第 {rowIndex} 行，客户ID输入有误！");
             }
 
-            CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+            CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
             if (customer == null)
             {
                 throw new ValidationException($"导入的第 {rowIndex} 行，指定的客户ID {customerCode} 不存在！");

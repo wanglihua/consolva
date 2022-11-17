@@ -94,7 +94,7 @@ public class ExpressRemarkPresetSelectController : Controller
 
         var id = param.Id;
 
-        ExpressRemarkPresetSelectInfo expressRemarkPresetSelect;
+        ExpressRemarkPresetSelectInfo? expressRemarkPresetSelect;
 
         if (id <= 0)
         {
@@ -129,7 +129,7 @@ public class ExpressRemarkPresetSelectController : Controller
 
         var isCreate = expressRemarkPresetSelectId <= 0;
 
-        ExpressRemarkPresetSelectInfo expressRemarkPresetSelect;
+        ExpressRemarkPresetSelectInfo? expressRemarkPresetSelect;
 
         if (isCreate)
         {

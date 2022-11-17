@@ -97,7 +97,7 @@ public class WarehouseController : Controller
     [Route("/admin/warehouse/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        WarehouseWithAddressDescriptionInfo warehouse;
+        WarehouseWithAddressDescriptionInfo? warehouse;
 
         if (id == null || id.Value == 0)
         {
@@ -131,7 +131,7 @@ public class WarehouseController : Controller
 
         var isCreate = warehouseId == 0;
 
-        WarehouseWithAddressDescriptionInfo warehouse;
+        WarehouseWithAddressDescriptionInfo? warehouse;
 
         if (isCreate)
             warehouse = new WarehouseWithAddressDescriptionInfo();

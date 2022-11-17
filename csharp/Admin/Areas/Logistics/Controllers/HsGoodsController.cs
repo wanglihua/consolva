@@ -90,7 +90,7 @@ public class HsGoodsController : Controller
     {
         session.DefaultReadOnly = true;
 
-        HsGoodsInfo hsGoods;
+        HsGoodsInfo? hsGoods;
 
         if (id == null || id.Value == 0)
         {
@@ -122,14 +122,14 @@ public class HsGoodsController : Controller
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+        UserInfo? loginUser = session.Get<UserInfo>(loginUserId);
 
         HsGoodsInfo hsGoodsFromUi = model.HsGoods;
         int hsGoodsIdFromUi = hsGoodsFromUi.Id;
 
         bool isCreate = hsGoodsIdFromUi == 0;
 
-        HsGoodsInfo hsGoods;
+        HsGoodsInfo? hsGoods;
 
         if (isCreate)
         {
@@ -180,7 +180,7 @@ public class HsGoodsController : Controller
     {
         foreach (int id in idList)
         {
-            HsGoodsInfo hsGoods = session.Get<HsGoodsInfo>(id);
+            HsGoodsInfo? hsGoods = session.Get<HsGoodsInfo>(id);
 
             int count = session.Query<LogisticsGoodsInfo>().Where(e => e.HsGoods!.Id == id).Count();
             if (count != 0)
@@ -203,7 +203,7 @@ public class HsGoodsController : Controller
     [Route("/admin/hs/goods/detail/data/{id:int}")]
     public IActionResult DetailData(int id)
     {
-        HsGoodsInfo hsGoodsInfo = session.Get<HsGoodsInfo>(id);
+        HsGoodsInfo? hsGoodsInfo = session.Get<HsGoodsInfo>(id);
         if (hsGoodsInfo == null)
         {
             throw new ValidationException("指定的海关物品不存在！");
@@ -221,7 +221,7 @@ public class HsGoodsController : Controller
     public IActionResult Import(IFormFile excelFile)
     {
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         if (excelFile == null)
         {

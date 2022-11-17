@@ -34,7 +34,7 @@ public class CustomerAddressController : Controller
     [Route("/admin/customer/address/{customerId:int}")]
     public IActionResult Index(int customerId)
     {
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             return Content("指定的客户Id不存在！");
@@ -66,7 +66,7 @@ public class CustomerAddressController : Controller
     [Route("/admin/customer/address/receive/detail")]
     public IActionResult ReceiveDetail(int id)
     {
-        CustomerReceiveAddressInfo customerAddress = session.Get<CustomerReceiveAddressInfo>(id);
+        CustomerReceiveAddressInfo? customerAddress = session.Get<CustomerReceiveAddressInfo>(id);
         if (customerAddress == null)
         {
             throw new ValidationException($"指定的客户地址#{id}不存在！");
@@ -91,7 +91,7 @@ public class CustomerAddressController : Controller
         }
 
         int addressId = addressFromUi.Id;
-        CustomerReceiveAddressInfo address = session.Get<CustomerReceiveAddressInfo>(addressId);
+        CustomerReceiveAddressInfo? address = session.Get<CustomerReceiveAddressInfo>(addressId);
         if (address == null)
         {
             throw new ValidationException($"指定的客户地址#{addressId}不存在！");

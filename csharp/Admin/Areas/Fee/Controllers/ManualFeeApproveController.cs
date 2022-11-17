@@ -164,7 +164,7 @@ public class ManualFeeApproveController : Controller
     {
         session.DefaultReadOnly = true;
 
-        ManualFeeApplyInfo manualFeeApply;
+        ManualFeeApplyInfo? manualFeeApply;
 
         if (id == null || id.Value == 0)
         {

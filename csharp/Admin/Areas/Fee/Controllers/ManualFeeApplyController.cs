@@ -144,7 +144,7 @@ public class ManualFeeApplyController : Controller
 
         if (id != null && id.Value != 0)
         {
-            ManualFeeApplyInfo manualFeeApply = session.Get<ManualFeeApplyInfo>(id.Value);
+            ManualFeeApplyInfo? manualFeeApply = session.Get<ManualFeeApplyInfo>(id.Value);
             if (manualFeeApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
@@ -191,7 +191,7 @@ public class ManualFeeApplyController : Controller
             throw new ValidationException("客户ID输入格式有误！");
         }
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的客户不存在！");
@@ -211,7 +211,7 @@ public class ManualFeeApplyController : Controller
 
         bool isCreate = applyId == 0;
 
-        ManualFeeApplyInfo manualFeeApply;
+        ManualFeeApplyInfo? manualFeeApply;
 
         if (isCreate)
         {
@@ -236,7 +236,7 @@ public class ManualFeeApplyController : Controller
             }
         }
 
-        ManualFeeReasonInfo manualFeeReason = session.Get<ManualFeeReasonInfo>(model.ManualReasonId);
+        ManualFeeReasonInfo? manualFeeReason = session.Get<ManualFeeReasonInfo>(model.ManualReasonId);
         if (manualFeeReason == null)
         {
             throw new ValidationException($"指定的减少费用原因#{model.ManualReasonId}不存在！");

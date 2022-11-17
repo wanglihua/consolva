@@ -29,7 +29,7 @@ public class CustomerScoreLogCustomerController : Controller
     [Route("/admin/customer/score/log/{customerId:int}")]
     public IActionResult Index(int customerId)
     {
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的会员不存在！");

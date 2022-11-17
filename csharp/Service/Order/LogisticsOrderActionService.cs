@@ -21,7 +21,7 @@ public class LogisticsOrderActionService
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -32,7 +32,7 @@ public class LogisticsOrderActionService
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, string actionDesc)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -43,7 +43,7 @@ public class LogisticsOrderActionService
 
     public void NewActionUser(int orderId, LogisticsOrderActionType actionType, int userId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -54,7 +54,7 @@ public class LogisticsOrderActionService
 
     public void NewActionUser(int orderId, LogisticsOrderActionType actionType, string actionDesc, int userId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -65,7 +65,7 @@ public class LogisticsOrderActionService
 
     public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, int customerId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -76,7 +76,7 @@ public class LogisticsOrderActionService
 
     public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, string actionDesc, int customerId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -91,7 +91,7 @@ public class LogisticsOrderActionService
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -102,7 +102,7 @@ public class LogisticsOrderActionService
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter, string actionDesc)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -113,7 +113,7 @@ public class LogisticsOrderActionService
 
     public void NewActionUser(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter, int userId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -124,7 +124,7 @@ public class LogisticsOrderActionService
 
     public void NewActionUser(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter, string actionDesc, int userId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -135,7 +135,7 @@ public class LogisticsOrderActionService
 
     public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter, int customerId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -146,7 +146,7 @@ public class LogisticsOrderActionService
 
     public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, LogisticsOrderStatus orderStatusBefore, LogisticsOrderStatus orderStatusAfter, string actionDesc, int customerId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -161,7 +161,7 @@ public class LogisticsOrderActionService
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -172,7 +172,7 @@ public class LogisticsOrderActionService
 
     public void NewActionWithoutUserCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, string actionDesc)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -183,7 +183,7 @@ public class LogisticsOrderActionService
 
     public void NewActionUser(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, int userId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -194,7 +194,7 @@ public class LogisticsOrderActionService
 
     public void NewActionUser(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, string actionDesc, int userId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -205,7 +205,7 @@ public class LogisticsOrderActionService
 
     public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, int customerId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -216,7 +216,7 @@ public class LogisticsOrderActionService
 
     public void NewActionCustomer(int orderId, LogisticsOrderActionType actionType, PayStatus payStatusBefore, PayStatus payStatusAfter, string actionDesc, int customerId)
     {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");
@@ -265,7 +265,7 @@ public class LogisticsOrderActionService
     {
         session.Flush(); // 可能业务对象（订单）的改变（主要是 新建保存）还没提交到数据库，这里提交确认一下
 
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null)
         {
             throw new Exception($"指定的订单#{orderId}不存在！");

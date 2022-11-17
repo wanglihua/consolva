@@ -46,7 +46,7 @@ public class CustomerScoreService
     {
         /*
 
-        LogisticsOrderPayInfo orderPay = session.Get<LogisticsOrderPayInfo>(logisticsOrderPayId);
+        LogisticsOrderPayInfo? orderPay = session.Get<LogisticsOrderPayInfo>(logisticsOrderPayId);
         if (orderPay == null)
         {
             throw new ValidationException("指定的集运订单支付不存在！");
@@ -99,13 +99,13 @@ public class CustomerScoreService
             throw new Exception("会员推广积分规则，集运积分设置小于等于零，不符合要求！");
         }
 
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderPay.Order?.Id ?? 0);
+        LogisticsOrderInfo? order = session.Get<LogisticsOrderInfo>(orderPay.Order?.Id ?? 0);
         if (order == null)
         {
             throw new ValidationException("订单支付对应订单为空，数据非法！");
         }
 
-        CustomerInfo orderCustomer = session.Get<CustomerInfo>(order.Customer?.Id ?? 0); // 取订单的客户
+        CustomerInfo? orderCustomer = session.Get<CustomerInfo>(order.Customer?.Id ?? 0); // 取订单的客户
         if (orderCustomer == null)
         {
             throw new ValidationException("订单支付对应订单的会员为空，数据非法！");
@@ -342,7 +342,7 @@ public class CustomerScoreService
             throw new ValidationException("积分换余额订单类别不能为空！");
         }
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的会员不存在！");

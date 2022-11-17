@@ -28,7 +28,7 @@ public class CustomerAccountEntryCustomerController : Controller
     [Route("/admin/customer/account/entry/customer/{customerId:int}")]
     public IActionResult Index(int customerId)
     {
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             return Content("指定的客户Id不存在！");

@@ -70,7 +70,7 @@ public class CustomerCharacterController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CustomerCharacterInfo customerCharacter;
+        CustomerCharacterInfo? customerCharacter;
 
         if (id == null || id.Value == 0)
         {
@@ -100,7 +100,7 @@ public class CustomerCharacterController : Controller
 
         var isCreate = customerCharacterId == 0;
 
-        CustomerCharacterInfo customerCharacter;
+        CustomerCharacterInfo? customerCharacter;
 
         if (isCreate)
             customerCharacter = new CustomerCharacterInfo();

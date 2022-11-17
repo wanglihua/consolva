@@ -18,6 +18,17 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Service;
 using Service.Logistics;
+using shunda.Admin.Areas.Logistics.Models.HsGoods;
+using shunda.Admin.Areas.Logistics.Models.LogisticsGoodsTrade;
+using shunda.Admin.Services;
+using shunda.Core;
+using shunda.Core.Web;
+using shunda.Domain.Logistics;
+using shunda.Domain.Order;
+using shunda.Domain.Pass;
+using shunda.Domain.Pass.PassRes;
+using shunda.Service;
+using shunda.Service.Logistics;
 using Web.Areas.Admin.Models.HsGoods;
 using Web.Areas.Admin.Models.LogisticsGoodsTrade;
 using ISession = NHibernate.ISession;
@@ -393,7 +404,7 @@ namespace Web.Areas.Admin.Controllers
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+            UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
             IList<LogisticsGoodsInfo> logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
                 .Where(e => idList.Contains(e.Id))
@@ -443,7 +454,7 @@ namespace Web.Areas.Admin.Controllers
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+            UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
             IList<HsGoodsInfo> hsGoodsList = session
                 .Query<HsGoodsInfo>()

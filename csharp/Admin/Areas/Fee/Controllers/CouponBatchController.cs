@@ -116,7 +116,7 @@ public class CouponBatchController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CouponBatchInfo couponBatch;
+        CouponBatchInfo? couponBatch;
 
         CouponBatchDetailModel model = new CouponBatchDetailModel();
 
@@ -169,7 +169,7 @@ public class CouponBatchController : Controller
 
         bool isCreate = couponBatchId == 0;
 
-        CouponBatchInfo couponBatch;
+        CouponBatchInfo? couponBatch;
 
         if (isCreate)
         {

@@ -130,7 +130,7 @@ public class LogisticsModeController : Controller
 
         var model = new LogisticsModeDetailModel();
 
-        LogisticsModeInfo logisticsMode;
+        LogisticsModeInfo? logisticsMode;
         if (id == 0)
         {
             logisticsMode = new LogisticsModeInfo();
@@ -271,7 +271,7 @@ public class LogisticsModeController : Controller
 
         var isCreate = logisticsModeId == 0;
 
-        LogisticsModeInfo logisticsMode;
+        LogisticsModeInfo? logisticsMode;
 
         if (isCreate)
             logisticsMode = new LogisticsModeInfo();

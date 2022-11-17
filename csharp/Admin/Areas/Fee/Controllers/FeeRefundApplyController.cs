@@ -153,7 +153,7 @@ public class FeeRefundApplyController : Controller
 
         if (id != null && id.Value != 0)
         {
-            FeeRefundApplyInfo feeRefundApply = session.Get<FeeRefundApplyInfo>(id.Value);
+            FeeRefundApplyInfo? feeRefundApply = session.Get<FeeRefundApplyInfo>(id.Value);
             if (feeRefundApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
@@ -205,7 +205,7 @@ public class FeeRefundApplyController : Controller
             throw new ValidationException("客户ID输入格式有误！");
         }
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的客户不存在！");
@@ -221,7 +221,7 @@ public class FeeRefundApplyController : Controller
             throw new ValidationException("退赔款费用必须大于0！");
         }
 
-        FeeRefundReasonInfo reason = session.Get<FeeRefundReasonInfo>(model.ReasonId);
+        FeeRefundReasonInfo? reason = session.Get<FeeRefundReasonInfo>(model.ReasonId);
         if (reason == null)
         {
             throw new ValidationException("指定的退赔原因不存在！");
@@ -231,7 +231,7 @@ public class FeeRefundApplyController : Controller
 
         bool isCreate = applyId == 0;
 
-        FeeRefundApplyInfo feeRefundApply;
+        FeeRefundApplyInfo? feeRefundApply;
 
         if (isCreate)
         {

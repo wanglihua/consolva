@@ -45,7 +45,7 @@ public class CustomerSupperPasswordService
     /// <returns></returns>
     public string GenerateNewPassword(int customerId)
     {
-        CustomerInfo customerInfo = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customerInfo = session.Get<CustomerInfo>(customerId);
         if (customerInfo == null)
         {
             throw new ValidationException("指定的客户不存在！");

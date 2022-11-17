@@ -37,7 +37,7 @@ public class CustomerLoginLogService
             stage = CustomerLoginStage.None;
         }
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException($"指定的客户#{customerId}不存在！");

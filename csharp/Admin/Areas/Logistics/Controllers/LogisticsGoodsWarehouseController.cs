@@ -120,7 +120,7 @@ public class LogisticsGoodsWarehouseController : Controller
 
         if (queryParam.GoodsId != 0)
         {
-            LogisticsGoodsInfo logisticsGoods = session.Get<LogisticsGoodsInfo>(queryParam.GoodsId);
+            LogisticsGoodsInfo? logisticsGoods = session.Get<LogisticsGoodsInfo>(queryParam.GoodsId);
             if (logisticsGoods == null)
             {
                 throw new ValidationException("指定的物品不存在！");
@@ -166,10 +166,10 @@ public class LogisticsGoodsWarehouseController : Controller
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         bool isCreate = true;
-        LogisticsGoodsInfo logisticsGoods = new LogisticsGoodsInfo();
+        LogisticsGoodsInfo? logisticsGoods = null;
 
         if (model.GoodsId != 0)
         {
@@ -288,7 +288,7 @@ public class LogisticsGoodsWarehouseController : Controller
     {
         foreach (int id in idList)
         {
-            LogisticsGoodsInfo logisticsGoods = session.Get<LogisticsGoodsInfo>(id);
+            LogisticsGoodsInfo? logisticsGoods = session.Get<LogisticsGoodsInfo>(id);
             if (logisticsGoods != null)
             {
                 if (logisticsGoods.Status == LogisticsGoodsStatus.Confirmed)
@@ -544,7 +544,7 @@ public class LogisticsGoodsWarehouseController : Controller
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         ITransaction? transaction = null;
         try

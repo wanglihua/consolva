@@ -75,7 +75,7 @@ public class LogisticsGstController : Controller
     [Route("/admin/logistics/gst/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        LogisticsGstInfo logisticsGst;
+        LogisticsGstInfo? logisticsGst;
 
         if (id == null || id.Value == 0)
         {
@@ -108,7 +108,7 @@ public class LogisticsGstController : Controller
 
         var isCreate = logisticsGstId == 0;
 
-        LogisticsGstInfo logisticsGst;
+        LogisticsGstInfo? logisticsGst;
 
         if (isCreate)
             logisticsGst = new LogisticsGstInfo();

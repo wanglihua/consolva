@@ -128,7 +128,7 @@ public class StorageLocController : Controller
         var storageLocId = model.Id;
         var shelfId = model.ShelfId;
 
-        StorageLocInfo storageLoc;
+        StorageLocInfo? storageLoc;
 
         if (storageLocId == 0)
         {
@@ -170,7 +170,7 @@ public class StorageLocController : Controller
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var loginUserId = loginUserService.GetLoginUserId();
-        var loginUser = session.Get<UserInfo>(loginUserId);
+        var loginUser = session.Get<UserInfo>(loginUserId)!;
 
         var storageLocSpec = session.Load<StorageLocSpecInfo>(model.SpecId);
         if (storageLocSpec == null) throw new ValidationException("指定的仓位规格不存在！");
@@ -180,7 +180,7 @@ public class StorageLocController : Controller
 
         var isCreate = storageLocId == 0;
 
-        StorageLocInfo storageLoc;
+        StorageLocInfo? storageLoc;
 
         if (isCreate)
         {

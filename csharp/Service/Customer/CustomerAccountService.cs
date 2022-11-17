@@ -27,7 +27,7 @@ public class CustomerAccountService
     /// <param name="description">描述</param>
     public void Change(CustomerAccountChangeType changeType, int customerId, decimal amount, string description = "")
     {
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的客户Id不存在！");
@@ -87,7 +87,7 @@ public class CustomerAccountService
     /// <returns></returns>
     public decimal GetPayForAnotherLimit(int customerId)
     {
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的会员不存在！");

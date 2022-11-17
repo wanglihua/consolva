@@ -31,7 +31,7 @@ public class WriteOffFeeService
 
     public void AddWriteOffFee(LogisticsOrderInfo logisticsOrder, CustomerInfo customer, decimal amount, int feeReasonId, int userId)
     {
-        ManualFeeReasonInfo manualFeeReason = session.Get<ManualFeeReasonInfo>(feeReasonId);
+        ManualFeeReasonInfo? manualFeeReason = session.Get<ManualFeeReasonInfo>(feeReasonId);
         if (manualFeeReason == null)
         {
             throw new Exception($"指定的核销原因#{feeReasonId}不存在！");
@@ -39,7 +39,7 @@ public class WriteOffFeeService
 
         string reasonContent = manualFeeReason.Content ?? string.Empty;
 
-        UserInfo user = session.Get<UserInfo>(userId);
+        UserInfo? user = session.Get<UserInfo>(userId);
         if (user == null)
         {
             throw new Exception($"指定的操作用户#{userId}不存在！");

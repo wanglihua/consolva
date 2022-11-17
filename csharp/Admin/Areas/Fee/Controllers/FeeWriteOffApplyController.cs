@@ -138,11 +138,9 @@ public class FeeWriteOffApplyController : Controller
 
         FeeWriteOffApplyDetailModel model = new FeeWriteOffApplyDetailModel();
 
-        FeeWriteOffApplyInfo feeWriteOffApply;
-
         if (id != null && id.Value != 0)
         {
-            feeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(id.Value);
+            FeeWriteOffApplyInfo? feeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(id.Value);
             if (feeWriteOffApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
@@ -199,7 +197,7 @@ public class FeeWriteOffApplyController : Controller
             throw new ValidationException("客户ID输入格式有误！");
         }
 
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的客户不存在！");
@@ -214,7 +212,7 @@ public class FeeWriteOffApplyController : Controller
 
         bool isCreate = applyId == 0;
 
-        FeeWriteOffApplyInfo feeWriteOffApply;
+        FeeWriteOffApplyInfo? feeWriteOffApply;
 
         if (isCreate)
         {
@@ -239,7 +237,7 @@ public class FeeWriteOffApplyController : Controller
             }
         }
 
-        ManualFeeReasonInfo manualFeeReason = session.Get<ManualFeeReasonInfo>(model.FeeReasonId);
+        ManualFeeReasonInfo? manualFeeReason = session.Get<ManualFeeReasonInfo>(model.FeeReasonId);
         if (manualFeeReason == null)
         {
             throw new ValidationException($"指定的核销费用原因#{model.FeeReasonId}不存在！");

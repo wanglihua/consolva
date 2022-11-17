@@ -32,13 +32,13 @@ public class CouponRulePriceBreakController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CouponBatchInfo batch = session.Get<CouponBatchInfo>(batchId);
+        CouponBatchInfo? batch = session.Get<CouponBatchInfo>(batchId);
         if (batch == null)
         {
             throw new ValidationException($"优惠券批次#{batchId}不存在！");
         }
 
-        CouponRulePriceBreakInfo couponRulePriceBreak;
+        CouponRulePriceBreakInfo? couponRulePriceBreak;
 
         if (id == 0)
         {
@@ -78,7 +78,7 @@ public class CouponRulePriceBreakController : Controller
 
         bool isCreate = couponRulePriceBreakId == 0;
 
-        CouponRulePriceBreakInfo rule;
+        CouponRulePriceBreakInfo? rule;
 
         if (isCreate)
         {
@@ -93,7 +93,7 @@ public class CouponRulePriceBreakController : Controller
             }
         }
 
-        CouponBatchInfo batch = session.Get<CouponBatchInfo>(model.BatchId);
+        CouponBatchInfo? batch = session.Get<CouponBatchInfo>(model.BatchId);
 
         rule.Batch = batch;
         rule.Amount = model.Amount;

@@ -74,7 +74,7 @@ public class FeeRefundReasonController : Controller
     {
         session.DefaultReadOnly = true;
 
-        FeeRefundReasonInfo refundReason;
+        FeeRefundReasonInfo? refundReason;
 
         if (id == null || id.Value == 0)
         {
@@ -112,7 +112,7 @@ public class FeeRefundReasonController : Controller
 
         bool isCreate = refundReasonId == 0;
 
-        FeeRefundReasonInfo refundReason;
+        FeeRefundReasonInfo? refundReason;
 
         if (isCreate)
         {

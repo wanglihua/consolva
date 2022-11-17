@@ -93,7 +93,7 @@ public class UserController : Controller
     [Route("/admin/user/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        UserInfo user;
+        UserInfo? user;
 
         if (id == null || id.Value == 0)
         {
@@ -127,7 +127,7 @@ public class UserController : Controller
 
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        UserInfo user;
+        UserInfo? user;
 
         if (isCreate)
         {
@@ -186,13 +186,13 @@ public class UserController : Controller
     {
         var userId = id;
 
-        var userInfo = session.Get<UserInfo>(userId);
-        if (userInfo == null) throw new ValidationException("指定的用户不存在！");
+        var user = session.Get<UserInfo>(userId);
+        if (user == null) throw new ValidationException("指定的用户不存在！");
 
-        if (userInfo.Status != UserStatus.Frozen) throw new ValidationException("用户当前不是冻结状态！");
+        if (user.Status != UserStatus.Frozen) throw new ValidationException("用户当前不是冻结状态！");
 
-        userInfo.Status = UserStatus.Normal;
-        session.Update(userInfo);
+        user.Status = UserStatus.Normal;
+        session.Update(user);
         session.Flush();
 
         return Json(new Dictionary<string, object> {
@@ -208,13 +208,13 @@ public class UserController : Controller
     {
         var userId = id;
 
-        var userInfo = session.Get<UserInfo>(userId);
-        if (userInfo == null) throw new ValidationException("指定的用户不存在！");
+        var user = session.Get<UserInfo>(userId);
+        if (user == null) throw new ValidationException("指定的用户不存在！");
 
-        if (userInfo.Status == UserStatus.Frozen) throw new ValidationException("用户已经是冻结状态！");
+        if (user.Status == UserStatus.Frozen) throw new ValidationException("用户已经是冻结状态！");
 
-        userInfo.Status = UserStatus.Frozen;
-        session.Update(userInfo);
+        user.Status = UserStatus.Frozen;
+        session.Update(user);
         session.Flush();
 
         return Json(new Dictionary<string, object> {

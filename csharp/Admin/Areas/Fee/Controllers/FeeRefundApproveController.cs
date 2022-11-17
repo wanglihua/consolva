@@ -161,7 +161,7 @@ public class FeeRefundApproveController : Controller
     {
         session.DefaultReadOnly = true;
 
-        FeeRefundApplyInfo feeRefundApply = session.Get<FeeRefundApplyInfo>(id);
+        FeeRefundApplyInfo? feeRefundApply = session.Get<FeeRefundApplyInfo>(id);
         if (feeRefundApply == null)
         {
             throw new ValidationException("指定的数据项不存在！");
@@ -189,7 +189,7 @@ public class FeeRefundApproveController : Controller
         int applyId = model.ApplyId;
         string approveMemo = model.ApproveMemo;
 
-        FeeRefundApplyInfo refundApply = session.Get<FeeRefundApplyInfo>(applyId);
+        FeeRefundApplyInfo? refundApply = session.Get<FeeRefundApplyInfo>(applyId);
         if (refundApply == null)
         {
             throw new ValidationException("指定的申请单不存在！");
@@ -265,7 +265,7 @@ public class FeeRefundApproveController : Controller
         int applyId = model.ApplyId;
         string approveMemo = model.ApproveMemo;
 
-        FeeRefundApplyInfo refundApply = session.Get<FeeRefundApplyInfo>(applyId);
+        FeeRefundApplyInfo? refundApply = session.Get<FeeRefundApplyInfo>(applyId);
         if (refundApply == null)
         {
             throw new ValidationException("指定的申请单不存在！");

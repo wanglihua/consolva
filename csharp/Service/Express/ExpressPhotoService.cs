@@ -34,7 +34,7 @@ public class ExpressPhotoService
     /// <param name="photoId"></param>
     public void BindPhotoToExpress(int photoId)
     {
-        ExpressPhotoInfo expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
+        ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
         if (expressPhoto == null)
         {
             throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
@@ -58,7 +58,7 @@ public class ExpressPhotoService
     /// <param name="express">可以为空</param>
     public void BindPhotoToExpress(int photoId, ExpressInfo? express)
     {
-        ExpressPhotoInfo expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
+        ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
         if (expressPhoto == null)
         {
             throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
@@ -97,7 +97,7 @@ public class ExpressPhotoService
     /// <param name="order"></param>
     public void BindPhotoToOrder(int photoId, LogisticsOrderInfo order)
     {
-        ExpressPhotoInfo expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
+        ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
         if (expressPhoto == null)
         {
             throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
@@ -118,7 +118,7 @@ public class ExpressPhotoService
     /// <param name="expressId"></param>
     public void BindExpressToPhoto(int expressId)
     {
-        ExpressInfo express = session.Get<ExpressInfo>(expressId);
+        ExpressInfo? express = session.Get<ExpressInfo>(expressId);
         if (express == null)
         {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
@@ -215,7 +215,7 @@ WHERE op.create_time > DATE_SUB(CURDATE(), INTERVAL 365 DAY)
                 int orderId = (int)bindData[2];
                 int customerId = (int)bindData[3];
 
-                ExpressPhotoInfo expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
+                ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
                 if (expressPhoto == null)
                 {
                     continue;
@@ -283,7 +283,7 @@ WHERE op.create_time > DATE_SUB(CURDATE(), INTERVAL 100 DAY)
                 int photoId = (int)bindData[0];
                 int customerId = (int)bindData[1];
 
-                ExpressPhotoInfo expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
+                ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
                 if (expressPhoto == null)
                 {
                     continue;

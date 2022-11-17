@@ -92,7 +92,7 @@ public class CustomerSuperVipDiscountController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CustomerSuperVipDiscountInfo customerSuperVipDiscount;
+        CustomerSuperVipDiscountInfo? customerSuperVipDiscount;
 
         var model = new CustomerSuperVipDiscountDetailModel();
 
@@ -130,7 +130,7 @@ public class CustomerSuperVipDiscountController : Controller
 
         var isCreate = customerSuperVipDiscountId == 0;
 
-        CustomerSuperVipDiscountInfo customerSuperVipDiscount;
+        CustomerSuperVipDiscountInfo? customerSuperVipDiscount;
 
         if (isCreate)
         {

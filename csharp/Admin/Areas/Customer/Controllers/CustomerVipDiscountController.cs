@@ -80,7 +80,7 @@ public class CustomerVipDiscountController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CustomerVipDiscountInfo customerVipDiscount;
+        CustomerVipDiscountInfo? customerVipDiscount;
 
         var isCreate = false;
         if (id == null || id.Value == 0)
@@ -125,7 +125,7 @@ public class CustomerVipDiscountController : Controller
 
         var isCreate = customerVipDiscountId == 0;
 
-        CustomerVipDiscountInfo customerVipDiscount;
+        CustomerVipDiscountInfo? customerVipDiscount;
 
         if (isCreate)
         {

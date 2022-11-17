@@ -151,23 +151,23 @@ public class FeeWriteOffApproveController : Controller
     {
         session.DefaultReadOnly = true;
 
-        FeeWriteOffApplyInfo logisticsOrderFeeWriteOffApply;
+        FeeWriteOffApplyInfo? feeWriteOffApply;
 
         if (id == null || id.Value == 0)
         {
-            logisticsOrderFeeWriteOffApply = new FeeWriteOffApplyInfo();
+            feeWriteOffApply = new FeeWriteOffApplyInfo();
         }
         else
         {
-            logisticsOrderFeeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(id.Value);
-            if (logisticsOrderFeeWriteOffApply == null)
+            feeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(id.Value);
+            if (feeWriteOffApply == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
             }
         }
 
         FeeWriteOffApproveDetailModel model = new FeeWriteOffApproveDetailModel();
-        model.FeeWriteOffApply = logisticsOrderFeeWriteOffApply;
+        model.FeeWriteOffApply = feeWriteOffApply;
 
         return View("FeeWriteOffApproveDetail", model);
     }

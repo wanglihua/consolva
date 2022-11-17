@@ -45,7 +45,7 @@ public class StorageLocDesignService
         }
         */
 
-        ShelfInfo shelf = session.Get<ShelfInfo>(shelfId);
+        ShelfInfo? shelf = session.Get<ShelfInfo>(shelfId);
 
         var shelfType = shelf.Type;
         IList<StorageLocSpecInfo> specList = session.Query<StorageLocSpecInfo>().Where(e => e.ShelfType == shelfType).ToList();

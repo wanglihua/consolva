@@ -18,6 +18,16 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Service;
 using Service.Logistics;
+using shunda.Admin.Areas.Logistics.Models.LogisticsGoods;
+using shunda.Admin.Services;
+using shunda.Core;
+using shunda.Core.Util;
+using shunda.Core.Web;
+using shunda.Domain.Logistics;
+using shunda.Domain.Pass;
+using shunda.Domain.Pass.PassRes;
+using shunda.Service;
+using shunda.Service.Logistics;
 using Web.Areas.Admin.Models.LogisticsGoods;
 using ISession = NHibernate.ISession;
 
@@ -166,7 +176,7 @@ namespace Web.Areas.Admin.Controllers
         {
             session.DefaultReadOnly = true;
 
-            LogisticsGoodsInfo logisticsGoods = null;
+            LogisticsGoodsInfo? logisticsGoods = null;
 
             bool isCreate = false;
 
@@ -175,7 +185,7 @@ namespace Web.Areas.Admin.Controllers
                 logisticsGoods = new LogisticsGoodsInfo();
 
                 int loginUserId = loginUserService.GetLoginUserId();
-                UserInfo userInfo = session.Get<UserInfo>(loginUserId);
+                UserInfo? userInfo = session.Get<UserInfo>(loginUserId);
                 if (userInfo != null)
                 {
                     logisticsGoods.AddUserUserNameCache = $"{userInfo.UserName}({userInfo.LoginName})";
@@ -191,7 +201,7 @@ namespace Web.Areas.Admin.Controllers
                     throw new ValidationException("指定的数据项不存在！");
                 }
 
-                UserInfo userInfo = session.Get<UserInfo>(logisticsGoods.AddUserId);
+                UserInfo? userInfo = session.Get<UserInfo>(logisticsGoods.AddUserId);
                 if (userInfo != null)
                 {
                     logisticsGoods.AddUserUserNameCache = $"{userInfo.UserName}({userInfo.LoginName})";
@@ -264,9 +274,7 @@ namespace Web.Areas.Admin.Controllers
         {
             session.DefaultReadOnly = true;
 
-            LogisticsGoodsInfo logisticsGoods = null;
-
-            logisticsGoods = session.Get<LogisticsGoodsInfo>(id);
+            LogisticsGoodsInfo? logisticsGoods = session.Get<LogisticsGoodsInfo>(id);
             if (logisticsGoods == null)
             {
                 throw new ValidationException("指定的数据项不存在！");
@@ -310,7 +318,7 @@ namespace Web.Areas.Admin.Controllers
             model.TypeList = LogisticsGoodsType.GetInnerList();
             model.StatusList = LogisticsGoodsStatus.GetList();
 
-            UserInfo userInfo = session.Get<UserInfo>(logisticsGoods.AddUserId);
+            UserInfo? userInfo = session.Get<UserInfo>(logisticsGoods.AddUserId);
             if (userInfo != null)
             {
                 logisticsGoods.AddUserUserNameCache = $"{userInfo.UserName}({userInfo.LoginName})";
@@ -370,14 +378,14 @@ namespace Web.Areas.Admin.Controllers
         private LogisticsGoodsInfo SaveInternal(LogisticsGoodsDetailModel model)
         {
             int loginUserId = loginUserService.GetLoginUserId();
-            UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+            UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
             LogisticsGoodsInfo logisticsGoodsFromUi = model.LogisticsGoods;
             int logisticsGoodsId = logisticsGoodsFromUi.Id;
 
             bool isCreate = logisticsGoodsId == 0;
 
-            LogisticsGoodsInfo logisticsGoods = null;
+            LogisticsGoodsInfo? logisticsGoods = null;
 
             if (isCreate)
             {
@@ -510,7 +518,7 @@ namespace Web.Areas.Admin.Controllers
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+            UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
             bool isCreate = model.LogisticsGoods.Id == 0;
 
@@ -570,7 +578,7 @@ namespace Web.Areas.Admin.Controllers
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+            UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
             IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => idList.Contains(e.Id)).ToList();
             foreach (LogisticsGoodsInfo goods in goodsList)
@@ -613,7 +621,7 @@ namespace Web.Areas.Admin.Controllers
             }
 
             int loginUserId = loginUserService.GetLoginUserId();
-            UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+            UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
             IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => idList.Contains(e.Id)).ToList();
             foreach (LogisticsGoodsInfo goods in goodsList)
