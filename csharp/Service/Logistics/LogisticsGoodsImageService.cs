@@ -209,10 +209,11 @@ LIMIT 1";
 
     /// <summary>
     /// 这个方法是取快递单号图片里面的图片，而不是后来上传的
+    /// 原来是这个名称 GetGoodsImageList
     /// </summary>
     /// <param name="goodsId"></param>
     /// <returns></returns>
-    public IList<ExpressPhotoInfo> GetGoodsImageList(int goodsId)
+    public IList<ExpressPhotoInfo> GetGoodsRecentOrderImageList(int goodsId)
     {
         /*
          
