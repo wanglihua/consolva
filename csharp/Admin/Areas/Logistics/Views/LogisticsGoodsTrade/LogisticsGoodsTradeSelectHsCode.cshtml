@@ -1,0 +1,44 @@
+@using Domain
+@using Domain.Logistics
+@model Web.Areas.Admin.Models.LogisticsGoodsTrade.LogisticsGoodsTradeSelectHsCodeModel
+@{
+    Layout = null;
+}
+
+<div class="modal fade" id="selectHsCodeDialog">
+    <div class="modal-dialog" style="width: 840px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">选择关联海关物品名</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsGoodsDetailForm" class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+                                <label for="cnHsNameQuery">中国海关申报名</label>&nbsp;<input id="cnHsNameQuery" name="cnHsNameQuery" style="width: 150px; height: 30px;" placeholder="中国海关申报名查询"/>&nbsp;
+                                <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadHsGoodsList(0)">
+                                    &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+                                </button>
+                            </div>
+
+                            <div id="hsGoodsList" data-page-index="0" data-sort-field="@(nameof(HsGoodsInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="selectHsCode();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    确认
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

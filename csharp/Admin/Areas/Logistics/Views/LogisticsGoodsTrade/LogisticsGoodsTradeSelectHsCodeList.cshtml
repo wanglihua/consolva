@@ -1,0 +1,69 @@
+@{
+    Layout = null;
+}
+@using Domain
+@model Web.Areas.Admin.Models.HsGoods.HsGoodsListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadHsGoodsList"})
+
+<table id="tblHsGoodsList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="hsGoodsCheckAll"></label><input id="hsGoodsCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 180px;">
+                <a field="@(nameof(HsGoodsInfo.CnHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">中国海关编码</a>
+            </th>
+            <th style="width: 180px;">
+                <a field="@(nameof(HsGoodsInfo.CnHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">中国海关申报名</a>
+            </th>
+            <th style="width: 180px;">
+                <a field="@(nameof(HsGoodsInfo.AuHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关编码</a>
+            </th>
+            <th style="width: 180px;">
+                <a field="@(nameof(HsGoodsInfo.AuHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关申报名</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.HsGoodsList != null && Model.HsGoodsList.Count() != 0)
+        {
+            int order = 1;
+            foreach (HsGoodsInfo hsGoods in Model.HsGoodsList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="hsGoodsCheck_@(hsGoods.Id)"></label><input id="hsGoodsCheck_@(hsGoods.Id)" type="checkbox" class="ace" value="@hsGoods.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>
+                        @hsGoods.CnHsCode
+                    </td>
+                    <td>
+                        @hsGoods.CnHsName
+                    </td>
+                    <td>
+                        @hsGoods.AuHsCode
+                    </td>
+                    <td>
+                        @hsGoods.AuHsName
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadHsGoodsList"})

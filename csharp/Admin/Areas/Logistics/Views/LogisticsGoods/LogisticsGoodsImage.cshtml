@@ -1,0 +1,25 @@
+@model Web.Areas.Admin.Models.LogisticsGoods.LogisticsGoodsImageModel
+@using Web.Areas.Admin.Models.LogisticsGoods
+
+@{
+    Layout = null;
+
+    string imageIndex = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+    string imageIndexFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}.Index";
+    string subPathFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}[{imageIndex}].{nameof(LogisticsGoodsImageModel.SubPath)}";
+    string fileNameFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}[{imageIndex}].{nameof(LogisticsGoodsImageModel.FileName)}";
+}
+
+<div id="@(imageIndex)" style="float: left; margin: 5px;">
+    <input type="hidden" name="@(imageIndexFieldName)" value="@(imageIndex)"/>
+    <input type="hidden" name="@(subPathFieldName)" value="@(Model.SubPath)"/>
+    <input type="hidden" name="@(fileNameFieldName)" value="@(Model.FileName)"/>
+    <div>
+        <a target="_blank" href="@(Model.ImageFileUrl)">
+            <img alt="" src="@(Model.ImageFileUrl)" style="width: 100px; height: 75px;"/>
+        </a>
+    </div>
+    <div style="margin-top: 5px; text-align: center;">
+        <a href="javascript: $.msg.confirm('确认要删除吗？', function() {$('#@(imageIndex)').remove();})">删除</a>
+    </div>
+</div>

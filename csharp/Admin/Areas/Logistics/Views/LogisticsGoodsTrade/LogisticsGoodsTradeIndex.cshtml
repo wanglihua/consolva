@@ -1,0 +1,360 @@
+@using Domain
+@using Domain.Logistics
+@model LogisticsGoodsTradeIndexModel
+@using Web.Areas.Admin.Models.LogisticsGoodsTrade
+@{
+    ViewBag.Title = "扩展名确认";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-menu">物品管理</li>
+    <li class="active" data-menu="goods-logistics-goods-trade-search-menu">扩展名确认</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsGoodsList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsGoods()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    <button id="btnImport" class="btn btn-success btn-sm">
+        <i class="ace-icon fa fa-plus"></i>
+        导入
+    </button>
+    <button class="btn btn-purple btn-sm" onclick="exportLogisticsGoods()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>
+    <button class="btn btn-pink btn-sm" onclick="setNoPhotoStatus()">
+        <i class="ace-icon fa fa-gear"></i>
+        设置需拍照
+    </button>    
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="cateQuery">类别</label>
+    <select id="cateQuery" name="cateQuery" style="width: 100px; height: 30px;">
+        <option value="">类别查询</option>
+        @foreach (LogisticsGoodsCate cate in Model.GoodsCateList)
+        {
+            <option value="@(cate.Id)">@(cate.Name)</option>
+        }
+    </select>&nbsp;
+    
+    <label for="nameQuery">扩展名</label>
+    <input id="nameQuery" name="nameQuery" style="width: 130px; height: 30px;" placeholder="扩展名查询"/>&nbsp;
+
+    <label for="hasBrandQuery">是否品牌</label>
+    <select id="hasBrandQuery" name="hasBrandQuery" style="width: 60px; height: 30px;">
+        <option value=""></option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select> &nbsp;
+
+    <label for="hasBatteryQuery">含电池或其他限制</label>
+    <select id="hasBatteryQuery" name="hasBatteryQuery" style="width: 60px; height: 30px;">
+        <option value=""></option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select> &nbsp;
+
+    <label for="hasBambooQuery">是否含草木竹</label>
+    <select id="hasBambooQuery" name="hasBambooQuery" style="width: 60px; height: 30px;">
+        <option value=""></option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select> &nbsp;
+
+    <label for="hasWoodPackageQuery">是否含实木包装</label>
+    <select id="hasWoodPackageQuery" name="hasWoodPackageQuery" style="width: 60px; height: 30px;">
+        <option value=""></option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select> &nbsp;
+    
+    <label for="isSpecialQuery">是否特货类</label>
+    <select id="isSpecialQuery" name="isSpecialQuery" style="width: 60px; height: 30px;">
+        <option value=""></option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select> &nbsp;    
+
+    <label for="isForbiddenQuery">是否禁止类</label>
+    <select id="isForbiddenQuery" name="isForbiddenQuery" style="width: 60px; height: 30px;">
+        <option value=""></option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select> &nbsp;
+
+    <label for="cnHsCodeQuery">中国海关编码</label><input id="cnHsCodeQuery" name="cnHsCodeQuery" style="width: 120px; height: 30px;" placeholder="中国海关编码查询"/>&nbsp;
+    <label for="cnHsNameQuery">中国海关申报名</label><input id="cnHsNameQuery" name="cnHsNameQuery" style="width: 120px; height: 30px;" placeholder="中国海关申报名查询"/>&nbsp;
+    <label for="auHsCodeQuery">澳洲海关编码</label><input id="auHsCodeQuery" name="auHsCodeQuery" style="width: 120px; height: 30px;" placeholder="澳洲海关编码查询"/>&nbsp;
+    <label for="auHsNameQuery">澳洲海关申报名</label><input id="auHsNameQuery" name="auHsNameQuery" style="width: 120px; height: 30px;" placeholder="澳洲海关申报名查询"/>&nbsp;
+    
+    <label for="updateUserQuery">修改人</label><input id="updateUserQuery" name="updateUserQuery" style="width: 120px; height: 30px;" placeholder="修改人查询"/>&nbsp;
+    
+    <label for="beginUpdateDateQuery">修改开始日期</label>&nbsp;<input id="beginUpdateDateQuery" name="beginUpdateDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    <label for="endUpdateDateQuery">修改截止日期</label>&nbsp;<input id="endUpdateDateQuery" name="endUpdateDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;    
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsGoodsList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div style="margin-bottom: 8px;">
+    <ul class="nav nav-tabs" id="recent-tab">
+        @if (Model.StatusId == LogisticsGoodsStatus.NotConfirmed.Id)
+        {
+            <li class="active">
+                <a href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = LogisticsGoodsStatus.NotConfirmed.Id})">未确认</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = LogisticsGoodsStatus.NotConfirmed.Id})">未确认</a>
+            </li>
+        }
+
+        @if (Model.StatusId == LogisticsGoodsStatus.Confirmed.Id)
+        {
+            <li class="active">
+                <a href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = LogisticsGoodsStatus.Confirmed.Id})">已确认</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = LogisticsGoodsStatus.Confirmed.Id})">已确认</a>
+            </li>
+        }
+
+    </ul>
+</div>
+
+<div id="logisticsGoodsList" data-page-index="0" data-sort-field="@(nameof(LogisticsGoodsInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsGoodsDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginUpdateDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endUpdateDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#beginUpdateDateQuery").on("dp.change", function (e) {
+            $('#endUpdateDateQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#endUpdateDateQuery").on("dp.change", function (e) {
+            $('#beginUpdateDateQuery').data("DateTimePicker").maxDate(e.date);
+        });
+        
+        loadLogisticsGoodsList();
+    });
+
+    function sortLogisticsGoodsList(sortField, sortDir) {
+        var list = $('#logisticsGoodsList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsGoodsList();
+    }
+
+    function loadLogisticsGoodsList(pageIndex) {
+        var list = $('#logisticsGoodsList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsGoodsTrade")",
+            type: "POST",
+            data: {
+                '@(nameof(TradeGoodsSearchListQueryParam.StatusQuery))': @(Model.StatusId),
+                '@(nameof(TradeGoodsSearchListQueryParam.CateQuery))': $('#cateQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.HasBrandQuery))': $('#hasBrandQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.HasBatteryQuery))': $('#hasBatteryQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.HasBambooQuery))': $('#hasBambooQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.HasWoodPackageQuery))': $('#hasWoodPackageQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.IsSpecialQuery))': $('#isSpecialQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.IsForbiddenQuery))': $('#isForbiddenQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.AuHsCodeQuery))': $('#auHsCodeQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.AuHsNameQuery))': $('#auHsNameQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.UpdateUserQuery))': $('#updateUserQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.BeginUpdateDateQuery))': $('#beginUpdateDateQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.EndUpdateDateQuery))': $('#endUpdateDateQuery').val(),
+                '@(nameof(TradeGoodsSearchListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(TradeGoodsSearchListQueryParam.SortField))': sortField,
+                '@(nameof(TradeGoodsSearchListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsGoodsList').html(data);
+
+                initListTable("#tblLogisticsGoodsList");
+            }
+        });
+    }
+
+    function showLogisticsGoodsDetail(id) {
+        var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId})";
+
+        url = url.replace(/88888/, id);
+        window.open(url, "logistics_goods_detail");
+    }
+
+    function deleteLogisticsGoods() {
+        var idList = getSelectIdList('#tblLogisticsGoodsList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "LogisticsGoodsTrade")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadLogisticsGoodsList();
+                    }
+                });
+            }
+        );
+    }
+
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {
+
+        var url = '@Url.Action("Import", "LogisticsGoodsTrade")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImport',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                    } else {
+                        loadLogisticsGoodsList();
+                        $.msg.show(result.message);
+                    }
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }
+
+    function exportLogisticsGoods() {
+        var params = $.param({
+            '@(nameof(TradeGoodsSearchListQueryParam.StatusQuery))': @(Model.StatusId),
+            '@(nameof(TradeGoodsSearchListQueryParam.NameQuery))': $('#nameQuery').val(),
+            '@(nameof(TradeGoodsSearchListQueryParam.HasBrandQuery))': $('#hasBrandQuery').val(),
+            '@(nameof(TradeGoodsSearchListQueryParam.HasBatteryQuery))': $('#hasBatteryQuery').val(),
+            '@(nameof(TradeGoodsSearchListQueryParam.HasBambooQuery))': $('#hasBambooQuery').val(),
+            '@(nameof(TradeGoodsSearchListQueryParam.HasWoodPackageQuery))': $('#hasWoodPackageQuery').val(),
+            '@(nameof(TradeGoodsSearchListQueryParam.IsSpecialQuery))': $('#isSpecialQuery').val(),
+            '@(nameof(TradeGoodsSearchListQueryParam.IsForbiddenQuery))': $('#isForbiddenQuery').val()
+        });
+
+        var url = '@Url.Action("Export", "LogisticsGoodsTrade")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }
+    
+    function setNoPhotoStatus() {
+        var idList = getSelectIdList('#tblLogisticsGoodsList');
+        
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+        
+        $.msg.confirm("确认要设置需拍照状态吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("SetNoPhotoStatus", "LogisticsGoodsTrade")',
+                    type: "POST",
+                    data: { "idList": idList},
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                        } else {
+                            $.msg.show(data.message);
+                            
+                            loadLogisticsGoodsList();
+                        }
+                    }
+                });
+            }
+        );
+    }
+
+</script>

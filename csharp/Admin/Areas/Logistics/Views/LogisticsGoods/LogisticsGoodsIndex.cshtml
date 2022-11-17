@@ -1,0 +1,202 @@
+@using Domain
+@using Domain.Logistics
+@using NPOI.SS.Formula.Functions
+@model LogisticsGoodsIndexModel
+@using Web.Areas.Admin.Models.LogisticsGoods
+@{
+    ViewBag.Title = Model.Type.Name + "清单";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-menu">物品管理</li>
+    <li class="active" data-menu="goods-logistics-goods@(Model.Type.Id)-index-menu">@(Model.Type.Name)清单</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsGoodsList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    
+    <button class="btn btn-purple btn-sm" onclick="exportLogisticsGoods()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>    
+    
+    <button type="button" class="btn btn-warning btn-sm" onclick="disableGoods()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        禁用
+    </button>
+    
+    <button type="button" class="btn btn-warning btn-sm" onclick="enableGoods()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        启用
+    </button>     
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="cateQuery">类别</label>
+    <select id="cateQuery" name="cateQuery" style="width: 120px; height: 30px;">
+        <option value="">类别查询</option>
+        @foreach (LogisticsGoodsCate cate in Model.GoodsCateList)
+        {
+            <option value="@(cate.Id)">@(cate.Name)</option>
+        }
+    </select> &nbsp;
+    <label for="nameQuery">扩展名</label><input id="nameQuery" name="nameQuery" style="width: 120px; height: 30px;" placeholder="扩展名查询"/>&nbsp;
+    <label for="cnHsCodeQuery">中国海关编码</label><input id="cnHsCodeQuery" name="cnHsCodeQuery" style="width: 120px; height: 30px;" placeholder="中国海关编码查询"/>&nbsp;
+    <label for="cnHsNameQuery">中国海关申报名</label><input id="cnHsNameQuery" name="cnHsNameQuery" style="width: 120px; height: 30px;" placeholder="中国海关申报名查询"/>&nbsp;
+    <label for="auHsCodeQuery">澳洲海关编码</label><input id="auHsCodeQuery" name="auHsCodeQuery" style="width: 120px; height: 30px;" placeholder="澳洲海关编码查询"/>&nbsp;
+    <label for="auHsNameQuery">澳洲海关申报名</label><input id="auHsNameQuery" name="auHsNameQuery" style="width: 120px; height: 30px;" placeholder="澳洲海关申报名查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsGoodsList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsGoodsList" data-page-index="0" data-sort-field="@(nameof(LogisticsGoodsInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="logisticsGoodsDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsGoodsList();
+    });
+
+    function sortLogisticsGoodsList(sortField, sortDir) {
+        var list = $('#logisticsGoodsList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsGoodsList();
+    }
+
+    function loadLogisticsGoodsList(pageIndex) {
+        var list = $('#logisticsGoodsList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsGoods")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsGoodsListQueryParam.TypeQuery))': @(Model.Type.Id),
+                '@(nameof(LogisticsGoodsListQueryParam.CateQuery))': $('#cateQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.AuHsCodeQuery))': $('#auHsCodeQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.AuHsNameQuery))': $('#auHsNameQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsGoodsListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsGoodsListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsGoodsList').html(data);
+
+                initListTable("#tblLogisticsGoodsList");
+            }
+        });
+    }
+
+    function viewLogisticsGoodsDetail(id) {
+        var url = "@Url.Action("View", "LogisticsGoods", new {id = 88888})";
+
+        url = url.replace(/88888/, id);
+        window.open(url, "logistics_goods_view");
+    }
+    
+    function enableGoods() {
+        var idList = getSelectIdList('#tblLogisticsGoodsList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要启用吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Enable", "LogisticsGoods")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } 
+                        
+                        $.msg.show(data.message);
+                        loadLogisticsGoodsList();
+                    }
+                });
+            }
+        );        
+    }
+    
+    function disableGoods() {
+        var idList = getSelectIdList('#tblLogisticsGoodsList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要禁用吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Disable", "LogisticsGoods")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } 
+                        
+                        $.msg.show(data.message);
+                        loadLogisticsGoodsList();
+                    }
+                });
+            }
+        ); 
+    }
+    
+    function exportLogisticsGoods() {
+        var params = $.param({
+                '@(nameof(LogisticsGoodsListQueryParam.TypeQuery))': @(Model.Type.Id),
+                '@(nameof(LogisticsGoodsListQueryParam.CateQuery))': $('#cateQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.AuHsCodeQuery))': $('#auHsCodeQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.AuHsNameQuery))': $('#auHsNameQuery').val(),
+        });
+
+        var url = '@Url.Action("Export", "LogisticsGoods")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }    
+    
+
+</script>
