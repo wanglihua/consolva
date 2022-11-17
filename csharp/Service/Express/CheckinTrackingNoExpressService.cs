@@ -41,7 +41,7 @@ namespace Service.Logistics
         }
 
         /// <summary>
-        /// 生成澳拼跟踪号的具体子单号，如果一个尺寸有多箱的话，就会是多个单号
+        /// 生成入库跟踪号的具体子单号，如果一个尺寸有多箱的话，就会是多个单号
         /// 如果主单号存在，就用现成的；如果子单号不存在，就生成一个主单号
         /// 【生成或者重新生成】，如果已经有子单号，会删除后再生成
         /// 返回一个主单号
@@ -86,7 +86,7 @@ namespace Service.Logistics
 
             string trackingNo = claimGoods.TrackingNo;
             // 这里排序顺序固定
-            var expressItemList = logisticsExpressService.GetLogisticsExpressItemList(trackingNo); // 这里的顺序是固定的，这样重新生成的时候，还是会尽量保持原来的澳拼跟踪号
+            var expressItemList = logisticsExpressService.GetLogisticsExpressItemList(trackingNo); // 这里的顺序是固定的，这样重新生成的时候，还是会尽量保持原来的入库跟踪号
             if (expressItemList == null || expressItemList.Count == 0)
             {
                 throw new ValidationException($"指定的申领件#{trackingNo}没有尺寸重量记录，无法生成澳拼入库号，不能入库！");

@@ -31,10 +31,7 @@ public class LogisticsGoodsLogService
     /// <exception cref="ValidationException"></exception>
     public void AddLog(LogisticsGoodsLogType type, int goodsId, int userId, string description)
     {
-        if (type == null)
-        {
-            type = LogisticsGoodsLogType.None;
-        }
+        type ??= LogisticsGoodsLogType.None;
 
         if (string.IsNullOrWhiteSpace(description))
         {
@@ -60,6 +57,6 @@ public class LogisticsGoodsLogService
         log.Description = description;
 
         session.Save(log);
-        // session.Flush();
+        session.Flush();
     }
 }

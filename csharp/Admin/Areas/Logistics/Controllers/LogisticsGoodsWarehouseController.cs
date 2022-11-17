@@ -16,6 +16,7 @@ using shunda.Domain.Logistics;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Logistics.Controllers;
@@ -409,7 +410,7 @@ public class LogisticsGoodsWarehouseController : Controller
             throw new ValidationException("指定的客服仓库交互图片不存在！");
         }
 
-        var goodsId = logisticsGoodsImage.Goods?.Id ?? 0;
+        var goodsId = logisticsGoodsImage.Goods.Id;
         var logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsId);
         if (logisticsGoods == null)
         {

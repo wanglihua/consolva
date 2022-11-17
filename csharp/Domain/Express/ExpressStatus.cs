@@ -20,7 +20,7 @@ public class ExpressStatus : CodeTypeBase
 
     /// <summary>
     /// 已认领
-    /// 澳拼系统的已入库状态
+    /// 系统的已入库状态
     /// 已完成认领和录完货值
     /// </summary>
     public static readonly ExpressStatus CheckIn = new ExpressStatus(3000, "已认领", "已认领");

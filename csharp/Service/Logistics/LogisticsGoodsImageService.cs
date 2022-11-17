@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using NLog;
 using shunda.Core.Config;
 using shunda.Core.Service;
+using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;
@@ -18,7 +19,7 @@ public class LogisticsGoodsImageService
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     public static string ImageUploadFolder = Path.Combine("static", "upload", "images", "goods");
-    public static string ImageUploadUrl = ImageUploadFolder.Replace("\\", "/");
+    public static string ImageUploadUrl = "/static/upload/images/goods";
 
     private static readonly int MAX_WIDTH = 1024;
     private static readonly int MAX_HEIGHT = 768;
@@ -88,7 +89,7 @@ public class LogisticsGoodsImageService
 
         originImage.Dispose();
 
-        return Tuple.Create($"/{ImageUploadUrl}/{subFolder}/{newFileName}", subFolder, newFileName);
+        return Tuple.Create($"{ImageUploadUrl}/{subFolder}/{newFileName}", subFolder, newFileName);
     }
 
     /// <summary>
@@ -104,7 +105,7 @@ public class LogisticsGoodsImageService
 
     public string GetFullImageUrl(string subPath, string fileName)
     {
-        return $"/{ImageUploadUrl}/{subPath}/{fileName}";
+        return $"{ImageUploadUrl}/{subPath}/{fileName}";
     }
 
     public void DeleteFile(LogisticsGoodsImageInfo goodsImage)
@@ -129,26 +130,51 @@ public class LogisticsGoodsImageService
     /// <returns></returns>
     public bool HasGoodsImage(int goodsId)
     {
+        var goodsImageId = session.Query<LogisticsGoodsImageInfo>()
+            .Where(e => e.Goods.Id == goodsId)
+            .Select(e => e.Id)
+            .Take(1)
+            .SingleOrDefault();
+        if (goodsImageId != 0)
+        {
+            return true;
+        }
+
         LogisticsGoodsInfo? logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsId);
-        if (logisticsGoods != null && string.IsNullOrWhiteSpace(logisticsGoods.CreateExpressTrackingNo) == false)
+        if (logisticsGoods == null)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(logisticsGoods.CreateExpressTrackingNo) == false)
         {
             string createExpressTrackingNo = logisticsGoods.CreateExpressTrackingNo.Trim();
-            LogisticsOrderPhotoInfo orderPhoto = session.Query<LogisticsOrderPhotoInfo>()
-                .Where(e => e.ExpressTrackingNo == createExpressTrackingNo)
+            int expressPhotoId = session.Query<ExpressPhotoInfo>()
+                .Where(e => e.TrackingNo == createExpressTrackingNo)
+                .Select(e => e.Id)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (orderPhoto != null)
+            if (expressPhotoId != 0)
             {
                 return true;
             }
         }
 
+        /*
+
+SELECT ep.id
+FROM tbl_express_goods eg
+         INNER JOIN tbl_express_photo ep ON ep.express_id = eg.express_id
+WHERE eg.goods_id = 1;
+
+         */
+
         string sql = $@"
-SELECT op.id
-FROM tbl_logistics_order_goods og
-         INNER JOIN tbl_logistics_order_photo op ON og.express_id = op.express_id
-WHERE og.goods_admin_id = {goodsId}
+SELECT ep.id
+FROM tbl_express_goods eg
+         INNER JOIN tbl_express_photo ep ON ep.express_id = eg.express_id
+WHERE eg.goods_id = {goodsId}
 LIMIT 1";
 
         object photoIdObj = session.CreateSQLQuery(sql).UniqueResult<object>();
@@ -166,16 +192,16 @@ LIMIT 1";
     /// </summary>
     /// <param name="trackingNoList"></param>
     /// <returns></returns>
-    public IList<LogisticsOrderPhotoInfo> GetGoodsCreateExpressImageList(IList<string> trackingNoList)
+    public IList<ExpressPhotoInfo> GetGoodsCreateExpressImageList(IList<string> trackingNoList)
     {
-        IList<LogisticsOrderPhotoInfo> orderPhotoList = session.Query<LogisticsOrderPhotoInfo>()
-            .Where(e => trackingNoList.Contains(e.ExpressTrackingNo))
+        IList<ExpressPhotoInfo> orderPhotoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
 
-        foreach (LogisticsOrderPhotoInfo orderPhoto in orderPhotoList)
+        foreach (ExpressPhotoInfo orderPhoto in orderPhotoList)
         {
-            orderPhoto.SmallImageFullUrlCache = GetSmallImageFullUrl(orderPhoto.StoreOss ?? false, orderPhoto.StorePath.Replace("\\", "/"), orderPhoto.StoreName);
-            orderPhoto.BigImageFullUrlCache = GetBigImageFullUrl(orderPhoto.StoreOss ?? false, orderPhoto.StorePath.Replace("\\", "/"), orderPhoto.StoreName, orderPhoto.CreateTime);
+            orderPhoto.SmallImageFullUrlCache = GetSmallImageFullUrl(orderPhoto.StoreLoc, orderPhoto.StorePath.Replace("\\", "/"), orderPhoto.StoreName);
+            orderPhoto.BigImageFullUrlCache = GetBigImageFullUrl(orderPhoto.StoreLoc, orderPhoto.StorePath.Replace("\\", "/"), orderPhoto.StoreName, orderPhoto.CreateTime);
         }
 
         return orderPhotoList;
@@ -186,70 +212,75 @@ LIMIT 1";
     /// </summary>
     /// <param name="goodsId"></param>
     /// <returns></returns>
-    public IList<LogisticsGoodsImageItem> GetGoodsImageList(int goodsId)
+    public IList<ExpressPhotoInfo> GetGoodsImageList(int goodsId)
     {
-        string sql = $@"
-SELECT op.id                  AS id,
-       og.goods_admin_id      AS goods_id,
-       op.order_id            AS order_id,
-       op.express_tracking_no AS express_tracking_no,
-       op.store_oss           AS store_oss,
-       op.store_path          AS store_path,
-       op.store_name          AS store_name,
-       op.create_time         AS create_time
-FROM tbl_logistics_order_goods og
-         INNER JOIN tbl_logistics_order_photo op ON og.express_id = op.express_id
-WHERE og.goods_admin_id = {goodsId}
-  AND og.order_id IN (
-    SELECT t.order_id
-    FROM (SELECT DISTINCT og.order_id AS order_id
-          FROM tbl_logistics_order_goods og
-          WHERE og.goods_admin_id = {goodsId}
-          ORDER BY og.order_id DESC
-          LIMIT 3) AS t)
+        /*
+         
+SELECT DISTINCT ep.order_id
+FROM tbl_express_photo ep
+         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
+WHERE eg.goods_id = 1
+  AND ep.order_id IS NOT NULL
+ORDER BY ep.id DESC
+LIMIT 3;
+         
+         */
+        // sql 中按tbl_express_photo.id 降序排，近似近期订单
+        string recentOrderIdSql = $@"
+SELECT DISTINCT ep.order_id
+FROM tbl_express_photo ep
+         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
+WHERE eg.goods_id = {goodsId}
+  AND ep.order_id IS NOT NULL
+ORDER BY ep.id DESC
+LIMIT 3
 ";
-        IList<object[]> goodsImageObjList = session.CreateSQLQuery(sql).List<object[]>();
+        IList<int> orderIdList = session.CreateSQLQuery(recentOrderIdSql).List<int>();
 
-        IList<LogisticsGoodsImageItem> goodsImageList = new List<LogisticsGoodsImageItem>();
-        foreach (object[] goodsImageObj in goodsImageObjList)
+        /*
+
+SELECT ep.*
+FROM tbl_express_photo ep
+         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
+WHERE eg.goods_id = 1
+  AND ep.order_id IN (1, 2, 3);
+
+         */
+
+        string goodsPhotoSql = $@"
+SELECT ep.*
+FROM tbl_express_photo ep
+         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
+WHERE eg.goods_id = {goodsId}
+  AND ep.order_id IN ({string.Join(",", orderIdList)})
+";
+
+        IList<ExpressPhotoInfo> expressPhotoList = session.CreateSQLQuery(goodsPhotoSql).AddEntity(typeof(ExpressPhotoInfo)).List<ExpressPhotoInfo>();
+
+        foreach (var expressPhoto in expressPhotoList)
         {
-            LogisticsGoodsImageItem imageItem = new LogisticsGoodsImageItem();
-            imageItem.Id = (int)goodsImageObj[0];
-            imageItem.GoodsId = (int)goodsImageObj[1];
-            imageItem.OrderId = (int)goodsImageObj[2];
-            imageItem.ExpressTrackingNo = (string)goodsImageObj[3];
-            imageItem.StoreOss = (bool)(goodsImageObj[4] ?? false);
-            imageItem.StorePath = (string)goodsImageObj[5];
-            imageItem.StoreName = (string)goodsImageObj[6];
-            imageItem.CreateTime = (DateTime)goodsImageObj[7];
-
-            goodsImageList.Add(imageItem);
+            expressPhoto.SmallImageFullUrlCache = GetSmallImageFullUrl(expressPhoto.StoreLoc, expressPhoto.StorePath, expressPhoto.StoreName);
+            expressPhoto.BigImageFullUrlCache = GetBigImageFullUrl(expressPhoto.StoreLoc, expressPhoto.StorePath, expressPhoto.StoreName, expressPhoto.CreateTime);
         }
 
-        foreach (LogisticsGoodsImageItem goodsImageItem in goodsImageList)
-        {
-            goodsImageItem.SmallFullImageUrl = GetSmallImageFullUrl(goodsImageItem.StoreOss, goodsImageItem.StorePath, goodsImageItem.StoreName);
-            goodsImageItem.BigFullImageUrl = GetBigImageFullUrl(goodsImageItem.StoreOss, goodsImageItem.StorePath, goodsImageItem.StoreName, goodsImageItem.CreateTime);
-        }
-
-        return goodsImageList;
+        return expressPhotoList;
     }
 
-    private string GetBigImageFullUrl(bool storeOss, string storePath, string storeName, DateTime createTime)
+    private string GetBigImageFullUrl(ExpressPhotoStoreLoc storeLoc, string storePath, string storeName, DateTime createTime)
     {
-        return GetBigImageFullUrl(storeOss, storePath, storeName, createTime, OssSiteLocType.China);
+        return GetBigImageFullUrl(storeLoc, storePath, storeName, createTime, OssSiteLocType.China);
     }
 
-    private string GetBigImageFullUrl(bool storeOss, string storePath, string storeName, DateTime createTime, OssSiteLocType siteLocType)
+    private string GetBigImageFullUrl(ExpressPhotoStoreLoc storeLoc, string storePath, string storeName, DateTime createTime, OssSiteLocType siteLocType)
     {
         if (string.IsNullOrWhiteSpace(storeName) == false)
         {
             storeName = storeName.Replace('\\', '/');
         }
 
-        if (storeOss == true)
+        if (storeLoc == ExpressPhotoStoreLoc.Oss)
         {
-            string watermarkSafeBase64 = GetUrlSafeBase64($"【澳拼集运】{createTime.ToString("yyyy-MM-dd HH:mm")} 拍摄");
+            string watermarkSafeBase64 = GetUrlSafeBase64($"【舜达集运】{createTime.ToString("yyyy-MM-dd HH:mm")} 拍摄");
 
             if (siteLocType == OssSiteLocType.HongKong)
             {
@@ -262,23 +293,23 @@ WHERE og.goods_admin_id = {goodsId}
         }
         else
         {
-            return $"/{LogisticsOrderImageService.ImageUploadUrl}/{storePath}/{storeName}";
+            return $"{ExpressPhotoFileService.ImageUploadUrl}/{storePath}/{storeName}";
         }
     }
 
-    private string GetSmallImageFullUrl(bool storeOss, string storePath, string storeName)
+    private string GetSmallImageFullUrl(ExpressPhotoStoreLoc storeLoc, string storePath, string storeName)
     {
-        return GetSmallImageFullUrl(storeOss, storePath, storeName, OssSiteLocType.China);
+        return GetSmallImageFullUrl(storeLoc, storePath, storeName, OssSiteLocType.China);
     }
 
-    private string GetSmallImageFullUrl(bool storeOss, string storePath, string storeName, OssSiteLocType siteLocType)
+    private string GetSmallImageFullUrl(ExpressPhotoStoreLoc storeLoc, string storePath, string storeName, OssSiteLocType siteLocType)
     {
         if (string.IsNullOrWhiteSpace(storeName) == false)
         {
             storeName = storeName.Replace('\\', '/');
         }
 
-        if (storeOss == true)
+        if (storeLoc == ExpressPhotoStoreLoc.Oss)
         {
             if (siteLocType == OssSiteLocType.HongKong)
             {
@@ -291,7 +322,7 @@ WHERE og.goods_admin_id = {goodsId}
         }
         else
         {
-            return $"/{LogisticsOrderImageService.ImageUploadUrl}/{storePath}/{storeName}";
+            return $"{ExpressPhotoFileService.ImageUploadUrl}/{storePath}/{storeName}";
         }
     }
 
