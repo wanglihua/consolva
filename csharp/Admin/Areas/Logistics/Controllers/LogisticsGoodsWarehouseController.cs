@@ -552,8 +552,42 @@ public class LogisticsGoodsWarehouseController : Controller
 
             logisticsGoodsList.Add(logisticsGoods);
         }
-        
+
         // 扩展名重复检查
+
+        // 自身导入的判断重复
+        IDictionary<string, int> logisticsGoodsNameRowNumMap = new Dictionary<string, int>();
+        int logisticsGoodsRowNum = 1;
+        foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList) // 这里logisticsGoodsList还是保持了导入顺序
+        {
+            string name = logisticsGoods.Name;
+            if (logisticsGoodsNameRowNumMap.TryGetValue(name, out int rowNumExist) == true)
+            {
+                throw new ValidationException($"导入数据中，第{logisticsGoodsRowNum}行 扩展名 {name} 跟第{rowNumExist}行 数据重复！");
+            }
+
+            logisticsGoodsNameRowNumMap[name] = logisticsGoodsRowNum;
+            logisticsGoodsRowNum = logisticsGoodsRowNum + 1;
+        }
+
+        // 跟数据中现有的判断重复
+        IList<string> goodsNameList = logisticsGoodsList.Select(e => e.Name).ToList();
+        IList<LogisticsGoodsInfo> logisticsGoodsListExist = session.Query<LogisticsGoodsInfo>()
+            .Where(e => goodsNameList.Contains(e.Name))
+            .ToList();
+        IDictionary<string, int> logisticsGoodsMapExist = logisticsGoodsListExist.ToDictionary(e => e.Name, e => e.Id);
+
+        logisticsGoodsRowNum = 1;
+        foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList) // 这里logisticsGoodsList还是保持了导入顺序
+        {
+            string name = logisticsGoods.Name;
+            if (logisticsGoodsMapExist.ContainsKey(name))
+            {
+                throw new ValidationException($"导入数据中，第{logisticsGoodsRowNum}行 扩展名 {name} 数据库中已存在！");
+            }
+
+            logisticsGoodsRowNum = logisticsGoodsRowNum + 1;
+        }
 
         int loginUserId = loginUserService.GetLoginUserId();
         UserInfo loginUser = session.Get<UserInfo>(loginUserId);
