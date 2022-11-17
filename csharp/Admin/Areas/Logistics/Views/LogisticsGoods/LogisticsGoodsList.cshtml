@@ -1,11 +1,10 @@
 @{
     Layout = null;
 }
-@using Domain
-@using Domain.Logistics
-@model Web.Areas.Admin.Models.LogisticsGoods.LogisticsGoodsListModel
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsGoods.LogisticsGoodsListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsGoodsList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsGoodsList" })
 
 <table id="tblLogisticsGoodsList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -40,42 +39,20 @@
             </th>
             <th style="width: 200px;">
                 <div>
-                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.AuHsCode)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">澳洲海关编码</a>
+                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.EnHsCode)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">英文海关编码</a>
                 </div>
                 <div>
-                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.AuHsName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">澳洲海关申报名</a>
-                </div>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasBrand))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">是否品牌</a>
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasBattery))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">含电池或其他</a>
-                </div>
-            </th>
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasBamboo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">含草木竹</a>
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasWoodPackage))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">含实木包装</a>
+                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.EnHsName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">英文海关申报名</a>
                 </div>
             </th>
             <th style="width: 110px; text-align: center;">
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.IsSpecial))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">特货类</a>
-                </div>                
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.IsForbidden))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">禁止类</a>
-                </div>
                 <div>
                     <a field="@(nameof(LogisticsGoodsInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">状态</a>
                 </div>
             </th>
             <th style="width: 135px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.AddUserId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">添加人员</a>
+                    <a field="@(nameof(LogisticsGoodsInfo.AddUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">添加人员</a>
                 </div>
                 <div>
                     <a field="@(nameof(LogisticsGoodsInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">添加时间</a>
@@ -121,53 +98,30 @@
                     </td>
                     <td>
                         <div>
-                            @logisticsGoods.HsGoods?.AuHsCode
+                            @logisticsGoods.HsGoods?.EnHsCode
                         </div>
                         <div>
-                            @logisticsGoods.HsGoods?.AuHsName
+                            @logisticsGoods.HsGoods?.EnHsName
                         </div>
                     </td>
+
                     <td style="text-align: center;">
                         <div>
-                            @logisticsGoods.HasBrandStr
-                            @if (logisticsGoods.HasBrand)
+                            @if (string.IsNullOrWhiteSpace(logisticsGoods.BrandName) == false)
                             {
-                                if (string.IsNullOrWhiteSpace(logisticsGoods.BrandName) == false)
-                                {
-                                    <span>（@logisticsGoods.BrandName）</span>
-                                }
-                                else
-                                {
-                                    <span>（空白）</span>
-                                }
+                                <span>（@logisticsGoods.BrandName）</span>
                             }
-                        </div>
-                        <div>
-                            @logisticsGoods.HasBatteryStr
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @logisticsGoods.HasBambooStr
-                        </div>
-                        <div>
-                            @logisticsGoods.HasWoodPackageStr
+                            else
+                            {
+                                <span>（空白）</span>
+                            }
+
                         </div>
                     </td>
+
                     <td style="text-align: center;">
                         <div>
-                            @logisticsGoods.IsSpecialStr
-                        </div>                        
-                        <div>
-                            @logisticsGoods.IsForbiddenStr
-                        </div>
-                        <div>
-                            @logisticsGoods.StatusNameCache
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @(logisticsGoods.AddUserUserNameCache)
+                            @(logisticsGoods.AddUser.LoginName)
                         </div>
                         <div>
                             @logisticsGoods.CreateTime.ToString("yyyy-MM-dd HH:mm")
@@ -180,7 +134,7 @@
         else
         {
             <tr>
-                <td colspan="11">
+                <td colspan="9">
                     暂时没有数据！
                 </td>
             </tr>
@@ -188,4 +142,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsGoodsList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsGoodsList" })

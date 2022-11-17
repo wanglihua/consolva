@@ -60,18 +60,18 @@
 
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <label asp-for="HsGoods.AuHsCode" class="col-xs-4 control-label">澳洲海关编码</label>
+                                <label asp-for="HsGoods.EnHsCode" class="col-xs-4 control-label">英文海关编码</label>
                                 <div class="col-xs-8">
-                                    <input asp-for="HsGoods.AuHsCode" type="text" class="input-sm form-control" />
+                                    <input asp-for="HsGoods.EnHsCode" type="text" class="input-sm form-control" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <label asp-for="HsGoods.AuHsName" class="col-xs-4 control-label">澳洲海关申报名</label>
+                                <label asp-for="HsGoods.EnHsName" class="col-xs-4 control-label">英文海关申报名</label>
                                 <div class="col-xs-8">
-                                    <input asp-for="HsGoods.AuHsName" type="text" class="input-sm form-control" />
+                                    <input asp-for="HsGoods.EnHsName" type="text" class="input-sm form-control" />
                                 </div>
                             </div>
                         </div>
@@ -177,11 +177,11 @@
                     required: true,
                     maxlength: 200
                 },
-                'HsGoods.AuHsCode': {
+                'HsGoods.EnHsCode': {
                     required: true,
                     maxlength: 100
                 },
-                'HsGoods.AuHsName': {
+                'HsGoods.EnHsName': {
                     required: true,
                     maxlength: 200
                 },

@@ -1,8 +1,7 @@
-@using Domain
-@using Domain.Logistics
-@using Domain.LogisticsOrder
-@using Web.Areas.Admin.Models.HsGoods
-@model Web.Areas.Admin.Models.LogisticsGoods.LogisticsGoodsDetailModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Logistics.Models.HsGoods
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsGoods.LogisticsGoodsDetailModel
 @{
     ViewBag.Title = "物品品名详细";
     Layout = "_AdminLayout";
@@ -103,32 +102,6 @@
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="LogisticsGoods.Cate" class="col-xs-4 control-label">类别</label>
-                                    <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
-                                            <select asp-for="LogisticsGoods.Cate" class="input-sm form-control" disabled="disabled">
-                                                @foreach (LogisticsGoodsCate cate in Model.CateList)
-                                                {
-                                                    <option value="@(cate.Id)">@(cate.Name)</option>
-                                                }
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select asp-for="LogisticsGoods.Cate" class="input-sm form-control">
-                                                @foreach (LogisticsGoodsCate cate in Model.CateList)
-                                                {
-                                                    <option value="@(cate.Id)">@(cate.Name)</option>
-                                                }
-                                            </select>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-6">
-                                <div class="form-group">
                                     <label asp-for="LogisticsGoods.Type" class="col-xs-4 control-label">物品类型</label>
                                     <div class="col-xs-8">
                                         <input id="goodsTypeValue" type="hidden" asp-for="LogisticsGoods.Type"/>
@@ -161,35 +134,13 @@
                                 </div>
                             </div>
 
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <label asp-for="LogisticsGoods.HasBrand" class="col-xs-4 control-label">是否品牌</label>
-                                    <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
-                                            <select asp-for="LogisticsGoods.HasBrand" class="input-sm form-control" disabled="disabled">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select asp-for="LogisticsGoods.HasBrand" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="row">
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="LogisticsGoods.HasBrand" class="col-xs-4 control-label">品牌名</label>
+                                    <label asp-for="LogisticsGoods.BrandName" class="col-xs-4 control-label">品牌名</label>
                                     <div class="col-xs-8">
                                         @if (Model.IsViewOnly)
                                         {
@@ -203,126 +154,6 @@
                                 </div>
                             </div>
 
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <label asp-for="LogisticsGoods.HasBattery" class="col-xs-4 control-label">含电池或其他限制</label>
-                                    <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
-                                            <select asp-for="LogisticsGoods.HasBattery" class="input-sm form-control" disabled="disabled">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select asp-for="LogisticsGoods.HasBattery" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <label asp-for="LogisticsGoods.HasBamboo" class="col-xs-4 control-label">是否含草木竹</label>
-                                    <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
-                                            <select asp-for="LogisticsGoods.HasBamboo" class="input-sm form-control" disabled="disabled">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select asp-for="LogisticsGoods.HasBamboo" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <label asp-for="LogisticsGoods.HasWoodPackage" class="col-xs-4 control-label">是否含实木包装</label>
-                                    <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
-                                            <select asp-for="LogisticsGoods.HasWoodPackage" class="input-sm form-control" disabled="disabled">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select asp-for="LogisticsGoods.HasWoodPackage" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <label asp-for="LogisticsGoods.IsSpecial" class="col-xs-4 control-label">是否特货类</label>
-                                    <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
-                                            <select asp-for="LogisticsGoods.IsSpecial" class="input-sm form-control" disabled="disabled">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select asp-for="LogisticsGoods.IsSpecial" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <label asp-for="LogisticsGoods.IsForbidden" class="col-xs-4 control-label">是否禁止类</label>
-                                    <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
-                                            <select asp-for="LogisticsGoods.IsForbidden" class="input-sm form-control" disabled="disabled">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            <select asp-for="LogisticsGoods.IsForbidden" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        }
-
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="row">
@@ -340,7 +171,7 @@
                                 <div class="form-group">
                                     <label for="addUser" class="col-xs-4 control-label">添加人员</label>
                                     <div class="col-xs-8">
-                                        <input id="addUser" type="text" class="input-sm form-control" disabled="disabled" value="@(Model.LogisticsGoods.AddUserUserNameCache)"/>
+                                        <input id="addUser" type="text" class="input-sm form-control" disabled="disabled" value="@(Model.LogisticsGoods.AddUser.LoginName)"/>
                                     </div>
                                 </div>
                             </div>
@@ -614,15 +445,15 @@
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="AuHsCode" class="col-xs-4 control-label">澳洲海关编码</label>
+                                    <label asp-for="EnHsCode" class="col-xs-4 control-label">英文海关编码</label>
                                     <div class="col-xs-8">
                                         @if (Model.IsViewOnly || autoSelectHsGoods)
                                         {
-                                            <input asp-for="AuHsCode" type="text" class="input-sm form-control" disabled="disabled"/>
+                                            <input asp-for="EnHsCode" type="text" class="input-sm form-control" disabled="disabled"/>
                                         }
                                         else
                                         {
-                                            <input asp-for="AuHsCode" type="text" class="input-sm form-control"/>
+                                            <input asp-for="EnHsCode" type="text" class="input-sm form-control"/>
                                         }
 
                                     </div>
@@ -631,15 +462,15 @@
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="AuHsName" class="col-xs-4 control-label">澳洲海关申报名</label>
+                                    <label asp-for="EnHsName" class="col-xs-4 control-label">英文海关申报名</label>
                                     <div class="col-xs-8">
                                         @if (Model.IsViewOnly || autoSelectHsGoods)
                                         {
-                                            <input asp-for="AuHsName" type="text" class="input-sm form-control" disabled="disabled"/>
+                                            <input asp-for="EnHsName" type="text" class="input-sm form-control" disabled="disabled"/>
                                         }
                                         else
                                         {
-                                            <input asp-for="AuHsName" type="text" class="input-sm form-control"/>
+                                            <input asp-for="EnHsName" type="text" class="input-sm form-control"/>
                                         }
 
                                     </div>
@@ -1040,8 +871,8 @@
                     $("#HsGoodsId").val(hsGoods.id);
                     $("#CnHsCode").val(hsGoods.cnHsCode);
                     $("#CnHsName").val(hsGoods.cnHsName);
-                    $("#AuHsCode").val(hsGoods.auHsCode);
-                    $("#AuHsName").val(hsGoods.auHsName);
+                    $("#EnHsCode").val(hsGoods.enHsCode);
+                    $("#EnHsName").val(hsGoods.enHsName);
                     $("#Elem01").val(hsGoods.elem01);
                     $("#Elem02").val(hsGoods.elem02);
                     $("#Elem03").val(hsGoods.elem03);
@@ -1106,11 +937,11 @@
                     required: true,
                     maxlength: 200
                 },
-                'AuHsCode': {
+                'EnHsCode': {
                     required: true,
                     maxlength: 100
                 },
-                'AuHsName': {
+                'EnHsName': {
                     required: true,
                     maxlength: 200
                 },
@@ -1225,11 +1056,11 @@
                     required: true,
                     maxlength: 200
                 },
-                'AuHsCode': {
+                'EnHsCode': {
                     required: true,
                     maxlength: 100
                 },
-                'AuHsName': {
+                'EnHsName': {
                     required: true,
                     maxlength: 200
                 },
@@ -1306,8 +1137,8 @@
             $("#btnSelectHsGoods").removeAttr("disabled");
             $("#CnHsCode").attr("disabled", "disabled");
             $("#CnHsName").attr("disabled", "disabled");
-            $("#AuHsCode").attr("disabled", "disabled");
-            $("#AuHsName").attr("disabled", "disabled");
+            $("#EnHsCode").attr("disabled", "disabled");
+            $("#EnHsName").attr("disabled", "disabled");
             $("#Elem01").attr("disabled", "disabled");
             $("#Elem02").attr("disabled", "disabled");
             $("#Elem03").attr("disabled", "disabled");
@@ -1321,8 +1152,8 @@
             $("#btnSelectHsGoods").attr("disabled", "disabled");
             $("#CnHsCode").removeAttr("disabled");
             $("#CnHsName").removeAttr("disabled");
-            $("#AuHsCode").removeAttr("disabled");
-            $("#AuHsName").removeAttr("disabled");
+            $("#EnHsCode").removeAttr("disabled");
+            $("#EnHsName").removeAttr("disabled");
             $("#Elem01").removeAttr("disabled");
             $("#Elem02").removeAttr("disabled");
             $("#Elem03").removeAttr("disabled");

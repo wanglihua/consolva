@@ -142,18 +142,18 @@ namespace Web.Areas.Admin.Controllers
                 criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods.CnHsName).IsInsensitiveLike(cnHsNameQuery, MatchMode.Anywhere));
             }
 
-            string auHsCodeQuery = queryParam.AuHsCodeQuery;
-            if (string.IsNullOrWhiteSpace(auHsCodeQuery) == false)
+            string enHsCodeQuery = queryParam.EnHsCodeQuery;
+            if (string.IsNullOrWhiteSpace(enHsCodeQuery) == false)
             {
-                auHsCodeQuery = auHsCodeQuery.Trim();
-                criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods.AuHsCode).IsInsensitiveLike(auHsCodeQuery, MatchMode.Anywhere));
+                enHsCodeQuery = enHsCodeQuery.Trim();
+                criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods.EnHsCode).IsInsensitiveLike(enHsCodeQuery, MatchMode.Anywhere));
             }
 
-            string auHsNameQuery = queryParam.AuHsNameQuery;
-            if (string.IsNullOrWhiteSpace(auHsNameQuery) == false)
+            string enHsNameQuery = queryParam.EnHsNameQuery;
+            if (string.IsNullOrWhiteSpace(enHsNameQuery) == false)
             {
-                auHsNameQuery = auHsNameQuery.Trim();
-                criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods.AuHsName).IsInsensitiveLike(auHsNameQuery, MatchMode.Anywhere));
+                enHsNameQuery = enHsNameQuery.Trim();
+                criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods.EnHsName).IsInsensitiveLike(enHsNameQuery, MatchMode.Anywhere));
             }
 
             return criteria;
@@ -327,8 +327,8 @@ namespace Web.Areas.Admin.Controllers
 
                 model.CnHsCode = hsGoods.CnHsCode;
                 model.CnHsName = hsGoods.CnHsName;
-                model.AuHsCode = hsGoods.AuHsCode;
-                model.AuHsName = hsGoods.AuHsName;
+                model.EnHsCode = hsGoods.EnHsCode;
+                model.EnHsName = hsGoods.EnHsName;
                 model.Elem01 = hsGoods.Elem01;
                 model.Elem02 = hsGoods.Elem02;
                 model.Elem03 = hsGoods.Elem03;
@@ -444,8 +444,8 @@ namespace Web.Areas.Admin.Controllers
 
                 hsGoodsInfo.CnHsCode = model.CnHsCode;
                 hsGoodsInfo.CnHsName = model.CnHsName;
-                hsGoodsInfo.AuHsCode = model.AuHsCode;
-                hsGoodsInfo.AuHsName = model.AuHsName;
+                hsGoodsInfo.EnHsCode = model.EnHsCode;
+                hsGoodsInfo.EnHsName = model.EnHsName;
                 hsGoodsInfo.Elem01 = model.Elem01;
                 hsGoodsInfo.Elem02 = model.Elem02;
                 hsGoodsInfo.Elem03 = model.Elem03;

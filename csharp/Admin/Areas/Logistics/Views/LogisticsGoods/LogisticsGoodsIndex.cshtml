@@ -1,16 +1,17 @@
-@using Domain
-@using Domain.Logistics
-@using NPOI.SS.Formula.Functions
-@model LogisticsGoodsIndexModel
-@using Web.Areas.Admin.Models.LogisticsGoods
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Logistics.Models.LogisticsGoods
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsGoods.LogisticsGoodsIndexModel
 @{
-    ViewData[ViewDataKey.Title] = Model.Type.Name + "清单";
+    ViewData[ViewDataKey.Title] = Model.GoodsType.Name + "清单";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="goods-menu">物品管理</li>
-    <li class="active" data-menu="goods-logistics-goods@(Model.Type.Id)-index-menu">@(ViewData[ViewDataKey.Title])</li>
+    <li class="active" data-menu="goods-logistics-goods@(Model.GoodsType.Id)-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
@@ -36,19 +37,11 @@
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <label for="cateQuery">类别</label>
-    <select id="cateQuery" name="cateQuery" style="width: 120px; height: 30px;">
-        <option value="">类别查询</option>
-        @foreach (LogisticsGoodsCate cate in Model.GoodsCateList)
-        {
-            <option value="@(cate.Id)">@(cate.Name)</option>
-        }
-    </select> &nbsp;
     <label for="nameQuery">扩展名</label><input id="nameQuery" name="nameQuery" style="width: 120px; height: 30px;" placeholder="扩展名查询"/>&nbsp;
     <label for="cnHsCodeQuery">中国海关编码</label><input id="cnHsCodeQuery" name="cnHsCodeQuery" style="width: 120px; height: 30px;" placeholder="中国海关编码查询"/>&nbsp;
     <label for="cnHsNameQuery">中国海关申报名</label><input id="cnHsNameQuery" name="cnHsNameQuery" style="width: 120px; height: 30px;" placeholder="中国海关申报名查询"/>&nbsp;
-    <label for="auHsCodeQuery">澳洲海关编码</label><input id="auHsCodeQuery" name="auHsCodeQuery" style="width: 120px; height: 30px;" placeholder="澳洲海关编码查询"/>&nbsp;
-    <label for="auHsNameQuery">澳洲海关申报名</label><input id="auHsNameQuery" name="auHsNameQuery" style="width: 120px; height: 30px;" placeholder="澳洲海关申报名查询"/>&nbsp;
+    <label for="enHsCodeQuery">英文海关编码</label><input id="enHsCodeQuery" name="enHsCodeQuery" style="width: 120px; height: 30px;" placeholder="英文海关编码查询"/>&nbsp;
+    <label for="enHsNameQuery">英文海关申报名</label><input id="enHsNameQuery" name="enHsNameQuery" style="width: 120px; height: 30px;" placeholder="英文海关申报名查询"/>&nbsp;
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsGoodsList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
@@ -90,13 +83,12 @@
             url: "@Url.Action("List", "LogisticsGoods")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsGoodsListQueryParam.TypeQuery))': @(Model.Type.Id),
-                '@(nameof(LogisticsGoodsListQueryParam.CateQuery))': $('#cateQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.GoodsTypeQuery))': @(Model.GoodsType.Id),
                 '@(nameof(LogisticsGoodsListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
-                '@(nameof(LogisticsGoodsListQueryParam.AuHsCodeQuery))': $('#auHsCodeQuery').val(),
-                '@(nameof(LogisticsGoodsListQueryParam.AuHsNameQuery))': $('#auHsNameQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.EnHsCodeQuery))': $('#enHsCodeQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.EnHsNameQuery))': $('#enHsNameQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.PageIndex))': pageIndex,
                 '@(nameof(LogisticsGoodsListQueryParam.SortField))': sortField,
                 '@(nameof(LogisticsGoodsListQueryParam.SortDir))': sortDir
@@ -185,13 +177,12 @@
     
     function exportLogisticsGoods() {
         var params = $.param({
-                '@(nameof(LogisticsGoodsListQueryParam.TypeQuery))': @(Model.Type.Id),
-                '@(nameof(LogisticsGoodsListQueryParam.CateQuery))': $('#cateQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.GoodsTypeQuery))': @(Model.GoodsType.Id),
                 '@(nameof(LogisticsGoodsListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
-                '@(nameof(LogisticsGoodsListQueryParam.AuHsCodeQuery))': $('#auHsCodeQuery').val(),
-                '@(nameof(LogisticsGoodsListQueryParam.AuHsNameQuery))': $('#auHsNameQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.EnHsCodeQuery))': $('#enHsCodeQuery').val(),
+                '@(nameof(LogisticsGoodsListQueryParam.EnHsNameQuery))': $('#enHsNameQuery').val(),
         });
 
         var url = '@Url.Action("Export", "LogisticsGoods")?' + params;

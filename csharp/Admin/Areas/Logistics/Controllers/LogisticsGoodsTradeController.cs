@@ -223,16 +223,16 @@ namespace Web.Areas.Admin.Controllers
                 criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(LogisticsGoodsInfo.HsGoods.CnHsName)}", cnHsNameQuery));
             }
 
-            if (string.IsNullOrWhiteSpace(queryParam.AuHsCodeQuery) == false)
+            if (string.IsNullOrWhiteSpace(queryParam.EnHsCodeQuery) == false)
             {
-                string auHsCodeQuery = queryParam.AuHsCodeQuery.Trim();
-                criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(LogisticsGoodsInfo.HsGoods.AuHsCode)}", auHsCodeQuery));
+                string enHsCodeQuery = queryParam.EnHsCodeQuery.Trim();
+                criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(LogisticsGoodsInfo.HsGoods.EnHsCode)}", enHsCodeQuery));
             }
 
-            if (string.IsNullOrWhiteSpace(queryParam.AuHsNameQuery) == false)
+            if (string.IsNullOrWhiteSpace(queryParam.EnHsNameQuery) == false)
             {
-                string auHsNameQuery = queryParam.AuHsNameQuery.Trim();
-                criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(LogisticsGoodsInfo.HsGoods.AuHsName)}", auHsNameQuery));
+                string enHsNameQuery = queryParam.EnHsNameQuery.Trim();
+                criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(LogisticsGoodsInfo.HsGoods.EnHsName)}", enHsNameQuery));
             }
 
             if (string.IsNullOrWhiteSpace(queryParam.UpdateUserQuery) == false)

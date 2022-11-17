@@ -4,8 +4,8 @@ CREATE TABLE tbl_hs_goods
     goods_type_id INT          DEFAULT 0  NOT NULL COMMENT '物品类型#type:LogisticsGoodsType', # 暂时不用到，预先添加一下
     cn_hs_code    VARCHAR(100) DEFAULT '' NOT NULL COMMENT '中国海关编码',
     cn_hs_name    VARCHAR(200) DEFAULT '' NOT NULL COMMENT '中国海关申报名',
-    en_hs_code    VARCHAR(100) DEFAULT '' NOT NULL COMMENT '澳洲海关编码',
-    en_hs_name    VARCHAR(200) DEFAULT '' NOT NULL COMMENT '澳洲海关申报名',
+    en_hs_code    VARCHAR(100) DEFAULT '' NOT NULL COMMENT '英文海关编码',
+    en_hs_name    VARCHAR(200) DEFAULT '' NOT NULL COMMENT '英文海关申报名',
     elem01        VARCHAR(300) DEFAULT '' NOT NULL COMMENT '要素1',
     elem02        VARCHAR(300) DEFAULT '' NOT NULL COMMENT '要素2',
     elem03        VARCHAR(300) DEFAULT '' NOT NULL COMMENT '要素3',

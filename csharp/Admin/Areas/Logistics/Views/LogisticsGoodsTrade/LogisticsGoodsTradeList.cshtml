@@ -39,10 +39,10 @@
                     <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.CnHsName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">中国海关申报名</a>
                 </div>
                 <div>
-                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.AuHsCode)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">澳洲海关编码</a>
+                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.EnHsCode)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">英文海关编码</a>
                 </div>
                 <div>
-                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.AuHsName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">澳洲海关申报名</a>
+                    <a field="@($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(HsGoodsInfo.EnHsName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">英文海关申报名</a>
                 </div>
             </th>
             <th style="width: 150px; text-align: center;">
@@ -132,10 +132,10 @@
                             @ListDataUtil.RenderStringWithDiv(logisticsGoods.HsGoods?.CnHsName)
                         </div>
                         <div style="color: blue;">
-                            @ListDataUtil.RenderStringWithDiv(logisticsGoods.HsGoods?.AuHsCode)
+                            @ListDataUtil.RenderStringWithDiv(logisticsGoods.HsGoods?.EnHsCode)
                         </div>
                         <div style="color: blue;">
-                            @ListDataUtil.RenderStringWithDiv(logisticsGoods.HsGoods?.AuHsName)
+                            @ListDataUtil.RenderStringWithDiv(logisticsGoods.HsGoods?.EnHsName)
                         </div>
                     </td>
                     <td style="text-align: center;">

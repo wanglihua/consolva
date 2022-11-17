@@ -1,17 +1,16 @@
-using System.Collections.Generic;
-using Core;
-using Domain.Logistics;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Core;
+using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoodsTrade;
 
-namespace Web.Areas.Admin.Models.LogisticsGoodsTrade
-{
-    public class LogisticsGoodsTradeListModel : ListModel
-    {
-        public LogisticsGoodsTradeListModel(ListPager listPager) : base(listPager)
-        {
-        }
+public class LogisticsGoodsTradeListModel : ListModel
 
-        public IList<LogisticsGoodsInfo> LogisticsGoodsList { get; set; }
+{
+    public LogisticsGoodsTradeListModel(ListPager listPager) : base(listPager)
+    {
     }
+
+    [BindNever]
+    public IList<LogisticsGoodsInfo> LogisticsGoodsList { get; set; } = new List<LogisticsGoodsInfo>();
 }

@@ -7,12 +7,12 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoods;
 
 public class LogisticsGoodsDetailModel
 {
-    public LogisticsGoodsInfo LogisticsGoods { get; set; }
+    public LogisticsGoodsInfo LogisticsGoods { get; set; } = new LogisticsGoodsInfo();
 
     [BindNever]
-    public IList<LogisticsGoodsImageInfo> ImageList { get; set; }
+    public IList<LogisticsGoodsImageInfo> ImageList { get; set; } = new List<LogisticsGoodsImageInfo>();
 
-    public IList<LogisticsGoodsImageModel> NewImageList { get; set; }
+    public IList<LogisticsGoodsImageModel> NewImageList { get; set; } = new List<LogisticsGoodsImageModel>();
 
     #region 海关物品字段
 
@@ -22,49 +22,46 @@ public class LogisticsGoodsDetailModel
     public bool HsGoodsAutoSelect { get; set; } = false;
 
     public int HsGoodsId { get; set; }
-    
-    //[Required(ErrorMessage = "物品类型不能为空！")]
-    public int TypeId { get; set; } // 现在基本没用
 
     //[Required(ErrorMessage = "中国海关编码不能为空！")]
     [MaxLength(100, ErrorMessage = "中国海关编码长度不能大于100！")]
-    public string CnHsCode { get; set; }
+    public string CnHsCode { get; set; } = string.Empty;
 
     //[Required(ErrorMessage = "中国海关申报名不能为空！")]
     [MaxLength(200, ErrorMessage = "中国海关申报名长度不能大于200！")]
-    public string CnHsName { get; set; }
+    public string CnHsName { get; set; } = string.Empty;
 
-    //[Required(ErrorMessage = "澳洲海关编码不能为空！")]
-    [MaxLength(100, ErrorMessage = "澳洲海关编码长度不能大于100！")]
-    public string AuHsCode { get; set; }
+    //[Required(ErrorMessage = "英文海关编码不能为空！")]
+    [MaxLength(100, ErrorMessage = "英文海关编码长度不能大于100！")]
+    public string EnHsCode { get; set; } = string.Empty;
 
-    //[Required(ErrorMessage = "澳洲海关申报名不能为空！")]
-    [MaxLength(200, ErrorMessage = "澳洲海关申报名长度不能大于200！")]
-    public string AuHsName { get; set; }
+    //[Required(ErrorMessage = "英文海关申报名不能为空！")]
+    [MaxLength(200, ErrorMessage = "英文海关申报名长度不能大于200！")]
+    public string EnHsName { get; set; } = string.Empty;
 
     [MaxLength(300, ErrorMessage = "要素1长度不能大于300！")]
-    public string Elem01 { get; set; }
+    public string? Elem01 { get; set; }
 
     [MaxLength(300, ErrorMessage = "要素2长度不能大于300！")]
-    public string Elem02 { get; set; }
+    public string? Elem02 { get; set; }
 
     [MaxLength(300, ErrorMessage = "要素3长度不能大于300！")]
-    public string Elem03 { get; set; }
+    public string? Elem03 { get; set; }
 
     [MaxLength(300, ErrorMessage = "要素4长度不能大于300！")]
-    public string Elem04 { get; set; }
+    public string? Elem04 { get; set; }
 
     [MaxLength(300, ErrorMessage = "要素5长度不能大于300！")]
-    public string Elem05 { get; set; }
+    public string? Elem05 { get; set; }
 
     [MaxLength(300, ErrorMessage = "要素6长度不能大于300！")]
-    public string Elem06 { get; set; }
+    public string? Elem06 { get; set; }
 
     [MaxLength(300, ErrorMessage = "要素7长度不能大于300！")]
-    public string Elem07 { get; set; }
+    public string? Elem07 { get; set; }
 
     [MaxLength(300, ErrorMessage = "要素8长度不能大于300！")]
-    public string Elem08 { get; set; }
+    public string? Elem08 { get; set; }
 
     #endregion
 
@@ -78,14 +75,11 @@ public class LogisticsGoodsDetailModel
     public int? StatusId { get; set; }
 
     [BindNever]
-    public IList<LogisticsGoodsCate> CateList { get; set; }
+    public IList<LogisticsGoodsType> TypeList { get; set; } = LogisticsGoodsType.GetInnerList();
 
     [BindNever]
-    public IList<LogisticsGoodsType> TypeList { get; set; }
+    public IList<LogisticsGoodsStatus> StatusList { get; set; } = LogisticsGoodsStatus.GetList();
 
     [BindNever]
-    public IList<LogisticsGoodsStatus> StatusList { get; set; }
-
-    [BindNever]
-    public IList<LogisticsGoodsLogInfo> LogList { get; set; }
+    public IList<LogisticsGoodsLogInfo> LogList { get; set; } = new List<LogisticsGoodsLogInfo>();
 }

@@ -23,10 +23,10 @@
             </th>
             <th style="width: 180px;">
                 <div>
-                    <a field="@(nameof(HsGoodsInfo.AuHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关申报名</a>
+                    <a field="@(nameof(HsGoodsInfo.EnHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">英文海关申报名</a>
                 </div>
                 <div>
-                    <a field="@(nameof(HsGoodsInfo.AuHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关编码</a>
+                    <a field="@(nameof(HsGoodsInfo.EnHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">英文海关编码</a>
                 </div>
             </th>
             <th style="width: 220px;">
@@ -93,10 +93,10 @@
                     </td>
                     <td class="break-word">
                         <div>
-                            @hsGoods.AuHsName
+                            @hsGoods.EnHsName
                         </div>
                         <div>
-                            @hsGoods.AuHsCode
+                            @hsGoods.EnHsCode
                         </div>
                     </td>
                     <td class="break-word">

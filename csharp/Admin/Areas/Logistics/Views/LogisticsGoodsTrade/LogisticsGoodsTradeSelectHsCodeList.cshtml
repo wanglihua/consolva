@@ -20,10 +20,10 @@
                 <a field="@(nameof(HsGoodsInfo.CnHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">中国海关申报名</a>
             </th>
             <th style="width: 180px;">
-                <a field="@(nameof(HsGoodsInfo.AuHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关编码</a>
+                <a field="@(nameof(HsGoodsInfo.EnHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">英文海关编码</a>
             </th>
             <th style="width: 180px;">
-                <a field="@(nameof(HsGoodsInfo.AuHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关申报名</a>
+                <a field="@(nameof(HsGoodsInfo.EnHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">英文海关申报名</a>
             </th>
             <th></th>
         </tr>
@@ -46,10 +46,10 @@
                         @hsGoods.CnHsName
                     </td>
                     <td>
-                        @hsGoods.AuHsCode
+                        @hsGoods.EnHsCode
                     </td>
                     <td>
-                        @hsGoods.AuHsName
+                        @hsGoods.EnHsName
                     </td>
                     <td></td>
                 </tr>

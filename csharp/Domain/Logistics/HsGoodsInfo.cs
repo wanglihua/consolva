@@ -36,18 +36,18 @@ public class HsGoodsInfo : Entity
     public virtual string CnHsName { get; set; } = string.Empty;
 
     /// <summary>
-    /// 澳洲海关编码，非空
+    /// 英文海关编码，非空
     /// </summary>
-    [Required(ErrorMessage = "澳洲海关编码不能为空！")]
-    [MaxLength(100, ErrorMessage = "澳洲海关编码长度不能大于100！")]
+    [Required(ErrorMessage = "英文海关编码不能为空！")]
+    [MaxLength(100, ErrorMessage = "英文海关编码长度不能大于100！")]
     [JsonProperty("enHsCode")]
     public virtual string EnHsCode { get; set; } = string.Empty;
 
     /// <summary>
-    /// 澳洲海关申报名，非空
+    /// 英文海关申报名，非空
     /// </summary>
-    [Required(ErrorMessage = "澳洲海关申报名不能为空！")]
-    [MaxLength(200, ErrorMessage = "澳洲海关申报名长度不能大于200！")]
+    [Required(ErrorMessage = "英文海关申报名不能为空！")]
+    [MaxLength(200, ErrorMessage = "英文海关申报名长度不能大于200！")]
     [JsonProperty("enHsName")]
     public virtual string EnHsName { get; set; } = string.Empty;
 

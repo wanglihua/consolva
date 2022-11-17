@@ -290,23 +290,23 @@ public class HsGoodsController : Controller
                 throw new ValidationException($"第{rowIndex}行数据 中国海关编码 不能为空，导入失败！");
             }
 
-            string auHsName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(auHsName))
+            string enHsName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(enHsName))
             {
-                throw new ValidationException($"第{rowIndex}行数据 澳洲海关申报名 不能为空，导入失败！");
+                throw new ValidationException($"第{rowIndex}行数据 英文海关申报名 不能为空，导入失败！");
             }
 
-            string auHsCode = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(auHsCode))
+            string enHsCode = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(enHsCode))
             {
-                throw new ValidationException($"第{rowIndex}行数据 澳洲海关编码 不能为空，导入失败！");
+                throw new ValidationException($"第{rowIndex}行数据 英文海关编码 不能为空，导入失败！");
             }
 
             HsGoodsInfo hsGoods = new HsGoodsInfo();
             hsGoods.CnHsName = cnHsName;
             hsGoods.CnHsCode = cnHsCode;
-            hsGoods.EnHsName = auHsName;
-            hsGoods.EnHsCode = auHsCode;
+            hsGoods.EnHsName = enHsName;
+            hsGoods.EnHsCode = enHsCode;
             hsGoods.Elem01 = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             hsGoods.Elem02 = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             hsGoods.Elem03 = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
@@ -375,7 +375,7 @@ public class HsGoodsController : Controller
         ICellStyle headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
         ICellStyle contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
 
-        // 中国海关申报名    中国海关编码    澳洲海关申报名    澳洲海关编码    中国申报要素1    中国申报要素2    中国申报要素3    中国申报要素4    中国申报要素5    中国申报要素6    中国申报要素7    中国申报要素8
+        // 中国海关申报名    中国海关编码    英文海关申报名    英文海关编码    中国申报要素1    中国申报要素2    中国申报要素3    中国申报要素4    中国申报要素5    中国申报要素6    中国申报要素7    中国申报要素8
         int rowIndex = 0;
 
         IRow row = sheet.CreateRow(rowIndex++);
@@ -399,13 +399,13 @@ public class HsGoodsController : Controller
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue("澳洲海关申报名");
+        cell.SetCellValue("英文海关申报名");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue("澳洲海关编码");
+        cell.SetCellValue("英文海关编码");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
@@ -474,13 +474,13 @@ public class HsGoodsController : Controller
             cell.SetCellType(CellType.String);
             cell.SetCellValue(hsGoods.CnHsCode);
 
-            // 澳洲海关申报名
+            // 英文海关申报名
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(hsGoods.EnHsName);
 
-            // 澳洲海关编码
+            // 英文海关编码
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.String);

@@ -1,28 +1,21 @@
-using System;
-using Core;
-using Domain.Logistics;
 using Microsoft.AspNetCore.Mvc;
+using shunda.Core;
+using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoods;
 
-namespace Web.Areas.Admin.Models.LogisticsGoods
+public class LogisticsGoodsListQueryParam : ListQueryParam
 {
-    public class LogisticsGoodsListQueryParam : ListQueryParam
-    {
-        [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
-        public LogisticsGoodsType TypeQuery { get; set; }
+    [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
+    public LogisticsGoodsType? GoodsTypeQuery { get; set; }
 
-        [ModelBinder(typeof(LogisticsGoodsCateModelBinder))]
-        public LogisticsGoodsCate CateQuery { get; set; }
+    public string? NameQuery { get; set; }
 
-        public string NameQuery { get; set; }
+    public string? CnHsCodeQuery { get; set; }
 
-        public string CnHsCodeQuery { get; set; }
+    public string? CnHsNameQuery { get; set; }
 
-        public string CnHsNameQuery { get; set; }
+    public string? EnHsCodeQuery { get; set; }
 
-        public string AuHsCodeQuery { get; set; }
-
-        public string AuHsNameQuery { get; set; }
-    }
+    public string? EnHsNameQuery { get; set; }
 }
