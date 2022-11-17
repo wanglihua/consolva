@@ -38,52 +38,10 @@ public class LogisticsGoodsWarehouseDetailModel
     public LogisticsGoodsType Type { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
-    /// 是否品牌
-    /// </summary>
-    [DisplayName("是否品牌")]
-    [Required(ErrorMessage = "是否品牌不能为空！")]
-    public bool HasBrand { get; set; }
-
-    /// <summary>
     /// 品牌名称
     /// </summary>
     [DisplayName("品牌名称")]
     public string? BrandName { get; set; }
-
-    /// <summary>
-    /// 含电池或其他限制
-    /// </summary>
-    [DisplayName("含电池或其他限制")]
-    [Required(ErrorMessage = "含电池或其他限制不能为空！")]
-    public bool HasBattery { get; set; }
-
-    /// <summary>
-    /// 是否含草木竹
-    /// </summary>
-    [DisplayName("是否含草木竹")]
-    [Required(ErrorMessage = "是否含草木竹不能为空！")]
-    public bool HasBamboo { get; set; }
-
-    /// <summary>
-    /// 是否含实木包装
-    /// </summary>
-    [DisplayName("是否含实木包装")]
-    [Required(ErrorMessage = "是否含实木包装不能为空！")]
-    public bool HasWoodPackage { get; set; }
-
-    /// <summary>
-    /// 是否禁止类
-    /// </summary>
-    [DisplayName("是否禁止类")]
-    [Required(ErrorMessage = "是否禁止类不能为空！")]
-    public bool IsForbidden { get; set; }
-
-    /// <summary>
-    /// 是否特货类
-    /// </summary>
-    [DisplayName("是否特货类")]
-    [Required(ErrorMessage = "是否特货类不能为空！")]
-    public bool IsSpecial { get; set; }
 
     /// <summary>
     /// 创建单号
