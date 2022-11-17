@@ -1,8 +1,5 @@
-using System;
+namespace shunda.Admin.Areas.Logistics.Models.HsGoods;
 
-namespace Web.Areas.Admin.Models.HsGoods
+public class HsGoodsIndexModel
 {
-    public class HsGoodsIndexModel
-    {
-    }
 }

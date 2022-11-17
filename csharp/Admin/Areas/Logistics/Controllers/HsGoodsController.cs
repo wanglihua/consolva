@@ -4,6 +4,7 @@ using NHibernate.Criterion;
 using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using shunda.Admin.Areas.Logistics.Models.HsGoods;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -13,7 +14,6 @@ using shunda.Domain.Logistics;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service;
-using Web.Areas.Admin.Models.HsGoods;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Logistics.Controllers;
@@ -75,10 +75,9 @@ public class HsGoodsController : Controller
 
         criteria = criteria.SetReadOnly(true);
 
-        string cnHsNameQuery = queryParam.CnHsNameQuery;
-        if (string.IsNullOrWhiteSpace(cnHsNameQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.CnHsNameQuery) == false)
         {
-            cnHsNameQuery = cnHsNameQuery.Trim();
+            string cnHsNameQuery = queryParam.CnHsNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<HsGoodsInfo>(e => e.CnHsName).IsInsensitiveLike(cnHsNameQuery, MatchMode.Anywhere));
         }
 
@@ -91,7 +90,7 @@ public class HsGoodsController : Controller
     {
         session.DefaultReadOnly = true;
 
-        HsGoodsInfo hsGoods = null;
+        HsGoodsInfo hsGoods;
 
         if (id == null || id.Value == 0)
         {
@@ -130,7 +129,7 @@ public class HsGoodsController : Controller
 
         bool isCreate = hsGoodsIdFromUi == 0;
 
-        HsGoodsInfo hsGoods = null;
+        HsGoodsInfo hsGoods;
 
         if (isCreate)
         {
@@ -183,7 +182,7 @@ public class HsGoodsController : Controller
         {
             HsGoodsInfo hsGoods = session.Get<HsGoodsInfo>(id);
 
-            int count = session.Query<LogisticsGoodsInfo>().Where(e => e.HsGoods.Id == id).Count();
+            int count = session.Query<LogisticsGoodsInfo>().Where(e => e.HsGoods!.Id == id).Count();
             if (count != 0)
             {
                 throw new ValidationException($"海关品名 {hsGoods.CnHsName} 已在扩展名中使用中，不能删除！");
@@ -321,7 +320,7 @@ public class HsGoodsController : Controller
             hsGoodsList.Add(hsGoods);
         }
 
-        ITransaction transaction = null;
+        ITransaction? transaction = null;
         try
         {
             transaction = session.BeginTransaction();

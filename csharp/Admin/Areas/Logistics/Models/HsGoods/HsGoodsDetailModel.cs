@@ -1,10 +1,8 @@
-using System;
-using Domain;
+using shunda.Domain.Logistics;
 
-namespace Web.Areas.Admin.Models.HsGoods
+namespace shunda.Admin.Areas.Logistics.Models.HsGoods;
+
+public class HsGoodsDetailModel
 {
-    public class HsGoodsDetailModel
-    {
-        public HsGoodsInfo HsGoods { get; set; }
-    }
+    public HsGoodsInfo HsGoods { get; set; } = new HsGoodsInfo();
 }

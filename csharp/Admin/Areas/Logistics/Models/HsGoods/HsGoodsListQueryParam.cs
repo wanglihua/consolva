@@ -1,9 +1,8 @@
-using Core;
+using shunda.Core;
 
-namespace Web.Areas.Admin.Models.HsGoods
+namespace shunda.Admin.Areas.Logistics.Models.HsGoods;
+
+public class HsGoodsListQueryParam : ListQueryParam
 {
-    public class HsGoodsListQueryParam : ListQueryParam
-    {
-        public string CnHsNameQuery { get; set; }
-    }
+    public string? CnHsNameQuery { get; set; }
 }

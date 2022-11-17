@@ -1,17 +1,15 @@
-using System;
-using Domain;
-using System.Collections.Generic;
-using Core;
-using Web.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Core;
+using shunda.Domain.Logistics;
 
-namespace Web.Areas.Admin.Models.HsGoods
+namespace shunda.Admin.Areas.Logistics.Models.HsGoods;
+
+public class HsGoodsListModel : ListModel
 {
-    public class HsGoodsListModel : ListModel
+    public HsGoodsListModel(ListPager listPager) : base(listPager)
     {
-        public HsGoodsListModel(ListPager listPager) : base(listPager)
-        {
-        }
-
-        public IList<HsGoodsInfo> HsGoodsList { get; set; }
     }
+
+    [BindNever]
+    public IList<HsGoodsInfo> HsGoodsList { get; set; } = new List<HsGoodsInfo>();
 }
