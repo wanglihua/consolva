@@ -1,0 +1,286 @@
+@using Domain
+@model Web.Areas.Admin.Models.HsGoods.HsGoodsDetailModel
+@{
+    ViewBag.Title = "海关品名详细";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-menu">物品管理</li>
+    <li class="active" data-menu="goods-hs-goods-index-menu">
+        <a href="@Url.Action("Index", "LogisticsGoods")">海关品名</a>
+    </li>
+    <li>物品详细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="refreshHsGoods()">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+
+    <button type="button" class="btn btn-success btn-sm" onclick="saveHsGoods();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "HsGoods")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+
+</div>
+
+<div class="widget-box" style="border-style: none; width: 1000px;">
+    <div class="widget-body">
+        <div class="widget-main">
+            <div class="row">
+                <div class="col-xs-12">
+                <form id="hsGoodsDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="HsGoods.Id" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.CnHsCode" class="col-xs-4 control-label">中国海关编码</label>
+                                <div class="col-xs-8">
+                                    <input asp-for="HsGoods.CnHsCode" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.CnHsName" class="col-xs-4 control-label">中国海关申报名</label>
+                                <div class="col-xs-8">
+                                    <input asp-for="HsGoods.CnHsName" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.AuHsCode" class="col-xs-4 control-label">澳洲海关编码</label>
+                                <div class="col-xs-8">
+                                    <input asp-for="HsGoods.AuHsCode" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.AuHsName" class="col-xs-4 control-label">澳洲海关申报名</label>
+                                <div class="col-xs-8">
+                                    <input asp-for="HsGoods.AuHsName" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem01" class="col-xs-2 control-label">要素1</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem01" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem02" class="col-xs-2 control-label">要素2</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem02" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem03" class="col-xs-2 control-label">要素3</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem03" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem04" class="col-xs-2 control-label">要素4</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem04" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem05" class="col-xs-2 control-label">要素5</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem05" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem06" class="col-xs-2 control-label">要素6</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem06" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem07" class="col-xs-2 control-label">要素7</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem07" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="HsGoods.Elem08" class="col-xs-2 control-label">要素8</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="HsGoods.Elem08" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function refreshHsGoods() {
+        window.location.reload();
+    }
+
+    function saveHsGoods() {
+        var form = $("#hsGoodsDetailForm");
+        var valid = validate(form,
+            {
+                'HsGoods.TypeId': {
+                    required: true,
+                    digits: true
+                },
+                'HsGoods.CnHsCode': {
+                    required: true,
+                    maxlength: 100
+                },
+                'HsGoods.CnHsName': {
+                    required: true,
+                    maxlength: 200
+                },
+                'HsGoods.AuHsCode': {
+                    required: true,
+                    maxlength: 100
+                },
+                'HsGoods.AuHsName': {
+                    required: true,
+                    maxlength: 200
+                },
+                'HsGoods.Elem01': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.Elem02': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.Elem03': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.Elem04': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.Elem05': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.Elem06': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.Elem07': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.Elem08': {
+                    required: false,
+                    maxlength: 300
+                },
+                'HsGoods.AddUserId': {
+                    required: true,
+                    digits: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "HsGoods")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+
+                        if(data.isCreate === true) {
+                            setTimeout(
+                                function() {
+                                    var url = "@Url.Action("Detail", "HsGoods", new {id = 88888})";
+                                    url = url.replace(/88888/, data.id);
+                                    window.location.href = url;
+                                },
+                                1000
+                            );
+                        }
+
+                        //return;
+                    }
+
+                    hideMask();
+                }
+            });
+        }
+    }
+
+    function deleteHsGoods() {
+        var idList = [@(Model.HsGoods.Id)];
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "HsGoods")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                            window.location.href = "@Url.Action("Index", "HsGoods")";
+                            return;
+                        }
+                    }
+                });
+            }
+        );
+    }
+
+</script>

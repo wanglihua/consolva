@@ -1,0 +1,195 @@
+@using Domain
+@model HsGoodsIndexModel
+@using Web.Areas.Admin.Models.HsGoods
+@{
+    ViewBag.Title = "海关品名";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-menu">物品管理</li>
+    <li class="active" data-menu="goods-hs-goods-index-menu">海关品名</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadHsGoodsList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showHsGoodsDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteHsGoods()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    <button id="btnImport" class="btn btn-success btn-sm">
+        <i class="ace-icon fa fa-plus"></i>
+        导入
+    </button>
+    <button class="btn btn-purple btn-sm" onclick="exportHsGoods()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="cnHsNameQuery">中国海关申报名</label>&nbsp;<input id="cnHsNameQuery" name="cnHsNameQuery" style="width: 150px; height: 30px;" placeholder="中国海关申报名查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadHsGoodsList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="hsGoodsList" data-page-index="0" data-sort-field="@(nameof(HsGoodsInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="hsGoodsDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadHsGoodsList();
+    });
+
+    function sortHsGoodsList(sortField, sortDir) {
+        var list = $('#hsGoodsList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadHsGoodsList();
+    }
+
+    function loadHsGoodsList(pageIndex) {
+        var list = $('#hsGoodsList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "HsGoods")",
+            type: "POST",
+            data: {
+                '@(nameof(HsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
+                '@(nameof(HsGoodsListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(HsGoodsListQueryParam.SortField))': sortField,
+                '@(nameof(HsGoodsListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#hsGoodsList').html(data);
+
+                initListTable("#tblHsGoodsList");
+            }
+        });
+    }
+
+    function deleteHsGoods() {
+        var idList = getSelectIdList('#tblHsGoodsList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "HsGoods")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadHsGoodsList();
+                    }
+                });
+            }
+        );
+    }
+
+    function showHsGoodsDetail(id) {
+        var url = "@Url.Action("Detail", "HsGoods", new {id = 88888})";
+
+        url = url.replace(/88888/, id);
+        window.open(url, "hs_goods_detail");
+    }
+
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {
+
+        var url = '@Url.Action("Import", "HsGoods")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImport',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                    } else {
+                        loadHsGoodsList();
+                        $.msg.show(result.message);
+                    }
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }
+
+    function exportHsGoods() {
+
+        var params = $.param({
+            '@(nameof(HsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val()
+        });
+
+        var url = '@Url.Action("Export", "HsGoods")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }
+
+</script>

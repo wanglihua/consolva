@@ -1,0 +1,157 @@
+@{
+    Layout = null;
+}
+@using Domain
+@model Web.Areas.Admin.Models.HsGoods.HsGoodsListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadHsGoodsList"})
+
+<table id="tblHsGoodsList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="hsGoodsCheckAll"></label><input id="hsGoodsCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 180px;">
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.CnHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">中国海关申报名</a>
+                </div>
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.CnHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">中国海关编码</a>
+                </div>
+            </th>
+            <th style="width: 180px;">
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.AuHsName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关申报名</a>
+                </div>
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.AuHsCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">澳洲海关编码</a>
+                </div>
+            </th>
+            <th style="width: 220px;">
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem01))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素1</a>
+                </div>
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem02))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素2</a>
+                </div>
+            </th>
+            <th style="width: 220px;">
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem03))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素3</a>
+                </div>
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem04))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素4</a>
+                </div>
+            </th>
+            <th style="width: 220px;">
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem05))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素5</a>
+                </div>
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem06))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素6</a>
+                </div>
+            </th>
+            <th style="width: 220px;">
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem07))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素7</a>
+                </div>
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.Elem08))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">要素8</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">创建时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(HsGoodsInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortHsGoodsList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.HsGoodsList != null && Model.HsGoodsList.Count() != 0)
+        {
+            int order = 1;
+            foreach (HsGoodsInfo hsGoods in Model.HsGoodsList)
+            {
+                <tr ondblclick="showHsGoodsDetail(@(hsGoods.Id));">
+                    <td style="text-align: center;">
+                        <label for="hsGoodsCheck_@(hsGoods.Id)"></label><input id="hsGoodsCheck_@(hsGoods.Id)" type="checkbox" class="ace" value="@hsGoods.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td class="break-word">
+                        <div>
+                            @hsGoods.CnHsName
+                        </div>
+                        <div>
+                            @hsGoods.CnHsCode
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @hsGoods.AuHsName
+                        </div>
+                        <div>
+                            @hsGoods.AuHsCode
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @hsGoods.Elem01
+                        </div>
+                        <div>
+                            @hsGoods.Elem02
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @hsGoods.Elem03
+                        </div>
+                        <div>
+                            @hsGoods.Elem04
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @hsGoods.Elem05
+                        </div>
+                        <div>
+                            @hsGoods.Elem06
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @hsGoods.Elem07
+                        </div>
+                        <div>
+                            @hsGoods.Elem08
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @hsGoods.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                        <div>
+                            @hsGoods.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadHsGoodsList"})
