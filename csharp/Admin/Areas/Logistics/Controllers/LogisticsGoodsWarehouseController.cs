@@ -8,8 +8,10 @@ using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Logistics.Models.LogisticsGoodsWarehouse;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
@@ -24,10 +26,10 @@ public class LogisticsGoodsWarehouseController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
-    private LoginUserService loginUserService = null;
-    private LogisticsGoodsImageService logisticsGoodsImageService = null;
-    private LogisticsGoodsLogService logisticsGoodsLogService = null;
+    private ISession session;
+    private LoginUserService loginUserService;
+    private LogisticsGoodsImageService logisticsGoodsImageService;
+    private LogisticsGoodsLogService logisticsGoodsLogService;
 
     public LogisticsGoodsWarehouseController(ISession session,
         LoginUserService loginUserService,
@@ -252,8 +254,8 @@ public class LogisticsGoodsWarehouseController : Controller
             {
                 LogisticsGoodsImageInfo interactImage = new LogisticsGoodsImageInfo();
                 interactImage.Goods = logisticsGoods;
-                interactImage.StorePath = image.SubPath;
-                interactImage.StoreName = image.FileName;
+                interactImage.StorePath = image.StorePath;
+                interactImage.StoreName = image.StoreName;
 
                 session.Save(interactImage);
             }
@@ -300,8 +302,8 @@ public class LogisticsGoodsWarehouseController : Controller
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        IList<LogisticsOrderGoodsInfo> logisticsOrderGoodsList = session.Query<LogisticsOrderGoodsInfo>()
-            .Where(e => idList.Contains(e.GoodsId) || idList.Contains(e.GoodsAdminId.Value))
+        IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => idList.Contains(e.Goods.Id))
             .ToList();
 
         IList<LogisticsGoodsImageInfo> logisticsGoodsImageList = session.Query<LogisticsGoodsImageInfo>()
@@ -310,14 +312,17 @@ public class LogisticsGoodsWarehouseController : Controller
 
         foreach (int id in idList)
         {
-            LogisticsGoodsInfo logisticsGoods = logisticsGoodsList.Where(e => e.Id == id).Take(1).SingleOrDefault();
+            LogisticsGoodsInfo? logisticsGoods = logisticsGoodsList
+                .Where(e => e.Id == id)
+                .Take(1)
+                .SingleOrDefault();
             if (logisticsGoods == null)
             {
                 throw new ValidationException($"指定的物品不存在！#{id}");
             }
 
-            var orderGoods = logisticsOrderGoodsList
-                .Where(e => e.GoodsId == id || e.GoodsAdminId == id)
+            var orderGoods = expressGoodsList
+                .Where(e => e.Goods.Id == id)
                 .Take(1)
                 .SingleOrDefault();
 
@@ -327,17 +332,20 @@ public class LogisticsGoodsWarehouseController : Controller
             }
         }
 
-        foreach (var goodsImage in logisticsGoodsImageList)
-        {
-            session.Delete(goodsImage);
-        }
+        // 数据库事务
+        Transactional.Wrap(session, () => {
+            foreach (var goodsImage in logisticsGoodsImageList)
+            {
+                session.Delete(goodsImage);
+            }
 
-        foreach (var logisticsGoods in logisticsGoodsList)
-        {
-            session.Delete(logisticsGoods);
-        }
+            foreach (var logisticsGoods in logisticsGoodsList)
+            {
+                session.Delete(logisticsGoods);
+            }
 
-        session.Flush();
+            session.Flush();
+        });
 
         foreach (var goodsImage in logisticsGoodsImageList)
         {
@@ -380,13 +388,13 @@ public class LogisticsGoodsWarehouseController : Controller
         var result = logisticsGoodsImageService.SaveImageFile(imageFile);
 
         string imageFileUrl = result.Item1;
-        string subPath = result.Item2;
-        string fileName = result.Item3;
+        string storePath = result.Item2;
+        string storeName = result.Item3;
 
         LogisticsGoodsWarehouseImageModel model = new LogisticsGoodsWarehouseImageModel();
         model.ImageFileUrl = imageFileUrl;
-        model.SubPath = subPath;
-        model.FileName = fileName;
+        model.StorePath = storePath;
+        model.StoreName = storeName;
 
         return View("LogisticsGoodsWarehouseImage", model);
     }
@@ -428,40 +436,6 @@ public class LogisticsGoodsWarehouseController : Controller
         {
             throw new ValidationException("导入失败，文件未上传！");
         }
-
-        // todo 这里的逻辑有点问题，应该是拿Excel里面的 Name 列表到数据里面取查找。主要是物品总量有点多
-
-        // IList<string> seaNameList = session
-        //     .Query<LogisticsGoodsInfo>()
-        //     .Where(e => e.Cate == LogisticsGoodsCate.Sea)
-        //     .Select(e => e.Name)
-        //     .Distinct()
-        //     .ToList();
-        //
-        // IDictionary<string, bool> seaNameDict = new Dictionary<string, bool>();
-        // foreach (string seaName in seaNameList)
-        // {
-        //     if (seaNameDict.ContainsKey(seaName) == false)
-        //     {
-        //         seaNameDict.Add(seaName, true);
-        //     }
-        // }
-        //
-        // IList<string> airNameList = session
-        //     .Query<LogisticsGoodsInfo>()
-        //     .Where(e => e.Cate == LogisticsGoodsCate.Air)
-        //     .Select(e => e.Name)
-        //     .Distinct()
-        //     .ToList();
-        //
-        // IDictionary<string, bool> airNameDict = new Dictionary<string, bool>();
-        // foreach (string airName in airNameList)
-        // {
-        //     if (airNameDict.ContainsKey(airName) == false)
-        //     {
-        //         airNameDict.Add(airName, true);
-        //     }
-        // }
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
         ISheet sheet = workbook.GetSheetAt(0);
@@ -518,26 +492,6 @@ public class LogisticsGoodsWarehouseController : Controller
             }
 
             name = name.Trim();
-
-            // if (logisticsGoods.Cate == LogisticsGoodsCate.Sea)
-            // {
-            //     if (seaNameDict.ContainsKey(name))
-            //     {
-            //         throw new ValidationException($"第{rowIndex}行数据 {LogisticsGoodsCate.Sea.Name} 扩展名 {name} 已存在或重复，导入失败！");
-            //     }
-            //
-            //     seaNameDict.Add(name, true);
-            // }
-            //
-            // if (logisticsGoods.Cate == LogisticsGoodsCate.Air)
-            // {
-            //     if (airNameDict.ContainsKey(name))
-            //     {
-            //         throw new ValidationException($"第{rowIndex}行数据  {LogisticsGoodsCate.Air.Name}  扩展名 {name} 已存在或重复，导入失败！");
-            //     }
-            //
-            //     airNameDict.Add(name, true);
-            // }
 
             if (name.Length > 200)
             {

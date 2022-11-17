@@ -19,7 +19,7 @@ public class ExpressPhotoFileService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public static readonly string ImageUploadFolder = Path.Combine("wwwroot", "static", "upload", "images", "express");
+    public static readonly string ImageUploadFolder = Path.Combine("static", "upload", "images", "express");
     public static readonly string ImageUploadUrl = "/static/upload/images/express";
 
     private static readonly int MAX_WIDTH = 800;
@@ -43,7 +43,7 @@ public class ExpressPhotoFileService
         string fileExt = ".jpg";
         string newFileName = Guid.NewGuid().ToString("N") + fileExt;
         string dayFolderName = DateTime.Now.ToString("yyyyMMdd");
-        string fullUploadFolder = Path.Combine(webHostEnvironment.ContentRootPath, ImageUploadFolder, dayFolderName);
+        string fullUploadFolder = Path.Combine(webHostEnvironment.WebRootPath, ImageUploadFolder, dayFolderName);
         string newFileFullName = Path.Combine(fullUploadFolder, newFileName);
 
         if (Directory.Exists(fullUploadFolder) == false)
@@ -98,7 +98,7 @@ public class ExpressPhotoFileService
         string fileExt = GetFileExt(formFile.FileName); // .jpg
         string newFileName = Guid.NewGuid().ToString("N") + fileExt;
         string monthFolderName = DateTime.Now.ToString("yyyyMM");
-        string fullUploadFolder = Path.Combine(webHostEnvironment.ContentRootPath, ImageUploadFolder, monthFolderName);
+        string fullUploadFolder = Path.Combine(webHostEnvironment.WebRootPath, ImageUploadFolder, monthFolderName);
         string newFileFullName = Path.Combine(fullUploadFolder, newFileName);
 
         if (Directory.Exists(fullUploadFolder) == false)
@@ -344,7 +344,7 @@ public class ExpressPhotoFileService
     {
         try
         {
-            string fullImageName = Path.Combine(webHostEnvironment.ContentRootPath, ImageUploadFolder, expressPhoto.StorePath, expressPhoto.StoreName);
+            string fullImageName = Path.Combine(webHostEnvironment.WebRootPath, ImageUploadFolder, expressPhoto.StorePath, expressPhoto.StoreName);
             File.Delete(fullImageName);
         }
         catch (Exception exp)
@@ -363,7 +363,7 @@ public class ExpressPhotoFileService
     {
         try
         {
-            string imageFullFileName = Path.Combine(webHostEnvironment.ContentRootPath, ImageUploadFolder, monthFolderName, fileName);
+            string imageFullFileName = Path.Combine(webHostEnvironment.WebRootPath, ImageUploadFolder, monthFolderName, fileName);
             Bitmap oldImage = new Bitmap(imageFullFileName);
 
             int imageWidth = oldImage.Width;

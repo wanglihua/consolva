@@ -20,7 +20,7 @@ public class FaviconController : Controller
     [Route("/favicon.ico")]
     public IActionResult Index()
     {
-        // string faviconPngFullPath = Path.Combine(webHostEnvironment.ContentRootPath, "wwwroot", "static", "images", "favicon.png");
+        // string faviconPngFullPath = Path.Combine(webHostEnvironment.WebRootPath, "static", "images", "favicon.png");
         // return PhysicalFile(faviconPngFullPath, ContentType.ImagePng);
         return File("/static/images/favicon.png", ContentType.ImagePng);
     }
