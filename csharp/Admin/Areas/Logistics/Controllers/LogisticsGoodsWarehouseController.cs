@@ -135,9 +135,6 @@ public class LogisticsGoodsWarehouseController : Controller
             model.Type = queryParam.GoodsTypeQuery ?? LogisticsGoodsType.None;
 
             model.CreateExpressTrackingNo = string.Empty;
-
-            // 如果是新增的话，就自动判断类型
-            model.Type = GetGoodsTypeByDetailModel(model);
         }
 
         /*
@@ -360,19 +357,6 @@ public class LogisticsGoodsWarehouseController : Controller
         });
     }
 
-    [HttpPost]
-    [Route("/admin/logistics/goods/warehouse/get/goods/type")]
-    public IActionResult GetGoodsType(LogisticsGoodsWarehouseDetailModel model)
-    {
-        LogisticsGoodsType type = GetGoodsTypeByDetailModel(model);
-
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "获取物品类型成功！" },
-            { "goodsType", type.Id },
-        });
-    }
-
     #region Image
 
     [HttpPost]
@@ -444,40 +428,40 @@ public class LogisticsGoodsWarehouseController : Controller
         {
             throw new ValidationException("导入失败，文件未上传！");
         }
-        
+
         // todo 这里的逻辑有点问题，应该是拿Excel里面的 Name 列表到数据里面取查找。主要是物品总量有点多
 
-        IList<string> seaNameList = session
-            .Query<LogisticsGoodsInfo>()
-            .Where(e => e.Cate == LogisticsGoodsCate.Sea)
-            .Select(e => e.Name)
-            .Distinct()
-            .ToList();
-
-        IDictionary<string, bool> seaNameDict = new Dictionary<string, bool>();
-        foreach (string seaName in seaNameList)
-        {
-            if (seaNameDict.ContainsKey(seaName) == false)
-            {
-                seaNameDict.Add(seaName, true);
-            }
-        }
-
-        IList<string> airNameList = session
-            .Query<LogisticsGoodsInfo>()
-            .Where(e => e.Cate == LogisticsGoodsCate.Air)
-            .Select(e => e.Name)
-            .Distinct()
-            .ToList();
-
-        IDictionary<string, bool> airNameDict = new Dictionary<string, bool>();
-        foreach (string airName in airNameList)
-        {
-            if (airNameDict.ContainsKey(airName) == false)
-            {
-                airNameDict.Add(airName, true);
-            }
-        }
+        // IList<string> seaNameList = session
+        //     .Query<LogisticsGoodsInfo>()
+        //     .Where(e => e.Cate == LogisticsGoodsCate.Sea)
+        //     .Select(e => e.Name)
+        //     .Distinct()
+        //     .ToList();
+        //
+        // IDictionary<string, bool> seaNameDict = new Dictionary<string, bool>();
+        // foreach (string seaName in seaNameList)
+        // {
+        //     if (seaNameDict.ContainsKey(seaName) == false)
+        //     {
+        //         seaNameDict.Add(seaName, true);
+        //     }
+        // }
+        //
+        // IList<string> airNameList = session
+        //     .Query<LogisticsGoodsInfo>()
+        //     .Where(e => e.Cate == LogisticsGoodsCate.Air)
+        //     .Select(e => e.Name)
+        //     .Distinct()
+        //     .ToList();
+        //
+        // IDictionary<string, bool> airNameDict = new Dictionary<string, bool>();
+        // foreach (string airName in airNameList)
+        // {
+        //     if (airNameDict.ContainsKey(airName) == false)
+        //     {
+        //         airNameDict.Add(airName, true);
+        //     }
+        // }
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
         ISheet sheet = workbook.GetSheetAt(0);
@@ -511,67 +495,8 @@ public class LogisticsGoodsWarehouseController : Controller
 
             cellIndex = 0;
 
-            string cateName = row.GetCell(cellIndex++)?.StringCellValue;
-            if (string.IsNullOrWhiteSpace(cateName))
-            {
-                break;
-            }
-
-            cateName = cateName.Trim();
-
-            if (cateName == LogisticsGoodsCate.Air.Name)
-            {
-                logisticsGoods.Cate = LogisticsGoodsCate.Air;
-            }
-            else if (cateName == LogisticsGoodsCate.Sea.Name)
-            {
-                logisticsGoods.Cate = LogisticsGoodsCate.Sea;
-            }
-            else
-            {
-                throw new ValidationException($"第{rowIndex}行数据 类别不对，应该是 {LogisticsGoodsCate.Sea.Name} 或者 {LogisticsGoodsCate.Air.Name} !");
-            }
-
-            // 扩展名
-            string name = row.GetCell(cellIndex++)?.StringCellValue;
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                break;
-            }
-
-            name = name.Trim();
-
-            if (logisticsGoods.Cate == LogisticsGoodsCate.Sea)
-            {
-                if (seaNameDict.ContainsKey(name))
-                {
-                    throw new ValidationException($"第{rowIndex}行数据 {LogisticsGoodsCate.Sea.Name} 扩展名 {name} 已存在或重复，导入失败！");
-                }
-
-                seaNameDict.Add(name, true);
-            }
-
-            if (logisticsGoods.Cate == LogisticsGoodsCate.Air)
-            {
-                if (airNameDict.ContainsKey(name))
-                {
-                    throw new ValidationException($"第{rowIndex}行数据  {LogisticsGoodsCate.Air.Name}  扩展名 {name} 已存在或重复，导入失败！");
-                }
-
-                airNameDict.Add(name, true);
-            }
-
-            if (name.Length > 200)
-            {
-                throw new ValidationException($"第{rowIndex}行数据  {cateName}  扩展名 {name} 太长，超过200长度，导入失败！");
-            }
-
-            logisticsGoods.Name = name.Trim();
-
-            /*
-
             // 物品类型
-            string goodsTypeStr = row.GetCell(cellIndex++)?.StringCellValue;
+            string goodsTypeStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             if (string.IsNullOrWhiteSpace(goodsTypeStr))
             {
                 throw new ValidationException($"第{rowIndex}行数据 物品类型 不能为空，导入失败！");
@@ -585,61 +510,53 @@ public class LogisticsGoodsWarehouseController : Controller
 
             logisticsGoods.Type = goodsType;
 
-            */
-
-            // 是否品牌
-            bool hasBrand = GetBoolValue(
-                row.GetCell(cellIndex++)?.StringCellValue,
-                $"第{rowIndex}行数据 是否品牌 不能为空，导入失败！",
-                $"第{rowIndex}行数据 是否品牌 数据有误，导入失败！");
-
-            logisticsGoods.HasBrand = hasBrand;
-
-            // 品牌
-            string brandName = row.GetCell(cellIndex++)?.StringCellValue;
-            if (hasBrand && string.IsNullOrWhiteSpace(brandName))
+            // 扩展名
+            string name = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ValidationException($"第{rowIndex}行数据 有品牌商品品牌名 不能为空，导入失败！");
+                break;
             }
 
+            name = name.Trim();
+
+            // if (logisticsGoods.Cate == LogisticsGoodsCate.Sea)
+            // {
+            //     if (seaNameDict.ContainsKey(name))
+            //     {
+            //         throw new ValidationException($"第{rowIndex}行数据 {LogisticsGoodsCate.Sea.Name} 扩展名 {name} 已存在或重复，导入失败！");
+            //     }
+            //
+            //     seaNameDict.Add(name, true);
+            // }
+            //
+            // if (logisticsGoods.Cate == LogisticsGoodsCate.Air)
+            // {
+            //     if (airNameDict.ContainsKey(name))
+            //     {
+            //         throw new ValidationException($"第{rowIndex}行数据  {LogisticsGoodsCate.Air.Name}  扩展名 {name} 已存在或重复，导入失败！");
+            //     }
+            //
+            //     airNameDict.Add(name, true);
+            // }
+
+            if (name.Length > 200)
+            {
+                throw new ValidationException($"第{rowIndex}行数据 扩展名 {name} 太长，超过200长度，导入失败！");
+            }
+
+            logisticsGoods.Name = name.Trim();
+
+            // 品牌
+            string brandName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             logisticsGoods.BrandName = brandName;
-
-            // 是否含电池或其他限制
-            logisticsGoods.HasBattery = GetBoolValue(
-                row.GetCell(cellIndex++)?.StringCellValue,
-                $"第{rowIndex}行数据 是否含电池或其他限制 不能为空，导入失败！",
-                $"第{rowIndex}行数据 是否含电池或其他限制 数据有误，导入失败！");
-
-            // 是否含草木竹
-            logisticsGoods.HasBamboo = GetBoolValue(
-                row.GetCell(cellIndex++)?.StringCellValue,
-                $"第{rowIndex}行数据 是否含草木竹 不能为空，导入失败！",
-                $"第{rowIndex}行数据 是否含草木竹 数据有误，导入失败！");
-
-            // 是否含实木包装
-            logisticsGoods.HasWoodPackage = GetBoolValue(
-                row.GetCell(cellIndex++)?.StringCellValue,
-                $"第{rowIndex}行数据 是否含实木包装 不能为空，导入失败！",
-                $"第{rowIndex}行数据 是否含实木包装 数据有误，导入失败！");
-
-            // 是否特货类
-            logisticsGoods.IsSpecial = GetBoolValue(
-                row.GetCell(cellIndex++)?.StringCellValue,
-                $"第{rowIndex}行数据 是否特货类 不能为空，导入失败！",
-                $"第{rowIndex}行数据 是否特货类 数据有误，导入失败！");
-
-            // 是否禁止类
-            logisticsGoods.IsForbidden = GetBoolValue(
-                row.GetCell(cellIndex++)?.StringCellValue,
-                $"第{rowIndex}行数据 是否禁止类 不能为空，导入失败！",
-                $"第{rowIndex}行数据 是否禁止类 数据有误，导入失败！");
-
-            logisticsGoods.HsGoods = null;
 
             logisticsGoodsList.Add(logisticsGoods);
         }
+        
+        // 扩展名重复检查
 
         int loginUserId = loginUserService.GetLoginUserId();
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
 
         ITransaction? transaction = null;
         try
@@ -648,9 +565,10 @@ public class LogisticsGoodsWarehouseController : Controller
 
             foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList)
             {
-                logisticsGoods.Type = logisticsGoodsType;
-
-                logisticsGoods.AddUserId = loginUserId;
+                // 海关编码暂时置空
+                logisticsGoods.HsGoods = null;
+                logisticsGoods.AddUser = loginUser;
+                logisticsGoods.UpdateUser = loginUser;
                 logisticsGoods.Status = LogisticsGoodsStatus.NotConfirmed;
 
                 session.Save(logisticsGoods);
@@ -693,7 +611,7 @@ public class LogisticsGoodsWarehouseController : Controller
         ICellStyle contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
         ICellStyle contentCenterCellStyle = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Center);
 
-        // 扩展名    物品类型    是否品牌    品牌    是否含电池或其他限制    是否含草木竹    是否含实木包装    是否禁止类    中国海关申报名    中国海关编码
+        // 扩展名    物品类型    品牌
         int rowIndex = 0;
 
         IRow row = sheet.CreateRow(rowIndex++);
@@ -703,12 +621,6 @@ public class LogisticsGoodsWarehouseController : Controller
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         ICell cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("类别");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
         cell.SetCellType(CellType.String);
         cell.SetCellValue("扩展名");
@@ -723,43 +635,7 @@ public class LogisticsGoodsWarehouseController : Controller
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否品牌");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
         cell.SetCellValue("品牌");
-
-        sheet.SetColumnWidth(cellIndex, 18 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否含电池或其他限制");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否含草木竹");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否含实木包装");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否特货类");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否禁止类");
 
         /*
         sheet.SetColumnWidth(cellIndex, 10 * 256);
@@ -776,19 +652,11 @@ public class LogisticsGoodsWarehouseController : Controller
 
             cellIndex = 0;
 
-            // 类别
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(goods.Cate?.Name);
-
             // 扩展名
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.Name);
-
-            /*
 
             // 物品类型
             cell = row.CreateCell(cellIndex++);
@@ -796,49 +664,11 @@ public class LogisticsGoodsWarehouseController : Controller
             cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.Type.Name);
 
-            */
-
-            // 是否品牌
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.HasBrand));
-
             // 品牌
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.BrandName);
-
-            // 是否含电池或其他限制
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.HasBattery));
-
-            // 是否含草木竹
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.HasBamboo));
-
-            // 是否含实木包装
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.HasWoodPackage));
-
-            // 是否特货类
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.IsSpecial));
-
-            // 是否禁止类
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.IsForbidden));
 
             /*
             // 状态

@@ -14,7 +14,7 @@ CREATE TABLE tbl_logistics_goods
     update_time                DATETIME                NOT NULL COMMENT '更新时间',
 
     INDEX ix_logistics_goods_type_id (type_id),
-    INDEX ix_logistics_goods_name (name),
+    UNIQUE INDEX ix_logistics_goods_name (name),
 
     CONSTRAINT fk_logistics_goods_hs_goods_id FOREIGN KEY (hs_goods_id) REFERENCES tbl_hs_goods (id),
     CONSTRAINT fk_logistics_goods_add_user_id FOREIGN KEY (add_user_id) REFERENCES tbl_user (id),
