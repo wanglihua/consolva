@@ -3,13 +3,13 @@
 @model LogisticsGoodsTradeIndexModel
 @using Web.Areas.Admin.Models.LogisticsGoodsTrade
 @{
-    ViewBag.Title = "扩展名确认";
+    ViewData[ViewDataKey.Title] = "扩展名确认";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="goods-menu">物品管理</li>
-    <li class="active" data-menu="goods-logistics-goods-trade-search-menu">扩展名确认</li>
+    <li class="active" data-menu="goods-logistics-goods-trade-search-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

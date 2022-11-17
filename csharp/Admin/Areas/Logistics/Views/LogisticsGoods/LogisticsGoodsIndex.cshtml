@@ -4,13 +4,13 @@
 @model LogisticsGoodsIndexModel
 @using Web.Areas.Admin.Models.LogisticsGoods
 @{
-    ViewBag.Title = Model.Type.Name + "清单";
+    ViewData[ViewDataKey.Title] = Model.Type.Name + "清单";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="goods-menu">物品管理</li>
-    <li class="active" data-menu="goods-logistics-goods@(Model.Type.Id)-index-menu">@(Model.Type.Name)清单</li>
+    <li class="active" data-menu="goods-logistics-goods@(Model.Type.Id)-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

@@ -1,13 +1,13 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoodsWarehouse;
 
-namespace Web.Areas.Admin.Models.LogisticsGoodsWarehouse
+public class LogisticsGoodsWarehouseImageModel
 {
-    public class LogisticsGoodsWarehouseImageModel
-    {
-        public string ImageFileUrl { get; set; }
+    [BindNever]
+    public string ImageFileUrl { get; set; } = string.Empty;
 
-        public string SubPath { get; set; }
+    public string SubPath { get; set; } = string.Empty;
 
-        public string FileName { get; set; }
-    }
+    public string FileName { get; set; } = string.Empty;
 }

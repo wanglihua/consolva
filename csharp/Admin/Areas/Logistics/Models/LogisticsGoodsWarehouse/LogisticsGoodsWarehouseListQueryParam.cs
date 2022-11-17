@@ -1,37 +1,18 @@
-using System;
-using Core;
-using Domain.Logistics;
 using Microsoft.AspNetCore.Mvc;
+using shunda.Core;
+using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoodsWarehouse;
 
-namespace Web.Areas.Admin.Models.LogisticsGoodsWarehouse
+public class LogisticsGoodsWarehouseListQueryParam : ListQueryParam
 {
-    public class LogisticsGoodsWarehouseListQueryParam : ListQueryParam
-    {
-        /// <summary>
-        /// 这个用于添加对话框加载
-        /// </summary>
-        public int GoodsId { get; set; }
+    /// <summary>
+    /// 这个用于添加对话框加载
+    /// </summary>
+    public int GoodsId { get; set; } // todo 如果不用了，就去掉
 
-        [ModelBinder(typeof(LogisticsGoodsCateModelBinder))]
-        public LogisticsGoodsCate CateQuery { get; set; }
+    [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
+    public LogisticsGoodsType? GoodsTypeQuery { get; set; }
 
-        [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
-        public LogisticsGoodsType TypeQuery { get; set; }
-
-        public string NameQuery { get; set; }
-
-        public bool? HasBrandQuery { get; set; }
-
-        public bool? HasBatteryQuery { get; set; }
-
-        public bool? HasBambooQuery { get; set; }
-
-        public bool? HasWoodPackageQuery { get; set; }
-
-        public bool? IsSpecialQuery { get; set; }        
-
-        public bool? IsForbiddenQuery { get; set; }
-    }
+    public string? NameQuery { get; set; }
 }

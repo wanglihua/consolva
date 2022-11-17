@@ -1,14 +1,16 @@
-@using Domain
-@model HsGoodsIndexModel
-@using Web.Areas.Admin.Models.HsGoods
+@using shunda.Admin.Areas.Logistics.Models.HsGoods
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.HsGoods.HsGoodsIndexModel
 @{
-    ViewBag.Title = "海关品名";
+    ViewData[ViewDataKey.Title] = "海关品名";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="goods-menu">物品管理</li>
-    <li class="active" data-menu="goods-hs-goods-index-menu">海关品名</li>
+    <li class="active" data-menu="goods-hs-goods-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

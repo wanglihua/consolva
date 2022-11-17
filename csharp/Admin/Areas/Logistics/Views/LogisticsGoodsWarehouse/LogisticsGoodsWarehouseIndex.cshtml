@@ -1,15 +1,17 @@
-@using Domain
-@using Domain.Logistics
-@model LogisticsGoodsWarehouseIndexModel
-@using Web.Areas.Admin.Models.LogisticsGoodsWarehouse
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Logistics.Models.LogisticsGoodsWarehouse
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsGoodsWarehouse.LogisticsGoodsWarehouseIndexModel
 @{
-    ViewBag.Title = "扩展名添加";
+    ViewData[ViewDataKey.Title] = "扩展名添加";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="goods-menu">物品管理</li>
-    <li class="active" data-menu="goods-logistics-goods-warehouse-search-menu">扩展名添加</li>
+    <li class="active" data-menu="goods-logistics-goods-warehouse-search-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
@@ -36,59 +38,17 @@
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <label for="cateQuery">类别</label>&nbsp;
-    <select id="cateQuery" name="cateQuery" style="width: 100px; height: 30px;">
-        <option value="">类别查询</option>
-        @foreach (LogisticsGoodsCate cate in Model.GoodsCateList)
+    <label for="goodsTypeQuery">物品类型</label>&nbsp;
+    <select id="goodsTypeQuery" style="width: 140px; height: 30px;">
+        <option value="">物品类型查询</option>
+        @foreach (LogisticsGoodsType goodsType in Model.GoodsTypeList)
         {
-            <option value="@(cate.Id)">@(cate.Name)</option>
+            <option value="@(goodsType.Id)">@(goodsType.Name)</option>
         }
     </select> &nbsp;
     
     <label for="nameQuery">扩展名</label>&nbsp;
     <input id="nameQuery" name="nameQuery" style="width: 130px; height: 30px;" placeholder="扩展名查询"/>&nbsp;
-
-    <label for="hasBrandQuery">是否品牌</label>&nbsp;
-    <select id="hasBrandQuery" name="hasBrandQuery" style="width: 60px; height: 30px;">
-        <option value=""></option>
-        <option value="@(true.ToString())">是</option>
-        <option value="@(false.ToString())">否</option>
-    </select> &nbsp;
-
-    <label for="hasBatteryQuery">含电池或其他限制</label>&nbsp;
-    <select id="hasBatteryQuery" name="hasBatteryQuery" style="width: 60px; height: 30px;">
-        <option value=""></option>
-        <option value="@(true.ToString())">是</option>
-        <option value="@(false.ToString())">否</option>
-    </select> &nbsp;
-
-    <label for="hasBambooQuery">是否含草木竹</label>&nbsp;
-    <select id="hasBambooQuery" name="hasBambooQuery" style="width: 60px; height: 30px;">
-        <option value=""></option>
-        <option value="@(true.ToString())">是</option>
-        <option value="@(false.ToString())">否</option>
-    </select> &nbsp;
-
-    <label for="hasWoodPackageQuery">是否含实木包装</label>&nbsp;
-    <select id="hasWoodPackageQuery" name="hasWoodPackageQuery" style="width: 60px; height: 30px;">
-        <option value=""></option>
-        <option value="@(true.ToString())">是</option>
-        <option value="@(false.ToString())">否</option>
-    </select> &nbsp;
-    
-    <label for="isSpecialQuery">是否特货类</label>&nbsp;
-    <select id="isSpecialQuery" name="isSpecialQuery" style="width: 60px; height: 30px;">
-        <option value=""></option>
-        <option value="@(true.ToString())">是</option>
-        <option value="@(false.ToString())">否</option>
-    </select> &nbsp;    
-
-    <label for="isForbiddenQuery">是否禁止类</label>&nbsp;
-    <select id="isForbiddenQuery" name="isForbiddenQuery" style="width: 60px; height: 30px;">
-        <option value=""></option>
-        <option value="@(true.ToString())">是</option>
-        <option value="@(false.ToString())">否</option>
-    </select> &nbsp;
 
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsGoodsList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
@@ -135,14 +95,8 @@
             url: "@Url.Action("List", "LogisticsGoodsWarehouse")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.CateQuery))': $('#cateQuery').val(),
+                '@(nameof(LogisticsGoodsWarehouseListQueryParam.GoodsTypeQuery))': $('#goodsTypeQuery').val(),
                 '@(nameof(LogisticsGoodsWarehouseListQueryParam.NameQuery))': $('#nameQuery').val(),
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBrandQuery))': $('#hasBrandQuery').val(),
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBatteryQuery))': $('#hasBatteryQuery').val(),
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBambooQuery))': $('#hasBambooQuery').val(),
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasWoodPackageQuery))': $('#hasWoodPackageQuery').val(),
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.IsSpecialQuery))': $('#isSpecialQuery').val(),
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.IsForbiddenQuery))': $('#isForbiddenQuery').val(),
                 '@(nameof(LogisticsGoodsWarehouseListQueryParam.PageIndex))': pageIndex,
                 '@(nameof(LogisticsGoodsWarehouseListQueryParam.SortField))': sortField,
                 '@(nameof(LogisticsGoodsWarehouseListQueryParam.SortDir))': sortDir
@@ -207,14 +161,8 @@
             type: "POST",
             data: {
                 "@(nameof(LogisticsGoodsWarehouseListQueryParam.GoodsId))": id,
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.CateQuery))': $('#cateQuery').val(),
-                "@(nameof(LogisticsGoodsWarehouseListQueryParam.NameQuery))": $("#nameQuery").val(),
-                "@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBrandQuery))": $("#hasBrandQuery").val(),
-                "@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBatteryQuery))": $("#hasBatteryQuery").val(),
-                "@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBambooQuery))": $("#hasBambooQuery").val(),
-                "@(nameof(LogisticsGoodsWarehouseListQueryParam.HasWoodPackageQuery))": $("#hasWoodPackageQuery").val(),
-                '@(nameof(LogisticsGoodsWarehouseListQueryParam.IsSpecialQuery))': $('#isSpecialQuery').val(),
-                "@(nameof(LogisticsGoodsWarehouseListQueryParam.IsForbiddenQuery))": $("#isForbiddenQuery").val()
+                '@(nameof(LogisticsGoodsWarehouseListQueryParam.GoodsTypeQuery))': $('#goodsTypeQuery').val(),
+                "@(nameof(LogisticsGoodsWarehouseListQueryParam.NameQuery))": $("#nameQuery").val()
             },
             success: function(data) {
                 hideMask();
@@ -338,12 +286,8 @@
 
     function exportLogisticsGoods() {
         var params = $.param({
-            '@(nameof(LogisticsGoodsWarehouseListQueryParam.NameQuery))': $('#nameQuery').val(),
-            '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBrandQuery))': $('#hasBrandQuery').val(),
-            '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBatteryQuery))': $('#hasBatteryQuery').val(),
-            '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasBambooQuery))': $('#hasBambooQuery').val(),
-            '@(nameof(LogisticsGoodsWarehouseListQueryParam.HasWoodPackageQuery))': $('#hasWoodPackageQuery').val(),
-            '@(nameof(LogisticsGoodsWarehouseListQueryParam.IsForbiddenQuery))': $('#isForbiddenQuery').val()
+            '@(nameof(LogisticsGoodsWarehouseListQueryParam.GoodsTypeQuery))': $('#goodsTypeQuery').val(),
+            '@(nameof(LogisticsGoodsWarehouseListQueryParam.NameQuery))': $('#nameQuery').val()
         });
 
         var url = '@Url.Action("Export", "LogisticsGoodsWarehouse")?' + params;
