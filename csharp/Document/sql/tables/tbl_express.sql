@@ -33,13 +33,13 @@ CREATE TABLE tbl_express
     total_weight           DECIMAL(10, 3) DEFAULT 0     NOT NULL COMMENT '总重量',    # KG
     total_volume           DECIMAL(14, 6) DEFAULT 0     NOT NULL COMMENT '总体积',    # 立方米,
 
-    shelf_status_id        INT            DEFAULT 0     NOT NULL COMMENT '快递单货架状态#type:ExpressShelfStatus',
     on_shelf_time          DATETIME                     NULL COMMENT '上架时间',
     on_shelf_user_id       INT                          NULL COMMENT '上架用户',
     off_shelf_time         DATETIME                     NULL COMMENT '下架时间',
     off_shelf_user_id      INT                          NULL COMMENT '下架用户',
     packing_time           DATETIME                     NULL COMMENT '入流动仓时间',
     packing_user_id        INT                          NULL COMMENT '入流动仓用户',
+    shelf_status_id        INT            DEFAULT 0     NOT NULL COMMENT '快递单货架状态#type:ExpressShelfStatus',
 
     return_tracking_no     VARCHAR(30)    DEFAULT ''    NOT NULL COMMENT '退运快递单号', # todo 必要的时候把这些移到另一个表里面
     return_express_company VARCHAR(100)   DEFAULT ''    NOT NULL COMMENT '退运快递公司',
@@ -74,17 +74,3 @@ CREATE TABLE tbl_express
     CONSTRAINT fk_express_packing_user_id FOREIGN KEY (packing_user_id) REFERENCES tbl_user (id),
     CONSTRAINT fk_express_dump_user_id FOREIGN KEY (dump_user_id) REFERENCES tbl_user (id)
 ) COMMENT '商品快递';
-
-
-/*
-
-ALTER TABLE tbl_express
-    ADD FOREIGN KEY fk_logistics_claim_on_shelf_user_id (on_shelf_user_id) REFERENCES tbl_user (id);
-
-ALTER TABLE tbl_express
-    ADD FOREIGN KEY fk_logistics_claim_off_shelf_user_id (off_shelf_user_id) REFERENCES tbl_user (id);
-
-ALTER TABLE tbl_express
-    ADD FOREIGN KEY fk_express_packing_user_id (packing_user_id) REFERENCES tbl_user (id);
-
- */
