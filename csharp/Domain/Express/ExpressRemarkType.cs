@@ -13,9 +13,14 @@ public class ExpressRemarkType : CodeTypeBase
     public static readonly ExpressRemarkType Customer = new ExpressRemarkType(1000, "客户备注", "客户备注");
 
     /// <summary>
-    /// 入库备注, 2000
+    /// 仓库备注, 2000
     /// </summary>
-    public static readonly ExpressRemarkType Checkin = new ExpressRemarkType(2000, "入库备注", "入库备注");
+    public static readonly ExpressRemarkType Warehouse = new ExpressRemarkType(2000, "仓库备注", "仓库备注");
+
+    /// <summary>
+    /// 客服备注, 3000
+    /// </summary>
+    public static readonly ExpressRemarkType Service = new ExpressRemarkType(3000, "客服备注", "客服备注");
 
     /// <summary>
     /// None
@@ -24,7 +29,8 @@ public class ExpressRemarkType : CodeTypeBase
 
     private static readonly IReadOnlyList<ExpressRemarkType> codeTypeList = new List<ExpressRemarkType>() {
         Customer,
-        Checkin,
+        Warehouse,
+        Service,
     };
 
     private static readonly Dictionary<int, ExpressRemarkType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
