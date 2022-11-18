@@ -1,4 +1,5 @@
 using shunda.Core.Util;
+using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Models.Sidebar;
 
@@ -42,6 +43,8 @@ public class SidebarModel
     {
         return PassUtil.HasOneOfPassRes(PassResIdMap, IsAdmin, passResIdList);
     }
+
+    public IList<LogisticsGoodsType> LogisticsGoodsTypeList { get; set; } = LogisticsGoodsType.GetInnerList();
 
 #if DEBUG
     public bool Debug { get; } = true;

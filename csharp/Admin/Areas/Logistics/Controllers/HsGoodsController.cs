@@ -18,6 +18,7 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Logistics.Controllers;
 
+[LogisticsArea]
 [AdminAuth(PassRes.Goods.HsGoods)]
 public class HsGoodsController : Controller
 {
