@@ -65,10 +65,10 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
         );
 
         Property(
-            x => x.ExpressComName,
+            x => x.ExpressCompany,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("express_com_name");
+                map.Column("express_company");
                 map.NotNullable(false);
             }
         );

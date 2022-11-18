@@ -134,7 +134,7 @@ public class AutoPhotoUploadController : Controller
         expressPhoto.User = user;
 
         expressPhoto.TrackingNo = trackingNo;
-        expressPhoto.ExpressComName = string.Empty;
+        expressPhoto.ExpressCompany = string.Empty;
         expressPhoto.Express = express;
         expressPhoto.Customer = customer;
         expressPhoto.Order = order;
@@ -275,7 +275,7 @@ public class AutoPhotoUploadController : Controller
         orderPhoto.StorePath = storePath;
         orderPhoto.StoreName = storeFileName;
         orderPhoto.Status = ExpressPhotoStatus.None;
-        orderPhoto.ExpressComName = String.Empty;
+        orderPhoto.ExpressCompany = String.Empty;
         orderPhoto.StoreLoc = ExpressPhotoStoreLoc.Oss;
         orderPhoto.User = uploadUser;
 

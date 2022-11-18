@@ -302,7 +302,7 @@ public class ExpressPhotoController : Controller
         expressPhoto.User = loginUser;
 
         expressPhoto.TrackingNo = trackingNo;
-        expressPhoto.ExpressComName = string.Empty;
+        expressPhoto.ExpressCompany = string.Empty;
         expressPhoto.Express = express;
         expressPhoto.Customer = customer;
         expressPhoto.Order = order;

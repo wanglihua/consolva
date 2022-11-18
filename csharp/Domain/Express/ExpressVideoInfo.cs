@@ -50,8 +50,8 @@ public class ExpressVideoInfo : Entity
     /// 快递公司，可空
     /// </summary>
     [MaxLength(100, ErrorMessage = "快递公司长度不能大于100！")]
-    [JsonProperty("expressComName")]
-    public virtual string? ExpressComName { get; set; } = null;
+    [JsonProperty("expressCompany")]
+    public virtual string? ExpressCompany { get; set; } = null;
 
     /// <summary>
     /// 类型，非空

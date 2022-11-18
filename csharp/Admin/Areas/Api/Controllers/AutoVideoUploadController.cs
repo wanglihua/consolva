@@ -98,7 +98,7 @@ public class AutoVideoUploadController : Controller
         orderVideo.StorePath = storePath;
         orderVideo.StoreName = storeFileName;
         orderVideo.Status = ExpressVideoStatus.None;
-        orderVideo.ExpressComName = String.Empty;
+        orderVideo.ExpressCompany = String.Empty;
         orderVideo.StoreLoc = ExpressPhotoStoreLoc.Oss;
         orderVideo.User = uploadUser;
 
