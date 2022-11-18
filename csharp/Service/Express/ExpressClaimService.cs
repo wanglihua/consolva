@@ -38,18 +38,18 @@ public class ExpressClaimService
     // 3.0 系统启用的时间点
     public static DateTime ARCHIVE_DATE => new DateTime(2021, 5, 1);
 
-    private ISession session = null;
-    private LogisticsExpressService logisticsExpressService = null;
-    private CustomerCodeService customerCodeService = null;
-    private ExpressClaimImageService expressClaimImageService = null;
+    private ISession session;
+    private ExpressSizeWeightService expressSizeWeightService;
+    private CustomerCodeService customerCodeService;
+    private ExpressClaimImageService expressClaimImageService;
 
     public ExpressClaimService(ISession session,
-        LogisticsExpressService logisticsExpressService,
+        ExpressSizeWeightService expressSizeWeightService,
         CustomerCodeService customerCodeService,
         ExpressClaimImageService expressClaimImageService)
     {
         this.session = session;
-        this.logisticsExpressService = logisticsExpressService;
+        this.expressSizeWeightService = expressSizeWeightService;
         this.customerCodeService = customerCodeService;
         this.expressClaimImageService = expressClaimImageService;
     }
@@ -99,7 +99,7 @@ public class ExpressClaimService
             .ToList();
 
         IList<string> trackingNoList = claimGoodsList.Select(e => e.TrackingNo).ToList();
-        IList<LogisticsExpressItem> expressItemList = logisticsExpressService.GetLogisticsExpressItemList(trackingNoList);
+        IList<ExpressSizeWeightInfo> expressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
 
         IList<ExpressExpectInfo> expressExpectList = session.Query<ExpressExpectInfo>()
             .Fetch(e => e.Customer)
@@ -815,13 +815,13 @@ public class ExpressClaimService
         if (queryParam.PickTimeBeginQuery != null)
         {
             DateTime pickTimeBeginQueryValue = queryParam.PickTimeBeginQuery.Value.Date;
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.PickTime >= pickTimeBeginQueryValue));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ClaimTime >= pickTimeBeginQueryValue));
         }
 
         if (queryParam.PickTimeEndQuery != null)
         {
             DateTime pickTimeEndQueryValue = queryParam.PickTimeEndQuery.Value.Date.AddDays(1);
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.PickTime < pickTimeEndQueryValue));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ClaimTime < pickTimeEndQueryValue));
         }
 
         if (queryParam.DumpTimeBeginQuery != null)

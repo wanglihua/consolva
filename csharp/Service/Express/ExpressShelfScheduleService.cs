@@ -20,12 +20,12 @@ namespace Service.Express
     public class ExpressShelfScheduleService
     {
         private ISession session = null;
-        private LogisticsExpressService logisticsExpressService = null;
+        private ExpressSizeWeightService expressSizeWeightService = null;
 
-        public ExpressShelfScheduleService(ISession session, LogisticsExpressService logisticsExpressService)
+        public ExpressShelfScheduleService(ISession session, ExpressSizeWeightService expressSizeWeightService)
         {
             this.session = session;
-            this.logisticsExpressService = logisticsExpressService;
+            this.expressSizeWeightService = expressSizeWeightService;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Service.Express
             IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>().Where(e => storageLocIdList.Contains(e.Id)).ToList();
 
             IList<string> trackingNoList = scheduleList.Select(e => e.Claim.TrackingNo).ToList();
-            IList<LogisticsExpressItem> expressItemList = logisticsExpressService.GetLogisticsExpressItemList(trackingNoList);
+            IList<LogisticsExpressItem> expressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
 
             foreach (ExpressShelfScheduleInfo schedule in scheduleList)
             {
