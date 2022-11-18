@@ -1,7 +1,8 @@
-@using Domain
-@model Web.Areas.Admin.Models.HsGoods.HsGoodsDetailModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
+@model shunda.Admin.Areas.Logistics.Models.HsGoods.HsGoodsDetailModel
 @{
-    ViewBag.Title = "海关品名详细";
+    ViewData[ViewDataKey.Title] = "海关品名详细";
     Layout = "_AdminLayout";
 }
 

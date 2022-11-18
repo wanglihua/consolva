@@ -1,8 +1,9 @@
 @{
     Layout = null;
 }
-@using Domain
-@model Web.Areas.Admin.Models.HsGoods.HsGoodsListModel
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.HsGoods.HsGoodsListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadHsGoodsList"})
 
@@ -85,50 +86,50 @@
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td class="break-word">
                         <div>
-                            @hsGoods.CnHsName
+                            @ListDataUtil.Render(hsGoods.CnHsName);
                         </div>
                         <div>
-                            @hsGoods.CnHsCode
-                        </div>
-                    </td>
-                    <td class="break-word">
-                        <div>
-                            @hsGoods.EnHsName
-                        </div>
-                        <div>
-                            @hsGoods.EnHsCode
+                            @ListDataUtil.Render(hsGoods.CnHsCode);
                         </div>
                     </td>
                     <td class="break-word">
                         <div>
-                            @hsGoods.Elem01
+                            @ListDataUtil.Render(hsGoods.EnHsName);
                         </div>
                         <div>
-                            @hsGoods.Elem02
-                        </div>
-                    </td>
-                    <td class="break-word">
-                        <div>
-                            @hsGoods.Elem03
-                        </div>
-                        <div>
-                            @hsGoods.Elem04
+                            @ListDataUtil.Render(hsGoods.EnHsCode);
                         </div>
                     </td>
                     <td class="break-word">
                         <div>
-                            @hsGoods.Elem05
+                            @ListDataUtil.Render(hsGoods.Elem01);
                         </div>
                         <div>
-                            @hsGoods.Elem06
+                            @ListDataUtil.Render(hsGoods.Elem02);
                         </div>
                     </td>
                     <td class="break-word">
                         <div>
-                            @hsGoods.Elem07
+                            @ListDataUtil.Render(hsGoods.Elem03);
                         </div>
                         <div>
-                            @hsGoods.Elem08
+                            @ListDataUtil.Render(hsGoods.Elem04);
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @ListDataUtil.Render(hsGoods.Elem05);
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(hsGoods.Elem06);
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @ListDataUtil.Render(hsGoods.Elem07);
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(hsGoods.Elem08);
                         </div>
                     </td>
                     <td style="text-align: center;">
