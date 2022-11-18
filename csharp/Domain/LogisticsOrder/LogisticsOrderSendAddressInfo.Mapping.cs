@@ -3,7 +3,7 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Domain.Customer;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderSendAddressInfoMapping : EntityMapping<LogisticsOrderSendAddressInfo>
 {

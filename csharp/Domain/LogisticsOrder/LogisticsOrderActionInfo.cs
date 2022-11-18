@@ -6,7 +6,7 @@ using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.Pass;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 订单操作日志

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using shunda.Core;
 using shunda.Domain.Express;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 订单快递单号

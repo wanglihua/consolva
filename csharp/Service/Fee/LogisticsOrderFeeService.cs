@@ -1,7 +1,7 @@
 using NHibernate;
 using shunda.Core.Service;
 using shunda.Domain.Fee;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Fee;
 

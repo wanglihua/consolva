@@ -3,7 +3,7 @@ using NLog;
 using shunda.Core.Hibernate;
 using shunda.Core.Service;
 
-namespace shunda.Service.Order;
+namespace shunda.Service.LogisticsOrder;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderCodeService

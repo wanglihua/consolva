@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using shunda.Core;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;

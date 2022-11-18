@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Admin.Areas.Customer.Models.Customer;
 

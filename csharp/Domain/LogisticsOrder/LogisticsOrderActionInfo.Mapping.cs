@@ -5,7 +5,7 @@ using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.Pass;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderActionInfoMapping : EntityNoUpdateMapping<LogisticsOrderActionInfo>
 {

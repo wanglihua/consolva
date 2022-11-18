@@ -13,7 +13,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service;

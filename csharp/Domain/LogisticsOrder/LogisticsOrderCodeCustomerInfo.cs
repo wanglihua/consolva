@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using shunda.Core.Json;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 物流订单编码按客户

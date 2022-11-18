@@ -6,7 +6,7 @@ using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.Storage;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
 {

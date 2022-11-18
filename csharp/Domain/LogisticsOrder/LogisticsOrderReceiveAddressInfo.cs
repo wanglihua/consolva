@@ -3,7 +3,7 @@ using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 订单收货地址

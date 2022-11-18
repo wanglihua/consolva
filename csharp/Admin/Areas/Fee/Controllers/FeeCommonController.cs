@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Areas.Fee.Models.FeeCommon;
 using shunda.Core;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 

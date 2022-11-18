@@ -2,7 +2,7 @@ using NHibernate.Mapping.ByCode;
 using shunda.Core;
 using shunda.Domain.Express;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderExpressInfoMapping : EntityMapping<LogisticsOrderExpressInfo>
 {

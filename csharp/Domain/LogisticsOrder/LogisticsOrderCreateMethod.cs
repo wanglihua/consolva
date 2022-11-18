@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 订单创建方式

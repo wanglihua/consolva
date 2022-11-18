@@ -3,7 +3,7 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Customer;

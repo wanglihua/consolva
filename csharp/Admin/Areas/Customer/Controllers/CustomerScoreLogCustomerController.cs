@@ -5,7 +5,7 @@ using shunda.Admin.Areas.Customer.Models.CustomerScoreLogCustomer;
 using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;

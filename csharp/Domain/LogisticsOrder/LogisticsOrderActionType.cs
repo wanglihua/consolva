@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderActionType : CodeTypeBase
 {

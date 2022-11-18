@@ -7,7 +7,7 @@ using shunda.Admin.Areas.Api.Models.AutoMeasureData;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using shunda.Service.AutoMeasure;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;

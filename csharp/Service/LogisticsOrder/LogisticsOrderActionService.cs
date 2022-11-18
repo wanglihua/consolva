@@ -2,10 +2,10 @@ using NHibernate;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 
-namespace shunda.Service.Order;
+namespace shunda.Service.LogisticsOrder;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderActionService

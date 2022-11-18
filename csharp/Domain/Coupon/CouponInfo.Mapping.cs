@@ -2,7 +2,7 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Core;
 using shunda.Domain.Customer;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Domain.Coupon;
 

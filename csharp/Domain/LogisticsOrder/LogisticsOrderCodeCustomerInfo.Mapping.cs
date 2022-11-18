@@ -2,7 +2,7 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderCodeCustomerInfoMapping : ClassMapping<LogisticsOrderCodeCustomerInfo>
 {

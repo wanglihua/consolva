@@ -14,7 +14,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;

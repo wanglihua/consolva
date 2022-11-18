@@ -2,7 +2,7 @@ using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderReceiveAddressInfoMapping : EntityMapping<LogisticsOrderReceiveAddressInfo>
 {

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 国际单号

@@ -4,7 +4,7 @@ using NHibernate.Mapping.ByCode;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderAirExpressInfoMapping : EntityMapping<LogisticsOrderAirExpressInfo>
 {

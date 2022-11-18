@@ -1,6 +1,6 @@
 using shunda.Core.CodeType;
 
-namespace shunda.Domain.Order;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 物流订单状态

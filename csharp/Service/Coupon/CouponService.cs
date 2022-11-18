@@ -4,7 +4,7 @@ using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Coupon;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Coupon;
 

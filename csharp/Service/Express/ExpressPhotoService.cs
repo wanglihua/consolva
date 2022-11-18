@@ -4,7 +4,7 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.Message;
-using shunda.Domain.Order;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Express;
 
