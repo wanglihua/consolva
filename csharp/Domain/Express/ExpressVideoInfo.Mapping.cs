@@ -60,7 +60,7 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("tracking_no");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -69,7 +69,7 @@ public class ExpressVideoInfoMapping : EntityMapping<ExpressVideoInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("express_company");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 

@@ -69,7 +69,7 @@ public class ExpressPhotoInfoMapping : EntityMapping<ExpressPhotoInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("express_company");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 

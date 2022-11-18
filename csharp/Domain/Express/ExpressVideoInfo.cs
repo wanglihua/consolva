@@ -40,18 +40,20 @@ public class ExpressVideoInfo : Entity
     public virtual ExpressInfo? Express { get; set; } = null;
 
     /// <summary>
-    /// 快递单号，可空
+    /// 快递单号，非空
     /// </summary>
+    [Required(ErrorMessage = "快递单号不能为空！")]
     [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
     [JsonProperty("trackingNo")]
-    public virtual string? TrackingNo { get; set; } = null;
+    public virtual string TrackingNo { get; set; } = string.Empty;
 
     /// <summary>
-    /// 快递公司，可空
+    /// 快递公司，非空
     /// </summary>
+    [Required(ErrorMessage = "快递公司不能为空！")]
     [MaxLength(100, ErrorMessage = "快递公司长度不能大于100！")]
     [JsonProperty("expressCompany")]
-    public virtual string? ExpressCompany { get; set; } = null;
+    public virtual string ExpressCompany { get; set; } = string.Empty;
 
     /// <summary>
     /// 类型，非空
