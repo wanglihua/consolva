@@ -15,6 +15,8 @@ using Order = NHibernate.Criterion.Order;
 
 namespace shunda.Service.Express;
 
+// todo claimGoods 改名
+
 [Service(ServiceType.Scoped)]
 public class ExpressClaimService
 {
@@ -41,17 +43,17 @@ public class ExpressClaimService
     private ISession session;
     private ExpressSizeWeightService expressSizeWeightService;
     private CustomerCodeService customerCodeService;
-    private ExpressClaimImageService expressClaimImageService;
+    private ExpressPhotoService expressPhotoService;
 
     public ExpressClaimService(ISession session,
         ExpressSizeWeightService expressSizeWeightService,
         CustomerCodeService customerCodeService,
-        ExpressClaimImageService expressClaimImageService)
+        ExpressPhotoService expressPhotoService)
     {
         this.session = session;
         this.expressSizeWeightService = expressSizeWeightService;
         this.customerCodeService = customerCodeService;
-        this.expressClaimImageService = expressClaimImageService;
+        this.expressPhotoService = expressPhotoService;
     }
 
     /// <summary>
@@ -106,10 +108,12 @@ public class ExpressClaimService
             .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
 
-        IList<LogisticsOrderPhotoInfo> expressPhotoList = expressClaimImageService.GetExpressPhotoList(trackingNoList);
+        IList<ExpressPhotoInfo> expressPhotoList = expressPhotoService.GetExpressPhotoList(trackingNoList);
 
         foreach (ExpressInfo claimGoods in claimGoodsList)
         {
+            /*
+             这里有些预加载了就可以了，不用设置 cache成员
             UserInfo addUser = userList.Where(e => e.Id == claimGoods.AddUser.Id).Take(1).SingleOrDefault();
             claimGoods.AddUserNameCache = addUser?.UserName;
 
@@ -153,6 +157,7 @@ public class ExpressClaimService
             claimGoods.CheckinStorageLocNameCache = checkinStorageLoc?.GetFullName();
 
             claimGoods.ExpressItemListCache = expressItemList.Where(e => e.ExpressTrackingNo == claimGoods.TrackingNo).ToList();
+            
 
             ExpressExpectInfo expect = expressExpectList.Where(e => e.TrackingNo == claimGoods.TrackingNo).Take(1).SingleOrDefault();
             claimGoods.ExpectCustomerIdCache = expect?.Customer?.CustomerCode ?? string.Empty;
@@ -162,6 +167,8 @@ public class ExpressClaimService
                 .Where(e => e.ExpressTrackingNo == claimGoods.TrackingNo)
                 .OrderBy(e => e.Type.Id) // 必须要用 Type.Id, Type之间还不能比较
                 .ToList();
+            
+            */
         }
 
         return claimGoodsList;
@@ -350,7 +357,7 @@ public class ExpressClaimService
 
             // 直接把所有待待打包的订单全找出来，应该不会很多
             var orderWaitPackListQuery = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.OrderStatus == LogisticsOrderStatus.CnWaitPack);
+                .Where(e => e.OrderStatus == LogisticsOrderStatus.WaitPack);
 
             // 后面的查询就是缩小 orderWaitPackList 的范围 
 
@@ -368,61 +375,6 @@ public class ExpressClaimService
 
                 int fmIdQuery = queryParam.FirstModeIdQuery;
                 orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.Id == fmIdQuery);
-            }
-
-            if (queryParam.SyncTlaQuery != null)
-            {
-                /*
-                string syncTlaProp = $"fm.{nameof(LogisticsModeInfo.SyncTla)}";
-
-                if (queryParam.SyncTlaQuery == false)
-                {
-                    // criteria = criteria.Add(Restrictions.Eq(syncTlaProp, false));
-                    criteria = criteria.Add(Restrictions.Or(Restrictions.Eq(syncTlaProp, false), Restrictions.IsNull(syncTlaProp)));
-                }
-
-                if (queryParam.SyncTlaQuery == true)
-                {
-                    criteria = criteria.Add(Restrictions.Eq(syncTlaProp, true));
-                }
-                */
-
-                if (queryParam.SyncTlaQuery == false)
-                {
-                    orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.SyncTla == false || e.FirstLogisticsMode.SyncTla == null);
-                }
-
-                if (queryParam.SyncTlaQuery == true)
-                {
-                    orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.SyncTla == true);
-                }
-            }
-
-            if (queryParam.PackPrintQuery != null)
-            {
-                /*
-                string packPrintTypeProp = $"fm.{nameof(LogisticsModeInfo.PackPrintType)}";
-
-                if (queryParam.PackPrintQuery == false)
-                {
-                    criteria = criteria.Add(Restrictions.Eq(packPrintTypeProp, LogisticsOrderPackPrintType.None));
-                }
-
-                if (queryParam.PackPrintQuery == true)
-                {
-                    criteria = criteria.Add(Restrictions.Not(Restrictions.Eq(packPrintTypeProp, LogisticsOrderPackPrintType.None)));
-                }
-                */
-
-                if (queryParam.PackPrintQuery == false)
-                {
-                    orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.PackPrintType == LogisticsOrderPackPrintType.None);
-                }
-
-                if (queryParam.PackPrintQuery == true)
-                {
-                    orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.PackPrintType != LogisticsOrderPackPrintType.None);
-                }
             }
 
             if (queryParam.SubmitPackTimeBeginQuery != null)
@@ -576,7 +528,7 @@ public class ExpressClaimService
                 e.AddTime >= ARCHIVE_DATE
                 && e.AddTime < EXPRESS_CHECKIN_RECENT_AGO
                 && (e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder)
-                && e.Dumped == false
+                && e.DumpStatus == ExpressDumpStatus.NotDump
                 && e.ArchiveType == ExpressArchiveType.None)
             );
         }
@@ -587,14 +539,14 @@ public class ExpressClaimService
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressDumpScheduleInfo>();
             scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Claim), nameof(ExpressDumpScheduleInfo.Claim));
             scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.DumpType)}", ExpressDumpType.NoPickup));
-            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.Dumped)}", false));
+            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.DumpStatus)}", ExpressDumpStatus.NotDump));
             scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.Id)}"));
 
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE
                 && e.AddTime < EXPRESS_CHECKIN_RECENT_AGO
                 && e.Status == ExpressStatus.WaitPick
-                && e.Dumped == false
+                && e.DumpStatus == ExpressDumpStatus.NotDump
                 && e.ArchiveType == ExpressArchiveType.None));
 
             criteria = criteria.Add(Subqueries.PropertyNotIn($"{nameof(ExpressInfo.Id)}", scheduleCriteria));
@@ -606,14 +558,14 @@ public class ExpressClaimService
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressDumpScheduleInfo>();
             scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Claim), nameof(ExpressDumpScheduleInfo.Claim));
             scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.DumpType)}", ExpressDumpType.NoProcess));
-            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.Dumped)}", false));
+            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.DumpStatus)}", ExpressDumpStatus.NotDump));
             scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.Id)}"));
 
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE
                 && e.AddTime < EXPRESS_CHECKIN_RECENT_AGO
                 && (e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder)
-                && e.Dumped == false
+                && e.DumpStatus == ExpressDumpStatus.NotDump
                 && e.ArchiveType == ExpressArchiveType.None));
 
             criteria = criteria.Add(Subqueries.PropertyNotIn($"{nameof(ExpressInfo.Id)}", scheduleCriteria));
@@ -622,7 +574,7 @@ public class ExpressClaimService
         // 已堆存
         if (expressClaimCate == ExpressClaimCate.Dumped)
         {
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Dumped == true));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.DumpStatus == ExpressDumpStatus.Dumped));
         }
 
         // 历史归档
@@ -689,7 +641,7 @@ public class ExpressClaimService
         {
             aoPinTrackingNoQuery = aoPinTrackingNoQuery.Trim();
             // criteria = criteria.Add(Restrictions.On<ExpressInfo>(e => e.AoPinTrackingNo).IsInsensitiveLike(aoPinTrackingNoQuery, MatchMode.Anywhere));
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.AoPinTrackingNo == aoPinTrackingNoQuery));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.CheckinTrackingNo == aoPinTrackingNoQuery));
         }
 
         string trackingNoQuery = queryParam.TrackingNoQuery;
@@ -724,7 +676,7 @@ public class ExpressClaimService
         if (string.IsNullOrWhiteSpace(customerCodeQuery) == false)
         {
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.CustomerId == customerIdQuery));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Customer!.Id == customerIdQuery));
         }
 
         string orderCodeQuery = queryParam.OrderCodeQuery;
@@ -767,9 +719,9 @@ public class ExpressClaimService
                 .Select(e => e.Id)
                 .ToList();
 
-            IList<int> claimGoodsIdList = session.Query<LogisticsClaimGoodsEntryInfo>()
-                .Where(e => goodsIdList.Contains(e.GoodsId))
-                .Select(e => e.ClaimId)
+            IList<int> claimGoodsIdList = session.Query<ExpressGoodsInfo>()
+                .Where(e => goodsIdList.Contains(e.Goods.Id))
+                .Select(e => e.Express.Id)
                 .Distinct()
                 .ToList();
 

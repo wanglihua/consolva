@@ -18,13 +18,38 @@ public class ExpressPhotoService
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
-    // private CustomerMessageService customerMessageService = null;
 
-    public ExpressPhotoService(ISession session)
-        // CustomerMessageService customerMessageService)
+    // private CustomerMessageService customerMessageService = null;
+    private ExpressPhotoFileService expressPhotoFileService;
+
+    public ExpressPhotoService(ISession session,
+        // CustomerMessageService customerMessageService,
+        ExpressPhotoFileService expressPhotoFileService)
     {
         this.session = session;
         // this.customerMessageService = customerMessageService;
+        this.expressPhotoFileService = expressPhotoFileService;
+    }
+
+    public IList<ExpressPhotoInfo> GetExpressPhotoList(IList<string> trackingNoList)
+    {
+        if (trackingNoList == null || trackingNoList.Count == 0)
+        {
+            return new List<ExpressPhotoInfo>();
+        }
+
+        IList<ExpressPhotoInfo> orderPhotoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
+            .OrderBy(e => e.Type)
+            .ToList();
+
+        foreach (ExpressPhotoInfo orderPhoto in orderPhotoList)
+        {
+            orderPhoto.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
+            orderPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
+        }
+
+        return orderPhotoList;
     }
 
     // todo b 调用
