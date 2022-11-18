@@ -7,7 +7,7 @@ public class LogisticsGoodsImageModel
     [BindNever]
     public string ImageFileUrl { get; set; } = string.Empty;
 
-    public string SubPath { get; set; } = string.Empty;
+    public string StorePath { get; set; } = string.Empty;
 
-    public string FileName { get; set; } = string.Empty;
+    public string StoreName { get; set; } = string.Empty;
 }

@@ -1,9 +1,11 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Logistics.Models.HsGoods
+@using shunda.Core.Web
+@using shunda.Domain.Express
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsGoods.LogisticsGoodsDetailModel
 @{
-    ViewBag.Title = "物品品名详细";
+    ViewData[ViewDataKey.Title] = "物品品名详细";
     Layout = "_AdminLayout";
 
     bool autoSelectHsGoods = Model.HsGoodsId != 0;
@@ -16,14 +18,14 @@
     @if (Model.IsViewOnly)
     {
         <li class="active" data-menu="goods-logistics-goods@(Model.LogisticsGoods.Type.Id)-index-menu">
-            <a href="@Url.Action("Index", "LogisticsGoods", new {typeId = Model.LogisticsGoods.Type.Id})">@(Model.LogisticsGoods.Type.Name)清单</a>
+            <a href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })">@(Model.LogisticsGoods.Type.Name)清单</a>
         </li>
         <li>物品详细</li>
     }
     else
     {
         <li class="active" data-menu="goods-logistics-goods-trade-search-menu">
-            <a href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = Model.StatusId.Value})">扩展名确认</a>
+            <a href="@Url.Action("Index", "LogisticsGoodsTrade", new { statusId = Model.StatusId ?? 0 })">扩展名确认</a>
         </li>
         <li>物品详细</li>
     }
@@ -67,7 +69,7 @@
     }
     else
     {
-        <a class="btn btn-pink btn-sm" target="_blank" href="@Url.Action("Detail", "LogisticsGoods", new {id = Model.LogisticsGoods.Id, statusId = (Model.LogisticsGoods.Status?.Id ?? 0)})">
+        <a class="btn btn-pink btn-sm" target="_blank" href="@Url.Action("Detail", "LogisticsGoods", new { id = Model.LogisticsGoods.Id, statusId = (Model.LogisticsGoods.Status?.Id ?? 0) })">
             <i class="ace-icon fa fa-pencil"></i>
             编辑
         </a>
@@ -75,14 +77,14 @@
 
     @if (Model.IsViewOnly)
     {
-        <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoods", new {typeId = Model.LogisticsGoods.Type.Id})">
+        <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
         </a>
     }
     else
     {
-        <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = Model.StatusId.Value})">
+        <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoodsTrade", new { statusId = Model.StatusId ?? 0 })">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
         </a>
@@ -229,12 +231,12 @@
                         <div class="row">
                             <label class="col-xs-2 control-label">创建单号图片</label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.CreateExpressImageListCache != null && Model.LogisticsGoods.CreateExpressImageListCache.Count != 0)
+                                @if (Model.LogisticsGoods.CreateExpressPhotoListCache != null && Model.LogisticsGoods.CreateExpressPhotoListCache.Count != 0)
                                 {
-                                    foreach (LogisticsOrderPhotoInfo orderPhoto in Model.LogisticsGoods.CreateExpressImageListCache)
+                                    foreach (ExpressPhotoInfo expressPhoto in Model.LogisticsGoods.CreateExpressPhotoListCache)
                                     {
-                                        <a href="@(orderPhoto.BigImageFullUrlCache)" target="_blank">
-                                            <img src="@(orderPhoto.SmallImageFullUrlCache)" alt=""/>
+                                        <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                            <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                         </a>
                                     }
                                 }
@@ -247,11 +249,11 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.FirstOrderImageListCache != null && Model.LogisticsGoods.FirstOrderImageListCache.Count != 0)
+                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0)
                                 {
-                                    int orderId = Model.LogisticsGoods.FirstOrderImageListCache.FirstOrDefault()?.OrderId ?? 0;
+                                    int orderId = Model.LogisticsGoods.FirstOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a href="@Url.Action("Detail", "LogisticsOrder", new {id = orderId})" target="_blank">订单1</a>
+                                        <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderId })" target="_blank">订单1</a>
                                         <span>图片</span>
                                     </span>
                                 }
@@ -261,17 +263,17 @@
                                 }
                             </label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.FirstOrderImageListCache != null && Model.LogisticsGoods.FirstOrderImageListCache.Count != 0)
+                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0)
                                 {
-                                    foreach (LogisticsGoodsImageItem imageItem in Model.LogisticsGoods.FirstOrderImageListCache)
+                                    foreach (var expressPhoto in Model.LogisticsGoods.FirstOrderExpressPhotoListCache)
                                     {
                                         <div style="display: inline-block;">
                                             <div>
-                                                <a href="@Url.Action("TrackingNoDetail", "ExpressClaim", new {trackingNo = imageItem.ExpressTrackingNo})" target="_blank">@(imageItem.ExpressTrackingNo)</a>
+                                                <a href="@Url.Action("TrackingNoDetail", "ExpressClaim", new { trackingNo = expressPhoto.TrackingNo })" target="_blank">@(expressPhoto.TrackingNo)</a>
                                             </div>
                                             <div>
-                                                <a href="@(imageItem.BigFullImageUrl)" target="_blank">
-                                                    <img src="@(imageItem.SmallFullImageUrl)" alt=""/>
+                                                <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                                    <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                                 </a>
                                             </div>
                                         </div>
@@ -286,11 +288,11 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.SecondOrderImageListCache != null && Model.LogisticsGoods.SecondOrderImageListCache.Count != 0)
+                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0)
                                 {
-                                    int orderId = Model.LogisticsGoods.SecondOrderImageListCache.FirstOrDefault()?.OrderId ?? 0;
+                                    int orderId = Model.LogisticsGoods.SecondOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a href="@Url.Action("Detail", "LogisticsOrder", new {id = orderId})" target="_blank">订单2</a>
+                                        <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderId })" target="_blank">订单2</a>
                                         <span>图片</span>
                                     </span>
                                 }
@@ -300,17 +302,17 @@
                                 }
                             </label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.SecondOrderImageListCache != null && Model.LogisticsGoods.SecondOrderImageListCache.Count != 0)
+                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0)
                                 {
-                                    foreach (LogisticsGoodsImageItem imageItem in Model.LogisticsGoods.SecondOrderImageListCache)
+                                    foreach (var expressPhoto in Model.LogisticsGoods.SecondOrderExpressPhotoListCache)
                                     {
                                         <div style="display: inline-block;">
                                             <div>
-                                                <a href="@Url.Action("TrackingNoDetail", "ExpressClaim", new {trackingNo = imageItem.ExpressTrackingNo})" target="_blank">@(imageItem.ExpressTrackingNo)</a>
+                                                <a href="@Url.Action("TrackingNoDetail", "ExpressClaim", new { trackingNo = expressPhoto.TrackingNo })" target="_blank">@(expressPhoto.TrackingNo)</a>
                                             </div>
                                             <div>
-                                                <a href="@(imageItem.BigFullImageUrl)" target="_blank">
-                                                    <img src="@(imageItem.SmallFullImageUrl)" alt=""/>
+                                                <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                                    <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                                 </a>
                                             </div>
                                         </div>
@@ -325,11 +327,11 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.ThirdOrderImageListCache != null && Model.LogisticsGoods.ThirdOrderImageListCache.Count != 0)
+                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0)
                                 {
-                                    int orderId = Model.LogisticsGoods.ThirdOrderImageListCache.FirstOrDefault()?.OrderId ?? 0;
+                                    int orderId = Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a href="@Url.Action("Detail", "LogisticsOrder", new {id = orderId})" target="_blank">订单3</a>
+                                        <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderId })" target="_blank">订单3</a>
                                         <span>图片</span>
                                     </span>
                                 }
@@ -339,17 +341,17 @@
                                 }
                             </label>
                             <div class="col-xs-10">
-                                @if (Model.LogisticsGoods.ThirdOrderImageListCache != null && Model.LogisticsGoods.ThirdOrderImageListCache.Count != 0)
+                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0)
                                 {
-                                    foreach (LogisticsGoodsImageItem imageItem in Model.LogisticsGoods.ThirdOrderImageListCache)
+                                    foreach (var expressPhoto in Model.LogisticsGoods.ThirdOrderExpressPhotoListCache)
                                     {
                                         <div style="display: inline-block;">
                                             <div>
-                                                <a href="@Url.Action("TrackingNoDetail", "ExpressClaim", new {trackingNo = imageItem.ExpressTrackingNo})" target="_blank">@(imageItem.ExpressTrackingNo)</a>
+                                                <a href="@Url.Action("TrackingNoDetail", "ExpressClaim", new { trackingNo = expressPhoto.TrackingNo })" target="_blank">@(expressPhoto.TrackingNo)</a>
                                             </div>
                                             <div>
-                                                <a href="@(imageItem.BigFullImageUrl)" target="_blank">
-                                                    <img src="@(imageItem.SmallFullImageUrl)" alt=""/>
+                                                <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                                    <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                                 </a>
                                             </div>
                                         </div>
@@ -776,7 +778,7 @@
                             return;
                         } else {
                             $.msg.show(data.message);
-                            window.location.href = "@Url.Action("Index", "LogisticsGoods", new {typeId = Model.LogisticsGoods.Type.Id})";
+                            window.location.href = "@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })";
                             return;
                         }
                     }
@@ -995,7 +997,7 @@
 
                         setTimeout(
                             function() {
-                                var url = "@Url.Action("Detail", "LogisticsGoods", new {id = 88888, statusId = Model.StatusId})";
+                                var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId })";
                                 url = url.replace(/88888/, data.id);
                                 window.location.href = url;
                             },
@@ -1115,7 +1117,7 @@
                         if(data.isCreate === true) {
                             setTimeout(
                                 function() {
-                                    var url = "@Url.Action("Detail", "LogisticsGoods", new {id = 88888, statusId = Model.StatusId})";
+                                    var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId })";
                                     url = url.replace(/88888/, data.id);
                                     window.location.href = url;
                                 },
@@ -1163,28 +1165,6 @@
             $("#Elem07").removeAttr("disabled");
             $("#Elem08").removeAttr("disabled");
         }
-    }
-
-    function onSelectChange() {
-        var form = $("#logisticsGoodsDetailForm");
-
-        $.ajax({
-            url: '@Url.Action("GetGoodsType", "LogisticsGoods")',
-            type: "POST",
-            data: form.serialize(),
-            success: function(data) {
-                hideMask();
-
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    //return;
-                } else {
-                    $("#goodsType").val(data.goodsType);
-                    $("#goodsTypeValue").val(data.goodsType);
-                    //return;
-                }
-            }
-        });
     }
 
 </script>

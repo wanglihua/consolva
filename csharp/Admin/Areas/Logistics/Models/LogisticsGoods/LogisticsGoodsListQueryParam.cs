@@ -7,7 +7,7 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoods;
 public class LogisticsGoodsListQueryParam : ListQueryParam
 {
     [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
-    public LogisticsGoodsType? GoodsTypeQuery { get; set; }
+    public LogisticsGoodsType? TypeQuery { get; set; }
 
     public string? NameQuery { get; set; }
 

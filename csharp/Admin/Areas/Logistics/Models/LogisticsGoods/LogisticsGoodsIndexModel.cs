@@ -6,5 +6,5 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoods;
 public class LogisticsGoodsIndexModel
 {
     [BindNever]
-    public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
+    public LogisticsGoodsType Type { get; set; } = LogisticsGoodsType.None;
 }

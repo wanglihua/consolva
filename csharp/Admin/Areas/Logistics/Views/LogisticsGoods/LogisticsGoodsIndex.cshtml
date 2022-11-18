@@ -5,13 +5,13 @@
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsGoods.LogisticsGoodsIndexModel
 @{
-    ViewData[ViewDataKey.Title] = Model.GoodsType.Name + "清单";
+    ViewData[ViewDataKey.Title] = Model.Type.Name + "清单";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="goods-menu">物品管理</li>
-    <li class="active" data-menu="goods-logistics-goods@(Model.GoodsType.Id)-index-menu">@(ViewData[ViewDataKey.Title])</li>
+    <li class="active" data-menu="goods-logistics-goods@(Model.Type.Id)-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
@@ -83,7 +83,7 @@
             url: "@Url.Action("List", "LogisticsGoods")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsGoodsListQueryParam.GoodsTypeQuery))': @(Model.GoodsType.Id),
+                '@(nameof(LogisticsGoodsListQueryParam.TypeQuery))': @(Model.Type.Id),
                 '@(nameof(LogisticsGoodsListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
@@ -177,7 +177,7 @@
     
     function exportLogisticsGoods() {
         var params = $.param({
-                '@(nameof(LogisticsGoodsListQueryParam.GoodsTypeQuery))': @(Model.GoodsType.Id),
+                '@(nameof(LogisticsGoodsListQueryParam.TypeQuery))': @(Model.Type.Id),
                 '@(nameof(LogisticsGoodsListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
                 '@(nameof(LogisticsGoodsListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),

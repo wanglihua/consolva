@@ -47,18 +47,8 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="IsSpecial" class="col-xs-4 control-label">是否特货类</label>
-                                        <div class="col-xs-8">
-                                            <select asp-for="IsSpecial" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                                
+                                @* todo a 放上物品类型 *@
 
                             </div>
 
@@ -66,77 +56,9 @@
 
                                 <div class="col-xs-6">
                                     <div class="form-group">
-                                        <label asp-for="HasBrand" class="col-xs-4 control-label">是否品牌</label>
-                                        <div class="col-xs-8">
-                                            <select asp-for="HasBrand" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="HasBrand" class="col-xs-4 control-label">品牌名</label>
+                                        <label asp-for="BrandName" class="col-xs-4 control-label">品牌名</label>
                                         <div class="col-xs-8">
                                             <input asp-for="BrandName" type="text" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="HasBattery" class="col-xs-4 control-label">含电池或其他限制</label>
-                                        <div class="col-xs-8">
-                                            <select asp-for="HasBattery" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="HasBamboo" class="col-xs-4 control-label">是否含草木竹</label>
-                                        <div class="col-xs-8">
-                                            <select asp-for="HasBamboo" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="HasWoodPackage" class="col-xs-4 control-label">是否含实木包装</label>
-                                        <div class="col-xs-8">
-                                            <select asp-for="HasWoodPackage" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="IsForbidden" class="col-xs-4 control-label">是否禁止类</label>
-                                        <div class="col-xs-8">
-                                            <select asp-for="IsForbidden" class="input-sm form-control" onchange="onSelectChange();">
-                                                <option value="@(false.ToString())">否</option>
-                                                <option value="@(true.ToString())">是</option>
-                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -285,27 +207,5 @@
     }
     
     *@
-
-    function onSelectChange() {
-        var form = $("#logisticsGoodsDetailForm");
-
-        $.ajax({
-            url: '@Url.Action("GetGoodsType", "LogisticsGoodsWarehouse")',
-            type: "POST",
-            data: form.serialize(),
-            success: function(data) {
-                hideMask();
-
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    //return;
-                } else {
-                    $("#goodsType").val(data.goodsType);
-                    $("#goodsTypeValue").val(data.goodsType);
-                    //return;
-                }
-            }
-        });
-    }
 
 </script>

@@ -6,14 +6,14 @@
 
     string imageIndex = DateTime.Now.ToString("yyyyMMddHHmmssfff");
     string imageIndexFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}.Index";
-    string subPathFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}[{imageIndex}].{nameof(LogisticsGoodsImageModel.SubPath)}";
-    string fileNameFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}[{imageIndex}].{nameof(LogisticsGoodsImageModel.FileName)}";
+    string subPathFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}[{imageIndex}].{nameof(LogisticsGoodsImageModel.StorePath)}";
+    string fileNameFieldName = $"{nameof(LogisticsGoodsDetailModel.NewImageList)}[{imageIndex}].{nameof(LogisticsGoodsImageModel.StoreName)}";
 }
 
 <div id="@(imageIndex)" style="float: left; margin: 5px;">
     <input type="hidden" name="@(imageIndexFieldName)" value="@(imageIndex)"/>
-    <input type="hidden" name="@(subPathFieldName)" value="@(Model.SubPath)"/>
-    <input type="hidden" name="@(fileNameFieldName)" value="@(Model.FileName)"/>
+    <input type="hidden" name="@(subPathFieldName)" value="@(Model.StorePath)"/>
+    <input type="hidden" name="@(fileNameFieldName)" value="@(Model.StoreName)"/>
     <div>
         <a target="_blank" href="@(Model.ImageFileUrl)">
             <img alt="" src="@(Model.ImageFileUrl)" style="width: 100px; height: 75px;"/>

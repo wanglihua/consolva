@@ -98,19 +98,19 @@ public class LogisticsGoodsTradeController : Controller
             if (orderIdList.Count > 0)
             {
                 int orderId = orderIdList[0];
-                logisticsGoods.FirstOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order != null && e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
+                logisticsGoods.FirstOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
             }
 
             if (orderIdList.Count > 1)
             {
                 int orderId = orderIdList[1];
-                logisticsGoods.SecondOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order != null && e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
+                logisticsGoods.SecondOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
             }
 
             if (orderIdList.Count > 2)
             {
                 int orderId = orderIdList[2];
-                logisticsGoods.ThirdOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order != null && e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
+                logisticsGoods.ThirdOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
             }
         }
 
@@ -315,7 +315,7 @@ public class LogisticsGoodsTradeController : Controller
 
         criteria = criteria.SetReadOnly(true);
 
-        
+
         if (string.IsNullOrWhiteSpace(queryParam.CnHsNameQuery) == false)
         {
             string cnHsNameQuery = queryParam.CnHsNameQuery.Trim();
@@ -467,7 +467,7 @@ public class LogisticsGoodsTradeController : Controller
             logisticsGoodsInDb.BrandName = brandName;
 
             // 中国海关申报名
-            string cnHsName = row.GetCell(cellIndex++)?.StringCellValue;
+            string cnHsName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(cnHsName))
             {

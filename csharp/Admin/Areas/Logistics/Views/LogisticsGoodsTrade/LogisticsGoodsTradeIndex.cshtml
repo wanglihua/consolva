@@ -37,16 +37,7 @@
     </button>    
 </div>
 
-<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <label for="cateQuery">类别</label>
-    <select id="cateQuery" name="cateQuery" style="width: 100px; height: 30px;">
-        <option value="">类别查询</option>
-        @foreach (LogisticsGoodsCate cate in Model.GoodsCateList)
-        {
-            <option value="@(cate.Id)">@(cate.Name)</option>
-        }
-    </select>&nbsp;
-    
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">    
     <label for="nameQuery">扩展名</label>
     <input id="nameQuery" name="nameQuery" style="width: 130px; height: 30px;" placeholder="扩展名查询"/>&nbsp;
 
