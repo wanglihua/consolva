@@ -3,6 +3,7 @@ using System.Drawing.Imaging;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using NHibernate;
 using NLog;
 using shunda.Core.Config;
 using shunda.Core.Service;
@@ -162,14 +163,26 @@ public class LogisticsGoodsImageService
         }
 
         /*
+         todo a 把下面的SQL改成这里的查询方式
+        ExpressPhotoInfo? ep = null;
+        ExpressGoodsInfo? eg = null;
+        session.QueryOver<ExpressPhotoInfo>(() => ep!)
+            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
+            .Select(e => ep!.Id)
+            .Where(() => eg!.Goods.Id == goodsId)
+            .Take(1)
+            .SingleOrDefault<int>();
+        
+        */
 
+        /*
+todo a 改成 JoinEntityQueryOver 的方式
 SELECT ep.id
 FROM tbl_express_goods eg
          INNER JOIN tbl_express_photo ep ON ep.express_id = eg.express_id
 WHERE eg.goods_id = 1;
 
          */
-
         string sql = $@"
 SELECT ep.id
 FROM tbl_express_goods eg
@@ -178,7 +191,7 @@ WHERE eg.goods_id = {goodsId}
 LIMIT 1";
 
         object photoIdObj = session.CreateSQLQuery(sql).UniqueResult<object>();
-        if (photoIdObj != null)
+        if (photoIdObj != null && (int)photoIdObj != 0)
         {
             return true;
         }
@@ -216,7 +229,7 @@ LIMIT 1";
     public IList<ExpressPhotoInfo> GetGoodsRecentOrderImageList(int goodsId)
     {
         /*
-         
+todo a 改成 JoinEntityQueryOver 的方式
 SELECT DISTINCT ep.order_id
 FROM tbl_express_photo ep
          INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
@@ -239,7 +252,7 @@ LIMIT 3
         IList<int> orderIdList = session.CreateSQLQuery(recentOrderIdSql).List<int>();
 
         /*
-
+todo a 改成 JoinEntityQueryOver 的方式
 SELECT ep.*
 FROM tbl_express_photo ep
          INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id

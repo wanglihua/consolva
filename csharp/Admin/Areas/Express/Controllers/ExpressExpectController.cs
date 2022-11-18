@@ -50,7 +50,8 @@ public class ExpressExpectController : Controller
     public IActionResult List(ExpressExpectListQueryParam queryParam)
     {
         var totalCount = GetQueryOver(queryParam)
-            .Select(Projections.Count<ExpressExpectInfo>(e => expressExpectAlias!.Id))
+            // .Select(Projections.Count<ExpressExpectInfo>(e => expressExpectAlias!.Id))
+            .Select(Projections.RowCount())
             .SingleOrDefault<int>();
 
         var listPager = new ListPager(queryParam, totalCount);

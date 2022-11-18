@@ -46,7 +46,7 @@ public class ExpressRemarkPresetSelectController : Controller
     public IActionResult List(ExpressRemarkPresetSelectListQueryParam queryParam)
     {
         var totalCount = GetQueryOver(queryParam)
-            .Select(Projections.Count<ExpressRemarkPresetSelectInfo>(e => expressRemarkPresetSelectAlias!.Id))
+            .Select(Projections.RowCount())
             .SingleOrDefault<int>();
 
         var listPager = new ListPager(queryParam, totalCount);
