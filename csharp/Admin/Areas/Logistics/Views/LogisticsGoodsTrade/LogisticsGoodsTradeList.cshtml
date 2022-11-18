@@ -1,10 +1,9 @@
 @{
     Layout = null;
 }
-@using Domain
-@using Domain.Logistics
-@using Domain.LogisticsOrder
-@model Web.Areas.Admin.Models.LogisticsGoodsTrade.LogisticsGoodsTradeListModel
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsGoodsTrade.LogisticsGoodsTradeListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsGoodsList"})
 
@@ -47,25 +46,10 @@
             </th>
             <th style="width: 150px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasBrand))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">是否品牌（品牌名）</a>
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasBattery))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">含电池或其他</a>
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasBamboo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">含草木竹</a>
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.HasWoodPackage))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">含实木包装</a>
+                    <a field="@(nameof(LogisticsGoodsInfo.BrandName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">品牌名</a>
                 </div>
             </th>
             <th style="width: 80px; text-align: center;">
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.IsSpecial))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">特货类</a>
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.IsForbidden))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">禁止类</a>
-                </div>
                 <div>
                     <a field="@(nameof(LogisticsGoodsInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">状态</a>
                 </div>
@@ -75,7 +59,7 @@
             </th>
             <th style="width: 130px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsGoodsInfo.AddUserId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">添加人员</a>
+                    <a field="@(nameof(LogisticsGoodsInfo.AddUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">添加人员</a>
                 </div>
                 <div>
                     <a field="@(nameof(LogisticsGoodsInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsList">添加时间</a>
@@ -140,31 +124,12 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @logisticsGoods.HasBrandStr
-                            @if (logisticsGoods.HasBrand)
-                            {
-                                <span>（@logisticsGoods.BrandName）</span>
-                            }
-                        </div>
-                        <div style="color: blue;">
-                            @logisticsGoods.HasBatteryStr
-                        </div>
-                        <div>
-                            @logisticsGoods.HasBambooStr
-                        </div>
-                        <div style="color: blue;">
-                            @logisticsGoods.HasWoodPackageStr
+                            <span>（@logisticsGoods.BrandName）</span>
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        <div>
-                            @logisticsGoods.IsSpecialStr
-                        </div>
-                        <div>
-                            @logisticsGoods.IsForbiddenStr
-                        </div>
                         <div style="color: blue;">
-                            @logisticsGoods.StatusNameCache
+                            @logisticsGoods.Status.Name
                         </div>
                         <div>
                             @ListDataUtil.Render(logisticsGoods.CreateExpressTrackingNo)
@@ -172,22 +137,17 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @(logisticsGoods.AddUserUserNameCache)
+                            <span>
+                                @(logisticsGoods.AddUser.UserName)<span>(@(logisticsGoods.AddUser.LoginName))</span>
+                            </span>
                         </div>
                         <div style="color: blue;">
                             @(logisticsGoods.CreateTime.ToString("yyyy-MM-dd HH:mm"))
                         </div>
-                        <div>
-                            @if (logisticsGoods.UpdateUser == null)
-                            {
-                                <span>-</span>
-                            }
-                            else
-                            {
-                                <span>
-                                    @(logisticsGoods.UpdateUser?.UserName)<span>(@(logisticsGoods.UpdateUser?.LoginName))</span>
-                                </span>
-                            }
+                        <div>    
+                            <span>
+                                @(logisticsGoods.UpdateUser.UserName)<span>(@(logisticsGoods.UpdateUser.LoginName))</span>
+                            </span>
                         </div>
                         <div style="color: blue;">
                             @(logisticsGoods.UpdateTime.ToString("yyyy-MM-dd HH:mm"))
@@ -205,12 +165,12 @@
                         }
                     </td>
                     <td class="break-word">
-                        @if (logisticsGoods.CreateExpressImageListCache != null && logisticsGoods.CreateExpressImageListCache.Count != 0)
+                        @if (logisticsGoods.CreateExpressPhotoListCache != null && logisticsGoods.CreateExpressPhotoListCache.Count != 0)
                         {
-                            foreach (LogisticsOrderPhotoInfo orderPhoto in logisticsGoods.CreateExpressImageListCache)
+                            foreach (var expressPhoto in logisticsGoods.CreateExpressPhotoListCache)
                             {
-                                <a href="@(orderPhoto.BigImageFullUrlCache)" target="_blank">
-                                    <img src="@(orderPhoto.SmallImageFullUrlCache)" alt=""/>
+                                <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                    <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                 </a>
                             }
                         }
@@ -220,12 +180,12 @@
                         }
                     </td>
                     <td class="break-word">
-                        @if (logisticsGoods.FirstOrderImageListCache != null && logisticsGoods.FirstOrderImageListCache.Count != 0)
+                        @if (logisticsGoods.FirstOrderExpressPhotoListCache != null && logisticsGoods.FirstOrderExpressPhotoListCache.Count != 0)
                         {
-                            foreach (LogisticsGoodsImageItem imageItem in logisticsGoods.FirstOrderImageListCache)
+                            foreach (var expressPhoto in logisticsGoods.FirstOrderExpressPhotoListCache)
                             {
-                                <a href="@(imageItem.BigFullImageUrl)" target="_blank">
-                                    <img src="@(imageItem.SmallFullImageUrl)" alt=""/>
+                                <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                    <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                 </a>
                             }
                         }
@@ -235,12 +195,12 @@
                         }
                     </td>
                     <td class="break-word">
-                        @if (logisticsGoods.SecondOrderImageListCache != null && logisticsGoods.SecondOrderImageListCache.Count != 0)
+                        @if (logisticsGoods.SecondOrderExpressPhotoListCache != null && logisticsGoods.SecondOrderExpressPhotoListCache.Count != 0)
                         {
-                            foreach (LogisticsGoodsImageItem imageItem in logisticsGoods.SecondOrderImageListCache)
+                            foreach (var expressPhoto in logisticsGoods.SecondOrderExpressPhotoListCache)
                             {
-                                <a href="@(imageItem.BigFullImageUrl)" target="_blank">
-                                    <img src="@(imageItem.SmallFullImageUrl)" alt=""/>
+                                <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                    <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                 </a>
                             }
                         }
@@ -250,12 +210,12 @@
                         }
                     </td>
                     <td class="break-word">
-                        @if (logisticsGoods.ThirdOrderImageListCache != null && logisticsGoods.ThirdOrderImageListCache.Count != 0)
+                        @if (logisticsGoods.ThirdOrderExpressPhotoListCache != null && logisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0)
                         {
-                            foreach (LogisticsGoodsImageItem imageItem in logisticsGoods.ThirdOrderImageListCache)
+                            foreach (var expressPhoto in logisticsGoods.ThirdOrderExpressPhotoListCache)
                             {
-                                <a href="@(imageItem.BigFullImageUrl)" target="_blank">
-                                    <img src="@(imageItem.SmallFullImageUrl)" alt=""/>
+                                <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
+                                    <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                 </a>
                             }
                         }
@@ -271,7 +231,7 @@
         else
         {
             <tr>
-                <td colspan="11">
+                <td colspan="14">
                     暂时没有数据！
                 </td>
             </tr>
