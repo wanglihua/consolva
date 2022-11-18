@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Logistics;
 
@@ -23,6 +24,9 @@ public class TradeGoodsSearchListQueryParam : ListQueryParam
     public string? EnHsNameQuery { get; set; }
 
     public string? UpdateUserQuery { get; set; }
+
+    [BindNever]
+    public int UpdateUserId { get; set; } = 0;
 
     public DateTime? BeginUpdateDateQuery { get; set; }
 

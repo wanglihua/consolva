@@ -11,6 +11,7 @@ using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
+using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.Order;
 using shunda.Domain.Pass;
@@ -60,6 +61,16 @@ public class LogisticsGoodsTradeController : Controller
     [Route("/admin/logistics/goods/trade/list")]
     public IActionResult List(TradeGoodsSearchListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.UpdateUserQuery) == false)
+        {
+            string updateUserQuery = queryParam.UpdateUserQuery.Trim();
+            queryParam.UpdateUserId = session.Query<UserInfo>()
+                .Where(e => e.LoginName == updateUserQuery || e.UserName == updateUserQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+        }
+
         int totalCount = GetTradeGoodsSearchListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -73,32 +84,33 @@ public class LogisticsGoodsTradeController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsGoodsInfo>();
 
+        IList<string> createExpressTrackingNoList = logisticsGoodsList.Select(e => e.CreateExpressTrackingNo).ToList();
+        IList<ExpressPhotoInfo> createExpressImageListAll = logisticsGoodsImageService.GetGoodsCreateExpressImageList(createExpressTrackingNoList);
+
         foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList)
         {
+            logisticsGoods.CreateExpressPhotoListCache = createExpressImageListAll.Where(e => e.TrackingNo == logisticsGoods.CreateExpressTrackingNo).OrderBy(e => e.Id).ToList();
 
-            IList<LogisticsOrderPhotoInfo> createExpressImageList = logisticsGoodsImageService.GetGoodsCreateExpressImageList(new List<string>() { logisticsGoods.CreateExpressTrackingNo });
-            logisticsGoods.CreateExpressImageListCache = createExpressImageList;
+            IList<ExpressPhotoInfo> goodsExpressPhotoList = logisticsGoodsImageService.GetGoodsRecentOrderImageList(logisticsGoods.Id);
 
-            IList<LogisticsGoodsImageItem> goodsImageItemList = logisticsGoodsImageService.GetGoodsImageList(logisticsGoods.Id);
-
-            IList<int> orderIdList = goodsImageItemList.Select(e => e.OrderId).Distinct().OrderByDescending(e => e).ToList();
+            IList<int> orderIdList = goodsExpressPhotoList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().OrderByDescending(e => e).ToList();
 
             if (orderIdList.Count > 0)
             {
                 int orderId = orderIdList[0];
-                logisticsGoods.FirstOrderImageListCache = goodsImageItemList.Where(e => e.OrderId == orderId).OrderBy(e => e.Id).ToList();
+                logisticsGoods.FirstOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order != null && e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
             }
 
             if (orderIdList.Count > 1)
             {
                 int orderId = orderIdList[1];
-                logisticsGoods.SecondOrderImageListCache = goodsImageItemList.Where(e => e.OrderId == orderId).OrderBy(e => e.Id).ToList();
+                logisticsGoods.SecondOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order != null && e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
             }
 
             if (orderIdList.Count > 2)
             {
                 int orderId = orderIdList[2];
-                logisticsGoods.ThirdOrderImageListCache = goodsImageItemList.Where(e => e.OrderId == orderId).OrderBy(e => e.Id).ToList();
+                logisticsGoods.ThirdOrderExpressPhotoListCache = goodsExpressPhotoList.Where(e => e.Order != null && e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
             }
         }
 
@@ -118,77 +130,32 @@ public class LogisticsGoodsTradeController : Controller
         criteria = criteria.CreateAlias(nameof(LogisticsGoodsInfo.HsGoods), nameof(LogisticsGoodsInfo.HsGoods), JoinType.LeftOuterJoin);
         criteria = criteria.CreateAlias(nameof(LogisticsGoodsInfo.UpdateUser), nameof(LogisticsGoodsInfo.UpdateUser), JoinType.LeftOuterJoin);
 
-        LogisticsGoodsStatus statusQuery = queryParam.StatusQuery;
-
-        if (statusQuery == LogisticsGoodsStatus.NotConfirmed)
+        if (queryParam.StatusQuery != null)
         {
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.Status == LogisticsGoodsStatus.NoPhoto || e.Status == LogisticsGoodsStatus.NotConfirmed));
+            LogisticsGoodsStatus statusQuery = queryParam.StatusQuery;
+
+            if (statusQuery == LogisticsGoodsStatus.NotConfirmed)
+            {
+                criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.Status == LogisticsGoodsStatus.PhotoRequired || e.Status == LogisticsGoodsStatus.NotConfirmed));
+            }
+
+            if (statusQuery == LogisticsGoodsStatus.Confirmed)
+            {
+                criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.Status == LogisticsGoodsStatus.Confirmed));
+            }
         }
 
-        if (statusQuery == LogisticsGoodsStatus.Confirmed)
+        if (queryParam.TypeQuery != null && queryParam.TypeQuery != LogisticsGoodsType.None)
         {
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.Status == LogisticsGoodsStatus.Confirmed));
-        }
-
-        LogisticsGoodsCate cateQuery = queryParam.CateQuery;
-        if (cateQuery != null && cateQuery != LogisticsGoodsCate.None)
-        {
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.Cate == cateQuery));
-        }
-
-        LogisticsGoodsType logisticsGoodsType = queryParam.TypeQuery;
-        if (logisticsGoodsType != null && logisticsGoodsType != LogisticsGoodsType.None)
-        {
+            LogisticsGoodsType logisticsGoodsType = queryParam.TypeQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.Type == logisticsGoodsType));
         }
 
-        string nameQuery = queryParam.NameQuery;
-        if (string.IsNullOrWhiteSpace(nameQuery) == false)
+
+        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
         {
-            nameQuery = nameQuery.Trim();
+            string nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
-        }
-
-        bool? hasBrandQuery = queryParam.HasBrandQuery;
-        if (hasBrandQuery.HasValue)
-        {
-            bool hasBrandQueryValue = hasBrandQuery.Value;
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.HasBrand == hasBrandQueryValue));
-        }
-
-        bool? hasBatteryQuery = queryParam.HasBatteryQuery;
-        if (hasBatteryQuery.HasValue)
-        {
-            bool hasBatteryQueryValue = hasBatteryQuery.Value;
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.HasBattery == hasBatteryQueryValue));
-        }
-
-        bool? hasBambooQuery = queryParam.HasBambooQuery;
-        if (hasBambooQuery.HasValue)
-        {
-            bool hasBambooQueryValue = hasBambooQuery.Value;
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.HasBamboo == hasBambooQueryValue));
-        }
-
-        bool? hasWoodPackageQuery = queryParam.HasWoodPackageQuery;
-        if (hasWoodPackageQuery.HasValue)
-        {
-            bool hasWoodPackageQueryValue = hasWoodPackageQuery.Value;
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.HasWoodPackage == hasWoodPackageQueryValue));
-        }
-
-        bool? isSpecialQuery = queryParam.IsSpecialQuery;
-        if (isSpecialQuery.HasValue)
-        {
-            bool isSpecialQueryValue = isSpecialQuery.Value;
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.IsSpecial == isSpecialQueryValue));
-        }
-
-        bool? isForbiddenQuery = queryParam.IsForbiddenQuery;
-        if (isForbiddenQuery.HasValue)
-        {
-            bool isForbiddenQueryValue = isForbiddenQuery.Value;
-            criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.IsForbidden == isForbiddenQueryValue));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CnHsCodeQuery) == false)
@@ -215,16 +182,10 @@ public class LogisticsGoodsTradeController : Controller
             criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.HsGoods)}.{nameof(LogisticsGoodsInfo.HsGoods.EnHsName)}", enHsNameQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.UpdateUserQuery) == false)
+        if (queryParam.UpdateUserId != 0)
         {
-            string updateUserQuery = queryParam.UpdateUserQuery.Trim();
-            UserInfo user = session.Query<UserInfo>()
-                .Where(e => e.LoginName == updateUserQuery || e.UserName == updateUserQuery)
-                .Take(1)
-                .SingleOrDefault();
-
-            int userId = user?.Id ?? 0;
-            criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.UpdateUser)}.{nameof(UserInfo.Id)}", userId));
+            int updateUserId = queryParam.UpdateUserId;
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsGoodsInfo.UpdateUser)}.{nameof(UserInfo.Id)}", updateUserId));
         }
 
         if (queryParam.BeginUpdateDateQuery != null)
@@ -247,34 +208,36 @@ public class LogisticsGoodsTradeController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
+        IList<int> goodsIdList = idList.ToList();
+
         IList<LogisticsGoodsInfo> logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
-            .Where(e => idList.Contains(e.Id))
+            .Where(e => goodsIdList.Contains(e.Id))
             .ToList();
 
-        IList<LogisticsOrderGoodsInfo> logisticsOrderGoodsList = session.Query<LogisticsOrderGoodsInfo>()
-            .Where(e => idList.Contains(e.GoodsId) || idList.Contains(e.GoodsAdminId.Value))
+        IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => goodsIdList.Contains(e.Goods.Id))
             .ToList();
 
         IList<LogisticsGoodsImageInfo> logisticsGoodsImageList = session.Query<LogisticsGoodsImageInfo>()
-            .Where(e => idList.Contains(e.Id))
+            .Where(e => goodsIdList.Contains(e.Goods.Id))
             .ToList();
 
-        foreach (int id in idList)
+        foreach (int goodsId in goodsIdList)
         {
-            LogisticsGoodsInfo logisticsGoods = logisticsGoodsList.Where(e => e.Id == id).Take(1).SingleOrDefault();
+            LogisticsGoodsInfo? logisticsGoods = logisticsGoodsList.Where(e => e.Id == goodsId).Take(1).SingleOrDefault();
             if (logisticsGoods == null)
             {
-                throw new ValidationException($"指定的物品不存在！#{id}");
+                throw new ValidationException($"指定的物品不存在！#{goodsId}");
             }
 
-            var orderGoods = logisticsOrderGoodsList
-                .Where(e => e.GoodsId == id || e.GoodsAdminId == id)
+            var orderGoods = expressGoodsList
+                .Where(e => e.Goods.Id == goodsId)
                 .Take(1)
                 .SingleOrDefault();
 
             if (orderGoods != null)
             {
-                throw new ValidationException($"物品 {logisticsGoods.Name}, 在订单物品中有被引用，不能删除！");
+                throw new ValidationException($"物品 {logisticsGoods.Name}, 在快递单物品中有被引用，不能删除！");
             }
         }
 
@@ -367,7 +330,9 @@ public class LogisticsGoodsTradeController : Controller
     [Transactional]
     public IActionResult SetNoPhotoStatus(int[] idList)
     {
-        if (idList == null || idList.Length == 0)
+        IList<int> goodsIdList = idList.ToList();
+        
+        if (goodsIdList == null || goodsIdList.Count == 0)
         {
             throw new ValidationException("请至少选择一条数据！");
         }
@@ -376,32 +341,32 @@ public class LogisticsGoodsTradeController : Controller
         UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         IList<LogisticsGoodsInfo> logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
-            .Where(e => idList.Contains(e.Id))
+            .Where(e => goodsIdList.Contains(e.Id))
             .ToList();
 
-        foreach (int id in idList)
+        foreach (int goodsId in goodsIdList)
         {
-            LogisticsGoodsInfo logisticsGoods = logisticsGoodsList
-                .Where(e => e.Id == id)
+            LogisticsGoodsInfo? logisticsGoods = logisticsGoodsList
+                .Where(e => e.Id == goodsId)
                 .Take(1)
                 .SingleOrDefault();
 
             if (logisticsGoods == null)
             {
-                throw new ValidationException($"指定的物品#{id}不存在！");
+                throw new ValidationException($"指定的物品#{goodsId}不存在！");
             }
         }
 
         foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList)
         {
             logisticsGoods.UpdateUser = loginUser;
-            logisticsGoods.Status = LogisticsGoodsStatus.NoPhoto;
+            logisticsGoods.Status = LogisticsGoodsStatus.PhotoRequired;
             session.Update(logisticsGoods);
         }
 
         foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList)
         {
-            logisticsGoodsLogService.AddLog(LogisticsGoodsLogType.SetNoPhoto, logisticsGoods.Id, loginUserId);
+            logisticsGoodsLogService.AddLog(LogisticsGoodsLogType.SetPhotoRequire, logisticsGoods.Id, loginUserId);
         }
 
         session.Flush();
@@ -627,6 +592,16 @@ public class LogisticsGoodsTradeController : Controller
     [Route("/admin/logistics/goods/trade/export")]
     public IActionResult Export(TradeGoodsSearchListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.UpdateUserQuery) == false)
+        {
+            string updateUserQuery = queryParam.UpdateUserQuery.Trim();
+            queryParam.UpdateUserId = session.Query<UserInfo>()
+                .Where(e => e.LoginName == updateUserQuery || e.UserName == updateUserQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .SingleOrDefault();
+        }
+        
         string fileName = "确认扩展名" + ".xlsx";
         string sheetName = "确认扩展名";
 
@@ -651,67 +626,67 @@ public class LogisticsGoodsTradeController : Controller
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         ICell cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("扩展名");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("物品类型");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("是否品牌");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("品牌");
 
         sheet.SetColumnWidth(cellIndex, 18 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("是否含电池或其他限制");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("是否含草木竹");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("是否含实木包装");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("是否特货类");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("是否禁止类");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("中国海关申报名");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCellStyle;
-        cell?.SetCellType(CellType.String);
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("中国海关编码");
 
         foreach (LogisticsGoodsInfo goods in logisticsGoodsList)
@@ -724,67 +699,56 @@ public class LogisticsGoodsTradeController : Controller
             // 扩展名
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.Name);
 
             // 物品类型
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.Type.Name);
-
-            // 是否品牌
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.HasBrand));
 
             // 品牌
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.BrandName);
-
-            // 是否含电池或其他限制
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
-            cell.SetCellValue(GetBoolStr(goods.HasBattery));
+            
 
             // 是否含草木竹
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(GetBoolStr(goods.HasBamboo));
 
             // 是否含实木包装
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(GetBoolStr(goods.HasWoodPackage));
 
             // 是否特货类
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(GetBoolStr(goods.IsSpecial));
 
             // 是否禁止类
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(GetBoolStr(goods.IsForbidden));
 
             // 中国海关申报名
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.HsGoods?.CnHsName);
 
             // 中国海关编码
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
-            cell?.SetCellType(CellType.String);
+            cell.SetCellType(CellType.String);
             cell.SetCellValue(goods.HsGoods?.CnHsCode);
         }
 
@@ -793,39 +757,5 @@ public class LogisticsGoodsTradeController : Controller
         memoryStream.Flush();
 
         return File(memoryStream.ToArray(), ContentType.Xlsx, fileName);
-    }
-
-    [NonAction]
-    private string GetBoolStr(bool trueOrFalse)
-    {
-        if (trueOrFalse)
-        {
-            return "是";
-        }
-        else
-        {
-            return "否";
-        }
-    }
-
-    [NonAction]
-    private bool GetBoolValue(string trueOrFalseStr, string valueEmptyMessage, string valueErrorMessage)
-    {
-        if (string.IsNullOrWhiteSpace(trueOrFalseStr))
-        {
-            throw new ValidationException(valueEmptyMessage);
-        }
-        else if (trueOrFalseStr == "是")
-        {
-            return true;
-        }
-        else if (trueOrFalseStr == "否")
-        {
-            return false;
-        }
-        else
-        {
-            throw new ValidationException(valueErrorMessage);
-        }
     }
 }

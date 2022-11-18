@@ -287,7 +287,9 @@ public class LogisticsGoodsWarehouseController : Controller
     [Route("/admin/logistics/goods/warehouse/delete")]
     public IActionResult Delete(int[] idList)
     {
-        foreach (int id in idList)
+        IList<int> goodsIdList = idList.ToList();
+        
+        foreach (int id in goodsIdList)
         {
             LogisticsGoodsInfo? logisticsGoods = session.Get<LogisticsGoodsInfo>(id);
             if (logisticsGoods != null)
@@ -300,30 +302,30 @@ public class LogisticsGoodsWarehouseController : Controller
         }
 
         IList<LogisticsGoodsInfo> logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
-            .Where(e => idList.Contains(e.Id))
+            .Where(e => goodsIdList.Contains(e.Id))
             .ToList();
 
         IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Where(e => idList.Contains(e.Goods.Id))
+            .Where(e => goodsIdList.Contains(e.Goods.Id))
             .ToList();
 
         IList<LogisticsGoodsImageInfo> logisticsGoodsImageList = session.Query<LogisticsGoodsImageInfo>()
-            .Where(e => idList.Contains(e.Id))
+            .Where(e => goodsIdList.Contains(e.Goods.Id))
             .ToList();
 
-        foreach (int id in idList)
+        foreach (int goodsId in goodsIdList)
         {
             LogisticsGoodsInfo? logisticsGoods = logisticsGoodsList
-                .Where(e => e.Id == id)
+                .Where(e => e.Id == goodsId)
                 .Take(1)
                 .SingleOrDefault();
             if (logisticsGoods == null)
             {
-                throw new ValidationException($"指定的物品不存在！#{id}");
+                throw new ValidationException($"指定的物品不存在！#{goodsId}");
             }
 
             var orderGoods = expressGoodsList
-                .Where(e => e.Goods.Id == id)
+                .Where(e => e.Goods.Id == goodsId)
                 .Take(1)
                 .SingleOrDefault();
 

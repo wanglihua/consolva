@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using shunda.Domain.Express;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Logistics;
@@ -79,4 +80,15 @@ public class LogisticsGoodsInfo : Entity
     [ModelBinder(typeof(LogisticsGoodsStatusModelBinder))]
     public virtual LogisticsGoodsStatus Status { get; set; } = LogisticsGoodsStatus.None;
 
+    #region cache
+
+    public virtual IList<ExpressPhotoInfo> CreateExpressPhotoListCache { get; set; } = new List<ExpressPhotoInfo>();
+
+    public virtual IList<ExpressPhotoInfo> FirstOrderExpressPhotoListCache { get; set; } = new List<ExpressPhotoInfo>();
+
+    public virtual IList<ExpressPhotoInfo> SecondOrderExpressPhotoListCache { get; set; } = new List<ExpressPhotoInfo>();
+
+    public virtual IList<ExpressPhotoInfo> ThirdOrderExpressPhotoListCache { get; set; } = new List<ExpressPhotoInfo>();
+
+    #endregion
 }
