@@ -440,6 +440,9 @@ public class LogisticsGoodsWarehouseController : Controller
             throw new ValidationException("导入失败，文件未上传！");
         }
 
+        int loginUserId = loginUserService.GetLoginUserId();
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;        
+
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
         ISheet sheet = workbook.GetSheetAt(0);
         if (sheet == null)
@@ -545,9 +548,6 @@ public class LogisticsGoodsWarehouseController : Controller
 
             logisticsGoodsRowNum = logisticsGoodsRowNum + 1;
         }
-
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         ITransaction? transaction = null;
         try
