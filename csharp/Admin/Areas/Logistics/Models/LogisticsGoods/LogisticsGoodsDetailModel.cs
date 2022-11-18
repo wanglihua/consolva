@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using shunda.Admin.Areas.Logistics.Models.LogisticsGoods.Web.Areas.Admin.Models.LogisticsGoods;
 using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoods;

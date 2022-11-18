@@ -1,8 +1,8 @@
 @{
     Layout = null;
 }
-@using Domain
-@model Web.Areas.Admin.Models.HsGoods.HsGoodsListModel
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.HsGoods.HsGoodsListModel
 
 @await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadHsGoodsList"})
 
