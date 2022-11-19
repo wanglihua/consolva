@@ -111,7 +111,7 @@ public class LogisticsOrderPayController : Controller
         var firstModeType = LogisticsModeType.GetById(queryParam.LogisticsModeTypeIdQuery ?? 0);
         if (firstModeType != null && firstModeType != LogisticsModeType.None) 
         {
-            criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsOrderPayInfo.Order)}.{nameof(LogisticsOrderPayInfo.Order.LogisticsModeType)}", firstModeType));
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(LogisticsOrderPayInfo.Order)}.{nameof(LogisticsOrderPayInfo.Order.FirstType)}", firstModeType));
         }
 
         if (queryParam.PayTimeBeginQuery != null)

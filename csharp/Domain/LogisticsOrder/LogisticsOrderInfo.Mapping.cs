@@ -73,19 +73,19 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
         );
 
         Property(
-            x => x.LogisticsModeType,
+            x => x.FirstType,
             map => {
                 map.Type<LogisticsModeTypeHibernateType>();
-                map.Column("logistics_mode_type_id");
+                map.Column("first_type_id");
                 map.NotNullable(true);
             }
         );
 
         ManyToOne(
-            x => x.LogisticsMode,
+            x => x.FirstMode,
             map => {
                 map.Class(typeof(LogisticsModeInfo));
-                map.Column("logistics_mode_id");
+                map.Column("first_mode_id");
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);

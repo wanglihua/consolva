@@ -66,14 +66,15 @@ public class LogisticsOrderInfo : Entity
     [Required(ErrorMessage = "物流方式类型不能为空！")]
     [JsonProperty("logisticsModeType")]
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
-    public virtual LogisticsModeType LogisticsModeType { get; set; } = LogisticsModeType.None;
+    public virtual LogisticsModeType FirstType { get; set; } = LogisticsModeType.None;
 
     /// <summary>
     /// 物流方式，非空
+    /// 这是一个主的，客户选择的物流方式。实际可能一个订单会多个物流方式。
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("logisticsMode")]
-    public virtual LogisticsModeInfo LogisticsMode { get; set; } = new LogisticsModeInfo();
+    public virtual LogisticsModeInfo FirstMode { get; set; } = new LogisticsModeInfo();
 
     /// <summary>
     /// 保险id，非空
