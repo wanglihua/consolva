@@ -145,38 +145,33 @@ public class ExpressShelfScheduleService
             criteria = criteria.Add(Restrictions.Eq($"w.{nameof(WarehouseInfo.Id)}", warehouseIdQuery));
         }
 
-        string aoPinTrackingNoQuery = queryParam.AoPinTrackingNoQuery;
-        if (string.IsNullOrWhiteSpace(aoPinTrackingNoQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.AoPinTrackingNoQuery) == false)
         {
-            aoPinTrackingNoQuery = aoPinTrackingNoQuery.Trim();
-            criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.CheckinTrackingNo)}", aoPinTrackingNoQuery, MatchMode.Anywhere));
+            string checkinTrackingNoQuery = queryParam.AoPinTrackingNoQuery.Trim();
+            criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.CheckinTrackingNo)}", checkinTrackingNoQuery, MatchMode.Anywhere));
         }
-
-        string trackingNoQuery = queryParam.TrackingNoQuery;
-        if (string.IsNullOrWhiteSpace(trackingNoQuery) == false)
+        
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
         {
-            trackingNoQuery = trackingNoQuery.Trim();
+            string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.TrackingNo)}", trackingNoQuery, MatchMode.Anywhere));
         }
 
-        string customerCodeQuery = queryParam.BillCustomerCodeQuery;
-        if (string.IsNullOrWhiteSpace(customerCodeQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.BillCustomerCodeQuery) == false)
         {
-            customerCodeQuery = customerCodeQuery.Trim();
-            criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.BillCustomerCode)}", customerCodeQuery, MatchMode.Anywhere));
+            string billCustomerCodeQuery = queryParam.BillCustomerCodeQuery.Trim();
+            criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.BillCustomerCode)}", billCustomerCodeQuery, MatchMode.Anywhere));
         }
 
-        string expressCompanyQuery = queryParam.ExpressCompanyQuery;
-        if (string.IsNullOrWhiteSpace(expressCompanyQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.ExpressCompanyQuery) == false)
         {
-            expressCompanyQuery = expressCompanyQuery.Trim();
+            string expressCompanyQuery = queryParam.ExpressCompanyQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.ExpressCompany)}", expressCompanyQuery, MatchMode.Anywhere));
         }
 
-        string orderCodeQuery = queryParam.OrderCodeQuery;
-        if (string.IsNullOrWhiteSpace(orderCodeQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
-            orderCodeQuery = orderCodeQuery.Trim();
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.Eq($"order.{nameof(LogisticsOrderInfo.Code)}", orderCodeQuery));
         }
 

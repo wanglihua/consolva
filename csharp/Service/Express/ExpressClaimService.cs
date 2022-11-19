@@ -59,7 +59,7 @@ public class ExpressClaimService
     /// <param name="queryParam"></param>
     /// <param name="listPager"></param>
     /// <returns></returns>
-    public IList<ExpressInfo> List(ExpressClaimCate expressClaimCate, ExpressClaimListQueryParam queryParam, ListPager listPager)
+    public IList<ExpressInfo> List(ExpressClaimCate expressClaimCate, ExpressClaimListQueryParam queryParam, ListPager? listPager)
     {
         ICriteria criteria = GetListCriteria(expressClaimCate, queryParam);
 
@@ -598,27 +598,21 @@ public class ExpressClaimService
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.Packing));
         }
 
-        string aoPinTrackingNoQuery = queryParam.AoPinTrackingNoQuery;
-        if (string.IsNullOrWhiteSpace(aoPinTrackingNoQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.AoPinTrackingNoQuery) == false)
         {
-            aoPinTrackingNoQuery = aoPinTrackingNoQuery.Trim();
-            // criteria = criteria.Add(Restrictions.On<ExpressInfo>(e => e.AoPinTrackingNo).IsInsensitiveLike(aoPinTrackingNoQuery, MatchMode.Anywhere));
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.CheckinTrackingNo == aoPinTrackingNoQuery));
+           string checkinTrackingNoQuery = queryParam.AoPinTrackingNoQuery.Trim();
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.CheckinTrackingNo == checkinTrackingNoQuery));
         }
 
-        string trackingNoQuery = queryParam.TrackingNoQuery;
-        if (string.IsNullOrWhiteSpace(trackingNoQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
         {
-            trackingNoQuery = trackingNoQuery.Trim();
-            // criteria = criteria.Add(Restrictions.On<ExpressInfo>(e => e.TrackingNo).IsInsensitiveLike(trackingNoQuery, MatchMode.Anywhere));
+            string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.TrackingNo == trackingNoQuery));
         }
 
-        string billCustomerCodeQuery = queryParam.BillCustomerCodeQuery;
-        if (string.IsNullOrWhiteSpace(billCustomerCodeQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.BillCustomerCodeQuery) == false)
         {
-            billCustomerCodeQuery = billCustomerCodeQuery.Trim();
-            // criteria = criteria.Add(Restrictions.On<ExpressInfo>(e => e.BillCustomerCode).IsInsensitiveLike(billCustomerCodeQuery, MatchMode.Anywhere));
+            string billCustomerCodeQuery = queryParam.BillCustomerCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.BillCustomerCode == billCustomerCodeQuery));
         }
 
@@ -634,30 +628,27 @@ public class ExpressClaimService
             }
         }
 
-        string customerCodeQuery = queryParam.CustomerCodeQuery;
-        if (string.IsNullOrWhiteSpace(customerCodeQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
         {
-            int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
+            int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery.Trim());
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Customer!.Id == customerIdQuery));
         }
 
-        string orderCodeQuery = queryParam.OrderCodeQuery;
-        if (string.IsNullOrWhiteSpace(orderCodeQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
-            LogisticsOrderInfo order = session.Query<LogisticsOrderInfo>()
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            LogisticsOrderInfo? order = session.Query<LogisticsOrderInfo>()
                 .Where(e => e.Code == orderCodeQuery)
                 .Take(1)
                 .SingleOrDefault();
 
             int orderId = order?.Id ?? 0;
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Order.Id == orderId));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Order!.Id == orderId));
         }
 
-        string expressCompanyQuery = queryParam.ExpressCompanyQuery;
-        if (string.IsNullOrWhiteSpace(expressCompanyQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.ExpressCompanyQuery) == false)
         {
-            expressCompanyQuery = expressCompanyQuery.Trim();
-            // criteria = criteria.Add(Restrictions.On<ExpressInfo>(e => e.ExpressCompany).IsInsensitiveLike(expressCompanyQuery, MatchMode.Anywhere));
+            string expressCompanyQuery = queryParam.ExpressCompanyQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ExpressCompany == expressCompanyQuery));
         }
 
