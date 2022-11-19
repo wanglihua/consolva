@@ -14,21 +14,13 @@ using shunda.Service.Customer;
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
-public class ExpressClaimService
+public class ExpressListService
 {
-    /// <summary>
-    /// 上架和上架排班的只考虑这个时间后的
-    /// </summary>
-    public static DateTime EXPRESS_ON_SHELF_AFTER => new DateTime(2021, 8, 19); // 2021-08-19
-
-    // 这里采用 => 只读属性的目的就是防止值被修改，不仅能防止被修改，而且还能保证每次取这个值时都会按现在时间重新计算
-    // 所以必须要用箭头
-    // public static DateTime EXPRESS_CHECKIN_RECENT_AGO => DateTime.Today.AddDays(-90); // 90天之前的时间段，做为长期和近期的区分点
-
     public static DateTime EXPRESS_CHECKIN_RECENT_AGO // 还是改成 get 的方式比较放心
     {
         get
         {
+            // 每次读取时都按当前日期计算
             return DateTime.Today.AddDays(-90); // 90天之前的时间段，做为长期和近期的区分点          
         }
     }
@@ -41,7 +33,7 @@ public class ExpressClaimService
     private CustomerCodeService customerCodeService;
     private ExpressPhotoService expressPhotoService;
 
-    public ExpressClaimService(ISession session,
+    public ExpressListService(ISession session,
         ExpressSizeWeightService expressSizeWeightService,
         CustomerCodeService customerCodeService,
         ExpressPhotoService expressPhotoService)
@@ -59,7 +51,7 @@ public class ExpressClaimService
     /// <param name="queryParam"></param>
     /// <param name="listPager"></param>
     /// <returns></returns>
-    public IList<ExpressInfo> List(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam, ListPager? listPager)
+    public IList<ExpressInfo> List(ExpressListMenuCate expressListMenuCate, ExpressListQueryParam queryParam, ListPager? listPager)
     {
         ICriteria criteria = GetListCriteria(expressListMenuCate, queryParam);
 
@@ -180,7 +172,7 @@ public class ExpressClaimService
     /// <param name="expressListMenuCate"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public IList<ExpressInfo> List(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
+    public IList<ExpressInfo> List(ExpressListMenuCate expressListMenuCate, ExpressListQueryParam queryParam)
     {
         return List(expressListMenuCate, queryParam, null);
     }
@@ -191,7 +183,7 @@ public class ExpressClaimService
     /// <param name="expressListMenuCate"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public int Count(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
+    public int Count(ExpressListMenuCate expressListMenuCate, ExpressListQueryParam queryParam)
     {
         int totalCount = GetListCriteria(expressListMenuCate, queryParam)
             .SetProjection(Projections.Count<ExpressInfo>(e => e.Id))
@@ -220,7 +212,7 @@ public class ExpressClaimService
         // 待上架排班
         if (expressListMenuCate == ExpressListMenuCate.ToOnShelfSchedule)
         {
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf && e.AddTime >= EXPRESS_ON_SHELF_AFTER));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf));
         }
 
         // 待下架排班
@@ -256,7 +248,7 @@ public class ExpressClaimService
         return criteria.List<ShelfInfo>().OrderBy(e => e.Name).ToList();
     }
 
-    public IList<ShelfInfo> GetShelfList(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
+    public IList<ShelfInfo> GetShelfList(ExpressListMenuCate expressListMenuCate, ExpressListQueryParam queryParam)
     {
         if (expressListMenuCate != ExpressListMenuCate.ToOnShelfSchedule
             && expressListMenuCate != ExpressListMenuCate.ToOffShelfSchedule
@@ -283,7 +275,7 @@ public class ExpressClaimService
     /// <param name="expressListMenuCate"></param>        
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    private ICriteria GetListCriteria(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
+    private ICriteria GetListCriteria(ExpressListMenuCate expressListMenuCate, ExpressListQueryParam queryParam)
     {
         ICriteria criteria = session.CreateCriteria<ExpressInfo>();
         criteria = criteria.SetReadOnly(true);
@@ -388,7 +380,7 @@ public class ExpressClaimService
             IList<int> groundStorageLocIdList = session.Query<StorageLocInfo>().Where(e => e.Shelf.Cate == ShelfCate.Ground).Select(e => e.Id).ToList(); // 找出所有地面仓位，应该不会很多
             criteria = criteria.Add(Restrictions.Not(Restrictions.In($"{nameof(ExpressInfo.StorageLoc)}.{nameof(StorageLocInfo.Id)}", groundStorageLocIdList.ToArray()))); // 待上架和待上架排班都不显示地面仓位                
 
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf && e.AddTime >= EXPRESS_ON_SHELF_AFTER && e.ArchiveType == ExpressArchiveType.None));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf && e.ArchiveType == ExpressArchiveType.None));
             criteria = criteria.Add(Restrictions.In(nameof(ExpressInfo.Status), mayToOnShelfStatusList.ToArray()));
         }
 
@@ -409,7 +401,7 @@ public class ExpressClaimService
             scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.Express)}.{nameof(ExpressShelfScheduleInfo.Express.ShelfStatus)}", ExpressShelfStatus.ToOnShelf));
             scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressShelfScheduleInfo.Express)}.{nameof(ExpressShelfScheduleInfo.Express.Id)}"));
 
-            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf && e.AddTime >= EXPRESS_ON_SHELF_AFTER && e.ArchiveType == ExpressArchiveType.None));
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf && e.ArchiveType == ExpressArchiveType.None));
             criteria = criteria.Add(Restrictions.In(nameof(ExpressInfo.Status), mayToOnShelfStatusList.ToArray()));
             criteria = criteria.Add(Subqueries.PropertyNotIn($"{nameof(ExpressInfo.Id)}", scheduleCriteria));
         }
@@ -598,9 +590,9 @@ public class ExpressClaimService
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.Packing));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.AoPinTrackingNoQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.CheckinTrackingNoQuery) == false)
         {
-           string checkinTrackingNoQuery = queryParam.AoPinTrackingNoQuery.Trim();
+           string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.CheckinTrackingNo == checkinTrackingNoQuery));
         }
 

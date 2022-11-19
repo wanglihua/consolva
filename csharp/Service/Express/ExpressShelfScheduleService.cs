@@ -31,7 +31,7 @@ public class ExpressShelfScheduleService
     /// <param name="queryParam"></param>
     /// <param name="listPager"></param>
     /// <returns></returns>
-    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressClaimListQueryParam queryParam, ListPager? listPager)
+    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam, ListPager? listPager)
     {
         ICriteria criteria = GetListCriteria(scheduleType, queryParam);
 
@@ -86,7 +86,7 @@ public class ExpressShelfScheduleService
     /// <param name="scheduleType"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressClaimListQueryParam queryParam)
+    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam)
     {
         return List(scheduleType, queryParam, null);
     }
@@ -97,7 +97,7 @@ public class ExpressShelfScheduleService
     /// <param name="scheduleType"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public int Count(ExpressShelfScheduleType scheduleType, ExpressClaimListQueryParam queryParam)
+    public int Count(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam)
     {
         int totalCount = GetListCriteria(scheduleType, queryParam)
             .SetProjection(Projections.RowCount())
@@ -112,7 +112,7 @@ public class ExpressShelfScheduleService
     /// <param name="scheduleType"></param>        
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    private ICriteria GetListCriteria(ExpressShelfScheduleType scheduleType, ExpressClaimListQueryParam queryParam)
+    private ICriteria GetListCriteria(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam)
     {
         ICriteria criteria = session.CreateCriteria<ExpressShelfScheduleInfo>();
         criteria = criteria.SetReadOnly(true);
@@ -145,9 +145,9 @@ public class ExpressShelfScheduleService
             criteria = criteria.Add(Restrictions.Eq($"w.{nameof(WarehouseInfo.Id)}", warehouseIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.AoPinTrackingNoQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.CheckinTrackingNoQuery) == false)
         {
-            string checkinTrackingNoQuery = queryParam.AoPinTrackingNoQuery.Trim();
+            string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.CheckinTrackingNo)}", checkinTrackingNoQuery, MatchMode.Anywhere));
         }
         

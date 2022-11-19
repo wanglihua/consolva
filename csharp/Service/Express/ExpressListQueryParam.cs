@@ -4,7 +4,7 @@ using shunda.Domain.Express;
 
 namespace shunda.Service.Express;
 
-public class ExpressClaimListQueryParam : ListQueryParam
+public class ExpressListQueryParam : ListQueryParam
 {
     /// <summary>
     /// 申领件ID列表
@@ -24,7 +24,7 @@ public class ExpressClaimListQueryParam : ListQueryParam
     /// </summary>
     public bool? PackPrintQuery { get; set; }
 
-    public string? AoPinTrackingNoQuery { get; set; } // todo a 改成 CheckinTrackingNoQuery
+    public string? CheckinTrackingNoQuery { get; set; }
 
     public string? TrackingNoQuery { get; set; }
 

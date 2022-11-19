@@ -32,7 +32,7 @@ public class ExpressDumpScheduleService
     /// <param name="queryParam"></param>
     /// <param name="listPager"></param>
     /// <returns></returns>
-    public IList<ExpressDumpScheduleInfo> List(ExpressDumpType dumpType, ExpressClaimListQueryParam queryParam, ListPager? listPager)
+    public IList<ExpressDumpScheduleInfo> List(ExpressDumpType dumpType, ExpressListQueryParam queryParam, ListPager? listPager)
     {
         ICriteria criteria = GetListCriteria(dumpType, queryParam);
 
@@ -89,7 +89,7 @@ public class ExpressDumpScheduleService
     /// <param name="dumpType"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public IList<ExpressDumpScheduleInfo> List(ExpressDumpType dumpType, ExpressClaimListQueryParam queryParam)
+    public IList<ExpressDumpScheduleInfo> List(ExpressDumpType dumpType, ExpressListQueryParam queryParam)
     {
         return List(dumpType, queryParam, null);
     }
@@ -100,7 +100,7 @@ public class ExpressDumpScheduleService
     /// <param name="dumpType"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public int Count(ExpressDumpType dumpType, ExpressClaimListQueryParam queryParam)
+    public int Count(ExpressDumpType dumpType, ExpressListQueryParam queryParam)
     {
         int totalCount = GetListCriteria(dumpType, queryParam)
             .SetProjection(Projections.RowCount())
@@ -115,7 +115,7 @@ public class ExpressDumpScheduleService
     /// <param name="dumpType"></param>        
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    private ICriteria GetListCriteria(ExpressDumpType dumpType, ExpressClaimListQueryParam queryParam)
+    private ICriteria GetListCriteria(ExpressDumpType dumpType, ExpressListQueryParam queryParam)
     {
         ICriteria criteria = session.CreateCriteria<ExpressDumpScheduleInfo>();
         criteria = criteria.SetReadOnly(true);
@@ -150,9 +150,9 @@ public class ExpressDumpScheduleService
             criteria = criteria.Add(Restrictions.Eq($"w.{nameof(WarehouseInfo.Id)}", warehouseIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.AoPinTrackingNoQuery) == false)
+        if (string.IsNullOrWhiteSpace(queryParam.CheckinTrackingNoQuery) == false)
         {
-            string checkinTrackingNoQuery = queryParam.AoPinTrackingNoQuery.Trim();
+            string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.Eq($"cg.{nameof(ExpressInfo.CheckinTrackingNo)}", checkinTrackingNoQuery));
         }
 
