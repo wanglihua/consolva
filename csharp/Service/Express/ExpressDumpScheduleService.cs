@@ -77,7 +77,7 @@ public class ExpressDumpScheduleService
             */
 
             // todo a 这个要启用起来
-            // schedule.Express.ExpressItemListCache = expressItemList.Where(e => e.ExpressTrackingNo == schedule.Express.TrackingNo).ToList();
+            schedule.Express.cache = expressItemList.Where(e => e.ExpressTrackingNo == schedule.Express.TrackingNo).ToList();
         }
 
         return scheduleList;
