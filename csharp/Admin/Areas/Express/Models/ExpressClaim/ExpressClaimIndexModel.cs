@@ -1,0 +1,17 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Pass;
+using shunda.Domain.Storage;
+
+namespace shunda.Admin.Areas.Express.Models.ExpressClaim;
+
+public class ExpressClaimIndexModel
+{
+    [BindNever]
+    public IList<WarehouseInfo> CnWarehouseList { get; set; } = new List<WarehouseInfo>();
+
+    [BindNever]
+    public IList<UserInfo> CheckinUserList { get; set; } = new List<UserInfo>();
+
+    [BindNever]
+    public bool CanForceDelete { get; set; }
+}

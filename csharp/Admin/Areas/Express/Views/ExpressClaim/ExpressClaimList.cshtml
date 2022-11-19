@@ -1,0 +1,321 @@
+@using Domain.LogisticsOrder
+@using Service.Express
+@model Web.Areas.Admin.Models.ExpressClaim.ExpressClaimListModel
+
+@{
+    Layout = null;
+}
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadExpressClaimList"})
+
+<table id="tblExpressClaimList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="claimGoodsCheckAll"></label><input id="claimGoodsCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.AoPinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">澳拼入库号</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递单号</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.ExpressCompany))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递公司</a>
+                </div>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">物品类型</a>
+                </div>
+                <div>
+                    扩展名
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.Order)).@(nameof(LogisticsClaimGoodsInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">所在订单</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.Order)).@(nameof(LogisticsClaimGoodsInfo.Order.ReceivingWarehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">订单状态</a>
+                </div>
+            </th>
+            <th style="width: 110px; text-align: center;">
+                <div>
+                    尺寸cm
+                </div>
+                <div>
+                    体积重,实际重kg
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.ExpressPackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">包裹数量</a>
+                </div>
+            </th>
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.BillCustomerCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">面单客户</a>
+                </div>
+                <div>
+                    是否预报
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">申领件描述</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.CustomerId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领客户</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.PickTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递状态</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.ShelfStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">上架状态</a>
+                </div>                
+            </th>
+            <th style="width: 90px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">当前仓库</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.StorageLoc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">当前仓位号</a>
+                </div>
+                <div>
+                    <span>入库仓库</span>
+                </div>
+                <div>
+                    <span>入库仓位号</span>
+                </div>                
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.AddUserId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库人员</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库时间</a>
+                </div>
+                <div>是否打木架</div>
+                <div>是否清理树皮</div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.OnShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">上架人员</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.OnShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">上架时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.OffShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">下架人员</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.OffShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">下架时间</a>
+                </div>
+            </th>
+            <th style="width: 150px;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.ServiceRemark))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">客服备注</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.WarehouseRemark))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">仓库备注</a>
+                </div>
+            </th>
+            <th>
+                <div>快递图片</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ExpressClaimList != null && Model.ExpressClaimList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsClaimGoodsInfo claimGoods in Model.ExpressClaimList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="claimGoodsCheck_@(claimGoods.Id)"></label><input id="claimGoodsCheck_@(claimGoods.Id)" type="checkbox" class="ace" value="@claimGoods.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <div>
+                            <a href="@Url.Action("Detail", "ExpressClaim", new {cateId = ExpressListMenuCate.All.Id, id = claimGoods.Id})" target="_blank">
+                                @ListDataUtil.Render(claimGoods.AoPinTrackingNo)
+                            </a>
+                        </div>
+                        <div style="color: blue;">
+                            <a href="@Url.Action("Detail", "ExpressClaim", new {cateId = ExpressListMenuCate.All.Id, id = claimGoods.Id})" target="_blank">
+                                @claimGoods.TrackingNo
+                            </a>
+                        </div>
+                        <div>
+                            @if (string.IsNullOrWhiteSpace(claimGoods.ExpressCompany) == false)
+                            {
+                                <span>@claimGoods.ExpressCompany</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div style="color: blue;">
+                            @(claimGoods.GoodsType?.Name)
+                        </div>
+                        <div>
+                            @(claimGoods.GoodsNamesCache)
+                        </div>                        
+                        <div style="color: blue;">
+                            @if (string.IsNullOrWhiteSpace(claimGoods.OrderCodeCache) == false)
+                            {
+                                <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = (claimGoods.Order?.Id ?? 0)})">
+                                    <span>@claimGoods.OrderCodeCache</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.OrderStatusNameCache)
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            <div>
+                                @{
+                                    IList<string> expressItemStrList = claimGoods.ExpressItemListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}<br/>{e.SingleVolumeWeight},{e.SingleWeight}").ToList();
+                                    string lwh = string.Join("<br/>", expressItemStrList);
+                                    if (string.IsNullOrWhiteSpace(lwh))
+                                    {
+                                        lwh = "-";
+                                    }
+                                }
+                                @Html.Raw(lwh)
+                            </div>
+                        </div>
+                        <div style="font-weight: bold; color: blue;">
+                            @claimGoods.ExpressPackageCount
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        @ListDataUtil.RenderStringWithDiv(claimGoods.BillCustomerCode)
+                        <div style="color: blue;">
+                            @if (claimGoods.HasExpectCache)
+                            {
+                                <span>有预报</span>
+                            }
+                            else
+                            {
+                                <span>无预报</span>
+                            }
+                        </div>
+                        @ListDataUtil.RenderStringWithDiv(claimGoods.Description)
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="color: blue;">
+                            @if (string.IsNullOrWhiteSpace(claimGoods.CustomerNameCache) == false)
+                            {
+                                <span>@claimGoods.CustomerNameCache</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div>
+                            @if (claimGoods.PickTime.HasValue)
+                            {
+                                <span>@claimGoods.PickTime.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div style="color: blue;">
+                            @(claimGoods.Status?.Name)
+                        </div>
+                        <div>
+                            @(claimGoods.ShelfStatus?.Name)
+                        </div>                        
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.WarehouseNameCache)
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.StorageLocNameCache)
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(claimGoods.CheckinWarehouseNameCache)
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.Render(claimGoods.CheckinStorageLocNameCache)
+                        </div>                        
+
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="color: blue;">@claimGoods.AddUserNameCache</div>
+                        <div>@claimGoods.AddTime.ToString("yyyy-MM-dd HH:mm")</div>
+                        <div style="color: blue;">
+                            @if (claimGoods.WoodFrameFinal)
+                            {
+                                <span>要打木架</span>
+                            }
+                            else
+                            {
+                                <span>不打木架</span>
+                            }
+                        </div>
+                        <div>
+                            @if (claimGoods.BarkCleanFinal)
+                            {
+                                <span>要清理树皮</span>
+                            }
+                            else
+                            {
+                                <span>不清理树皮</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="color: blue;">@ListDataUtil.Render(claimGoods.OnShelfUserNameCache)</div>
+                        <div>@ListDataUtil.Render(claimGoods.OnShelfTime)</div>
+                        <div style="color: blue;">@ListDataUtil.Render(claimGoods.OffShelfUserNameCache)</div>
+                        <div>@ListDataUtil.Render(claimGoods.OffShelfTime)</div>
+                    </td>
+                    <td class="break-word">
+                        <div class="break-word">
+                            @claimGoods.ServiceRemark
+                        </div>
+                        <div class="break-word">
+                            @claimGoods.WarehouseRemark
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        @foreach (LogisticsOrderPhotoInfo photo in claimGoods.ExpressPhotoListCache)
+                        {
+                            <a href="@(photo.BigImageFullUrlCache)" target="_blank">
+                                <img src="@(photo.SmallImageFullUrlCache)" alt="" style="max-height: 30px;"/>
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="12">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadExpressClaimList"})

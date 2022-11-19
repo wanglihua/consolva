@@ -1,0 +1,405 @@
+@using Domain.LogisticsOrder
+@using Domain.Pass
+@using Domain.Warehouse
+@using Service.Express
+@model Web.Areas.Admin.Models.ExpressClaim.ExpressClaimIndexModel
+
+@{
+    ViewBag.Title = "快递详细";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="express-menu">快递管理</li>
+    <li class="active" data-menu="express-claim-detail-menu">快递详细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadExpressClaimList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteExpressClaim()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    @if (Model.CanForceDelete)
+    {
+        <button type="button" class="btn btn-danger btn-sm" onclick="forceDeleteExpressClaim()">
+            <i class="ace-icon fa fa-trash-o"></i>
+            强制删除
+        </button>
+        <script type="text/javascript">
+            function forceDeleteExpressClaim() {
+                var idList = getSelectIdList('#tblExpressClaimList');
+        
+                if (idList.length === 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+        
+                $.msg.confirm("确认要强制删除吗？",
+                    function() {
+                        showMask("提交中...");
+                        $.ajax({
+                            url: '@Url.Action("ForceDelete", "LogisticsClaimGoods")',
+                            type: "POST",
+                            data: { "idList": idList },
+                            success: function(data) {
+                                hideMask();
+                                if (data.success === false) {
+                                    $.msg.error(data.message);
+                                    return;
+                                } else {
+                                    $.msg.show(data.message);
+                                }
+        
+                                loadExpressClaimList();
+                            }
+                        });
+                    }
+                );
+            }
+        </script>
+
+        <button type="button" class="btn btn-pink btn-sm" onclick="throwAwayExpressClaim()">
+            <i class="ace-icon fa fa-trash-o"></i>
+            设置已丢弃
+        </button>
+        <script type="text/javascript">
+            function throwAwayExpressClaim() {
+                var idList = getSelectIdList('#tblExpressClaimList');
+        
+                if (idList.length === 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+        
+                $.msg.confirm("确认要设置快递单丢弃吗？",
+                    function() {
+                        showMask("提交中...");
+                        $.ajax({
+                            url: '@Url.Action("ThrowAway", "LogisticsClaimGoods")',
+                            type: "POST",
+                            data: { "idList": idList },
+                            success: function(data) {
+                                hideMask();
+                                if (data.success === false) {
+                                    $.msg.error(data.message);
+                                    return;
+                                } else {
+                                    $.msg.show(data.message);
+                                }
+        
+                                loadExpressClaimList();
+                            }
+                        });
+                    }
+                );
+            }
+        </script>
+    }
+
+    <button class="btn btn-purple btn-sm" onclick="exportData()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>    
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <select id="warehouseIdQuery" name="warehouseIdQuery" style="width: 130px; height: 30px;" onchange="loadExpressClaimList(0);">
+        <option value="">入库仓库</option>
+        @foreach (WarehouseInfo warehouse in Model.CnWarehouseList)
+        {
+            <option value="@(warehouse.Id)">@(warehouse.Name)</option>
+        }
+    </select>
+    <label for="aoPinTrackingNoQuery">澳拼入库号</label>&nbsp;<input id="aoPinTrackingNoQuery" name="aoPinTrackingNoQuery" autocomplete="off" style="width: 130px; height: 30px;" placeholder="澳拼入库号查询"/>&nbsp;
+    <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" autocomplete="off" style="width: 180px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
+    <label for="billCustomerCodeQuery">面单客户</label>&nbsp;<input id="billCustomerCodeQuery" name="billCustomerCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="面单客户查询"/>&nbsp;
+    <select id="hasBillCustomerIdQuery" name="hasBillCustomerIdQuery" style="width: 150px; height: 30px;">
+        <option value="">面单客户ID解析结果</option>
+        <option value="@(true.ToString())">面单客户ID解析成功</option>
+        <option value="@(false.ToString())">面单客户ID解析失败</option>
+    </select> &nbsp;
+    <select id="expectedQuery" name="expectedQuery" style="width: 110px; height: 30px;" onchange="loadExpressClaimList(0);">
+        <option value="">是否已预报</option>
+        <option value="@(true.ToString())">是，已预报</option>
+        <option value="@(false.ToString())">否，未预报</option>
+    </select>
+    <label for="customerCodeQuery">认领客户</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="认领客户查询"/>&nbsp;
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+    <select id="statusQuery" name="statusQuery" style="width: 110px; height: 30px;" onchange="loadExpressClaimList(0);">
+        <option value="">快递状态</option>
+        @foreach (LogisticsClaimGoodsStatus status in LogisticsClaimGoodsStatus.GetList())
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>
+
+    <select id="shelfStatusQuery" name="shelfStatusQuery" style="width: 110px; height: 30px;" onchange="loadExpressClaimList(0);">
+        <option value="">上架状态</option>
+        @foreach (ExpressShelfStatus status in ExpressShelfStatus.GetList())
+        {
+            <option value="@(status.Id)">@(status.Name)</option>
+        }
+    </select>
+    <label for="goodsNameQuery">扩展名查询</label>&nbsp;<input id="goodsNameQuery" name="goodsNameQuery" autocomplete="off" style="width: 120px; height: 30px;" placeholder="扩展名查询"/>&nbsp;
+    
+    <select id="addDateTimeQueryMode" style="width: 120px; height: 30px;" onchange="changeAddDateTimeQueryMode()">
+        <option value="queryByAddDate">按入库日期查询</option>
+        <option value="queryByAddTime">按入库时间查询</option>
+    </select>
+    
+    <script type="text/javascript">
+        function changeAddDateTimeQueryMode(x) {
+            var addDateTimeQueryMode = $("#addDateTimeQueryMode").val();
+
+            if (addDateTimeQueryMode === "queryByAddDate") {
+                $("#addDateQuery").show();
+                $("#addTimeQuery").hide();
+                
+                $("#addTimeBeginQuery").val("");
+                $("#addTimeEndQuery").val("");
+            }
+            if (addDateTimeQueryMode === "queryByAddTime") {
+                $("#addDateQuery").hide();
+                $("#addTimeQuery").show();
+                
+                $("#addDateBeginQuery").val("");
+                $("#addDateEndQuery").val("");
+            }
+        }
+    </script>
+
+    <span id="addDateQuery">
+        <label for="addDateBeginQuery">入库开始日期</label>&nbsp;<input id="addDateBeginQuery" name="addDateBeginQuery" style="width: 90px; height: 30px;" placeholder="入库开始日期" autocomplete="off"/>&nbsp;
+        <label for="addDateEndQuery">入库截止日期</label>&nbsp;<input id="addDateEndQuery" name="addDateEndQuery" style="width: 90px; height: 30px;" placeholder="入库截止日期" autocomplete="off"/>&nbsp;
+    </span>
+    <span id="addTimeQuery" style="display: none;">
+        <label for="addTimeBeginQuery">入库开始时间</label>&nbsp;<input id="addTimeBeginQuery" name="addTimeBeginQuery" style="width: 110px; height: 30px;" placeholder="入库开始时间" autocomplete="off"/>&nbsp;
+        <label for="addTimeEndQuery">入库截止时间</label>&nbsp;<input id="addTimeEndQuery" name="addTimeEndQuery" style="width: 110px; height: 30px;" placeholder="入库截止时间" autocomplete="off"/>&nbsp;
+    </span>
+
+    <label for="pickTimeBeginQuery">认领开始日期</label>&nbsp;<input id="pickTimeBeginQuery" name="pickTimeBeginQuery" style="width: 90px; height: 30px;" placeholder="认领开始日期" autocomplete="off"/>&nbsp;
+    <label for="pickTimeEndQuery">认领截止日期</label>&nbsp;<input id="pickTimeEndQuery" name="pickTimeEndQuery" style="width: 90px; height: 30px;" placeholder="认领截止日期" autocomplete="off"/>&nbsp;
+    
+    <select id="checkUserIdQuery" name="checkUserIdQuery" style="width: 150px; height: 30px; display: none;@*隐藏起来，这个查询条件暂时取消*@" onchange="loadExpressClaimList(0);">
+        <option value="">入库人员查询</option>
+        @foreach (UserInfo user in Model.CheckinUserList)
+        {
+            <option value="@(user.Id)">@(user.LoginName)(@(user.UserName))</option>
+        }
+    </select>
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressClaimList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="expressClaimList" data-page-index="0" data-sort-field="@(nameof(LogisticsClaimGoodsInfo.Id))" data-sort-dir="@(SortDirection.Desc)"></div>
+
+<script type="text/javascript">
+
+    $(function() {
+        // addData
+        $('#addDateBeginQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#addDateEndQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#addDateBeginQuery").on("dp.change", function (e) {
+            $('#addDateEndQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#addDateEndQuery").on("dp.change", function (e) {
+            $('#addDateBeginQuery').data("DateTimePicker").maxDate(e.date);
+        }); 
+        
+        // addTme
+        $('#addTimeBeginQuery').datetimepicker({
+            locale: "zh-cn"
+        });
+
+        $('#addTimeEndQuery').datetimepicker({
+            locale: "zh-cn",
+            useCurrent: false
+        });       
+        
+        // pickTime
+        $('#pickTimeBeginQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#pickTimeEndQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#pickTimeBeginQuery").on("dp.change", function (e) {
+            $('#pickTimeEndQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#pickTimeEndQuery").on("dp.change", function (e) {
+            $('#pickTimeBeginQuery').data("DateTimePicker").maxDate(e.date);
+        });
+        
+        loadExpressClaimList();
+    });
+    
+    function sortExpressClaimList(sortField, sortDir) {
+        var list = $('#expressClaimList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExpressClaimList();
+    }
+    
+    function loadExpressClaimList(pageIndex) {
+        var list = $('#expressClaimList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExpressClaim")",
+            type: "POST",
+            data: {
+                '@(nameof(ExpressClaimListQueryParam.WarehouseIdQuery))': $('#warehouseIdQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.AoPinTrackingNoQuery))': $('#aoPinTrackingNoQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.PickTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.PickTimeEndQuery))': $('#pickTimeEndQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
+                '@(nameof(ExpressClaimListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),                 
+                '@(nameof(ExpressClaimListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ExpressClaimListQueryParam.SortField))': sortField,
+                '@(nameof(ExpressClaimListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#expressClaimList').html(data);
+
+                initListTable("#tblExpressClaimList");
+            }
+        });
+    }  
+    
+    function exportData() {
+        var idList = getSelectIdList('#tblExpressClaimList');
+
+        @*
+        var params = $.param({
+            '@(nameof(ExpressClaimListQueryParam.IdList))': idList,
+            '@(nameof(ExpressClaimListQueryParam.AoPinTrackingNoQuery))': $('#aoPinTrackingNoQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.StatusQuery))': $('#statusQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.PickTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.PickTimeEndQuery))': $('#pickTimeEndQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
+            '@(nameof(ExpressClaimListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
+            '@(nameof(ExpressClaimListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val()
+        });
+
+        var url = '@Url.Action("Export", "ExpressClaim")?' + params;
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+        *@
+        
+        downLoadFile({
+            url: "@Url.Action("Export", "ExpressClaim")",
+            data: {
+                '@(nameof(ExpressClaimListQueryParam.IdList))': idList,
+                '@(nameof(ExpressClaimListQueryParam.AoPinTrackingNoQuery))': $('#aoPinTrackingNoQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.PickTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.PickTimeEndQuery))': $('#pickTimeEndQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
+                '@(nameof(ExpressClaimListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
+                '@(nameof(ExpressClaimListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val()                
+            }
+        });        
+    }
+    
+    function deleteExpressClaim() {
+        var idList = getSelectIdList('#tblExpressClaimList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "LogisticsClaimGoods")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadExpressClaimList();
+                    }
+                });
+            }
+        );
+    }    
+</script>
