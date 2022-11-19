@@ -51,7 +51,7 @@ public class LogisticsGoodsTradeController : Controller
     {
         LogisticsGoodsTradeIndexModel model = new LogisticsGoodsTradeIndexModel();
 
-        model.StatusId = statusId;
+        model.Status = LogisticsGoodsStatus.GetById(statusId);
         model.GoodsTypeList = LogisticsGoodsType.GetInnerList();
 
         return View("LogisticsGoodsTradeIndex", model);

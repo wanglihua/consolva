@@ -149,25 +149,22 @@ public class ManualFeeReasonController : Controller
         IList<ManualFeeReasonInfo> feeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => idList.Contains(e.Id)).ToList();
         foreach (var feeReason in feeReasonList)
         {
-            /*
-             todo a 后面补上
             if (feeReason.FeeType == ManualFeeType.WriteOffFee)
             {
                 int count = session.Query<LogisticsOrderPayInfo>().Where(e => e.WriteOffReasonId == feeReason.Id).Count();
                 if (count != 0)
                 {
-                    throw new ValidationException($"{feeReason.FeeType?.Name} {feeReason.Content} 当前被引用中, 不能删除, 可以停用!");
+                    throw new ValidationException($"{feeReason.FeeType.Name} {feeReason.Content} 当前被引用中, 不能删除, 可以停用!");
                 }
             }
             else
             {
-                int count = session.Query<LogisticsOrderFeeInfo>().Where(e => e.ManualReasonId == feeReason.Id).Count();
+                int count = session.Query<LogisticsOrderFeeInfo>().Where(e => e.ManualReason!.Id == feeReason.Id).Count();
                 if (count != 0)
                 {
-                    throw new ValidationException($"{feeReason.FeeType?.Name} {feeReason.Content} 当前被引用中, 不能删除, 可以停用!");
+                    throw new ValidationException($"{feeReason.FeeType.Name} {feeReason.Content} 当前被引用中, 不能删除, 可以停用!");
                 }
             }
-            */
         }
 
         foreach (var id in idList)

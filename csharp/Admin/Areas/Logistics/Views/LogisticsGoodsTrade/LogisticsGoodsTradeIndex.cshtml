@@ -58,7 +58,7 @@
 
 <div style="margin-bottom: 8px;">
     <ul class="nav nav-tabs" id="recent-tab">
-        @if (Model.StatusId == LogisticsGoodsStatus.NotConfirmed.Id)
+        @if (Model.Status == LogisticsGoodsStatus.NotConfirmed)
         {
             <li class="active">
                 <a href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = LogisticsGoodsStatus.NotConfirmed.Id})">未确认</a>
@@ -71,7 +71,7 @@
             </li>
         }
 
-        @if (Model.StatusId == LogisticsGoodsStatus.Confirmed.Id)
+        @if (Model.Status == LogisticsGoodsStatus.Confirmed)
         {
             <li class="active">
                 <a href="@Url.Action("Index", "LogisticsGoodsTrade", new {statusId = LogisticsGoodsStatus.Confirmed.Id})">已确认</a>
@@ -142,7 +142,7 @@
             url: "@Url.Action("List", "LogisticsGoodsTrade")",
             type: "POST",
             data: {
-                '@(nameof(TradeGoodsSearchListQueryParam.StatusQuery))': @(Model.StatusId),
+                '@(nameof(TradeGoodsSearchListQueryParam.StatusQuery))': @(Model.Status.Id),
                 '@(nameof(TradeGoodsSearchListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(TradeGoodsSearchListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
                 '@(nameof(TradeGoodsSearchListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
@@ -171,7 +171,7 @@
     }
 
     function showLogisticsGoodsDetail(id) {
-        var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId})";
+        var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.Status.Id})";
 
         url = url.replace(/88888/, id);
         window.open(url, "logistics_goods_detail");
@@ -257,7 +257,7 @@
 
     function exportLogisticsGoods() {
         var params = $.param({
-                '@(nameof(TradeGoodsSearchListQueryParam.StatusQuery))': @(Model.StatusId),
+                '@(nameof(TradeGoodsSearchListQueryParam.StatusQuery))': @(Model.Status.Id),
                 '@(nameof(TradeGoodsSearchListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(TradeGoodsSearchListQueryParam.CnHsCodeQuery))': $('#cnHsCodeQuery').val(),
                 '@(nameof(TradeGoodsSearchListQueryParam.CnHsNameQuery))': $('#cnHsNameQuery').val(),
