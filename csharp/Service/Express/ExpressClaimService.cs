@@ -726,15 +726,15 @@ public class ExpressClaimService
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.OnShelfTime < OnShelfTimeEndQueryValue));
         }
 
-        if (queryParam.PickTimeBeginQuery != null)
+        if (queryParam.ClaimTimeBeginQuery != null)
         {
-            DateTime pickTimeBeginQueryValue = queryParam.PickTimeBeginQuery.Value.Date;
+            DateTime pickTimeBeginQueryValue = queryParam.ClaimTimeBeginQuery.Value.Date;
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ClaimTime >= pickTimeBeginQueryValue));
         }
 
-        if (queryParam.PickTimeEndQuery != null)
+        if (queryParam.ClaimTimeEndQuery != null)
         {
-            DateTime pickTimeEndQueryValue = queryParam.PickTimeEndQuery.Value.Date.AddDays(1);
+            DateTime pickTimeEndQueryValue = queryParam.ClaimTimeEndQuery.Value.Date.AddDays(1);
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ClaimTime < pickTimeEndQueryValue));
         }
 
