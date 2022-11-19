@@ -10,8 +10,6 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Domain.Storage;
 using shunda.Service.Customer;
-using ISession = NHibernate.ISession;
-using Order = NHibernate.Criterion.Order;
 
 namespace shunda.Service.Express;
 
@@ -78,14 +76,14 @@ public class ExpressClaimService
         IList<ExpressInfo> claimGoodsList = criteria.List<ExpressInfo>();
 
         List<int> userIdList = claimGoodsList.Select(e => e.AddUser.Id).Distinct().ToList();
-        userIdList.AddRange(claimGoodsList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser.Id).Distinct().ToList());
-        userIdList.AddRange(claimGoodsList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser.Id).Distinct().ToList());
-        userIdList.AddRange(claimGoodsList.Where(e => e.PackingUser != null).Select(e => e.PackingUser.Id).Distinct().ToList());
-        userIdList.AddRange(claimGoodsList.Where(e => e.DumpUser != null).Select(e => e.DumpUser.Id).Distinct().ToList());
+        userIdList.AddRange(claimGoodsList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser!.Id).Distinct().ToList());
+        userIdList.AddRange(claimGoodsList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser!.Id).Distinct().ToList());
+        userIdList.AddRange(claimGoodsList.Where(e => e.PackingUser != null).Select(e => e.PackingUser!.Id).Distinct().ToList());
+        userIdList.AddRange(claimGoodsList.Where(e => e.DumpUser != null).Select(e => e.DumpUser!.Id).Distinct().ToList());
         userIdList = userIdList.Distinct().ToList();
 
         IList<int> customerIdList = claimGoodsList.Where(e => e.Customer != null).Select(e => e.Customer!.Id).Distinct().ToList();
-        IList<int> orderIdList = claimGoodsList.Where(e => e.Order != null).Select(e => e.Order.Id).Distinct().ToList();
+        IList<int> orderIdList = claimGoodsList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().ToList();
 
         List<int> storageLocIdList = claimGoodsList.Select(e => e.StorageLoc.Id).Distinct().ToList();
         // storageLocIdList.AddRange(claimGoodsList.Where(e => e.CheckinStorageLoc != null).Select(e => e.CheckinStorageLoc.Id).Distinct().ToList());
@@ -333,10 +331,10 @@ public class ExpressClaimService
         if (expressClaimCate == ExpressClaimCate.ToOffShelfSchedule)
         {
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressShelfScheduleInfo>();
-            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressShelfScheduleInfo.Claim), nameof(ExpressShelfScheduleInfo.Claim));
+            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressShelfScheduleInfo.Express), nameof(ExpressShelfScheduleInfo.Express));
             scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.ScheduleType)}", ExpressShelfScheduleType.OffShelf));
-            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.Claim)}.{nameof(ExpressShelfScheduleInfo.Claim.Status)}", ExpressStatus.WaitPack)); // 缩小范围
-            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressShelfScheduleInfo.Claim)}.{nameof(ExpressShelfScheduleInfo.Claim.Id)}"));
+            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.Express)}.{nameof(ExpressShelfScheduleInfo.Express.Status)}", ExpressStatus.WaitPack)); // 缩小范围
+            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressShelfScheduleInfo.Express)}.{nameof(ExpressShelfScheduleInfo.Express.Id)}"));
 
             criteria = criteria.Add(Restrictions.And(
                     // Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.WaitPack && e.ArchiveType == ExpressArchiveType.None),
@@ -361,20 +359,12 @@ public class ExpressClaimService
 
             // 后面的查询就是缩小 orderWaitPackList 的范围 
 
-            if (queryParam.OrderTargetWarehouseIdQuery != 0)
-            {
-                // criteria = criteria.Add(Restrictions.Eq($"tw.{nameof(WarehouseInfo.Id)}", queryParam.OrderTargetWarehouseIdQuery));
-
-                int twIdQuery = queryParam.OrderTargetWarehouseIdQuery;
-                orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.TargetWarehouse.Id == twIdQuery);
-            }
-
             if (queryParam.FirstModeIdQuery != 0)
             {
                 // criteria = criteria.Add(Restrictions.Eq($"fm.{nameof(LogisticsModeInfo.Id)}", queryParam.FirstModeIdQuery));
 
                 int fmIdQuery = queryParam.FirstModeIdQuery;
-                orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.Id == fmIdQuery);
+                orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.Id == fmIdQuery); // todo a 这里改造，express 中也晚上 提交打包时间，头程物流
             }
 
             if (queryParam.SubmitPackTimeBeginQuery != null)
@@ -442,10 +432,10 @@ public class ExpressClaimService
             criteria = criteria.Add(Restrictions.Not(Restrictions.In($"{nameof(ExpressInfo.StorageLoc)}.{nameof(StorageLocInfo.Id)}", groundStorageLocIdList.ToArray()))); // 待上架和待上架排班都不显示地面仓位                  
 
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressShelfScheduleInfo>();
-            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressShelfScheduleInfo.Claim), nameof(ExpressShelfScheduleInfo.Claim));
+            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressShelfScheduleInfo.Express), nameof(ExpressShelfScheduleInfo.Express));
             scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.ScheduleType)}", ExpressShelfScheduleType.OnShelf));
-            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.Claim)}.{nameof(ExpressShelfScheduleInfo.Claim.ShelfStatus)}", ExpressShelfStatus.ToOnShelf));
-            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressShelfScheduleInfo.Claim)}.{nameof(ExpressShelfScheduleInfo.Claim.Id)}"));
+            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.Express)}.{nameof(ExpressShelfScheduleInfo.Express.ShelfStatus)}", ExpressShelfStatus.ToOnShelf));
+            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressShelfScheduleInfo.Express)}.{nameof(ExpressShelfScheduleInfo.Express.Id)}"));
 
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf && e.AddTime >= EXPRESS_ON_SHELF_AFTER && e.ArchiveType == ExpressArchiveType.None));
             criteria = criteria.Add(Restrictions.In(nameof(ExpressInfo.Status), mayToOnShelfStatusList.ToArray()));
@@ -516,7 +506,7 @@ public class ExpressClaimService
                 e.AddTime >= ARCHIVE_DATE
                 && e.AddTime < EXPRESS_CHECKIN_RECENT_AGO
                 && e.Status == ExpressStatus.WaitPick
-                && e.Dumped == false
+                && e.DumpStatus == ExpressDumpStatus.NotDump
                 && e.ArchiveType == ExpressArchiveType.None)
             );
         }
@@ -537,10 +527,10 @@ public class ExpressClaimService
         if (expressClaimCate == ExpressClaimCate.NotPickedLongDumpSchedule)
         {
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressDumpScheduleInfo>();
-            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Claim), nameof(ExpressDumpScheduleInfo.Claim));
+            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Express), nameof(ExpressDumpScheduleInfo.Express));
             scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.DumpType)}", ExpressDumpType.NoPickup));
-            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.DumpStatus)}", ExpressDumpStatus.NotDump));
-            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.Id)}"));
+            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Express)}.{nameof(ExpressDumpScheduleInfo.Express.DumpStatus)}", ExpressDumpStatus.NotDump));
+            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressDumpScheduleInfo.Express)}.{nameof(ExpressDumpScheduleInfo.Express.Id)}"));
 
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE
@@ -556,10 +546,10 @@ public class ExpressClaimService
         if (expressClaimCate == ExpressClaimCate.NotOrderLongDumpSchedule)
         {
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressDumpScheduleInfo>();
-            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Claim), nameof(ExpressDumpScheduleInfo.Claim));
+            scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Express), nameof(ExpressDumpScheduleInfo.Express));
             scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.DumpType)}", ExpressDumpType.NoProcess));
-            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.DumpStatus)}", ExpressDumpStatus.NotDump));
-            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressDumpScheduleInfo.Claim)}.{nameof(ExpressDumpScheduleInfo.Claim.Id)}"));
+            scheduleCriteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.Express)}.{nameof(ExpressDumpScheduleInfo.Express.DumpStatus)}", ExpressDumpStatus.NotDump));
+            scheduleCriteria.SetProjection(Projections.Property($"{nameof(ExpressDumpScheduleInfo.Express)}.{nameof(ExpressDumpScheduleInfo.Express.Id)}"));
 
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE

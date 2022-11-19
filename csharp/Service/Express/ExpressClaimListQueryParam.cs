@@ -15,19 +15,9 @@ public class ExpressClaimListQueryParam : ListQueryParam
     public int WarehouseIdQuery { get; set; }
 
     /// <summary>
-    /// 订单目的仓
-    /// </summary>
-    public int OrderTargetWarehouseIdQuery { get; set; }
-
-    /// <summary>
     /// 头程物流Id
     /// </summary>
     public int FirstModeIdQuery { get; set; }
-
-    /// <summary>
-    /// 是否对接TLA查询
-    /// </summary>
-    public bool? SyncTlaQuery { get; set; }
 
     /// <summary>
     /// 是否打印澳拼标签

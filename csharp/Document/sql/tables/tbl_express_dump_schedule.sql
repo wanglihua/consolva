@@ -11,8 +11,8 @@ CREATE TABLE tbl_express_dump_schedule
     create_time  DATETIME NOT NULL COMMENT '创建时间',
     update_time  DATETIME NOT NULL COMMENT '更新时间',
 
-    FOREIGN KEY fk_express_dump_schedule_express_id (express_id) REFERENCES tbl_express (id),
-    FOREIGN KEY fk_express_dump_schedule_user_id (user_id) REFERENCES tbl_user (id),
+    CONSTRAINT fk_express_dump_schedule_express_id FOREIGN KEY (express_id) REFERENCES tbl_express (id),
+    CONSTRAINT fk_express_dump_schedule_user_id FOREIGN KEY (user_id) REFERENCES tbl_user (id),
 
     UNIQUE INDEX ix_express_dump_schedule_c_s (express_id, dump_type_id)
 
