@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using NHibernate;
+using NHibernate.Criterion;
 using NLog;
 using shunda.Core.Config;
 using shunda.Core.Service;
@@ -162,36 +163,16 @@ public class LogisticsGoodsImageService
             }
         }
 
-        /*
-         todo a 把下面的SQL改成这里的查询方式
         ExpressPhotoInfo? ep = null;
         ExpressGoodsInfo? eg = null;
-        session.QueryOver<ExpressPhotoInfo>(() => ep!)
+        int epId = session.QueryOver<ExpressPhotoInfo>(() => ep!)
             .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
             .Select(e => ep!.Id)
             .Where(() => eg!.Goods.Id == goodsId)
             .Take(1)
             .SingleOrDefault<int>();
-        
-        */
 
-        /*
-todo a 改成 JoinEntityQueryOver 的方式
-SELECT ep.id
-FROM tbl_express_goods eg
-         INNER JOIN tbl_express_photo ep ON ep.express_id = eg.express_id
-WHERE eg.goods_id = 1;
-
-         */
-        string sql = $@"
-SELECT ep.id
-FROM tbl_express_goods eg
-         INNER JOIN tbl_express_photo ep ON ep.express_id = eg.express_id
-WHERE eg.goods_id = {goodsId}
-LIMIT 1";
-
-        object photoIdObj = session.CreateSQLQuery(sql).UniqueResult<object>();
-        if (photoIdObj != null && (int)photoIdObj != 0)
+        if (epId != 0)
         {
             return true;
         }
@@ -228,48 +209,22 @@ LIMIT 1";
     /// <returns></returns>
     public IList<ExpressPhotoInfo> GetGoodsRecentOrderImageList(int goodsId)
     {
-        /*
-todo a 改成 JoinEntityQueryOver 的方式
-SELECT DISTINCT ep.order_id
-FROM tbl_express_photo ep
-         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
-WHERE eg.goods_id = 1
-  AND ep.order_id IS NOT NULL
-ORDER BY ep.id DESC
-LIMIT 3;
-         
-         */
-        // sql 中按tbl_express_photo.id 降序排，近似近期订单
-        string recentOrderIdSql = $@"
-SELECT DISTINCT ep.order_id
-FROM tbl_express_photo ep
-         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
-WHERE eg.goods_id = {goodsId}
-  AND ep.order_id IS NOT NULL
-ORDER BY ep.id DESC
-LIMIT 3
-";
-        IList<int> orderIdList = session.CreateSQLQuery(recentOrderIdSql).List<int>();
+        ExpressPhotoInfo? ep = null;
+        ExpressGoodsInfo? eg = null;
 
-        /*
-todo a 改成 JoinEntityQueryOver 的方式
-SELECT ep.*
-FROM tbl_express_photo ep
-         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
-WHERE eg.goods_id = 1
-  AND ep.order_id IN (1, 2, 3);
+        IList<int> orderIdList = session.QueryOver<ExpressPhotoInfo>(() => ep!)
+            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
+            .Select(Projections.Distinct(Projections.Property($"{nameof(ep)}.{nameof(ep.Order)}.{nameof(ep.Order.Id)}")))
+            .Where(() => eg!.Goods.Id == goodsId && ep!.Order != null)
+            .OrderByAlias(() => ep!.Order!.Id).Desc
+            .Take(3)
+            .List<int>();
 
-         */
-
-        string goodsPhotoSql = $@"
-SELECT ep.*
-FROM tbl_express_photo ep
-         INNER JOIN tbl_express_goods eg ON ep.express_id = eg.express_id
-WHERE eg.goods_id = {goodsId}
-  AND ep.order_id IN ({string.Join(",", orderIdList)})
-";
-
-        IList<ExpressPhotoInfo> expressPhotoList = session.CreateSQLQuery(goodsPhotoSql).AddEntity(typeof(ExpressPhotoInfo)).List<ExpressPhotoInfo>();
+        IList<ExpressPhotoInfo> expressPhotoList = session.QueryOver<ExpressPhotoInfo>(() => ep!)
+            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
+            .Select(e => ep)
+            .Where(() => eg!.Goods.Id == goodsId && orderIdList.Contains(ep!.Order!.Id))
+            .List<ExpressPhotoInfo>();
 
         foreach (var expressPhoto in expressPhotoList)
         {
