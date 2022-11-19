@@ -146,6 +146,26 @@ public class ExpressInfo : Entity
     public virtual CustomerInfo? Customer { get; set; } = null;
 
     /// <summary>
+    /// 头程方式，非空
+    /// </summary>
+    [Required(ErrorMessage = "头程方式不能为空！")]
+    [JsonProperty("firstType")]
+    [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
+    public virtual LogisticsModeType FirstType { get; set; } = LogisticsModeType.None;
+
+    /// <summary>
+    /// 头程物流，可空
+    /// </summary>
+    [JsonProperty("firstMode")]
+    public virtual LogisticsModeInfo? FirstMode { get; set; } = null;
+
+    /// <summary>
+    /// 提交打包时间，可空
+    /// </summary>
+    [JsonProperty("submitPackTime")]
+    public virtual DateTime? SubmitPackTime { get; set; } = null;
+
+    /// <summary>
     /// 总重量，非空
     /// </summary>
     [Required(ErrorMessage = "总重量不能为空！")]
@@ -205,7 +225,6 @@ public class ExpressInfo : Entity
 
     /// <summary>
     /// 退运快递单号，非空
-    /// todo b 放到另外一个表里面
     /// </summary>
     [Required(ErrorMessage = "退运快递单号不能为空！")]
     [MaxLength(30, ErrorMessage = "退运快递单号长度不能大于30！")]
@@ -247,14 +266,12 @@ public class ExpressInfo : Entity
 
     /// <summary>
     /// 堆存用户，可空
-    /// todo b 这个自动是不是可以去掉，因为有另外一个表 express dump 来存储了
     /// </summary>
     [JsonProperty("dumpUser")]
     public virtual UserInfo? DumpUser { get; set; } = null;
 
     /// <summary>
     /// 堆存时间，可空
-    /// todo b 这个自动是不是可以去掉，因为有另外一个表 express dump 来存储了
     /// </summary>
     [JsonProperty("dumpTime")]
     public virtual DateTime? DumpTime { get; set; } = null;
@@ -283,4 +300,9 @@ public class ExpressInfo : Entity
     [ModelBinder(typeof(ExpressStatusModelBinder))]
     public virtual ExpressStatus Status { get; set; } = ExpressStatus.None;
 
+    #region cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

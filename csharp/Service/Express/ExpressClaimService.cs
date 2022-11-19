@@ -13,8 +13,6 @@ using shunda.Service.Customer;
 
 namespace shunda.Service.Express;
 
-// todo claimGoods 改名
-
 [Service(ServiceType.Scoped)]
 public class ExpressClaimService
 {
@@ -73,22 +71,23 @@ public class ExpressClaimService
                 .SetMaxResults(listPager.PageSize);
         }
 
-        IList<ExpressInfo> claimGoodsList = criteria.List<ExpressInfo>();
+        IList<ExpressInfo> expressList = criteria.List<ExpressInfo>();
 
-        List<int> userIdList = claimGoodsList.Select(e => e.AddUser.Id).Distinct().ToList();
-        userIdList.AddRange(claimGoodsList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser!.Id).Distinct().ToList());
-        userIdList.AddRange(claimGoodsList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser!.Id).Distinct().ToList());
-        userIdList.AddRange(claimGoodsList.Where(e => e.PackingUser != null).Select(e => e.PackingUser!.Id).Distinct().ToList());
-        userIdList.AddRange(claimGoodsList.Where(e => e.DumpUser != null).Select(e => e.DumpUser!.Id).Distinct().ToList());
+        List<int> userIdList = expressList.Select(e => e.AddUser.Id).Distinct().ToList();
+        userIdList.AddRange(expressList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser!.Id).Distinct().ToList());
+        userIdList.AddRange(expressList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser!.Id).Distinct().ToList());
+        userIdList.AddRange(expressList.Where(e => e.PackingUser != null).Select(e => e.PackingUser!.Id).Distinct().ToList());
+        userIdList.AddRange(expressList.Where(e => e.DumpUser != null).Select(e => e.DumpUser!.Id).Distinct().ToList());
         userIdList = userIdList.Distinct().ToList();
 
-        IList<int> customerIdList = claimGoodsList.Where(e => e.Customer != null).Select(e => e.Customer!.Id).Distinct().ToList();
-        IList<int> orderIdList = claimGoodsList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().ToList();
+        IList<int> customerIdList = expressList.Where(e => e.Customer != null).Select(e => e.Customer!.Id).Distinct().ToList();
+        IList<int> orderIdList = expressList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().ToList();
 
-        List<int> storageLocIdList = claimGoodsList.Select(e => e.StorageLoc.Id).Distinct().ToList();
-        // storageLocIdList.AddRange(claimGoodsList.Where(e => e.CheckinStorageLoc != null).Select(e => e.CheckinStorageLoc.Id).Distinct().ToList());
+        List<int> storageLocIdList = expressList.Select(e => e.StorageLoc.Id).Distinct().ToList();
+        // storageLocIdList.AddRange(expressList.Where(e => e.CheckinStorageLoc != null).Select(e => e.CheckinStorageLoc.Id).Distinct().ToList());
         storageLocIdList = storageLocIdList.Distinct().ToList();
 
+        // 相当于是做了预加载
         IList<UserInfo> userList = session.Query<UserInfo>().Where(e => e.LoginName != UserInfo.DevLoginName && userIdList.Contains(e.Id)).ToList();
         IList<CustomerInfo> customerList = session.Query<CustomerInfo>().Where(e => customerIdList.Contains(e.Id)).ToList();
         IList<LogisticsOrderInfo> orderList = session.Query<LogisticsOrderInfo>().Where(e => orderIdList.Contains(e.Id)).ToList();
@@ -98,7 +97,7 @@ public class ExpressClaimService
             .Where(e => e.Status == LogisticsModeStatus.Enabled || e.InnerStatus == LogisticsModeStatus.Enabled) // 只取当前活跃的物流方式
             .ToList();
 
-        IList<string> trackingNoList = claimGoodsList.Select(e => e.TrackingNo).ToList();
+        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
         IList<ExpressSizeWeightInfo> expressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
 
         IList<ExpressExpectInfo> expressExpectList = session.Query<ExpressExpectInfo>()
@@ -108,68 +107,70 @@ public class ExpressClaimService
 
         IList<ExpressPhotoInfo> expressPhotoList = expressPhotoService.GetExpressPhotoList(trackingNoList);
 
-        foreach (ExpressInfo claimGoods in claimGoodsList)
+        foreach (ExpressInfo express in expressList)
         {
+            express.CustomerCodeCache = customerCodeService.GetCustomerCode(express.Customer?.Id ?? 0);
+
             /*
              这里有些预加载了就可以了，不用设置 cache成员
-            UserInfo addUser = userList.Where(e => e.Id == claimGoods.AddUser.Id).Take(1).SingleOrDefault();
-            claimGoods.AddUserNameCache = addUser?.UserName;
+            UserInfo addUser = userList.Where(e => e.Id == express.AddUser.Id).Take(1).SingleOrDefault();
+            express.AddUserNameCache = addUser?.UserName;
 
             // on shelf user, off shelf user，packing user 不采用关联表的方式
-            int onShelfUserId = claimGoods.OnShelfUser?.Id ?? 0;
+            int onShelfUserId = express.OnShelfUser?.Id ?? 0;
             UserInfo onShelfUser = userList.Where(e => e.Id == onShelfUserId).Take(1).SingleOrDefault();
-            claimGoods.OnShelfUserNameCache = onShelfUser?.UserName;
+            express.OnShelfUserNameCache = onShelfUser?.UserName;
 
-            int offShelfUserId = claimGoods.OffShelfUser?.Id ?? 0;
+            int offShelfUserId = express.OffShelfUser?.Id ?? 0;
             UserInfo offShelfUser = userList.Where(e => e.Id == offShelfUserId).Take(1).SingleOrDefault();
-            claimGoods.OffShelfUserNameCache = offShelfUser?.UserName;
+            express.OffShelfUserNameCache = offShelfUser?.UserName;
 
-            int packingUserId = claimGoods.PackingUser?.Id ?? 0;
+            int packingUserId = express.PackingUser?.Id ?? 0;
             UserInfo packingUser = userList.Where(e => e.Id == packingUserId).Take(1).SingleOrDefault();
-            claimGoods.PackingUserNamCache = packingUser?.UserName;
+            express.PackingUserNamCache = packingUser?.UserName;
 
-            int dumpUserId = claimGoods.DumpUser?.Id ?? 0;
+            int dumpUserId = express.DumpUser?.Id ?? 0;
             UserInfo dumpUser = userList.Where(e => e.Id == dumpUserId).Take(1).SingleOrDefault();
-            claimGoods.DumpUserNameCache = dumpUser?.UserName;
+            express.DumpUserNameCache = dumpUser?.UserName;
 
-            CustomerInfo customer = customerList.Where(e => e.Id == claimGoods.CustomerId).Take(1).SingleOrDefault();
-            claimGoods.CustomerNameCache = customer?.CustomerCode;
+            CustomerInfo customer = customerList.Where(e => e.Id == express.CustomerId).Take(1).SingleOrDefault();
+            express.CustomerNameCache = customer?.CustomerCode;
 
-            LogisticsOrderInfo order = orderList.Where(e => e.Id == (claimGoods.Order?.Id ?? 0)).Take(1).SingleOrDefault();
-            claimGoods.OrderCodeCache = order?.Code;
-            claimGoods.OrderStatusNameCache = order?.OrderStatus?.Name;
-            claimGoods.orderTargetWarehouseNameCache = warehouseList.Where(e => e.Id == (order?.TargetWarehouse?.Id ?? 0)).Take(1).SingleOrDefault()?.Name;
-            claimGoods.OrderFirstModeNameCache = modeList.Where(e => e.Id == (order?.FirstLogisticsMode?.Id ?? 0)).Take(1).SingleOrDefault()?.Name;
-            claimGoods.OrderSubmitPackTimeCache = order?.SubmitPackTime;
+            LogisticsOrderInfo order = orderList.Where(e => e.Id == (express.Order?.Id ?? 0)).Take(1).SingleOrDefault();
+            express.OrderCodeCache = order?.Code;
+            express.OrderStatusNameCache = order?.OrderStatus?.Name;
+            express.orderTargetWarehouseNameCache = warehouseList.Where(e => e.Id == (order?.TargetWarehouse?.Id ?? 0)).Take(1).SingleOrDefault()?.Name;
+            express.OrderFirstModeNameCache = modeList.Where(e => e.Id == (order?.FirstLogisticsMode?.Id ?? 0)).Take(1).SingleOrDefault()?.Name;
+            express.OrderSubmitPackTimeCache = order?.SubmitPackTime;
 
-            StorageLocInfo storageLoc = storageLocList.Where(e => e.Id == (claimGoods.StorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
-            claimGoods.StorageLocNameCache = storageLoc?.GetFullName();
+            StorageLocInfo storageLoc = storageLocList.Where(e => e.Id == (express.StorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
+            express.StorageLocNameCache = storageLoc?.GetFullName();
 
-            WarehouseInfo checkinWarehouse = warehouseList.Where(e => e.Id == (claimGoods.CheckinWarehouse?.Id ?? 0)).Take(1).SingleOrDefault();
-            claimGoods.CheckinWarehouseNameCache = checkinWarehouse?.Name;
+            WarehouseInfo checkinWarehouse = warehouseList.Where(e => e.Id == (express.CheckinWarehouse?.Id ?? 0)).Take(1).SingleOrDefault();
+            express.CheckinWarehouseNameCache = checkinWarehouse?.Name;
 
-            WarehouseInfo warehouse = warehouseList.Where(e => e.Id == (claimGoods.Warehouse?.Id ?? 0)).Take(1).SingleOrDefault();
-            claimGoods.WarehouseNameCache = warehouse?.Name;
+            WarehouseInfo warehouse = warehouseList.Where(e => e.Id == (express.Warehouse?.Id ?? 0)).Take(1).SingleOrDefault();
+            express.WarehouseNameCache = warehouse?.Name;
 
-            StorageLocInfo checkinStorageLoc = storageLocList.Where(e => e.Id == (claimGoods.CheckinStorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
-            claimGoods.CheckinStorageLocNameCache = checkinStorageLoc?.GetFullName();
+            StorageLocInfo checkinStorageLoc = storageLocList.Where(e => e.Id == (express.CheckinStorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
+            express.CheckinStorageLocNameCache = checkinStorageLoc?.GetFullName();
 
-            claimGoods.ExpressItemListCache = expressItemList.Where(e => e.ExpressTrackingNo == claimGoods.TrackingNo).ToList();
+            express.ExpressItemListCache = expressItemList.Where(e => e.ExpressTrackingNo == express.TrackingNo).ToList();
             
 
-            ExpressExpectInfo expect = expressExpectList.Where(e => e.TrackingNo == claimGoods.TrackingNo).Take(1).SingleOrDefault();
-            claimGoods.ExpectCustomerIdCache = expect?.Customer?.CustomerCode ?? string.Empty;
-            claimGoods.ExpectTimeCache = expect?.CreateTime;
+            ExpressExpectInfo expect = expressExpectList.Where(e => e.TrackingNo == express.TrackingNo).Take(1).SingleOrDefault();
+            express.ExpectCustomerIdCache = expect?.Customer?.CustomerCode ?? string.Empty;
+            express.ExpectTimeCache = expect?.CreateTime;
 
-            claimGoods.ExpressPhotoListCache = expressPhotoList
-                .Where(e => e.ExpressTrackingNo == claimGoods.TrackingNo)
+            express.ExpressPhotoListCache = expressPhotoList
+                .Where(e => e.ExpressTrackingNo == express.TrackingNo)
                 .OrderBy(e => e.Type.Id) // 必须要用 Type.Id, Type之间还不能比较
                 .ToList();
             
             */
         }
 
-        return claimGoodsList;
+        return expressList;
     }
 
     /// <summary>
@@ -346,53 +347,23 @@ public class ExpressClaimService
 
         if (expressClaimCate == ExpressClaimCate.ToOffShelf || expressClaimCate == ExpressClaimCate.ToOffShelfSchedule)
         {
-            /* 不用关联表模式，性能太差
-            criteria = criteria.CreateAlias($"order.{nameof(LogisticsOrderInfo.TargetWarehouse)}", "tw", JoinType.LeftOuterJoin);
-            criteria = criteria.CreateAlias($"order.{nameof(LogisticsOrderInfo.FirstLogisticsMode)}", "fm", JoinType.LeftOuterJoin);
-            
-            criteria = criteria.Add(Restrictions.Eq($"order.{nameof(LogisticsOrderInfo.OrderStatus)}", LogisticsOrderStatus.CnWaitPack));                
-            */
-
-            // 直接把所有待待打包的订单全找出来，应该不会很多
-            var orderWaitPackListQuery = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.OrderStatus == LogisticsOrderStatus.WaitPack);
-
-            // 后面的查询就是缩小 orderWaitPackList 的范围 
-
             if (queryParam.FirstModeIdQuery != 0)
             {
-                // criteria = criteria.Add(Restrictions.Eq($"fm.{nameof(LogisticsModeInfo.Id)}", queryParam.FirstModeIdQuery));
-
-                int fmIdQuery = queryParam.FirstModeIdQuery;
-                orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.FirstLogisticsMode.Id == fmIdQuery); // todo a 这里改造，express 中也晚上 提交打包时间，头程物流
+                int firstModeIdQuery = queryParam.FirstModeIdQuery;
+                criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressInfo.FirstMode)}.{nameof(ExpressInfo.FirstMode.Id)}", firstModeIdQuery));
             }
 
             if (queryParam.SubmitPackTimeBeginQuery != null)
             {
-                /*
-                // DateTime submitPackTimeBeginQuery = queryParam.SubmitPackTimeBeginQuery.Value.Date;
-                DateTime submitPackTimeBeginQuery = queryParam.SubmitPackTimeBeginQuery.Value;
-                criteria = criteria.Add(Restrictions.Ge($"order.{nameof(LogisticsOrderInfo.SubmitPackTime)}", submitPackTimeBeginQuery));
-                */
-
-                DateTime submitPackTimeBeginQuery = queryParam.SubmitPackTimeBeginQuery.Value;
-                orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.SubmitPackTime >= submitPackTimeBeginQuery);
+                DateTime submitPackTimeBeginQuery = queryParam.SubmitPackTimeBeginQuery.Value.Date;
+                criteria = criteria.Add(Restrictions.Ge($"{nameof(ExpressInfo.SubmitPackTime)}", submitPackTimeBeginQuery));
             }
 
             if (queryParam.SubmitPackTimeEndQuery != null)
             {
-                /*
-                // DateTime submitPackTimeEndQuery = queryParam.SubmitPackTimeEndQuery.Value.Date.AddDays(1);
-                DateTime submitPackTimeEndQuery = queryParam.SubmitPackTimeEndQuery.Value;
-                criteria = criteria.Add(Restrictions.Lt($"order.{nameof(LogisticsOrderInfo.SubmitPackTime)}", submitPackTimeEndQuery));
-                */
-
-                DateTime submitPackTimeEndQuery = queryParam.SubmitPackTimeEndQuery.Value;
-                orderWaitPackListQuery = orderWaitPackListQuery.Where(e => e.SubmitPackTime < submitPackTimeEndQuery);
+                DateTime submitPackTimeEndQuery = queryParam.SubmitPackTimeEndQuery.Value.Date.AddDays(1);
+                criteria = criteria.Add(Restrictions.Lt($"{nameof(ExpressInfo.SubmitPackTime)}", submitPackTimeEndQuery));
             }
-
-            var orderIdList = orderWaitPackListQuery.Select(e => e.Id).ToArray();
-            criteria = criteria.Add(Restrictions.In(claimOrderIdProp, orderIdList));
         }
 
         // 按界面分类过滤
@@ -709,13 +680,13 @@ public class ExpressClaimService
                 .Select(e => e.Id)
                 .ToList();
 
-            IList<int> claimGoodsIdList = session.Query<ExpressGoodsInfo>()
+            IList<int> expressIdList = session.Query<ExpressGoodsInfo>()
                 .Where(e => goodsIdList.Contains(e.Goods.Id))
                 .Select(e => e.Express.Id)
                 .Distinct()
                 .ToList();
 
-            criteria = criteria.Add(Restrictions.On<ExpressInfo>(e => e.Id).IsIn(claimGoodsIdList.ToArray()));
+            criteria = criteria.Add(Restrictions.On<ExpressInfo>(e => e.Id).IsIn(expressIdList.ToArray()));
         }
 
         if (queryParam.AddDateBeginQuery != null)

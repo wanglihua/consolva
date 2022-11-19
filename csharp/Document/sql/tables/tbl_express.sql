@@ -29,6 +29,9 @@ CREATE TABLE tbl_express
     order_id               INT                          NULL COMMENT '物流订单',
     order_code             VARCHAR(100)   DEFAULT ''    NOT NULL COMMENT '订单编号',
     customer_id            INT                          NULL COMMENT '客户',
+    first_type_id          INT            DEFAULT 0     NOT NULL COMMENT '头程方式#type:LogisticsModeType',
+    first_mode_id          INT                          NULL COMMENT '头程物流',
+    submit_pack_time       DATETIME                     NULL COMMENT '提交打包时间',
 
     total_weight           DECIMAL(10, 3) DEFAULT 0     NOT NULL COMMENT '总重量',    # KG
     total_volume           DECIMAL(14, 6) DEFAULT 0     NOT NULL COMMENT '总体积',    # 立方米,
@@ -69,6 +72,7 @@ CREATE TABLE tbl_express
     CONSTRAINT fk_express_storage_loc_id FOREIGN KEY (storage_loc_id) REFERENCES tbl_storage_loc (id),
     CONSTRAINT fk_express_order_id FOREIGN KEY (order_id) REFERENCES tbl_logistics_order (id),
     CONSTRAINT fk_express_customer_id FOREIGN KEY (customer_id) REFERENCES tbl_customer (id),
+    CONSTRAINT fk_express_first_mode_id FOREIGN KEY (first_mode_id) REFERENCES tbl_logistics_mode (id),
     CONSTRAINT fk_express_on_shelf_user_id FOREIGN KEY (on_shelf_user_id) REFERENCES tbl_user (id),
     CONSTRAINT fk_express_off_shelf_user_id FOREIGN KEY (off_shelf_user_id) REFERENCES tbl_user (id),
     CONSTRAINT fk_express_packing_user_id FOREIGN KEY (packing_user_id) REFERENCES tbl_user (id),

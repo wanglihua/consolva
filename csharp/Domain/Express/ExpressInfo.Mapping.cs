@@ -190,6 +190,35 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo>
         );
 
         Property(
+            x => x.FirstType,
+            map => {
+                map.Type<LogisticsModeTypeHibernateType>();
+                map.Column("first_type_id");
+                map.NotNullable(true);
+            }
+        );
+
+        ManyToOne(
+            x => x.FirstMode,
+            map => {
+                map.Class(typeof(LogisticsModeInfo));
+                map.Column("first_mode_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.SubmitPackTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("submit_pack_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
             x => x.TotalWeight,
             map => {
                 map.Type(NHibernateUtil.Decimal);
