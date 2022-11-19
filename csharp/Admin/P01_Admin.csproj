@@ -38,4 +38,10 @@
         <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\LogisticsOrderRemarkReason\LogisticsOrderRemarkReasonDetail.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\LogisticsOrderRemarkReason\LogisticsOrderRemarkReasonIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\LogisticsOrderRemarkReason\LogisticsOrderRemarkReasonList.cshtml" />
+    </ItemGroup>
+
 </Project>
