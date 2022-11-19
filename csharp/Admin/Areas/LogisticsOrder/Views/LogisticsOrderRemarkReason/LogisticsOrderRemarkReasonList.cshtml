@@ -1,0 +1,61 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.LogisticsOrder
+@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemarkReason.LogisticsOrderRemarkReasonListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderRemarkReasonList"})
+
+<table id="tblLogisticsOrderRemarkReasonList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="logisticsOrderRemarkReasonCheckAll"></label><input id="logisticsOrderRemarkReasonCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 100px;">
+                <a field="@(nameof(LogisticsOrderRemarkReasonInfo.Reason))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRemarkReasonList">原因</a>
+            </th>
+            <th style="width: 300px;">
+                <a field="@(nameof(LogisticsOrderRemarkReasonInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRemarkReasonList">描述</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderRemarkReasonInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRemarkReasonList">创建时间</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(LogisticsOrderRemarkReasonInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderRemarkReasonList">修改时间</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsOrderRemarkReasonList != null && Model.LogisticsOrderRemarkReasonList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsOrderRemarkReasonInfo logisticsOrderRemarkReason in Model.LogisticsOrderRemarkReasonList)
+            {
+                <tr ondblclick="showLogisticsOrderRemarkReasonDetail(@(logisticsOrderRemarkReason.Id));">
+                    <td style="text-align: center;">
+                        <label for="logisticsOrderRemarkReasonCheck_@(logisticsOrderRemarkReason.Id)"></label><input id="logisticsOrderRemarkReasonCheck_@(logisticsOrderRemarkReason.Id)" type="checkbox" class="ace" value="@logisticsOrderRemarkReason.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@logisticsOrderRemarkReason.Reason</td>
+                    <td>@logisticsOrderRemarkReason.Description</td>
+                    <td style="text-align: center;">@logisticsOrderRemarkReason.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: center;">@logisticsOrderRemarkReason.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderRemarkReasonList"})

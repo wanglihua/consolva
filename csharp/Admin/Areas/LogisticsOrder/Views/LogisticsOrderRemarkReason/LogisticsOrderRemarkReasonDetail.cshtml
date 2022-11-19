@@ -1,0 +1,51 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemarkReason.LogisticsOrderRemarkReasonDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsOrderRemarkReasonDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">订单备注原因详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsOrderRemarkReasonDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="LogisticsOrderRemarkReason.Id" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsOrderRemarkReason.Reason" class="col-xs-2 control-label">原因</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LogisticsOrderRemarkReason.Reason" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LogisticsOrderRemarkReason.Description" class="col-xs-2 control-label">描述</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="LogisticsOrderRemarkReason.Description" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsOrderRemarkReason();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
