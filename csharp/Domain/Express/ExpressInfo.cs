@@ -205,6 +205,7 @@ public class ExpressInfo : Entity
 
     /// <summary>
     /// 退运快递单号，非空
+    /// todo b 放到另外一个表里面
     /// </summary>
     [Required(ErrorMessage = "退运快递单号不能为空！")]
     [MaxLength(30, ErrorMessage = "退运快递单号长度不能大于30！")]
@@ -246,12 +247,14 @@ public class ExpressInfo : Entity
 
     /// <summary>
     /// 堆存用户，可空
+    /// todo b 这个自动是不是可以去掉，因为有另外一个表 express dump 来存储了
     /// </summary>
     [JsonProperty("dumpUser")]
     public virtual UserInfo? DumpUser { get; set; } = null;
 
     /// <summary>
     /// 堆存时间，可空
+    /// todo b 这个自动是不是可以去掉，因为有另外一个表 express dump 来存储了
     /// </summary>
     [JsonProperty("dumpTime")]
     public virtual DateTime? DumpTime { get; set; } = null;
