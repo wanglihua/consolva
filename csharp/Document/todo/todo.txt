@@ -1,0 +1,4 @@
+
+快递单入库时， express_size_weight, express_photo  等等的更新 express_id 字段
+
+订单创建时，express_remark, express_size_weight, express_photo 等等的更新 order_id 字段
