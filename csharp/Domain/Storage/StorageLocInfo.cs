@@ -102,6 +102,12 @@ public class StorageLocInfo : Entity
         return $"{RowNum}层-{ColNum}号";
     }
 
+    public virtual bool HasGoodsCache { get; set; }
+
+    /*
+     
+     todo b 这里都是暂时没用到的，到时放出来
+
     /// <summary>
     /// 用于业务计算的时候的暂时记录和排序用
     /// </summary>
@@ -122,8 +128,6 @@ public class StorageLocInfo : Entity
     /// </summary>
     public virtual string TrackingNoCache { get; set; } = string.Empty;
 
-    public virtual bool HasGoodsCache { get; set; }
-
     public virtual bool HasQueryGoodsCache { get; set; }
 
     public virtual string GoodsTypeCache { get; set; } = string.Empty;
@@ -132,6 +136,8 @@ public class StorageLocInfo : Entity
     /// 仓位上快递单号数量
     /// </summary>
     public virtual int ExpressCountCache { get; set; }
+    
+    */
 
     #endregion
 }

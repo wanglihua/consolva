@@ -146,21 +146,23 @@ public class ExpressListService
 
             StorageLocInfo checkinStorageLoc = storageLocList.Where(e => e.Id == (express.CheckinStorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
             express.CheckinStorageLocNameCache = checkinStorageLoc?.GetFullName();
-
-            // todo a 下面这三个字段要启用起来
-            express.ExpressItemListCache = expressItemList.Where(e => e.ExpressTrackingNo == express.TrackingNo).ToList();
-            
-
-            ExpressExpectInfo expect = expressExpectList.Where(e => e.TrackingNo == express.TrackingNo).Take(1).SingleOrDefault();
-            express.ExpectCustomerIdCache = expect?.Customer?.CustomerCode ?? string.Empty;
-            express.ExpectTimeCache = expect?.CreateTime;
-
-            express.ExpressPhotoListCache = expressPhotoList
-                .Where(e => e.ExpressTrackingNo == express.TrackingNo)
-                .OrderBy(e => e.Type.Id) // 必须要用 Type.Id, Type之间还不能比较
-                .ToList();
             
             */
+
+            string trackingNo = express.TrackingNo;
+            express.ExpressSizeWeightListCache = expressItemList.Where(e => e.TrackingNo == trackingNo).ToList();
+
+            ExpressExpectInfo? expect = expressExpectList.Where(e => e.TrackingNo == express.TrackingNo).Take(1).SingleOrDefault();
+            if (expect != null)
+            {
+                express.CustomerCodeCache = customerCodeService.GetCustomerCode(expect?.Customer?.Id ?? 0);
+                express.ExpressExpectCache = expect;
+            }
+
+            express.ExpressPhotoListCache = expressPhotoList
+                .Where(e => e.TrackingNo == express.TrackingNo)
+                .OrderBy(e => e.Type.Id) // 必须要用 Type.Id, Type之间还不能比较
+                .ToList();
         }
 
         return expressList;
@@ -592,7 +594,7 @@ public class ExpressListService
 
         if (string.IsNullOrWhiteSpace(queryParam.CheckinTrackingNoQuery) == false)
         {
-           string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
+            string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.CheckinTrackingNo == checkinTrackingNoQuery));
         }
 

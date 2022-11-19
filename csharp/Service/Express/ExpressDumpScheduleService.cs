@@ -58,7 +58,7 @@ public class ExpressDumpScheduleService
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>().Where(e => storageLocIdList.Contains(e.Id)).ToList();
 
         IList<string> trackingNoList = scheduleList.Select(e => e.Express.TrackingNo).ToList();
-        IList<ExpressSizeWeightInfo> expressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
+        IList<ExpressSizeWeightInfo> expressSizeWeightList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
 
         foreach (ExpressDumpScheduleInfo schedule in scheduleList)
         {
@@ -76,8 +76,8 @@ public class ExpressDumpScheduleService
             schedule.Express.StorageLocNameCache = storageLoc?.GetFullName();
             */
 
-            // todo a 这个要启用起来
-            schedule.Express.cache = expressItemList.Where(e => e.ExpressTrackingNo == schedule.Express.TrackingNo).ToList();
+            string trackingNo = schedule.Express.TrackingNo;
+            schedule.Express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.TrackingNo == trackingNo).ToList();
         }
 
         return scheduleList;
