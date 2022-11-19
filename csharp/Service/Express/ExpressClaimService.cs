@@ -55,13 +55,13 @@ public class ExpressClaimService
     /// <summary>
     /// 分页获取列表数据
     /// </summary>
-    /// <param name="expressClaimCate"></param>
+    /// <param name="expressListMenuCate"></param>
     /// <param name="queryParam"></param>
     /// <param name="listPager"></param>
     /// <returns></returns>
-    public IList<ExpressInfo> List(ExpressClaimCate expressClaimCate, ExpressClaimListQueryParam queryParam, ListPager? listPager)
+    public IList<ExpressInfo> List(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam, ListPager? listPager)
     {
-        ICriteria criteria = GetListCriteria(expressClaimCate, queryParam);
+        ICriteria criteria = GetListCriteria(expressListMenuCate, queryParam);
 
         if (listPager != null)
         {
@@ -177,35 +177,35 @@ public class ExpressClaimService
     /// <summary>
     /// 不分页获取列表数据
     /// </summary>
-    /// <param name="expressClaimCate"></param>
+    /// <param name="expressListMenuCate"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public IList<ExpressInfo> List(ExpressClaimCate expressClaimCate, ExpressClaimListQueryParam queryParam)
+    public IList<ExpressInfo> List(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
     {
-        return List(expressClaimCate, queryParam, null);
+        return List(expressListMenuCate, queryParam, null);
     }
 
     /// <summary>
     /// 计数
     /// </summary>
-    /// <param name="expressClaimCate"></param>
+    /// <param name="expressListMenuCate"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public int Count(ExpressClaimCate expressClaimCate, ExpressClaimListQueryParam queryParam)
+    public int Count(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
     {
-        int totalCount = GetListCriteria(expressClaimCate, queryParam)
+        int totalCount = GetListCriteria(expressListMenuCate, queryParam)
             .SetProjection(Projections.Count<ExpressInfo>(e => e.Id))
             .UniqueResult<int>();
 
         return totalCount;
     }
 
-    public IList<ShelfInfo> GetShelfList(ExpressClaimCate expressClaimCate, int warehouseId)
+    public IList<ShelfInfo> GetShelfList(ExpressListMenuCate expressListMenuCate, int warehouseId)
     {
-        if (expressClaimCate != ExpressClaimCate.ToOnShelfSchedule
-            && expressClaimCate != ExpressClaimCate.ToOffShelfSchedule
-            && expressClaimCate != ExpressClaimCate.NotPickedLongDumpSchedule
-            && expressClaimCate != ExpressClaimCate.NotOrderLongDumpSchedule)
+        if (expressListMenuCate != ExpressListMenuCate.ToOnShelfSchedule
+            && expressListMenuCate != ExpressListMenuCate.ToOffShelfSchedule
+            && expressListMenuCate != ExpressListMenuCate.NotPickedLongDumpSchedule
+            && expressListMenuCate != ExpressListMenuCate.NotOrderLongDumpSchedule)
         {
             throw new ValidationException("该方法当前只支持排班获取货架列表！");
         }
@@ -218,19 +218,19 @@ public class ExpressClaimService
         criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressInfo.Warehouse)}.{nameof(ExpressInfo.Warehouse.Id)}", warehouseId));
 
         // 待上架排班
-        if (expressClaimCate == ExpressClaimCate.ToOnShelfSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.ToOnShelfSchedule)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.ShelfStatus == ExpressShelfStatus.ToOnShelf && e.AddTime >= EXPRESS_ON_SHELF_AFTER));
         }
 
         // 待下架排班
-        if (expressClaimCate == ExpressClaimCate.ToOffShelfSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.ToOffShelfSchedule)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.WaitPack));
         }
 
         // 长期未认领待堆存排班
-        if (expressClaimCate == ExpressClaimCate.NotPickedLongDumpSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.NotPickedLongDumpSchedule)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE
@@ -240,7 +240,7 @@ public class ExpressClaimService
         }
 
         // 长期未出库待堆存排班
-        if (expressClaimCate == ExpressClaimCate.NotOrderLongDumpSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.NotOrderLongDumpSchedule)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE
@@ -256,19 +256,19 @@ public class ExpressClaimService
         return criteria.List<ShelfInfo>().OrderBy(e => e.Name).ToList();
     }
 
-    public IList<ShelfInfo> GetShelfList(ExpressClaimCate expressClaimCate, ExpressClaimListQueryParam queryParam)
+    public IList<ShelfInfo> GetShelfList(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
     {
-        if (expressClaimCate != ExpressClaimCate.ToOnShelfSchedule
-            && expressClaimCate != ExpressClaimCate.ToOffShelfSchedule
-            && expressClaimCate != ExpressClaimCate.NotPickedLongDumpSchedule
-            && expressClaimCate != ExpressClaimCate.NotOrderLongDumpSchedule)
+        if (expressListMenuCate != ExpressListMenuCate.ToOnShelfSchedule
+            && expressListMenuCate != ExpressListMenuCate.ToOffShelfSchedule
+            && expressListMenuCate != ExpressListMenuCate.NotPickedLongDumpSchedule
+            && expressListMenuCate != ExpressListMenuCate.NotOrderLongDumpSchedule)
         {
             throw new ValidationException("该方法当前只支持排班获取货架列表！");
         }
 
         queryParam.ScheduleShelfIdListQuery = null;
 
-        ICriteria criteria = GetListCriteria(expressClaimCate, queryParam);
+        ICriteria criteria = GetListCriteria(expressListMenuCate, queryParam);
         criteria = criteria.SetReadOnly(true);
 
         // string storageLocAlias = nameof(ExpressInfo.StorageLoc);
@@ -280,10 +280,10 @@ public class ExpressClaimService
     /// <summary>
     /// 获取查询 criteria
     /// </summary>
-    /// <param name="expressClaimCate"></param>        
+    /// <param name="expressListMenuCate"></param>        
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    private ICriteria GetListCriteria(ExpressClaimCate expressClaimCate, ExpressClaimListQueryParam queryParam)
+    private ICriteria GetListCriteria(ExpressListMenuCate expressListMenuCate, ExpressClaimListQueryParam queryParam)
     {
         ICriteria criteria = session.CreateCriteria<ExpressInfo>();
         criteria = criteria.SetReadOnly(true);
@@ -323,14 +323,14 @@ public class ExpressClaimService
         string claimOrderIdProp = $"{nameof(ExpressInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}";
 
         // 待下架
-        if (expressClaimCate == ExpressClaimCate.ToOffShelf)
+        if (expressListMenuCate == ExpressListMenuCate.ToOffShelf)
         {
             // criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.WaitPack && e.ArchiveType == ExpressArchiveType.None));
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.WaitPack)); // 有归档属性的快递单号也应该正常待下架显示
         }
 
         // 待下架排班
-        if (expressClaimCate == ExpressClaimCate.ToOffShelfSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.ToOffShelfSchedule)
         {
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressShelfScheduleInfo>();
             scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressShelfScheduleInfo.Express), nameof(ExpressShelfScheduleInfo.Express));
@@ -346,7 +346,7 @@ public class ExpressClaimService
             );
         }
 
-        if (expressClaimCate == ExpressClaimCate.ToOffShelf || expressClaimCate == ExpressClaimCate.ToOffShelfSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.ToOffShelf || expressListMenuCate == ExpressListMenuCate.ToOffShelfSchedule)
         {
             if (queryParam.FirstModeIdQuery != 0)
             {
@@ -378,7 +378,7 @@ public class ExpressClaimService
         IList<ExpressStatus> mayToOnShelfStatusList = ExpressStatus.GetMayToOnShelfList();
 
         // 待上架
-        if (expressClaimCate == ExpressClaimCate.ToOnShelf)
+        if (expressListMenuCate == ExpressListMenuCate.ToOnShelf)
         {
             /*
             IList<int> groundShelfIdList = session.Query<ShelfInfo>().Where(e => e.Cate == ShelfCate.Ground).Select(e => e.Id).ToList();
@@ -393,7 +393,7 @@ public class ExpressClaimService
         }
 
         // 待上架排班
-        if (expressClaimCate == ExpressClaimCate.ToOnShelfSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.ToOnShelfSchedule)
         {
             /*
             IList<int> groundShelfIdList = session.Query<ShelfInfo>().Where(e => e.Cate == ShelfCate.Ground).Select(e => e.Id).ToList();
@@ -415,14 +415,14 @@ public class ExpressClaimService
         }
 
         // 已上架
-        if (expressClaimCate == ExpressClaimCate.OnShelf)
+        if (expressListMenuCate == ExpressListMenuCate.OnShelf)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= EXPRESS_CHECKIN_RECENT_AGO && e.ShelfStatus == ExpressShelfStatus.OnShelf));
         }
 
         // 已认领
-        if (expressClaimCate == ExpressClaimCate.Picked)
+        if (expressListMenuCate == ExpressListMenuCate.Picked)
         {
             DetachedCriteria expectExpressCriteria = DetachedCriteria.For<ExpressExpectInfo>()
                 .Add(Restrictions.Where<ExpressExpectInfo>(e => e.Status == ExpressExpectStatus.Create || e.Status == ExpressExpectStatus.Enter)) // create 状态放在这里只是为了容错
@@ -439,7 +439,7 @@ public class ExpressClaimService
         }
 
         // 未认领
-        if (expressClaimCate == ExpressClaimCate.NotPicked)
+        if (expressListMenuCate == ExpressListMenuCate.NotPicked)
         {
             DetachedCriteria expectExpressCriteria = DetachedCriteria.For<ExpressExpectInfo>()
                 .Add(Restrictions.Where<ExpressExpectInfo>(e => e.Status == ExpressExpectStatus.Create || e.Status == ExpressExpectStatus.Enter)) // create 状态放在这里只是为了容错
@@ -453,7 +453,7 @@ public class ExpressClaimService
         }
 
         // 已预报
-        if (expressClaimCate == ExpressClaimCate.Expect)
+        if (expressListMenuCate == ExpressListMenuCate.Expect)
         {
             DateTime beforeRecentAgo = EXPRESS_CHECKIN_RECENT_AGO.AddDays(-20); // DateTime.Today.AddDays(-110); // 110天之前的时间段，做为 90 天内预报的起始点，提前20天可能的预报应该够了
 
@@ -472,7 +472,7 @@ public class ExpressClaimService
         }
 
         // 长期未认领
-        if (expressClaimCate == ExpressClaimCate.NotPickedLong)
+        if (expressListMenuCate == ExpressListMenuCate.NotPickedLong)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE
@@ -484,7 +484,7 @@ public class ExpressClaimService
         }
 
         // 长期未出库
-        if (expressClaimCate == ExpressClaimCate.NotOrderLong)
+        if (expressListMenuCate == ExpressListMenuCate.NotOrderLong)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime >= ARCHIVE_DATE
@@ -496,7 +496,7 @@ public class ExpressClaimService
         }
 
         // 长期未认领堆存排班
-        if (expressClaimCate == ExpressClaimCate.NotPickedLongDumpSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.NotPickedLongDumpSchedule)
         {
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressDumpScheduleInfo>();
             scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Express), nameof(ExpressDumpScheduleInfo.Express));
@@ -515,7 +515,7 @@ public class ExpressClaimService
         }
 
         // 长期未出库堆存排班
-        if (expressClaimCate == ExpressClaimCate.NotOrderLongDumpSchedule)
+        if (expressListMenuCate == ExpressListMenuCate.NotOrderLongDumpSchedule)
         {
             DetachedCriteria scheduleCriteria = DetachedCriteria.For<ExpressDumpScheduleInfo>();
             scheduleCriteria = scheduleCriteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Express), nameof(ExpressDumpScheduleInfo.Express));
@@ -534,13 +534,13 @@ public class ExpressClaimService
         }
 
         // 已堆存
-        if (expressClaimCate == ExpressClaimCate.Dumped)
+        if (expressListMenuCate == ExpressListMenuCate.Dumped)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.DumpStatus == ExpressDumpStatus.Dumped));
         }
 
         // 历史归档
-        if (expressClaimCate == ExpressClaimCate.Archive)
+        if (expressListMenuCate == ExpressListMenuCate.Archive)
         {
             if (queryParam.ArchiveTypeQuery == null)
             {
@@ -587,13 +587,13 @@ public class ExpressClaimService
         }
 
         // 已下架
-        if (expressClaimCate == ExpressClaimCate.OffShelf)
+        if (expressListMenuCate == ExpressListMenuCate.OffShelf)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.OffShelf));
         }
 
         // 打包中
-        if (expressClaimCate == ExpressClaimCate.Packing)
+        if (expressListMenuCate == ExpressListMenuCate.Packing)
         {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.Packing));
         }
