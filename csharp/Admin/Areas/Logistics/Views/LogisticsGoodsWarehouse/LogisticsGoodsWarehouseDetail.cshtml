@@ -25,7 +25,7 @@
                                         <label asp-for="Type" class="col-xs-4 control-label">物品类型</label>
                                         <div class="col-xs-8">
                                             <input id="goodsTypeValue" type="hidden" asp-for="Type"/>
-                                            <select id="goodsType" asp-for="Type" class="input-sm form-control" disabled="disabled">
+                                            <select id="goodsType" asp-for="Type" class="input-sm form-control">
                                                 @foreach (LogisticsGoodsType goodsType in Model.TypeList)
                                                 {
                                                     <option value="@(goodsType.Id)">@(goodsType.Name)</option>
@@ -47,8 +47,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                @* todo a 放上物品类型 *@
 
                             </div>
 
