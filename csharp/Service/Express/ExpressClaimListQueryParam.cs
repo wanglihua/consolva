@@ -64,12 +64,12 @@ public class ExpressClaimListQueryParam : ListQueryParam
     /// <summary>
     /// 客户认领时间开始
     /// </summary>
-    public DateTime? PickTimeBeginQuery { get; set; }
+    public DateTime? ClaimTimeBeginQuery { get; set; }
 
     /// <summary>
     /// 客户认领时间结束
     /// </summary>
-    public DateTime? PickTimeEndQuery { get; set; }
+    public DateTime? ClaimTimeEndQuery { get; set; }
 
     /// <summary>
     /// 入库登记日期开始

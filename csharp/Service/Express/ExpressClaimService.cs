@@ -155,6 +155,7 @@ public class ExpressClaimService
             StorageLocInfo checkinStorageLoc = storageLocList.Where(e => e.Id == (express.CheckinStorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
             express.CheckinStorageLocNameCache = checkinStorageLoc?.GetFullName();
 
+            // todo a 下面这三个字段要启用起来
             express.ExpressItemListCache = expressItemList.Where(e => e.ExpressTrackingNo == express.TrackingNo).ToList();
             
 
