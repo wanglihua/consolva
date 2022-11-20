@@ -1,3 +1,5 @@
+DROP TABLE tbl_logistics_order_first_mode;
+
 CREATE TABLE tbl_logistics_order_first_mode
 (
     id            INT                     NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',

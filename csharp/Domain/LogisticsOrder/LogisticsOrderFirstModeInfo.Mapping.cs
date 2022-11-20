@@ -38,7 +38,7 @@ public class LogisticsOrderFirstModeInfoMapping : EntityMapping<LogisticsOrderFi
                 map.Column("goods_type_id");
                 map.NotNullable(true);
             }
-        );        
+        );
 
         Property(
             x => x.FirstType,
@@ -60,5 +60,13 @@ public class LogisticsOrderFirstModeInfoMapping : EntityMapping<LogisticsOrderFi
             }
         );
 
+        Property(
+            x => x.Channel,
+            map => {
+                map.Type<LogisticsModeChannelHibernateType>();
+                map.Column("channel_id");
+                map.NotNullable(true);
+            }
+        );
     }
 }

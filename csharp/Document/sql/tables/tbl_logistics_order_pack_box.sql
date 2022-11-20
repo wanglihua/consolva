@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS tbl_logistics_order_pack_box;
+# DROP TABLE IF EXISTS tbl_logistics_order_pack_box;
 
 CREATE TABLE tbl_logistics_order_pack_box
 (

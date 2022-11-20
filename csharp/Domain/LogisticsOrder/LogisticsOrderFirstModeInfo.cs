@@ -49,4 +49,9 @@ public class LogisticsOrderFirstModeInfo : Entity
     [JsonProperty("firstMode")]
     public virtual LogisticsModeInfo FirstMode { get; set; } = new LogisticsModeInfo();
 
+    /// <summary>
+    /// 渠道类型，非空
+    /// </summary>
+    [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
+    public virtual LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
 }
