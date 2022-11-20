@@ -32,6 +32,15 @@ public class LogisticsOrderFirstModeInfoMapping : EntityMapping<LogisticsOrderFi
         );
 
         Property(
+            x => x.GoodsType,
+            map => {
+                map.Type<LogisticsGoodsTypeHibernateType>();
+                map.Column("goods_type_id");
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.FirstType,
             map => {
                 map.Type<LogisticsModeTypeHibernateType>();

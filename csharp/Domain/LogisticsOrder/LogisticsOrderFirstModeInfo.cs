@@ -27,6 +27,14 @@ public class LogisticsOrderFirstModeInfo : Entity
     public virtual string OrderCode { get; set; } = string.Empty;
 
     /// <summary>
+    /// 物品类型，非空
+    /// </summary>
+    [Required(ErrorMessage = "物品类型不能为空！")]
+    [JsonProperty("goodsType")]
+    [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
+    public virtual LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
+
+    /// <summary>
     /// 物流方式类型，非空
     /// </summary>
     [Required(ErrorMessage = "物流方式类型不能为空！")]
