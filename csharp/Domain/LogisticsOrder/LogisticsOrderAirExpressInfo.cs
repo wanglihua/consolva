@@ -56,11 +56,10 @@ public class LogisticsOrderAirExpressInfo : Entity
     public virtual decimal? ShippingFee { get; set; } = null;
 
     /// <summary>
-    /// 发货渠道，可空
+    /// 渠道类型，非空
     /// </summary>
-    [MaxLength(50, ErrorMessage = "发货渠道长度不能大于50！")]
-    [JsonProperty("channel")]
-    public virtual string? Channel { get; set; } = null;
+    [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
+    public virtual LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
 
     /// <summary>
     /// 空运备注，可空

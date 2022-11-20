@@ -82,9 +82,9 @@ public class LogisticsOrderAirExpressInfoMapping : EntityMapping<LogisticsOrderA
         Property(
             x => x.Channel,
             map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("channel");
-                map.NotNullable(false);
+                map.Type<LogisticsModeChannelHibernateType>();
+                map.Column("channel_id");
+                map.NotNullable(true);
             }
         );
 

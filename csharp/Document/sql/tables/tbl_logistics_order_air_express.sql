@@ -1,3 +1,5 @@
+# DROP TABLE tbl_logistics_order_air_express;
+
 CREATE TABLE tbl_logistics_order_air_express
 (
     id                INT                     NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
@@ -8,7 +10,7 @@ CREATE TABLE tbl_logistics_order_air_express
     shipping_weight   DECIMAL(10, 3)          NULL COMMENT '承运人计费重量Kg',
     estimate_fee      DECIMAL(10, 2)          NULL COMMENT '预估运费支出RMB',
     shipping_fee      DECIMAL(10, 2)          NULL COMMENT '运费支出RMB',
-    channel           VARCHAR(50)             NULL COMMENT '发货渠道',
+    channel_id        INT                     NOT NULL COMMENT '渠道类型#type:LogisticsModeChannel',
     memo              VARCHAR(300)            NULL COMMENT '空运备注',
 
     import_user_id    INT                     NULL COMMENT '导入人',

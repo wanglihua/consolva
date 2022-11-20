@@ -18,9 +18,9 @@ public class LogisticsModeChannel : CodeTypeBase
     public static readonly LogisticsModeChannel Cosmetics = new LogisticsModeChannel(2000, "化妆品渠道", "化妆品渠道");
 
     /// <summary>
-    /// 化妆品渠道, 3000
+    /// 含电渠道, 3000
     /// </summary>
-    public static readonly LogisticsModeChannel Electric = new LogisticsModeChannel(3000, "化妆品渠道", "化妆品渠道");
+    public static readonly LogisticsModeChannel Electric = new LogisticsModeChannel(3000, "含电渠道", "含电渠道");
 
     /// <summary>
     /// EMS渠道, 4000
