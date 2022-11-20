@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Express.Models.ExpressClaim
 @using shunda.Domain.Express
+@using shunda.Service.Express
 @model shunda.Admin.Areas.Express.Models.ExpressClaim.ExpressClaimDetailModel
 
 @{
@@ -74,7 +75,7 @@
         <span>&nbsp;</span>
         <span>入库号跟踪号</span>
         <span>
-            @(Model.ClaimGoods?.AoPinTrackingNo ?? string.Empty)
+            @(Model.ClaimGoods?.CheckinTrackingNo ?? string.Empty)
         </span>
     </li>
 }
@@ -115,9 +116,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.AoPinTrackingNo" class="col-xs-4 control-label">澳拼入库号</label>
+                                        <label asp-for="ClaimGoods.CheckinTrackingNo" class="col-xs-4 control-label">澳拼入库号</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.AoPinTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.CheckinTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -154,9 +155,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ExpressPackageCount" class="col-xs-4 control-label">包裹数量</label>
+                                        <label asp-for="ClaimGoods.PackageCount" class="col-xs-4 control-label">包裹数量</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ExpressPackageCount" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.PackageCount" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -172,17 +173,17 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ExpressExpect.Customer.CustomerCode" class="col-xs-4 control-label">预报客户</label>
+                                        <label asp-for="ExpressExpect.CustomerCodeCache" class="col-xs-4 control-label">预报客户</label>
                                         <div class="col-xs-8">
                                             @if (Model.ExpressExpect != null)
                                             {
                                                 <label class="control-label">
-                                                    <a href="@Url.Action("Detail", "Customer", new { id = Model.ExpressExpect?.Customer?.Id ?? 0 })" target="_blank">@(Model.ExpressExpect?.Customer?.CustomerCode)</a>
+                                                    <a href="@Url.Action("Detail", "Customer", new { id = Model.ExpressExpect?.Customer?.Id ?? 0 })" target="_blank">@(Model.ExpressExpect?.CustomerCodeCache)</a>
                                                 </label>
                                             }
                                             else
                                             {
-                                                <input asp-for="ExpressExpect.Customer.CustomerCode" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="ExpressExpect.CustomerCodeCache" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
                                     </div>
@@ -221,9 +222,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="OrderPack.PackUser.UserName" class="col-xs-4 control-label">打包人员</label>
+                                        <label asp-for="OrderPack.User.UserName" class="col-xs-4 control-label">打包人员</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="OrderPack.PackUser.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="OrderPack.User.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -402,9 +403,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.PickTime" class="col-xs-4 control-label">认领时间</label>
+                                        <label asp-for="ClaimGoods.ClaimTime" class="col-xs-4 control-label">认领时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.PickTime" type="text" value="@(Model.ClaimGoods?.PickTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.ClaimTime" type="text" value="@(Model.ClaimGoods?.ClaimTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -612,7 +613,7 @@
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelWoodFrame').toggle();">
                             <div style="float: left;">
-                                木架树皮退运
+                                快递退运
                             </div>
                             <div style="float: right;">
                                 显示/隐藏
@@ -622,87 +623,6 @@
 
                         <div id="panelWoodFrame" style="display: block;">
                             <div class="row">
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.WoodFrame" class="col-xs-4 control-label" style="color: blue;">打木架</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.WoodFrame" type="text" value="@(Model.GetBoolStr(Model.ClaimGoods.WoodFrame))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.WoodFrameCustomer" class="col-xs-4 control-label">打木架客户端</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.WoodFrameCustomer" type="text" value="@(Model.GetBoolStr(Model.ClaimGoods.WoodFrameCustomer))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.WoodFrameDone" class="col-xs-4 control-label">木架已打</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.WoodFrameDone" type="text" value="@(Model.GetBoolStr(Model.ClaimGoods.WoodFrameDone))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.WoodFrameTime" class="col-xs-4 control-label">打木架时间</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.WoodFrameTime" type="text" value="@(Model.ClaimGoods.WoodFrameTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.WoodFrameUser.UserName" class="col-xs-4 control-label">打木架人员</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.WoodFrameUser.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.BarkClean" class="col-xs-4 control-label" style="color: blue;">清理树皮</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.BarkClean" type="text" value="@(Model.GetBoolStr(Model.ClaimGoods.BarkClean))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.BarkCleanDone" class="col-xs-4 control-label">树皮已清理</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.BarkCleanDone" type="text" value="@(Model.GetBoolStr(Model.ClaimGoods.BarkCleanDone))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.BarkCleanTime" class="col-xs-4 control-label">树皮清理时间</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.BarkCleanTime" type="text" value="@(Model.ClaimGoods.BarkCleanTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.BarkCleanUser.UserName" class="col-xs-4 control-label">清理树皮人员</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.BarkCleanUser.UserName" type="text" value="@(Model.GetBoolStr(Model.ClaimGoods.BarkCleanCustomer))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
@@ -786,7 +706,7 @@
                                     @if (Model.EntryList != null && Model.EntryList.Count() != 0)
                                     {
                                         int order = 1;
-                                        foreach (LogisticsClaimGoodsEntryInfo item in Model.EntryList)
+                                        foreach (ExpressGoodsInfo item in Model.EntryList)
                                         {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
@@ -871,18 +791,18 @@
                                     @if (Model.ExpressItemList != null && Model.ExpressItemList.Count() != 0)
                                     {
                                         int order = 1;
-                                        foreach (LogisticsExpressItem item in Model.ExpressItemList)
+                                        foreach (ExpressSizeWeightInfo item in Model.ExpressItemList)
                                         {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
-                                                <td style="text-align: center;">@item.ChildTrackingNo</td>
+                                                <td style="text-align: center;">@item.TrackingNoSub</td>
                                                 <td style="text-align: center;">@item.Length.ToString("#0.0")</td>
                                                 <td style="text-align: center;">@item.Width.ToString("#0.0")</td>
                                                 <td style="text-align: center;">@item.Height.ToString("#0.0")</td>
-                                                <td style="text-align: center;">@item.SingleVolume.ToString("#0.000000")</td>
-                                                <td style="text-align: center;">@item.SingleVolumeWeight.ToString("#0.000")</td>
-                                                <td style="text-align: center;">@item.SingleWeight.ToString("#0.000")</td>
-                                                <td style="text-align: center;">@item.Quantity</td>
+                                                <td style="text-align: center;">@item.VolumeCache.ToString("#0.000000")</td>
+                                                <td style="text-align: center;">@item.VolumeWeightCache.ToString("#0.000")</td>
+                                                <td style="text-align: center;">@item.Weight.ToString("#0.000")</td>
+                                                <td style="text-align: center;">@item.PackageCount</td>
                                                 <td></td>
                                             </tr>
                                         }

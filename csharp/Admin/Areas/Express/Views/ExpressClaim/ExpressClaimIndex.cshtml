@@ -1,18 +1,20 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Express
 @using shunda.Domain.Pass
 @using shunda.Domain.Storage
+@using shunda.Service.Express
 @model shunda.Admin.Areas.Express.Models.ExpressClaim.ExpressClaimIndexModel
 
 @{
-    ViewBag.Title = "快递详细";
+    ViewData[ViewDataKey.Title] = "快递详细";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="express-menu">快递管理</li>
-    <li class="active" data-menu="express-claim-detail-menu">快递详细</li>
+    <li class="active" data-menu="express-claim-detail-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">
@@ -43,7 +45,7 @@
                     function() {
                         showMask("提交中...");
                         $.ajax({
-                            url: '@Url.Action("ForceDelete", "LogisticsClaimGoods")',
+                            url: '@Url.Action("ForceDelete", "ExpressClaim")',
                             type: "POST",
                             data: { "idList": idList },
                             success: function(data) {
@@ -80,7 +82,7 @@
                     function() {
                         showMask("提交中...");
                         $.ajax({
-                            url: '@Url.Action("ThrowAway", "LogisticsClaimGoods")',
+                            url: '@Url.Action("ThrowAway", "ExpressClaim")',
                             type: "POST",
                             data: { "idList": idList },
                             success: function(data) {
@@ -115,7 +117,7 @@
             <option value="@(warehouse.Id)">@(warehouse.Name)</option>
         }
     </select>
-    <label for="aoPinTrackingNoQuery">澳拼入库号</label>&nbsp;<input id="aoPinTrackingNoQuery" name="aoPinTrackingNoQuery" autocomplete="off" style="width: 130px; height: 30px;" placeholder="澳拼入库号查询"/>&nbsp;
+    <label for="checkinTrackingNoQuery">入库跟踪号</label>&nbsp;<input id="checkinTrackingNoQuery" name="checkinTrackingNoQuery" autocomplete="off" style="width: 130px; height: 30px;" placeholder="入库跟踪号查询"/>&nbsp;
     <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" name="trackingNoQuery" autocomplete="off" style="width: 180px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
     <label for="billCustomerCodeQuery">面单客户</label>&nbsp;<input id="billCustomerCodeQuery" name="billCustomerCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="面单客户查询"/>&nbsp;
     <select id="hasBillCustomerIdQuery" name="hasBillCustomerIdQuery" style="width: 150px; height: 30px;">
@@ -132,7 +134,7 @@
     <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
     <select id="statusQuery" name="statusQuery" style="width: 110px; height: 30px;" onchange="loadExpressClaimList(0);">
         <option value="">快递状态</option>
-        @foreach (LogisticsClaimGoodsStatus status in LogisticsClaimGoodsStatus.GetList())
+        @foreach (ExpressStatus status in ExpressStatus.GetList())
         {
             <option value="@(status.Id)">@(status.Name)</option>
         }
@@ -198,7 +200,7 @@
     </button>
 </div>
 
-<div id="expressClaimList" data-page-index="0" data-sort-field="@(nameof(LogisticsClaimGoodsInfo.Id))" data-sort-dir="@(SortDirection.Desc)"></div>
+<div id="expressClaimList" data-page-index="0" data-sort-field="@(nameof(ExpressInfo.Id))" data-sort-dir="@(SortDirection.Desc)"></div>
 
 <script type="text/javascript">
 
@@ -282,27 +284,27 @@
             url: "@Url.Action("List", "ExpressClaim")",
             type: "POST",
             data: {
-                '@(nameof(ExpressClaimListQueryParam.WarehouseIdQuery))': $('#warehouseIdQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.AoPinTrackingNoQuery))': $('#aoPinTrackingNoQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.StatusQuery))': $('#statusQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.PickTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.PickTimeEndQuery))': $('#pickTimeEndQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
-                '@(nameof(ExpressClaimListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),                 
-                '@(nameof(ExpressClaimListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(ExpressClaimListQueryParam.SortField))': sortField,
-                '@(nameof(ExpressClaimListQueryParam.SortDir))': sortDir
+                '@(nameof(ExpressListQueryParam.WarehouseIdQuery))': $('#warehouseIdQuery').val(),
+                '@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))': $('#checkinTrackingNoQuery').val(),
+                '@(nameof(ExpressListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+                '@(nameof(ExpressListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
+                '@(nameof(ExpressListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
+                '@(nameof(ExpressListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(ExpressListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(ExpressListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(ExpressListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
+                '@(nameof(ExpressListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
+                '@(nameof(ExpressListQueryParam.ClaimTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
+                '@(nameof(ExpressListQueryParam.ClaimTimeEndQuery))': $('#pickTimeEndQuery').val(),
+                '@(nameof(ExpressListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
+                '@(nameof(ExpressListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
+                '@(nameof(ExpressListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
+                '@(nameof(ExpressListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),                 
+                '@(nameof(ExpressListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
+                '@(nameof(ExpressListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val(),
+                '@(nameof(ExpressListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ExpressListQueryParam.SortField))': sortField,
+                '@(nameof(ExpressListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();
@@ -324,24 +326,24 @@
 
         @*
         var params = $.param({
-            '@(nameof(ExpressClaimListQueryParam.IdList))': idList,
-            '@(nameof(ExpressClaimListQueryParam.AoPinTrackingNoQuery))': $('#aoPinTrackingNoQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.StatusQuery))': $('#statusQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.PickTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.PickTimeEndQuery))': $('#pickTimeEndQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
-            '@(nameof(ExpressClaimListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
-            '@(nameof(ExpressClaimListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val()
+            '@(nameof(ExpressListQueryParam.IdList))': idList,
+            '@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))': $('#checkinTrackingNoQuery').val(),
+            '@(nameof(ExpressListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+            '@(nameof(ExpressListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
+            '@(nameof(ExpressListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
+            '@(nameof(ExpressListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+            '@(nameof(ExpressListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+            '@(nameof(ExpressListQueryParam.StatusQuery))': $('#statusQuery').val(),
+            '@(nameof(ExpressListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
+            '@(nameof(ExpressListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
+            '@(nameof(ExpressListQueryParam.ClaimTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
+            '@(nameof(ExpressListQueryParam.ClaimTimeEndQuery))': $('#pickTimeEndQuery').val(),
+            '@(nameof(ExpressListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
+            '@(nameof(ExpressListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
+            '@(nameof(ExpressListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
+            '@(nameof(ExpressListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),
+            '@(nameof(ExpressListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
+            '@(nameof(ExpressListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val()
         });
 
         var url = '@Url.Action("Export", "ExpressClaim")?' + params;
@@ -351,24 +353,24 @@
         downLoadFile({
             url: "@Url.Action("Export", "ExpressClaim")",
             data: {
-                '@(nameof(ExpressClaimListQueryParam.IdList))': idList,
-                '@(nameof(ExpressClaimListQueryParam.AoPinTrackingNoQuery))': $('#aoPinTrackingNoQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.StatusQuery))': $('#statusQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.PickTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.PickTimeEndQuery))': $('#pickTimeEndQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
-                '@(nameof(ExpressClaimListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
-                '@(nameof(ExpressClaimListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val()                
+                '@(nameof(ExpressListQueryParam.IdList))': idList,
+                '@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))': $('#checkinTrackingNoQuery').val(),
+                '@(nameof(ExpressListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+                '@(nameof(ExpressListQueryParam.BillCustomerCodeQuery))': $('#billCustomerCodeQuery').val(),
+                '@(nameof(ExpressListQueryParam.HasBillCustomerIdQuery))': $('#hasBillCustomerIdQuery').val(),
+                '@(nameof(ExpressListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(ExpressListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(ExpressListQueryParam.StatusQuery))': $('#statusQuery').val(),
+                '@(nameof(ExpressListQueryParam.ShelfStatusQuery))': $('#shelfStatusQuery').val(),
+                '@(nameof(ExpressListQueryParam.GoodsNameQuery))': $('#goodsNameQuery').val(),
+                '@(nameof(ExpressListQueryParam.ClaimTimeBeginQuery))': $('#pickTimeBeginQuery').val(),
+                '@(nameof(ExpressListQueryParam.ClaimTimeEndQuery))': $('#pickTimeEndQuery').val(),
+                '@(nameof(ExpressListQueryParam.AddDateBeginQuery))': $('#addDateBeginQuery').val(),
+                '@(nameof(ExpressListQueryParam.AddDateEndQuery))': $('#addDateEndQuery').val(), 
+                '@(nameof(ExpressListQueryParam.AddTimeBeginQuery))': $('#addTimeBeginQuery').val(),
+                '@(nameof(ExpressListQueryParam.AddTimeEndQuery))': $('#addTimeEndQuery').val(),
+                '@(nameof(ExpressListQueryParam.ExpectedQuery))': $('#expectedQuery').val(),
+                '@(nameof(ExpressListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val()                
             }
         });        
     }
@@ -385,7 +387,7 @@
             function() {
                 showMask("提交中...");
                 $.ajax({
-                    url: '@Url.Action("Delete", "LogisticsClaimGoods")',
+                    url: '@Url.Action("Delete", "ExpressClaim")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {

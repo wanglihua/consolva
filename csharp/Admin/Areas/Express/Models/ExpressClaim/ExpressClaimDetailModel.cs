@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
@@ -15,9 +14,9 @@ public class ExpressClaimDetailModel
 
     public UserInfo AddUser { get; set; } = new UserInfo();
 
-    public CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public CustomerInfo? Customer { get; set; } = new CustomerInfo();
 
-    public ExpressExpectInfo ExpressExpect { get; set; } = new ExpressExpectInfo();
+    public ExpressExpectInfo? ExpressExpect { get; set; } = null;
 
     public LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 

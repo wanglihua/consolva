@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 
@@ -78,6 +79,7 @@ public class ExpressSizeWeightInfo : Entity
 
     /// <summary>
     /// 重量kg，非空
+    /// 这个是单件的一个包裹重量，不是多个包裹的总重量
     /// </summary>
     [Required(ErrorMessage = "重量kg不能为空！")]
     [JsonProperty("weight")]
@@ -105,9 +107,20 @@ public class ExpressSizeWeightInfo : Entity
     #region cache
 
     /// <summary>
-    /// 体积重
+    /// 单箱体积
     /// </summary>
-    public virtual decimal? VolumeWeightCache { get; set; }
+    public decimal VolumeCache
+    {
+        get { return decimal.Round(Length * Width * Height / 100_00_00, 6, MidpointRounding.AwayFromZero); }
+    }
+
+    /// <summary>
+    /// 单箱体积重
+    /// </summary>
+    public decimal VolumeWeightCache
+    {
+        get { return decimal.Round(Length * Width * Height / LogisticsConfig.VolumeWeightDenominator, 3, MidpointRounding.AwayFromZero); }
+    }
 
     /// <summary>
     /// 体积重实际重比值

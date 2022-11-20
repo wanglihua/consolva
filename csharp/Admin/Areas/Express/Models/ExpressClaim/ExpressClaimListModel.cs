@@ -11,5 +11,5 @@ public class ExpressClaimListModel : ListModel
     }
 
     [BindNever]
-    public IList<ExpressPhotoInfo> ExpressClaimList { get; set; } = new List<ExpressPhotoInfo>();
+    public IList<ExpressInfo> ExpressClaimList { get; set; } = new List<ExpressInfo>();
 }

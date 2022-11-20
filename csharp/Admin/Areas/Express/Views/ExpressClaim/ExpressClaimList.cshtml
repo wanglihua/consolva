@@ -1,4 +1,5 @@
 @using shunda.Core.Web
+@using shunda.Domain.Express
 @using shunda.Service.Express
 @model shunda.Admin.Areas.Express.Models.ExpressClaim.ExpressClaimListModel
 
@@ -17,7 +18,7 @@
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 130px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.AoPinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">澳拼入库号</a>
+                    <a field="@(nameof(ExpressInfo.CheckinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库跟踪号</a>
                 </div>
                 <div>
                     <a field="@(nameof(ExpressInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递单号</a>
@@ -37,7 +38,7 @@
                     <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">所在订单</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.ReceivingWarehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">订单状态</a>
+                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">订单状态</a>
                 </div>
             </th>
             <th style="width: 110px; text-align: center;">
@@ -48,7 +49,7 @@
                     体积重,实际重kg
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.ExpressPackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">包裹数量</a>
+                    <a field="@(nameof(ExpressInfo.PackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">包裹数量</a>
                 </div>
             </th>
             <th style="width: 130px; text-align: center;">
@@ -64,10 +65,10 @@
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.CustomerId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领客户</a>
+                    <a field="@(nameof(ExpressInfo.Customer)).@(nameof(ExpressInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领客户</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.PickTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领时间</a>
+                    <a field="@(nameof(ExpressInfo.ClaimTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领时间</a>
                 </div>
                 <div>
                     <a field="@(nameof(ExpressInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递状态</a>
@@ -92,7 +93,7 @@
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.AddUserId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库人员</a>
+                    <a field="@(nameof(ExpressInfo.AddUser)).@(nameof(ExpressInfo.AddUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库人员</a>
                 </div>
                 <div>
                     <a field="@(nameof(ExpressInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库时间</a>
@@ -141,7 +142,7 @@
                     <td style="text-align: center;">
                         <div>
                             <a href="@Url.Action("Detail", "ExpressClaim", new {cateId = ExpressListMenuCate.All.Id, id = claimGoods.Id})" target="_blank">
-                                @ListDataUtil.Render(claimGoods.AoPinTrackingNo)
+                                @ListDataUtil.Render(claimGoods.CheckinTrackingNo)
                             </a>
                         </div>
                         <div style="color: blue;">
@@ -187,7 +188,7 @@
                         <div>
                             <div>
                                 @{
-                                    IList<string> expressItemStrList = claimGoods.ExpressItemListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}<br/>{e.SingleVolumeWeight},{e.SingleWeight}").ToList();
+                                    IList<string> expressItemStrList = claimGoods.ExpressSizeWeightListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}<br/>{e.VolumeWeightCache},{e.Weight}").ToList();
                                     string lwh = string.Join("<br/>", expressItemStrList);
                                     if (string.IsNullOrWhiteSpace(lwh))
                                     {
@@ -198,13 +199,13 @@
                             </div>
                         </div>
                         <div style="font-weight: bold; color: blue;">
-                            @claimGoods.ExpressPackageCount
+                            @claimGoods.PackageCount
                         </div>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         @ListDataUtil.RenderStringWithDiv(claimGoods.BillCustomerCode)
                         <div style="color: blue;">
-                            @if (claimGoods.HasExpectCache)
+                            @if (claimGoods.ExpressExpectCache != null)
                             {
                                 <span>有预报</span>
                             }
@@ -227,9 +228,9 @@
                             }
                         </div>
                         <div>
-                            @if (claimGoods.PickTime.HasValue)
+                            @if (claimGoods.ClaimTime.HasValue)
                             {
-                                <span>@claimGoods.PickTime.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                                <span>@claimGoods.ClaimTime.Value.ToString("yyyy-MM-dd HH:mm")</span>
                             }
                             else
                             {
@@ -261,26 +262,6 @@
                     <td style="text-align: center;">
                         <div style="color: blue;">@claimGoods.AddUserNameCache</div>
                         <div>@claimGoods.AddTime.ToString("yyyy-MM-dd HH:mm")</div>
-                        <div style="color: blue;">
-                            @if (claimGoods.WoodFrameFinal)
-                            {
-                                <span>要打木架</span>
-                            }
-                            else
-                            {
-                                <span>不打木架</span>
-                            }
-                        </div>
-                        <div>
-                            @if (claimGoods.BarkCleanFinal)
-                            {
-                                <span>要清理树皮</span>
-                            }
-                            else
-                            {
-                                <span>不清理树皮</span>
-                            }
-                        </div>
                     </td>
                     <td style="text-align: center;">
                         <div style="color: blue;">@ListDataUtil.Render(claimGoods.OnShelfUserNameCache)</div>
@@ -297,7 +278,7 @@
                         </div>
                     </td>
                     <td class="break-word">
-                        @foreach (LogisticsOrderPhotoInfo photo in claimGoods.ExpressPhotoListCache)
+                        @foreach (ExpressPhotoInfo photo in claimGoods.ExpressPhotoListCache)
                         {
                             <a href="@(photo.BigImageFullUrlCache)" target="_blank">
                                 <img src="@(photo.SmallImageFullUrlCache)" alt="" style="max-height: 30px;"/>

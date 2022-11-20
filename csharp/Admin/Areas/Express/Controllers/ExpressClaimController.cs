@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
+using NHibernate.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Express.Models.ExpressClaim;
@@ -27,22 +28,22 @@ namespace shunda.Admin.Areas.Express.Controllers;
 [AdminAuth(PassRes.Express.ExpressList)]
 public class ExpressClaimController : Controller
 {
-    private ISession session = null;
-    private ExpressClaimService expressClaimService = null;
-    private LogisticsExpressService logisticsExpressService = null;
-    private LogisticsOrderImageService logisticsOrderImageService = null;
-    private LoginUserService loginUserService = null;
+    private ISession session;
+    private ExpressListService expressListService;
+    private ExpressSizeWeightService expressSizeWeightService;
+    private ExpressPhotoFileService expressPhotoFileService;
+    private LoginUserService loginUserService;
 
     public ExpressClaimController(ISession session,
-        ExpressClaimService expressClaimService,
-        LogisticsExpressService logisticsExpressService,
-        LogisticsOrderImageService logisticsOrderImageService,
+        ExpressListService expressListService,
+        ExpressSizeWeightService expressSizeWeightService,
+        ExpressPhotoFileService expressPhotoFileService,
         LoginUserService loginUserService)
     {
         this.session = session;
-        this.expressClaimService = expressClaimService;
-        this.logisticsExpressService = logisticsExpressService;
-        this.logisticsOrderImageService = logisticsOrderImageService;
+        this.expressListService = expressListService;
+        this.expressSizeWeightService = expressSizeWeightService;
+        this.expressPhotoFileService = expressPhotoFileService;
         this.loginUserService = loginUserService;
     }
 
@@ -53,7 +54,7 @@ public class ExpressClaimController : Controller
         ExpressClaimIndexModel model = new ExpressClaimIndexModel();
 
         model.CnWarehouseList = session.Query<WarehouseInfo>()
-            .Where(e => e.Type == WarehouseType.Cn && e.InnerStatus == WarehouseStatus.Enabled)
+            .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
             .OrderBy(e => e.OrderNum)
             .ToList();
 
@@ -67,7 +68,7 @@ public class ExpressClaimController : Controller
         bool isAdmin = loginUserService.IsAdmin;
         Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
 
-        model.CanForceDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.ExpressManage.ClaimGoodsForceDelete);
+        model.CanForceDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ClaimGoodsForceDelete);
 
         return View("ExpressClaimIndex", model);
     }
@@ -76,10 +77,10 @@ public class ExpressClaimController : Controller
     [Route("/admin/express/claim/list")]
     public IActionResult List(ExpressListQueryParam queryParam)
     {
-        int totalCount = expressClaimService.Count(ExpressListMenuCate.All, queryParam);
+        int totalCount = expressListService.Count(ExpressListMenuCate.All, queryParam);
         ListPager listPager = new ListPager(queryParam, totalCount);
 
-        IList<ExpressInfo> expressClaimList = expressClaimService.List(ExpressListMenuCate.All, queryParam, listPager);
+        IList<ExpressInfo> expressClaimList = expressListService.List(ExpressListMenuCate.All, queryParam, listPager);
 
         IList<int> claimGoodsIdList = expressClaimList.Select(e => e.Id).ToList();
         IList<ExpressGoodsInfo> claimGoodsEntryList = session.Query<ExpressGoodsInfo>()
@@ -109,44 +110,41 @@ public class ExpressClaimController : Controller
     [Route("/admin/express/claim/tracking/no/detail/{trackingNo}")]
     public IActionResult TrackingNoDetail(string trackingNo)
     {
-        ExpressInfo claimGoods = session.Query<ExpressInfo>()
+        ExpressInfo? express = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
             .SingleOrDefault();
 
-        if (claimGoods == null)
+        if (express == null)
         {
             throw new ValidationException($"指定的快递单号#{trackingNo}不存在！");
         }
 
-        return Detail(ExpressListMenuCate.All.Id, (claimGoods?.Id ?? 0));
+        return Detail(ExpressListMenuCate.All.Id, (express?.Id ?? 0));
     }
 
     [HttpGet]
     [Route("/admin/express/claim/detail/{cateId:int}/{id:int}")]
     public IActionResult Detail(int cateId, int id)
     {
-        int claimId = id;
+        int expressId = id;
 
-        ExpressInfo claimGoods = session.Get<ExpressInfo>(claimId);
+        ExpressInfo claimGoods = session.Get<ExpressInfo>(expressId);
         if (claimGoods == null)
         {
-            throw new ValidationException($"指定的快递单号#{claimId}不存在！");
+            throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
         ExpressClaimDetailModel model = new ExpressClaimDetailModel();
         model.ClaimGoods = claimGoods;
-        model.AddUser = session.Get<UserInfo>(claimGoods.AddUserId);
+        model.AddUser = claimGoods.AddUser;
 
         model.Cate = ExpressListMenuCate.GetById(cateId);
-
-        int customerId = claimGoods.CustomerId ?? 0;
-        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-        model.Customer = customer;
+        model.Customer = claimGoods.Customer;
 
         IList<ExpressGoodsInfo> claimGoodsEntryList = session
             .Query<ExpressGoodsInfo>()
-            .Where(e => e.ClaimId == claimId)
+            .Where(e => e.Express.Id == expressId)
             .ToList();
 
         foreach (var claimGoodsEntry in claimGoodsEntryList)
@@ -178,17 +176,17 @@ public class ExpressClaimController : Controller
 
         model.OrderPack = orderPackExpress?.OrderPack;
 
-        model.ExpressItemList = logisticsExpressService.GetLogisticsExpressItemList(trackingNo);
+        model.ExpressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNo);
 
-        model.OrderPhotoList = session.Query<LogisticsOrderPhotoInfo>()
+        model.OrderPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => e.ExpressTrackingNo == trackingNo)
             .OrderBy(e => e.Type)
             .ToList();
 
-        foreach (LogisticsOrderPhotoInfo orderPhoto in model.OrderPhotoList)
+        foreach (ExpressPhotoInfo orderPhoto in model.OrderPhotoList)
         {
-            orderPhoto.BigImageFullUrlCache = logisticsOrderImageService.GetBigImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
-            orderPhoto.SmallImageFullUrlCache = logisticsOrderImageService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
+            orderPhoto.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
+            orderPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
         }
 
         model.ExpressLogList = session.Query<ExpressLogInfo>()
@@ -198,7 +196,7 @@ public class ExpressClaimController : Controller
 
         bool isAdmin = loginUserService.IsAdmin;
         Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
-        model.CanCustomerServiceRemark = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.ExpressManage.ExpressCustomerServiceRemark);
+        model.CanCustomerServiceRemark = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressCustomerServiceRemark);
 
         // 打包用户和时间
         var packExpressList = session.Query<LogisticsOrderPackExpressInfo>()
@@ -273,7 +271,7 @@ public class ExpressClaimController : Controller
         return View("ExpressClaimDetail", model);
     }
 
-    [AdminAuth(PassRes.ExpressManage.ExpressCustomerServiceRemark)]
+    [AdminAuth(PassRes.Express.ExpressCustomerServiceRemark)]
     [HttpPost]
     [Route("/admin/express/claim/detail/save/customer/service/remark")]
     public IActionResult SaveExpressCustomerServiceRemark(int claimId, string serviceRemark)
@@ -312,13 +310,13 @@ public class ExpressClaimController : Controller
     [NoHibernateAutoTransaction]
     public IActionResult Export(ExpressListQueryParam queryParam)
     {
-        int totalCount = expressClaimService.Count(ExpressListMenuCate.All, queryParam);
+        int totalCount = expressListService.Count(ExpressListMenuCate.All, queryParam);
         if (totalCount > 10000) // 暂时不能导出超1万个吧
         {
             throw new ValidationException("导出的快递单号太多了，请缩小查询条件！");
         }
 
-        IList<ExpressInfo> expressClaimList = expressClaimService.List(ExpressListMenuCate.All, queryParam);
+        IList<ExpressInfo> expressClaimList = expressListService.List(ExpressListMenuCate.All, queryParam);
 
         IList<int> claimGoodsIdList = expressClaimList.Select(e => e.Id).ToList();
         IList<ExpressGoodsInfo> claimGoodsEntryList = session.Query<ExpressGoodsInfo>()
@@ -329,7 +327,6 @@ public class ExpressClaimController : Controller
 
         foreach (ExpressInfo claimGoods in expressClaimList)
         {
-            // IList<int> claimGoodsEntryListForClaim = claimGoodsEntryList.Where(e => e.ClaimId == claimGoods.Id).Select(e => e.Id).ToList();
             IList<int> goodsIdListForClaim = claimGoodsEntryList
                 .Where(e => e.ClaimId == claimGoods.Id)
                 .Select(e => e.GoodsId)
