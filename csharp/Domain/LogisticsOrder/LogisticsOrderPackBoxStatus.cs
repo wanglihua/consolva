@@ -25,7 +25,7 @@ public class LogisticsOrderPackBoxStatus : CodeTypeBase
     /// <summary>
     /// None
     /// </summary>
-    private static readonly LogisticsOrderPackBoxStatus None = new LogisticsOrderPackBoxStatus(0, "", "");
+    public static readonly LogisticsOrderPackBoxStatus None = new LogisticsOrderPackBoxStatus(0, "", "");
 
     private static IReadOnlyList<LogisticsOrderPackBoxStatus> codeTypeList = new List<LogisticsOrderPackBoxStatus>() {
         Pack,

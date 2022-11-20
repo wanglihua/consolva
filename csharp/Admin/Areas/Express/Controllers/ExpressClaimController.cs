@@ -10,6 +10,7 @@ using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
@@ -206,7 +207,7 @@ public class ExpressClaimController : Controller
             .OrderBy(e => e.OrderPack.Id)
             .ToList();
 
-        model.PackUserTimeList = Enumerable.Select<, UserTimeItem>(packExpressList, e =>
+        model.PackUserTimeList = Enumerable.Select<UserTimeItem>(packExpressList, e =>
                 new UserTimeItem() {
                     User = e.OrderPack.PackUser,
                     Time = e.OrderPack.PackTime
