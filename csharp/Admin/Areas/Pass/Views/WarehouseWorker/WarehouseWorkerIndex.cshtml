@@ -1,0 +1,175 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Pass.Models.WarehouseWorker
+@using shunda.Core
+@using shunda.Domain.Pass
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Pass.Models.WarehouseWorker.WarehouseWorkerIndexModel
+@{
+    ViewBag.Title = "仓库工作人员";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="auth-menu">权限管理</li>
+    <li class="active" data-menu="auth-warehouse-worker-index-menu">仓库工作人员</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadWarehouseWorkerList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showWarehouseWorkerDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWarehouseWorker()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="warehouseIdQuery">仓库</label>&nbsp;
+    <select id="warehouseIdQuery" name="warehouseIdQuery" style="width: 200px; height: 30px;" onchange="loadWarehouseWorkerList();">
+        <option value="0">仓库</option>
+        @foreach (WarehouseInfo warehouseInfo in Model.WarehouseList)
+        {
+            <option value="@warehouseInfo.Id">@warehouseInfo.Code &nbsp; @warehouseInfo.Name</option>
+        }
+    </select> &nbsp;
+
+    <label for="typeQuery">工作人员类型</label>&nbsp;
+    <select id="typeQuery" name="typeQuery" style="width: 150px; height: 30px;" onchange="loadWarehouseWorkerList();">
+        <option value="0">工作人员类型</option>
+        @foreach (var type in Model.TypeList)
+        {
+            <option value="@type.Id">@type.Name</option>
+        }
+    </select> &nbsp;
+
+    <label for="userQuery">人员</label>&nbsp;
+    <input id="userQuery" name="userQuery" type="text" style="width: 150px; height: 30px;" placeholder="人员查询"/> &nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadWarehouseWorkerList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="warehouseWorkerList" data-page-index="0" data-sort-field="@(nameof(WarehouseWorkerInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="warehouseWorkerDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadWarehouseWorkerList();
+    });
+
+    function sortWarehouseWorkerList(sortField, sortDir) {
+        var list = $('#warehouseWorkerList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadWarehouseWorkerList();
+    }
+
+    function loadWarehouseWorkerList(pageIndex) {
+        var list = $('#warehouseWorkerList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "WarehouseWorker")",
+            type: "POST",
+            data: {
+                '@(nameof(WarehouseWorkerListQueryParam.WarehouseIdQuery))': $('#warehouseIdQuery').val(),
+                '@(nameof(WarehouseWorkerListQueryParam.TypeQuery))': $('#typeQuery').val(),
+                '@(nameof(WarehouseWorkerListQueryParam.UserQuery))': $('#userQuery').val(),
+                '@(nameof(WarehouseWorkerListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(WarehouseWorkerListQueryParam.SortField))': sortField,
+                '@(nameof(WarehouseWorkerListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#warehouseWorkerList').html(data);
+
+                initListTable("#tblWarehouseWorkerList");
+            }
+        });
+    }
+
+    function showWarehouseWorkerDetail(id) {
+        $("#warehouseWorkerDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("Detail", "WarehouseWorker")',
+            type: "POST",
+            data: {
+                "@(nameof(WarehouseWorkerDetailParam.Id))": id,
+                "@(nameof(WarehouseWorkerDetailParam.WarehouseId))": $('#warehouseIdQuery').val(),
+                "@(nameof(WarehouseWorkerDetailParam.Type))": $('#typeQuery').val(),
+                "@(nameof(WarehouseWorkerDetailParam.UserQuery))": $('#userQuery').val()
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#warehouseWorkerDetailDialogWrapper").html(data);
+                $("#warehouseWorkerDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function deleteWarehouseWorker() {
+        var idList = getSelectIdList('#tblWarehouseWorkerList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "WarehouseWorker")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadWarehouseWorkerList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

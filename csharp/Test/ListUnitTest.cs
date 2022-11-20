@@ -10,12 +10,12 @@ public class ListUnitTest
         };
 
         IList<int> list2 = list1.ToList();
-        
+
         list2.Add(5);
-        
+
         Console.WriteLine(string.Join(",", list1.Select(e => e.ToString())));
         Console.WriteLine(string.Join(",", list2.Select(e => e.ToString())));
-        
+
         Assert.False(list1 == list2);
     }
 }

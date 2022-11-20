@@ -10,37 +10,37 @@ public class WarehouseWorkerType : CodeTypeBase
     /// <summary>
     /// 入库人员
     /// </summary>
-    public static readonly WarehouseWorkerType Checkin = new WarehouseWorkerType(100, "入库人员", "入库人员");
+    public static readonly WarehouseWorkerType Checkin = new WarehouseWorkerType(1000, "入库人员", "入库人员");
 
     /// <summary>
     /// 上架人员
     /// </summary>
-    public static readonly WarehouseWorkerType OnShelf = new WarehouseWorkerType(120, "上架人员", "上架人员");
+    public static readonly WarehouseWorkerType OnShelf = new WarehouseWorkerType(2000, "上架人员", "上架人员");
 
     /// <summary>
     /// 下架人员
     /// </summary>
-    public static readonly WarehouseWorkerType OffShelf = new WarehouseWorkerType(140, "下架人员", "下架人员");
+    public static readonly WarehouseWorkerType OffShelf = new WarehouseWorkerType(3000, "下架人员", "下架人员");
 
     /// <summary>
     /// 堆存人员
     /// </summary>
-    public static readonly WarehouseWorkerType ExpressDump = new WarehouseWorkerType(160, "堆存人员", "快递堆存人员");
+    public static readonly WarehouseWorkerType ExpressDump = new WarehouseWorkerType(4000, "堆存人员", "快递堆存人员");
 
     /// <summary>
     /// 打包人员
     /// </summary>
-    public static readonly WarehouseWorkerType Pack = new WarehouseWorkerType(200, "打包人员", "打包人员");
+    public static readonly WarehouseWorkerType Pack = new WarehouseWorkerType(5000, "打包人员", "打包人员");
 
     /// <summary>
     /// 打包排班人员
     /// </summary>
-    public static readonly WarehouseWorkerType PackSchedule = new WarehouseWorkerType(220, "打包排班人员", "打包排班人员");
+    public static readonly WarehouseWorkerType PackSchedule = new WarehouseWorkerType(6000, "打包排班人员", "打包排班人员");
 
     /// <summary>
     /// 发货人员
     /// </summary>
-    public static readonly WarehouseWorkerType Ship = new WarehouseWorkerType(240, "发货人员", "发货人员");
+    public static readonly WarehouseWorkerType Ship = new WarehouseWorkerType(7000, "发货人员", "发货人员");
 
     /// <summary>
     /// None

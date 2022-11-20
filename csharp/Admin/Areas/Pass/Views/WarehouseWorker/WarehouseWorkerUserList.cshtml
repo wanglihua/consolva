@@ -1,0 +1,57 @@
+@using shunda.Domain.Pass
+@model shunda.Admin.Areas.Pass.Models.WarehouseWorker.WarehouseWorkerUserListModel
+@{
+    Layout = null;
+}
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserList"})
+
+<table id="tblUserList" class="data-list-table table table-striped table-bordered table-hover">
+    <caption style="color: #dddddd">选择要添加的用户, 如果[仓库]和[人员类型]都已选择，下面列表中将排除对应的已添加人员</caption>
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="userCheckAll"></label><input id="userCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 150px;">
+                <a field="@(nameof(UserInfo.LoginName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">登录名</a>
+            </th>
+            <th>
+                <a field="@(nameof(UserInfo.UserName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">用户名</a>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(UserInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortUserList">创建时间</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.UserList != null && Model.UserList.Count() != 0)
+        {
+            int order = 1;
+            foreach (UserInfo user in Model.UserList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="userCheck_@(user.Id)"></label><input id="userCheck_@(user.Id)" type="checkbox" class="ace" value="@user.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td>@user.LoginName</td>
+                    <td>@user.UserName</td>
+                    <td style="text-align: center;">@user.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadUserList"})

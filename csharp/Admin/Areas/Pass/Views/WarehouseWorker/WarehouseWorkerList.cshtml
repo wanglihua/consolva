@@ -1,0 +1,70 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.Pass
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Pass.Models.WarehouseWorker.WarehouseWorkerListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadWarehouseWorkerList"})
+
+<table id="tblWarehouseWorkerList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        <th style="width: 40px; text-align: center;">
+            <label for="warehouseWorkerCheckAll"></label><input id="warehouseWorkerCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+        </th>
+        <th style="width: 50px; text-align: center;">序号</th>
+        <th style="width: 120px;">
+            <a field="@($"{Model.WarehouseAlias}.{nameof(WarehouseInfo.Name)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseWorkerList">仓库</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@($"{nameof(WarehouseInfo.Type)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseWorkerList">人员类型</a>
+        </th>
+        <th style="width: 100px;">
+            <a field="@($"{Model.UserAlias}.{nameof(UserInfo.LoginName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseWorkerList">登录名</a>
+        </th>
+        <th style="width: 120px;">
+            <a field="@($"{Model.UserAlias}.{nameof(UserInfo.UserName)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseWorkerList">用户名</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(WarehouseWorkerInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseWorkerList">创建时间</a>
+        </th>
+        <th style="width: 120px; text-align: center;">
+            <a field="@(nameof(WarehouseWorkerInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortWarehouseWorkerList">修改时间</a>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.WarehouseWorkerList != null && Model.WarehouseWorkerList.Count() != 0)
+    {
+        int order = 1;
+        foreach (WarehouseWorkerInfo warehouseWorker in Model.WarehouseWorkerList)
+        {
+            <tr>
+                <td style="text-align: center;">
+                    <label for="warehouseWorkerCheck_@(warehouseWorker.Id)"></label><input id="warehouseWorkerCheck_@(warehouseWorker.Id)" type="checkbox" class="ace" value="@warehouseWorker.Id"/><span class="lbl"></span>
+                </td>
+                <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                <td>@warehouseWorker.Warehouse.Name</td>
+                <td style="text-align: center;">@warehouseWorker.Type?.Name</td>
+                <td>@warehouseWorker.User.LoginName</td>
+                <td>@warehouseWorker.User.UserName</td>
+                <td style="text-align: center;">@warehouseWorker.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td style="text-align: center;">@warehouseWorker.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="10">
+                暂时没有数据！
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadWarehouseWorkerList"})

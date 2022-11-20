@@ -1,0 +1,185 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Pass.Models.WarehouseWorker
+@using shunda.Core
+@using shunda.Domain.Pass
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.Pass.Models.WarehouseWorker.WarehouseWorkerDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="warehouseWorkerDetailDialog">
+    <div class="modal-dialog" style="width: 780px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">仓库工作人员详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="warehouseWorkerDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="WarehouseWorker.Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="warehouseId" class="col-xs-2 control-label">仓库</label>
+                                <div class="col-xs-10">
+                                    <select id="warehouseId" asp-for="WarehouseId" class="input-sm form-control" required="required" onchange="loadUserList()">
+                                        <option value="">选择仓库</option>
+                                        @foreach (WarehouseInfo warehouseInfo in Model.WarehouseList)
+                                        {
+                                            <option value="@warehouseInfo.Id">@warehouseInfo.Code &nbsp; @warehouseInfo.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="workerType" class="col-xs-2 control-label">人员类型</label>
+                                <div class="col-xs-10">
+                                    <select id="workerType" asp-for="WarehouseWorker.Type" class="input-sm form-control" required="required" onchange="loadUserList()">
+                                        <option value="">选择人员类型</option>
+                                        @foreach (var workerType in Model.TypeList)
+                                        {
+                                            <option value="@(workerType.Id)">@(workerType.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12" style="border-top: 1px solid lightgray; margin-top: 10px;">
+                            <div>
+                                <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px; text-align: right;">
+                                    <label for="nameQuery">名称</label>&nbsp;<input id="nameQuery" name="nameQuery" value="@(Model.UserQuery)" style="width: 120px; height: 30px;" placeholder="名称查询"/>&nbsp;
+
+                                    <label for="groupIdQuery">群组</label>&nbsp;
+                                    <select id="groupIdQuery" name="groupIdQuery" style="width: 150px; height: 30px;">
+                                        <option value="0">群组查询</option>
+                                        @foreach (GroupInfo group in Model.GroupList)
+                                        {
+                                            <option value="@(group.Id)">@(group.Name)</option>
+                                        }
+                                    </select> &nbsp;
+
+                                    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadUserList(0)">
+                                        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+                                    </button>
+                                </div>
+
+                                <div id="userList" data-page-index="0" data-sort-field="@(nameof(UserInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveWarehouseWorker();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    添加保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function() {
+        loadUserList();
+    });
+
+    function sortUserList(sortField, sortDir) {
+        var list = $('#userList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadUserList();
+    }
+
+    function loadUserList(pageIndex) {
+        var list = $('#userList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("UserList", "WarehouseWorker")",
+            type: "POST",
+            data: {
+                '@(nameof(WarehouseWorkerUserListQueryParam.NameQuery))': $('#nameQuery').val(),
+                '@(nameof(WarehouseWorkerUserListQueryParam.GroupIdQuery))': $('#groupIdQuery').val(),
+                '@(nameof(WarehouseWorkerUserListQueryParam.WarehouseId))': $('#warehouseId').val(),
+                '@(nameof(WarehouseWorkerUserListQueryParam.Type))': $('#workerType').val(),
+                '@(nameof(WarehouseWorkerUserListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(WarehouseWorkerUserListQueryParam.SortField))': sortField,
+                '@(nameof(WarehouseWorkerUserListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#userList').html(data);
+
+                initListTable("#tblUserList");
+            }
+        });
+    }
+
+    function saveWarehouseWorker() {
+        var userIdList = getSelectIdList('#tblUserList');
+
+        if (userIdList.length === 0) {
+            $.msg.alert("请选择要添加的用户！");
+            return;
+        }
+        
+        var form = $("#warehouseWorkerDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "WarehouseWorker")',
+                type: "POST",
+                data: {
+                    "@(nameof(WarehouseWorkerDetailModel.WarehouseId))": $("#warehouseId").val(),
+                    "@(nameof(WarehouseWorkerDetailModel.WorkerType))": $("#workerType").val(),
+                    "@(nameof(WarehouseWorkerDetailModel.UserIdList))": userIdList
+                },
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        // $('#warehouseWorkerDetailDialog').modal('hide');
+                        loadUserList();
+                        loadWarehouseWorkerList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+</script>
