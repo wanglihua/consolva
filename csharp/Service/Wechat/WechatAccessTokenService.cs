@@ -39,7 +39,7 @@ public class WechatAccessTokenService
         {
             if (wechatAccessToken != null) // 只是过期
             {
-                if (now.Date.Day == 1 && now.Hour > 4 && now.Hour < 8) // 每月的 1日，4个小时内做多过期两次，最多也就执行2次了。
+                if (now.Date.Day == 1 && now.Hour > 4 && now.Hour < 8) // 每月的 1日，4个小时内最多过期两次，最多也就执行2次了。
                 {
                     int latestId = wechatAccessToken.Id;
                     session.Query<WechatAccessTokenInfo>()
