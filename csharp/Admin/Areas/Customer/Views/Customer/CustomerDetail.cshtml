@@ -582,10 +582,10 @@
                             <a target="_blank" href="@Url.Action("Index", "LogisticsClaimGoodsCustomer", new { customerId = Model.Customer.Id })">会员更多申领件...</a>
                         </div>
                         <div>
-                            <div id="claimGoodsList" data-page-index="0" data-sort-field="@(nameof(LogisticsClaimGoodsInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+                            <div id="expressList" data-page-index="0" data-sort-field="@(nameof(LogisticsClaimGoodsInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
                             </div>
 
-                            <div id="claimGoodsDetailDialogWrapper"></div>
+                            <div id="expressDetailDialogWrapper"></div>
                             <script type="text/javascript">
 
                                 $(function() {
@@ -593,7 +593,7 @@
                                 });
 
                                 function sortClaimGoodsList(sortField, sortDir) {
-                                    var list = $('#claimGoodsList');
+                                    var list = $('#expressList');
                                     list.data('sort-field', sortField);
                                     list.data('sort-dir', sortDir);
 
@@ -601,7 +601,7 @@
                                 }
 
                                 function loadClaimGoodsList(pageIndex) {
-                                    var list = $('#claimGoodsList');
+                                    var list = $('#expressList');
 
                                     if (pageIndex === null || pageIndex === undefined) {
                                         pageIndex = list.data("page-index");
@@ -632,7 +632,7 @@
                                                 return;
                                             }
 
-                                            $('#claimGoodsList').html(data);
+                                            $('#expressList').html(data);
 
                                             initListTable("#tblClaimGoodsList");
                                         }
@@ -640,10 +640,10 @@
                                 }
 
                                 function showClaimGoodsDetail(id) {
-                                    $("#claimGoodsDetailDialogWrapper").html("");
+                                    $("#expressDetailDialogWrapper").html("");
 
                                     showMask("加载中...");
-                                    // $("#claimGoodsDetailForm").clearValidation();
+                                    // $("#expressDetailForm").clearValidation();
 
                                     $.ajax({
                                         url: '@Url.Action("Detail", "LogisticsClaimGoods")',
@@ -656,14 +656,14 @@
                                                 return;
                                             }
 
-                                            $("#claimGoodsDetailDialogWrapper").html(data);
-                                            $("#claimGoodsDetailDialog").modal(modalOptions);
+                                            $("#expressDetailDialogWrapper").html(data);
+                                            $("#expressDetailDialog").modal(modalOptions);
                                         }
                                     });
                                 }
 
                                 function saveClaimGoods() {
-                                    var form = $("#claimGoodsDetailForm");
+                                    var form = $("#expressDetailForm");
                                     var valid = validate(form,
                                         {
                                             'ClaimGoods.Name': {
@@ -709,7 +709,7 @@
                                                     //return;
                                                 } else {
                                                     $.msg.show(data.message);
-                                                    $('#claimGoodsDetailDialog').modal('hide');
+                                                    $('#expressDetailDialog').modal('hide');
                                                     loadClaimGoodsList();
                                                     //return;
                                                 }

@@ -11,5 +11,5 @@ public class ExpressListModel : ListModel
     }
 
     [BindNever]
-    public IList<ExpressInfo> ExpressClaimList { get; set; } = new List<ExpressInfo>();
+    public IList<ExpressInfo> ExpressList { get; set; } = new List<ExpressInfo>();
 }

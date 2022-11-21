@@ -120,9 +120,9 @@ public class ExpressDumpScheduleService
         ICriteria criteria = session.CreateCriteria<ExpressDumpScheduleInfo>();
         criteria = criteria.SetReadOnly(true);
 
-        criteria = criteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Express), "cg");
+        criteria = criteria.CreateAlias(nameof(ExpressDumpScheduleInfo.Express), "express");
 
-        string storageLoc = $"cg.{nameof(ExpressInfo.StorageLoc)}";
+        string storageLoc = $"express.{nameof(ExpressInfo.StorageLoc)}";
         criteria = criteria.CreateAlias(storageLoc, "sl");
 
         // 这个好像不起作用，生成的SQL，还是没有做这个join
@@ -131,16 +131,16 @@ public class ExpressDumpScheduleService
 
         criteria = criteria.CreateAlias(nameof(ExpressDumpScheduleInfo.User), "user");
 
-        string claimWarehouse = $"cg.{nameof(ExpressInfo.Warehouse)}";
+        string claimWarehouse = $"express.{nameof(ExpressInfo.Warehouse)}";
         criteria = criteria.CreateAlias(claimWarehouse, "w", JoinType.LeftOuterJoin);
 
         // 按排班类型过滤
         criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressDumpScheduleInfo.DumpType)}", dumpType));
-        criteria = criteria.Add(Restrictions.Eq($"cg.{nameof(ExpressInfo.DumpStatus)}", ExpressDumpStatus.NotDump)); // 只显示未堆存的        
+        criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.DumpStatus)}", ExpressDumpStatus.NotDump)); // 只显示未堆存的        
 
         // 不显示已打包和已退运的，这两个状态是绝对不会在货架上了
         var noDumpClaimStatusList = new ExpressStatus[] { ExpressStatus.Pack, ExpressStatus.Returned };
-        criteria = criteria.Add(Restrictions.Not(Restrictions.In($"cg.{nameof(ExpressInfo.Status)}", noDumpClaimStatusList)));
+        criteria = criteria.Add(Restrictions.Not(Restrictions.In($"express.{nameof(ExpressInfo.Status)}", noDumpClaimStatusList)));
 
         // 按查询条件过滤
 
@@ -153,37 +153,37 @@ public class ExpressDumpScheduleService
         if (string.IsNullOrWhiteSpace(queryParam.CheckinTrackingNoQuery) == false)
         {
             string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
-            criteria = criteria.Add(Restrictions.Eq($"cg.{nameof(ExpressInfo.CheckinTrackingNo)}", checkinTrackingNoQuery));
+            criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.CheckinTrackingNo)}", checkinTrackingNoQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
         {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
-            criteria = criteria.Add(Restrictions.Eq($"cg.{nameof(ExpressInfo.TrackingNo)}", trackingNoQuery));
+            criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.TrackingNo)}", trackingNoQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.BillCustomerCodeQuery) == false)
         {
             string billCustomerCodeQuery = queryParam.BillCustomerCodeQuery.Trim();
-            criteria = criteria.Add(Restrictions.Eq($"cg.{nameof(ExpressInfo.BillCustomerCode)}", billCustomerCodeQuery));
+            criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.BillCustomerCode)}", billCustomerCodeQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.ExpressCompanyQuery) == false)
         {
             string expressCompanyQuery = queryParam.ExpressCompanyQuery.Trim();
-            criteria = criteria.Add(Restrictions.InsensitiveLike($"cg.{nameof(ExpressInfo.ExpressCompany)}", expressCompanyQuery, MatchMode.Anywhere));
+            criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.ExpressCompany)}", expressCompanyQuery, MatchMode.Anywhere));
         }
 
         if (queryParam.StatusQuery != null && queryParam.StatusQuery != ExpressStatus.None)
         {
             ExpressStatus statusQuery = queryParam.StatusQuery;
-            criteria = criteria.Add(Restrictions.Eq($"cg.{nameof(ExpressInfo.Status)}", statusQuery));
+            criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.Status)}", statusQuery));
         }
 
         if (queryParam.ShelfStatusQuery != null && queryParam.ShelfStatusQuery != ExpressShelfStatus.None)
         {
             ExpressShelfStatus shelfStatusQuery = queryParam.ShelfStatusQuery;
-            criteria = criteria.Add(Restrictions.Eq($"cg.{nameof(ExpressInfo.ShelfStatus)}", shelfStatusQuery));
+            criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.ShelfStatus)}", shelfStatusQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.GoodsNameQuery) == false)
@@ -200,7 +200,7 @@ public class ExpressDumpScheduleService
                 .Distinct()
                 .ToList();
 
-            criteria = criteria.Add(Restrictions.In($"cg.{nameof(ExpressInfo.Id)}", expressIdList.ToArray()));
+            criteria = criteria.Add(Restrictions.In($"express.{nameof(ExpressInfo.Id)}", expressIdList.ToArray()));
         }
 
         if (queryParam.ScheduleUserIdListQuery != null && queryParam.ScheduleUserIdListQuery.Count != 0)
@@ -212,25 +212,25 @@ public class ExpressDumpScheduleService
         if (queryParam.AddDateBeginQuery != null)
         {
             DateTime addTimeBeginQueryValue = queryParam.AddDateBeginQuery.Value.Date;
-            criteria = criteria.Add(Restrictions.Ge($"cg.{nameof(ExpressInfo.AddTime)}", addTimeBeginQueryValue));
+            criteria = criteria.Add(Restrictions.Ge($"express.{nameof(ExpressInfo.AddTime)}", addTimeBeginQueryValue));
         }
 
         if (queryParam.AddDateEndQuery != null)
         {
             DateTime addTimeEndQueryValue = queryParam.AddDateEndQuery.Value.Date.AddDays(1);
-            criteria = criteria.Add(Restrictions.Lt($"cg.{nameof(ExpressInfo.AddTime)}", addTimeEndQueryValue));
+            criteria = criteria.Add(Restrictions.Lt($"express.{nameof(ExpressInfo.AddTime)}", addTimeEndQueryValue));
         }
 
         if (queryParam.OnShelfTimeBeginQuery != null)
         {
             DateTime onShelfTimeBeginQueryValue = queryParam.OnShelfTimeBeginQuery.Value.Date;
-            criteria = criteria.Add(Restrictions.Ge($"cg.{nameof(ExpressInfo.OnShelfTime)}", onShelfTimeBeginQueryValue));
+            criteria = criteria.Add(Restrictions.Ge($"express.{nameof(ExpressInfo.OnShelfTime)}", onShelfTimeBeginQueryValue));
         }
 
         if (queryParam.OnShelfTimeEndQuery != null)
         {
             DateTime onShelfTimeEndQueryValue = queryParam.OnShelfTimeEndQuery.Value.Date.AddDays(1);
-            criteria = criteria.Add(Restrictions.Lt($"cg.{nameof(ExpressInfo.OnShelfTime)}", onShelfTimeEndQueryValue));
+            criteria = criteria.Add(Restrictions.Lt($"express.{nameof(ExpressInfo.OnShelfTime)}", onShelfTimeEndQueryValue));
         }
 
         // 看上下文，如果是上架的，就是上架排班时间；如果是下架的，就是下架排班时间
@@ -249,13 +249,13 @@ public class ExpressDumpScheduleService
         if (queryParam.ClaimTimeBeginQuery != null)
         {
             DateTime pickTimeBeginQueryValue = queryParam.ClaimTimeBeginQuery.Value.Date;
-            criteria = criteria.Add(Restrictions.Ge($"cg.{nameof(ExpressInfo.ClaimTime)}", pickTimeBeginQueryValue));
+            criteria = criteria.Add(Restrictions.Ge($"express.{nameof(ExpressInfo.ClaimTime)}", pickTimeBeginQueryValue));
         }
 
         if (queryParam.ClaimTimeEndQuery != null)
         {
             DateTime pickTimeEndQueryValue = queryParam.ClaimTimeEndQuery.Value.Date.AddDays(1);
-            criteria = criteria.Add(Restrictions.Lt($"cg.{nameof(ExpressInfo.ClaimTime)}", pickTimeEndQueryValue));
+            criteria = criteria.Add(Restrictions.Lt($"express.{nameof(ExpressInfo.ClaimTime)}", pickTimeEndQueryValue));
         }
 
         if (queryParam.ScheduleShelfIdListQuery != null && queryParam.ScheduleShelfIdListQuery.Count != 0)

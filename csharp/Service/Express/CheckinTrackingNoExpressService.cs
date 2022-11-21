@@ -50,8 +50,8 @@ namespace Service.Logistics
         /// <returns>主单号</returns>
         public string Generate(int claimId)
         {
-            var claimGoods = session.Get<LogisticsClaimGoodsInfo>(claimId);
-            if (claimGoods == null)
+            var express = session.Get<LogisticsClaimGoodsInfo>(claimId);
+            if (express == null)
             {
                 throw new ValidationException($"指定的申领件#{claimId}不存在！");
             }
@@ -67,8 +67,8 @@ namespace Service.Logistics
             {
                 aoPinTrackingNoExpressMain = new AoPinTrackingNoExpressInfo();
                 aoPinTrackingNoExpressMain.AoPinTrackingNo = GetNextMainTrackinigNo();
-                aoPinTrackingNoExpressMain.TrackingNo = claimGoods.TrackingNo;
-                aoPinTrackingNoExpressMain.Claim = claimGoods;
+                aoPinTrackingNoExpressMain.TrackingNo = express.TrackingNo;
+                aoPinTrackingNoExpressMain.Claim = express;
                 aoPinTrackingNoExpressMain.LogisticsExpress = null;
                 aoPinTrackingNoExpressMain.ChildExpress = null;
                 aoPinTrackingNoExpressMain.Status = AoPinTrackingNoExpressStatus.ToOnShelf;
@@ -84,7 +84,7 @@ namespace Service.Logistics
                 throw new ValidationException("澳拼入库号主单号不能为空！");
             }
 
-            string trackingNo = claimGoods.TrackingNo;
+            string trackingNo = express.TrackingNo;
             // 这里排序顺序固定
             var expressItemList = logisticsExpressService.GetLogisticsExpressItemList(trackingNo); // 这里的顺序是固定的，这样重新生成的时候，还是会尽量保持原来的入库跟踪号
             if (expressItemList == null || expressItemList.Count == 0)
@@ -109,8 +109,8 @@ namespace Service.Logistics
 
                     var aoPinTrackingNoExpress = new AoPinTrackingNoExpressInfo();
                     aoPinTrackingNoExpress.AoPinTrackingNo = subAoPinTrackingNo;
-                    aoPinTrackingNoExpress.TrackingNo = claimGoods.TrackingNo;
-                    aoPinTrackingNoExpress.Claim = claimGoods;
+                    aoPinTrackingNoExpress.TrackingNo = express.TrackingNo;
+                    aoPinTrackingNoExpress.Claim = express;
                     aoPinTrackingNoExpress.LogisticsExpress = session.Load<LogisticsExpressInfo>(expressItem.LogisticsExpressId);
                     aoPinTrackingNoExpress.ChildExpress = null;
                     if (expressItem.ChildExpressId != null)

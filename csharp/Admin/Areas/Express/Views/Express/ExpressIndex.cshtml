@@ -112,7 +112,7 @@
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
     <select id="warehouseIdQuery" name="warehouseIdQuery" style="width: 130px; height: 30px;" onchange="loadExpressClaimList(0);">
         <option value="">入库仓库</option>
-        @foreach (WarehouseInfo warehouse in Model.CnWarehouseList)
+        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
         {
             <option value="@(warehouse.Id)">@(warehouse.Name)</option>
         }

@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
-                <label for="claimGoodsCheckAll"></label><input id="claimGoodsCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                <label for="expressCheckAll"></label><input id="expressCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 130px; text-align: center;">
@@ -126,14 +126,14 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.ExpressClaimList != null && Model.ExpressClaimList.Count() != 0)
+        @if (Model.ExpressList != null && Model.ExpressList.Count() != 0)
         {
             int order = 1;
-            foreach (ExpressInfo express in Model.ExpressClaimList)
+            foreach (ExpressInfo express in Model.ExpressList)
             {
                 <tr>
                     <td style="text-align: center;">
-                        <label for="claimGoodsCheck_@(express.Id)"></label><input id="claimGoodsCheck_@(express.Id)" type="checkbox" class="ace" value="@express.Id"/><span class="lbl"></span>
+                        <label for="expressCheck_@(express.Id)"></label><input id="expressCheck_@(express.Id)" type="checkbox" class="ace" value="@express.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">

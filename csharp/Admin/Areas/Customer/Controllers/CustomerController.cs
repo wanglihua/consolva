@@ -218,34 +218,34 @@ public class CustomerController : Controller
             criteria = criteria.SetReadOnly(true);
             criteria = criteria.Add(Restrictions.Where<LogisticsClaimGoodsInfo>(e => e.BillCustomerId == customerId));
 
-            IList<LogisticsClaimGoodsInfo> claimGoodsList = criteria
+            IList<LogisticsClaimGoodsInfo> expressList = criteria
                 .AddOrder(new Order(nameof(LogisticsClaimGoodsInfo.Id), false))
                 .SetMaxResults(10)
                 .List<LogisticsClaimGoodsInfo>();
 
-            IList<int> userIdList = claimGoodsList.Select(e => e.AddUserId).Distinct().ToList();
-            IList<int> orderIdList = claimGoodsList.Where(e => e.Order != null).Select(e => e.Order.Id).Distinct().ToList();
-            List<int> storageLocIdList = claimGoodsList.Where(e => e.StorageLoc != null).Select(e => e.StorageLoc.Id).Distinct().ToList();
+            IList<int> userIdList = expressList.Select(e => e.AddUserId).Distinct().ToList();
+            IList<int> orderIdList = expressList.Where(e => e.Order != null).Select(e => e.Order.Id).Distinct().ToList();
+            List<int> storageLocIdList = expressList.Where(e => e.StorageLoc != null).Select(e => e.StorageLoc.Id).Distinct().ToList();
 
             IList<UserInfo> userList = session.Query<UserInfo>().Where(e => e.LoginName != UserInfo.DevLoginName && userIdList.Contains(e.Id)).ToList();
             IList<LogisticsOrderInfo> orderList = session.Query<LogisticsOrderInfo>().Where(e => orderIdList.Contains(e.Id)).ToList();
             IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>().Where(e => storageLocIdList.Contains(e.Id)).ToList();
 
-            foreach (LogisticsClaimGoodsInfo claimGoodsInfo in claimGoodsList)
+            foreach (LogisticsClaimGoodsInfo expressInfo in expressList)
             {
-                UserInfo user = userList.Where(e => e.Id == claimGoodsInfo.AddUserId).Take(1).SingleOrDefault();
-                claimGoodsInfo.AddUserNameCache = user?.UserName;
+                UserInfo user = userList.Where(e => e.Id == expressInfo.AddUserId).Take(1).SingleOrDefault();
+                expressInfo.AddUserNameCache = user?.UserName;
 
-                claimGoodsInfo.CustomerNameCache = customer?.CustomerCode;
+                expressInfo.CustomerNameCache = customer?.CustomerCode;
 
-                LogisticsOrderInfo logisticsOrder = orderList.Where(e => e.Id == (claimGoodsInfo.Order?.Id ?? 0)).Take(1).SingleOrDefault();
-                claimGoodsInfo.OrderCodeCache = logisticsOrder?.Code;
+                LogisticsOrderInfo logisticsOrder = orderList.Where(e => e.Id == (expressInfo.Order?.Id ?? 0)).Take(1).SingleOrDefault();
+                expressInfo.OrderCodeCache = logisticsOrder?.Code;
 
-                StorageLocInfo storageLoc = storageLocList.Where(e => e.Id == (claimGoodsInfo.StorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
-                claimGoodsInfo.StorageLocNameCache = storageLoc?.GetFullName();
+                StorageLocInfo storageLoc = storageLocList.Where(e => e.Id == (expressInfo.StorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
+                expressInfo.StorageLocNameCache = storageLoc?.GetFullName();
             }
 
-            model.LogisticsClaimGoodsList = claimGoodsList;
+            model.LogisticsClaimGoodsList = expressList;
         }
 
         // 问题件列表

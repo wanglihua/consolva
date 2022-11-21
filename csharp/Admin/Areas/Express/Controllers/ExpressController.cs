@@ -56,7 +56,7 @@ public class ExpressController : Controller
     {
         ExpressIndexModel model = new ExpressIndexModel();
 
-        model.CnWarehouseList = session.Query<WarehouseInfo>()
+        model.WarehouseList = session.Query<WarehouseInfo>()
             .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
             .OrderBy(e => e.OrderNum)
             .ToList();
@@ -86,7 +86,7 @@ public class ExpressController : Controller
         IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam, listPager);
 
         ExpressListModel model = new ExpressListModel(listPager);
-        model.ExpressClaimList = expressList;
+        model.ExpressList = expressList;
 
         return View("ExpressList", model);
     }

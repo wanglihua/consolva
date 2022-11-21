@@ -195,13 +195,13 @@ public class ExpressShelfScheduleService
                 .Select(e => e.Id)
                 .ToList();
 
-            IList<int> claimGoodsIdList = session.Query<ExpressGoodsInfo>()
+            IList<int> expressIdList = session.Query<ExpressGoodsInfo>()
                 .Where(e => goodsIdList.Contains(e.Goods.Id))
                 .Select(e => e.Express.Id)
                 .Distinct()
                 .ToList();
 
-            criteria = criteria.Add(Restrictions.In($"express.{nameof(ExpressInfo.Id)}", claimGoodsIdList.ToArray()));
+            criteria = criteria.Add(Restrictions.In($"express.{nameof(ExpressInfo.Id)}", expressIdList.ToArray()));
         }
 
         if (queryParam.ScheduleUserIdListQuery != null && queryParam.ScheduleUserIdListQuery.Count != 0)
