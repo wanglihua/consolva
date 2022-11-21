@@ -1,11 +1,12 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Express.Models.ExpressClaim
+@using shunda.Core.Web
 @using shunda.Domain.Express
 @using shunda.Service.Express
 @model shunda.Admin.Areas.Express.Models.ExpressClaim.ExpressClaimDetailModel
 
 @{
-    ViewBag.Title = "快递详细";
+    ViewData[ViewDataKey.Title] = "快递详细";
     Layout = "_AdminLayout";
 }
 
@@ -65,7 +66,7 @@
     }
     else
     {
-        <li class="active" data-menu="express-claim-detail-menu">快递详细</li>
+        <li class="active" data-menu="express-claim-detail-menu">@(ViewData[ViewDataKey.Title])</li>
     }
     <li>
         <span>快递单号</span>
@@ -220,24 +221,6 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="OrderPack.User.UserName" class="col-xs-4 control-label">打包人员</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="OrderPack.User.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="OrderPack.PackTime" class="col-xs-4 control-label">打包时间</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="OrderPack.PackTime" type="text" value="@(Model.OrderPack?.PackTime.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
 
                             <div class="row">
@@ -323,7 +306,7 @@
                                             <div class="form-group">
                                                 <label for="pack_time_@(seq)" class="col-xs-4 control-label">打包时间@(seq == 1 ? "" : seq.ToString())</label>
                                                 <div class="col-xs-8">
-                                                    <input id="pack_time_@(seq)" type="text" value="@(userTime?.Time.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                                    <input id="pack_time_@(seq)" type="text" value="@(userTime.Time.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -336,42 +319,24 @@
 
                                 @{
                                     seq = 0;
-                                    foreach (LoadUnloadUserTime loadUnloadUserTime in Model.LoadUnloadUserTimeList)
+                                    foreach (UserTimeItem userTime in Model.ShipUserTimeList)
                                     {
                                         seq = seq + 1;
 
                                         <div class="col-xs-3">
                                             <div class="form-group">
-                                                <label for="load_user_@(seq)" class="col-xs-4 control-label">装箱人员@(seq == 1 ? "" : seq.ToString())</label>
+                                                <label for="ship_user_@(seq)" class="col-xs-4 control-label">发货人员@(seq == 1 ? "" : seq.ToString())</label>
                                                 <div class="col-xs-8">
-                                                    <input id="load_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(loadUnloadUserTime?.LoadUserTime.User.UserName)"/>
+                                                    <input id="ship_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(userTime.User.UserName)"/>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="col-xs-3">
                                             <div class="form-group">
-                                                <label for="load_time_@(seq)" class="col-xs-4 control-label">装箱时间@(seq == 1 ? "" : seq.ToString())</label>
+                                                <label for="ship_time_@(seq)" class="col-xs-4 control-label">发货时间@(seq == 1 ? "" : seq.ToString())</label>
                                                 <div class="col-xs-8">
-                                                    <input id="load_time_@(seq)" type="text" value="@(loadUnloadUserTime?.LoadUserTime?.Time.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-3">
-                                            <div class="form-group">
-                                                <label for="unload_user_@(seq)" class="col-xs-4 control-label">卸货人员@(seq == 1 ? "" : seq.ToString())</label>
-                                                <div class="col-xs-8">
-                                                    <input id="unload_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(loadUnloadUserTime?.UnloadUserTime.User.UserName)"/>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-3">
-                                            <div class="form-group">
-                                                <label for="unload_time_@(seq)" class="col-xs-4 control-label">卸货时间@(seq == 1 ? "" : seq.ToString())</label>
-                                                <div class="col-xs-8">
-                                                    <input id="unload_time_@(seq)" type="text" value="@(loadUnloadUserTime?.UnloadUserTime?.Time.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                                    <input id="ship_time_@(seq)" type="text" value="@(userTime.Time.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -379,6 +344,7 @@
                                 }
 
                             </div>
+
 
                             <div class="row">
 
@@ -710,7 +676,7 @@
                                         {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
-                                                <td style="text-align: center;">@item.GoodsNameCache</td>
+                                                <td style="text-align: center;">@item.Goods.Name</td>
                                                 <td style="text-align: center;">
                                                     <span>
                                                         @(item.Price)

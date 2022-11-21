@@ -89,7 +89,7 @@ public class LogisticsOrderPackInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "打包人员不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo PackUser { get; set; } = new UserInfo();
 
     /// <summary>
     /// 打包时间，非空

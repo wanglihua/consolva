@@ -17,16 +17,3 @@ public class UserTimeItem
     /// </summary>
     public DateTime Time { get; set; }
 }
-
-public class LoadUnloadUserTime
-{
-    /// <summary>
-    /// 装箱，操作用户和时间
-    /// </summary>
-    public UserTimeItem LoadUserTime { get; set; } = new UserTimeItem();
-
-    /// <summary>
-    /// 卸货，操作用户和时间
-    /// </summary>
-    public UserTimeItem UnloadUserTime { get; set; } = new UserTimeItem();
-}

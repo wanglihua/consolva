@@ -1,6 +1,7 @@
 using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Domain.Pass;
 
 namespace shunda.Domain.LogisticsOrder;
 
@@ -50,6 +51,17 @@ public class LogisticsOrderPackBoxInfoMapping : EntityMapping<LogisticsOrderPack
             }
         );
 
+        ManyToOne(
+            x => x.ShipUser,
+            map => {
+                map.Class(typeof(UserInfo));
+                map.Column("ship_user_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+        
         Property(
             x => x.DeliverTime,
             map => {

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using shunda.Domain.Pass;
 
 namespace shunda.Domain.LogisticsOrder;
 
@@ -38,6 +39,12 @@ public class LogisticsOrderPackBoxInfo : Entity
     public virtual DateTime? ShipTime { get; set; } = null;
 
     /// <summary>
+    /// 发货人，可空
+    /// </summary>
+    [JsonProperty("shipUser")]
+    public virtual UserInfo? ShipUser { get; set; } = null;
+
+    /// <summary>
     /// 交付时间，可空
     /// </summary>
     [JsonProperty("deliverTime")]
@@ -50,5 +57,4 @@ public class LogisticsOrderPackBoxInfo : Entity
     [JsonProperty("status")]
     [ModelBinder(typeof(LogisticsOrderPackBoxStatusModelBinder))]
     public virtual LogisticsOrderPackBoxStatus Status { get; set; } = LogisticsOrderPackBoxStatus.None;
-
 }

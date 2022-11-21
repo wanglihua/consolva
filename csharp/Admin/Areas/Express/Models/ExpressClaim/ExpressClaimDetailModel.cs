@@ -20,8 +20,6 @@ public class ExpressClaimDetailModel
 
     public LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
-    public LogisticsOrderPackInfo OrderPack { get; set; }
-
     public IList<ExpressGoodsInfo> EntryList { get; set; } = new List<ExpressGoodsInfo>();
 
     public IList<ExpressSizeWeightInfo> ExpressItemList { get; set; } = new List<ExpressSizeWeightInfo>(); // todo a 改名
@@ -51,5 +49,5 @@ public class ExpressClaimDetailModel
 
     public IList<UserTimeItem> PackUserTimeList { get; set; } = new List<UserTimeItem>();
 
-    public IList<LoadUnloadUserTime> LoadUnloadUserTimeList { get; set; } = new List<LoadUnloadUserTime>();
+    public IList<UserTimeItem> ShipUserTimeList { get; set; } = new List<UserTimeItem>();
 }

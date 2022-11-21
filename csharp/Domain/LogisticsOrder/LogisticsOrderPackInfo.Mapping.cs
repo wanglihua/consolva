@@ -109,10 +109,10 @@ public class LogisticsOrderPackInfoMapping : EntityMapping<LogisticsOrderPackInf
         );
 
         ManyToOne(
-            x => x.User,
+            x => x.PackUser,
             map => {
                 map.Class(typeof(UserInfo));
-                map.Column("user_id");
+                map.Column("pack_user_id");
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);

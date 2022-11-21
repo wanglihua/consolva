@@ -145,13 +145,12 @@ public class ExpressClaimController : Controller
 
         IList<ExpressGoodsInfo> expressGoodsList = session
             .Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
             .Where(e => e.Express.Id == expressId)
             .ToList();
 
         foreach (var expressGoods in expressGoodsList)
         {
-            LogisticsGoodsInfo goods = session.Get<LogisticsGoodsInfo>(expressGoods.GoodsId);
-            expressGoods.GoodsNameCache = goods?.GetGoodsAdminName();
         }
 
         model.EntryList = expressGoodsList;
@@ -167,20 +166,10 @@ public class ExpressClaimController : Controller
             .SingleOrDefault();
         model.ExpressExpect = expressExpect;
 
-        LogisticsOrderPackExpressInfo orderPackExpress = session.Query<LogisticsOrderPackExpressInfo>()
-            .Fetch(e => e.OrderExpress)
-            .Fetch(e => e.OrderPack).ThenFetch(e => e.PackUser)
-            .Where(e => e.OrderExpress.ExpressTrackingNo == trackingNo)
-            .OrderByDescending(e => e.Id)
-            .Take(1)
-            .SingleOrDefault();
-
-        model.OrderPack = orderPackExpress?.OrderPack;
-
         model.ExpressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNo);
 
         model.OrderPhotoList = session.Query<ExpressPhotoInfo>()
-            .Where(e => e.ExpressTrackingNo == trackingNo)
+            .Where(e => e.TrackingNo == trackingNo)
             .OrderBy(e => e.Type)
             .ToList();
 
@@ -197,16 +186,16 @@ public class ExpressClaimController : Controller
 
         bool isAdmin = loginUserService.IsAdmin;
         Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
-        model.CanCustomerServiceRemark = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressCustomerServiceRemark);
+        model.CanCustomerServiceRemark = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressServiceRemark);
 
         // 打包用户和时间
         var packExpressList = session.Query<LogisticsOrderPackExpressInfo>()
             .Fetch(e => e.OrderPack).ThenFetch(e => e.PackUser)
-            .Where(e => e.ExpressNo == trackingNo)
+            .Where(e => e.Express.Id == expressId)
             .OrderBy(e => e.OrderPack.Id)
             .ToList();
 
-        model.PackUserTimeList = Enumerable.Select<UserTimeItem>(packExpressList, e =>
+        model.PackUserTimeList = packExpressList.Select(e =>
                 new UserTimeItem() {
                     User = e.OrderPack.PackUser,
                     Time = e.OrderPack.PackTime
@@ -216,58 +205,18 @@ public class ExpressClaimController : Controller
 
         // 装箱用户和时间
         IList<int> packIdList = Enumerable.ToList(packExpressList.Select(e => e.OrderPack.Id));
-        IList<int> packBoxIdList = session.Query<LogisticsOrderPackBoxInfo>()
+        var packBoxList = session.Query<LogisticsOrderPackBoxInfo>()
+            .Fetch(e => e.ShipUser)
             .Where(e => packIdList.Contains(e.OrderPack.Id))
-            .Select(e => e.Id)
             .ToList();
 
-        IList<LogisticsOrderPackBoxHistoryInfo> packBoxHistory = session.Query<LogisticsOrderPackBoxHistoryInfo>()
-            .Fetch(e => e.User)
-            .Where(e => packBoxIdList.Contains(e.OrderPackBox.Id)
-                        && (e.Type == LogisticsOrderPackBoxHistoryType.LoadManual
-                            || e.Type == LogisticsOrderPackBoxHistoryType.LoadScan
-                            || e.Type == LogisticsOrderPackBoxHistoryType.UnloadScan
-                            || e.Type == LogisticsOrderPackBoxHistoryType.UnloadManual))
+        model.ShipUserTimeList = packBoxList
+            .Where(e => e.ShipUser != null && e.ShipTime != null)
+            .Select(e => new UserTimeItem() {
+                User = e.ShipUser!,
+                Time = e.ShipTime!.Value,
+            })
             .ToList();
-
-        IList<LoadUnloadUserTime> loadUnloadUserTimeList = new List<LoadUnloadUserTime>();
-        packBoxIdList = packBoxIdList.OrderBy(e => e).ToList();
-        foreach (var packBoxId in packBoxIdList)
-        {
-            LoadUnloadUserTime loadUnloadUserTime = new LoadUnloadUserTime();
-
-            // load
-            var loadHistory = packBoxHistory.Where(e => e.OrderPackBox.Id == packBoxId
-                                                        && (e.Type == LogisticsOrderPackBoxHistoryType.LoadManual
-                                                            || e.Type == LogisticsOrderPackBoxHistoryType.LoadScan))
-                .Take(1).SingleOrDefault();
-
-            if (loadHistory != null)
-            {
-                loadUnloadUserTime.LoadUserTime = new UserTimeItem() {
-                    User = loadHistory.User,
-                    Time = loadHistory.CreateTime
-                };
-            }
-
-            // unload
-            var unloadHistory = packBoxHistory.Where(e => e.OrderPackBox.Id == packBoxId
-                                                          && (e.Type == LogisticsOrderPackBoxHistoryType.UnloadManual
-                                                              || e.Type == LogisticsOrderPackBoxHistoryType.UnloadScan))
-                .Take(1).SingleOrDefault();
-
-            if (unloadHistory != null)
-            {
-                loadUnloadUserTime.UnloadUserTime = new UserTimeItem() {
-                    User = unloadHistory.User,
-                    Time = unloadHistory.CreateTime
-                };
-            }
-
-            loadUnloadUserTimeList.Add(loadUnloadUserTime);
-        }
-
-        model.LoadUnloadUserTimeList = loadUnloadUserTimeList;
 
         return View("ExpressClaimDetail", model);
     }
