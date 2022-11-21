@@ -45,7 +45,7 @@
                     function() {
                         showMask("提交中...");
                         $.ajax({
-                            url: '@Url.Action("ForceDelete", "ExpressClaim")',
+                            url: '@Url.Action("ForceDelete", "Express")',
                             type: "POST",
                             data: { "idList": idList },
                             success: function(data) {
@@ -82,7 +82,7 @@
                     function() {
                         showMask("提交中...");
                         $.ajax({
-                            url: '@Url.Action("ThrowAway", "ExpressClaim")',
+                            url: '@Url.Action("ThrowAway", "Express")',
                             type: "POST",
                             data: { "idList": idList },
                             success: function(data) {
@@ -281,7 +281,7 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "ExpressClaim")",
+            url: "@Url.Action("List", "Express")",
             type: "POST",
             data: {
                 '@(nameof(ExpressListQueryParam.WarehouseIdQuery))': $('#warehouseIdQuery').val(),
@@ -351,7 +351,7 @@
         *@
         
         downLoadFile({
-            url: "@Url.Action("Export", "ExpressClaim")",
+            url: "@Url.Action("Export", "Express")",
             data: {
                 '@(nameof(ExpressListQueryParam.IdList))': idList,
                 '@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))': $('#checkinTrackingNoQuery').val(),
@@ -387,7 +387,7 @@
             function() {
                 showMask("提交中...");
                 $.ajax({
-                    url: '@Url.Action("Delete", "ExpressClaim")',
+                    url: '@Url.Action("Delete", "Express")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {
