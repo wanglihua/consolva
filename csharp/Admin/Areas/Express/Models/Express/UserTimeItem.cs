@@ -1,6 +1,6 @@
 using shunda.Domain.Pass;
 
-namespace shunda.Admin.Areas.Express.Models.ExpressClaim;
+namespace shunda.Admin.Areas.Express.Models.Express;
 
 /// <summary>
 /// 操作用户，操作时间 组合

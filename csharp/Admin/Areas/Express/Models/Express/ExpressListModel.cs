@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Express;
 
-namespace shunda.Admin.Areas.Express.Models.ExpressClaim;
+namespace shunda.Admin.Areas.Express.Models.Express;
 
-public class ExpressClaimListModel : ListModel
+public class ExpressListModel : ListModel
 {
-    public ExpressClaimListModel(ListPager listPager) : base(listPager)
+    public ExpressListModel(ListPager listPager) : base(listPager)
     {
     }
 

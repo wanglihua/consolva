@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Pass;
 using shunda.Domain.Storage;
 
-namespace shunda.Admin.Areas.Express.Models.ExpressClaim;
+namespace shunda.Admin.Areas.Express.Models.Express;
 
-public class ExpressClaimIndexModel
+public class ExpressIndexModel
 {
     [BindNever]
     public IList<WarehouseInfo> CnWarehouseList { get; set; } = new List<WarehouseInfo>();

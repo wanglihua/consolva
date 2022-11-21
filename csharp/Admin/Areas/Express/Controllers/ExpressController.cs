@@ -3,7 +3,7 @@ using NHibernate;
 using NHibernate.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using shunda.Admin.Areas.Express.Models.ExpressClaim;
+using shunda.Admin.Areas.Express.Models.Express;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -54,7 +54,7 @@ public class ExpressController : Controller
     [Route("/admin/express")]
     public IActionResult Index()
     {
-        ExpressClaimIndexModel model = new ExpressClaimIndexModel();
+        ExpressIndexModel model = new ExpressIndexModel();
 
         model.CnWarehouseList = session.Query<WarehouseInfo>()
             .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
@@ -73,7 +73,7 @@ public class ExpressController : Controller
 
         model.CanForceDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressForceDelete);
 
-        return View("ExpressClaimIndex", model);
+        return View("ExpressIndex", model);
     }
 
     [HttpPost]
@@ -85,10 +85,10 @@ public class ExpressController : Controller
 
         IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam, listPager);
 
-        ExpressClaimListModel model = new ExpressClaimListModel(listPager);
+        ExpressListModel model = new ExpressListModel(listPager);
         model.ExpressClaimList = expressList;
 
-        return View("ExpressClaimList", model);
+        return View("ExpressList", model);
     }
 
     [HttpGet]
@@ -120,7 +120,7 @@ public class ExpressController : Controller
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
-        ExpressClaimDetailModel model = new ExpressClaimDetailModel();
+        ExpressDetailModel model = new ExpressDetailModel();
         model.Express = express;
         model.AddUser = express.AddUser;
 
@@ -210,7 +210,7 @@ public class ExpressController : Controller
             })
             .ToList();
 
-        return View("ExpressClaimDetail", model);
+        return View("ExpressDetail", model);
     }
 
     [AdminAuth(PassRes.Express.ExpressServiceRemark)]
