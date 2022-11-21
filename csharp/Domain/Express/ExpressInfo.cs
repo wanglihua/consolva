@@ -304,6 +304,8 @@ public class ExpressInfo : Entity
 
     public virtual string CustomerCodeCache { get; set; } = string.Empty;
 
+    public virtual string OrderStatusNameCache { get; set; } = string.Empty;
+
     public virtual IList<ExpressSizeWeightInfo> ExpressSizeWeightListCache { get; set; } = new List<ExpressSizeWeightInfo>();
 
     public virtual IList<ExpressPhotoInfo> ExpressPhotoListCache { get; set; } = new List<ExpressPhotoInfo>();
@@ -313,6 +315,16 @@ public class ExpressInfo : Entity
     public virtual IList<ExpressRemarkInfo> ExpressRemarkListCache { get; set; } = new List<ExpressRemarkInfo>();
 
     public virtual string GoodsNamesCache { get; set; } = string.Empty;
+
+    public virtual string StorageLocNameCache { get; set; } = string.Empty;
+
+    public virtual string WarehouseNameCache { get; set; } = string.Empty;
+
+    public virtual string AddUserNameCache { get; set; } = string.Empty;
+
+    public virtual string OnShelfUserNameCache { get; set; } = string.Empty;
+
+    public virtual string OffShelfUserNameCache { get; set; } = string.Empty;
 
     #endregion
 }

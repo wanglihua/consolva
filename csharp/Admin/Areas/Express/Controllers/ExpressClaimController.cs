@@ -89,6 +89,17 @@ public class ExpressClaimController : Controller
 
         IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
         IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+        IList<int> orderIdList = expressList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().ToList();
+
+        List<int> userIdList = new List<int>();
+        userIdList.AddRange(expressList.Select(e => e.AddUser.Id));
+        userIdList.AddRange(expressList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser.Id));
+        userIdList.AddRange(expressList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser.Id));
+
+        var orderStatusNameList = session.Query<LogisticsOrderInfo>()
+            .Where(e => orderIdList.Contains(e.Id))
+            .Select(new {OrderId = e.Id, OrderStatusName = e.OrderStatus.Name})
+            .ToList();
 
         IList<ExpressExpectInfo> expressExpectList = session.Query<ExpressExpectInfo>()
             .Where(e => trackingNoList.Contains(e.TrackingNo))
@@ -107,12 +118,20 @@ public class ExpressClaimController : Controller
             .Where(e => expressIdList.Contains(e.Express!.Id))
             .ToList();
 
+        IList<UserInfo> userList = session.Query<UserInfo>().Where(e => userIdList.Contains(e.Id)).ToList();
+
         foreach (ExpressInfo express in expressList)
         {
             int expressId = express.Id;
             string trackingNo = express.TrackingNo;
+            int orderId = express.Order?.Id ?? 0;
 
             express.CustomerCodeCache = customerCodeService.GetCustomerCode(express.Customer?.Id ?? 0);
+
+            if(orderId != 0)
+            {
+                experss.OrderStatusName = orderStatusNameList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.OrderStatusName ?? string.Empty;
+            }
 
             express.ExpressExpectCache = expressExpectList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
 
@@ -123,6 +142,24 @@ public class ExpressClaimController : Controller
 
             express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.Express!.Id == expressId).ToList();
             express.ExpressRemarkListCache = expressRemarkList.Where(e => (e.Express?.Id ?? 0) == expressId).ToList();
+
+            int addUserId = express.AddUser.Id;
+            UserInfo? addUser = userList.Where(e => e.Id == addUserId).Take(1).SingleOrDefault();
+            experss.AddUserNameCache = addUser?.UserName ?? string.Empty;
+
+            if(express.OnShelfUser != null)
+            {
+                int onShelfUserId = express.OnShelfUser.Id;
+                UserInfo? onShelfUser = userList.Where(e => e.Id == onShelfUserId).Take(1).SingleOrDefault();
+                express.OnShelfUserNameCache = onShelfUser?.UserName ?? string.Empty;
+            }
+
+            if(express.OffShelfUser != null)
+            {
+                int offShelfUserId = express.OffShelfUser.Id;
+                UserInfo? offShelfUser = userList.Where(e => e.Id == OffShelfUserId).Take(1).SingleOrDefault();
+                express.OffShelfUserNameCache = offShelfUser?.UserName ?? string.Empty;
+            }
         }
 
         ExpressClaimListModel model = new ExpressClaimListModel(listPager);
@@ -305,21 +342,78 @@ public class ExpressClaimController : Controller
         IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam);
 
         IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
+        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+        IList<int> orderIdList = expressList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().ToList();
+
+        List<int> userIdList = new List<int>();
+        userIdList.AddRange(expressList.Select(e => e.AddUser.Id));
+        userIdList.AddRange(expressList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser.Id));
+        userIdList.AddRange(expressList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser.Id));
+
+        var orderStatusNameList = session.Query<LogisticsOrderInfo>()
+            .Where(e => orderIdList.Contains(e.Id))
+            .Select(new {OrderId = e.Id, OrderStatusName = e.OrderStatus.Name})
+            .ToList();
+
+        IList<ExpressExpectInfo> expressExpectList = session.Query<ExpressExpectInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
+            .ToList();
+
         IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Fetch(e => e.Goods)
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
 
+        IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();
+
+        IList<ExpressRemarkInfo> expressRemarkList = session.Query<ExpressRemarkInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();
+
+        IList<UserInfo> userList = session.Query<UserInfo>().Where(e => userIdList.Contains(e.Id)).ToList();
+
         foreach (ExpressInfo express in expressList)
         {
             int expressId = express.Id;
+            string trackingNo = express.TrackingNo;
+            int orderId = express.Order?.Id ?? 0;
 
             express.CustomerCodeCache = customerCodeService.GetCustomerCode(express.Customer?.Id ?? 0);
+
+            if(orderId != 0)
+            {
+                experss.OrderStatusName = orderStatusNameList.Where(e => e.OrderId == orderId).Take(1).SingleOrDefault()?.OrderStatusName ?? string.Empty;
+            }
+
+            express.ExpressExpectCache = expressExpectList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
 
             var goodsListForExpress = expressGoodsList
                 .Where(e => e.Express.Id == expressId)
                 .ToList();
             express.GoodsNamesCache = string.Join(",", goodsListForExpress.Select(e => e.Goods.Name).ToArray());
+
+            express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.Express!.Id == expressId).ToList();
+            express.ExpressRemarkListCache = expressRemarkList.Where(e => (e.Express?.Id ?? 0) == expressId).ToList();
+
+            int addUserId = express.AddUser.Id;
+            UserInfo? addUser = userList.Where(e => e.Id == addUserId).Take(1).SingleOrDefault();
+            experss.AddUserNameCache = addUser?.UserName ?? string.Empty;
+
+            if(express.OnShelfUser != null)
+            {
+                int onShelfUserId = express.OnShelfUser.Id;
+                UserInfo? onShelfUser = userList.Where(e => e.Id == onShelfUserId).Take(1).SingleOrDefault();
+                express.OnShelfUserNameCache = onShelfUser?.UserName ?? string.Empty;
+            }
+
+            if(express.OffShelfUser != null)
+            {
+                int offShelfUserId = express.OffShelfUser.Id;
+                UserInfo? offShelfUser = userList.Where(e => e.Id == OffShelfUserId).Take(1).SingleOrDefault();
+                express.OffShelfUserNameCache = offShelfUser?.UserName ?? string.Empty;
+            }
         }
 
         string fileName = $"快递单导出.xlsx";
@@ -580,7 +674,7 @@ public class ExpressClaimController : Controller
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.GoodsType?.Name ?? "");
+            cell.SetCellValue(cg.GoodsType.Name);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
@@ -702,6 +796,11 @@ public class ExpressClaimController : Controller
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(cg.OffShelfTime?.ToString("yyyy-MM-dd HH:mm") ?? "");
+
+            cell = row.CreateCell(cellIndex++);
+            cell.CellStyle = contentCenterCellStyle;
+            cell.SetCellType(CellType.String);
+            cell.SetCellValue(cg.ServiceRemark);            
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
