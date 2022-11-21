@@ -63,7 +63,7 @@
         <option value="">申请人查询</option>
         @foreach (var user in Model.ApplyUserList)
         {
-            <option value="@(user.Id)">@(user.LoginName)&nbsp;@(user.UserName)</option>
+            <option value="@(user.Id)">@(user.UserName)</option>
         }
     </select>
 

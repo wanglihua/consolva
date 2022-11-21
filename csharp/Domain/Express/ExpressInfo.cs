@@ -310,5 +310,7 @@ public class ExpressInfo : Entity
 
     public virtual ExpressExpectInfo? ExpressExpectCache { get; set; } = null;
 
+    public virtual IList<ExpressRemarkInfo> ExpressRemarkListCache { get; set; } = new List<ExpressRemarkInfo>();
+
     #endregion
 }

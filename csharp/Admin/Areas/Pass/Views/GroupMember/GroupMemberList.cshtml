@@ -36,8 +36,8 @@
                         <label for="groupMemberCheck_@(groupMember.Id)"></label><input id="groupMemberCheck_@(groupMember.Id)" type="checkbox" class="ace" value="@groupMember.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td>@groupMember.User?.LoginName</td>
-                    <td>@groupMember.User?.UserName</td>
+                    <td>@groupMember.User.LoginName</td>
+                    <td>@groupMember.User.UserName</td>
                     <td>@groupMember.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td></td>
                 </tr>

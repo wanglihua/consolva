@@ -117,10 +117,7 @@
             </th>
             <th style="width: 150px;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.ServiceRemark))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">客服备注</a>
-                </div>
-                <div>
-                    <a field="@(nameof(ExpressInfo.WarehouseRemark))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">仓库备注</a>
+                    <span>备注</span>
                 </div>
             </th>
             <th>
@@ -246,36 +243,31 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.RenderStringWithDiv(claimGoods.WarehouseNameCache)
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.Warehouse.Name)
                         </div>
                         <div style="color: blue;">
-                            @ListDataUtil.RenderStringWithDiv(claimGoods.StorageLocNameCache)
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.StorageLoc.GetFullName())
                         </div>
-                        <div>
-                            @ListDataUtil.Render(claimGoods.CheckinWarehouseNameCache)
-                        </div>
-                        <div style="color: blue;">
-                            @ListDataUtil.Render(claimGoods.CheckinStorageLocNameCache)
-                        </div>                        
-
                     </td>
                     <td style="text-align: center;">
-                        <div style="color: blue;">@claimGoods.AddUserNameCache</div>
+                        <div style="color: blue;">@claimGoods.AddUser.UserName</div>
                         <div>@claimGoods.AddTime.ToString("yyyy-MM-dd HH:mm")</div>
                     </td>
                     <td style="text-align: center;">
-                        <div style="color: blue;">@ListDataUtil.Render(claimGoods.OnShelfUserNameCache)</div>
+                        <div style="color: blue;">@ListDataUtil.Render(claimGoods.OnShelfUser?.UserName)</div>
                         <div>@ListDataUtil.Render(claimGoods.OnShelfTime)</div>
-                        <div style="color: blue;">@ListDataUtil.Render(claimGoods.OffShelfUserNameCache)</div>
+                        <div style="color: blue;">@ListDataUtil.Render(claimGoods.OffShelfUser?.UserName)</div>
                         <div>@ListDataUtil.Render(claimGoods.OffShelfTime)</div>
                     </td>
                     <td class="break-word">
-                        <div class="break-word">
-                            @claimGoods.ServiceRemark
-                        </div>
-                        <div class="break-word">
-                            @claimGoods.WarehouseRemark
-                        </div>
+                        @foreach (ExpressRemarkInfo remark in claimGoods.ExpressRemarkListCache)
+                        {
+                            <div class="break-word">
+                                <span>@(remark.Type.Name):</span>
+                                <span>@(remark.Remark)</span>
+                            </div>
+                        }
+
                     </td>
                     <td class="break-word">
                         @foreach (ExpressPhotoInfo photo in claimGoods.ExpressPhotoListCache)

@@ -64,7 +64,7 @@ public class ExpressSizeWeightController : Controller
 
         foreach (ExpressSizeWeightInfo child in expressSizeWeightChildList)
         {
-            child.VolumeWeightCache = child.Length * child.Width * child.Height / LogisticsConfig.VolumeWeightDenominator;
+            // child.VolumeWeightCache = child.Length * child.Width * child.Height / LogisticsConfig.VolumeWeightDenominator; 自动计算了
 
             if (child.Weight != 0)
             {
@@ -74,7 +74,7 @@ public class ExpressSizeWeightController : Controller
 
         foreach (ExpressSizeWeightInfo expressSizeWeight in expressSizeWeightList)
         {
-            expressSizeWeight.VolumeWeightCache = expressSizeWeight.Length * expressSizeWeight.Width * expressSizeWeight.Height / LogisticsConfig.VolumeWeightDenominator;
+            // expressSizeWeight.VolumeWeightCache = expressSizeWeight.Length * expressSizeWeight.Width * expressSizeWeight.Height / LogisticsConfig.VolumeWeightDenominator; 自动计算了
 
             if (expressSizeWeight.Weight != 0)
             {

@@ -133,7 +133,7 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                          <div style="color: #08008c;">
-                            @(feeRefundApply.ApplyUser?.LoginName)<span>&nbsp;</span>@(feeRefundApply.ApplyUser?.UserName)
+                            @(feeRefundApply.ApplyUser?.UserName)
                         </div>
                         <div>
                             @ListDataUtil.RenderDateTimeWithDiv(feeRefundApply.ApplyTime)
@@ -143,8 +143,6 @@
                         <div style="color: #08008c;">
                             @if (feeRefundApply.ApproveUser != null)
                             {
-                                @(feeRefundApply.ApproveUser?.LoginName)
-                                <span>&nbsp;</span>
                                 @(feeRefundApply.ApproveUser?.UserName)
                             }
                             else

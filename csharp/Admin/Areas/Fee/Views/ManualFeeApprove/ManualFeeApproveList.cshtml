@@ -106,13 +106,11 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            @(manualFeeApply.ApplyUser?.LoginName)&nbsp;@(manualFeeApply.ApplyUser?.UserName)
+                            @(manualFeeApply.ApplyUser?.UserName)
                         </div>
                         <div style="color: #08008c;">
                             @if (manualFeeApply.ApproveUser != null)
                             {
-                                @(manualFeeApply.ApproveUser?.LoginName)
-                                <span>&nbsp;</span>
                                 @(manualFeeApply.ApproveUser?.UserName)
                             }
                             else

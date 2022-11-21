@@ -191,7 +191,7 @@
         <option value="">入库人员查询</option>
         @foreach (UserInfo user in Model.CheckinUserList)
         {
-            <option value="@(user.Id)">@(user.LoginName)(@(user.UserName))</option>
+            <option value="@(user.Id)">@(user.UserName)</option>
         }
     </select>
 

@@ -6,6 +6,7 @@ using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Express.Models.ExpressClaim;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -271,9 +272,10 @@ public class ExpressClaimController : Controller
         return View("ExpressClaimDetail", model);
     }
 
-    [AdminAuth(PassRes.Express.ExpressCustomerServiceRemark)]
+    [AdminAuth(PassRes.Express.ExpressServiceRemark)]
     [HttpPost]
     [Route("/admin/express/claim/detail/save/customer/service/remark")]
+    [Transactional]
     public IActionResult SaveExpressCustomerServiceRemark(int claimId, string serviceRemark)
     {
         ExpressInfo express = session.Get<ExpressInfo>(claimId);
@@ -307,7 +309,6 @@ public class ExpressClaimController : Controller
 
     [HttpPost]
     [Route("/admin/express/claim/export")]
-    [NoHibernateAutoTransaction]
     public IActionResult Export(ExpressListQueryParam queryParam)
     {
         int totalCount = expressListService.Count(ExpressListMenuCate.All, queryParam);

@@ -314,7 +314,7 @@
                                             <div class="form-group">
                                                 <label for="pack_user_@(seq)" class="col-xs-4 control-label">打包人员@(seq == 1 ? "" : seq.ToString())</label>
                                                 <div class="col-xs-8">
-                                                    <input id="pack_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(userTime?.User?.LoginName)"/>
+                                                    <input id="pack_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(userTime.User.UserName)"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -344,7 +344,7 @@
                                             <div class="form-group">
                                                 <label for="load_user_@(seq)" class="col-xs-4 control-label">装箱人员@(seq == 1 ? "" : seq.ToString())</label>
                                                 <div class="col-xs-8">
-                                                    <input id="load_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(loadUnloadUserTime?.LoadUserTime?.User?.LoginName)"/>
+                                                    <input id="load_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(loadUnloadUserTime?.LoadUserTime.User.UserName)"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -362,7 +362,7 @@
                                             <div class="form-group">
                                                 <label for="unload_user_@(seq)" class="col-xs-4 control-label">卸货人员@(seq == 1 ? "" : seq.ToString())</label>
                                                 <div class="col-xs-8">
-                                                    <input id="unload_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(loadUnloadUserTime?.UnloadUserTime?.User?.LoginName)"/>
+                                                    <input id="unload_user_@(seq)" type="text" disabled="disabled" class="input-sm form-control" value="@(loadUnloadUserTime?.UnloadUserTime.User.UserName)"/>
                                                 </div>
                                             </div>
                                         </div>
