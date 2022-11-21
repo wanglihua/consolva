@@ -121,7 +121,7 @@ public class ExpressClaimController : Controller
         }
 
         ExpressClaimDetailModel model = new ExpressClaimDetailModel();
-        model.ClaimGoods = express;
+        model.Express = express;
         model.AddUser = express.AddUser;
 
         model.Cate = ExpressListMenuCate.GetById(cateId);
@@ -143,7 +143,7 @@ public class ExpressClaimController : Controller
         {
         }
 
-        model.EntryList = expressGoodsList;
+        model.ExpressGoodsList = expressGoodsList;
 
         NHibernateUtil.Initialize(express.Order);
 
@@ -156,14 +156,14 @@ public class ExpressClaimController : Controller
             .SingleOrDefault();
         model.ExpressExpect = expressExpect;
 
-        model.ExpressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNo);
+        model.ExpressSizeWeightList = expressSizeWeightService.GetExpressSizeWeightList(trackingNo);
 
-        model.OrderPhotoList = session.Query<ExpressPhotoInfo>()
+        model.ExpressPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .OrderBy(e => e.Type)
             .ToList();
 
-        foreach (ExpressPhotoInfo orderPhoto in model.OrderPhotoList)
+        foreach (ExpressPhotoInfo orderPhoto in model.ExpressPhotoList)
         {
             orderPhoto.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
             orderPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);

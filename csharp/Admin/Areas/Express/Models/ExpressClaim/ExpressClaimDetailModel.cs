@@ -10,7 +10,7 @@ public class ExpressClaimDetailModel
 {
     public ExpressListMenuCate Cate { get; set; } = ExpressListMenuCate.None;
 
-    public ExpressInfo ClaimGoods { get; set; } = new ExpressInfo(); // todo a 改名
+    public ExpressInfo Express { get; set; } = new ExpressInfo();
 
     public UserInfo AddUser { get; set; } = new UserInfo();
 
@@ -20,11 +20,11 @@ public class ExpressClaimDetailModel
 
     public LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
-    public IList<ExpressGoodsInfo> EntryList { get; set; } = new List<ExpressGoodsInfo>();
+    public IList<ExpressGoodsInfo> ExpressGoodsList { get; set; } = new List<ExpressGoodsInfo>();
 
-    public IList<ExpressSizeWeightInfo> ExpressItemList { get; set; } = new List<ExpressSizeWeightInfo>(); // todo a 改名
+    public IList<ExpressSizeWeightInfo> ExpressSizeWeightList { get; set; } = new List<ExpressSizeWeightInfo>();
 
-    public IList<ExpressPhotoInfo> OrderPhotoList { get; set; } = new List<ExpressPhotoInfo>();
+    public IList<ExpressPhotoInfo> ExpressPhotoList { get; set; } = new List<ExpressPhotoInfo>();
 
     public IList<ExpressLogInfo> ExpressLogList { get; set; } = new List<ExpressLogInfo>();
 

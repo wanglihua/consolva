@@ -71,12 +71,12 @@
     <li>
         <span>快递单号</span>
         <span>
-            @(Model.ClaimGoods?.TrackingNo ?? string.Empty)
+            @(Model.Express.TrackingNo)
         </span>
         <span>&nbsp;</span>
         <span>入库号跟踪号</span>
         <span>
-            @(Model.ClaimGoods?.CheckinTrackingNo ?? string.Empty)
+            @(Model.Express.CheckinTrackingNo)
         </span>
     </li>
 }
@@ -117,36 +117,36 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.CheckinTrackingNo" class="col-xs-4 control-label">澳拼入库号</label>
+                                        <label asp-for="Express.CheckinTrackingNo" class="col-xs-4 control-label">澳拼入库号</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.CheckinTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.CheckinTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.TrackingNo" class="col-xs-4 control-label">快递单号</label>
+                                        <label asp-for="Express.TrackingNo" class="col-xs-4 control-label">快递单号</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.TrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.TrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ExpressCompany" class="col-xs-4 control-label">快递公司</label>
+                                        <label asp-for="Express.ExpressCompany" class="col-xs-4 control-label">快递公司</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ExpressCompany" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ExpressCompany" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.Status.Name" class="col-xs-4 control-label">状态</label>
+                                        <label asp-for="Express.Status.Name" class="col-xs-4 control-label">状态</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.Status.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.Status.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -156,18 +156,18 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.PackageCount" class="col-xs-4 control-label">包裹数量</label>
+                                        <label asp-for="Express.PackageCount" class="col-xs-4 control-label">包裹数量</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.PackageCount" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.PackageCount" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.BillCustomerCode" class="col-xs-4 control-label">面单客户</label>
+                                        <label asp-for="Express.BillCustomerCode" class="col-xs-4 control-label">面单客户</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.BillCustomerCode" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.BillCustomerCode" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -192,9 +192,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ShelfStatus.Name" class="col-xs-4 control-label">上架状态</label>
+                                        <label asp-for="Express.ShelfStatus.Name" class="col-xs-4 control-label">上架状态</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ShelfStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ShelfStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -214,9 +214,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.AddTime" class="col-xs-4 control-label">入库时间</label>
+                                        <label asp-for="Express.AddTime" class="col-xs-4 control-label">入库时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.AddTime" type="text" value="@(Model.ClaimGoods.AddTime.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.AddTime" type="text" value="@(Model.Express.AddTime.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -227,36 +227,36 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.OnShelfUser!.UserName" class="col-xs-4 control-label">上架人员</label>
+                                        <label asp-for="Express.OnShelfUser!.UserName" class="col-xs-4 control-label">上架人员</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.OnShelfUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.OnShelfUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.OnShelfTime" class="col-xs-4 control-label">上架时间</label>
+                                        <label asp-for="Express.OnShelfTime" class="col-xs-4 control-label">上架时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.OnShelfTime" type="text" value="@(Model.ClaimGoods.OnShelfTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.OnShelfTime" type="text" value="@(Model.Express.OnShelfTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.OffShelfUser!.UserName" class="col-xs-4 control-label">下架人员</label>
+                                        <label asp-for="Express.OffShelfUser!.UserName" class="col-xs-4 control-label">下架人员</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.OffShelfUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.OffShelfUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.OffShelfTime" class="col-xs-4 control-label">下架时间</label>
+                                        <label asp-for="Express.OffShelfTime" class="col-xs-4 control-label">下架时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.OffShelfTime" type="text" value="@(Model.ClaimGoods.OffShelfTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.OffShelfTime" type="text" value="@(Model.Express.OffShelfTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -267,18 +267,18 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.PackingUser!.UserName" class="col-xs-4 control-label">入流动仓人员</label>
+                                        <label asp-for="Express.PackingUser!.UserName" class="col-xs-4 control-label">入流动仓人员</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.PackingUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.PackingUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.PackingTime" class="col-xs-4 control-label">入流动仓时间</label>
+                                        <label asp-for="Express.PackingTime" class="col-xs-4 control-label">入流动仓时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.PackingTime" type="text" value="@(Model.ClaimGoods.PackingTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.PackingTime" type="text" value="@(Model.Express.PackingTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -369,26 +369,26 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ClaimTime" class="col-xs-4 control-label">认领时间</label>
+                                        <label asp-for="Express.ClaimTime" class="col-xs-4 control-label">认领时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ClaimTime" type="text" value="@(Model.ClaimGoods.ClaimTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ClaimTime" type="text" value="@(Model.Express.ClaimTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.Order!.Code" class="col-xs-4 control-label">所在订单</label>
+                                        <label asp-for="Express.Order!.Code" class="col-xs-4 control-label">所在订单</label>
                                         <div class="col-xs-8">
-                                            @if (Model.ClaimGoods.Order != null)
+                                            @if (Model.Express.Order != null)
                                             {
                                                 <label class="control-label">
-                                                    <a href="@Url.Action("Detail", "LogisticsOrder", new { id = Model.ClaimGoods.Order?.Id ?? 0 })" target="_blank">@(Model.ClaimGoods.Order?.Code)</a>
+                                                    <a href="@Url.Action("Detail", "LogisticsOrder", new { id = Model.Express.Order?.Id ?? 0 })" target="_blank">@(Model.Express.Order?.Code)</a>
                                                 </label>
                                             }
                                             else
                                             {
-                                                <input asp-for="ClaimGoods.Order!.Code" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="Express.Order!.Code" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
                                     </div>
@@ -396,9 +396,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.Order!.OrderStatus.Name" class="col-xs-4 control-label">订单状态</label>
+                                        <label asp-for="Express.Order!.OrderStatus.Name" class="col-xs-4 control-label">订单状态</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.Order!.OrderStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.Order!.OrderStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -408,9 +408,9 @@
 
                                 <div class="col-xs-12">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.Description" class="col-xs-1 control-label">申领件描述</label>
+                                        <label asp-for="Express.Description" class="col-xs-1 control-label">申领件描述</label>
                                         <div class="col-xs-11">
-                                            <textarea asp-for="ClaimGoods.Description" rows="1" disabled="disabled" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Express.Description" rows="1" disabled="disabled" class="input-sm form-control"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -464,7 +464,7 @@
                                             url: "@Url.Action("SaveExpressCustomerServiceRemark", "ExpressClaim")",
                                             type: "POST",
                                             data: {
-                                                'claimId': @(Model.ClaimGoods.Id),
+                                                'claimId': @(Model.Express.Id),
                                                 'serviceRemark': $('#serviceRemark').val()
                                             },
                                             success: function(data) {
@@ -508,7 +508,7 @@
                                                             url: '@Url.Action("GetPrintDataById", "LogisticsExpressCheckin")',
                                                             type: "POST",
                                                             data: {
-                                                                "claimId": "@(Model.ClaimGoods.Id)"
+                                                                "claimId": "@(Model.Express.Id)"
                                                             },
                                                             success: function(data) {
                                                                 hideMask();
@@ -529,7 +529,7 @@
                                                             url: '@Url.Action("GetPrintDataById", "LogisticsExpressCheckin")',
                                                             type: "POST",
                                                             data: {
-                                                                "claimId": "@(Model.ClaimGoods.Id)"
+                                                                "claimId": "@(Model.Express.Id)"
                                                             },
                                                             success: function(data) {
                                                                 hideMask();
@@ -550,7 +550,7 @@
                                                             url: '@Url.Action("GetPrintDataById", "LogisticsExpressCheckin")',
                                                             type: "POST",
                                                             data: {
-                                                                "claimId": "@(Model.ClaimGoods.Id)"
+                                                                "claimId": "@(Model.Express.Id)"
                                                             },
                                                             success: function(data) {
                                                                 hideMask();
@@ -600,45 +600,45 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ReturnPickupCode" class="col-xs-4 control-label" style="color: blue;">退运取货码</label>
+                                        <label asp-for="Express.ReturnPickupCode" class="col-xs-4 control-label" style="color: blue;">退运取货码</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ReturnPickupCode" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ReturnPickupCode" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ReturnApplyTime" class="col-xs-4 control-label">退运申请时间</label>
+                                        <label asp-for="Express.ReturnApplyTime" class="col-xs-4 control-label">退运申请时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ReturnApplyTime" type="text" value="@(Model.ClaimGoods.ReturnApplyTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ReturnApplyTime" type="text" value="@(Model.Express.ReturnApplyTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ReturnTime" class="col-xs-4 control-label">实际退运时间</label>
+                                        <label asp-for="Express.ReturnTime" class="col-xs-4 control-label">实际退运时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ReturnTime" type="text" value="@(Model.ClaimGoods.ReturnTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ReturnTime" type="text" value="@(Model.Express.ReturnTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ReturnTrackingNo" class="col-xs-4 control-label">退运快递单号</label>
+                                        <label asp-for="Express.ReturnTrackingNo" class="col-xs-4 control-label">退运快递单号</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ReturnTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ReturnTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.ReturnExpressCompany" class="col-xs-4 control-label">退运快递公司</label>
+                                        <label asp-for="Express.ReturnExpressCompany" class="col-xs-4 control-label">退运快递公司</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ReturnExpressCompany" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Express.ReturnExpressCompany" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -677,10 +677,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model.EntryList != null && Model.EntryList.Count() != 0)
+                                    @if (Model.ExpressGoodsList != null && Model.ExpressGoodsList.Count() != 0)
                                     {
                                         int order = 1;
-                                        foreach (ExpressGoodsInfo item in Model.EntryList)
+                                        foreach (ExpressGoodsInfo item in Model.ExpressGoodsList)
                                         {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
@@ -762,10 +762,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model.ExpressItemList != null && Model.ExpressItemList.Count() != 0)
+                                    @if (Model.ExpressSizeWeightList != null && Model.ExpressSizeWeightList.Count() != 0)
                                     {
                                         int order = 1;
-                                        foreach (ExpressSizeWeightInfo item in Model.ExpressItemList)
+                                        foreach (ExpressSizeWeightInfo item in Model.ExpressSizeWeightList)
                                         {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
@@ -806,10 +806,10 @@
                         </div>
                         <div id="panelPhoto" style="display: block;">
                             @{
-                                IList<ExpressPhotoType> photoTypeList = Model.OrderPhotoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
+                                IList<ExpressPhotoType> photoTypeList = Model.ExpressPhotoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
                             }
 
-                            @if (Model.OrderPhotoList != null && Model.OrderPhotoList.Count() != 0)
+                            @if (Model.ExpressPhotoList != null && Model.ExpressPhotoList.Count() != 0)
                             {
                                 <ul id="orderPhotoList" class="nav nav-tabs">
                                     @{
@@ -852,7 +852,7 @@
                                             <div id="photoTab_@(photoType.Id)" class="tab-pane fade @(activeClass)">
 
                                                 @{
-                                                    IList<ExpressPhotoInfo> typePhotoList = Model.OrderPhotoList.Where(e => e.Type.Id == photoType.Id).ToList();
+                                                    IList<ExpressPhotoInfo> typePhotoList = Model.ExpressPhotoList.Where(e => e.Type.Id == photoType.Id).ToList();
 
                                                     foreach (ExpressPhotoInfo expressPhoto in typePhotoList)
                                                     {
