@@ -17,6 +17,7 @@ using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service;
+using shunda.Service.Customer;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
@@ -29,23 +30,26 @@ namespace shunda.Admin.Areas.Express.Controllers;
 [AdminAuth(PassRes.Express.ExpressList)]
 public class ExpressClaimController : Controller
 {
-    private ISession session;
-    private ExpressListService expressListService;
-    private ExpressSizeWeightService expressSizeWeightService;
-    private ExpressPhotoFileService expressPhotoFileService;
-    private LoginUserService loginUserService;
+    private readonly ISession session;
+    private readonly ExpressListService expressListService;
+    private readonly ExpressSizeWeightService expressSizeWeightService;
+    private readonly ExpressPhotoFileService expressPhotoFileService;
+    private readonly LoginUserService loginUserService;
+    private readonly CustomerCodeService customerCodeService;
 
     public ExpressClaimController(ISession session,
         ExpressListService expressListService,
         ExpressSizeWeightService expressSizeWeightService,
         ExpressPhotoFileService expressPhotoFileService,
-        LoginUserService loginUserService)
+        LoginUserService loginUserService,
+        CustomerCodeService customerCodeService)
     {
         this.session = session;
         this.expressListService = expressListService;
         this.expressSizeWeightService = expressSizeWeightService;
         this.expressPhotoFileService = expressPhotoFileService;
         this.loginUserService = loginUserService;
+        this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
@@ -84,21 +88,41 @@ public class ExpressClaimController : Controller
         IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam, listPager);
 
         IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
+        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+
+        IList<ExpressExpectInfo> expressExpectList = session.Query<ExpressExpectInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
+            .ToList();
+
         IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
-        IList<int> goodsIdList = expressGoodsList.Select(e => e.Goods.Id).Distinct().ToList();
-        IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
+
+        IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();
+
+        IList<ExpressRemarkInfo> expressRemarkList = session.Query<ExpressRemarkInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();
 
         foreach (ExpressInfo express in expressList)
         {
             int expressId = express.Id;
-            IList<int> goodsIdListForExpress = expressGoodsList
+            string trackingNo = express.TrackingNo;
+
+            express.CustomerCodeCache = customerCodeService.GetCustomerCode(express.Customer?.Id ?? 0);
+
+            express.ExpressExpectCache = expressExpectList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
+
+            var goodsListForExpress = expressGoodsList
                 .Where(e => e.Express.Id == expressId)
-                .Select(e => e.Goods.Id)
-                .Distinct()
                 .ToList();
-            express.GoodsNamesCache = string.Join(",", goodsList.Where(e => goodsIdListForExpress.Contains(e.Id)).Select(e => e.Name).ToArray());
+            express.GoodsNamesCache = string.Join(",", goodsListForExpress.Select(e => e.Goods.Name).ToArray());
+
+            express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.Express!.Id == expressId).ToList();
+            express.ExpressRemarkListCache = expressRemarkList.Where(e => (e.Express?.Id ?? 0) == expressId).ToList();
         }
 
         ExpressClaimListModel model = new ExpressClaimListModel(listPager);
@@ -225,12 +249,12 @@ public class ExpressClaimController : Controller
     [HttpPost]
     [Route("/admin/express/claim/detail/save/customer/service/remark")]
     [Transactional]
-    public IActionResult SaveExpressCustomerServiceRemark(int claimId, string serviceRemark)
+    public IActionResult SaveExpressCustomerServiceRemark(int expressId, string serviceRemark)
     {
-        ExpressInfo express = session.Get<ExpressInfo>(claimId);
+        ExpressInfo express = session.Get<ExpressInfo>(expressId);
         if (express == null)
         {
-            throw new ValidationException("指定的快递单申领件不存在！");
+            throw new ValidationException("指定的快递单不存在！");
         }
 
         // todo 是不是要判断状态，某些状态下不能保存这个客服备注
@@ -241,13 +265,25 @@ public class ExpressClaimController : Controller
             serviceRemark = string.Empty;
         }
 
-        if (serviceRemark.Length > 500)
+        if (serviceRemark.Length > 300)
         {
             throw new ValidationException("客服备注不能超过500个字符！");
         }
 
-        express.ServiceRemark = serviceRemark;
-        session.Update(express);
+        var expressServiceRemark = session.Query<ExpressRemarkInfo>()
+            .Where(e => e.Express!.Id == expressId && e.Type == ExpressRemarkType.Service)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (expressServiceRemark == null)
+        {
+            expressServiceRemark = new ExpressRemarkInfo();
+            expressServiceRemark.Type = ExpressRemarkType.Service;
+        }
+
+        expressServiceRemark.Remark = serviceRemark;
+
+        session.SaveOrUpdate(expressServiceRemark);
         session.Flush();
 
         return Json(new Dictionary<string, object>() {
@@ -266,23 +302,24 @@ public class ExpressClaimController : Controller
             throw new ValidationException("导出的快递单号太多了，请缩小查询条件！");
         }
 
-        IList<ExpressInfo> expressClaimList = expressListService.List(ExpressListMenuCate.All, queryParam);
+        IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam);
 
-        IList<int> expressIdList = expressClaimList.Select(e => e.Id).ToList();
+        IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
         IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Where(e => expressIdList.Contains(e.ClaimId))
+            .Fetch(e => e.Goods)
+            .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
-        IList<int> goodsIdList = expressGoodsList.Select(e => e.GoodsId).Distinct().ToList();
-        IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
 
-        foreach (ExpressInfo express in expressClaimList)
+        foreach (ExpressInfo express in expressList)
         {
-            IList<int> goodsIdListForClaim = expressGoodsList
-                .Where(e => e.ClaimId == express.Id)
-                .Select(e => e.GoodsId)
-                .Distinct()
+            int expressId = express.Id;
+
+            express.CustomerCodeCache = customerCodeService.GetCustomerCode(express.Customer?.Id ?? 0);
+
+            var goodsListForExpress = expressGoodsList
+                .Where(e => e.Express.Id == expressId)
                 .ToList();
-            express.GoodsNamesCache = string.Join(",", goodsList.Where(e => goodsIdListForClaim.Contains(e.Id)).Select(e => e.Name).ToArray());
+            express.GoodsNamesCache = string.Join(",", goodsListForExpress.Select(e => e.Goods.Name).ToArray());
         }
 
         string fileName = $"快递单导出.xlsx";
@@ -504,6 +541,12 @@ public class ExpressClaimController : Controller
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
+        cell.SetCellValue("客户备注");        
+
+        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        cell = row.CreateCell(cellIndex++);
+        cell.CellStyle = headerCenterCellStyle;
+        cell.SetCellType(CellType.String);
         cell.SetCellValue("客服备注");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
@@ -512,7 +555,7 @@ public class ExpressClaimController : Controller
         cell.SetCellType(CellType.String);
         cell.SetCellValue("仓库备注");
 
-        foreach (ExpressInfo cg in expressClaimList)
+        foreach (ExpressInfo cg in expressList)
         {
             row = sheet.CreateRow(rowIndex++);
             row.HeightInPoints = rowHeight;
@@ -522,7 +565,7 @@ public class ExpressClaimController : Controller
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.AoPinTrackingNo);
+            cell.SetCellValue(cg.CheckinTrackingNo);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
@@ -547,32 +590,32 @@ public class ExpressClaimController : Controller
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.OrderCodeCache);
+            cell.SetCellValue(cg.OrderCode);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.OrderStatusNameCache);
+            cell.SetCellValue(cg.Order?.OrderStatus.Name ?? string.Empty);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(string.Join(",", cg.ExpressItemListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}")));
+            cell.SetCellValue(string.Join(",", cg.ExpressSizeWeightListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}")));
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(string.Join(",", cg.ExpressItemListCache.Select(e => $"{e.SingleVolumeWeight}")));
+            cell.SetCellValue(string.Join(",", cg.ExpressSizeWeightListCache.Select(e => $"{e.VolumeWeightCache}")));
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(string.Join(",", cg.ExpressItemListCache.Select(e => $"{e.SingleWeight}")));
+            cell.SetCellValue(string.Join(",", cg.ExpressSizeWeightListCache.Select(e => $"{e.Weight}")));
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = precision0Style;
             cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(cg.ExpressPackageCount);
+            cell.SetCellValue(cg.PackageCount);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
@@ -580,7 +623,7 @@ public class ExpressClaimController : Controller
             cell.SetCellValue(cg.BillCustomerCode);
 
             string expectStr = "";
-            if (cg.HasExpectCache)
+            if (cg.ExpressExpectCache != null)
             {
                 expectStr = "有预报";
             }
@@ -602,12 +645,12 @@ public class ExpressClaimController : Controller
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.CustomerNameCache);
+            cell.SetCellValue(cg.CustomerCodeCache);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.PickTime?.ToString("yyyy-MM-dd HH:mm") ?? "");
+            cell.SetCellValue(cg.ClaimTime?.ToString("yyyy-MM-dd HH:mm") ?? "");
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
@@ -629,15 +672,6 @@ public class ExpressClaimController : Controller
             cell.SetCellType(CellType.String);
             cell.SetCellValue(cg.StorageLocNameCache);
 
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.CheckinWarehouseNameCache);
-
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(cg.CheckinStorageLocNameCache);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
@@ -648,36 +682,6 @@ public class ExpressClaimController : Controller
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(cg.AddTime.ToString("yyyy-MM-dd HH:mm"));
-
-            string woodFrameStr = "";
-            if (cg.WoodFrameFinal)
-            {
-                woodFrameStr = "要打木架";
-            }
-            else
-            {
-                woodFrameStr = "不打木架";
-            }
-
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(woodFrameStr);
-
-            string barkCleanStr = "";
-            if (cg.BarkCleanFinal)
-            {
-                barkCleanStr = "要清理树皮";
-            }
-            else
-            {
-                barkCleanStr = "不清理树皮";
-            }
-
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(barkCleanStr);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
