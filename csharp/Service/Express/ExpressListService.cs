@@ -65,99 +65,81 @@ public class ExpressListService
 
         IList<ExpressInfo> expressList = criteria.List<ExpressInfo>();
 
-        List<int> userIdList = expressList.Select(e => e.AddUser.Id).Distinct().ToList();
-        userIdList.AddRange(expressList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser!.Id).Distinct().ToList());
-        userIdList.AddRange(expressList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser!.Id).Distinct().ToList());
-        userIdList.AddRange(expressList.Where(e => e.PackingUser != null).Select(e => e.PackingUser!.Id).Distinct().ToList());
-        userIdList.AddRange(expressList.Where(e => e.DumpUser != null).Select(e => e.DumpUser!.Id).Distinct().ToList());
+        IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
+        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+        IList<int> orderIdList = expressList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().ToList();
+        IList<int> firstModeIdList = expressList.Where(e => e.FirstMode != null).Select(e => e.FirstMode!.Id).Distinct().ToList();
+        IList<int> warehouseIdList = expressList.Select(e => e.Warehouse.Id).Distinct().ToList();
+
+        List<int> userIdList = expressList.Select(e => e.AddUser.Id).ToList();
+        userIdList.AddRange(expressList.Where(e => e.OnShelfUser != null).Select(e => e.OnShelfUser!.Id));
+        userIdList.AddRange(expressList.Where(e => e.OffShelfUser != null).Select(e => e.OffShelfUser!.Id));
+        userIdList.AddRange(expressList.Where(e => e.PackingUser != null).Select(e => e.PackingUser!.Id));
+        userIdList.AddRange(expressList.Where(e => e.DumpUser != null).Select(e => e.DumpUser!.Id));
         userIdList = userIdList.Distinct().ToList();
 
-        IList<int> customerIdList = expressList.Where(e => e.Customer != null).Select(e => e.Customer!.Id).Distinct().ToList();
-        IList<int> orderIdList = expressList.Where(e => e.Order != null).Select(e => e.Order!.Id).Distinct().ToList();
 
         List<int> storageLocIdList = expressList.Select(e => e.StorageLoc.Id).Distinct().ToList();
-        // storageLocIdList.AddRange(expressList.Where(e => e.CheckinStorageLoc != null).Select(e => e.CheckinStorageLoc.Id).Distinct().ToList());
         storageLocIdList = storageLocIdList.Distinct().ToList();
 
-        // 相当于是做了预加载
+        // 预加载
         IList<UserInfo> userList = session.Query<UserInfo>().Where(e => e.LoginName != UserInfo.DevLoginName && userIdList.Contains(e.Id)).ToList();
-        IList<CustomerInfo> customerList = session.Query<CustomerInfo>().Where(e => customerIdList.Contains(e.Id)).ToList();
-        IList<LogisticsOrderInfo> orderList = session.Query<LogisticsOrderInfo>().Where(e => orderIdList.Contains(e.Id)).ToList();
+
+        // 预加载
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>().Fetch(e => e.Spec).Fetch(e => e.Shelf).Where(e => storageLocIdList.Contains(e.Id)).ToList();
-        IList<WarehouseInfo> warehouseList = session.Query<WarehouseInfo>().ToList(); // 所有的吧，总共也没多少。有些仓库，当前是禁用了，但之前存储的确实是这个禁用的值。
-        IList<LogisticsModeInfo> modeList = session.Query<LogisticsModeInfo>()
-            .Where(e => e.Status == LogisticsModeStatus.Enabled || e.InnerStatus == LogisticsModeStatus.Enabled) // 只取当前活跃的物流方式
+
+        // 预加载
+        IList<WarehouseInfo> warehouseList = session.Query<WarehouseInfo>()
+            .Where(e => warehouseIdList.Contains(e.Id))
             .ToList();
 
-        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
-        IList<ExpressSizeWeightInfo> expressItemList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
+        // 预加载
+        IList<LogisticsModeInfo> modeList = session.Query<LogisticsModeInfo>()
+            .Where(e => firstModeIdList.Contains(e.Id))
+            .ToList();
+
+        // 订单字段比较多，这里只取 order status
+        var orderStatusNameList = session.Query<LogisticsOrderInfo>()
+            .Where(e => orderIdList.Contains(e.Id))
+            .Select(e => new { OrderId = e.Id, OrderStatusName = e.OrderStatus.Name })
+            .ToList();
+
+        IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();
 
         IList<ExpressExpectInfo> expressExpectList = session.Query<ExpressExpectInfo>()
-            .Fetch(e => e.Customer)
             .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
+
+        IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+
+        IList<ExpressRemarkInfo> expressRemarkList = session.Query<ExpressRemarkInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();        
 
         IList<ExpressPhotoInfo> expressPhotoList = expressPhotoService.GetExpressPhotoList(trackingNoList);
 
         foreach (ExpressInfo express in expressList)
         {
+            int expressId = express.Id;
+            string trackingNo = express.TrackingNo;
+            
             express.CustomerCodeCache = customerCodeService.GetCustomerCode(express.Customer?.Id ?? 0);
 
-            /*
-             这里有些预加载了就可以了，不用设置 cache成员
-            UserInfo addUser = userList.Where(e => e.Id == express.AddUser.Id).Take(1).SingleOrDefault();
-            express.AddUserNameCache = addUser?.UserName;
-
-            // on shelf user, off shelf user，packing user 不采用关联表的方式
-            int onShelfUserId = express.OnShelfUser?.Id ?? 0;
-            UserInfo onShelfUser = userList.Where(e => e.Id == onShelfUserId).Take(1).SingleOrDefault();
-            express.OnShelfUserNameCache = onShelfUser?.UserName;
-
-            int offShelfUserId = express.OffShelfUser?.Id ?? 0;
-            UserInfo offShelfUser = userList.Where(e => e.Id == offShelfUserId).Take(1).SingleOrDefault();
-            express.OffShelfUserNameCache = offShelfUser?.UserName;
-
-            int packingUserId = express.PackingUser?.Id ?? 0;
-            UserInfo packingUser = userList.Where(e => e.Id == packingUserId).Take(1).SingleOrDefault();
-            express.PackingUserNamCache = packingUser?.UserName;
-
-            int dumpUserId = express.DumpUser?.Id ?? 0;
-            UserInfo dumpUser = userList.Where(e => e.Id == dumpUserId).Take(1).SingleOrDefault();
-            express.DumpUserNameCache = dumpUser?.UserName;
-
-            CustomerInfo customer = customerList.Where(e => e.Id == express.CustomerId).Take(1).SingleOrDefault();
-            express.CustomerNameCache = customer?.CustomerCode;
-
-            LogisticsOrderInfo order = orderList.Where(e => e.Id == (express.Order?.Id ?? 0)).Take(1).SingleOrDefault();
-            express.OrderCodeCache = order?.Code;
-            express.OrderStatusNameCache = order?.OrderStatus?.Name;
-            express.orderTargetWarehouseNameCache = warehouseList.Where(e => e.Id == (order?.TargetWarehouse?.Id ?? 0)).Take(1).SingleOrDefault()?.Name;
-            express.OrderFirstModeNameCache = modeList.Where(e => e.Id == (order?.FirstLogisticsMode?.Id ?? 0)).Take(1).SingleOrDefault()?.Name;
-            express.OrderSubmitPackTimeCache = order?.SubmitPackTime;
-
-            StorageLocInfo storageLoc = storageLocList.Where(e => e.Id == (express.StorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
-            express.StorageLocNameCache = storageLoc?.GetFullName();
-
-            WarehouseInfo checkinWarehouse = warehouseList.Where(e => e.Id == (express.CheckinWarehouse?.Id ?? 0)).Take(1).SingleOrDefault();
-            express.CheckinWarehouseNameCache = checkinWarehouse?.Name;
-
-            WarehouseInfo warehouse = warehouseList.Where(e => e.Id == (express.Warehouse?.Id ?? 0)).Take(1).SingleOrDefault();
-            express.WarehouseNameCache = warehouse?.Name;
-
-            StorageLocInfo checkinStorageLoc = storageLocList.Where(e => e.Id == (express.CheckinStorageLoc?.Id ?? 0)).Take(1).SingleOrDefault();
-            express.CheckinStorageLocNameCache = checkinStorageLoc?.GetFullName();
+            express.StorageLocNameCache = express.StorageLoc.GetFullName();
             
-            */
+            var goodsListForExpress = expressGoodsList
+                .Where(e => e.Express.Id == expressId)
+                .ToList();
+            express.GoodsNamesCache = string.Join(",", goodsListForExpress.Select(e => e.Goods.Name).ToArray());
 
-            string trackingNo = express.TrackingNo;
-            express.ExpressSizeWeightListCache = expressItemList.Where(e => e.TrackingNo == trackingNo).ToList();
-
-            ExpressExpectInfo? expect = expressExpectList.Where(e => e.TrackingNo == express.TrackingNo).Take(1).SingleOrDefault();
-            if (expect != null)
-            {
-                express.CustomerCodeCache = customerCodeService.GetCustomerCode(expect?.Customer?.Id ?? 0);
-                express.ExpressExpectCache = expect;
-            }
+            express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.Express!.Id == expressId).ToList();
+            express.ExpressRemarkListCache = expressRemarkList.Where(e => (e.Express?.Id ?? 0) == expressId).ToList();
+            express.ExpressExpectCache = expressExpectList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
 
             express.ExpressPhotoListCache = expressPhotoList
                 .Where(e => e.TrackingNo == express.TrackingNo)

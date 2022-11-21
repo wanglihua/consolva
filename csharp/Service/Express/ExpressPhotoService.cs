@@ -52,6 +52,27 @@ public class ExpressPhotoService
         return orderPhotoList;
     }
 
+    public IList<ExpressPhotoInfo> GetExpressPhotoList(IList<int> expressIdList)
+    {
+        if (expressIdList == null || expressIdList.Count == 0)
+        {
+            return new List<ExpressPhotoInfo>();
+        }
+
+        IList<ExpressPhotoInfo> orderPhotoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .OrderBy(e => e.Type)
+            .ToList();
+
+        foreach (ExpressPhotoInfo orderPhoto in orderPhotoList)
+        {
+            orderPhoto.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
+            orderPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
+        }
+
+        return orderPhotoList;
+    }
+
     // todo b 调用
     /// <summary>
     /// 绑定图片到快递单号，添加和更新图片时调用

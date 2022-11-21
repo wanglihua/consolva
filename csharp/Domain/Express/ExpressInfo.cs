@@ -318,13 +318,5 @@ public class ExpressInfo : Entity
 
     public virtual string StorageLocNameCache { get; set; } = string.Empty;
 
-    public virtual string WarehouseNameCache { get; set; } = string.Empty;
-
-    public virtual string AddUserNameCache { get; set; } = string.Empty;
-
-    public virtual string OnShelfUserNameCache { get; set; } = string.Empty;
-
-    public virtual string OffShelfUserNameCache { get; set; } = string.Empty;
-
     #endregion
 }
