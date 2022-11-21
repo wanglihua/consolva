@@ -14,43 +14,43 @@
     <li class="parent" data-menu="express-menu">快递管理</li>
     @if (Model.Cate == ExpressListMenuCate.All)
     {
-        <li class="active" data-menu="express-claim-detail-menu">快递详细</li>
+        <li class="active" data-menu="express-detail-menu">快递详细</li>
     }
     else if (Model.Cate == ExpressListMenuCate.Expect)
     {
-        <li class="active" data-menu="express-claim-expect-menu">已预报</li>
+        <li class="active" data-menu="express-expect-menu">已预报</li>
     }
     else if (Model.Cate == ExpressListMenuCate.NotOrderLong)
     {
-        <li class="active" data-menu="express-claim-not-order-long-menu">长期未出库</li>
+        <li class="active" data-menu="express-not-order-long-menu">长期未出库</li>
     }
     else if (Model.Cate == ExpressListMenuCate.NotPicked)
     {
-        <li class="active" data-menu="express-claim-not-picked-menu">未认领</li>
+        <li class="active" data-menu="express-not-picked-menu">未认领</li>
     }
     else if (Model.Cate == ExpressListMenuCate.NotPickedLong)
     {
-        <li class="active" data-menu="express-claim-not-picked-long-menu">长期未认领</li>
+        <li class="active" data-menu="express-not-picked-long-menu">长期未认领</li>
     }
     else if (Model.Cate == ExpressListMenuCate.Dumped)
     {
-        <li class="active" data-menu="express-claim-dumped-menu">已堆存</li>
+        <li class="active" data-menu="express-dumped-menu">已堆存</li>
     }
     else if (Model.Cate == ExpressListMenuCate.OnShelf)
     {
-        <li class="active" data-menu="express-claim-on-shelf-menu">已上架</li>
+        <li class="active" data-menu="express-on-shelf-menu">已上架</li>
     }
     else if (Model.Cate == ExpressListMenuCate.Picked)
     {
-        <li class="active" data-menu="express-claim-picked-menu">已认领</li>
+        <li class="active" data-menu="express-picked-menu">已认领</li>
     }
     else if (Model.Cate == ExpressListMenuCate.ToOffShelf)
     {
-        <li class="active" data-menu="express-claim-to-off-shelf-menu">待下架</li>
+        <li class="active" data-menu="express-to-off-shelf-menu">待下架</li>
     }
     else if (Model.Cate == ExpressListMenuCate.ToOnShelf)
     {
-        <li class="active" data-menu="express-claim-to-on-shelf-menu">待上架</li>
+        <li class="active" data-menu="express-to-on-shelf-menu">待上架</li>
     }
     else if (Model.Cate == ExpressListMenuCate.Return)
     {
@@ -66,7 +66,7 @@
     }
     else
     {
-        <li class="active" data-menu="express-claim-detail-menu">@(ViewData[ViewDataKey.Title])</li>
+        <li class="active" data-menu="express-detail-menu">@(ViewData[ViewDataKey.Title])</li>
     }
     <li>
         <span>快递单号</span>
