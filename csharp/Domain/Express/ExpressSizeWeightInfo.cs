@@ -109,7 +109,7 @@ public class ExpressSizeWeightInfo : Entity
     /// <summary>
     /// 单箱体积
     /// </summary>
-    public decimal VolumeCache
+    public virtual decimal VolumeCache
     {
         get { return decimal.Round(Length * Width * Height / 100_00_00, 6, MidpointRounding.AwayFromZero); }
     }
@@ -117,7 +117,7 @@ public class ExpressSizeWeightInfo : Entity
     /// <summary>
     /// 单箱体积重
     /// </summary>
-    public decimal VolumeWeightCache
+    public virtual decimal VolumeWeightCache
     {
         get { return decimal.Round(Length * Width * Height / LogisticsConfig.VolumeWeightDenominator, 3, MidpointRounding.AwayFromZero); }
     }
