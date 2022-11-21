@@ -9,6 +9,9 @@ using shunda.Domain.Wechat;
 
 namespace shunda.Service.Wechat;
 
+/// <summary>
+/// todo 如果公众号和小程序的 token 放在一个表里面，这里的逻辑要修改
+/// </summary>
 [Service(ServiceType.Scoped)]
 public class WechatAccessTokenService
 {
