@@ -68,7 +68,7 @@ public class ExpressClaimController : Controller
         bool isAdmin = loginUserService.IsAdmin;
         Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
 
-        model.CanForceDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ClaimGoodsForceDelete);
+        model.CanForceDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressForceDelete);
 
         return View("ExpressClaimIndex", model);
     }
@@ -80,28 +80,28 @@ public class ExpressClaimController : Controller
         int totalCount = expressListService.Count(ExpressListMenuCate.All, queryParam);
         ListPager listPager = new ListPager(queryParam, totalCount);
 
-        IList<ExpressInfo> expressClaimList = expressListService.List(ExpressListMenuCate.All, queryParam, listPager);
+        IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam, listPager);
 
-        IList<int> claimGoodsIdList = expressClaimList.Select(e => e.Id).ToList();
-        IList<ExpressGoodsInfo> claimGoodsEntryList = session.Query<ExpressGoodsInfo>()
-            .Where(e => claimGoodsIdList.Contains(e.ClaimId))
+        IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
+        IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
-        IList<int> goodsIdList = claimGoodsEntryList.Select(e => e.GoodsId).Distinct().ToList();
+        IList<int> goodsIdList = expressGoodsList.Select(e => e.Goods.Id).Distinct().ToList();
         IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
 
-        foreach (ExpressInfo claimGoods in expressClaimList)
+        foreach (ExpressInfo express in expressList)
         {
-            // IList<int> claimGoodsEntryListForClaim = claimGoodsEntryList.Where(e => e.ClaimId == claimGoods.Id).Select(e => e.Id).ToList();
-            IList<int> goodsIdListForClaim = claimGoodsEntryList
-                .Where(e => e.ClaimId == claimGoods.Id)
-                .Select(e => e.GoodsId)
+            int expressId = express.Id;
+            IList<int> goodsIdListForExpress = expressGoodsList
+                .Where(e => e.Express.Id == expressId)
+                .Select(e => e.Goods.Id)
                 .Distinct()
                 .ToList();
-            claimGoods.GoodsNamesCache = string.Join(",", goodsList.Where(e => goodsIdListForClaim.Contains(e.Id)).Select(e => e.Name).ToArray());
+            express.GoodsNamesCache = string.Join(",", goodsList.Where(e => goodsIdListForExpress.Contains(e.Id)).Select(e => e.Name).ToArray());
         }
 
         ExpressClaimListModel model = new ExpressClaimListModel(listPager);
-        model.ExpressClaimList = expressClaimList;
+        model.ExpressClaimList = expressList;
 
         return View("ExpressClaimList", model);
     }
@@ -129,37 +129,37 @@ public class ExpressClaimController : Controller
     {
         int expressId = id;
 
-        ExpressInfo claimGoods = session.Get<ExpressInfo>(expressId);
-        if (claimGoods == null)
+        ExpressInfo express = session.Get<ExpressInfo>(expressId);
+        if (express == null)
         {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
         ExpressClaimDetailModel model = new ExpressClaimDetailModel();
-        model.ClaimGoods = claimGoods;
-        model.AddUser = claimGoods.AddUser;
+        model.ClaimGoods = express;
+        model.AddUser = express.AddUser;
 
         model.Cate = ExpressListMenuCate.GetById(cateId);
-        model.Customer = claimGoods.Customer;
+        model.Customer = express.Customer;
 
-        IList<ExpressGoodsInfo> claimGoodsEntryList = session
+        IList<ExpressGoodsInfo> expressGoodsList = session
             .Query<ExpressGoodsInfo>()
             .Where(e => e.Express.Id == expressId)
             .ToList();
 
-        foreach (var claimGoodsEntry in claimGoodsEntryList)
+        foreach (var expressGoods in expressGoodsList)
         {
-            LogisticsGoodsInfo goods = session.Get<LogisticsGoodsInfo>(claimGoodsEntry.GoodsId);
-            claimGoodsEntry.GoodsNameCache = goods?.GetGoodsAdminName();
+            LogisticsGoodsInfo goods = session.Get<LogisticsGoodsInfo>(expressGoods.GoodsId);
+            expressGoods.GoodsNameCache = goods?.GetGoodsAdminName();
         }
 
-        model.EntryList = claimGoodsEntryList;
+        model.EntryList = expressGoodsList;
 
-        NHibernateUtil.Initialize(claimGoods.Order);
+        NHibernateUtil.Initialize(express.Order);
 
-        string trackingNo = claimGoods.TrackingNo;
+        string trackingNo = express.TrackingNo;
 
-        LogisticsExpressExpectInfo expressExpect = session.Query<LogisticsExpressExpectInfo>()
+        ExpressExpectInfo? expressExpect = session.Query<ExpressExpectInfo>()
             .Fetch(e => e.Customer)
             .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
@@ -276,8 +276,8 @@ public class ExpressClaimController : Controller
     [Route("/admin/express/claim/detail/save/customer/service/remark")]
     public IActionResult SaveExpressCustomerServiceRemark(int claimId, string serviceRemark)
     {
-        ExpressInfo claimGoods = session.Get<ExpressInfo>(claimId);
-        if (claimGoods == null)
+        ExpressInfo express = session.Get<ExpressInfo>(claimId);
+        if (express == null)
         {
             throw new ValidationException("指定的快递单申领件不存在！");
         }
@@ -295,8 +295,8 @@ public class ExpressClaimController : Controller
             throw new ValidationException("客服备注不能超过500个字符！");
         }
 
-        claimGoods.ServiceRemark = serviceRemark;
-        session.Update(claimGoods);
+        express.ServiceRemark = serviceRemark;
+        session.Update(express);
         session.Flush();
 
         return Json(new Dictionary<string, object>() {
@@ -318,21 +318,21 @@ public class ExpressClaimController : Controller
 
         IList<ExpressInfo> expressClaimList = expressListService.List(ExpressListMenuCate.All, queryParam);
 
-        IList<int> claimGoodsIdList = expressClaimList.Select(e => e.Id).ToList();
-        IList<ExpressGoodsInfo> claimGoodsEntryList = session.Query<ExpressGoodsInfo>()
-            .Where(e => claimGoodsIdList.Contains(e.ClaimId))
+        IList<int> expressIdList = expressClaimList.Select(e => e.Id).ToList();
+        IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => expressIdList.Contains(e.ClaimId))
             .ToList();
-        IList<int> goodsIdList = claimGoodsEntryList.Select(e => e.GoodsId).Distinct().ToList();
+        IList<int> goodsIdList = expressGoodsList.Select(e => e.GoodsId).Distinct().ToList();
         IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
 
-        foreach (ExpressInfo claimGoods in expressClaimList)
+        foreach (ExpressInfo express in expressClaimList)
         {
-            IList<int> goodsIdListForClaim = claimGoodsEntryList
-                .Where(e => e.ClaimId == claimGoods.Id)
+            IList<int> goodsIdListForClaim = expressGoodsList
+                .Where(e => e.ClaimId == express.Id)
                 .Select(e => e.GoodsId)
                 .Distinct()
                 .ToList();
-            claimGoods.GoodsNamesCache = string.Join(",", goodsList.Where(e => goodsIdListForClaim.Contains(e.Id)).Select(e => e.Name).ToArray());
+            express.GoodsNamesCache = string.Join(",", goodsList.Where(e => goodsIdListForClaim.Contains(e.Id)).Select(e => e.Name).ToArray());
         }
 
         string fileName = $"快递单导出.xlsx";
