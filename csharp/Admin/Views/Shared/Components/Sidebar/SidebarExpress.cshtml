@@ -14,6 +14,16 @@
         </a>
         <b class="arrow"></b>
         <ul class="submenu">
+        
+            @if (Model.HasPassRes(PassRes.Express.ExpressList))
+            {
+                <li id="express-express-expect-menu">
+                    <a asp-area="Express" asp-controller="Express" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>快递详情
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
 
             @if (Model.HasPassRes(PassRes.Express.ExpressExpect))
             {

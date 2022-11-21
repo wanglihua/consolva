@@ -3,7 +3,6 @@ using NHibernate.Criterion;
 using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
-using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
@@ -83,7 +82,7 @@ public class ExpressListService
         storageLocIdList = storageLocIdList.Distinct().ToList();
 
         // 预加载
-        IList<UserInfo> userList = session.Query<UserInfo>().Where(e => e.LoginName != UserInfo.DevLoginName && userIdList.Contains(e.Id)).ToList();
+        IList<UserInfo> userList = session.Query<UserInfo>().Where(e => userIdList.Contains(e.Id)).ToList();
 
         // 预加载
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>().Fetch(e => e.Spec).Fetch(e => e.Shelf).Where(e => storageLocIdList.Contains(e.Id)).ToList();
@@ -119,7 +118,7 @@ public class ExpressListService
 
         IList<ExpressRemarkInfo> expressRemarkList = session.Query<ExpressRemarkInfo>()
             .Where(e => expressIdList.Contains(e.Express!.Id))
-            .ToList();        
+            .ToList();
 
         IList<ExpressPhotoInfo> expressPhotoList = expressPhotoService.GetExpressPhotoList(trackingNoList);
 
@@ -127,11 +126,11 @@ public class ExpressListService
         {
             int expressId = express.Id;
             string trackingNo = express.TrackingNo;
-            
+
             express.CustomerCodeCache = customerCodeService.GetCustomerCode(express.Customer?.Id ?? 0);
 
             express.StorageLocNameCache = express.StorageLoc.GetFullName();
-            
+
             var goodsListForExpress = expressGoodsList
                 .Where(e => e.Express.Id == expressId)
                 .ToList();
