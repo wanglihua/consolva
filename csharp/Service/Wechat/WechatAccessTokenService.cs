@@ -40,7 +40,7 @@ public class WechatAccessTokenService
                 {
                     int latestId = wechatAccessToken.Id;
                     session.Query<WechatAccessTokenInfo>()
-                        .Where(e => e.Id < latestId) // 这里必须要 < 不能<=
+                        .Where(e => e.Id < latestId) // 这里暂时用 < 
                         .Delete();
                 }
             }
