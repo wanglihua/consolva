@@ -47,6 +47,8 @@ public class ExpressClaimDetailModel
 
     public bool CanCustomerServiceRemark { get; set; } = false;
 
+    public IList<ExpressRemarkInfo> ExpressRemarkList { get; set; } = new List<ExpressRemarkInfo>();
+
     public IList<UserTimeItem> PackUserTimeList { get; set; } = new List<UserTimeItem>();
 
     public IList<UserTimeItem> ShipUserTimeList { get; set; } = new List<UserTimeItem>();

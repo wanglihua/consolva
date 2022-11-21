@@ -174,7 +174,7 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ExpressExpect.CustomerCodeCache" class="col-xs-4 control-label">预报客户</label>
+                                        <label asp-for="ExpressExpect!.CustomerCodeCache" class="col-xs-4 control-label">预报客户</label>
                                         <div class="col-xs-8">
                                             @if (Model.ExpressExpect != null)
                                             {
@@ -184,7 +184,7 @@
                                             }
                                             else
                                             {
-                                                <input asp-for="ExpressExpect.CustomerCodeCache" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="ExpressExpect!.CustomerCodeCache" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
                                     </div>
@@ -227,9 +227,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.OnShelfUser.UserName" class="col-xs-4 control-label">上架人员</label>
+                                        <label asp-for="ClaimGoods.OnShelfUser!.UserName" class="col-xs-4 control-label">上架人员</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.OnShelfUser.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.OnShelfUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -245,9 +245,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.OffShelfUser.UserName" class="col-xs-4 control-label">下架人员</label>
+                                        <label asp-for="ClaimGoods.OffShelfUser!.UserName" class="col-xs-4 control-label">下架人员</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.OffShelfUser.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.OffShelfUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -267,9 +267,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.PackingUser.UserName" class="col-xs-4 control-label">入流动仓人员</label>
+                                        <label asp-for="ClaimGoods.PackingUser!.UserName" class="col-xs-4 control-label">入流动仓人员</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.PackingUser.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.PackingUser!.UserName" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -350,18 +350,18 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="Customer.CustomerCode" class="col-xs-4 control-label">认领客户</label>
+                                        <label asp-for="Customer!.CustomerCodeCache" class="col-xs-4 control-label">认领客户</label>
                                         <div class="col-xs-8">
                                             @*<input asp-for="Customer.CustomerCode" type="text" disabled="disabled" class="input-sm form-control"/>*@
                                             @if (Model.Customer != null)
                                             {
                                                 <label class="control-label">
-                                                    <a href="@Url.Action("Detail", "Customer", new { id = Model.Customer?.Id ?? 0 })" target="_blank">@(Model.Customer?.CustomerCode)</a>
+                                                    <a href="@Url.Action("Detail", "Customer", new { id = Model.Customer?.Id ?? 0 })" target="_blank">@(Model.Customer?.CustomerCodeCache)</a>
                                                 </label>
                                             }
                                             else
                                             {
-                                                <input asp-for="Customer.CustomerCode" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="Customer!.CustomerCodeCache" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
                                     </div>
@@ -371,24 +371,24 @@
                                     <div class="form-group">
                                         <label asp-for="ClaimGoods.ClaimTime" class="col-xs-4 control-label">认领时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.ClaimTime" type="text" value="@(Model.ClaimGoods?.ClaimTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.ClaimTime" type="text" value="@(Model.ClaimGoods.ClaimTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.Order.Code" class="col-xs-4 control-label">所在订单</label>
+                                        <label asp-for="ClaimGoods.Order!.Code" class="col-xs-4 control-label">所在订单</label>
                                         <div class="col-xs-8">
                                             @if (Model.ClaimGoods.Order != null)
                                             {
                                                 <label class="control-label">
-                                                    <a href="@Url.Action("Detail", "LogisticsOrder", new { id = Model.ClaimGoods?.Order?.Id ?? 0 })" target="_blank">@(Model.ClaimGoods?.Order?.Code)</a>
+                                                    <a href="@Url.Action("Detail", "LogisticsOrder", new { id = Model.ClaimGoods.Order?.Id ?? 0 })" target="_blank">@(Model.ClaimGoods.Order?.Code)</a>
                                                 </label>
                                             }
                                             else
                                             {
-                                                <input asp-for="ClaimGoods.Order.Code" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="ClaimGoods.Order!.Code" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
                                     </div>
@@ -396,9 +396,9 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ClaimGoods.Order.OrderStatus.Name" class="col-xs-4 control-label">订单状态</label>
+                                        <label asp-for="ClaimGoods.Order!.OrderStatus.Name" class="col-xs-4 control-label">订单状态</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ClaimGoods.Order.OrderStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ClaimGoods.Order!.OrderStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -419,59 +419,67 @@
 
                             <div class="row">
 
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label for="serviceRemark" class="col-xs-2 control-label">客服备注</label>
-                                        <div class="col-xs-10">
-                                            @if (Model.CanCustomerServiceRemark == false)
-                                            {
-                                                <textarea id="serviceRemark" asp-for="ClaimGoods.ServiceRemark" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
-                                            }
-                                            else
-                                            {
-                                                <textarea id="serviceRemark" asp-for="ClaimGoods.ServiceRemark" rows="2" class="input-sm form-control"></textarea>
-                                                <div style="padding: 5px 0; text-align: right; width: 100%">
-                                                    <button type="button" class="btn btn-xs btn-default" onclick="saveServiceRemark()">保存客服留言</button>
-                                                </div>
-                                            }
-                                        </div>
-
-                                        <script type="text/javascript">
-                                            function saveServiceRemark()
-                                            {
-                                                showMask("数据加载中，请稍候");
-                                        
-                                                $.ajax({
-                                                    url: "@Url.Action("SaveExpressCustomerServiceRemark", "ExpressClaim")",
-                                                    type: "POST",
-                                                    data: {
-                                                        'claimId': @(Model.ClaimGoods.Id),
-                                                        'serviceRemark': $('#serviceRemark').val()
-                                                    },
-                                                    success: function(data) {
-                                                        hideMask();
-                                        
-                                                        if (data.success === false) {
-                                                            $.msg.error(data.message);
-                                                            return;
-                                                        }
-                                                        
-                                                        $.msg.show(data.message);
+                                @foreach (var remark in Model.ExpressRemarkList)
+                                {
+                                    if (remark.Type == ExpressRemarkType.Service)
+                                    {
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label for="remark_@(remark.Id)" class="col-xs-2 control-label">@(remark.Type.Name)</label>
+                                                <div class="col-xs-10">
+                                                    @if (Model.CanCustomerServiceRemark == false)
+                                                    {
+                                                        <textarea id="serviceRemark" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
                                                     }
-                                                });
-                                            }
-                                        </script>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="ClaimGoods.ServiceRemark" class="col-xs-2 control-label">仓库备注</label>
-                                        <div class="col-xs-10">
-                                            <textarea asp-for="ClaimGoods.ServiceRemark" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
+                                                    else
+                                                    {
+                                                        <textarea id="serviceRemark"  rows="2" class="input-sm form-control"></textarea>
+                                                        <div style="padding: 5px 0; text-align: right; width: 100%">
+                                                            <button type="button" class="btn btn-xs btn-default" onclick="saveServiceRemark()">保存客服留言</button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label for="remark_@(remark.Id)" class="col-xs-2 control-label">@(remark.Type.Name)</label>
+                                                <div class="col-xs-10">
+                                                    <textarea id="remark_@(remark.Id)" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                                <script type="text/javascript">
+                                    function saveServiceRemark()
+                                    {
+                                        showMask("数据加载中，请稍候");
+                                
+                                        $.ajax({
+                                            url: "@Url.Action("SaveExpressCustomerServiceRemark", "ExpressClaim")",
+                                            type: "POST",
+                                            data: {
+                                                'claimId': @(Model.ClaimGoods.Id),
+                                                'serviceRemark': $('#serviceRemark').val()
+                                            },
+                                            success: function(data) {
+                                                hideMask();
+                                
+                                                if (data.success === false) {
+                                                    $.msg.error(data.message);
+                                                    return;
+                                                }
+                                                
+                                                $.msg.show(data.message);
+                                            }
+                                        });
+                                    }
+                                </script>
 
                             </div>
 

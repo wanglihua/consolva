@@ -125,7 +125,13 @@ public class ExpressClaimController : Controller
         model.AddUser = express.AddUser;
 
         model.Cate = ExpressListMenuCate.GetById(cateId);
-        model.Customer = express.Customer;
+
+        var customer = express.Customer;
+        if (customer != null)
+        {
+            customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
+        }
+        model.Customer = customer;
 
         IList<ExpressGoodsInfo> expressGoodsList = session
             .Query<ExpressGoodsInfo>()
@@ -171,6 +177,8 @@ public class ExpressClaimController : Controller
         bool isAdmin = loginUserService.IsAdmin;
         Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
         model.CanCustomerServiceRemark = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressServiceRemark);
+
+        model.ExpressRemarkList = session.Query<ExpressRemarkInfo>().Where(e => e.Express!.Id == expressId).ToList();
 
         // 打包用户和时间
         var packExpressList = session.Query<LogisticsOrderPackExpressInfo>()
