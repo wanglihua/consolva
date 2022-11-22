@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core.Util;
 using shunda.Domain.Logistics;
+using shunda.Domain.Storage;
 
 namespace shunda.Admin.Models.Sidebar;
 
@@ -8,13 +10,16 @@ public class SidebarModel
     /// <summary>
     ///     Sidebar 是不是被折叠的
     /// </summary>
+    [BindNever]
     public bool IsSidebarMin { get; set; } = true;
 
     /// <summary>
     ///     是否是管理员
     /// </summary>
+    [BindNever]
     public bool IsAdmin { get; set; }
 
+    [BindNever]
     public Dictionary<int, bool> PassResIdMap { get; set; } = new();
 
     /// <summary>
@@ -43,8 +48,12 @@ public class SidebarModel
     {
         return PassUtil.HasOneOfPassRes(PassResIdMap, IsAdmin, passResIdList);
     }
-
+    
+    [BindNever]
     public IList<LogisticsGoodsType> LogisticsGoodsTypeList { get; set; } = LogisticsGoodsType.GetInnerList();
+
+    [BindNever]
+    public IList<WarehouseInfo> WarehouseList { get; set; } = new List<WarehouseInfo>();
 
 #if DEBUG
     public bool Debug { get; } = true;

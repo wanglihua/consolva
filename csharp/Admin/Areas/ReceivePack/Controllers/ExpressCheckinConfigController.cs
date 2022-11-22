@@ -13,7 +13,7 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 [AdminAuth(PassRes.ReceivePack.ExpressCheckinConfig)]
 public class ExpressCheckinConfigController : Controller
 {
-    private ISession session = null;
+    private ISession session;
 
     public ExpressCheckinConfigController(ISession session)
     {

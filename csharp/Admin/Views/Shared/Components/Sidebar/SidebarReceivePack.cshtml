@@ -1,0 +1,169 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Pass.PassRes
+@using shunda.Domain.Storage
+@model shunda.Admin.Models.Sidebar.SidebarModel
+@{
+    Layout = null;
+}
+@if (Model.HasOneOfPassRes(PassRes.ReceivePack.All))
+{
+    <li id="goods-receive-pack-menu">
+        <a href="#" class="dropdown-toggle">
+            <i class="menu-icon fa fa-archive"></i>
+            <span class="menu-text">收货打包</span>
+            <b class="arrow fa fa-angle-down"></b>
+        </a>
+        <b class="arrow"></b>
+        <ul class="submenu">
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckin))
+            {
+                <li id="goods-receive-pack-logistics-express-checkin">
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text">收货入库</span>
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <b class="arrow"></b>
+                    <ul class="submenu">
+
+                        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
+                        {
+                            <li id="goods-receive-pack-logistics-express-checkin-warehouse@(warehouse.Id)-index-menu">
+                                <a href="@Url.Action("Index", "LogisticsExpressCheckin", new { warehouseId = warehouse.Id })">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    @(warehouse.Name)
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                        }
+
+                    </ul>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPack))
+            {
+                <li id="goods-receive-pack-goods-repack">
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text">打包</span>
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <b class="arrow"></b>
+                    <ul class="submenu">
+                        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
+                        {
+                            <li id="goods-receive-pack-goods-repack-warehouse@(warehouse.Id)-index-menu">
+                                <a href="@Url.Action("Index", "LogisticsOrderGoodsPack", new { warehouseId = warehouse.Id })">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    @(warehouse.Name)
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
+            {
+                <li id="goods-receive-pack-express-checkin-config-index-menu">
+                    <a asp-area="ReceivePack" asp-controller="ExpressCheckinConfig" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        快递单入库配置
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
+            {
+                <li id="goods-receive-pack-shelf-user-index-menu">
+                    <a href="@Url.Action("Index", "ShelfUser")">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        货架用户关联
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
+            {
+                <li id="goods-receive-pack-logistics-express-remark-index-menu">
+                    <a href="@Url.Action("Index", "LogisticsExpressRemark")">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        入库快递单备注
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackConfig))
+            {
+                <li id="goods-receive-pack-order-pack-config-index-menu">
+                    <a href="@Url.Action("Index", "LogisticsOrderPackConfig")">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        订单打包配置
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderStorageLoc))
+            {
+                <li id="goods-receive-pack-order-storage-loc-index-menu">
+                    <a href="@Url.Action("Index", "LogisticsOrderStorageLoc")">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        订单仓位
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.PackReport))
+            {
+                <li id="goods-receive-pack-pack-report-index-menu">
+                    <a href="@Url.Action("Index", "LogisticsOrderGoodsPackReport")">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        打包统计
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderShouldSubmitPack))
+            {
+                <li id="goods-receive-pack-order-should-submit-pack-index-menu">
+                    <a href="@Url.Action("Index", "LogisticsOrderShouldSubmitPack")">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        催打包订单
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackSchedule))
+            {
+                <li id="goods-receive-pack-order-pack-schedule">
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text">打包排班</span>
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <b class="arrow"></b>
+                    <ul class="submenu">
+                        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
+                        {
+                            <li id="goods-receive-pack-order-pack-schedule-warehouse@(warehouse.Id)-index-menu">
+                                <a href="@Url.Action("Index", "LogisticsOrderPackSchedule", new { warehouseId = warehouse.Id })">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    @(warehouse?.Name)
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+
+        </ul>
+    </li>
+}
