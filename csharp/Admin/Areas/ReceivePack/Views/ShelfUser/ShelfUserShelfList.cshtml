@@ -1,0 +1,12 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.ReceivePack.Models.ShelfUser.ShelfUserDetailModel
+@{
+    Layout = null;
+}
+<select asp-for="ShelfId" required="required" class="input-sm form-control">
+    <option value="">选择货架</option>
+    @foreach (var shelf in Model.ShelfList)
+    {
+        <option value="@(shelf.Id)">@(shelf.Type?.Name) @(shelf.Name)</option>
+    }
+</select>

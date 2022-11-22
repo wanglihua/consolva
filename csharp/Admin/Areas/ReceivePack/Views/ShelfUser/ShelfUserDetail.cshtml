@@ -1,0 +1,95 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.ReceivePack.Models.ShelfUser.ShelfUserDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="shelfUserDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">货架用户关联详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="shelfUserDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="ShelfUserId" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="WarehouseId" class="col-xs-2 control-label">仓库</label>
+                                <div class="col-xs-10">
+                                    <select id="warehouseId" asp-for="WarehouseId" required="required" class="input-sm form-control" onchange="warehouseSelectChange()">
+                                        <option value="">仓库</option>
+                                        @foreach (var warehouse in Model.WarehouseList)
+                                        {
+                                            <option value="@(warehouse.Id)">@(warehouse.Name)</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" asp-for="WarehouseId"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ShelfId" class="col-xs-2 control-label">货架</label>
+                                <div id="shelfListWrapper" class="col-xs-10">
+                                    <partial name="ShelfUserShelfList" model="@(Model)" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LoginName" class="col-xs-2 control-label">用户登录名</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LoginName" type="text" required="required" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Type" class="col-xs-2 control-label">类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Type" required="required" digits="true" class="input-sm form-control">
+                                        @foreach (ShelfUserType type in Model.TypeList)
+                                        {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveShelfUser();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

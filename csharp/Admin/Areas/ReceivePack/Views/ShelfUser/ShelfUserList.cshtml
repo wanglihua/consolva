@@ -1,0 +1,123 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.ReceivePack.Models.ShelfUser.ShelfUserListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadShelfUserList"})
+
+<table id="tblShelfUserList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="shelfUserCheckAll"></label><input id="shelfUserCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 150px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ShelfUserInfo.Warehouse)).@(nameof(ShelfUserInfo.Warehouse.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfUserList">仓库</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ShelfUserInfo.Shelf)).@(nameof(ShelfUserInfo.Shelf.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfUserList">货架</a>
+                </div>
+            </th>
+
+            <th style="width: 180px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ShelfUserInfo.User)).@(nameof(ShelfUserInfo.User.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfUserList">用户</a>
+                </div>
+            </th>
+
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ShelfUserInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfUserList">类型</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ShelfUserInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfUserList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ShelfUserInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortShelfUserList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ShelfUserList != null && Model.ShelfUserList.Count() != 0)
+        {
+            int order = 1;
+            foreach (ShelfUserInfo shelfUser in Model.ShelfUserList)
+            {
+                <tr ondblclick="showShelfUserDetail(@(shelfUser.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="shelfUserCheck_@(shelfUser.Id)"></label><input id="shelfUserCheck_@(shelfUser.Id)" type="checkbox" class="ace" value="@shelfUser.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(shelfUser.Warehouse.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(shelfUser.Shelf.Type.Name)
+                            &nbsp; 
+                            @ListDataUtil.Render(shelfUser.Shelf.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(shelfUser.User.UserName)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(shelfUser.Type.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @shelfUser.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @shelfUser.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadShelfUserList"})

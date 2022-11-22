@@ -1,4 +1,6 @@
-﻿CREATE TABLE tbl_warehouse_worker
+﻿# DROP TABLE tbl_warehouse_worker;
+
+CREATE TABLE tbl_warehouse_worker
 (
     id           INT          NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
     type_id      INT          NOT NULL COMMENT '工作人员类型#type:WarehouseWorkerType',
@@ -10,6 +12,6 @@
     update_time  DATETIME     NOT NULL COMMENT '更新时间',
 
     INDEX ix_warehouse_worker_type_id (type_id),
-    FOREIGN KEY fk_warehouse_worker_warehouse_id (warehouse_id) REFERENCES tbl_warehouse (id),
-    FOREIGN KEY fk_warehouse_worker_user_id (user_id) REFERENCES tbl_user (id)
+    CONSTRAINT fk_warehouse_worker_warehouse_id FOREIGN KEY (warehouse_id) REFERENCES tbl_warehouse (id),
+    CONSTRAINT fk_warehouse_worker_user_id FOREIGN KEY (user_id) REFERENCES tbl_user (id)
 ) COMMENT '仓库工作人员';

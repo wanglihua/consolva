@@ -1,0 +1,200 @@
+@using shunda.Admin.Areas.ReceivePack.Models.ShelfUser
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.ReceivePack.Models.ShelfUser.ShelfUserIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = "货架用户关联";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-receive-pack-menu">收货打包</li>
+    <li class="active" data-menu="goods-receive-pack-shelf-user-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadShelfUserList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showShelfUserDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteShelfUser()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="shelfNameQuery">货架</label>&nbsp;<input id="shelfNameQuery" name="shelfNameQuery" style="width: 120px; height: 30px;" placeholder="货架名称查询"/>&nbsp;
+    <label for="userQuery">用户</label>&nbsp;<input id="userQuery" name="userQuery" style="width: 180px; height: 30px;" placeholder="用户名或登录名 查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadShelfUserList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="shelfUserList" data-page-index="0" data-sort-field="@(nameof(ShelfUserInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="shelfUserDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadShelfUserList();
+    });
+
+    function sortShelfUserList(sortField, sortDir) {
+        var list = $('#shelfUserList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadShelfUserList();
+    }
+
+    function loadShelfUserList(pageIndex) {
+        var list = $('#shelfUserList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ShelfUser")",
+            type: "POST",
+            data: {
+                "@(nameof(ShelfUserListQueryParam.ShelfNameQuery))": $('#shelfNameQuery').val(),
+                "@(nameof(ShelfUserListQueryParam.UserQuery))": $('#userQuery').val(),
+                "@(nameof(ShelfUserListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ShelfUserListQueryParam.SortField))": sortField,
+                "@(nameof(ShelfUserListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#shelfUserList').html(data);
+
+                initListTable("#tblShelfUserList");
+            }
+        });
+    }
+
+    function showShelfUserDetail(id) {
+        $("#shelfUserDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#shelfUserDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ShelfUser")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#shelfUserDetailDialogWrapper").html(data);
+                $("#shelfUserDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+    
+    function warehouseSelectChange() {
+        var warehouseId = $("#warehouseId").val();
+        
+        $("#shelfListWrapper").html("");
+
+        showMask("加载中...");
+        // $("#shelfUserDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("ShelfList", "ShelfUser")',
+            type: "POST",
+            data: { "warehouseId": warehouseId },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#shelfListWrapper").html(data);
+            }
+        });
+    }    
+
+    function saveShelfUser() {
+        var form = $("#shelfUserDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ShelfUser")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#shelfUserDetailDialog').modal('hide');
+                    loadShelfUserList();
+                }
+            });
+        }
+    }
+
+    function deleteShelfUser() {
+        var idList = getSelectIdList('#tblShelfUserList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ShelfUser")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadShelfUserList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
