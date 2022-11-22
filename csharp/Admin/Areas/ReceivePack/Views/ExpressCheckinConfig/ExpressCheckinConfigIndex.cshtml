@@ -1,0 +1,249 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckinConfig.ExpressCheckinConfigIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = "快递单入库配置";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-receive-pack-menu">收货打包</li>
+    <li class="active" data-menu="goods-receive-pack-express-checkin-config-index-menu">
+        @(ViewData[ViewDataKey.Title])
+    </li>
+}
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="saveExpressCheckinConfig();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 1024px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="expressCheckinConfigDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="ExpressCheckinConfig.Id" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.ExpressCountPerStorageLoc" class="col-xs-6 control-label">每仓位快递数</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.ExpressCountPerStorageLoc" class="input-sm form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>      
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.SigninPhotoMinQtyPerExpress" class="col-xs-6 control-label">签收照片最小数量</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.SigninPhotoMinQtyPerExpress" class="input-sm form-control">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.CheckinPhotoMinQtyPerExpress" class="col-xs-6 control-label">入库照片最小数量</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.CheckinPhotoMinQtyPerExpress" class="input-sm form-control">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.AutoRecordCheckinVideo" class="col-xs-6 control-label">自动录制视频</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.AutoRecordCheckinVideo" class="input-sm form-control">
+                                        <option value="@(false.ToString())">否，不自动录制</option>
+                                        <option value="@(true.ToString())">是，自动录制</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.ClientShowVideo" class="col-xs-6 control-label">客户端视频</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.ClientShowVideo" class="input-sm form-control">
+                                        <option value="@(false.ToString())">否，客户端不展示视频</option>
+                                        <option value="@(true.ToString())">是，客户端展示视频</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.CheckinPhotoClientShow" class="col-xs-6 control-label">客户端入库图片</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.CheckinPhotoClientShow" class="input-sm form-control">
+                                        <option value="@(false.ToString())">否，不显示入库图片</option>
+                                        <option value="@(true.ToString())">是，显示入库图片</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.LabelW10H05Status" class="col-xs-6 control-label">标签10*5是否启用</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.LabelW10H05Status" class="input-sm form-control">
+                                        @foreach (ExpressCheckinLabelConfigStatus status in Model.ExpressCheckinLabelStatusList)
+                                        {
+                                            <option value="@(status.Id)">@(status.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.LabelW10H05PrintCount" class="col-xs-6 control-label">标签10*5打印数量</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.LabelW10H05PrintCount" class="input-sm form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4" style="line-height: 30px; padding-left: 50px;">
+                            <a href="@Url.Action("PrintPreview", "ExpressCheckinConfig", new { labelTypeId = ExpressCheckinLabelType.SizeW10H05 })" target="_blank">打印预览</a>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.LabelW05H05Status" class="col-xs-6 control-label">标签5*5是否启用</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.LabelW05H05Status" class="input-sm form-control">
+                                        @foreach (ExpressCheckinLabelConfigStatus status in Model.ExpressCheckinLabelStatusList)
+                                        {
+                                            <option value="@(status.Id)">@(status.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="ExpressCheckinConfig.LabelW05H05PrintCount" class="col-xs-6 control-label">标签5*5打印数量</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="ExpressCheckinConfig.LabelW05H05PrintCount" class="input-sm form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4" style="line-height: 30px; padding-left: 50px;">
+                            <a href="@Url.Action("PrintPreview", "ExpressCheckinConfig", new { labelTypeId = ExpressCheckinLabelType.SizeW05H05 })" target="_blank">打印预览</a>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveExpressCheckinConfig() {
+        var form = $("#expressCheckinConfigDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ExpressCheckinConfig")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                    } else {
+                        $.msg.show(data.message);
+                    }
+
+                    hideMask();
+                }
+            });
+        }
+    }
+
+</script>

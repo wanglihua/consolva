@@ -1,17 +1,18 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Pass.Models.WarehouseWorker
 @using shunda.Core
+@using shunda.Core.Web
 @using shunda.Domain.Pass
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Pass.Models.WarehouseWorker.WarehouseWorkerIndexModel
 @{
-    ViewBag.Title = "仓库工作人员";
+    ViewData[ViewDataKey.Title] = "仓库工作人员";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="auth-menu">权限管理</li>
-    <li class="active" data-menu="auth-warehouse-worker-index-menu">仓库工作人员</li>
+    <li class="active" data-menu="auth-warehouse-worker-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

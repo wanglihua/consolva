@@ -1,0 +1,91 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckinConfig
+@using shunda.Core.Web
+@model ExpressCheckinConfigPrintPreviewModel
+
+@{
+    ViewData[ViewDataKey.Title] = $"打印预览（ {Model.LabelType.Name}）";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-receive-pack-menu">收货打包</li>
+    <li class="active" data-menu="goods-receive-pack-express-checkin-config-index-menu">
+        快递单入库配置
+    </li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 650px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <div class="row">
+
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="trackingNo" class="control-label">快递单号</label>
+                            <input id="trackingNo" name="trackingNo" type="text" class="input-sm" style="width: 200px;"/>
+                            &nbsp;&nbsp;
+                            <button id="btnPrintPreview" type="button" class="btn btn-primary btn-sm" onclick="printCheckinLabel()">
+                                <i class="ace-icon fa fa-floppy-o"></i>
+                                打印预览
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/lodop/LodopFuncs.js?v=20191002"></script>
+<script type="text/javascript" src="@Url.Action("Index", "LodopScript")"></script>
+
+<script type="text/javascript">
+
+    function printCheckinLabel()
+    {
+        showMask("处理中...");
+
+        $.ajax({
+            url: '@Url.Action("GetExpress", "ExpressCheckinConfig")',
+            type: "POST",
+            data: {
+                "expressTrackingNo": $("#trackingNo").val()
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                } 
+                
+                showMask("处理中...");
+        
+                $.ajax({
+                    url: '@Url.Action("GetPrintDataById", "LogisticsExpressCheckin")',
+                    type: "POST",
+                    data: {
+                        "expressId": data.id
+                    },
+                    success: function(data) {
+                        hideMask();
+        
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } 
+                        
+                        printCheckinLabelCommon(data, 1, 1, 1); // 1 包裹数量 1 打印数量， 1 正常件
+                    }
+                });
+            }
+        }); 
+    }
+
+</script>
+
+<partial name="ExpressCheckinConfigPrintLabel" model="@(new ExpressCheckinConfigPrintLabelModel() { LabelType = Model.LabelType, Preview = true })"/>

@@ -1,0 +1,83 @@
+@{
+    Layout = null;
+}
+@* 是不是预览 *@
+@model bool 
+
+<script type="text/javascript">
+
+    @* type: 1 正常件, 2 申领件， 3 问题件 *@
+    function printCheckinLabelCommonW10H05(data, packageCount, printCount, type) {
+        var LODOP = getLodopWithLicenses();
+        
+        LODOP.PRINT_INIT("入库标签打印W10H05");
+
+        LODOP.SET_PRINT_PAGESIZE(1, "100mm", "50mm", "入库标签打印W10H05");
+
+        LODOP.SET_PRINT_STYLE("FontName", "微软雅黑");
+        LODOP.SET_PRINT_STYLE("Bold", 0);
+        LODOP.SET_PRINT_STYLE("FontSize", 10);
+
+        for (var index = 0; index < packageCount * printCount; index++) {
+            LODOP.NEWPAGE();
+            
+            LODOP.ADD_PRINT_TEXT("2.00mm","2.00mm","25.0mm","13.00mm", data.storageLoc.substr(0, 2));
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 30);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);   
+            
+            LODOP.ADD_PRINT_TEXT("7.50mm","27.00mm","28.00mm","7mm", data.customerCode.substr(data.customerCode.indexOf('-') + 1));
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 14);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);            
+
+            LODOP.ADD_PRINT_TEXT("16.00mm","2.00mm","92.00mm","6.61mm", data.storageLoc);
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 12);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);    
+            
+            LODOP.ADD_PRINT_TEXT("7.28mm","86.00mm","18.00mm","6.60mm", "【" + data.checkinPackageCount + "】");
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 10);       
+            
+            var state = "";
+            if(type === 1) {
+                state = "正";
+            } else if(type === 2) {
+                state = "申";
+            } else if(type === 3) {
+                state = "问";
+            }            
+
+            LODOP.ADD_PRINT_TEXT("15.0mm","88.00mm","14.00mm","6.60mm", state);
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 14);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);  
+            
+            LODOP.ADD_PRINT_BARCODE("23.00mm","2.00mm","90.00mm","15.00mm", "128Auto", data.expressTrackingNo + "SD");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 10);
+            LODOP.SET_PRINT_STYLEA(0,"ShowBarText", 1);
+            LODOP.SET_PRINT_STYLEA(0,"DataCharset", "UTF-8");            
+
+            LODOP.ADD_PRINT_TEXT("40.00mm","2.00mm","93mm","16.4mm", "备注: " + data.warehouseNote);
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 10);
+        }
+
+        @if (Model)
+        {
+            <text>
+                // LODOP.PRINT_DESIGN();
+                // LODOP.PREVIEW();
+                LODOP.PRINT();
+            </text>
+        }
+        else
+        {
+            <text>
+                LODOP.PRINT();
+            </text>
+        }
+    }
+
+</script>

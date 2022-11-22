@@ -1,0 +1,27 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckinConfig.ExpressCheckinConfigPrintLabelModel
+@{
+    Layout = null;
+    string printFunName = "";
+}
+
+@if (Model.LabelType == ExpressCheckinLabelType.SizeW10H05)
+{
+    <partial name="ExpressCheckinConfigPrintLabelW10H05" model="@(Model.Preview)" />
+
+    printFunName = "printCheckinLabelCommonW10H05";
+}
+else if (Model.LabelType == ExpressCheckinLabelType.SizeW05H05)
+{
+    <partial name="ExpressCheckinConfigPrintLabelW05H05" model="@(Model.Preview)" />
+
+    printFunName = "printCheckinLabelCommonW05H05";
+}
+
+<script type="text/javascript">
+    @* type: 1 正常件, 2 申领件， 3 问题件， 这个 packageCount 也只是用来控制打印数量 *@
+    function printCheckinLabelCommon(data, packageCount, printCount, type) {
+        @(printFunName)(data, packageCount, printCount, type);
+    }
+</script>
