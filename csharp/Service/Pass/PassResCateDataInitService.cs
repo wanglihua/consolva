@@ -18,11 +18,15 @@ public class PassResCateDataInitService
     public void InitData()
     {
         IList<PassResCateInfo> cateList = new List<PassResCateInfo>() {
-            PassRes.Fee.Cate,
-            PassRes.Storage.Cate,
-            PassRes.Logistics.Cate,
+            PassRes.Customer.Cate,
             PassRes.CustomerMessage.Cate,
-            PassRes.SystemSetting.Cate,
+            PassRes.Express.Cate,
+            PassRes.Fee.Cate,
+            PassRes.Goods.Cate,
+            PassRes.Logistics.Cate,
+            PassRes.ReceivePack.Cate,
+            PassRes.Setting.Cate,
+            PassRes.Storage.Cate,
         };
 
         // 检查 cate id 唯一性

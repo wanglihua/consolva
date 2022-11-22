@@ -29,21 +29,21 @@ public partial class PassRes
         /// <summary>
         /// 扩展名添加
         /// </summary>
-        public const int GoodsWarehouse = Goods.CateId + 0100;
+        public const int GoodsWarehouse = CateId + 0100;
 
         /// <summary>
         /// 扩展名确认
         /// </summary>
-        public const int GoodsTrade = Goods.CateId + 0200;
+        public const int GoodsTrade = CateId + 0200;
 
         /// <summary>
         /// 类型物品清单
         /// </summary>
-        public const int GoodsListByType = Goods.CateId + 0300;
+        public const int GoodsListByType = CateId + 0300;
 
         /// <summary>
         /// 海关物品名
         /// </summary>
-        public const int HsGoods = Goods.CateId + 0400;
+        public const int HsGoods = CateId + 0400;
     }
 }

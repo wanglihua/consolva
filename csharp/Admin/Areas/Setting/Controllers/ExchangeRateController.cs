@@ -14,7 +14,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Setting.Controllers;
 
 [SettingArea]
-[AdminAuth(PassRes.SystemSetting.ExchangeRate)]
+[AdminAuth(PassRes.Setting.ExchangeRate)]
 public class ExchangeRateController : Controller
 {
     private readonly ExchangeRateService exchangeRateService;

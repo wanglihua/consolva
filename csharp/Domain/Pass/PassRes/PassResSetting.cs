@@ -5,7 +5,7 @@ public partial class PassRes
     /// <summary>
     /// 系统配置
     /// </summary>
-    public class SystemSetting
+    public class Setting
     {
         /// <summary>
         /// 类别
