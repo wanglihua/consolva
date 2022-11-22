@@ -44,4 +44,10 @@
       <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\LogisticsOrderRemarkReason\LogisticsOrderRemarkReasonList.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\ReceivePack\Views\ExpressRemarkPresetSelect\ExpressRemarkPresetSelectDetail.cshtml" />
+      <AdditionalFiles Include="Areas\ReceivePack\Views\ExpressRemarkPresetSelect\ExpressRemarkPresetSelectIndex.cshtml" />
+      <AdditionalFiles Include="Areas\ReceivePack\Views\ExpressRemarkPresetSelect\ExpressRemarkPresetSelectList.cshtml" />
+    </ItemGroup>
+
 </Project>

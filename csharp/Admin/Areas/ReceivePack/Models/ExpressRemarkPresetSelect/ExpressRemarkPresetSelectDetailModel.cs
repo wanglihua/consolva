@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Express;
 
-namespace shunda.Admin.Areas.Express.Models.ExpressRemarkPresetSelect;
+namespace shunda.Admin.Areas.ReceivePack.Models.ExpressRemarkPresetSelect;
 
 public class ExpressRemarkPresetSelectDetailModel : ExpressRemarkPresetSelectSaveModel
 {

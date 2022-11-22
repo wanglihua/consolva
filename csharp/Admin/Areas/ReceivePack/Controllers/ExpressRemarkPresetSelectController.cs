@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
-using shunda.Admin.Areas.Express.Models.ExpressRemarkPresetSelect;
+using shunda.Admin.Areas.ReceivePack.Models.ExpressRemarkPresetSelect;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -10,12 +10,12 @@ using shunda.Core.Web;
 using shunda.Domain.Express;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.Express.Controllers;
+namespace shunda.Admin.Areas.ReceivePack.Controllers;
 
 /// <summary>
 /// 快递单备注预设 控制器
 /// </summary>
-[ExpressArea]
+[ReceivePackArea]
 // [ExpressAuth(PassRes.XXX.ExpressRemarkPresetSelect)]
 public class ExpressRemarkPresetSelectController : Controller
 {

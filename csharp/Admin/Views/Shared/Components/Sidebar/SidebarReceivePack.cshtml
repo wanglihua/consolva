@@ -78,24 +78,24 @@
             @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
             {
                 <li id="goods-receive-pack-shelf-user-index-menu">
-                    <a href="@Url.Action("Index", "ShelfUser")">
+                    <a asp-area="ReceivePack" asp-controller="ShelfUser" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         货架用户关联
                     </a>
                     <b class="arrow"></b>
                 </li>
             }
-
+            
             @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
             {
-                <li id="goods-receive-pack-logistics-express-remark-index-menu">
-                    <a href="@Url.Action("Index", "LogisticsExpressRemark")">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        入库快递单备注
+                <li id="receive-pack-express-remark-preset-select-menu">
+                    <a asp-area="ReceivePack" asp-controller="ExpressRemarkPresetSelect" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>快递单备注预设
                     </a>
                     <b class="arrow"></b>
                 </li>
             }
+            
 
             @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackConfig))
             {
