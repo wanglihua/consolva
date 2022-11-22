@@ -2,7 +2,7 @@ using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
-using shunda.Service.Express;
+using shunda.Service.Fee;
 
 namespace shunda.Service.Customer;
 

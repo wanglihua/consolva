@@ -8,7 +8,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Fee;
 using shunda.Domain.Pass.PassRes;
-using shunda.Service.Express;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Setting.Controllers;

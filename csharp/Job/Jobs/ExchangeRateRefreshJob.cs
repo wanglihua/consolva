@@ -5,7 +5,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using shunda.Service;
-using shunda.Service.Express;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Job.Jobs;
