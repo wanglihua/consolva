@@ -36,7 +36,10 @@ public class ExpressRemarkPresetSelectController : Controller
     {
         var model = new ExpressRemarkPresetSelectIndexModel();
 
-        model.TypeList = ExpressRemarkType.GetList();
+        model.TypeList = new List<ExpressRemarkType>() {
+            ExpressRemarkType.Warehouse,
+            ExpressRemarkType.Service,
+        };
 
         return View("ExpressRemarkPresetSelectIndex", model);
     }
@@ -113,7 +116,10 @@ public class ExpressRemarkPresetSelectController : Controller
         model.Remark = expressRemarkPresetSelect.Remark;
         model.OrderNum = expressRemarkPresetSelect.OrderNum;
 
-        model.TypeList = ExpressRemarkType.GetList();
+        model.TypeList = new List<ExpressRemarkType>() {
+            ExpressRemarkType.Warehouse,
+            ExpressRemarkType.Service,
+        };
 
         return View("ExpressRemarkPresetSelectDetail", model);
     }
