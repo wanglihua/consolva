@@ -65,7 +65,7 @@ CREATE TABLE tbl_express
     UNIQUE INDEX ix_express_checkin_tracking_no (checkin_tracking_no),
     INDEX ix_express_return_tracking_no (return_tracking_no),
     INDEX ix_express_bill_customer_id (bill_customer_id),
-    INDEX ix_express_status_id (status_id),
+    INDEX ix_express_status_id (status_id), # 这个索引必须要加上的
     CONSTRAINT fk_express_add_user_id FOREIGN KEY (add_user_id) REFERENCES tbl_user (id),
     CONSTRAINT fk_express_warehouse_id FOREIGN KEY (warehouse_id) REFERENCES tbl_warehouse (id),
     CONSTRAINT fk_express_shelf_id FOREIGN KEY (shelf_id) REFERENCES tbl_shelf (id),

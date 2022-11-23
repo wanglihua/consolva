@@ -50,4 +50,9 @@
       <AdditionalFiles Include="Areas\ReceivePack\Views\ExpressRemarkPresetSelect\ExpressRemarkPresetSelectList.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Areas\ReceivePack\Controllers\LogisticsExpressCheckinController.cs" />
+      <Content Include="Areas\ReceivePack\Controllers\LogisticsExpressCheckinController.cs" />
+    </ItemGroup>
+
 </Project>

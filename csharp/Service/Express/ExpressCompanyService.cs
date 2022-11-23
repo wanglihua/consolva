@@ -1,4 +1,3 @@
-using NHibernate;
 using NLog;
 using shunda.Core.Service;
 
