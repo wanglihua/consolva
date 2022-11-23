@@ -16,8 +16,9 @@ BEGIN
         SELECT sl.id
         FROM tbl_storage_loc sl
                  INNER JOIN tbl_shelf s ON sl.shelf_id = s.id
-        WHERE s.status_id = 1000 # ShelfStatus.Enabled
-          AND sl.status_id = 1000; # StorageLocStatus.Enabled
+        WHERE s.status_id = 1000  # ShelfStatus.Enabled
+          AND sl.status_id = 1000 # StorageLocStatus.Enabled
+          AND s.type_id = 1000; # ShelfType.Normal
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 

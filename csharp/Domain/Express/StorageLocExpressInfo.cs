@@ -16,8 +16,9 @@ public class StorageLocExpressInfo
 
     /// <summary>
     /// 快递单，非空
+    /// 如果仓位上没有快递单号，会插入一条 express id 为 0 的记录
     /// </summary>
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual int ExpressId { get; set; }
 
     #region override
 
@@ -39,7 +40,7 @@ public class StorageLocExpressInfo
             return false;
         }
 
-        if (StorageLoc?.Id == storageLocExpressAnother.StorageLoc?.Id && Express?.Id == storageLocExpressAnother.Express?.Id)
+        if (StorageLoc?.Id == storageLocExpressAnother.StorageLoc?.Id && ExpressId == storageLocExpressAnother.ExpressId)
         {
             return true;
         }
@@ -49,12 +50,12 @@ public class StorageLocExpressInfo
 
     public override int GetHashCode()
     {
-        if ((StorageLoc?.Id ?? 0) == 0 || (Express?.Id ?? 0) == 0)
+        if ((StorageLoc?.Id ?? 0) == 0 || ExpressId == 0)
         {
             return base.GetHashCode();
         }
 
-        return unchecked(StorageLoc.Id.GetHashCode() + unchecked(3 * Express.Id.GetHashCode()));
+        return unchecked(StorageLoc.Id.GetHashCode() + unchecked(3 * ExpressId.GetHashCode()));
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using NHibernate;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 using shunda.Domain.Storage;
@@ -16,13 +17,12 @@ public class StorageLocExpressInfoMapping : ClassMapping<StorageLocExpressInfo>
         Table("tbl_storage_loc_express");
 
         ComposedId(ci => {
-            ci.ManyToOne(x => x.Express,
+            ci.Property(
+                x => x.ExpressId,
                 map => {
-                    map.Class(typeof(ExpressInfo));
+                    map.Type(NHibernateUtil.Int32);
                     map.Column("express_id");
                     map.NotNullable(true);
-                    map.Cascade(Cascade.None);
-                    map.Fetch(FetchKind.Select);
                 });
 
             ci.ManyToOne(
