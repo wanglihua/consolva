@@ -4,8 +4,8 @@ public static class DataBaseConfig
 {
     public enum DataBaseType
     {
-        MySQL = 100,
-        SQLite = 200,
+        MySQL = 1000,
+        SQLite = 2000,
     }
 
     public static string MySQLConnectionString
@@ -13,9 +13,9 @@ public static class DataBaseConfig
         get
         {
 #if DEBUG
-            return "server=127.0.0.1;database=shunda;user id=root;password=root;MinPoolSize=4;MaxPoolSize=512;Allow User Variables=True;CharacterSet=utf8mb4;";
+            return "server=127.0.0.1;database=shunda;user id=root;password=root;MinPoolSize=4;MaxPoolSize=512;AllowBatch=True;AllowUserVariables=True;CharacterSet=utf8mb4;";
 #else
-            return "server=127.0.0.1;database=shunda;user id=root;password=root;MinPoolSize=4;MaxPoolSize=512;Allow User Variables=True;CharacterSet=utf8mb4;";
+            return "server=127.0.0.1;database=shunda;user id=root;password=root;MinPoolSize=4;MaxPoolSize=512;AllowBatch=True;AllowUserVariables=True;CharacterSet=utf8mb4;";
 #endif
         }
     }
