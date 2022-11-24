@@ -11,9 +11,9 @@ namespace shunda.Service.Express;
 [Service(ServiceType.Scoped)]
 public class ExpressCheckinService
 {
-    private ISession session = null;
-    private ExpressCheckinConfigService expressCheckinConfigService = null;
-    private UserService userService = null;
+    private ISession session;
+    private ExpressCheckinConfigService expressCheckinConfigService;
+    private UserService userService;
 
     public ExpressCheckinService(ISession session,
         ExpressCheckinConfigService expressCheckinConfigService,
@@ -51,58 +51,44 @@ public class ExpressCheckinService
 
         int expressCountPerStorageLoc = expressCheckinConfig.ExpressCountPerStorageLoc;
 
-        IList<ExpressStatus> occupyStorageLocStatusList = ExpressStatus.GetOccupyStorageLocStatusList();
-        string occupyStorageLocStatusStr = string.Join(",", occupyStorageLocStatusList.Select(e => e.Id.ToString()).ToArray());
-
         bool isAdmin = userService.IsUserAdmin(userId);
 
+        /*
+SELECT DISTINCT se.shelf_id
+FROM tbl_storage_loc_express se
+GROUP BY se.shelf_id, se.storage_loc_id
+HAVING COUNT(*) < 8;
+         */
         string sql = $@"
-SELECT DISTINCT s.id
-FROM tbl_shelf s
-         INNER JOIN tbl_shelf_user su ON su.shelf_id = s.id
-         INNER JOIN tbl_storage_loc sl ON sl.shelf_id = s.id
-         LEFT JOIN tbl_logistics_claim_goods cg ON cg.status_id IN ({occupyStorageLocStatusStr}) AND cg.storage_loc_id = sl.id
-WHERE s.warehouse_id = {warehouseId}
-  AND s.status_id = {ShelfStatus.Enabled.Id}
-  AND s.type_id = {ShelfType.Claim.Id}
-  AND su.user_id = {userId}
-GROUP BY sl.id, s.id, s.name, s.order_num
-HAVING SUM(if(cg.status_id IS NOT NULL AND cg.status_id IN ({occupyStorageLocStatusStr}), 1, 0)) < {expressCountPerStorageLoc}
+SELECT DISTINCT se.shelf_id
+FROM tbl_storage_loc_express se
+GROUP BY se.shelf_id, se.storage_loc_id
+HAVING COUNT(*) < {expressCountPerStorageLoc}
 ";
-
-        if (isAdmin)
-        {
-            sql = $@"
-SELECT DISTINCT s.id
-FROM tbl_shelf s
-         INNER JOIN tbl_storage_loc sl ON sl.shelf_id = s.id
-         LEFT JOIN tbl_logistics_claim_goods cg ON cg.status_id IN ({occupyStorageLocStatusStr}) AND cg.storage_loc_id = sl.id
-WHERE s.warehouse_id = {warehouseId}
-  AND s.status_id = {ShelfStatus.Enabled.Id}
-  AND s.type_id = {ShelfType.Claim.Id}
-GROUP BY sl.id, s.id, s.name, s.order_num
-HAVING SUM(if(cg.status_id IS NOT NULL AND cg.status_id IN ({occupyStorageLocStatusStr}), 1, 0)) < {expressCountPerStorageLoc}
-";
-        }
 
         IList<int> shelfIdList = session.CreateSQLQuery(sql).List<int>();
+
+        if (isAdmin == false)
+        {
+            IList<int> userShelfIdList = session.Query<ShelfUserInfo>()
+                .Where(e => e.User.Id == userId)
+                .Select(e => e.Shelf.Id)
+                .ToList();
+
+            shelfIdList = shelfIdList.Where(e => userShelfIdList.Contains(e)).ToList();
+        }
 
         int shelfIdIncludeValue = shelfIdInclude ?? 0;
         if (shelfIdIncludeValue != 0)
         {
-            ShelfInfo shelfInclude = session.Query<ShelfInfo>()
-                .Where(e => e.Id == shelfIdIncludeValue && e.Warehouse.Id == warehouseId)
-                .Take(1)
-                .SingleOrDefault();
-
-            if (shelfInclude != null)
-            {
-                shelfIdList.Add(shelfIdIncludeValue);
-            }
+            shelfIdList.Add(shelfIdIncludeValue);
         }
 
         IList<ShelfInfo> shelfList = session.Query<ShelfInfo>()
-            .Where(e => shelfIdList.Contains(e.Id))
+            .Where(e => shelfIdList.Contains(e.Id)
+                        && e.Status == ShelfStatus.Enabled
+                        && e.Type == ShelfType.Normal
+                        && e.Warehouse.Id == warehouseId)
             .OrderBy(e => e.OrderNum).ThenBy(e => e.Id)
             .Distinct()
             .ToList();
