@@ -35,17 +35,17 @@ public class ExpressCheckinController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private ExpressCompanyService expressCompanyService;
-    private ExpressTrackingNoService expressTrackingNoService;
-    private ExpressCheckinService expressCheckinService;
-    private LoginUserService loginUserService;
-    private CustomerService customerService;
-    private LogisticsGoodsTypeService logisticsGoodsTypeService;
-    private CheckinTrackingNoService checkinTrackingNoService;
-    private StorageLocService storageLocService;
-    private ExpressCheckinConfigService expressCheckinConfigService;
-    private CustomerMessageService customerMessageService;
+    private readonly ISession session;
+    private readonly ExpressCompanyService expressCompanyService;
+    private readonly ExpressTrackingNoService expressTrackingNoService;
+    private readonly ExpressCheckinService expressCheckinService;
+    private readonly LoginUserService loginUserService;
+    private readonly CustomerService customerService;
+    private readonly LogisticsGoodsTypeService logisticsGoodsTypeService;
+    private readonly CheckinTrackingNoService checkinTrackingNoService;
+    private readonly StorageLocService storageLocService;
+    private readonly ExpressCheckinConfigService expressCheckinConfigService;
+    // private readonly CustomerMessageService customerMessageService;
     private ExpressLogService expressLogService;
     private ExpressSizeWeightService expressSizeWeightService;
     private LogisticsGoodsImageService logisticsGoodsImageService;
@@ -61,7 +61,7 @@ public class ExpressCheckinController : Controller
         CheckinTrackingNoService checkinTrackingNoService,
         StorageLocService storageLocService,
         ExpressCheckinConfigService expressCheckinConfigService,
-        CustomerMessageService customerMessageService,
+        // CustomerMessageService customerMessageService,
         ExpressLogService expressLogService,
         ExpressSizeWeightService expressSizeWeightService,
         LogisticsGoodsImageService logisticsGoodsImageService)
@@ -76,7 +76,7 @@ public class ExpressCheckinController : Controller
         this.checkinTrackingNoService = checkinTrackingNoService;
         this.storageLocService = storageLocService;
         this.expressCheckinConfigService = expressCheckinConfigService;
-        this.customerMessageService = customerMessageService;
+        // this.customerMessageService = customerMessageService;
         this.expressLogService = expressLogService;
         this.expressSizeWeightService = expressSizeWeightService;
         this.logisticsGoodsImageService = logisticsGoodsImageService;
@@ -101,8 +101,8 @@ public class ExpressCheckinController : Controller
         model.CheckinUserName = loginUser?.UserName ?? string.Empty;
 
         var checkinConfig = expressCheckinConfigService.GetExpressCheckinConfig();
-        model.CheckinPrintType = expressCheckinConfigService.GetVersion3PrintType(checkinConfig);
-        model.CheckinPrintCount = expressCheckinConfigService.GetVersion3PrintCount(checkinConfig);
+        model.CheckinPrintType = expressCheckinConfigService.GetLabelType(checkinConfig);
+        model.CheckinPrintCount = expressCheckinConfigService.GetPrintCount(checkinConfig);
 
         return View("ExpressCheckinIndex", model);
     }
@@ -113,7 +113,6 @@ public class ExpressCheckinController : Controller
     {
         int loginUserId = loginUserService.GetLoginUserId();
 
-        string oldExpressTrackingNo = expressTrackingNo;
         expressTrackingNo = expressTrackingNoService.RemoveUselessSuffix(expressTrackingNo);
 
         if (string.IsNullOrWhiteSpace(expressTrackingNo) == false)
@@ -123,9 +122,8 @@ public class ExpressCheckinController : Controller
 
         // 查看已经存在的, 还在仓位上的 tracking no 并把信息显示在这里
 
-        ExpressInfo claimExist = session.Query<ExpressInfo>()
-            // .Where(e => e.TrackingNo == expressTrackingNo && e.WarehouseProcessed == false)
-            .Where(e => e.TrackingNo == expressTrackingNo) // WarehouseProcessed 在保存的时候进行控制好了
+        ExpressInfo? expressExist = session.Query<ExpressInfo>()
+            .Where(e => e.TrackingNo == expressTrackingNo)
             .Take(1)
             .SingleOrDefault();
 
@@ -134,21 +132,18 @@ public class ExpressCheckinController : Controller
         model.WarehouseId = warehouseId;
         model.Warehouse = session.Get<WarehouseInfo>(warehouseId);
         model.ExpressTrackingNo = expressTrackingNo;
-        model.OldExpressTrackingNo = oldExpressTrackingNo;
 
-        int? claimExistShelfId = null;
-        StorageLocInfo storageLocExist = null;
-        if (claimExist != null)
+        int? expressExistShelfId = null;
+        StorageLocInfo? storageLocExist = null;
+        if (expressExist != null)
         {
-            model.ClaimId = claimExist.Id;
-            model.BillCustomerCode = claimExist.BillCustomerCode;
-            model.ExpressCompany = claimExist.ExpressCompany;
-            model.CheckinPackageCount = claimExist.ExpressPackageCount;
-            model.WoodFrame = claimExist.WoodFrame ?? false;
-            model.BarkClean = claimExist.BarkClean ?? false;
-            model.Description = claimExist.Description;
+            model.ClaimId = expressExist.Id;
+            model.BillCustomerCode = expressExist.BillCustomerCode;
+            model.ExpressCompany = expressExist.ExpressCompany;
+            model.PackageCount = expressExist.PackageCount;
+            model.Description = expressExist.Description;
 
-            int storageLocIdExist = claimExist.StorageLoc?.Id ?? 0;
+            int storageLocIdExist = expressExist.StorageLoc?.Id ?? 0;
             storageLocExist = session.Query<StorageLocInfo>()
                 .Fetch(e => e.Shelf)
                 .Fetch(e => e.Spec)
@@ -156,23 +151,23 @@ public class ExpressCheckinController : Controller
                 .Take(1)
                 .SingleOrDefault();
 
-            claimExistShelfId = storageLocExist?.Shelf?.Id;
+            expressExistShelfId = storageLocExist?.Shelf?.Id;
 
-            model.StorageLocName = storageLocExist?.GetFullName();
+            model.StorageLocName = storageLocExist?.GetFullName() ?? string.Empty;
         }
 
-        LogisticsExpressCheckinUserShelfInfo userSelect = expressCheckinService.GetUserShelfSelect(loginUserId);
+        ExpressCheckinUserShelfSelectInfo userSelect = expressCheckinService.GetUserShelfSelect(loginUserId);
 
-        if ((claimExistShelfId ?? 0) != 0)
+        if ((expressExistShelfId ?? 0) != 0)
         {
-            model.ShelfId = claimExistShelfId;
+            model.ShelfId = expressExistShelfId;
         }
         else
         {
             model.ShelfId = userSelect?.Shelf?.Id ?? 0;
         }
 
-        model.ShelfList = expressCheckinService.GetAvaibleShelfList(warehouseId, loginUserId, claimExistShelfId);
+        model.ShelfList = expressCheckinService.GetAvaibleShelfList(warehouseId, loginUserId, expressExistShelfId);
 
         if (model.ShelfId != null)
         {
@@ -189,33 +184,29 @@ public class ExpressCheckinController : Controller
             model.StorageLocSpecId = userSelect?.StorageLocSpec?.Id ?? 0;
         }
 
-        model.RemarkList = session.Query<LogisticsExpressRemarkInfo>().OrderBy(e => e.Id).ToList();
+        model.RemarkList = session.Query<ExpressRemarkPresetSelectInfo>().OrderBy(e => e.Id).ToList();
 
         // 物品列表
-        if (claimExist != null)
+        if (expressExist != null)
         {
-            int claimExistId = claimExist.Id;
-            IList<ExpressGoodsInfo> goodsEntryList = session.Query<ExpressGoodsInfo>()
-                .Where(e => e.ClaimId == claimExistId)
+            int expressExistId = expressExist.Id;
+            IList<ExpressGoodsInfo> expressGoodsList = session.Query<ExpressGoodsInfo>()
+                .Fetch(e => e.Goods)
+                .Where(e => e.Express.Id == expressExistId)
                 .OrderBy(e => e.Id)
-                .ToList();
-
-            IList<int> goodsIdList = goodsEntryList.Select(e => e.GoodsId).ToList();
-            IList<LogisticsGoodsInfo> logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
-                .Where(e => goodsIdList.Contains(e.Id))
                 .ToList();
 
             IList<LogisticsExpressCheckinExpressGoodsModel> goodsModelList = new List<LogisticsExpressCheckinExpressGoodsModel>();
 
-            foreach (ExpressGoodsInfo goodsEntry in goodsEntryList)
+            foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
             {
                 LogisticsExpressCheckinExpressGoodsModel goodsModel = new LogisticsExpressCheckinExpressGoodsModel();
-                goodsModel.EntryId = goodsEntry.Id;
-                goodsModel.UiIndex = goodsEntry.Id.ToString();
-                goodsModel.GoodsId = goodsEntry.GoodsId;
-                goodsModel.GoodsName = logisticsGoodsList.Where(e => e.Id == goodsEntry.GoodsId).Take(1).SingleOrDefault()?.Name;
-                goodsModel.Quantity = goodsEntry.Quantity;
-                goodsModel.Unit = goodsEntry.Unit;
+                goodsModel.EntryId = expressGoods.Id;
+                goodsModel.UiIndex = expressGoods.Id.ToString();
+                goodsModel.GoodsId = expressGoods.Goods.Id;
+                goodsModel.GoodsName = expressGoods.Goods.Name;
+                goodsModel.Quantity = expressGoods.Quantity;
+                goodsModel.Unit = expressGoods.Unit;
                 goodsModel.UnitList = GoodsUnit.GetList();
 
                 goodsModelList.Add(goodsModel);
@@ -269,25 +260,8 @@ public class ExpressCheckinController : Controller
 
         // 尺寸重量数据 end
 
-        // 是不是已经 2.0 创建订单了
-        LogisticsOrderGoodsExpressInfo orderExpress = session
-            .Query<LogisticsOrderGoodsExpressInfo>()
-            .Fetch(e => e.Order)
-            .Where(e => e.ExpressTrackingNo == expressTrackingNo
-                        && e.Order.OrderStatus != LogisticsOrderStatus.Draft
-                        && e.Order.OrderStatus != LogisticsOrderStatus.OrderCanceled
-                        && e.Order.OrderStatus != LogisticsOrderStatus.OrderNormalCompleted) // 就判断这几个状态够了的
-            .Take(1)
-            .SingleOrDefault();
-
-        if (orderExpress != null)
-        {
-            // throw new ValidationException("快递单号已经存在于现有订单中，请确认快递单号是否正确，或从2.0界面入库！");
-            model.Message = "快递单号已经存在于现有订单中，请确认快递单号是否正确，或从2.0界面入库！";
-        }
-
         // 是不是已经预报的快递单号
-        var expressExpect = session.Query<LogisticsExpressExpectInfo>()
+        var expressExpect = session.Query<ExpressExpectInfo>()
             .Where(e => e.TrackingNo == expressTrackingNo)
             .Take(1)
             .SingleOrDefault();
@@ -518,8 +492,8 @@ public class ExpressCheckinController : Controller
 
         LogisticsExpressExpectInfo expressExpect = null;
 
-        int claimId = model.ClaimId;
-        bool isCreate = claimId == 0;
+        int expressId = model.ClaimId;
+        bool isCreate = expressId == 0;
 
         lock (ExpressCheckinLockObject) // lock 时，数据库事务应该放在 lock 区域之内
         {
@@ -533,7 +507,7 @@ public class ExpressCheckinController : Controller
 
                 if (isCreate == false)
                 {
-                    express = session.Get<ExpressInfo>(claimId);
+                    express = session.Get<ExpressInfo>(expressId);
                     if (express.TrackingNo != model.ExpressTrackingNo)
                     {
                         ExpressInfo expressOther = session.Query<ExpressInfo>()
@@ -554,7 +528,7 @@ public class ExpressCheckinController : Controller
                         .Take(1)
                         .FirstOrDefault();
 
-                    if (express != null && express.Id != claimId)
+                    if (express != null && express.Id != expressId)
                     {
                         throw new ValidationException("该快递单号存在其他入库记录！");
                     }
@@ -793,8 +767,8 @@ public class ExpressCheckinController : Controller
                 session.SaveOrUpdate(express);
                 session.Flush();
 
-                claimId = express.Id;
-                if (claimId == 0)
+                expressId = express.Id;
+                if (expressId == 0)
                 {
                     throw new Exception("快递单号没能保存成功！");
                 }
@@ -803,7 +777,7 @@ public class ExpressCheckinController : Controller
                 if (prePackageCount != packageCount)
                 {
                     // 生成澳拼跟踪号，返回主单号
-                    var mainTrackingNo = checkinTrackingNoService.Generate(claimId);
+                    var mainTrackingNo = checkinTrackingNoService.Generate(expressId);
 
                     express.AoPinTrackingNo = mainTrackingNo;
                     session.Update(express);
@@ -811,20 +785,20 @@ public class ExpressCheckinController : Controller
                 }
 
                 // 删除被移除的物品
-                IList<ExpressGoodsInfo> goodsEntryList = new List<ExpressGoodsInfo>();
+                IList<ExpressGoodsInfo> expressGoodsList = new List<ExpressGoodsInfo>();
                 if (isCreate == false)
                 {
-                    goodsEntryList = session.Query<ExpressGoodsInfo>()
-                        .Where(e => e.ClaimId == claimId)
+                    expressGoodsList = session.Query<ExpressGoodsInfo>()
+                        .Where(e => e.ClaimId == expressId)
                         .ToList();
 
                     // 移除界面上没有，但数据库中有的物品
                     IList<int> entryIdListFromUi = goodsModelList.Select(e => e.EntryId).ToList();
-                    IList<ExpressGoodsInfo> goodsEntryToDelete = goodsEntryList
+                    IList<ExpressGoodsInfo> expressGoodsToDelete = expressGoodsList
                         .Where(e => entryIdListFromUi.Contains(e.Id) == false)
                         .ToList();
 
-                    foreach (ExpressGoodsInfo ce in goodsEntryToDelete)
+                    foreach (ExpressGoodsInfo ce in expressGoodsToDelete)
                     {
                         if (isCreate == false)
                         {
@@ -842,7 +816,7 @@ public class ExpressCheckinController : Controller
                 }
 
                 // 后续处理就不需要从数据库获取这个列表
-                IList<ExpressGoodsInfo> claimEntryList = new List<ExpressGoodsInfo>();
+                IList<ExpressGoodsInfo> expressEntryList = new List<ExpressGoodsInfo>();
 
                 // 保存物品
                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList)
@@ -850,7 +824,7 @@ public class ExpressCheckinController : Controller
                     ExpressGoodsInfo expressEntry = null;
                     if (goodsItem.EntryId != 0)
                     {
-                        expressEntry = goodsEntryList.Where(e => e.Id == goodsItem.EntryId).Take(1).SingleOrDefault();
+                        expressEntry = expressGoodsList.Where(e => e.Id == goodsItem.EntryId).Take(1).SingleOrDefault();
                     }
 
                     if (expressEntry == null)
@@ -858,7 +832,7 @@ public class ExpressCheckinController : Controller
                         expressEntry = new ExpressGoodsInfo();
                     }
 
-                    expressEntry.ClaimId = claimId;
+                    expressEntry.ClaimId = expressId;
 
                     if (isCreate == false &&
                         (expressEntry.GoodsId != goodsItem.GoodsId
@@ -884,7 +858,7 @@ public class ExpressCheckinController : Controller
 
                     session.SaveOrUpdate(expressEntry);
 
-                    claimEntryList.Add(expressEntry);
+                    expressEntryList.Add(expressEntry);
                 }
 
                 session.Flush();
@@ -927,7 +901,7 @@ public class ExpressCheckinController : Controller
                     expressLogService.UserClaimLog(express.Id, ExpressLogType.CheckinEdit, logDesc, loginUserId);
                 }
 
-                expressSizeWeightService.SumAndUpdateExpress(express.Id);
+                expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
 
                 expressCheckinService.SaveUserShelfSelect(loginUserId, model.ShelfId ?? 0, model.StorageLocSpecId ?? 0);
 
@@ -953,7 +927,7 @@ public class ExpressCheckinController : Controller
             {
                 if (expressExpect.Customer != null) // 这个 Customer 应该不可空才对
                 {
-                    customerMessageService.SendMessageYuBaoHuoZhi(expressExpect.Customer, expressExpect.TrackingNo);
+                    // todo 加上 customerMessageService.SendMessageYuBaoHuoZhi(expressExpect.Customer, expressExpect.TrackingNo);
                 }
             }
             else if (billCustomerId != 0) // 没预报但有面单会员ID
@@ -961,7 +935,7 @@ public class ExpressCheckinController : Controller
                 CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
                 if (billCustomer != null)
                 {
-                    customerMessageService.SendMessageWoDeShenLingJian(billCustomer);
+                   // todo 加上 customerMessageService.SendMessageWoDeShenLingJian(billCustomer);
                 }
             }
         }
@@ -1067,14 +1041,14 @@ public class ExpressCheckinController : Controller
     }
 
     [HttpPost]
-    [Route("/admin/express/checkin/claim/get/print/data/by/id")]
+    [Route("/admin/express/checkin/express/get/print/data/by/id")]
     [NoLoginRequired]
-    public IActionResult GetPrintDataById(int claimId)
+    public IActionResult GetPrintDataById(int expressId)
     {
-        ExpressInfo express = session.Get<ExpressInfo>(claimId);
+        ExpressInfo express = session.Get<ExpressInfo>(expressId);
         if (express == null)
         {
-            throw new ValidationException($"指定的快递单号#{claimId}不存在");
+            throw new ValidationException($"指定的快递单号#{expressId}不存在");
         }
 
         // string expressTrackingNo = express.TrackingNo;
@@ -1152,7 +1126,7 @@ public class ExpressCheckinController : Controller
     }
 
     [HttpPost]
-    [Route("/admin/express/checkin/claim/get/print/data")]
+    [Route("/admin/express/checkin/express/get/print/data")]
     [NoLoginRequired]
     public IActionResult GetPrintData(string expressTrackingNo)
     {
@@ -1170,7 +1144,7 @@ public class ExpressCheckinController : Controller
     }
 
     [HttpPost]
-    [Route("/admin/express/checkin/claim/get/print/data/manual")]
+    [Route("/admin/express/checkin/express/get/print/data/manual")]
     [NoLoginRequired]
     public IActionResult GetPrintDataManual(string expressTrackingNo)
     {
@@ -1494,7 +1468,7 @@ public class ExpressCheckinController : Controller
 
                 session.Flush();
 
-                expressSizeWeightService.SumAndUpdateExpress(express.Id);
+                expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
             }
 
             session.Flush();

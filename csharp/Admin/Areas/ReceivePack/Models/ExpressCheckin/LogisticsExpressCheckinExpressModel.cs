@@ -48,7 +48,7 @@ public class LogisticsExpressCheckinExpressModel
     public string Message { get; set; } = string.Empty;
 
     [BindNever]
-    public ExpressExpectInfo ExpressExpect { get; set; } = new ExpressExpectInfo();
+    public ExpressExpectInfo? ExpressExpect { get; set; } = null;
 
     [BindNever]
     public bool AutoRecordCheckinVideo { get; set; }
@@ -79,11 +79,7 @@ public class LogisticsExpressCheckinExpressModel
     /// 这个是申领件的入库包裹数量
     /// </summary>
     [Required(ErrorMessage = "入库包裹数量不能为空！")]
-    public int? CheckinPackageCount { get; set; }
-
-    public bool WoodFrame { get; set; }
-
-    public bool BarkClean { get; set; }
+    public int? PackageCount { get; set; }
 
     [Required(ErrorMessage = "货架不能为空！")]
     public int? ShelfId { get; set; }
