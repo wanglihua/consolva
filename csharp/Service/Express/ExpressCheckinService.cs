@@ -130,21 +130,35 @@ HAVING COUNT(*) < {expressCountPerStorageLoc}
         int shelfId = shelf.Id;
         int storageLocSpecId = storageLocSpec.Id;
 
-        IList<ExpressStatus> occupyStorageLocStatusList = ExpressStatus.GetOccupyStorageLocStatusList();
-        string occupyStorageLocStatusStr = string.Join(",", occupyStorageLocStatusList.Select(e => e.Id.ToString()).ToArray());
+        /*
+         
+SELECT DISTINCT sl.id AS storage_loc_id
+FROM tbl_storage_loc sl
+         INNER JOIN tbl_shelf s ON sl.shelf_id = s.id
+         INNER JOIN tbl_storage_loc_express sle ON sle.storage_loc_id = sl.id
+WHERE s.id = 1
+        AND s.status_id = 10000
+        AND sl.status_id = 1000
+        AND sl.spec_id = 1000
+        GROUP BY sl.id, sl.col_num, sl.row_num, sl.order_num
+            HAVING COUNT(*) < 8
+        ORDER BY sl.order_num, sl.col_num, sl.row_num DESC, COUNT(*)
+        LIMIT 1
+        
+        */
 
         string sql = $@"
 SELECT DISTINCT sl.id AS storage_loc_id
 FROM tbl_storage_loc sl
          INNER JOIN tbl_shelf s ON sl.shelf_id = s.id
-         LEFT JOIN tbl_logistics_claim_goods cg ON cg.storage_loc_id = sl.id
-WHERE sl.shelf_id = {shelfId}
+         INNER JOIN tbl_storage_loc_express sle ON sle.storage_loc_id = sl.id
+WHERE s.id = {shelfId}
   AND s.status_id = {ShelfStatus.Enabled.Id}
   AND sl.status_id = {StorageLocStatus.Enabled.Id}
   AND sl.spec_id = {storageLocSpecId}
 GROUP BY sl.id, sl.col_num, sl.row_num, sl.order_num
-HAVING SUM(if(cg.status_id IS NOT NULL AND cg.status_id IN ({occupyStorageLocStatusStr}), 1, 0)) < {expressCountPerStorageLoc}
-ORDER BY sl.order_num, SUM(if(cg.status_id IS NOT NULL AND cg.status_id IN ({occupyStorageLocStatusStr}), 1, 0)) DESC, sl.col_num, sl.row_num DESC
+HAVING COUNT(*) < {expressCountPerStorageLoc}
+ORDER BY sl.order_num, sl.col_num, sl.row_num DESC, COUNT(*)
 LIMIT 1
 ";
 

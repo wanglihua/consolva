@@ -41,7 +41,7 @@ public class StorageLocExpressService
     /// 存储过程内部有数据库事务
     /// </summary>
     public void UpdateAll()
-    {
+    { 
         session.CreateSQLQuery("CALL storage_loc_express_update_all()").List();
     }
 }
