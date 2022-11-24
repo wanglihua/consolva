@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Specialized;
 using NLog;
 using Quartz;
@@ -56,6 +55,9 @@ public class QuartzStartup
 
             jobStartTime = jobStartTime.AddMinutes(jobIntervalMinutes);
             ExchangeRateRefreshJob.Schedule(scheduler, jobStartTime);
+
+            jobStartTime = jobStartTime.AddMinutes(jobIntervalMinutes);
+            StorageLocExpressUpdateJob.Schedule(scheduler, jobStartTime);
         }
     }
 
