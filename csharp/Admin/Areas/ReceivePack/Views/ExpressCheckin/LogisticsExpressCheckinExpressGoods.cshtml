@@ -1,0 +1,76 @@
+@{
+    Layout = null;
+}
+
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin.LogisticsExpressCheckinExpressGoodsModel
+@{
+    Layout = null;
+
+    string goodsIndexValue = $"{Model.UiIndex}";
+    if (Model.EntryId != 0)
+    {
+        goodsIndexValue = $"{Model.EntryId}";
+    }
+    string goodsIndexFieldName = $"{nameof(LogisticsExpressCheckinExpressModel.GoodsList)}.Index";
+
+    string entryIdFieldName = $"{nameof(LogisticsExpressCheckinExpressModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.EntryId)}";
+
+    string goodsIdFieldName = $"{nameof(LogisticsExpressCheckinExpressModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.GoodsId)}";
+
+    int qunatity = 1;
+    if (Model.Quantity != 0)
+    {
+        qunatity = Model.Quantity;
+    }
+    string quantityFieldName = $"{nameof(LogisticsExpressCheckinExpressModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.Quantity)}";
+
+    string unitFieldName = $"{nameof(LogisticsExpressCheckinExpressModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.Unit)}";
+
+}
+<tr id="goods_@Model.UiIndex" class="claimGoodsEntry">
+    <td style="text-align: center;">
+        <input id="@goodsIndexFieldName" name="@goodsIndexFieldName" value="@goodsIndexValue" type="hidden"/>
+        <input id="@entryIdFieldName" name="@entryIdFieldName" value="@Model.EntryId " type="hidden"/>
+        <select id="goodsId_@Model.UiIndex" name="@goodsIdFieldName" class="select2" style="width: 380px;">
+            @if (Model.GoodsId != 0)
+            {
+                <option value="@(Model.GoodsId)">@(Model.GoodsName)</option>
+            }
+        </select>
+    </td>
+    <td style="text-align: center;">
+        <div class="input-group" style="margin: 0 auto;">
+            <input id="@quantityFieldName" name="@quantityFieldName" type="number" value="@(qunatity)" class="input-sm form-control" style="display: inline-block; width: 80px;text-align: center;">
+            <select id="@unitFieldName" name="@unitFieldName" class="input-group-addon" style="display: inline-block; width: 80px; height:28px;padding: 4px 0;">
+                <option value="">选择单位</option>
+                @foreach (var unit in Model.UnitList)
+                {
+                    @if (string.IsNullOrWhiteSpace(Model.Unit) == false && Model.Unit == unit)
+                    {
+                        <option value="@unit" selected="selected">&nbsp;&nbsp; @unit</option>
+                    }
+                    else
+                    {
+                        <option value="@unit">&nbsp;&nbsp; @unit</option>
+                    }
+                }
+            </select>
+        </div>
+    </td>
+    <td style="text-align: center;">
+        <a class="del" href="javascript:removeGoods('#goods_@Model.UiIndex');">
+            <span class="glyphicon glyphicon-minus-sign" style="color: red;"></span>
+            <span class="badge">移除物品</span>
+        </a>
+    </td>
+</tr>
+
+<script type="text/javascript">
+
+    $(function() {
+        renderSelect2SingleGoods($("select#goodsId_@Model.UiIndex"));
+    });
+
+</script>

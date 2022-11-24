@@ -1,0 +1,30 @@
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin.LogisticsExpressCheckinSizeWeightChildItem
+
+@{
+    Layout = null;
+}
+
+<tr class="childExpressRow">
+    <td style="text-align: left;">
+        &nbsp;@(Model.ParentTrackingNo)-<input type="text" class="childTrackingNo input-sm" style="width: 60px;" value="@(Model.TrackingNo)"/>
+        <input type="hidden" class="expressChildId" value="@(Model.ExpressChildId)"/>
+    </td>
+    <td style="text-align: center;">
+        <input type="number" step="0.1" number="true" class="childLength input-sm form-control" value="@(Model.Length)" style="text-align: right;"/>
+    </td>
+    <td style="text-align: center;">
+        <input type="number" step="0.1" number="true" class="childWidth input-sm form-control" value="@(Model.Width)" style="text-align: right;"/>
+    </td>
+    <td style="text-align: center;">
+        <input type="number" step="0.1" number="true" class="childHeight input-sm form-control" value="@(Model.Height)" style="text-align: right;"/>
+    </td>
+    <td style="text-align: center;">
+        <input type="number" step="0.1" number="true" class="childWeight input-sm form-control" value="@(Model.Weight)" style="text-align: right;"/>
+    </td>
+    <td style="text-align: center;">
+        <input type="number" step="1" number="true" class="childPackageCount input-sm form-control" value="@(Model.PackageCount)" style="text-align: right;" onblur="sumPackageCount()"/>
+    </td>
+    <td style="text-align: center;">
+        <a style="cursor: pointer;" onclick="removeExpressSizeWeight(this);">移除</a>
+    </td>
+</tr>

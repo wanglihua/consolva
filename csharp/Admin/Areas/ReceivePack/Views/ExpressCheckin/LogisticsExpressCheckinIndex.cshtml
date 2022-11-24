@@ -1,0 +1,483 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckinConfig
+@using shunda.Core.Web
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin.LogisticsExpressCheckinIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = Model.Warehouse.Name + "-收货入库";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="goods-receive-pack-menu">收货打包</li>
+    <li class="parent" data-menu="goods-receive-pack-logistics-express-checkin">收货入库</li>
+    <li class="active" data-menu="goods-receive-pack-logistics-express-checkin-warehouse@(Model.Warehouse?.Id)-index-menu" style="color: #2679B5; font-weight: bold;">@(ViewData[ViewDataKey.Title])</li>
+}
+
+@section Style
+{
+    <style>
+        input.search-input {
+            color:#000;
+            width:100%;
+            height:60px;
+            line-height:60px;
+            font-size:40px;
+            background-color: #faffbd;
+        }
+
+        button.search-btn {
+            height: 60px;
+            line-height: 42px;
+            font-size: 40px;
+        }
+        
+        table#express {
+            background-color: white;
+        }
+
+        table#express td {
+            white-space:normal;
+            word-wrap: break-word;
+            word-break: break-all;            
+        }
+
+        table#express td.lbl {
+            background-color: #F2F2F2;
+            text-align: center;
+        }
+        
+        table#warehouseNoteTable td.lbl {
+            background-color: #F2F2F2;
+            text-align: center;
+        }
+
+        div#goodsList {
+            margin-top: 50px
+        }
+
+        h3#warehouseError {
+            margin: 20px 0;
+            color:red;
+        }
+
+        h3#expressTrackingNoError {
+            margin: 20px 0;
+            color:red;
+        }
+        
+    </style>
+}
+
+<script type="text/javascript" src="/static/lodop/LodopFuncs.js?v=20191002"></script>
+<script type="text/javascript" src="@Url.Action("Index", "LodopScript")"></script>
+
+<partial name="~/Areas/ReceivePack/Views/ExpressCheckinConfig/ExpressCheckinConfigPrintLabel.cshtml" model="@(new ExpressCheckinConfigPrintLabelModel() { LabelType = Model.CheckinPrintType, Preview = Model.Debug })"/>
+
+<div>
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" method="post" onkeydown="if(event.keyCode === 13){getLogisticsExpress($('#expressTrackingNoInput').val());return false}">
+                <div class="input-group" style="width: 770px">
+                    <input type="text" id="expressTrackingNoInput" name="expressTrackingNoInput" class="form-control search-input" onfocus="this.value='';" autocomplete="off" placeholder="请输入或扫描来件快递单号"/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-danger search-btn" onclick="getLogisticsExpress($('#expressTrackingNoInput').val());return false">搜索</button>
+                        <button id="btnTakePhoto" type="button" class="btn btn-warning search-btn" style="visibility: hidden;" onclick="takePhoto();return false">拍照</button>                        
+                    </span>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+    <div id="logisticsExpress" class="row" style="margin-left: 1px;">
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function getLogisticsExpress(expressTrackingNo, afterSave) {
+        @* 发送单号和人员信息至摄像头拍照，如果是保存后的，实际就是清除这些信息，*@
+        @* 放在一系列操作的最前面，这样自动录制视频时，消息已经传过去了 *@
+        @* 联系不到websocket服务器时，这个操作也不是会费时间 *@
+        try {
+            var expressPhotoData = {};
+            
+            if (afterSave === true) {
+                expressPhotoData = {
+                    "type": "info",
+                    "trackingNo": "",
+                    "checkinLoginName": "",
+                    "checkinUserName": ""
+                };
+                
+                $("#btnTakePhoto").css("visibility", "hidden");
+            } else {
+                expressPhotoData = {
+                    "type": "info",
+                    "trackingNo": expressTrackingNo,
+                    "checkinLoginName": "@Html.Raw(Model.CheckinLoginName)",
+                    "checkinUserName": "@Html.Raw(Model.CheckinUserName)"
+                };
+                
+                if (expressTrackingNo !== "") {
+                    $("#btnTakePhoto").css("visibility", "visible");
+                } else {
+                    $("#btnTakePhoto").css("visibility", "hidden");
+                }
+            }
+            
+            var ws = new WebSocket("wss://localhost:8113");
+    
+            ws.onopen = function () {
+                ws.send(JSON.stringify(expressPhotoData));
+            };
+    
+            ws.onmessage = function (evt) {
+                console.log(evt.data);
+                ws.close();
+            };
+        } catch (e) {
+            console.log(e);
+        }
+
+        showMask("数据加载中，请稍候");
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Express", "LogisticsExpressCheckin")",
+            data: {
+                warehouseId: "@(Model.Warehouse?.Id)",
+                expressTrackingNo: expressTrackingNo
+            },
+            success: function (data) {
+                hideMask();
+                
+                if(data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+    
+                $("#logisticsExpress").html(data);
+    
+                renderSelect2AllGoods();
+               
+            }
+        });
+    }
+    
+    function takePhoto() {
+        var expressTrackingNo = $('#expressTrackingNoInput').val(); @* 其实这个信息C++端也没用起来的，只是现在传了这个数据 *@
+        try {
+            var expressPhotoData = {
+                "type": "photo",
+                "trackingNo": expressTrackingNo,
+                "checkinLoginName": "@Html.Raw(Model.CheckinLoginName)",
+                "checkinUserName": "@Html.Raw(Model.CheckinUserName)"
+            };
+            
+            var ws = new WebSocket("wss://localhost:8113");
+    
+            ws.onopen = function () {
+                ws.send(JSON.stringify(expressPhotoData));
+            };
+    
+            ws.onmessage = function (evt) {
+                console.log(evt.data);
+                ws.close();
+            };
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    
+    function getExpressComName(expressTrackingNo) {
+        if($("#expressCompany").val() === "") {
+            $.ajax({
+                url: "@Url.Action("GetExpressComName", "LogisticsExpressCheckin")",
+                type: "POST",
+                data: {
+                    "expressTrackingNo": expressTrackingNo
+                },
+                success: function(data) {
+                    if (data.success === true) {
+                        $("#expressCompany").val(data.content);
+                        return;
+                    }
+                }
+            });
+        }        
+    }    
+
+    function renderSelect2AllGoods() {
+        var select2 =  $("table#goodsList select.select2");
+
+        select2.select2({
+            language: "iepoch-goods-checkin",
+            placeholder: '输入物品名关键字，搜索并选择。',
+            ajax: {
+                url: "@Url.Action("SearchGoodsListData", "LogisticsExpressCheckin")",
+                type: "POST",
+                delay: 250,
+                error: function(xhr, textStatus, error){
+
+                },
+                data: function(params) {
+                    return {
+                        warehouseId: "@(Model.Warehouse?.Id ?? 0)",
+                        param: params.term
+                    };
+                },
+                processResults: function(data, params) {
+                    return {
+                        results: data.items
+                    };
+                },
+                cache: false
+            },
+            escapeMarkup: function(markup) { return markup; },
+            minimumInputLength: 1,
+            templateResult: function(data) {
+                return data.text;
+            },
+            templateSelection: function(data, container) {
+                return data.text;
+            }
+        });
+
+        select2.on("select2:select", function(e) {
+        });
+    }
+    
+    function renderSelect2SingleGoods(select) {
+
+        select.select2({
+            language: "iepoch-goods-checkin",
+            placeholder: '输入物品名关键字，搜索并选择。',
+            ajax: {
+                url: "@Url.Action("SearchGoodsListData", "LogisticsExpressCheckin")",
+                type: "POST",
+                delay: 250,
+                error: function(xhr, textStatus, error){
+
+                },
+                data: function(params) {
+                    return {
+                        warehouseId: "@(Model.Warehouse?.Id ?? 0)",
+                        param: params.term
+                    };
+                },
+                processResults: function(data, params) {
+                    return {
+                        results: data.items
+                    };
+                },
+                cache: false
+            },
+            escapeMarkup: function(markup) { return markup; },
+            minimumInputLength: 1,
+            templateResult: function(data) {
+                return data.text;
+            },
+            templateSelection: function(data, container) {
+                return data.text;
+            }
+        });
+
+        select.on("select2:select", function(e) {
+        });
+    }    
+    
+    function remarkSelectChange() {
+        var remarkSelect = $("#remarkList").val();
+        var description = $("#description");
+        
+        description.val(description.val() + remarkSelect);
+    }
+    
+    function addGoods() {
+        $.ajax({
+            url: '@Url.Action("AddGoods", "LogisticsExpressCheckin")',
+            type: "POST",
+            data: {},
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    // return;
+                }
+                else {
+                    $("#addGoodsTr").before(data);
+                    // return;
+                }
+            }
+        });
+    }    
+    
+    function removeGoods(goods) {
+        $(goods).remove();
+    }
+    
+    function saveExpressPrintLabel(expressTrackingNo) {
+       
+        showMask("操作中，请稍候");
+        $.ajax({
+            url: "@Url.Action("CheckSizeWeightData", "LogisticsExpressCheckin")",
+            type: "POST",
+            data: {
+                "expressTrackingNo": expressTrackingNo
+            },
+            success: function(data) {
+                hideMask();
+        
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+        
+                if(data.hasData === true && data.tooShort === false && data.tooLight === false) {
+                    saveExpressInternal(expressTrackingNo);
+                } else if(data.tooShort !== false) {
+                    $.msg.confirm("当前快递单号尺寸信息有长宽高小于1CM，确认要入库吗？", function() {
+                        saveExpressInternal(expressTrackingNo);
+                    });                       
+                } else if(data.tooLight !== false) {
+                    $.msg.confirm("当前快递单号尺寸信息有重量低于0.1KG，确认要入库吗？", function() {
+                        saveExpressInternal(expressTrackingNo);
+                    });                    
+                } else if(data.hasData !== true) {
+                    $.msg.confirm("当前快递单号还没任何已保存的尺寸信息，确认要入库吗？", function() {
+                        saveExpressInternal(expressTrackingNo);
+                    });
+                }
+            }
+        });
+    }  
+    
+     function saveExpressInternal(expressTrackingNo) {
+        $.messager.model = {
+            ok: {text: '<i class="ace-icon fa fa-check"></i>确定正确', classed: 'btn-success btn-sm'},
+            cancel: {text: '<i class="ace-icon fa fa-times"></i>修改包裹件数', classed: 'btn-primary btn-sm'}
+        };
+
+        $.messager.confirm("确认", '<div class="huaduConfirm"><i class="fa fa-question-circle fa-5x orange2"></i></br></br>请确定 <span style="color:red;font-weight:bold;">' + expressTrackingNo + '</span> 快递单号的包裹件数为：<span style="color:red;font-weight:bold;">'+ $("#checkinPackageCount").val() +'</span></div>', function() {
+
+            var form = $("#logisticsExpressCheckinForm");
+            var valid = validate(form);
+
+            if (valid) {
+
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("CheckinSave", "LogisticsExpressCheckin")',
+                    type: "POST",
+                    data: form.serialize(),
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } 
+                        
+                        $.msg.tip(data.message);
+
+                        printExpressLabel(expressTrackingNo, parseInt($("#checkinPackageCount").val()));
+                        getLogisticsExpress(expressTrackingNo, true);
+                    }
+                });
+            }
+        });        
+     }     
+     
+    function printExpressLabel(expressTrackingNo, packageCount) {
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("GetPrintData", "LogisticsExpressCheckin")',
+            type: "POST",
+            data: {
+                "expressTrackingNo": expressTrackingNo
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+                
+                printCheckinLabelCommon(data, packageCount, @Model.CheckinPrintCount, 2); @* type: 1 正常件, 2 申领件， 3 问题件 *@
+                return;
+            }
+        });
+    }
+    
+    function printExpressLabelManual(expressTrackingNo, packageCount) {
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("GetPrintDataManual", "LogisticsExpressCheckin")',
+            type: "POST",
+            data: {
+                "expressTrackingNo": expressTrackingNo
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+                
+                printCheckinLabelCommon(data, packageCount, @Model.CheckinPrintCount, 2); @* type: 1 正常件, 2 申领件， 3 问题件 *@
+                return;
+            }
+        });
+    }    
+    
+    function recordStart(expressTrackingNo) {
+            try {
+                var expressPhotoData  = {
+                    "type": "recordStart",
+                    "trackingNo": expressTrackingNo,
+                    "checkinLoginName": "@Html.Raw(Model.CheckinLoginName)",
+                    "checkinUserName": "@Html.Raw(Model.CheckinUserName)"
+                };
+                
+                var ws = new WebSocket("wss://localhost:8113");
+        
+                ws.onopen = function () {
+                    ws.send(JSON.stringify(expressPhotoData));
+                };
+        
+                ws.onmessage = function (evt) {
+                    console.log(evt.data);
+                    ws.close();
+                };
+            } catch (e) {
+                console.log(e);
+            }        
+    }
+    
+    function recordFinish(expressTrackingNo) {
+            try {
+                var expressPhotoData  = {
+                    "type": "recordFinish",
+                    "trackingNo": expressTrackingNo,
+                    "checkinLoginName": "@Html.Raw(Model.CheckinLoginName)",
+                    "checkinUserName": "@Html.Raw(Model.CheckinUserName)"
+                };
+                
+                var ws = new WebSocket("wss://localhost:8113");
+        
+                ws.onopen = function () {
+                    ws.send(JSON.stringify(expressPhotoData));
+                };
+        
+                ws.onmessage = function (evt) {
+                    console.log(evt.data);
+                    ws.close();
+                };
+            } catch (e) {
+                console.log(e);
+            }        
+    }    
+
+</script>

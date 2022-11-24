@@ -1,0 +1,15 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin.LogisticsExpressCheckinExpressModel
+
+@{
+    Layout = null;
+}
+
+<select asp-for="StorageLocSpecId" class="input-sm form-control">
+    <option value="0">选择仓位规格</option>
+    @foreach (StorageLocSpecInfo spec in Model.StorageLocSpecList)
+    {
+        <option value="@(spec.Id)">@(spec.Name)&nbsp;-&nbsp;@(spec.Length)×@(spec.Width)×@(spec.Height)cm</option>
+    }
+</select>

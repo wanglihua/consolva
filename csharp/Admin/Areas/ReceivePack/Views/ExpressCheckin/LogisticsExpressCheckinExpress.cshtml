@@ -1,0 +1,306 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin
+@using shunda.Domain.Express
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin.LogisticsExpressCheckinExpressModel
+
+@{
+    Layout = null;
+
+    bool autoRecordCheckinVideo = Model.AutoRecordCheckinVideo;
+}
+
+@if (Model.Warehouse == null)
+{
+    autoRecordCheckinVideo = false;
+    <h3 id="warehouseError" class="well">仓库参数不对，您进入的页面是否有误？</h3>
+}
+else if (string.IsNullOrWhiteSpace(Model.ExpressTrackingNo))
+{
+    autoRecordCheckinVideo = false;
+    <h3 id="expressTrackingNoError" class="well">请输入快递单号</h3>
+}
+else
+{
+    <div style="margin: 5px 0;">
+        <div style="width: 980px;">
+            <form id="logisticsExpressCheckinForm" class="form-horizontal" method="post">
+
+                @if (string.IsNullOrWhiteSpace(Model.Message) == false)
+                {
+                    autoRecordCheckinVideo = false;
+                    <h3 id="expressTrackingNoError" class="well">
+                        @(Model.Message)
+                    </h3>
+                }
+                else if (Model.ClaimId != 0)
+                {
+                    autoRecordCheckinVideo = false;
+                    <h3 id="expressTrackingNoError" class="well">
+                        快递单号 @(Model.ExpressTrackingNo) 已成功入库，修改保存后将更新入库记录信息！
+                    </h3>
+                }
+
+                <input type="hidden" asp-for="WarehouseId"/>
+                <input type="hidden" asp-for="ClaimId"/>
+
+                <div>
+                    <table id="express" class="data-list-table table table-bordered" style="margin-bottom: 8px;">
+                        @* <caption>单号详情</caption> *@
+                        <tbody>
+
+                            <tr>
+                                <td style="width: 100px" class="lbl">
+                                    <label for="expressTrackingNo">快递单号</label>
+                                </td>
+                                <td style="width: 388px">
+                                    <input id="expressTrackingNo" asp-for="ExpressTrackingNo" type="text" readonly="readonly" required="required" class="input-sm form-control"/>
+                                    @if (Model.ExpressTrackingNo != Model.OldExpressTrackingNo)
+                                    {
+                                        <div class="help-block">
+                                            原@(Model.OldExpressTrackingNo)
+                                        </div>
+                                    }
+                                </td>
+                                <td style="width: 100px" class="lbl">
+                                    <label for="expressCompany">物流公司</label>
+                                </td>
+                                <td style="width: 388px">
+                                    <input id="expressCompany" asp-for="ExpressCompany" type="text" class="input-sm form-control"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                @if (Model.ExpressExpect == null)
+                                {
+                                    <td class="lbl">
+                                        <label asp-for="BillCustomerCode">面单客户ID</label>
+                                    </td>
+                                    <td>
+                                        <input asp-for="BillCustomerCode" type="text" class="input-sm form-control"/>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="lbl" style="height: 37px;">
+                                        <label asp-for="BillCustomerCode">预报客户ID</label>
+                                    </td>
+                                    <td>
+                                        <input asp-for="BillCustomerCode" type="hidden" value="@(Model.ExpressExpect?.Customer?.Id)" class="input-sm form-control"/>
+                                        <span style="color: red; font-weight: bold;">@(Model.ExpressExpect?.Customer?.Id)</span>
+                                    </td>
+                                }
+
+                                <td class="lbl">
+                                    <label asp-for="ShelfId">货架</label>
+                                </td>
+                                <td>
+                                    <select id="shelfId" asp-for="ShelfId" class="input-sm form-control" onchange="shelfSelectChange()">
+                                        <option value="0">选择入库货架</option>
+                                        @foreach (ShelfInfo shelf in Model.ShelfList)
+                                        {
+                                            <option value="@(shelf.Id)">@(shelf.Name)</option>
+                                        }
+                                    </select>
+
+                                    <script type="text/javascript">
+                                        
+                                        function shelfSelectChange() {
+                                            
+                                            var shelfId = $("#shelfId").val();
+                                            
+                                            showMask("加载中...");
+                                            $.ajax({
+                                                url: '@Url.Action("StorageLocSpecList", "LogisticsExpressCheckin")',
+                                                type: "POST",
+                                                data: {
+                                                    "shelfId": shelfId
+                                                },
+                                                success: function(data) {
+                                                    hideMask();
+                                                    if (data.success === false) {
+                                                        $.msg.error(data.message);
+                                                        return;
+                                                    }
+                                                    
+                                                    $("#storageLocSpecWrapper").html(data);
+                                                }
+                                            });
+                                        }  
+                                    
+                                    </script>
+
+                                    @*
+                                    用这里的代码，就是不可以手工选择货架
+                                    <select asp-for="ShelfId" class="input-sm form-control" disabled="disabled">
+                                        @foreach (ShelfInfo shelf in Model.ShelfList)
+                                        {
+                                            <option value="@(shelf.Id)">@(shelf.Name)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="ShelfId" value="@((Model.ShelfId ?? 0) != 0 ? (Model.ShelfId ?? 0) : Model.ShelfList.FirstOrDefault()?.Id)" type="hidden"/>
+                                    *@
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="lbl">
+                                    <label for="checkinPackageCount" style="color: red;">入库包裹数量</label>
+                                </td>
+                                <td>
+                                    <input id="checkinPackageCount" asp-for="CheckinPackageCount" type="number" class="input-sm form-control" readonly="readonly"/>
+                                </td>
+                                <td class="lbl">仓位规格</td>
+                                <td style="vert-align: middle;">
+                                    <div id="storageLocSpecWrapper">
+                                        <partial name="LogisticsExpressCheckinStorageLocSpecList" model="@(Model)"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="lbl">木架和树皮</td>
+                                <td style="vert-align: middle;">
+                                    <input id="woodFrame" asp-for="WoodFrame" type="checkbox" style="position: relative; top: 5px; width: 20px;height: 20px; line-height: 20px; margin-top: 0px;"/><label style="line-height: 20px;" for="woodFrame">&nbsp;打木架</label>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input id="barkClean" asp-for="BarkClean" type="checkbox" style="position: relative; top: 5px; width: 20px;height: 20px; line-height: 20px; margin-top: 0px;"/><label for="barkClean">&nbsp;清理树皮</label>
+                                </td>
+
+                                @if (string.IsNullOrWhiteSpace(Model.StorageLocName) == false)
+                                {
+                                    <text>
+                                        <td class="lbl">仓位</td>
+                                        <td>
+                                            <span style="color: blue;">@(Model.StorageLocName)</span>
+                                        </td>
+                                    </text>
+                                }
+                                else
+                                {
+                                    <text>
+                                        <td class="lbl">
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </text>
+                                }
+
+                            </tr>
+                            <tr>
+                                <td class="lbl">
+                                    <label for="description">描述</label>
+                                </td>
+                                <td colspan="3">
+                                    <div class="row">
+                                        <div class="col-xs-8">
+                                            <textarea id="description" asp-for="Description" rows="1" class="input-sm form-control"></textarea>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <select id="remarkList" class="input-sm form-control" style="margin-top: 2px;" onchange="remarkSelectChange()">
+                                                <option value="">选择预设入库备注</option>
+                                                @foreach (ExpressRemarkPresetSelectInfo remarkPreset in Model.RemarkList)
+                                                {
+                                                    <option value="@(remarkPreset.Remark)">@(remarkPreset.Remark)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin: 8px 0;">
+                    <table id="goodsList" class="data-list-table table table-bordered table-hover" style="margin-bottom: 8px;">
+                        @* <caption>物品列表</caption> *@
+                        <thead>
+                            <tr>
+                                <th style="width: 350px; text-align: center; font-weight: normal;"><span style="display: block;float: left; font-weight: bold;">物品列表</span> 扩展名</th>
+                                <th style="width: 150px; text-align: center; font-weight: normal;">数量</th>
+                                <th style="width: 120px; text-align: center; font-weight: normal;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.GoodsList != null && Model.GoodsList.Count != 0)
+                            {
+                                foreach (LogisticsExpressCheckinExpressGoodsModel goodsModel in Model.GoodsList)
+                                {
+                                    <partial name="LogisticsExpressCheckinExpressGoods" model="@(goodsModel)"/>
+                                }
+                            }
+
+                            <tr id="addGoodsTr">
+                                <td style="border: 0;"></td>
+                                <td style="border: 0;"></td>
+                                <td style="text-align: center;border: 0;">
+                                    <a class="del" href="javascript: addGoods();">
+                                        <span class="glyphicon glyphicon-plus-sign" style="color: green;"></span>
+                                        <span class="badge">添加物品</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin: 5px 0;">
+                    <partial name="LogisticsExpressCheckinSizeWeight" model="@(Model)"/>
+                </div>
+
+                <div style="margin-top: -20px; text-align: center;">
+                    <button type="button" class="btn btn-pink" onclick="saveAndPrint();">
+                        <i class="ace-icon fa fa-floppy-o"></i>
+                        保存入库并打印标签
+                    </button>
+                    <button type="button" class="btn btn-purple" onclick="printExpressLabelManual($('#expressTrackingNo').val(), parseInt($('#checkinPackageCount').val()))">
+                        <i class="ace-icon fa fa-print"></i>
+                        手动补打标签
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function() {
+            getExpressComName($("#expressTrackingNo").val());
+        });
+    </script>
+
+    @if (Model.ClaimId == 0)
+    {
+        <script type="text/javascript">
+            $(function() {
+                addGoods();
+            });
+        </script>
+    }
+
+    @if (autoRecordCheckinVideo)
+    {
+        <script type="text/javascript">
+            recordStart("@(Model.ExpressTrackingNo)");
+        </script>
+    }
+
+    @if (autoRecordCheckinVideo)
+    {
+        <script type="application/javascript">
+            function saveAndPrint() {
+                recordFinish('@(Model.ExpressTrackingNo)');
+                saveExpressPrintLabel('@(Model.ExpressTrackingNo)');
+            }
+        </script>
+    }
+    else
+    {
+        <script type="application/javascript">
+            function saveAndPrint() {
+                saveExpressPrintLabel('@(Model.ExpressTrackingNo)');
+            }
+        </script>
+    }
+}

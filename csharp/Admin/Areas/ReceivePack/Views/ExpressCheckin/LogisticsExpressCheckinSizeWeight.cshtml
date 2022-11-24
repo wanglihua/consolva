@@ -1,0 +1,172 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin
+@model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin.LogisticsExpressCheckinExpressModel
+
+@{
+    Layout = null;
+}
+<table id="tblSizeWeight" class="data-list-table table table-bordered" style="margin-bottom: 0;">
+    @* <caption>尺寸重量</caption> *@
+    <thead>
+        <tr>
+            <td style="width: 220px; text-align: center;" class="lbl">
+                <span style="font-weight: bold;display: block; float: left;">尺寸重量</span>
+                快递单号/子单号
+            </td>
+            <td style="width: 130px; text-align: center;" class="lbl">
+                长度(cm)
+            </td>
+            <td style="width: 130px; text-align: center;" class="lbl">
+                宽度(cm)
+            </td>
+            <td style="width: 130px; text-align: center;" class="lbl">
+                高度(cm)
+            </td>
+            <td style="width: 130px; text-align: center;" class="lbl">
+                重量(kg)
+            </td>
+            <td style="width: 120px; text-align: center;" class="lbl">
+                箱数(共&nbsp;<span id="totalPackageCount" style="color: red; font-weight: bold;"></span>&nbsp;箱)
+            </td>
+            <td>
+            </td>
+        </tr>
+    </thead>
+    <tbody id="sizeWeightBody">
+        <tr>
+            <td style="text-align: left;">
+                <input id="expressTrackingNo" asp-for="ExpressTrackingNo" value="@(Model.ExpressTrackingNo)" type="text" class="input-sm form-control" readonly="readonly"/>
+            </td>
+            <td style="text-align: center;">
+                <input id="expressLength" asp-for="Length" type="number" step="0.1" number="true" class="input-sm form-control" style="text-align: right;"/>
+            </td>
+            <td style="text-align: center;">
+                <input id="expressWidth" asp-for="Width" type="number" step="0.1" number="true" class="input-sm form-control" style="text-align: right;"/>
+            </td>
+            <td style="text-align: center;">
+                <input id="expressHeight" asp-for="Height" type="number" step="0.1" number="true" class="input-sm form-control" style="text-align: right;"/>
+            </td>
+            <td style="text-align: center;">
+                <input id="expressWeight" asp-for="Weight" type="number" step="0.1" number="true" class="input-sm form-control" style="text-align: right;"/>
+            </td>
+            <td style="text-align: center;">
+                <input id="expressPackageCount" asp-for="ExpressPackageCount" type="number" step="1" number="true" class="expressPackageCount input-sm form-control" style="text-align: right;" onblur="sumPackageCount()"/>
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        @foreach (LogisticsExpressCheckinSizeWeightChildItem childSizeWeight in Model.ChildSizeWeightList)
+        {
+            <partial name="LogisticsExpressCheckinSizeWeightRow" model="@(childSizeWeight)"/>
+        }
+
+    </tbody>
+</table>
+
+<div style="text-align: right; margin: 8px 0;">
+    <a class="btn btn-success btn-mini" onClick="addExpressSizeWeight()">
+        <i class="ace-icon fa fa-plus"></i>
+        添加子单号
+    </a>
+    <a class="btn btn-primary btn-mini" onClick="saveExpressSizeWeight()">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存尺寸重量
+    </a>
+</div>
+
+<script type="text/javascript">
+
+    $(function() {
+        sumPackageCount();
+    });
+    
+    function sumPackageCount() {
+        var totalPackageCount = 0;
+        
+        totalPackageCount = totalPackageCount + parseInt($("#sizeWeightBody input.expressPackageCount").val());
+        
+        $("input.childPackageCount").each(function() {
+            totalPackageCount = totalPackageCount + parseInt($(this).val());
+        });
+        
+        if(isNaN(totalPackageCount) === false) {
+            $("span#totalPackageCount").html(totalPackageCount); @* 尺寸重量列表上方总计 *@
+            $("input#checkinPackageCount").val(totalPackageCount); @* 单号详情 入库包裹数量 *@
+        }
+    }
+
+    function addExpressSizeWeight() {
+        showMask("操作中，请稍候");
+        $.ajax({
+            url: "@Url.Action("NewExpressSizeWeightRow", "LogisticsExpressCheckin")",
+            type: "POST",
+            data: {
+                "expressTrackingNo": "@(Model.ExpressTrackingNo)"
+            },
+            success: function(data) {
+                hideMask();
+        
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+        
+                $("tbody#sizeWeightBody").append(data);
+                
+                sumPackageCount();
+            }
+        });
+    }
+    
+    function removeExpressSizeWeight(btnThis) {
+        $.msg.confirm("确认要移除吗？", function() {
+            $(btnThis).closest('tr.childExpressRow').remove();
+            $.msg.alert("子单号尺寸重量数据，已从界面上移除，请保存尺寸重量，保存后生效！");      
+            
+            sumPackageCount();
+        });
+    }    
+
+    function saveExpressSizeWeight()
+    {
+        var childExpressList = [];
+        
+        $("#sizeWeightBody").find("tr.childExpressRow").each(function (){
+            childExpressList.push({
+                "@(nameof(LogisticsExpressCheckinSizeWeightChildItem.ExpressChildId))": $(this).find("input.expressChildId").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightChildItem.TrackingNo))": $(this).find("input.childTrackingNo").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightChildItem.Length))": $(this).find("input.childLength").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightChildItem.Width))": $(this).find("input.childWidth").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightChildItem.Height))": $(this).find("input.childHeight").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightChildItem.Weight))": $(this).find("input.childWeight").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightChildItem.PackageCount))": $(this).find("input.childPackageCount").val(),
+            });
+        });
+        
+        showMask("操作中，请稍候");
+        $.ajax({
+            url: "@Url.Action("SaveSizeWeight", "LogisticsExpressCheckin")",
+            type: "POST",
+            data: {
+                "@(nameof(LogisticsExpressCheckinSizeWeightModel.ExpressTrackingNo))": '@(Model.ExpressTrackingNo)',
+                "@(nameof(LogisticsExpressCheckinSizeWeightModel.Length))": $("#expressLength").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightModel.Width))": $("#expressWidth").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightModel.Height))": $("#expressHeight").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightModel.Weight))": $("#expressWeight").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightModel.PackageCount))": $("#expressPackageCount").val(),
+                "@(nameof(LogisticsExpressCheckinSizeWeightModel.ChildSizeWeightList))": childExpressList
+            },
+            success: function(data) {
+                hideMask();
+        
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+        
+                $.msg.show(data.message);
+            }
+        });
+    }
+</script>
