@@ -119,4 +119,22 @@ public class ExpressTrackingNoService
 
         return true;
     }
+
+    public string RemoveUselessSuffix(string expressTrackingNo)
+    {
+        if (string.IsNullOrWhiteSpace(expressTrackingNo))
+        {
+            return expressTrackingNo;
+        }
+
+        expressTrackingNo = expressTrackingNo.Trim();
+
+        int indexOfMinus = expressTrackingNo.IndexOf("-");
+        if (indexOfMinus >= 0)
+        {
+            expressTrackingNo = expressTrackingNo.Substring(0, indexOfMinus);
+        }
+
+        return expressTrackingNo;
+    }
 }

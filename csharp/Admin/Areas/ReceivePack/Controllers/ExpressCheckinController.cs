@@ -5,7 +5,9 @@ using NHibernate.Criterion;
 using NHibernate.Linq;
 using NHibernate.SqlCommand;
 using NLog;
+using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 using shunda.Admin.Services;
+using shunda.Core;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -27,19 +29,18 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 /// </summary>
 [ReceivePackArea]
 [AdminAuth(PassRes.ReceivePack.ExpressCheckin)]
-public class LogisticsExpressCheckinController : Controller
+public class ExpressCheckinController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
     private ExpressCompanyService expressCompanyService;
-    private ExpressTrackingNoCorrectService expressTrackingNoCorrectService;
     private ExpressTrackingNoService expressTrackingNoService;
     private ExpressCheckinService expressCheckinService;
     private LoginUserService loginUserService;
     private CustomerService customerService;
     private LogisticsGoodsTypeService logisticsGoodsTypeService;
-    private AoPinTrackingNoService aoPinTrackingNoService;
+    private CheckinTrackingNoService checkinTrackingNoService;
     private StorageLocService storageLocService;
     private ExpressCheckinConfigService expressCheckinConfigService;
     private CustomerMessageService customerMessageService;
@@ -49,16 +50,15 @@ public class LogisticsExpressCheckinController : Controller
     private LogisticsGoodsImageService logisticsGoodsImageService;
     private SizeWeightHoldExpressService sizeWeightHoldExpressService;
 
-    public LogisticsExpressCheckinController(
+    public ExpressCheckinController(
         ISession session,
         ExpressCompanyService expressCompanyService,
-        ExpressTrackingNoCorrectService expressTrackingNoCorrectService,
         ExpressTrackingNoService expressTrackingNoService,
         ExpressCheckinService expressCheckinService,
         LoginUserService loginUserService,
         CustomerService customerService,
         LogisticsGoodsTypeService logisticsGoodsTypeService,
-        AoPinTrackingNoService aoPinTrackingNoService,
+        CheckinTrackingNoService checkinTrackingNoService,
         StorageLocService storageLocService,
         ExpressCheckinConfigService expressCheckinConfigService,
         CustomerMessageService customerMessageService,
@@ -70,13 +70,12 @@ public class LogisticsExpressCheckinController : Controller
     {
         this.session = session;
         this.expressCompanyService = expressCompanyService;
-        this.expressTrackingNoCorrectService = expressTrackingNoCorrectService;
         this.expressTrackingNoService = expressTrackingNoService;
         this.expressCheckinService = expressCheckinService;
         this.loginUserService = loginUserService;
         this.customerService = customerService;
         this.logisticsGoodsTypeService = logisticsGoodsTypeService;
-        this.aoPinTrackingNoService = aoPinTrackingNoService;
+        this.checkinTrackingNoService = checkinTrackingNoService;
         this.storageLocService = storageLocService;
         this.expressCheckinConfigService = expressCheckinConfigService;
         this.customerMessageService = customerMessageService;
@@ -110,7 +109,7 @@ public class LogisticsExpressCheckinController : Controller
         model.CheckinPrintType = expressCheckinConfigService.GetVersion3PrintType(checkinConfig);
         model.CheckinPrintCount = expressCheckinConfigService.GetVersion3PrintCount(checkinConfig);
 
-        return View("LogisticsExpressCheckinIndex", model);
+        return View("ExpressCheckinIndex", model);
     }
 
     [HttpPost]
@@ -121,7 +120,7 @@ public class LogisticsExpressCheckinController : Controller
         int loginUserId = loginUserService.GetLoginUserId();
 
         string oldExpressTrackingNo = expressTrackingNo;
-        expressTrackingNo = expressTrackingNoCorrectService.RemoveUselessSuffix(expressTrackingNo);
+        expressTrackingNo = expressTrackingNoService.RemoveUselessSuffix(expressTrackingNo);
 
         if (string.IsNullOrWhiteSpace(expressTrackingNo) == false)
         {
@@ -130,7 +129,7 @@ public class LogisticsExpressCheckinController : Controller
 
         // 查看已经存在的, 还在仓位上的 tracking no 并把信息显示在这里
 
-        LogisticsClaimGoodsInfo claimExist = session.Query<LogisticsClaimGoodsInfo>()
+        ExpressInfo claimExist = session.Query<ExpressInfo>()
             // .Where(e => e.TrackingNo == expressTrackingNo && e.WarehouseProcessed == false)
             .Where(e => e.TrackingNo == expressTrackingNo) // WarehouseProcessed 在保存的时候进行控制好了
             .Take(1)
@@ -202,7 +201,7 @@ public class LogisticsExpressCheckinController : Controller
         if (claimExist != null)
         {
             int claimExistId = claimExist.Id;
-            IList<LogisticsClaimGoodsEntryInfo> goodsEntryList = session.Query<LogisticsClaimGoodsEntryInfo>()
+            IList<ExpressGoodsInfo> goodsEntryList = session.Query<ExpressGoodsInfo>()
                 .Where(e => e.ClaimId == claimExistId)
                 .OrderBy(e => e.Id)
                 .ToList();
@@ -214,7 +213,7 @@ public class LogisticsExpressCheckinController : Controller
 
             IList<LogisticsExpressCheckinExpressGoodsModel> goodsModelList = new List<LogisticsExpressCheckinExpressGoodsModel>();
 
-            foreach (LogisticsClaimGoodsEntryInfo goodsEntry in goodsEntryList)
+            foreach (ExpressGoodsInfo goodsEntry in goodsEntryList)
             {
                 LogisticsExpressCheckinExpressGoodsModel goodsModel = new LogisticsExpressCheckinExpressGoodsModel();
                 goodsModel.EntryId = goodsEntry.Id;
@@ -303,7 +302,7 @@ public class LogisticsExpressCheckinController : Controller
         var expressCheckinConfig = expressCheckinConfigService.GetExpressCheckinConfig();
         model.AutoRecordCheckinVideo = expressCheckinConfig.AutoRecordCheckinVideo;
 
-        return View("LogisticsExpressCheckinExpress", model);
+        return View("ExpressCheckinExpress", model);
     }
 
     [HttpPost]
@@ -315,7 +314,7 @@ public class LogisticsExpressCheckinController : Controller
 
         model.StorageLocSpecList = GetShelfStorageLocSpecList(shelfId);
 
-        return View("LogisticsExpressCheckinStorageLocSpecList", model);
+        return View("ExpressCheckinStorageLocSpecList", model);
     }
 
     [NonAction]
@@ -344,7 +343,7 @@ public class LogisticsExpressCheckinController : Controller
         model.UiIndex = DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999).ToString();
         model.UnitList = GoodsUnit.GetList();
 
-        return View("LogisticsExpressCheckinExpressGoods", model);
+        return View("ExpressCheckinExpressGoods", model);
     }
 
     [HttpPost]
@@ -538,14 +537,14 @@ public class LogisticsExpressCheckinController : Controller
             {
                 transaction = session.BeginTransaction();
 
-                LogisticsClaimGoodsInfo claimGoods = null;
+                ExpressInfo claimGoods = null;
 
                 if (isCreate == false)
                 {
-                    claimGoods = session.Get<LogisticsClaimGoodsInfo>(claimId);
+                    claimGoods = session.Get<ExpressInfo>(claimId);
                     if (claimGoods.TrackingNo != model.ExpressTrackingNo)
                     {
-                        LogisticsClaimGoodsInfo claimGoodsOther = session.Query<LogisticsClaimGoodsInfo>()
+                        ExpressInfo claimGoodsOther = session.Query<ExpressInfo>()
                             .Where(e => e.TrackingNo == expressTrackingNo)
                             .Take(1)
                             .FirstOrDefault();
@@ -557,7 +556,7 @@ public class LogisticsExpressCheckinController : Controller
                 }
                 else
                 {
-                    claimGoods = session.Query<LogisticsClaimGoodsInfo>()
+                    claimGoods = session.Query<ExpressInfo>()
                         .Fetch(e => e.StorageLoc)
                         .Where(e => e.TrackingNo == expressTrackingNo)
                         .Take(1)
@@ -570,24 +569,24 @@ public class LogisticsExpressCheckinController : Controller
                 }
 
                 /*
-                if (claimGoods != null && (claimGoods.Picked == true || LogisticsClaimGoodsStatus.IsCheckedIn(claimGoods.Status)))
+                if (claimGoods != null && (claimGoods.Picked == true || ExpressStatus.IsCheckedIn(claimGoods.Status)))
                 {
                     throw new ValidationException("该快递单号已被会员认领，不能修改更新记录信息！");
                 }
                 */
 
-                if (claimGoods != null && (claimGoods.WarehouseProcessed == true || LogisticsClaimGoodsStatus.IsOrderCreate(claimGoods.Status)))
+                if (claimGoods != null && (claimGoods.WarehouseProcessed == true || ExpressStatus.IsOrderCreate(claimGoods.Status)))
                 {
                     throw new ValidationException("该快递单号已提交订单，不能修改更新记录信息！");
                 }
 
-                if (claimGoods != null && (claimGoods.Status == LogisticsClaimGoodsStatus.WaitReturn))
+                if (claimGoods != null && (claimGoods.Status == ExpressStatus.WaitReturn))
                 {
                     throw new ValidationException("该快递单号当前申请退运中，不能修改更新记录信息！");
                 }
 
                 /*
-                if (claimGoods != null && (claimGoods.WarehouseProcessed == true || claimGoods.Status == LogisticsClaimGoodsStatus.Order))
+                if (claimGoods != null && (claimGoods.WarehouseProcessed == true || claimGoods.Status == ExpressStatus.Order))
                 {
                     throw new ValidationException("该快递单号已存在入库记录，并且已经下架或打包，不能修改更新记录信息！");
                 }
@@ -656,11 +655,11 @@ public class LogisticsExpressCheckinController : Controller
 
                 if (claimGoods == null)
                 {
-                    claimGoods = new LogisticsClaimGoodsInfo();
+                    claimGoods = new ExpressInfo();
                     claimGoods.TrackingNo = expressTrackingNo;
                     claimGoods.AoPinTrackingNo = string.Empty; // 后面会回填这个澳拼跟踪号
                     claimGoods.Picked = false;
-                    claimGoods.Status = LogisticsClaimGoodsStatus.WaitPick; // 初始化为 WaitPick     
+                    claimGoods.Status = ExpressStatus.WaitPick; // 初始化为 WaitPick     
                     claimGoods.ShelfStatus = ExpressShelfStatus.ToOnShelf; // 初始化为 待上架
                     claimGoods.WarehouseProcessed = false;
                     claimGoods.AddTime = DateTime.Now;
@@ -705,7 +704,7 @@ public class LogisticsExpressCheckinController : Controller
                 /*
                 if (hasOrder)
                 {
-                    claimGoods.Status = LogisticsClaimGoodsStatus.Order;
+                    claimGoods.Status = ExpressStatus.Order;
                     claimGoods.PickTime = DateTime.Now;
                     claimGoods.CustomerId = customerId;
                     claimGoods.Order = orderExpress.Order;
@@ -812,7 +811,7 @@ public class LogisticsExpressCheckinController : Controller
                 if (prePackageCount != packageCount)
                 {
                     // 生成澳拼跟踪号，返回主单号
-                    var mainTrackingNo = aoPinTrackingNoService.Generate(claimId);
+                    var mainTrackingNo = checkinTrackingNoService.Generate(claimId);
 
                     claimGoods.AoPinTrackingNo = mainTrackingNo;
                     session.Update(claimGoods);
@@ -820,20 +819,20 @@ public class LogisticsExpressCheckinController : Controller
                 }
 
                 // 删除被移除的物品
-                IList<LogisticsClaimGoodsEntryInfo> goodsEntryList = new List<LogisticsClaimGoodsEntryInfo>();
+                IList<ExpressGoodsInfo> goodsEntryList = new List<ExpressGoodsInfo>();
                 if (isCreate == false)
                 {
-                    goodsEntryList = session.Query<LogisticsClaimGoodsEntryInfo>()
+                    goodsEntryList = session.Query<ExpressGoodsInfo>()
                         .Where(e => e.ClaimId == claimId)
                         .ToList();
 
                     // 移除界面上没有，但数据库中有的物品
                     IList<int> entryIdListFromUi = goodsModelList.Select(e => e.EntryId).ToList();
-                    IList<LogisticsClaimGoodsEntryInfo> goodsEntryToDelete = goodsEntryList
+                    IList<ExpressGoodsInfo> goodsEntryToDelete = goodsEntryList
                         .Where(e => entryIdListFromUi.Contains(e.Id) == false)
                         .ToList();
 
-                    foreach (LogisticsClaimGoodsEntryInfo ce in goodsEntryToDelete)
+                    foreach (ExpressGoodsInfo ce in goodsEntryToDelete)
                     {
                         if (isCreate == false)
                         {
@@ -851,12 +850,12 @@ public class LogisticsExpressCheckinController : Controller
                 }
 
                 // 后续处理就不需要从数据库获取这个列表
-                IList<LogisticsClaimGoodsEntryInfo> claimEntryList = new List<LogisticsClaimGoodsEntryInfo>();
+                IList<ExpressGoodsInfo> claimEntryList = new List<ExpressGoodsInfo>();
 
                 // 保存物品
                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList)
                 {
-                    LogisticsClaimGoodsEntryInfo claimGoodsEntry = null;
+                    ExpressGoodsInfo claimGoodsEntry = null;
                     if (goodsItem.EntryId != 0)
                     {
                         claimGoodsEntry = goodsEntryList.Where(e => e.Id == goodsItem.EntryId).Take(1).SingleOrDefault();
@@ -864,7 +863,7 @@ public class LogisticsExpressCheckinController : Controller
 
                     if (claimGoodsEntry == null)
                     {
-                        claimGoodsEntry = new LogisticsClaimGoodsEntryInfo();
+                        claimGoodsEntry = new ExpressGoodsInfo();
                     }
 
                     claimGoodsEntry.ClaimId = claimId;
@@ -1086,7 +1085,7 @@ public class LogisticsExpressCheckinController : Controller
     [NoHibernateAutoTransaction]
     public IActionResult GetPrintDataById(int claimId)
     {
-        LogisticsClaimGoodsInfo claimGoods = session.Get<LogisticsClaimGoodsInfo>(claimId);
+        ExpressInfo claimGoods = session.Get<ExpressInfo>(claimId);
         if (claimGoods == null)
         {
             throw new ValidationException($"指定的快递单号#{claimId}不存在");
@@ -1116,17 +1115,19 @@ public class LogisticsExpressCheckinController : Controller
         string checkinTime = claimGoods.AddTime.ToString("MM-dd HH:mm");
         string goodsTypeShortName = claimGoods.GoodsType?.CheckinLabelShortName;
 
-        var aoPinSubTrackingNoList = aoPinTrackingNoService.ListSubTrackingNo(claimGoods.Id);
+        /*
+         这里不需要这些逻辑
+        var aoPinSubTrackingNoList = checkinTrackingNoService.ListSubTrackingNo(claimGoods.Id);
 
         // 如果还没有澳拼单号的，就生成。有些历史入库的快递单号的，还没有澳拼入库单号。这个逻辑主要用在历史入库快递单，补打标签的时候
         if (aoPinSubTrackingNoList == null || aoPinSubTrackingNoList.Count == 0)
         {
-            string mainTrackingNo = aoPinTrackingNoService.Generate(claimGoods.Id);
+            string mainTrackingNo = checkinTrackingNoService.Generate(claimGoods.Id);
             claimGoods.AoPinTrackingNo = mainTrackingNo;
             session.Update(claimGoods);
             session.Flush();
 
-            aoPinSubTrackingNoList = aoPinTrackingNoService.ListSubTrackingNo(claimGoods.Id);
+            aoPinSubTrackingNoList = checkinTrackingNoService.ListSubTrackingNo(claimGoods.Id);
         }
 
         aoPinSubTrackingNoList = aoPinSubTrackingNoList.OrderBy(e => e.AoPinTrackingNo).ToList(); // 澳拼入库子单号排序一下
@@ -1145,11 +1146,13 @@ public class LogisticsExpressCheckinController : Controller
 
             aoPinSubTrackingNoItemList.Add(subTrackingNoItem);
         }
+        */
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
             { "message", "获取数据成功！" },
             { "expressTrackingNo", claimGoods.TrackingNo },
+            { "checkinTrackingNo", claimGoods.CheckinTrackingNo },
             { "customerCode", customerCode },
             { "warehouseNote", description },
             { "description", description },
@@ -1159,7 +1162,6 @@ public class LogisticsExpressCheckinController : Controller
             { "loginName", loginName },
             { "checkinTime", checkinTime },
             { "goodsTypeName", goodsTypeShortName },
-            { "aoPinSubTNList", aoPinSubTrackingNoItemList }
         });
     }
 
@@ -1169,7 +1171,7 @@ public class LogisticsExpressCheckinController : Controller
     [NoHibernateAutoTransaction]
     public IActionResult GetPrintData(string expressTrackingNo)
     {
-        LogisticsClaimGoodsInfo claimGoods = session.Query<LogisticsClaimGoodsInfo>()
+        ExpressInfo claimGoods = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == expressTrackingNo)
             .Take(1)
             .SingleOrDefault();
@@ -1188,7 +1190,7 @@ public class LogisticsExpressCheckinController : Controller
     [NoHibernateAutoTransaction]
     public IActionResult GetPrintDataManual(string expressTrackingNo)
     {
-        LogisticsClaimGoodsInfo claimGoods = session.Query<LogisticsClaimGoodsInfo>()
+        ExpressInfo claimGoods = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == expressTrackingNo)
             .Take(1)
             .SingleOrDefault();
@@ -1480,7 +1482,7 @@ public class LogisticsExpressCheckinController : Controller
             }
 
             // 如果是已入库的快递单，就要更新包裹数量；并且可能生成新的澳拼入库子单号
-            var claimGoods = session.Query<LogisticsClaimGoodsInfo>()
+            var claimGoods = session.Query<ExpressInfo>()
                 .Where(e => e.TrackingNo == expressTrackingNo)
                 .Take(1)
                 .SingleOrDefault();
@@ -1491,7 +1493,7 @@ public class LogisticsExpressCheckinController : Controller
                 if (shouldReGenerateAoPinTrackingNo)
                 {
                     // 这里是重新生成子单号
-                    var mainTrackingNo = aoPinTrackingNoService.Generate(claimGoods.Id);
+                    var mainTrackingNo = checkinTrackingNoService.Generate(claimGoods.Id);
                     claimGoods.AoPinTrackingNo = mainTrackingNo; // 设置主单号
                 }
 
@@ -1530,7 +1532,7 @@ public class LogisticsExpressCheckinController : Controller
         model.Height = null;
         model.Weight = null;
         model.PackageCount = 1;
-        return View("LogisticsExpressCheckinSizeWeightRow", model);
+        return View("ExpressCheckinSizeWeightRow", model);
     }
 
     #endregion

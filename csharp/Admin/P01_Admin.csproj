@@ -38,21 +38,4 @@
         <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\LogisticsOrderRemarkReason\LogisticsOrderRemarkReasonDetail.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\LogisticsOrderRemarkReason\LogisticsOrderRemarkReasonIndex.cshtml" />
-      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\LogisticsOrderRemarkReason\LogisticsOrderRemarkReasonList.cshtml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Areas\ReceivePack\Views\ExpressRemarkPresetSelect\ExpressRemarkPresetSelectDetail.cshtml" />
-      <AdditionalFiles Include="Areas\ReceivePack\Views\ExpressRemarkPresetSelect\ExpressRemarkPresetSelectIndex.cshtml" />
-      <AdditionalFiles Include="Areas\ReceivePack\Views\ExpressRemarkPresetSelect\ExpressRemarkPresetSelectList.cshtml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Areas\ReceivePack\Controllers\LogisticsExpressCheckinController.cs" />
-      <Content Include="Areas\ReceivePack\Controllers\LogisticsExpressCheckinController.cs" />
-    </ItemGroup>
-
 </Project>
