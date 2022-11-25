@@ -695,17 +695,9 @@ public class ExpressCheckinController : Controller
                     }
 
                     // 检查仓位和货架是否可用
-                    storageLocService.CheckStorageLoc((recommandStorage?.Id ?? 0), ShelfType.Claim);
+                    storageLocService.CheckStorageLoc((recommandStorage.Id), ShelfType.Normal);
 
                     express.StorageLoc = recommandStorage;
-                    express.CheckinStorageLoc = recommandStorage;
-                }
-
-                if (expressExpect != null
-                    && string.IsNullOrWhiteSpace(expressExpect.Description) == false // 预报里面的描述非空
-                    && string.IsNullOrWhiteSpace(express.CustomerRemark) == true) // 申领件里面的客户备注为空
-                {
-                    express.CustomerRemark = expressExpect.Description;
                 }
 
                 session.SaveOrUpdate(express);
@@ -715,6 +707,24 @@ public class ExpressCheckinController : Controller
                 if (expressId == 0)
                 {
                     throw new Exception("快递单号没能保存成功！");
+                }
+
+                // 保存客户备注
+                if (isCreate) // 新增是才需要这个客户备注迁移
+                {
+                    if (expressExpect != null
+                        && string.IsNullOrWhiteSpace(expressExpect.Description) == false) // 预报里面的描述非空
+                    {
+                        // 这时肯定是新增
+
+                        session.Save(new ExpressRemarkInfo() {
+                            Express = express,
+                            Type = ExpressRemarkType.Customer,
+                            AddUser = loginUser,
+                            Remark = expressExpect.Description.Trim(),
+                        });
+                        session.Flush();
+                    }
                 }
 
                 // 保存入库备注
@@ -738,12 +748,13 @@ public class ExpressCheckinController : Controller
                 session.SaveOrUpdate(checkinRemarkInDb);
                 session.Flush();
 
+
                 // 删除被移除的物品
                 IList<ExpressGoodsInfo> expressGoodsList = new List<ExpressGoodsInfo>();
                 if (isCreate == false)
                 {
                     expressGoodsList = session.Query<ExpressGoodsInfo>()
-                        .Where(e => e.ClaimId == expressId)
+                        .Where(e => e.Express!.Id == expressId)
                         .ToList();
 
                     // 移除界面上没有，但数据库中有的物品
