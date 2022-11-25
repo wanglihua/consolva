@@ -57,7 +57,7 @@ public class ExpressShelfScheduleService
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>().Where(e => storageLocIdList.Contains(e.Id)).ToList();
 
         IList<string> trackingNoList = scheduleList.Select(e => e.Express.TrackingNo).ToList();
-        IList<ExpressSizeWeightInfo> expressSizeWeightList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
+        IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>().Where(e => trackingNoList.Contains(e.TrackingNo)).ToList();
 
         foreach (ExpressShelfScheduleInfo schedule in scheduleList)
         {
@@ -150,7 +150,7 @@ public class ExpressShelfScheduleService
             string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.CheckinTrackingNo)}", checkinTrackingNoQuery, MatchMode.Anywhere));
         }
-        
+
         if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
         {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim();

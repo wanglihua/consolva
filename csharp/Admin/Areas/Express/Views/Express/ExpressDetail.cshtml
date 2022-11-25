@@ -406,19 +406,6 @@
 
                             <div class="row">
 
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label asp-for="Express.Description" class="col-xs-1 control-label">申领件描述</label>
-                                        <div class="col-xs-11">
-                                            <textarea asp-for="Express.Description" rows="1" disabled="disabled" class="input-sm form-control"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
                                 @foreach (var remark in Model.ExpressRemarkList)
                                 {
                                     if (remark.Type == ExpressRemarkType.Service)

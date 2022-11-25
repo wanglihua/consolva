@@ -496,7 +496,7 @@ public class ExpressCheckinController : Controller
 
         lock (ExpressCheckinLockObject) // lock 时，数据库事务应该放在 lock 区域之内
         {
-            ITransaction transaction = null;
+            ITransaction? transaction = null;
 
             try
             {
@@ -820,29 +820,13 @@ public class ExpressCheckinController : Controller
 
                 session.Flush();
 
-                /*
-                // 3.0 快递单入库的时候，如果快递单已经创建订单（可能是2.0的界面创建的），就把入库的认领件设置成已认领的，并把认领件的仓位设置到订单快递单号仓位(这时一般还没仓位)上
-                if (orderExpress != null)
-                {
-                    StorageLocInfo storageLoc = express.StorageLoc;
-
-                    int orderExpressId = orderExpress.Id;
-                    session.Query<LogisticsOrderGoodsInfo>()
-                        .Where(e => e.Express.Id == orderExpressId)
-                        .UpdateBuilder()
-                        .Set(e => e.StorageLoc, storageLoc)
-                        .Set(e => e.UpdateTime, DateTime.Now)
-                        .Update();
-                }
-                */
-
-                StorageLocInfo storageLoc = express.StorageLoc;
+                StorageLocInfo? storageLoc = express.StorageLoc;
                 if (isCreate)
                 {
                     string logDesc = storageLoc?.GetFullName() ?? string.Empty;
                     if (expressExpect != null)
                     {
-                        logDesc += $"，面单客户按预报客户：{expressExpect.Customer?.Id ?? 0}";
+                        logDesc += $"，面单客户按预报客户：{expressExpect.Customer.Id}";
                     }
 
                     expressLogService.UserLog(express.Id, ExpressLogType.Checkin, logDesc, loginUserId);
@@ -852,7 +836,7 @@ public class ExpressCheckinController : Controller
                     string logDesc = (storageLoc?.GetFullName() ?? string.Empty) + " " + string.Join(";", editDescList);
                     if (expressExpect != null)
                     {
-                        logDesc += $"，面单客户按预报客户：{expressExpect.Customer?.Id ?? 0}";
+                        logDesc += $"，面单客户按预报客户：{expressExpect.Customer.Id}";
                     }
 
                     expressLogService.UserLog(express.Id, ExpressLogType.CheckinEdit, logDesc, loginUserId);

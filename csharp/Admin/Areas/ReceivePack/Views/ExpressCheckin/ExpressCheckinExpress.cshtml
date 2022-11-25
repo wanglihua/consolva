@@ -154,17 +154,11 @@ else
                                 <td class="lbl">仓位规格</td>
                                 <td style="vert-align: middle;">
                                     <div id="storageLocSpecWrapper">
-                                        <partial name="LogisticsExpressCheckinStorageLocSpecList" model="@(Model)"/>
+                                        <partial name="ExpressCheckinStorageLocSpecList" model="@(Model)"/>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="lbl">木架和树皮</td>
-                                <td style="vert-align: middle;">
-                                    <input id="woodFrame" asp-for="WoodFrame" type="checkbox" style="position: relative; top: 5px; width: 20px;height: 20px; line-height: 20px; margin-top: 0px;"/><label style="line-height: 20px;" for="woodFrame">&nbsp;打木架</label>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <input id="barkClean" asp-for="BarkClean" type="checkbox" style="position: relative; top: 5px; width: 20px;height: 20px; line-height: 20px; margin-top: 0px;"/><label for="barkClean">&nbsp;清理树皮</label>
-                                </td>
 
                                 @if (string.IsNullOrWhiteSpace(Model.StorageLocName) == false)
                                 {

@@ -58,7 +58,7 @@ public class ExpressDumpScheduleService
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>().Where(e => storageLocIdList.Contains(e.Id)).ToList();
 
         IList<string> trackingNoList = scheduleList.Select(e => e.Express.TrackingNo).ToList();
-        IList<ExpressSizeWeightInfo> expressSizeWeightList = expressSizeWeightService.GetExpressSizeWeightList(trackingNoList);
+        IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>().Where(e => trackingNoList.Contains(e.TrackingNo)).ToList();
 
         foreach (ExpressDumpScheduleInfo schedule in scheduleList)
         {

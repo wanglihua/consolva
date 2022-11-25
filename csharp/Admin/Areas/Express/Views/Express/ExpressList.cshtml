@@ -59,9 +59,6 @@
                 <div>
                     是否预报
                 </div>
-                <div>
-                    <a field="@(nameof(ExpressInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">申领件描述</a>
-                </div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
@@ -204,7 +201,6 @@
                                 <span>无预报</span>
                             }
                         </div>
-                        @ListDataUtil.RenderStringWithDiv(express.Description)
                     </td>
                     <td style="text-align: center;">
                         <div style="color: blue;">

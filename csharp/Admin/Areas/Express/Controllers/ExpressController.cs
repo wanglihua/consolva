@@ -391,12 +391,6 @@ public class ExpressController : Controller
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue("申领件描述");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
         cell.SetCellValue("认领客户");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
@@ -452,18 +446,6 @@ public class ExpressController : Controller
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
         cell.SetCellValue("入库时间");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否打木架");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("是否清理树皮");
 
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell = row.CreateCell(cellIndex++);
@@ -542,12 +524,12 @@ public class ExpressController : Controller
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(express.OrderCode);
+            cell.SetCellValue(express.OrderCode); // 这里不要用 express.Order.Code，会导致一次数据库访问
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(express.OrderStatusNameCache); // 这里不要用 express.Order.Code，会导致一次数据库访问
+            cell.SetCellValue(express.OrderStatusNameCache); 
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
@@ -588,11 +570,6 @@ public class ExpressController : Controller
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(expectStr);
-
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(express.Description);
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
