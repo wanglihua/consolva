@@ -99,7 +99,7 @@
     function addExpressSizeWeight() {
         showMask("操作中，请稍候");
         $.ajax({
-            url: "@Url.Action("NewExpressSizeWeightRow", "LogisticsExpressCheckin")",
+            url: "@Url.Action("NewExpressSizeWeightRow", "ExpressCheckin")",
             type: "POST",
             data: {
                 "expressTrackingNo": "@(Model.ExpressTrackingNo)"
@@ -146,7 +146,7 @@
         
         showMask("操作中，请稍候");
         $.ajax({
-            url: "@Url.Action("SaveSizeWeight", "LogisticsExpressCheckin")",
+            url: "@Url.Action("SaveSizeWeight", "ExpressCheckin")",
             type: "POST",
             data: {
                 "@(nameof(LogisticsExpressCheckinSizeWeightModel.ExpressTrackingNo))": '@(Model.ExpressTrackingNo)',

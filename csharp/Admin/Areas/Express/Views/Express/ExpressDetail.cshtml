@@ -492,7 +492,7 @@
                                                     function printLabelW10H05() {
                                                         showMask("处理中...");
                                                         $.ajax({
-                                                            url: '@Url.Action("GetPrintDataById", "LogisticsExpressCheckin")',
+                                                            url: '@Url.Action("GetPrintDataById", "ExpressCheckin")',
                                                             type: "POST",
                                                             data: {
                                                                 "claimId": "@(Model.Express.Id)"
@@ -513,7 +513,7 @@
                                                     function printLabelW05H05() {
                                                         showMask("处理中...");
                                                         $.ajax({
-                                                            url: '@Url.Action("GetPrintDataById", "LogisticsExpressCheckin")',
+                                                            url: '@Url.Action("GetPrintDataById", "ExpressCheckin")',
                                                             type: "POST",
                                                             data: {
                                                                 "claimId": "@(Model.Express.Id)"
@@ -534,7 +534,7 @@
                                                     function printLabelW10H05Old() {
                                                         showMask("处理中...");
                                                         $.ajax({
-                                                            url: '@Url.Action("GetPrintDataById", "LogisticsExpressCheckin")',
+                                                            url: '@Url.Action("GetPrintDataById", "ExpressCheckin")',
                                                             type: "POST",
                                                             data: {
                                                                 "claimId": "@(Model.Express.Id)"

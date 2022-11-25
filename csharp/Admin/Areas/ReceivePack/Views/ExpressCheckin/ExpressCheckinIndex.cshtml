@@ -144,7 +144,7 @@
         showMask("数据加载中，请稍候");
         $.ajax({
             type: "POST",
-            url: "@Url.Action("Express", "LogisticsExpressCheckin")",
+            url: "@Url.Action("Express", "ExpressCheckin")",
             data: {
                 warehouseId: "@(Model.Warehouse?.Id)",
                 expressTrackingNo: expressTrackingNo
@@ -193,7 +193,7 @@
     function getExpressComName(expressTrackingNo) {
         if($("#expressCompany").val() === "") {
             $.ajax({
-                url: "@Url.Action("GetExpressComName", "LogisticsExpressCheckin")",
+                url: "@Url.Action("GetExpressComName", "ExpressCheckin")",
                 type: "POST",
                 data: {
                     "expressTrackingNo": expressTrackingNo
@@ -215,7 +215,7 @@
             language: "iepoch-goods-checkin",
             placeholder: '输入物品名关键字，搜索并选择。',
             ajax: {
-                url: "@Url.Action("SearchGoodsListData", "LogisticsExpressCheckin")",
+                url: "@Url.Action("SearchGoodsListData", "ExpressCheckin")",
                 type: "POST",
                 delay: 250,
                 error: function(xhr, textStatus, error){
@@ -254,7 +254,7 @@
             language: "iepoch-goods-checkin",
             placeholder: '输入物品名关键字，搜索并选择。',
             ajax: {
-                url: "@Url.Action("SearchGoodsListData", "LogisticsExpressCheckin")",
+                url: "@Url.Action("SearchGoodsListData", "ExpressCheckin")",
                 type: "POST",
                 delay: 250,
                 error: function(xhr, textStatus, error){
@@ -296,7 +296,7 @@
     
     function addGoods() {
         $.ajax({
-            url: '@Url.Action("AddGoods", "LogisticsExpressCheckin")',
+            url: '@Url.Action("AddGoods", "ExpressCheckin")',
             type: "POST",
             data: {},
             success: function(data) {
@@ -321,7 +321,7 @@
        
         showMask("操作中，请稍候");
         $.ajax({
-            url: "@Url.Action("CheckSizeWeightData", "LogisticsExpressCheckin")",
+            url: "@Url.Action("CheckSizeWeightData", "ExpressCheckin")",
             type: "POST",
             data: {
                 "expressTrackingNo": expressTrackingNo
@@ -368,7 +368,7 @@
 
                 showMask("提交中...");
                 $.ajax({
-                    url: '@Url.Action("CheckinSave", "LogisticsExpressCheckin")',
+                    url: '@Url.Action("CheckinSave", "ExpressCheckin")',
                     type: "POST",
                     data: form.serialize(),
                     success: function(data) {
@@ -392,7 +392,7 @@
         showMask("加载中...");
 
         $.ajax({
-            url: '@Url.Action("GetPrintData", "LogisticsExpressCheckin")',
+            url: '@Url.Action("GetPrintData", "ExpressCheckin")',
             type: "POST",
             data: {
                 "expressTrackingNo": expressTrackingNo
@@ -414,7 +414,7 @@
         showMask("加载中...");
 
         $.ajax({
-            url: '@Url.Action("GetPrintDataManual", "LogisticsExpressCheckin")',
+            url: '@Url.Action("GetPrintDataManual", "ExpressCheckin")',
             type: "POST",
             data: {
                 "expressTrackingNo": expressTrackingNo

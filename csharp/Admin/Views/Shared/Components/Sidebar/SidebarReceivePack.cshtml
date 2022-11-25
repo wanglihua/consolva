@@ -29,7 +29,7 @@
                         @foreach (WarehouseInfo warehouse in Model.WarehouseList)
                         {
                             <li id="goods-receive-pack-logistics-express-checkin-warehouse@(warehouse.Id)-index-menu">
-                                <a href="@Url.Action("Index", "LogisticsExpressCheckin", new { warehouseId = warehouse.Id })">
+                                <a asp-area="ReceivePack" asp-controller="ExpressCheckin" asp-action="Index" asp-route-warehouseId="@(warehouse.Id)">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     @(warehouse.Name)
                                 </a>
