@@ -156,7 +156,9 @@ public class ExpressController : Controller
             .SingleOrDefault();
         model.ExpressExpect = expressExpect;
 
-        model.ExpressSizeWeightList = expressSizeWeightService.GetExpressSizeWeightList(trackingNo);
+        model.ExpressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .ToList();
 
         model.ExpressPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => e.TrackingNo == trackingNo)

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 
+// todo a 名称改掉
 public class LogisticsExpressCheckinSizeWeightModel
 {
     /// <summary>
@@ -47,6 +48,7 @@ public class LogisticsExpressCheckinSizeWeightModel
     public IList<LogisticsExpressCheckinSizeWeightChildItem> ChildSizeWeightList { get; set; } = new List<LogisticsExpressCheckinSizeWeightChildItem>();
 }
 
+// todo a 名称改掉
 public class LogisticsExpressCheckinSizeWeightChildItem
 {
     [Required(ErrorMessage = "子单号ID不能为空！")]

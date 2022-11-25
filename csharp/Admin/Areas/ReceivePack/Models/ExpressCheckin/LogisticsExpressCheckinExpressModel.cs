@@ -60,10 +60,10 @@ public class LogisticsExpressCheckinExpressModel
     /// </summary>
     public IList<LogisticsExpressCheckinSizeWeightChildItem> ChildSizeWeightList { get; set; } = new List<LogisticsExpressCheckinSizeWeightChildItem>();
 
-    public int ClaimId { get; set; }
+    public int ClaimId { get; set; } // todo a  名称改掉
 
     [Required(ErrorMessage = "快递入库仓库不能为空！")]
-    public int? WarehouseId { get; set; }
+    public int WarehouseId { get; set; }
 
     [Required(ErrorMessage = "快递单号不能为空！")]
     [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]

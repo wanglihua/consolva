@@ -15,25 +15,6 @@ public class ExpressSizeWeightService
         this.session = session;
     }
 
-    public IList<ExpressSizeWeightInfo> GetExpressSizeWeightList(string trackingNo)
-    {
-        return session.Query<ExpressSizeWeightInfo>()
-            .Where(e => e.TrackingNo == trackingNo)
-            .ToList();
-    }
-
-    public IList<ExpressSizeWeightInfo> GetExpressSizeWeightList(IList<string> trackingNoList)
-    {
-        if (trackingNoList == null || trackingNoList.Count == 0)
-        {
-            return new List<ExpressSizeWeightInfo>();
-        }
-
-        return session.Query<ExpressSizeWeightInfo>()
-            .Where(e => trackingNoList.Contains(e.TrackingNo))
-            .ToList();
-    }
-
     public void BindExpress(string trackingNo, ExpressInfo express)
     {
         if (string.IsNullOrWhiteSpace(trackingNo))
