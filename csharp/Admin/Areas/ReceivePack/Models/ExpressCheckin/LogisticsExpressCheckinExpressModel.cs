@@ -13,9 +13,6 @@ public class LogisticsExpressCheckinExpressModel
     public WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
 
     [BindNever]
-    public string OldExpressTrackingNo { get; set; } = string.Empty; // todo a 去掉
-
-    [BindNever]
     public decimal? Length { get; set; }
 
     [BindNever]

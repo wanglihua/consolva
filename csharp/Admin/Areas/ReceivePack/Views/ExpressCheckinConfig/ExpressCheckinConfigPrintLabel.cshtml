@@ -8,13 +8,13 @@
 
 @if (Model.LabelType == ExpressCheckinLabelType.SizeW10H05)
 {
-    <partial name="ExpressCheckinConfigPrintLabelW10H05" model="@(Model.Preview)" />
+    <partial name="~/Areas/ReceivePack/Views/ExpressCheckinConfig/ExpressCheckinConfigPrintLabelW10H05.cshtml" model="@(Model.Preview)" />
 
     printFunName = "printCheckinLabelCommonW10H05";
 }
 else if (Model.LabelType == ExpressCheckinLabelType.SizeW05H05)
 {
-    <partial name="ExpressCheckinConfigPrintLabelW05H05" model="@(Model.Preview)" />
+    <partial name="~/Areas/ReceivePack/Views/ExpressCheckinConfig/ExpressCheckinConfigPrintLabelW05H05.cshtml" model="@(Model.Preview)" />
 
     printFunName = "printCheckinLabelCommonW05H05";
 }

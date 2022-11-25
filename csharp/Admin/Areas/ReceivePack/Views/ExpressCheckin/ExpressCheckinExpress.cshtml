@@ -55,12 +55,6 @@ else
                                 </td>
                                 <td style="width: 388px">
                                     <input id="expressTrackingNo" asp-for="ExpressTrackingNo" type="text" readonly="readonly" required="required" class="input-sm form-control"/>
-                                    @if (Model.ExpressTrackingNo != Model.OldExpressTrackingNo)
-                                    {
-                                        <div class="help-block">
-                                            原@(Model.OldExpressTrackingNo)
-                                        </div>
-                                    }
                                 </td>
                                 <td style="width: 100px" class="lbl">
                                     <label for="expressCompany">物流公司</label>
@@ -182,7 +176,7 @@ else
                             </tr>
                             <tr>
                                 <td class="lbl">
-                                    <label for="description">描述</label>
+                                    <label for="description">入库备注</label>
                                 </td>
                                 <td colspan="3">
                                     <div class="row">
@@ -221,7 +215,7 @@ else
                             {
                                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsModel in Model.GoodsList)
                                 {
-                                    <partial name="LogisticsExpressCheckinExpressGoods" model="@(goodsModel)"/>
+                                    <partial name="ExpressCheckinExpressGoods" model="@(goodsModel)"/>
                                 }
                             }
 
@@ -240,7 +234,7 @@ else
                 </div>
 
                 <div style="margin: 5px 0;">
-                    <partial name="LogisticsExpressCheckinSizeWeight" model="@(Model)"/>
+                    <partial name="ExpressCheckinSizeWeight" model="@(Model)"/>
                 </div>
 
                 <div style="margin-top: -20px; text-align: center;">
