@@ -14,7 +14,6 @@ using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
-using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
@@ -897,7 +896,7 @@ public class ExpressCheckinController : Controller
                 }
             }
         }
-        
+
         // todo remark, photo video, sizeweight 的 express id 绑定
 
         return Json(new Dictionary<string, object>() {
@@ -1117,80 +1116,81 @@ public class ExpressCheckinController : Controller
             throw new ValidationException("已打包快递单号不能，保存尺寸重量信息");
         }
 
-        LogisticsExpressInfo logisticsExpress = session.Query<LogisticsExpressInfo>()
+        // 先全部取出来
+        IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
             .Where(e => e.TrackingNo == trackingNo)
+            .ToList();
+
+        ExpressSizeWeightInfo? expressSizeWeightMain = expressSizeWeightList
+            .Where(e => string.IsNullOrWhiteSpace(e.TrackingNoSub))
             .Take(1)
             .SingleOrDefault();
 
         bool logisticsExpressCreate = false;
-        if (logisticsExpress == null)
+        if (expressSizeWeightMain == null)
         {
             logisticsExpressCreate = true;
 
-            logisticsExpress = new LogisticsExpressInfo();
-            logisticsExpress.TrackingNo = trackingNo;
-            logisticsExpress.Status = LogisticsExpressStatus.Sign;
-            logisticsExpress.SignTime = DateTime.Now;
+            expressSizeWeightMain = new ExpressSizeWeightInfo();
+            expressSizeWeightMain.TrackingNo = trackingNo;
+            expressSizeWeightMain.TrackingNoSub = string.Empty;
         }
 
         StringBuilder expressEditLogDescBuiler = new StringBuilder();
 
         // 长
-        if (logisticsExpressCreate == false && logisticsExpress.Length != model.Length)
+        if (logisticsExpressCreate == false && expressSizeWeightMain.Length != model.Length)
         {
-            expressEditLogDescBuiler.Append($"长:{logisticsExpress.Length}=>{model.Length}");
+            expressEditLogDescBuiler.Append($"长:{expressSizeWeightMain.Length}=>{model.Length}");
         }
 
-        logisticsExpress.Length = model.Length;
+        expressSizeWeightMain.Length = model.Length ?? 0;
 
         // 宽
-        if (logisticsExpressCreate == false && logisticsExpress.Width != model.Width)
+        if (logisticsExpressCreate == false && expressSizeWeightMain.Width != model.Width)
         {
-            expressEditLogDescBuiler.Append($"宽:{logisticsExpress.Width}=>{model.Width}");
+            expressEditLogDescBuiler.Append($"宽:{expressSizeWeightMain.Width}=>{model.Width}");
         }
 
-        logisticsExpress.Width = model.Width;
+        expressSizeWeightMain.Width = model.Width ?? 0;
 
         // 高
-        if (logisticsExpressCreate == false && logisticsExpress.Height != model.Height)
+        if (logisticsExpressCreate == false && expressSizeWeightMain.Height != model.Height)
         {
-            expressEditLogDescBuiler.Append($"高:{logisticsExpress.Height}=>{model.Height}");
+            expressEditLogDescBuiler.Append($"高:{expressSizeWeightMain.Height}=>{model.Height}");
         }
 
-        logisticsExpress.Height = model.Height;
+        expressSizeWeightMain.Height = model.Height ?? 0;
 
         // 重量
-        if (logisticsExpressCreate == false && logisticsExpress.Weight != model.Weight)
+        if (logisticsExpressCreate == false && expressSizeWeightMain.Weight != model.Weight)
         {
-            expressEditLogDescBuiler.Append($"重量:{logisticsExpress.Weight}=>{model.Weight}");
+            expressEditLogDescBuiler.Append($"重量:{expressSizeWeightMain.Weight}=>{model.Weight}");
         }
 
-        logisticsExpress.Weight = model.Weight;
+        expressSizeWeightMain.Weight = model.Weight ?? 0;
 
         // 箱数
-        if (logisticsExpressCreate == false && logisticsExpress.PackageCount != model.PackageCount)
+        if (logisticsExpressCreate == false && expressSizeWeightMain.PackageCount != model.PackageCount)
         {
-            expressEditLogDescBuiler.Append($"箱数:{logisticsExpress.PackageCount}=>{model.PackageCount}");
+            expressEditLogDescBuiler.Append($"箱数:{expressSizeWeightMain.PackageCount}=>{model.PackageCount}");
         }
 
-        logisticsExpress.PackageCount = model.PackageCount;
+        expressSizeWeightMain.PackageCount = model.PackageCount ?? 1;
 
-        session.SaveOrUpdate(logisticsExpress);
+        session.SaveOrUpdate(expressSizeWeightMain);
         session.Flush();
 
 
         if (logisticsExpressCreate == true)
         {
-            string addLogDesc = $"长:{logisticsExpress.Length}, 宽:{logisticsExpress.Width}, 高:{logisticsExpress.Height}, 重量:{logisticsExpress.Weight}, 箱数:{logisticsExpress.PackageCount}";
+            string addLogDesc = $"长:{expressSizeWeightMain.Length}, 宽:{expressSizeWeightMain.Width}, 高:{expressSizeWeightMain.Height}, 重量:{expressSizeWeightMain.Weight}, 箱数:{expressSizeWeightMain.PackageCount}";
             expressLogService.UserLog(trackingNo, ExpressLogType.SizeWeightAdd, addLogDesc, loginUserId);
         }
         else
         {
             expressLogService.UserLog(trackingNo, ExpressLogType.SizeWeightEdit, expressEditLogDescBuiler.ToString(), loginUserId);
         }
-
-
-        int logisticsExpressId = logisticsExpress.Id;
 
         // 保存子单号尺寸
         {
@@ -1226,8 +1226,8 @@ public class ExpressCheckinController : Controller
 
             IList<int> childSizeWeightIdList = childSizeWeightList.Select(e => e.ExpressChildId).ToList();
 
-            IList<LogisticsExpressChildInfo> childSizeWeightListInDb = session.Query<LogisticsExpressChildInfo>()
-                .Where(e => e.Parent.Id == logisticsExpressId)
+            IList<ExpressSizeWeightInfo> childSizeWeightListInDb = expressSizeWeightList
+                .Where(e => string.IsNullOrWhiteSpace(e.TrackingNoSub) == false)
                 .ToList();
 
             // 子单号尺寸，数据库里面有界面上没有的删除
@@ -1235,12 +1235,6 @@ public class ExpressCheckinController : Controller
             {
                 if (childSizeWeightIdList.Contains(chidSizeWeightInDb.Id) == false)
                 {
-                    // 先删除可能已经生成的澳拼入库子单号，否则接下来的删除会有外键引用错误
-                    int chidSizeWeightInDbId = chidSizeWeightInDb.Id;
-                    session.Query<AoPinTrackingNoExpressInfo>()
-                        .Where(e => e.ChildExpress != null && e.ChildExpress.Id == chidSizeWeightInDbId)
-                        .Delete();
-
                     // 再删除子单号尺寸
                     session.Delete(chidSizeWeightInDb);
 
@@ -1256,17 +1250,16 @@ public class ExpressCheckinController : Controller
             {
                 if (childItem.ExpressChildId == 0)
                 {
-                    LogisticsExpressChildInfo expressChild = new LogisticsExpressChildInfo();
-                    // expressChild.Id = childItem.ExpressChildId;
-                    expressChild.Parent = logisticsExpress;
+                    ExpressSizeWeightInfo expressChild = new ExpressSizeWeightInfo();
+                    expressChild.TrackingNo = trackingNo;
 
                     string subTrackingNo = $"{trackingNo}-{childItem.TrackingNo}";
                     expressChild.TrackingNo = subTrackingNo;
-                    expressChild.Length = childItem.Length;
-                    expressChild.Width = childItem.Width;
-                    expressChild.Height = childItem.Height;
-                    expressChild.Weight = childItem.Weight;
-                    expressChild.PackageCount = childItem.PackageCount;
+                    expressChild.Length = childItem.Length ?? 0;
+                    expressChild.Width = childItem.Width ?? 0;
+                    expressChild.Height = childItem.Height ?? 0;
+                    expressChild.Weight = childItem.Weight ?? 0;
+                    expressChild.PackageCount = childItem.PackageCount ?? 1;
 
                     session.Save(expressChild);
 
@@ -1275,50 +1268,55 @@ public class ExpressCheckinController : Controller
                 }
                 else
                 {
-                    LogisticsExpressChildInfo expressChild = session.Get<LogisticsExpressChildInfo>(childItem.ExpressChildId);
-                    expressChild.Parent = logisticsExpress;
+                    ExpressSizeWeightInfo? expressChild = expressSizeWeightList.Where(e => e.Id == childItem.ExpressChildId).Take(1).SingleOrDefault();
+                    if (expressChild == null)
+                    {
+                        throw new ValidationException($"指定的尺寸重量信息#{childItem.ExpressChildId}不存在！");
+                    }
+
+                    expressChild.TrackingNo = trackingNo;
 
                     StringBuilder childEditLogDescBuiler = new StringBuilder();
 
                     string subTrackingNo = $"{trackingNo}-{childItem.TrackingNo}";
-                    if (expressChild.TrackingNo != subTrackingNo)
+                    if (expressChild.TrackingNoSub != subTrackingNo)
                     {
-                        expressChild.TrackingNo = subTrackingNo;
+                        expressChild.TrackingNoSub = subTrackingNo;
 
                         childEditLogDescBuiler.Append($"子单号:{expressChild.TrackingNo}=>{subTrackingNo}");
                     }
 
                     if (expressChild.Length != childItem.Length)
                     {
-                        expressChild.Length = childItem.Length;
+                        expressChild.Length = childItem.Length ?? 0;
 
                         childEditLogDescBuiler.Append($"长:{expressChild.Length}=>{childItem.Length}");
                     }
 
                     if (expressChild.Width != childItem.Width)
                     {
-                        expressChild.Width = childItem.Width;
+                        expressChild.Width = childItem.Width ?? 0;
 
                         childEditLogDescBuiler.Append($"宽:{expressChild.Width}=>{childItem.Width}");
                     }
 
                     if (expressChild.Height != childItem.Height)
                     {
-                        expressChild.Height = childItem.Height;
+                        expressChild.Height = childItem.Height ?? 0;
 
                         childEditLogDescBuiler.Append($"高:{expressChild.Height}=>{childItem.Height}");
                     }
 
                     if (expressChild.Weight != childItem.Weight)
                     {
-                        expressChild.Weight = childItem.Weight;
+                        expressChild.Weight = childItem.Weight ?? 0;
 
                         childEditLogDescBuiler.Append($"重量:{expressChild.Weight}=>{childItem.Weight}");
                     }
 
                     if (expressChild.PackageCount != childItem.PackageCount)
                     {
-                        expressChild.PackageCount = childItem.PackageCount;
+                        expressChild.PackageCount = childItem.PackageCount ?? 1;
 
                         childEditLogDescBuiler.Append($"箱数:{expressChild.PackageCount}=>{childItem.PackageCount}");
                     }
