@@ -90,8 +90,8 @@ public class LogisticsExpressCheckinExpressModel
     // [Required(ErrorMessage = "仓位不能为空！")]
     // public int? StorageLocId { get; set; }
 
-    [MaxLength(500, ErrorMessage = "备注长度不能大于500！")]
-    public string Description { get; set; } = string.Empty;
+    [MaxLength(300, ErrorMessage = "备注长度不能大于300！")]
+    public string? Description { get; set; } // todo a 改名成 CheckinRemark
 
     public IList<LogisticsExpressCheckinExpressGoodsModel> GoodsList { get; set; } = new List<LogisticsExpressCheckinExpressGoodsModel>();
 }

@@ -52,15 +52,6 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo>
         );
 
         Property(
-            x => x.Description,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("description");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
             x => x.AddTime,
             map => {
                 map.Type(NHibernateUtil.DateTime);

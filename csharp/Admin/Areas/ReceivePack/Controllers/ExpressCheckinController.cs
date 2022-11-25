@@ -139,11 +139,21 @@ public class ExpressCheckinController : Controller
         StorageLocInfo? storageLocExist = null;
         if (expressExist != null)
         {
+            int expressExistId = expressExist.Id;
+
             model.ClaimId = expressExist.Id;
             model.BillCustomerCode = expressExist.BillCustomerCode;
             model.ExpressCompany = expressExist.ExpressCompany;
             model.PackageCount = expressExist.PackageCount;
-            model.Description = expressExist.Description;
+
+            // 仓库备注
+
+            ExpressRemarkInfo? expressRemark = session.Query<ExpressRemarkInfo>()
+                .Where(e => e.Express!.Id == expressExistId)
+                .Take(1)
+                .SingleOrDefault();
+
+            model.Description = expressRemark?.Remark ?? string.Empty;
 
             int storageLocIdExist = expressExist.StorageLoc?.Id ?? 0;
             storageLocExist = session.Query<StorageLocInfo>()
@@ -419,6 +429,7 @@ public class ExpressCheckinController : Controller
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
+        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         // 快递单号大写与去掉前后于中间的空格，订单创建时同样也要做这样的事情
         string expressTrackingNo = model.ExpressTrackingNo.Trim().Replace(" ", "").ToUpper(); // 去空格再大写
@@ -572,9 +583,6 @@ public class ExpressCheckinController : Controller
                 LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(goodsTypeList);
 
                 // 如果已经在 快递单号预报 里面的，就设置 快递单号预报为 录货值 状态
-                // bool hasOrder = false;
-                // int customerId = 0;
-
                 expressExpect = session.Query<ExpressExpectInfo>()
                     .Where(e => e.TrackingNo == expressTrackingNo)
                     .Take(1)
@@ -585,19 +593,15 @@ public class ExpressCheckinController : Controller
                     expressExpect.Status = ExpressExpectStatus.Enter;
                     session.Save(expressExpect);
                     session.Flush();
-
-                    // customerId = expressExpect.Customer.Id;
                 }
 
                 if (express == null)
                 {
                     express = new ExpressInfo();
                     express.TrackingNo = expressTrackingNo;
-                    express.AoPinTrackingNo = string.Empty; // 后面会回填这个澳拼跟踪号
-                    express.Picked = false;
+                    express.CheckinTrackingNo = string.Empty; // 后面会回填这个澳拼跟踪号
                     express.Status = ExpressStatus.WaitPick; // 初始化为 WaitPick     
                     express.ShelfStatus = ExpressShelfStatus.ToOnShelf; // 初始化为 待上架
-                    express.WarehouseProcessed = false;
                     express.AddTime = DateTime.Now;
                 }
 
@@ -606,7 +610,7 @@ public class ExpressCheckinController : Controller
                 // 仓库
                 if (isCreate == false && (express.Warehouse?.Id ?? 0) != warehouseId)
                 {
-                    editDescList.Add($"仓库:{express.Warehouse?.Name}=>{warehouse?.Name}");
+                    editDescList.Add($"仓库:{express.Warehouse?.Name}=>{warehouse.Name}");
                 }
 
                 express.Warehouse = warehouse;
@@ -622,33 +626,22 @@ public class ExpressCheckinController : Controller
                 // 物品类型
                 if (isCreate == false && express.GoodsType != goodsType)
                 {
-                    editDescList.Add($"物品类型:{express.GoodsType?.Name}=>{goodsType?.Name}");
+                    editDescList.Add($"物品类型:{express.GoodsType.Name}=>{goodsType.Name}");
                 }
 
                 express.GoodsType = goodsType;
 
                 // 添加用户
-                if (isCreate == false && express.AddUserId != loginUserId)
+                if (isCreate == false && express.AddUser.Id != loginUserId)
                 {
-                    UserInfo oldAddUser = session.Get<UserInfo>(express.AddUserId);
-                    UserInfo newAddUser = session.Get<UserInfo>(loginUserId);
-                    editDescList.Add($"添加用户:{oldAddUser?.UserName}=>{newAddUser?.UserName}");
+                    UserInfo oldAddUser = express.AddUser;
+                    editDescList.Add($"添加用户:{oldAddUser.UserName}=>{loginUser.UserName}");
                 }
 
-                express.AddUserId = loginUserId;
-
-                /*
-                if (hasOrder)
-                {
-                    express.Status = ExpressStatus.Order;
-                    express.PickTime = DateTime.Now;
-                    express.CustomerId = customerId;
-                    express.Order = orderExpress.Order;
-                }
-                */
+                express.AddUser = loginUser;
 
                 // 包裹数量
-                int prePackageCount = express.ExpressPackageCount; // 如果是新建，不是修改保存的话，这个值就是0
+                int prePackageCount = express.PackageCount; // 如果是新建，不是修改保存的话，这个值就是0
                 int packageCount = expressSizeWeightList.Sum(e => e.PackageCount);
 
                 if (packageCount <= 0)
@@ -661,45 +654,26 @@ public class ExpressCheckinController : Controller
                     editDescList.Add($"包裹数量:{prePackageCount}=>{packageCount}");
                 }
 
-                express.ExpressPackageCount = packageCount;
+                express.PackageCount = packageCount;
 
-                // 打木架
-                if (express.WoodFrame == false && model.WoodFrame == true)
+                // 入库备注 日志，后面 express 保存完后，保存到 express remark 表
+
+                string checkinRemark = model.Description?.Trim() ?? string.Empty;
+                ExpressRemarkInfo? checkinRemarkInDb = null;
+                string oldCheckinRemark = string.Empty;
+                if (isCreate == false)
                 {
-                    express.WoodFrameAddMode = ExpressWoodFrameAddMode.Checkin;
+                    int expId = express.Id;
+                    checkinRemarkInDb = session.Query<ExpressRemarkInfo>()
+                        .Where(e => e.Express!.Id == expId && e.Type == ExpressRemarkType.Warehouse)
+                        .Take(1)
+                        .SingleOrDefault();
+                    oldCheckinRemark = checkinRemarkInDb?.Remark ?? string.Empty;
+                    if (checkinRemark != oldCheckinRemark)
+                    {
+                        editDescList.Add($"入库备注:{oldCheckinRemark}=>{checkinRemark}");
+                    }
                 }
-
-                if (isCreate == false && express.WoodFrame != model.WoodFrame)
-                {
-                    string woodFrameBeforeDesc = express.WoodFrame == true ? "是" : "否";
-                    string woodFrameAfterDesc = model.WoodFrame == true ? "是" : "否";
-                    editDescList.Add($"打木架:{woodFrameBeforeDesc}=>{woodFrameAfterDesc}");
-                }
-
-                express.WoodFrame = model.WoodFrame;
-
-                // 清理树皮
-                if (express.BarkClean == false && model.BarkClean == true)
-                {
-                    express.BarkCleanAddMode = ExpressBarkCleanAddMode.Checkin;
-                }
-
-                if (isCreate == false && express.BarkClean != model.BarkClean)
-                {
-                    string barkCleanBeforeDesc = express.BarkClean == true ? "是" : "否";
-                    string barkCleanAfterDesc = model.BarkClean == true ? "是" : "否";
-                    editDescList.Add($"清理树皮杂物:{barkCleanBeforeDesc}=>{barkCleanAfterDesc}");
-                }
-
-                express.BarkClean = model.BarkClean;
-
-                // 备注
-                if (isCreate == false && express.Description != model.Description)
-                {
-                    editDescList.Add($"备注:{express.Description}=>{model.Description}");
-                }
-
-                express.Description = model.Description;
 
                 // 面单客户
 
@@ -743,16 +717,26 @@ public class ExpressCheckinController : Controller
                     throw new Exception("快递单号没能保存成功！");
                 }
 
-                // 如果是新增（新入库），或者入库信息修改时，总箱数有变动
-                if (prePackageCount != packageCount)
+                // 保存入库备注
+                if (checkinRemarkInDb == null)
                 {
-                    // 生成澳拼跟踪号，返回主单号
-                    var mainTrackingNo = checkinTrackingNoService.Generate(expressId);
-
-                    express.AoPinTrackingNo = mainTrackingNo;
-                    session.Update(express);
-                    session.Flush();
+                    checkinRemarkInDb = new ExpressRemarkInfo() {
+                        Express = express,
+                        Type = ExpressRemarkType.Warehouse,
+                        AddUser = loginUser,
+                    };
                 }
+
+                checkinRemarkInDb.Remark = checkinRemark;
+
+                if (isCreate == false && checkinRemark != oldCheckinRemark)
+                {
+                    // 编辑时如果入库备注跟原来的不同，就更新添加用户
+                    checkinRemarkInDb.AddUser = loginUser;
+                }
+
+                session.SaveOrUpdate(checkinRemarkInDb);
+                session.Flush();
 
                 // 删除被移除的物品
                 IList<ExpressGoodsInfo> expressGoodsList = new List<ExpressGoodsInfo>();

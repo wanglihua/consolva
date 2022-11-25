@@ -15,7 +15,6 @@ CREATE TABLE tbl_express
     checkin_tracking_no    VARCHAR(20)    DEFAULT ''    NOT NULL COMMENT '入库跟踪号',
     express_company        VARCHAR(100)   DEFAULT ''    NOT NULL COMMENT '快递公司',
     goods_type_id          INT            DEFAULT 0     NOT NULL COMMENT '物品类型#type:LogisticsGoodsType',
-    description            VARCHAR(500)   DEFAULT ''    NOT NULL COMMENT '快递单描述',
     add_time               DATETIME                     NOT NULL COMMENT '入库时间',
     add_user_id            INT                          NOT NULL COMMENT '添加用户',
     bill_customer_code     VARCHAR(50)    DEFAULT ''    NOT NULL COMMENT '面单客户',

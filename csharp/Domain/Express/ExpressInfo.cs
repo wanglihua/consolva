@@ -48,14 +48,6 @@ public class ExpressInfo : Entity
     public virtual LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
-    /// 快递单描述，非空
-    /// </summary>
-    [Required(ErrorMessage = "快递单描述不能为空！")]
-    [MaxLength(500, ErrorMessage = "快递单描述长度不能大于500！")]
-    [JsonProperty("description")]
-    public virtual string Description { get; set; } = string.Empty;
-
-    /// <summary>
     /// 入库时间，非空
     /// </summary>
     [Required(ErrorMessage = "入库时间不能为空！")]
