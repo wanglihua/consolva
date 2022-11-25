@@ -750,16 +750,17 @@ public class ExpressCheckinController : Controller
 
 
                 // 删除被移除的物品
-                IList<ExpressGoodsInfo> expressGoodsList = new List<ExpressGoodsInfo>();
+                IList<ExpressGoodsInfo> expressGoodsListInDb = new List<ExpressGoodsInfo>();
                 if (isCreate == false)
                 {
-                    expressGoodsList = session.Query<ExpressGoodsInfo>()
+                    expressGoodsListInDb = session.Query<ExpressGoodsInfo>()
+                        .Fetch(e => e.Goods)
                         .Where(e => e.Express!.Id == expressId)
                         .ToList();
 
                     // 移除界面上没有，但数据库中有的物品
                     IList<int> entryIdListFromUi = goodsModelList.Select(e => e.EntryId).ToList();
-                    IList<ExpressGoodsInfo> expressGoodsToDelete = expressGoodsList
+                    IList<ExpressGoodsInfo> expressGoodsToDelete = expressGoodsListInDb
                         .Where(e => entryIdListFromUi.Contains(e.Id) == false)
                         .ToList();
 
@@ -767,11 +768,8 @@ public class ExpressCheckinController : Controller
                     {
                         if (isCreate == false)
                         {
-                            LogisticsGoodsInfo goodsRemove = session.Get<LogisticsGoodsInfo>(ce.GoodsId);
-                            if (goodsRemove != null)
-                            {
-                                editDescList.Add($"移除物品:{goodsRemove.Name}*{ce.Quantity}{ce.Unit}");
-                            }
+                            string goodsNameToRemove = ce.Goods.Name;
+                            editDescList.Add($"移除物品:{goodsNameToRemove}*{ce.Quantity}{ce.Unit}");
                         }
 
                         session.Delete(ce);
@@ -780,36 +778,33 @@ public class ExpressCheckinController : Controller
                     session.Flush();
                 }
 
-                // 后续处理就不需要从数据库获取这个列表
-                IList<ExpressGoodsInfo> expressEntryList = new List<ExpressGoodsInfo>();
-
                 // 保存物品
                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList)
                 {
-                    ExpressGoodsInfo expressEntry = null;
+                    ExpressGoodsInfo? expressGoods = null;
                     if (goodsItem.EntryId != 0)
                     {
-                        expressEntry = expressGoodsList.Where(e => e.Id == goodsItem.EntryId).Take(1).SingleOrDefault();
+                        expressGoods = expressGoodsListInDb.Where(e => e.Id == goodsItem.EntryId).Take(1).SingleOrDefault();
                     }
 
-                    if (expressEntry == null)
+                    if (expressGoods == null)
                     {
-                        expressEntry = new ExpressGoodsInfo();
+                        expressGoods = new ExpressGoodsInfo();
                     }
 
-                    expressEntry.ClaimId = expressId;
+                    expressGoods.Express = express;
 
                     if (isCreate == false &&
-                        (expressEntry.GoodsId != goodsItem.GoodsId
-                         || expressEntry.Quantity != goodsItem.Quantity
-                         || expressEntry.Unit != goodsItem.Unit))
+                        (expressGoods.Goods.Id != goodsItem.GoodsId
+                         || expressGoods.Quantity != goodsItem.Quantity
+                         || expressGoods.Unit != goodsItem.Unit))
                     {
                         LogisticsGoodsInfo goodsEditAfter = session.Get<LogisticsGoodsInfo>(goodsItem.GoodsId);
-                        if (expressEntry.Id != 0) // 这个时候是修改(isCreate == false)，编辑物品
+                        if (expressGoods.Id != 0) // 这个时候是修改(isCreate == false)，编辑物品
                         {
-                            LogisticsGoodsInfo goodsEditBefore = session.Get<LogisticsGoodsInfo>(expressEntry.GoodsId);
+                            LogisticsGoodsInfo goodsEditBefore = expressGoods.Goods;
 
-                            editDescList.Add($"修改物品: {goodsEditBefore?.Name}{expressEntry?.Quantity}{expressEntry?.Unit}=>{goodsEditAfter?.Name}{goodsItem.Quantity}{goodsItem.Unit}");
+                            editDescList.Add($"修改物品: {goodsEditBefore?.Name}{expressGoods.Quantity}{expressGoods.Unit}=>{goodsEditAfter?.Name}{goodsItem.Quantity}{goodsItem.Unit}");
                         }
                         else // 这个时候是修改(isCreate == false)，添加物品
                         {
@@ -817,13 +812,11 @@ public class ExpressCheckinController : Controller
                         }
                     }
 
-                    expressEntry.GoodsId = goodsItem.GoodsId;
-                    expressEntry.Quantity = goodsItem.Quantity;
-                    expressEntry.Unit = goodsItem.Unit;
+                    expressGoods.Goods = session.Get<LogisticsGoodsInfo>(goodsItem.GoodsId);
+                    expressGoods.Quantity = goodsItem.Quantity;
+                    expressGoods.Unit = goodsItem.Unit;
 
-                    session.SaveOrUpdate(expressEntry);
-
-                    expressEntryList.Add(expressEntry);
+                    session.SaveOrUpdate(expressGoods);
                 }
 
                 session.Flush();
@@ -853,7 +846,7 @@ public class ExpressCheckinController : Controller
                         logDesc += $"，面单客户按预报客户：{expressExpect.Customer?.Id ?? 0}";
                     }
 
-                    expressLogService.UserClaimLog(express.Id, ExpressLogType.Checkin, logDesc, loginUserId);
+                    expressLogService.UserLog(express.Id, ExpressLogType.Checkin, logDesc, loginUserId);
                 }
                 else
                 {
@@ -863,7 +856,7 @@ public class ExpressCheckinController : Controller
                         logDesc += $"，面单客户按预报客户：{expressExpect.Customer?.Id ?? 0}";
                     }
 
-                    expressLogService.UserClaimLog(express.Id, ExpressLogType.CheckinEdit, logDesc, loginUserId);
+                    expressLogService.UserLog(express.Id, ExpressLogType.CheckinEdit, logDesc, loginUserId);
                 }
 
                 expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
@@ -892,7 +885,7 @@ public class ExpressCheckinController : Controller
             {
                 if (expressExpect.Customer != null) // 这个 Customer 应该不可空才对
                 {
-                    // todo 加上 customerMessageService.SendMessageYuBaoHuoZhi(expressExpect.Customer, expressExpect.TrackingNo);
+                    // todo b 加上 customerMessageService.SendMessageYuBaoHuoZhi(expressExpect.Customer, expressExpect.TrackingNo);
                 }
             }
             else if (billCustomerId != 0) // 没预报但有面单会员ID
@@ -900,10 +893,12 @@ public class ExpressCheckinController : Controller
                 CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
                 if (billCustomer != null)
                 {
-                    // todo 加上 customerMessageService.SendMessageWoDeShenLingJian(billCustomer);
+                    // todo b 加上 customerMessageService.SendMessageWoDeShenLingJian(billCustomer);
                 }
             }
         }
+        
+        // todo remark, photo video, sizeweight 的 express id 绑定
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
@@ -998,44 +993,24 @@ public class ExpressCheckinController : Controller
             .Take(1)
             .SingleOrDefault();
         string storageLocName = storageLoc?.GetFullName() ?? string.Empty;
-        string description = express.Description;
         string checkinPackageCount = express.PackageCount.ToString();
         string userName = express.AddUser.UserName;
         string checkinTime = express.AddTime.ToString("MM-dd HH:mm");
         string goodsTypeShortName = express.GoodsType.CheckinLabelShortName;
 
-        /*
-         这里不需要这些逻辑
-        var aoPinSubTrackingNoList = checkinTrackingNoService.ListSubTrackingNo(express.Id);
+        IList<ExpressRemarkInfo> expressRemarkList = session.Query<ExpressRemarkInfo>()
+            .Where(e => e.Express!.Id == expressId) // 一个快递不会有很多备注，全部取出来算了
+            .ToList();
 
-        // 如果还没有澳拼单号的，就生成。有些历史入库的快递单号的，还没有澳拼入库单号。这个逻辑主要用在历史入库快递单，补打标签的时候
-        if (aoPinSubTrackingNoList == null || aoPinSubTrackingNoList.Count == 0)
-        {
-            string mainTrackingNo = checkinTrackingNoService.Generate(express.Id);
-            express.AoPinTrackingNo = mainTrackingNo;
-            session.Update(express);
-            session.Flush();
+        ExpressRemarkInfo? expressRemarkWarehouse = expressRemarkList
+            .Where(e => e.Type == ExpressRemarkType.Warehouse)
+            .Take(1)
+            .SingleOrDefault();
 
-            aoPinSubTrackingNoList = checkinTrackingNoService.ListSubTrackingNo(express.Id);
-        }
-
-        aoPinSubTrackingNoList = aoPinSubTrackingNoList.OrderBy(e => e.AoPinTrackingNo).ToList(); // 澳拼入库子单号排序一下
-
-        var aoPinSubTrackingNoItemList = new List<IDictionary<string, object>>();
-        foreach (var subTrackingNo in aoPinSubTrackingNoList)
-        {
-            IDictionary<string, object> subTrackingNoItem = new Dictionary<string, object>();
-            subTrackingNoItem["aoPinTrackingNo"] = subTrackingNo.AoPinTrackingNo;
-
-            subTrackingNoItem["trackingNo"] = subTrackingNo.LogisticsExpress?.TrackingNo ?? string.Empty;
-            if (subTrackingNo.ChildExpress != null)
-            {
-                subTrackingNoItem["trackingNo"] = subTrackingNo.ChildExpress?.TrackingNo ?? string.Empty;
-            }
-
-            aoPinSubTrackingNoItemList.Add(subTrackingNoItem);
-        }
-        */
+        ExpressRemarkInfo? expressRemarkCustomer = expressRemarkList
+            .Where(e => e.Type == ExpressRemarkType.Customer)
+            .Take(1)
+            .SingleOrDefault();
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
@@ -1043,8 +1018,8 @@ public class ExpressCheckinController : Controller
             { "expressTrackingNo", express.TrackingNo },
             { "checkinTrackingNo", express.CheckinTrackingNo },
             { "customerCode", customerCode },
-            { "warehouseNote", description },
-            { "description", description },
+            { "warehouseNote", expressRemarkWarehouse?.Remark ?? string.Empty },
+            { "description", expressRemarkCustomer?.Remark ?? string.Empty }, // todo a 这里的 description 改成 customerNote 或 remark
             { "checkinPackageCount", checkinPackageCount },
             { "orderCode", orderCode },
             { "storageLoc", storageLocName },
@@ -1059,7 +1034,7 @@ public class ExpressCheckinController : Controller
     [NoLoginRequired]
     public IActionResult GetPrintData(string expressTrackingNo)
     {
-        ExpressInfo express = session.Query<ExpressInfo>()
+        ExpressInfo? express = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == expressTrackingNo)
             .Take(1)
             .SingleOrDefault();
@@ -1077,7 +1052,7 @@ public class ExpressCheckinController : Controller
     [NoLoginRequired]
     public IActionResult GetPrintDataManual(string expressTrackingNo)
     {
-        ExpressInfo express = session.Query<ExpressInfo>()
+        ExpressInfo? express = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == expressTrackingNo)
             .Take(1)
             .SingleOrDefault();
@@ -1091,7 +1066,7 @@ public class ExpressCheckinController : Controller
         var printData = GetPrintDataById(express.Id);
 
         int loginUserId = loginUserService.GetLoginUserId();
-        expressLogService.UserClaimLog(express.Id, ExpressLogType.ManualPrintLabel, loginUserId);
+        expressLogService.UserLog(express.Id, ExpressLogType.ManualPrintLabel, loginUserId);
 
         return printData;
     }
@@ -1130,22 +1105,20 @@ public class ExpressCheckinController : Controller
 
         int loginUserId = loginUserService.GetLoginUserId();
 
-        string expressTrackingNo = model.ExpressTrackingNo;
+        string trackingNo = model.ExpressTrackingNo;
 
         // 检查快递单号状态
-        LogisticsOrderGoodsExpressInfo orderExpress = session.Query<LogisticsOrderGoodsExpressInfo>()
-            .Where(e => e.ExpressTrackingNo == expressTrackingNo)
+        ExpressInfo? express = session.Query<ExpressInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
             .SingleOrDefault();
-        if (orderExpress != null && orderExpress.Status == LogisticsOrderGoodsExpressStatus.Packed)
+        if (express != null && ExpressStatus.IsPacked(express.Status))
         {
             throw new ValidationException("已打包快递单号不能，保存尺寸重量信息");
         }
 
-        bool shouldReGenerateAoPinTrackingNo = false;
-
         LogisticsExpressInfo logisticsExpress = session.Query<LogisticsExpressInfo>()
-            .Where(e => e.TrackingNo == expressTrackingNo)
+            .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
             .SingleOrDefault();
 
@@ -1155,14 +1128,9 @@ public class ExpressCheckinController : Controller
             logisticsExpressCreate = true;
 
             logisticsExpress = new LogisticsExpressInfo();
-            logisticsExpress.TrackingNo = expressTrackingNo;
+            logisticsExpress.TrackingNo = trackingNo;
             logisticsExpress.Status = LogisticsExpressStatus.Sign;
             logisticsExpress.SignTime = DateTime.Now;
-        }
-
-        if (logisticsExpressCreate == true)
-        {
-            shouldReGenerateAoPinTrackingNo = true; // 一般这种情况下也不需要重新生成的，申领件肯定还没入库
         }
 
         StringBuilder expressEditLogDescBuiler = new StringBuilder();
@@ -1203,8 +1171,6 @@ public class ExpressCheckinController : Controller
         if (logisticsExpressCreate == false && logisticsExpress.PackageCount != model.PackageCount)
         {
             expressEditLogDescBuiler.Append($"箱数:{logisticsExpress.PackageCount}=>{model.PackageCount}");
-
-            shouldReGenerateAoPinTrackingNo = true;
         }
 
         logisticsExpress.PackageCount = model.PackageCount;
@@ -1216,11 +1182,11 @@ public class ExpressCheckinController : Controller
         if (logisticsExpressCreate == true)
         {
             string addLogDesc = $"长:{logisticsExpress.Length}, 宽:{logisticsExpress.Width}, 高:{logisticsExpress.Height}, 重量:{logisticsExpress.Weight}, 箱数:{logisticsExpress.PackageCount}";
-            expressLogService.UserLog(expressTrackingNo, ExpressLogType.SizeWeightAdd, addLogDesc, loginUserId);
+            expressLogService.UserLog(trackingNo, ExpressLogType.SizeWeightAdd, addLogDesc, loginUserId);
         }
         else
         {
-            expressLogService.UserLog(expressTrackingNo, ExpressLogType.SizeWeightEdit, expressEditLogDescBuiler.ToString(), loginUserId);
+            expressLogService.UserLog(trackingNo, ExpressLogType.SizeWeightEdit, expressEditLogDescBuiler.ToString(), loginUserId);
         }
 
 
@@ -1279,9 +1245,7 @@ public class ExpressCheckinController : Controller
                     session.Delete(chidSizeWeightInDb);
 
                     string deleteLogDesc = $"长:{chidSizeWeightInDb.Length}, 宽:{chidSizeWeightInDb.Width}, 高:{chidSizeWeightInDb.Height}, 重量:{chidSizeWeightInDb.Weight}, 箱数:{chidSizeWeightInDb.PackageCount}";
-                    expressLogService.UserLog(expressTrackingNo, ExpressLogType.SizeWeightDelete, deleteLogDesc, loginUserId);
-
-                    shouldReGenerateAoPinTrackingNo = true;
+                    expressLogService.UserLog(trackingNo, ExpressLogType.SizeWeightDelete, deleteLogDesc, loginUserId);
                 }
             }
 
@@ -1296,7 +1260,7 @@ public class ExpressCheckinController : Controller
                     // expressChild.Id = childItem.ExpressChildId;
                     expressChild.Parent = logisticsExpress;
 
-                    string subTrackingNo = $"{expressTrackingNo}-{childItem.TrackingNo}";
+                    string subTrackingNo = $"{trackingNo}-{childItem.TrackingNo}";
                     expressChild.TrackingNo = subTrackingNo;
                     expressChild.Length = childItem.Length;
                     expressChild.Width = childItem.Width;
@@ -1307,9 +1271,7 @@ public class ExpressCheckinController : Controller
                     session.Save(expressChild);
 
                     string addLogDesc = $"子单号:{subTrackingNo}, 长:{expressChild.Length}, 宽:{expressChild.Width}, 高:{expressChild.Height}, 重量:{expressChild.Weight}, 箱数:{expressChild.PackageCount}";
-                    expressLogService.UserLog(expressTrackingNo, ExpressLogType.SizeWeightAdd, addLogDesc, loginUserId);
-
-                    shouldReGenerateAoPinTrackingNo = true;
+                    expressLogService.UserLog(trackingNo, ExpressLogType.SizeWeightAdd, addLogDesc, loginUserId);
                 }
                 else
                 {
@@ -1318,7 +1280,7 @@ public class ExpressCheckinController : Controller
 
                     StringBuilder childEditLogDescBuiler = new StringBuilder();
 
-                    string subTrackingNo = $"{expressTrackingNo}-{childItem.TrackingNo}";
+                    string subTrackingNo = $"{trackingNo}-{childItem.TrackingNo}";
                     if (expressChild.TrackingNo != subTrackingNo)
                     {
                         expressChild.TrackingNo = subTrackingNo;
@@ -1359,44 +1321,17 @@ public class ExpressCheckinController : Controller
                         expressChild.PackageCount = childItem.PackageCount;
 
                         childEditLogDescBuiler.Append($"箱数:{expressChild.PackageCount}=>{childItem.PackageCount}");
-
-                        shouldReGenerateAoPinTrackingNo = true;
                     }
 
-                    expressLogService.UserLog(expressTrackingNo, ExpressLogType.SizeWeightEdit, childEditLogDescBuiler.ToString(), loginUserId);
+                    expressLogService.UserLog(trackingNo, ExpressLogType.SizeWeightEdit, childEditLogDescBuiler.ToString(), loginUserId);
 
                     session.Update(expressChild);
                 }
             }
 
-            // 如果是已入库的快递单，就要更新包裹数量；并且可能生成新的澳拼入库子单号
-            var express = session.Query<ExpressInfo>()
-                .Where(e => e.TrackingNo == expressTrackingNo)
-                .Take(1)
-                .SingleOrDefault();
-
+            // 如果是已入库的快递单，就要更新包裹数量尺寸重量等
             if (express != null)
             {
-                // 如果子单号有删除，并且是已入库的快递单的，就重新生成澳拼子单号
-                if (shouldReGenerateAoPinTrackingNo)
-                {
-                    // 这里是重新生成子单号
-                    var mainTrackingNo = checkinTrackingNoService.Generate(express.Id);
-                    express.AoPinTrackingNo = mainTrackingNo; // 设置主单号
-                }
-
-                int packageCount = (logisticsExpress.PackageCount ?? 1) + childSizeWeightList.Sum(e => (e.PackageCount ?? 1));
-                if (packageCount <= 0)
-                {
-                    packageCount = 1;
-                }
-
-                express.ExpressPackageCount = packageCount;
-
-                session.Update(express);
-
-                session.Flush();
-
                 expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
             }
 

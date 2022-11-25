@@ -249,6 +249,26 @@ public class ExpressStatus : CodeTypeBase
         return true;
     }
 
+    private static IReadOnlyList<ExpressStatus> codeTypePacked = new List<ExpressStatus>() {
+        Pack,
+        WaitTransport,
+        Transporting,
+        Complete,
+    };
+
+    public static bool IsPacked(ExpressStatus status)
+    {
+        foreach (ExpressStatus statusPacked in codeTypePacked)
+        {
+            if (statusPacked == status)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static IList<ExpressStatus> GetOccupyStorageLocStatusList()
     {
         return new List<ExpressStatus>() {
