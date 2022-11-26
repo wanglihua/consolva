@@ -31,13 +31,13 @@ namespace shunda.Service.CustomerMessage
         public static readonly TimeSpan DelayYiDaoMuDiCangTiXing = new TimeSpan(2, 0, 0, 0); // TimeSpan(int days, int hours, int minutes, int seconds)
 
 
-        public static readonly string DefaultProcessUser = "澳拼小秘3.0";
+        public static readonly string DefaultProcessUser = "舜达小秘";
 
-        public static readonly string PhotoMessageSender = "澳拼3.0智能拍照机器人";
+        public static readonly string PhotoMessageSender = "舜达智能拍照机器人";
 
         private ISession session = null;
         private SmsService smsService = null;
-        private WeiXinMessageService weiXinMessageService = null;
+        private WechatMessageService wechatMessageService = null;
         private LoginUserService loginUserService = null;
         private CustomerMessageClientCustomizeService customerMessageClientCustomizeService = null;
 
@@ -45,13 +45,13 @@ namespace shunda.Service.CustomerMessage
 
         public CustomerMessageCommonService(ISession session,
             SmsService smsService,
-            WeiXinMessageService weiXinMessageService,
+            WechatMessageService wechatMessageService,
             LoginUserService loginUserService,
             CustomerMessageClientCustomizeService customerMessageClientCustomizeService)
         {
             this.session = session;
             this.smsService = smsService;
-            this.weiXinMessageService = weiXinMessageService;
+            this.wechatMessageService = wechatMessageService;
             this.loginUserService = loginUserService;
             this.customerMessageClientCustomizeService = customerMessageClientCustomizeService;
         }
@@ -98,6 +98,7 @@ namespace shunda.Service.CustomerMessage
 
         /// <summary>
         /// 发送客户消息，带有订单参数
+        /// todo a 这里的 消息发送会被改造
         /// </summary>
         public void SendMessageWithOrder(CustomerMessageSendType sendType, CustomerMessageType messageType, CustomerInfo customer, WeiXinFollowerInfo weiXinFollower, LogisticsOrderInfo order, params object[] messageData)
         {
@@ -161,7 +162,7 @@ namespace shunda.Service.CustomerMessage
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -206,7 +207,7 @@ namespace shunda.Service.CustomerMessage
                         if (setting.WeiXinSend)
                         {
                             isSent = true;
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(weiXinFollower, "", "会员注册提醒", "澳拼客户", message, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(weiXinFollower, "", "会员注册提醒", "澳拼客户", message, processUser);
                         }
 
                         /*
@@ -250,7 +251,7 @@ namespace shunda.Service.CustomerMessage
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -292,7 +293,7 @@ namespace shunda.Service.CustomerMessage
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -334,7 +335,7 @@ namespace shunda.Service.CustomerMessage
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "已取消关注提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "已取消关注提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -376,7 +377,7 @@ namespace shunda.Service.CustomerMessage
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageData[0].ToString(), customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageData[0].ToString(), customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -418,7 +419,7 @@ namespace shunda.Service.CustomerMessage
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -585,7 +586,7 @@ namespace shunda.Service.CustomerMessage
         /// <param name="url"></param>
         public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string url = null)
         {
-            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, first, orderCode, customerCode, remark, sender, url);
+            wechatMessageService.SendOrderNoticeTemplateMessage(customer, first, orderCode, customerCode, remark, sender, url);
         }
 
         /// <summary>

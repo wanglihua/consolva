@@ -42,7 +42,7 @@ namespace shunda.Service.Message;
 
         private ISession session = null;
         private SmsService smsService = null;
-        private WeiXinMessageService weiXinMessageService = null;
+        private WechatMessageService wechatMessageService = null;
         private LoginUserService loginUserService = null;
         private CustomerClientUrlService customerClientUrlService = null;
         private CustomerMessageClientCustomizeService customerMessageClientCustomizeService = null;
@@ -51,14 +51,14 @@ namespace shunda.Service.Message;
 
         public CustomerMessageService(ISession session,
             SmsService smsService,
-            WeiXinMessageService weiXinMessageService,
+            WechatMessageService wechatMessageService,
             LoginUserService loginUserService,
             CustomerClientUrlService customerClientUrlService,
             CustomerMessageClientCustomizeService customerMessageClientCustomizeService)
         {
             this.session = session;
             this.smsService = smsService;
-            this.weiXinMessageService = weiXinMessageService;
+            this.wechatMessageService = wechatMessageService;
             this.loginUserService = loginUserService;
             this.customerClientUrlService = customerClientUrlService;
             this.customerMessageClientCustomizeService = customerMessageClientCustomizeService;
@@ -161,17 +161,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser);
                         }
                     }
                 }
@@ -269,17 +269,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -373,17 +373,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -476,17 +476,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderAbnormalNoticeTemplateMessage(customer, "", abnormalClause, message1, processUser);
+                            wechatMessageService.SendOrderAbnormalNoticeTemplateMessage(customer, "", abnormalClause, message1, processUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderAbnormalNoticeTemplateMessage(customer, "", abnormalClause, message2, processUser);
+                            wechatMessageService.SendOrderAbnormalNoticeTemplateMessage(customer, "", abnormalClause, message2, processUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderAbnormalNoticeTemplateMessage(customer, "", abnormalClause, message3, processUser);
+                            wechatMessageService.SendOrderAbnormalNoticeTemplateMessage(customer, "", abnormalClause, message3, processUser);
                         }
                     }
                 }
@@ -586,17 +586,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser);
                         }
                     }
                 }
@@ -696,17 +696,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, defaultProcessUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, defaultProcessUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, defaultProcessUser);
                         }
                     }
                 }
@@ -809,17 +809,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -922,17 +922,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1036,17 +1036,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1150,17 +1150,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1264,17 +1264,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1382,17 +1382,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1501,17 +1501,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1619,17 +1619,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1735,17 +1735,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1852,17 +1852,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -1969,17 +1969,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -2083,17 +2083,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -2195,17 +2195,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "收取GST推送", customer.CustomerCode, message1, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "收取GST推送", customer.CustomerCode, message1, defaultProcessUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "收取GST推送", customer.CustomerCode, message2, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "收取GST推送", customer.CustomerCode, message2, defaultProcessUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "收取GST推送", customer.CustomerCode, message3, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "收取GST推送", customer.CustomerCode, message3, defaultProcessUser);
                         }
                     }
                 }
@@ -2312,17 +2312,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customer.CustomerCode, message1, sender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customer.CustomerCode, message1, sender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customer.CustomerCode, message2, sender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customer.CustomerCode, message2, sender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customer.CustomerCode, message3, sender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customer.CustomerCode, message3, sender, url);
                         }
                     }
                 }
@@ -2447,17 +2447,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -2566,17 +2566,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库视频推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库视频推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库视频推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库视频推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库视频推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库视频推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -2678,17 +2678,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单问题图片推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单问题图片推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单问题图片推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单问题图片推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单问题图片推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单问题图片推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -2791,17 +2791,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单中国损毁图片推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单中国损毁图片推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单中国损毁图片推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单中国损毁图片推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单中国损毁图片推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单中国损毁图片推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -2904,17 +2904,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单退运图片推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单退运图片推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单退运图片推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单退运图片推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单退运图片推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单退运图片推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -3017,17 +3017,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -3130,17 +3130,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单澳洲损毁图片推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单澳洲损毁图片推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单澳洲损毁图片推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单澳洲损毁图片推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单澳洲损毁图片推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单澳洲损毁图片推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -3242,17 +3242,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单交付图片推送", customer.CustomerCode, message1, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单交付图片推送", customer.CustomerCode, message1, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单交付图片推送", customer.CustomerCode, message2, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单交付图片推送", customer.CustomerCode, message2, photoMessageSender, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单交付图片推送", customer.CustomerCode, message3, photoMessageSender, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单交付图片推送", customer.CustomerCode, message3, photoMessageSender, url);
                         }
                     }
                 }
@@ -3345,17 +3345,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "VIP升级", customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "VIP升级", customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "VIP升级", customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "VIP升级", customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "VIP升级", customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "VIP升级", customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -3452,17 +3452,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "在线客服留言提醒", customer.CustomerCode, message1, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "在线客服留言提醒", customer.CustomerCode, message1, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "在线客服留言提醒", customer.CustomerCode, message2, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "在线客服留言提醒", customer.CustomerCode, message2, processUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "在线客服留言提醒", customer.CustomerCode, message3, processUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "在线客服留言提醒", customer.CustomerCode, message3, processUser, url);
                         }
                     }
                 }
@@ -3565,17 +3565,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -3692,17 +3692,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "船航时间更改提醒", customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "船航时间更改提醒", customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "船航时间更改提醒", customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "船航时间更改提醒", customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "船航时间更改提醒", customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "船航时间更改提醒", customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -3804,17 +3804,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单超期未入库提醒", customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单超期未入库提醒", customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单超期未入库提醒", customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单超期未入库提醒", customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单超期未入库提醒", customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "快递单超期未入库提醒", customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -3913,17 +3913,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "澳洲快递单号提醒", customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "澳洲快递单号提醒", customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "澳洲快递单号提醒", customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "澳洲快递单号提醒", customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "澳洲快递单号提醒", customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "澳洲快递单号提醒", customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -4028,17 +4028,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageType.Name, customer.CustomerCode, message1, sender, orderDetailUrl);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageType.Name, customer.CustomerCode, message1, sender, orderDetailUrl);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageType.Name, customer.CustomerCode, message2, sender, orderDetailUrl);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageType.Name, customer.CustomerCode, message2, sender, orderDetailUrl);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageType.Name, customer.CustomerCode, message3, sender, orderDetailUrl);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageType.Name, customer.CustomerCode, message3, sender, orderDetailUrl);
                         }
                     }
                 }
@@ -4141,17 +4141,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message1, defaultProcessUser, orderDetailUrl);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message1, defaultProcessUser, orderDetailUrl);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message2, defaultProcessUser, orderDetailUrl);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message2, defaultProcessUser, orderDetailUrl);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message3, defaultProcessUser, orderDetailUrl);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message3, defaultProcessUser, orderDetailUrl);
                         }
                     }
                 }
@@ -4251,17 +4251,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单未支付提醒", customer.CustomerCode, message1, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单未支付提醒", customer.CustomerCode, message1, defaultProcessUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单未支付提醒", customer.CustomerCode, message2, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单未支付提醒", customer.CustomerCode, message2, defaultProcessUser);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单未支付提醒", customer.CustomerCode, message3, defaultProcessUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "订单未支付提醒", customer.CustomerCode, message3, defaultProcessUser);
                         }
                     }
                 }
@@ -4353,17 +4353,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "未创建订单提醒", customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "未创建订单提醒", customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "未创建订单提醒", customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "未创建订单提醒", customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "未创建订单提醒", customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "未创建订单提醒", customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -4455,17 +4455,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "客服评价消息", customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "客服评价消息", customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "客服评价消息", customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "客服评价消息", customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "客服评价消息", customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "客服评价消息", customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -4563,17 +4563,17 @@ namespace shunda.Service.Message;
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国内仓储即将超期提醒", customer.CustomerCode, message1, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "国内仓储即将超期提醒", customer.CustomerCode, message1, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message2) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国内仓储即将超期提醒", customer.CustomerCode, message2, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "国内仓储即将超期提醒", customer.CustomerCode, message2, defaultProcessUser, url);
                         }
 
                         if (string.IsNullOrWhiteSpace(message3) == false)
                         {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国内仓储即将超期提醒", customer.CustomerCode, message3, defaultProcessUser, url);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "国内仓储即将超期提醒", customer.CustomerCode, message3, defaultProcessUser, url);
                         }
                     }
                 }
@@ -4702,17 +4702,17 @@ namespace shunda.Service.Message;
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第一次推送", orderCode, customer.CustomerCode, message1, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第一次推送", orderCode, customer.CustomerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第一次推送", orderCode, customer.CustomerCode, message2, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第一次推送", orderCode, customer.CustomerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第一次推送", orderCode, customer.CustomerCode, message3, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第一次推送", orderCode, customer.CustomerCode, message3, processUser, url);
                     }
                 }
             }
@@ -4847,17 +4847,17 @@ namespace shunda.Service.Message;
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第二次推送", orderCode, customer.CustomerCode, message1, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第二次推送", orderCode, customer.CustomerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第二次推送", orderCode, customer.CustomerCode, message2, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第二次推送", orderCode, customer.CustomerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第二次推送", orderCode, customer.CustomerCode, message3, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第二次推送", orderCode, customer.CustomerCode, message3, processUser, url);
                     }
                 }
             }
@@ -4994,17 +4994,17 @@ namespace shunda.Service.Message;
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第三次推送", orderCode, customer.CustomerCode, message1, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第三次推送", orderCode, customer.CustomerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第三次推送", orderCode, customer.CustomerCode, message2, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第三次推送", orderCode, customer.CustomerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第三次推送", orderCode, customer.CustomerCode, message3, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第三次推送", orderCode, customer.CustomerCode, message3, processUser, url);
                     }
                 }
             }
@@ -5128,17 +5128,17 @@ namespace shunda.Service.Message;
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第四次推送", orderCode, customer.CustomerCode, message1, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第四次推送", orderCode, customer.CustomerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第四次推送", orderCode, customer.CustomerCode, message2, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第四次推送", orderCode, customer.CustomerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false)
                     {
-                        messageStatus = weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第四次推送", orderCode, customer.CustomerCode, message3, processUser, url);
+                        messageStatus = wechatMessageService.SendOrderNoticeTemplateMessage(customer, "送货上门第四次推送", orderCode, customer.CustomerCode, message3, processUser, url);
                     }
                 }
             }
@@ -5251,7 +5251,7 @@ namespace shunda.Service.Message;
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -5296,7 +5296,7 @@ namespace shunda.Service.Message;
                         if (setting.WeiXinSend)
                         {
                             isSent = true;
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(weiXinFollower, "", "会员注册提醒", "澳拼客户", message, processUser);
+                            wechatMessageService.SendOrderNoticeTemplateMessage(weiXinFollower, "", "会员注册提醒", "澳拼客户", message, processUser);
                         }
 
                         /*
@@ -5340,7 +5340,7 @@ namespace shunda.Service.Message;
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -5382,7 +5382,7 @@ namespace shunda.Service.Message;
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -5424,7 +5424,7 @@ namespace shunda.Service.Message;
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "已取消关注提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "已取消关注提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -5466,7 +5466,7 @@ namespace shunda.Service.Message;
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", messageData[0].ToString(), customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageData[0].ToString(), customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)
@@ -5508,7 +5508,7 @@ namespace shunda.Service.Message;
                             if (setting.WeiXinSend)
                             {
                                 isSent = true;
-                                weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customer?.CustomerCode, message, processUser);
+                                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customer?.CustomerCode, message, processUser);
                             }
 
                             if (setting.SmsSend)

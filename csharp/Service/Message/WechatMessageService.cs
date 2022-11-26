@@ -9,16 +9,16 @@ using shunda.Core.Config;
 using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
 #endif
 
-namespace shunda.Service.CustomerMessage;
+namespace shunda.Service.Message;
 
 [Service(ServiceType.Scoped)]
-public class WeiXinMessageService
+public class WechatMessageService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly WechatAccessTokenService wechatAccessTokenService;
 
-    public WeiXinMessageService(WechatAccessTokenService wechatAccessTokenService)
+    public WechatMessageService(WechatAccessTokenService wechatAccessTokenService)
     {
         this.wechatAccessTokenService = wechatAccessTokenService;
     }
