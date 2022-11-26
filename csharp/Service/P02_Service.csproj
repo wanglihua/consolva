@@ -37,7 +37,7 @@
 
     <ItemGroup>
       <Compile Remove="CustomerMessage\CustomerMessageService.cs" />
-      <Content Include="Message\CustomerMessageCommonService.cs" />
+      <Compile Include="Message\CustomerMessageCommonService.cs" />
       <Content Include="Message\CustomerMessageService.cs" />
       <Compile Remove="CustomerMessage\CustomerMessageRealTimeSendSettingService.cs" />
       <Content Include="Message\CustomerMessageRealTimeSendSettingService.cs" />

@@ -25,7 +25,7 @@ public class CustomerMessageStatus : CodeTypeBase
     /// <summary>
     /// None
     /// </summary>
-    private static readonly CustomerMessageStatus None = new CustomerMessageStatus(0, "", "");
+    public static readonly CustomerMessageStatus None = new CustomerMessageStatus(0, "", "");
 
     public static CustomerMessageStatus GetById(int id)
     {
