@@ -1,48 +1,36 @@
-using System;
 using System.Net;
-using Core;
 using System.Net.Mail;
 using System.Text;
-using System.Threading.Tasks;
-using Domain;
-using Domain.Message;
+using shunda.Core.Config;
+using shunda.Core.Service;
 
-namespace shunda.Service.CustomerMessage
+namespace shunda.Service.CustomerMessage;
+
+[Service(ServiceType.Scoped)]
+public class SmtpMailService
 {
-    [Service(ServiceType.Scoped)]
-    public class SmtpMailService
+    public void SendMail(string addressSendTo, string subject, string body)
     {
-        private SmtpConfigService smtpConfigService = null;
+        SmtpClient smtpClient = new SmtpClient() {
+            Host = SmtpConfig.SmtpServer,
+            Port = SmtpConfig.SmtpPort,
+            Credentials = new NetworkCredential(SmtpConfig.SmtpUser, SmtpConfig.SmtpPwd),
+            DeliveryMethod = SmtpDeliveryMethod.Network,
+            EnableSsl = true,
+        };
 
-        public SmtpMailService(SmtpConfigService smtpConfigService)
-        {
-            this.smtpConfigService = smtpConfigService;
-        }
+        MailAddress addressFrom = new MailAddress(SmtpConfig.AddressFrom, SmtpConfig.NickNameFrom);
+        MailAddress addressTo = new MailAddress(addressSendTo);
 
-        public void SendMail(string addressSendTo, string subject, string body)
-        {
-            SmtpConfigInfo smtpConfig = smtpConfigService.GetSmtpConfig();
+        MailMessage mailMessage = new MailMessage(addressFrom, addressTo) {
+            Subject = subject,
+            Body = body,
+            BodyEncoding = Encoding.UTF8,
+            IsBodyHtml = true,
+            Priority = MailPriority.Normal,
+        };
 
-            int.TryParse(smtpConfig.SmtpPort, out int smtpPort);
-
-            SmtpClient smtpClient = new SmtpClient(smtpConfig.SmtpServer, smtpPort);
-            smtpClient.Host = smtpConfig.SmtpServer;
-            smtpClient.Port = smtpPort;
-            smtpClient.Credentials = new NetworkCredential(smtpConfig.SmtpUser, smtpConfig.SmtpPwd);
-            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            smtpClient.EnableSsl = true;
-            MailAddress addressFrom = new MailAddress(smtpConfig.AddressFrom, smtpConfig.NickNameFrom);
-            MailAddress addressTo = new MailAddress(addressSendTo);
-
-            MailMessage mailMessage = new MailMessage(addressFrom, addressTo);
-            mailMessage.Subject = subject;
-            mailMessage.Body = body;
-            mailMessage.BodyEncoding = Encoding.UTF8;
-            mailMessage.IsBodyHtml = true;
-            mailMessage.Priority = MailPriority.Normal;
-
-            Task taskSendMail = smtpClient.SendMailAsync(mailMessage);
-            taskSendMail.Wait();
-        }
+        Task taskSendMail = smtpClient.SendMailAsync(mailMessage);
+        taskSendMail.Wait();
     }
 }
