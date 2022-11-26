@@ -1,17 +1,13 @@
-using System;
-using System.Net.Http.Json;
 using Newtonsoft.Json;
 using NHibernate;
 using NLog;
-using shunda.Core.Config;
 using shunda.Core.Service;
-using shunda.Domain;
+using shunda.Domain.Message;
 #if !DEBUG
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
+using shunda.Domain;
+using System.Net.Http.Json;
+using shunda.Core.Config;
 #endif
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.CustomerMessage
 {
@@ -20,7 +16,7 @@ namespace shunda.Service.CustomerMessage
     {
         private static Logger log = LogManager.GetCurrentClassLogger();
 
-        private ISession session ;
+        private ISession session;
         private MobileService mobileService;
         private SiteErrorService siteErrorService;
 
@@ -65,7 +61,6 @@ namespace shunda.Service.CustomerMessage
             return sendResult;
 
 #else
-           
             string senderId = SmsConfig.SenderId;
             string account = SmsConfig.Account;
             string password = SmsConfig.Password;
@@ -74,7 +69,7 @@ namespace shunda.Service.CustomerMessage
 
             HttpClient httpClient = new HttpClient();
 
-            JsonContent jsonContent =  JsonContent.Create(new SendSmsRequest(senderId, account, password, mobile, message));
+            JsonContent jsonContent = JsonContent.Create(new SendSmsRequest(senderId, account, password, mobile, message));
 
             Task<HttpResponseMessage> taskResponseMessage = httpClient.PostAsync(url, jsonContent);
 
