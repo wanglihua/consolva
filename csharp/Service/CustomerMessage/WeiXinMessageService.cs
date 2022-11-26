@@ -1,13 +1,11 @@
-using NHibernate;
 using NLog;
 using Senparc.Weixin.MP.AdvancedAPIs;
-using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Service.Wechat;
-
 #if !DEBUG
+using shunda.Core.Config;
 using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
 #endif
 
@@ -18,12 +16,10 @@ namespace shunda.Service.CustomerMessage
     {
         private static Logger log = LogManager.GetCurrentClassLogger();
 
-        private ISession session;
         private WechatAccessTokenService wechatAccessTokenService;
 
-        public WeiXinMessageService(ISession session, WechatAccessTokenService wechatAccessTokenService)
+        public WeiXinMessageService(WechatAccessTokenService wechatAccessTokenService)
         {
-            this.session = session;
             this.wechatAccessTokenService = wechatAccessTokenService;
         }
 
