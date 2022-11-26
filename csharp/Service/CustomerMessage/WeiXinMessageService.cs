@@ -9,80 +9,80 @@ using shunda.Core.Config;
 using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
 #endif
 
-namespace shunda.Service.CustomerMessage
+namespace shunda.Service.CustomerMessage;
+
+[Service(ServiceType.Scoped)]
+public class WeiXinMessageService
 {
-    [Service(ServiceType.Scoped)]
-    public class WeiXinMessageService
+    private static Logger log = LogManager.GetCurrentClassLogger();
+
+    private readonly WechatAccessTokenService wechatAccessTokenService;
+
+    public WeiXinMessageService(WechatAccessTokenService wechatAccessTokenService)
     {
-        private static Logger log = LogManager.GetCurrentClassLogger();
+        this.wechatAccessTokenService = wechatAccessTokenService;
+    }
 
-        private WechatAccessTokenService wechatAccessTokenService;
-
-        public WeiXinMessageService(WechatAccessTokenService wechatAccessTokenService)
+    /// <summary>
+    /// 发送模板消息
+    /// </summary>
+    /// <param name="openId">openId</param>
+    /// <param name="templateId">模板Id</param>
+    /// <param name="data"></param>
+    /// <param name="url"></param>
+    /// <returns>是否发送成功</returns>
+    public CustomerMessageStatus SendTemplateMessage(string openId, string templateId, object data, string? url = null)
+    {
+        if (string.IsNullOrWhiteSpace(openId) == false)
         {
-            this.wechatAccessTokenService = wechatAccessTokenService;
+            try
+            {
+                TemplateApi.SendTemplateMessage(wechatAccessTokenService.GetAccessToken(), openId, templateId, url, data);
+                return CustomerMessageStatus.Sent;
+            }
+            catch (Exception exp)
+            {
+                log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
+                log.Error(exp);
+
+                return CustomerMessageStatus.SendFail;
+            }
         }
 
-        /// <summary>
-        /// 发送模板消息
-        /// </summary>
-        /// <param name="openId">openId</param>
-        /// <param name="templateId">模板Id</param>
-        /// <param name="data"></param>
-        /// <param name="url"></param>
-        /// <returns>是否发送成功</returns>
-        public CustomerMessageStatus SendTemplateMessage(string openId, string templateId, object data, string? url = null)
+        return CustomerMessageStatus.SendFail; // 一般这时还没关注公众号，也算发送失败
+    }
+
+    /// <summary>
+    /// 发送订单通知
+    /// </summary>
+    /// <param name="customer">customer</param>
+    /// <param name="first">first</param>
+    /// <param name="orderCode">orderCode</param>
+    /// <param name="customerCode">customerCode</param>
+    /// <param name="remark">remark</param>
+    /// <param name="sender">sender</param>
+    /// <param name="url"></param>
+    /// <returns>是否发送成功</returns>
+    public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
+    {
+        string openId = customer.OpenId;
+        if (string.IsNullOrWhiteSpace(openId))
         {
-            if (string.IsNullOrWhiteSpace(openId) == false)
-            {
-                try
-                {
-                    TemplateApi.SendTemplateMessage(wechatAccessTokenService.GetAccessToken(), openId, templateId, url, data);
-                    return CustomerMessageStatus.Sent;
-                }
-                catch (Exception exp)
-                {
-                    log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
-                    log.Error(exp);
-
-                    return CustomerMessageStatus.SendFail;
-                }
-            }
-
             return CustomerMessageStatus.SendFail; // 一般这时还没关注公众号，也算发送失败
         }
 
-        /// <summary>
-        /// 发送订单通知
-        /// </summary>
-        /// <param name="customer">customer</param>
-        /// <param name="first">first</param>
-        /// <param name="orderCode">orderCode</param>
-        /// <param name="customerCode">customerCode</param>
-        /// <param name="remark">remark</param>
-        /// <param name="sender">sender</param>
-        /// <param name="url"></param>
-        /// <returns>是否发送成功</returns>
-        public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
-        {
-            string openId = customer.OpenId;
-            if (string.IsNullOrWhiteSpace(openId))
-            {
-                return CustomerMessageStatus.SendFail; // 一般这时还没关注公众号，也算发送失败
-            }
-
 #if DEBUG
-            log.Trace("SendOrderNoticeTemplateMessage: ");
-            log.Trace($"openId: {openId}");
-            log.Trace($"first: {first}");
-            log.Trace($"orderCode: {orderCode}");
-            log.Trace($"customerCode: {customerCode}");
-            log.Trace($"remark: {remark}");
-            log.Trace($"sender: {sender}");
-            log.Trace($"url: {url}");
+        log.Trace("SendOrderNoticeTemplateMessage: ");
+        log.Trace($"openId: {openId}");
+        log.Trace($"first: {first}");
+        log.Trace($"orderCode: {orderCode}");
+        log.Trace($"customerCode: {customerCode}");
+        log.Trace($"remark: {remark}");
+        log.Trace($"sender: {sender}");
+        log.Trace($"url: {url}");
 
 
-            return CustomerMessageStatus.Sent;
+        return CustomerMessageStatus.Sent;
 #else
             DateTime processTime = DateTime.Now;
 
@@ -97,29 +97,29 @@ namespace shunda.Service.CustomerMessage
 
             return SendTemplateMessage(openId, WeChatConfig.OrderNoticeTemplateId, data, url);
 #endif
-        }
+    }
 
-        /// <summary>
-        /// 订单处理异常通知
-        /// </summary>
-        /// <param name="customer">customer</param>
-        /// <param name="first">first</param>
-        /// <param name="abnormalCause">异常原因</param>
-        /// <param name="remark">remark</param>
-        /// <param name="sender">sender</param>
-        /// <returns>是否发送成功</returns>
-        public CustomerMessageStatus SendOrderAbnormalNoticeTemplateMessage(CustomerInfo customer, string first, string abnormalCause, string remark, string sender)
-        {
-            string openId = customer.OpenId;
+    /// <summary>
+    /// 订单处理异常通知
+    /// </summary>
+    /// <param name="customer">customer</param>
+    /// <param name="first">first</param>
+    /// <param name="abnormalCause">异常原因</param>
+    /// <param name="remark">remark</param>
+    /// <param name="sender">sender</param>
+    /// <returns>是否发送成功</returns>
+    public CustomerMessageStatus SendOrderAbnormalNoticeTemplateMessage(CustomerInfo customer, string first, string abnormalCause, string remark, string sender)
+    {
+        string openId = customer.OpenId;
 #if DEBUG
-            log.Trace("SendOrderAbnormalNoticeTemplateMessage: ");
-            log.Trace($"openId: {openId}");
-            log.Trace($"first: {first}");
-            log.Trace($"abnormalCause: {abnormalCause}");
-            log.Trace($"remark: {remark}");
-            log.Trace($"sender: {sender}");
+        log.Trace("SendOrderAbnormalNoticeTemplateMessage: ");
+        log.Trace($"openId: {openId}");
+        log.Trace($"first: {first}");
+        log.Trace($"abnormalCause: {abnormalCause}");
+        log.Trace($"remark: {remark}");
+        log.Trace($"sender: {sender}");
 
-            return CustomerMessageStatus.Sent;
+        return CustomerMessageStatus.Sent;
 #else
             DateTime abnormalTime = DateTime.Now;
 
@@ -132,6 +132,5 @@ namespace shunda.Service.CustomerMessage
 
             return SendTemplateMessage(openId, WeChatConfig.OrderAbnormalTemplateId, data);
 #endif
-        }
     }
 }
