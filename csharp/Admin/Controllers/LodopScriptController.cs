@@ -8,7 +8,7 @@ namespace shunda.Admin.Controllers;
 public class LodopScriptController : Controller
 {
     [HttpGet]
-    [Route("/lodop/script")]
+    [Route("/admin/lodop/script")]
     public IActionResult Index()
     {
         // LODOP.SET_PRINTER_INDEX(-1); 尝试使用默认打印机
