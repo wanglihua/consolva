@@ -33,7 +33,7 @@ else
                         @(Model.Message)
                     </h3>
                 }
-                else if (Model.ClaimId != 0)
+                else if (Model.ExpressId != 0)
                 {
                     autoRecordCheckinVideo = false;
                     <h3 id="expressTrackingNoError" class="well">
@@ -42,7 +42,7 @@ else
                 }
 
                 <input type="hidden" asp-for="WarehouseId"/>
-                <input type="hidden" asp-for="ClaimId"/>
+                <input type="hidden" asp-for="ExpressId"/>
 
                 <div>
                     <table id="express" class="data-list-table table table-bordered" style="margin-bottom: 8px;">
@@ -181,12 +181,12 @@ else
                                 <td colspan="3">
                                     <div class="row">
                                         <div class="col-xs-8">
-                                            <textarea id="description" asp-for="Description" rows="1" class="input-sm form-control"></textarea>
+                                            <textarea id="description" asp-for="WarehouseRemark" rows="1" class="input-sm form-control"></textarea>
                                         </div>
                                         <div class="col-xs-4">
                                             <select id="remarkList" class="input-sm form-control" style="margin-top: 2px;" onchange="remarkSelectChange()">
                                                 <option value="">选择预设入库备注</option>
-                                                @foreach (ExpressRemarkPresetSelectInfo remarkPreset in Model.RemarkList)
+                                                @foreach (ExpressRemarkPresetSelectInfo remarkPreset in Model.RemarkPresetList)
                                                 {
                                                     <option value="@(remarkPreset.Remark)">@(remarkPreset.Remark)</option>
                                                 }
@@ -258,7 +258,7 @@ else
         });
     </script>
 
-    @if (Model.ClaimId == 0)
+    @if (Model.ExpressId == 0)
     {
         <script type="text/javascript">
             $(function() {

@@ -36,7 +36,7 @@ public class LogisticsExpressCheckinExpressModel
     public IList<StorageLocSpecInfo> StorageLocSpecList { get; set; } = new List<StorageLocSpecInfo>();
 
     [BindNever]
-    public IList<ExpressRemarkPresetSelectInfo> RemarkList { get; set; } = new List<ExpressRemarkPresetSelectInfo>();
+    public IList<ExpressRemarkPresetSelectInfo> RemarkPresetList { get; set; } = new List<ExpressRemarkPresetSelectInfo>();
 
     [BindNever]
     public string StorageLocName { get; set; } = string.Empty;
@@ -57,7 +57,7 @@ public class LogisticsExpressCheckinExpressModel
     /// </summary>
     public IList<LogisticsExpressCheckinSizeWeightChildItem> ChildSizeWeightList { get; set; } = new List<LogisticsExpressCheckinSizeWeightChildItem>();
 
-    public int ClaimId { get; set; } // todo a  名称改掉
+    public int ExpressId { get; set; } // todo a  名称改掉
 
     [Required(ErrorMessage = "快递入库仓库不能为空！")]
     public int WarehouseId { get; set; }
@@ -88,7 +88,7 @@ public class LogisticsExpressCheckinExpressModel
     // public int? StorageLocId { get; set; }
 
     [MaxLength(300, ErrorMessage = "备注长度不能大于300！")]
-    public string? Description { get; set; } // todo a 改名成 CheckinRemark
+    public string? WarehouseRemark { get; set; }
 
     public IList<LogisticsExpressCheckinExpressGoodsModel> GoodsList { get; set; } = new List<LogisticsExpressCheckinExpressGoodsModel>();
 }

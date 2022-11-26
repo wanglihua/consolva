@@ -157,12 +157,11 @@ public class ExpressPhotoService
         session.Flush();
     }
 
-    // todo b 调用
     /// <summary>
     /// 绑定快递单号到图片，添加和更新快递单时调用
     /// </summary>
     /// <param name="expressId"></param>
-    public void BindExpressToPhoto(int expressId)
+    public void BindExpressPhoto(int expressId)
     {
         ExpressInfo? express = session.Get<ExpressInfo>(expressId);
         if (express == null)

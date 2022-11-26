@@ -43,13 +43,13 @@ public class ExpressCheckinController : Controller
     private readonly LogisticsGoodsTypeService logisticsGoodsTypeService;
     private readonly CheckinTrackingNoService checkinTrackingNoService;
     private readonly StorageLocService storageLocService;
-
     private readonly ExpressCheckinConfigService expressCheckinConfigService;
-
     // private readonly CustomerMessageService customerMessageService;
-    private ExpressLogService expressLogService;
-    private ExpressSizeWeightService expressSizeWeightService;
-    private LogisticsGoodsImageService logisticsGoodsImageService;
+    private readonly ExpressLogService expressLogService;
+    private readonly ExpressSizeWeightService expressSizeWeightService;
+    private readonly ExpressPhotoService expressPhotoService;
+    private readonly ExpressVideoService expressVideoService;
+    private readonly LogisticsGoodsImageService logisticsGoodsImageService;
 
     public ExpressCheckinController(
         ISession session,
@@ -65,6 +65,8 @@ public class ExpressCheckinController : Controller
         // CustomerMessageService customerMessageService,
         ExpressLogService expressLogService,
         ExpressSizeWeightService expressSizeWeightService,
+        ExpressPhotoService expressPhotoService,
+        ExpressVideoService expressVideoService,
         LogisticsGoodsImageService logisticsGoodsImageService)
     {
         this.session = session;
@@ -80,6 +82,8 @@ public class ExpressCheckinController : Controller
         // this.customerMessageService = customerMessageService;
         this.expressLogService = expressLogService;
         this.expressSizeWeightService = expressSizeWeightService;
+        this.expressPhotoService = expressPhotoService;
+        this.expressVideoService = expressVideoService;
         this.logisticsGoodsImageService = logisticsGoodsImageService;
     }
 
@@ -140,7 +144,7 @@ public class ExpressCheckinController : Controller
         {
             int expressExistId = expressExist.Id;
 
-            model.ClaimId = expressExist.Id;
+            model.ExpressId = expressExist.Id;
             model.BillCustomerCode = expressExist.BillCustomerCode;
             model.ExpressCompany = expressExist.ExpressCompany;
             model.PackageCount = expressExist.PackageCount;
@@ -152,7 +156,7 @@ public class ExpressCheckinController : Controller
                 .Take(1)
                 .SingleOrDefault();
 
-            model.Description = expressRemark?.Remark ?? string.Empty;
+            model.WarehouseRemark = expressRemark?.Remark ?? string.Empty;
 
             int storageLocIdExist = expressExist.StorageLoc?.Id ?? 0;
             storageLocExist = session.Query<StorageLocInfo>()
@@ -195,7 +199,7 @@ public class ExpressCheckinController : Controller
             model.StorageLocSpecId = userSelect?.StorageLocSpec?.Id ?? 0;
         }
 
-        model.RemarkList = session.Query<ExpressRemarkPresetSelectInfo>().OrderBy(e => e.Id).ToList();
+        model.RemarkPresetList = session.Query<ExpressRemarkPresetSelectInfo>().OrderBy(e => e.Id).ToList();
 
         // 物品列表
         if (expressExist != null)
@@ -491,7 +495,7 @@ public class ExpressCheckinController : Controller
 
         ExpressExpectInfo? expressExpect = null;
 
-        int expressId = model.ClaimId;
+        int expressId = model.ExpressId;
         bool isCreate = expressId == 0;
 
         lock (ExpressCheckinLockObject) // lock 时，数据库事务应该放在 lock 区域之内
@@ -657,20 +661,19 @@ public class ExpressCheckinController : Controller
 
                 // 入库备注 日志，后面 express 保存完后，保存到 express remark 表
 
-                string checkinRemark = model.Description?.Trim() ?? string.Empty;
-                ExpressRemarkInfo? checkinRemarkInDb = null;
-                string oldCheckinRemark = string.Empty;
+                string warehouseRemark = model.WarehouseRemark?.Trim() ?? string.Empty;
+                ExpressRemarkInfo? warehouseRemarkInDb = null;
+                string oldWarehouseRemark = string.Empty;
                 if (isCreate == false)
                 {
-                    int expId = express.Id;
-                    checkinRemarkInDb = session.Query<ExpressRemarkInfo>()
-                        .Where(e => e.Express!.Id == expId && e.Type == ExpressRemarkType.Warehouse)
+                    warehouseRemarkInDb = session.Query<ExpressRemarkInfo>()
+                        .Where(e => e.Express!.Id == expressId && e.Type == ExpressRemarkType.Warehouse)
                         .Take(1)
                         .SingleOrDefault();
-                    oldCheckinRemark = checkinRemarkInDb?.Remark ?? string.Empty;
-                    if (checkinRemark != oldCheckinRemark)
+                    oldWarehouseRemark = warehouseRemarkInDb?.Remark ?? string.Empty;
+                    if (warehouseRemark != oldWarehouseRemark)
                     {
-                        editDescList.Add($"入库备注:{oldCheckinRemark}=>{checkinRemark}");
+                        editDescList.Add($"入库备注:{oldWarehouseRemark}=>{warehouseRemark}");
                     }
                 }
 
@@ -701,11 +704,15 @@ public class ExpressCheckinController : Controller
 
                 session.SaveOrUpdate(express);
                 session.Flush();
+                
+                // 入库跟踪号，这时生成，生成的号不会浪费
 
-                expressId = express.Id;
-                if (expressId == 0)
+                if (isCreate)
                 {
-                    throw new Exception("快递单号没能保存成功！");
+                    express.CheckinTrackingNo = checkinTrackingNoService.GetNextMainTrackinigNo();
+                    
+                    session.Update(express);
+                    session.Flush();
                 }
 
                 // 保存客户备注
@@ -727,24 +734,24 @@ public class ExpressCheckinController : Controller
                 }
 
                 // 保存入库备注
-                if (checkinRemarkInDb == null)
+                if (warehouseRemarkInDb == null)
                 {
-                    checkinRemarkInDb = new ExpressRemarkInfo() {
+                    warehouseRemarkInDb = new ExpressRemarkInfo() {
                         Express = express,
                         Type = ExpressRemarkType.Warehouse,
                         AddUser = loginUser,
                     };
                 }
 
-                checkinRemarkInDb.Remark = checkinRemark;
+                warehouseRemarkInDb.Remark = warehouseRemark;
 
-                if (isCreate == false && checkinRemark != oldCheckinRemark)
+                if (isCreate == false && warehouseRemark != oldWarehouseRemark)
                 {
                     // 编辑时如果入库备注跟原来的不同，就更新添加用户
-                    checkinRemarkInDb.AddUser = loginUser;
+                    warehouseRemarkInDb.AddUser = loginUser;
                 }
 
-                session.SaveOrUpdate(checkinRemarkInDb);
+                session.SaveOrUpdate(warehouseRemarkInDb);
                 session.Flush();
 
 
@@ -881,7 +888,9 @@ public class ExpressCheckinController : Controller
             }
         }
 
-        // todo remark, photo video, sizeweight 的 express id 绑定
+        expressSizeWeightService.BindAndSum(expressId);
+        expressPhotoService.BindExpressPhoto(expressId);
+        expressVideoService.BindExpressVideo(expressId);
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
@@ -1090,11 +1099,12 @@ public class ExpressCheckinController : Controller
 
         string trackingNo = model.ExpressTrackingNo;
 
-        // 检查快递单号状态
         ExpressInfo? express = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
             .SingleOrDefault();
+
+        // 检查快递单号状态
         if (express != null && ExpressStatus.IsPacked(express.Status))
         {
             throw new ValidationException("已打包快递单号不能，保存尺寸重量信息");
@@ -1116,6 +1126,7 @@ public class ExpressCheckinController : Controller
             logisticsExpressCreate = true;
 
             expressSizeWeightMain = new ExpressSizeWeightInfo();
+            expressSizeWeightMain.Express = express; // 有可能为 null
             expressSizeWeightMain.TrackingNo = trackingNo;
             expressSizeWeightMain.TrackingNoSub = string.Empty;
         }
@@ -1238,6 +1249,7 @@ public class ExpressCheckinController : Controller
                     expressChild.TrackingNo = trackingNo;
 
                     string subTrackingNo = $"{trackingNo}-{childItem.TrackingNo}";
+                    expressChild.Express = express; // 有可能为 null
                     expressChild.TrackingNo = subTrackingNo;
                     expressChild.Length = childItem.Length ?? 0;
                     expressChild.Width = childItem.Width ?? 0;
@@ -1314,7 +1326,8 @@ public class ExpressCheckinController : Controller
             // 如果是已入库的快递单，就要更新包裹数量尺寸重量等
             if (express != null)
             {
-                expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
+                // expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
+                expressSizeWeightService.BindAndSum(express);
             }
 
             session.Flush();
