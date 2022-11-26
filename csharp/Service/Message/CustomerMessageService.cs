@@ -17,8 +17,11 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Message;
 using shunda.Domain.Pass;
 
-namespace shunda.Service.CustomerMessage
-{
+
+// todo a 这个文件将来会被移除
+
+namespace shunda.Service.Message;
+
     [Service(ServiceType.Scoped)]
     public class CustomerMessageService
     {
@@ -5660,4 +5663,3 @@ namespace shunda.Service.CustomerMessage
             return SaveCustomerMessage(sendType, customer, null, message, isSent, setting);
         }
     }
-}

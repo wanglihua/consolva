@@ -3,7 +3,7 @@ using NHibernate;
 using shunda.Core.Service;
 using shunda.Domain.Message;
 
-namespace shunda.Service.CustomerMessage;
+namespace shunda.Service.Message;
 
 /// <summary>
 /// 客户消息定客户端制
