@@ -42,7 +42,7 @@ namespace shunda.Service.CustomerMessage
             {
                 var result = new SendSmsResult(SendSmsResult.MobileFormatError, "不是正确的电话号码格式！", "");
 
-                AddSmsSendRecord(mobile ?? string.Empty, message ?? string.Empty, result);
+                AddSmsSendRecord(mobile, message, result);
 
                 return result;
             }
@@ -114,12 +114,13 @@ namespace shunda.Service.CustomerMessage
 
         private void AddSmsSendRecord(string mobile, string message, SendSmsResult sendSmsResult)
         {
-            var smsSendRecord = new SmsSendRecordInfo();
-            smsSendRecord.Mobile = mobile;
-            smsSendRecord.Message = message;
-            smsSendRecord.SendCode = sendSmsResult.Code;
-            smsSendRecord.SendError = sendSmsResult.Error;
-            smsSendRecord.SendMsgId = sendSmsResult.MessageId;
+            var smsSendRecord = new SmsSendRecordInfo() {
+                Mobile = mobile,
+                Message = message,
+                SendCode = sendSmsResult.Code,
+                SendError = sendSmsResult.Error,
+                SendMsgId = sendSmsResult.MessageId,
+            };
 
             session.Save(smsSendRecord);
             session.Flush();
@@ -159,19 +160,19 @@ namespace shunda.Service.CustomerMessage
         }
 
         [JsonProperty("senderId")]
-        public string SenderId { get; set; }
+        public string SenderId { get; set; } = string.Empty;
 
         [JsonProperty("account")]
-        public string Account { get; set; }
+        public string Account { get; set; } = string.Empty;
 
         [JsonProperty("password")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [JsonProperty("mobile")]
-        public string Mobile { get; set; }
+        public string Mobile { get; set; } = string.Empty;
 
         [JsonProperty("msg")]
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -223,13 +224,13 @@ namespace shunda.Service.CustomerMessage
         }
 
         [JsonProperty("code")]
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
 
         [JsonProperty("error")]
-        public string Error { get; set; }
+        public string Error { get; set; } = string.Empty;
 
         [JsonProperty("msgid")]
-        public string MessageId { get; set; }
+        public string MessageId { get; set; } = string.Empty;
     }
 }
 
