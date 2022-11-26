@@ -1,10 +1,15 @@
 using NHibernate;
 using NLog;
 using Senparc.Weixin.MP.AdvancedAPIs;
+using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Service.Wechat;
+
+#if !DEBUG
+using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
+#endif
 
 namespace shunda.Service.CustomerMessage
 {
@@ -15,7 +20,7 @@ namespace shunda.Service.CustomerMessage
 
         private ISession session;
         private WechatAccessTokenService wechatAccessTokenService;
-        
+
         public WeiXinMessageService(ISession session, WechatAccessTokenService wechatAccessTokenService)
         {
             this.session = session;
@@ -30,7 +35,7 @@ namespace shunda.Service.CustomerMessage
         /// <param name="data"></param>
         /// <param name="url"></param>
         /// <returns>是否发送成功</returns>
-        public CustomerMessageStatus SendTemplateMessage(string openId, string templateId, object data, string? url)
+        public CustomerMessageStatus SendTemplateMessage(string openId, string templateId, object data, string? url = null)
         {
             if (string.IsNullOrWhiteSpace(openId) == false)
             {
@@ -62,7 +67,7 @@ namespace shunda.Service.CustomerMessage
         /// <param name="sender">sender</param>
         /// <param name="url"></param>
         /// <returns>是否发送成功</returns>
-        public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url)
+        public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
         {
             string openId = customer.OpenId;
             if (string.IsNullOrWhiteSpace(openId))
@@ -71,7 +76,6 @@ namespace shunda.Service.CustomerMessage
             }
 
 #if DEBUG
-
             log.Trace("SendOrderNoticeTemplateMessage: ");
             log.Trace($"openId: {openId}");
             log.Trace($"first: {first}");
@@ -95,18 +99,7 @@ namespace shunda.Service.CustomerMessage
                 remark = new TemplateDataItem(remark)
             };
 
-            if (account == WeChatOfficialAccount.Account2)
-            {
-                return SendTemplateMessage(account, openId, WeChatConfig2.OrderNoticeTemplateId, data, url);
-            }
-            else if (account == WeChatOfficialAccount.Account1
-                     || account == WeChatOfficialAccount.None
-                     || account == null)
-            {
-                return SendTemplateMessage(account, openId, WeChatConfig1.OrderNoticeTemplateId, data, url);
-            }
-
-            return CustomerMessageStatus.SendFail;
+            return SendTemplateMessage(openId, WeChatConfig.OrderNoticeTemplateId, data, url);
 #endif
         }
 
@@ -141,18 +134,7 @@ namespace shunda.Service.CustomerMessage
                 remark = new TemplateDataItem(remark + "【" + sender + "】")
             };
 
-            if (account == WeChatOfficialAccount.Account2)
-            {
-                return SendTemplateMessage(account, openId, WeChatConfig2.OrderAbnormalTemplateId, data);
-            }
-            else if (account == WeChatOfficialAccount.Account1
-                     || account == WeChatOfficialAccount.None
-                     || account == null)
-            {
-                return SendTemplateMessage(account, openId, WeChatConfig1.OrderAbnormalTemplateId, data);
-            }
-            
-            return CustomerMessageStatus.SendFail;
+            return SendTemplateMessage(openId, WeChatConfig.OrderAbnormalTemplateId, data);
 #endif
         }
     }
