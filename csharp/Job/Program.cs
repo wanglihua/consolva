@@ -41,21 +41,15 @@ public class Program
         // Add services to the container.
         var services = builder.Services;
 
-        services.AddScoped<RequestLogActionFilter>();
-        services.AddScoped<LoginTimeoutResetActionFilter>();
         services.AddScoped<HibernateActionFilter>();
         services.AddScoped<HeaderActionFilter>();
-        services.AddScoped<AdminAuthActionFilter>();
         services.AddScoped<ExceptionFilter>();
 
         var mvcBuilder = services.AddControllersWithViews()
             .AddMvcOptions(options => {
                 // 执行顺序是从上到下的
-                options.Filters.AddService<RequestLogActionFilter>(); // 这个Filter执行时 sessionId 应该已经有了
-                options.Filters.AddService<LoginTimeoutResetActionFilter>(); // 这个Filter执行时 sessionId 应该已经有了
                 options.Filters.AddService<HibernateActionFilter>();
                 options.Filters.AddService<HeaderActionFilter>();
-                options.Filters.AddService<AdminAuthActionFilter>();
                 options.Filters.AddService<ExceptionFilter>();
 
                 // 数据绑定相关
