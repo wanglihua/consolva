@@ -69,12 +69,12 @@ public class CustomerMessageNoOrderService
             throw new ValidationException("消息发送指定的会员不能为空！");
         }
 
-        string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-
         if (customer.Status == CustomerStatus.Frozen)
         {
             return;
         }
+
+        string customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
         CustomerMessageCycleTimingSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageCycleTimingSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled)
@@ -96,7 +96,7 @@ public class CustomerMessageNoOrderService
                 if (setting.WechatSend)
                 {
                     messageStatus = CustomerMessageStatus.Sent;
-                    string processUser = customerMessageCommonService.GetProcessUser();
+                    string processUser = CustomerMessageCommonService.ShundaSecretary;
                     string? url = GetMessageUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false)

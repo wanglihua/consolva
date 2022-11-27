@@ -5,7 +5,6 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Message;
 using shunda.Domain.Pass;
 using shunda.Service.CustomerMessage;
-
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Message;
@@ -15,17 +14,15 @@ namespace shunda.Service.Message;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class CustomerMessageCommonService
-{ 
-    public static readonly string DefaultProcessUser = "舜达小秘";
+{
+    public static readonly string ShundaSecretary = "舜达小秘";
 
-    public static readonly string PhotoMessageSender = "舜达智能拍照机器人";
+    public static readonly string PhotoRobot = "舜达智能拍照机器人";
 
     private ISession session;
     private SmsService smsService;
     private WechatMessageService wechatMessageService;
     private CustomerMessageClientCustomizeService customerMessageClientCustomizeService;
-
-    private string userName = string.Empty; // 初始是空的
 
     public CustomerMessageCommonService(ISession session,
         SmsService smsService,
@@ -36,163 +33,6 @@ public class CustomerMessageCommonService
         this.smsService = smsService;
         this.wechatMessageService = wechatMessageService;
         this.customerMessageClientCustomizeService = customerMessageClientCustomizeService;
-    }
-
-    public void SetUserName(string userName)
-    {
-        this.userName = userName;
-    }
-
-    /// <summary>
-    /// 发送客户消息
-    /// </summary>
-    public void SendCustomerMessage(CustomerMessageSendType sendType, CustomerMessageType messageType, CustomerInfo customer, params object[] messageData)
-    {
-        if (customer?.Status == CustomerStatus.Frozen)
-        {
-            return;
-        }
-
-        SendCustomerMessageWithOrder(sendType, messageType, customer, null, messageData);
-    }
-
-    /// <summary>
-    /// 发送客户消息，带有订单参数
-    /// </summary>
-    public void SendCustomerMessageWithOrder(CustomerMessageSendType sendType, CustomerMessageType messageType, CustomerInfo customer, LogisticsOrderInfo order, params object[] messageData)
-    {
-        if (customer?.Status == CustomerStatus.Frozen)
-        {
-            return;
-        }
-
-        SendMessageWithOrder(sendType, messageType, customer, null, order, messageData);
-    }
-
-    /// <summary>
-    /// 发送公众号订阅者消息
-    /// </summary>
-    public void SendWechatFollowerMessage(CustomerMessageSendType sendType, CustomerMessageType messageType, params object[] messageData)
-    {
-        // todo 这里要修改
-        SendMessageWithOrder(sendType, messageType, null, null, messageData);
-    }
-
-    /// <summary>
-    /// 发送客户消息，带有订单参数
-    /// todo a 这里的 消息发送会被改造
-    /// </summary>
-    public void SendMessageWithOrder(CustomerMessageSendType sendType, CustomerMessageType messageType, CustomerInfo customer, LogisticsOrderInfo order, params object[] messageData)
-    {
-        // 这里的 customer 是有可能为 null 的
-
-        if (customer?.Status == CustomerStatus.Frozen)
-        {
-            return;
-        }
-
-        int customerId = customer?.Id ?? 0;
-
-        string processUser = GetProcessUser();
-
-        bool isSent = false;
-        bool smsSend = false;
-        bool weiXinSend = false;
-        string message = String.Empty; // 记录的消息内容，一般取取微信的详细
-
-        if (sendType == CustomerMessageSendType.CycleTiming)
-        {
-            CustomerMessageCycleTimingSendSettingInfo setting = session
-                .Query<CustomerMessageCycleTimingSendSettingInfo>()
-                .Where(e => e.Type == messageType)
-                .Take(1)
-                .SingleOrDefault();
-
-            if (setting == null)
-            {
-                throw new Exception("指定的消息发送配置不存在！");
-            }
-
-            smsSend = setting.SmsSend;
-            weiXinSend = setting.WechatSend;
-
-            #region 定时提交打包提醒
-
-            if (messageType == CustomerMessageType.TimingSubmitPack)
-            {
-                if (messageData == null || messageData.Length != 1)
-                {
-                    throw new Exception("定时提交打包提醒 消息发送参数数量不对！");
-                }
-
-                /*
-                 *
-                 * 0: 订单编号
-                 *
-                setting.WechatMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。早打包，早收到宝贝呢！";
-                setting.SmsMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。";
-                 *
-                 */
-
-                message = string.Format(setting.WechatMessageTemplate1, messageData[0]);
-
-                if (setting.Status == CustomerMessageSettingStatus.Enabled)
-                {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.TimingSubmitPack); // 实际周期发送的还不是可定制的
-                    if (clientShouldSend)
-                    {
-                        if (setting.WechatSend)
-                        {
-                            isSent = true;
-                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageData[0].ToString(), customer?.CustomerCode, message, processUser);
-                        }
-
-                        if (setting.SmsSend)
-                        {
-                            isSent = true;
-                            smsService.SendSms(customer.Mobile, string.Format(setting.SmsMessageTemplate, messageData[0]));
-                        }
-                    }
-                }
-            }
-
-            #endregion
-        }
-
-        CustomerMessageInfo customerMessage = new CustomerMessageInfo();
-        customerMessage.SendType = sendType;
-        customerMessage.Type = messageType;
-        customerMessage.Customer = customer;
-
-        // 其实可以合成一句 customerMessage.Order = order;
-
-        if (order != null)
-        {
-            customerMessage.Order = order;
-        }
-        else
-        {
-            customerMessage.Order = null;
-        }
-
-        customerMessage.Content = message;
-        customerMessage.SmsSend = smsSend;
-        customerMessage.WechatSend = weiXinSend;
-        customerMessage.PlanSendTime = DateTime.Now;
-        customerMessage.SendTime = DateTime.Now;
-
-        if (isSent)
-        {
-            customerMessage.Status = CustomerMessageStatus.Sent;
-        }
-        else
-        {
-            customerMessage.Status = CustomerMessageStatus.NotSend;
-        }
-
-        session.Save(customerMessage);
-
-        session.Flush();
     }
 
     public CustomerMessageRealTimeSendSettingInfo GetCustomerMessageRealTimeSendSetting(CustomerMessageType messageType)
@@ -233,30 +73,6 @@ public class CustomerMessageCommonService
         }
 
         return setting;
-    }    
-
-    public string GetProcessUser()
-    {
-        if (string.IsNullOrWhiteSpace(userName) == false)
-        {
-            return userName;
-        }
-
-        string processUser = DefaultProcessUser;
-        if (loginUserService != null) // 如果是定时任务的调用，这个值可能是null值
-        {
-            int loginUserId = loginUserService.GetLoginUserId();
-            if (loginUserId != 0)
-            {
-                string loginUserName = session.Get<UserInfo>(loginUserId)?.UserName;
-                if (string.IsNullOrWhiteSpace(loginUserName) == false)
-                {
-                    processUser = loginUserName;
-                }
-            }
-        }
-
-        return processUser;
     }
 
     public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting)
@@ -334,7 +150,7 @@ public class CustomerMessageCommonService
         session.Flush();
 
         return customerMessage.Id;
-    }    
+    }
 
     /// <summary>
     /// 一般保存的是订单为空的客户消息
