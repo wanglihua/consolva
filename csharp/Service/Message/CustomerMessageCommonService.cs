@@ -116,48 +116,6 @@ public class CustomerMessageCommonService
             smsSend = setting.SmsSend;
             weiXinSend = setting.WechatSend;
 
-            #region 已注册未下单推送
-
-            if (messageType == CustomerMessageType.YiZhuCeXiaDanTuiSong)
-            {
-                if (messageData != null && messageData.Length != 0)
-                {
-                    throw new Exception("已注册未下单推送 消息发送参数数量不对！");
-                }
-
-                /*
-                 *
-                 * 消息无参数
-                 *
-                setting.WechatMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
-                setting.SmsMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
-                 *
-                 */
-
-                message = setting.WechatMessageTemplate1;
-
-                if (setting.Status == CustomerMessageSettingStatus.Enabled)
-                {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.YiZhuCeXiaDanTuiSong); // 实际周期发送的还不是可定制的
-                    if (clientShouldSend)
-                    {
-                        if (setting.WechatSend)
-                        {
-                            isSent = true;
-                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customer?.CustomerCode, message, processUser);
-                        }
-
-                        if (setting.SmsSend)
-                        {
-                            isSent = true;
-                            smsService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
-                        }
-                    }
-                }
-            }
-
-            #endregion
-
             #region 会员未关注公众号推送
 
             if (messageType == CustomerMessageType.HuiYuanWeiGuanZhuGongZhongHaoTuiSong)

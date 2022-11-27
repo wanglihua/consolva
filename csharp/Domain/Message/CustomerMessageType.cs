@@ -31,7 +31,7 @@ public class CustomerMessageType : CodeTypeBase
     /// <summary>
     /// 定时提醒，已注册未下单推送
     /// </summary>
-    public static readonly CustomerMessageType YiZhuCeXiaDan = new CustomerMessageType(600, "已注册未下单推送", "已注册未下单推送");
+    public static readonly CustomerMessageType NoOrder = new CustomerMessageType(600, "已注册未下单推送", "已注册未下单推送");
 
     /// <summary>
     /// 定时提醒，会员未关注公众号推送
@@ -200,7 +200,7 @@ public class CustomerMessageType : CodeTypeBase
             AllMember,
             HelpMeMakeMoney,
             NotRegister,
-            YiZhuCeXiaDan,
+            NoOrder,
             HuiYuanWeiGuanZhuGongZhongHao,
             QuXiaoGuanZhuGongZhongHao,
             DingShiTiJiaoDaBao,

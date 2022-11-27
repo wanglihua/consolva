@@ -71,11 +71,11 @@ public class CustomerMessageCycleTimingSendSettingService
         {
             // 已注册未下单推送
 
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.YiZhuCeXiaDanTuiSong).Take(1).SingleOrDefault();
+            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.NoOrder).Take(1).SingleOrDefault();
             if (setting == null)
             {
                 setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.YiZhuCeXiaDanTuiSong;
+                setting.Type = CustomerMessageType.NoOrder;
                 setting.Status = CustomerMessageSettingStatus.Disabled;
                 setting.WeiXinSend = true;
                 setting.SmsSend = false;

@@ -5314,7 +5314,7 @@ namespace shunda.Service.Message;
 
                 #region 已注册未下单推送
 
-                if (messageType == CustomerMessageType.YiZhuCeXiaDanTuiSong)
+                if (messageType == CustomerMessageType.NoOrder)
                 {
                     if (messageData != null && messageData.Length != 0)
                     {
@@ -5334,7 +5334,7 @@ namespace shunda.Service.Message;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
-                        bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.YiZhuCeXiaDanTuiSong); // 实际周期发送的还不是可定制的
+                        bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NoOrder); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
                             if (setting.WeiXinSend)
