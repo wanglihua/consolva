@@ -5225,7 +5225,7 @@ namespace shunda.Service.Message;
 
                 #region 帮我赚钱提醒
 
-                if (messageType == CustomerMessageType.BangWoZhuanQianTiXing)
+                if (messageType == CustomerMessageType.HelpMeMakeMoney)
                 {
                     if (messageData != null && messageData.Length != 0)
                     {
@@ -5245,7 +5245,7 @@ namespace shunda.Service.Message;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
-                        bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.BangWoZhuanQianTiXing); // 实际周期发送的还不是可定制的
+                        bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.HelpMeMakeMoney); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
                             if (setting.WeiXinSend)

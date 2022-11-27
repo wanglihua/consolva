@@ -23,11 +23,11 @@ public class CustomerMessageCycleTimingSendSettingService
         {
             // 帮我赚钱提醒
 
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.BangWoZhuanQianTiXing).Take(1).SingleOrDefault();
+            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.HelpMeMakeMoney).Take(1).SingleOrDefault();
             if (setting == null)
             {
                 setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.BangWoZhuanQianTiXing;
+                setting.Type = CustomerMessageType.HelpMeMakeMoney;
                 setting.Status = CustomerMessageSettingStatus.Disabled;
                 setting.WeiXinSend = true;
                 setting.SmsSend = false;

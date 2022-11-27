@@ -72,7 +72,7 @@ public class CustomerMessageCommonService
     /// <summary>
     /// 发送公众号订阅者消息
     /// </summary>
-    public void SendWeiXinFollowerMessage(CustomerMessageSendType sendType, CustomerMessageType messageType, params object[] messageData)
+    public void SendWechatFollowerMessage(CustomerMessageSendType sendType, CustomerMessageType messageType, params object[] messageData)
     {
         // todo 这里要修改
         SendMessageWithOrder(sendType, messageType, null, null, messageData);
@@ -114,11 +114,11 @@ public class CustomerMessageCommonService
             }
 
             smsSend = setting.SmsSend;
-            weiXinSend = setting.WeiXinSend;
+            weiXinSend = setting.WechatSend;
 
             #region 帮我赚钱提醒
 
-            if (messageType == CustomerMessageType.BangWoZhuanQianTiXing)
+            if (messageType == CustomerMessageType.HelpMeMakeMoney)
             {
                 if (messageData != null && messageData.Length != 0)
                 {
@@ -129,19 +129,19 @@ public class CustomerMessageCommonService
                  *
                  * 消息无参数
                  *
-                setting.WeiXinMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！";
+                setting.WechatMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！";
                 setting.SmsMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？将【帮我赚钱】里您的专属海报转发朋友圈就可以赚钱哦！";
                  *
                  */
 
-                message = setting.WeiXinMessageTemplate1;
+                message = setting.WechatMessageTemplate1;
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.BangWoZhuanQianTiXing); // 实际周期发送的还不是可定制的
+                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.HelpMeMakeMoney); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
-                        if (setting.WeiXinSend)
+                        if (setting.WechatSend)
                         {
                             isSent = true;
                             wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customer?.CustomerCode, message, processUser);
@@ -171,12 +171,12 @@ public class CustomerMessageCommonService
                  *
                  * 消息无参数
                  *
-                setting.WeiXinMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦。该红包即可以在澳拼消费，也可以提现。进入公众号【费率|下单】里面的【在线下单】即可注册会员呢，别错过机会哦！";
+                setting.WechatMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦。该红包即可以在澳拼消费，也可以提现。进入公众号【费率|下单】里面的【在线下单】即可注册会员呢，别错过机会哦！";
                 setting.SmsMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦！";
                  *
                  */
 
-                message = setting.WeiXinMessageTemplate1;
+                message = setting.WechatMessageTemplate1;
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
@@ -186,7 +186,7 @@ public class CustomerMessageCommonService
                     if (clientShouldSend)
                     {
                     */
-                    if (setting.WeiXinSend)
+                    if (setting.WechatSend)
                     {
                         isSent = true;
                         wechatMessageService.SendOrderNoticeTemplateMessage(weiXinFollower, "", "会员注册提醒", "澳拼客户", message, processUser);
@@ -218,19 +218,19 @@ public class CustomerMessageCommonService
                  *
                  * 消息无参数
                  *
-                setting.WeiXinMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
+                setting.WechatMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
                 setting.SmsMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
                  *
                  */
 
-                message = setting.WeiXinMessageTemplate1;
+                message = setting.WechatMessageTemplate1;
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
                     bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.YiZhuCeXiaDanTuiSong); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
-                        if (setting.WeiXinSend)
+                        if (setting.WechatSend)
                         {
                             isSent = true;
                             wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customer?.CustomerCode, message, processUser);
@@ -260,19 +260,19 @@ public class CustomerMessageCommonService
                  *
                  * 消息无参数
                  *
-                setting.WeiXinMessageTemplate = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
+                setting.WechatMessageTemplate = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
                 setting.SmsMessageTemplate = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
                  *
                  */
 
-                message = setting.WeiXinMessageTemplate1;
+                message = setting.WechatMessageTemplate1;
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
                     bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.HuiYuanWeiGuanZhuGongZhongHaoTuiSong); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
-                        if (setting.WeiXinSend)
+                        if (setting.WechatSend)
                         {
                             isSent = true;
                             wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customer?.CustomerCode, message, processUser);
@@ -302,19 +302,19 @@ public class CustomerMessageCommonService
                  *
                  * 消息无参数
                  *
-                setting.WeiXinMessageTemplate = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
+                setting.WechatMessageTemplate = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
                 setting.SmsMessageTemplate = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
                  *
                  */
 
-                message = setting.WeiXinMessageTemplate1;
+                message = setting.WechatMessageTemplate1;
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
                     bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.QuXiaoGuanZhuGongZhongHaoTuiSong); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
-                        if (setting.WeiXinSend)
+                        if (setting.WechatSend)
                         {
                             isSent = true;
                             wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "已取消关注提醒", customer?.CustomerCode, message, processUser);
@@ -344,19 +344,19 @@ public class CustomerMessageCommonService
                  *
                  * 0: 订单编号
                  *
-                setting.WeiXinMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。早打包，早收到宝贝呢！";
+                setting.WechatMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。早打包，早收到宝贝呢！";
                 setting.SmsMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。";
                  *
                  */
 
-                message = string.Format(setting.WeiXinMessageTemplate1, messageData[0]);
+                message = string.Format(setting.WechatMessageTemplate1, messageData[0]);
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
                     bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.DingShiTiJiaoDaBaoTiXing); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
-                        if (setting.WeiXinSend)
+                        if (setting.WechatSend)
                         {
                             isSent = true;
                             wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageData[0].ToString(), customer?.CustomerCode, message, processUser);
@@ -386,19 +386,19 @@ public class CustomerMessageCommonService
                  *
                  * 消息无参数
                  *
-                setting.WeiXinMessageTemplate = "亲，客服发现您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
+                setting.WechatMessageTemplate = "亲，客服发现您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
                 setting.SmsMessageTemplate = "亲，您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
                  *
                  */
 
-                message = setting.WeiXinMessageTemplate1;
+                message = setting.WechatMessageTemplate1;
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
                     bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.GongGongShenLingJianChuLiTiXing); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
-                        if (setting.WeiXinSend)
+                        if (setting.WechatSend)
                         {
                             isSent = true;
                             wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customer?.CustomerCode, message, processUser);
@@ -434,7 +434,7 @@ public class CustomerMessageCommonService
 
         customerMessage.Content = message;
         customerMessage.SmsSend = smsSend;
-        customerMessage.WeiXinSend = weiXinSend;
+        customerMessage.WechatSend = weiXinSend;
         customerMessage.PlanSendTime = DateTime.Now;
         customerMessage.SendTime = DateTime.Now;
 
@@ -516,7 +516,7 @@ public class CustomerMessageCommonService
 
         customerMessage.Content = message;
         customerMessage.SmsSend = setting.SmsSend;
-        customerMessage.WeiXinSend = setting.WeiXinSend;
+        customerMessage.WechatSend = setting.WechatSend;
         customerMessage.PlanSendTime = DateTime.Now;
         customerMessage.SendTime = DateTime.Now;
         customerMessage.Status = messageStatus;

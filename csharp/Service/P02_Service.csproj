@@ -36,20 +36,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="CustomerMessage\CustomerMessageService.cs" />
-      <Compile Include="Message\CustomerMessageCommonService.cs" />
-      <Content Include="Message\CustomerMessageService.cs" />
-      <Compile Remove="CustomerMessage\CustomerMessageRealTimeSendSettingService.cs" />
-      <Content Include="Message\CustomerMessageRealTimeSendSettingService.cs" />
-      <Compile Remove="CustomerMessage\CustomerMessageCycleTimingSendSettingService.cs" />
-      <Content Include="Message\CustomerMessageCycleTimingSendSettingService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageAuExtraStorageDayFeeService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageAuExtraStorageDayFeeService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageAuFreeStorageDayReminderService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageAuFreeStorageDayReminderService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageCheckinExtraSizeWeightHoldService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageCheckinExtraSizeWeightHoldService.cs" />
-      <Compile Remove="Message\CustomerMessage\CustomerMessageCommonService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageDingDanZhuangTaiHuiBoService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageDingDanZhuangTaiHuiBoService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageHomeDeliverPhotoRateService.cs" />
@@ -82,6 +74,12 @@
       <Content Include="Message\CustomerMessage\CustomerMessageZhiFuErChengFangShiBianGengFeiYongService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageZiDongDaBaoYuGaoService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageZiDongDaBaoYuGaoService.cs" />
+      <Compile Remove="Message\CustomerMessageCycleTimingSendSettingService.cs" />
+      <Content Include="Message\CustomerMessageCycleTimingSendSettingService.cs" />
+      <Compile Remove="Message\CustomerMessageRealTimeSendSettingService.cs" />
+      <Content Include="Message\CustomerMessageRealTimeSendSettingService.cs" />
+      <Compile Remove="Message\CustomerMessageService.cs" />
+      <Content Include="Message\CustomerMessageService.cs" />
     </ItemGroup>
     
 </Project>
