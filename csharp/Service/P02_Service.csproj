@@ -37,21 +37,14 @@
 
     <ItemGroup>
       <Compile Remove="Message\CustomerMessage\CustomerMessageAuExtraStorageDayFeeService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageAuExtraStorageDayFeeService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageAuFreeStorageDayReminderService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageAuFreeStorageDayReminderService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageCheckinExtraSizeWeightHoldService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageCheckinExtraSizeWeightHoldService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageDingDanZhuangTaiHuiBoService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageDingDanZhuangTaiHuiBoService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageHomeDeliverPhotoRateService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageHomeDeliverPhotoRateService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageHomeDeliverTimeService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageHomeDeliverTimeService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageMuDiCangPiCiKeZiTiService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageMuDiCangPiCiKeZiTiService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageMuDiCangPiCiSaoMaYiChangService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageMuDiCangPiCiSaoMaYiChangService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageOrderDeliveredAirService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageOrderDeliveredAirService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessagePickupStationDeliverRateService.cs" />
@@ -67,11 +60,9 @@
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiDaoGangService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageYiDaoGangService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiDaoMuDiCangService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageYiDaoMuDiCangService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiZhuanYunService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageYiZhuanYunService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageZhiFuErChengFangShiBianGengFeiYongService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageZhiFuErChengFangShiBianGengFeiYongService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageZiDongDaBaoYuGaoService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageZiDongDaBaoYuGaoService.cs" />
       <Compile Remove="Message\CustomerMessageCycleTimingSendSettingService.cs" />

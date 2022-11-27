@@ -30,17 +30,24 @@ public class CustomerMessageHelpMeMakeMoneyService
         this.customerCodeService = customerCodeService;
     }
 
+    private static CustomerMessageType messageType => CustomerMessageType.HelpMeMakeMoney;
+
+    private string? GetMessageUrl()
+    {
+        return customerClientUrlService.GetCustomerPromotionUrl();
+    }
+
     public static void InitSetting(ISession session)
     {
         var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
-            .Where(e => e.Type == CustomerMessageType.HelpMeMakeMoney)
+            .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
 
         if (setting == null)
         {
             setting = new CustomerMessageCycleTimingSendSettingInfo();
-            setting.Type = CustomerMessageType.HelpMeMakeMoney;
+            setting.Type = messageType;
             setting.Status = CustomerMessageSettingStatus.Disabled;
             setting.WechatSend = true;
             setting.SmsSend = false;
@@ -73,7 +80,6 @@ public class CustomerMessageHelpMeMakeMoneyService
             return;
         }
 
-        CustomerMessageType messageType = CustomerMessageType.HelpMeMakeMoney;
         CustomerMessageCycleTimingSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageCycleTimingSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled)
         {
@@ -95,7 +101,7 @@ public class CustomerMessageHelpMeMakeMoneyService
                 {
                     messageStatus = CustomerMessageStatus.Sent;
                     string processUser = customerMessageCommonService.GetProcessUser();
-                    string url = customerClientUrlService.GetCustomerPromotionUrl();
+                    string? url = GetMessageUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {

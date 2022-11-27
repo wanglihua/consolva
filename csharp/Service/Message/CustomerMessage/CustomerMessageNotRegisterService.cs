@@ -29,17 +29,24 @@ public class CustomerMessageNotRegisterService
         this.customerClientUrlService = customerClientUrlService;
         this.customerCodeService = customerCodeService;
     }
+    
+    private static CustomerMessageType messageType => CustomerMessageType.NotRegister;
+
+    private string? GetMessageUrl()
+    {
+        return customerClientUrlService.GetRegisterUrl();
+    }
 
     public static void InitSetting(ISession session)
     {
         var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
-            .Where(e => e.Type == CustomerMessageType.NotRegister)
+            .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
         if (setting == null)
         {
             setting = new CustomerMessageCycleTimingSendSettingInfo();
-            setting.Type = CustomerMessageType.NotRegister;
+            setting.Type = messageType;
             setting.Status = CustomerMessageSettingStatus.Disabled;
             setting.WechatSend = true;
             setting.SmsSend = false;
@@ -72,7 +79,6 @@ public class CustomerMessageNotRegisterService
             return;
         }
 
-        CustomerMessageType messageType = CustomerMessageType.NotRegister;
         CustomerMessageCycleTimingSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageCycleTimingSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled)
         {
@@ -94,7 +100,7 @@ public class CustomerMessageNotRegisterService
                 {
                     messageStatus = CustomerMessageStatus.Sent;
                     string processUser = customerMessageCommonService.GetProcessUser();
-                    string url = customerClientUrlService.GetCustomerPromotionUrl();
+                    string? url = GetMessageUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {

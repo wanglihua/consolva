@@ -29,16 +29,23 @@ public class CustomerMessageNoOrderService
         this.customerCodeService = customerCodeService;
     }
 
+    private static CustomerMessageType messageType => CustomerMessageType.NoOrder;
+
+    private string? GetMessageUrl()
+    {
+        return null;
+    }
+
     public static void InitSetting(ISession session)
     {
         var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
-            .Where(e => e.Type == CustomerMessageType.NoOrder)
+            .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
         if (setting == null)
         {
             setting = new CustomerMessageCycleTimingSendSettingInfo();
-            setting.Type = CustomerMessageType.NoOrder;
+            setting.Type = messageType;
             setting.Status = CustomerMessageSettingStatus.Disabled;
             setting.WechatSend = true;
             setting.SmsSend = false;
@@ -69,8 +76,6 @@ public class CustomerMessageNoOrderService
             return;
         }
 
-        CustomerMessageType messageType = CustomerMessageType.NotRegister;
-
         CustomerMessageCycleTimingSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageCycleTimingSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled)
         {
@@ -92,7 +97,7 @@ public class CustomerMessageNoOrderService
                 {
                     messageStatus = CustomerMessageStatus.Sent;
                     string processUser = customerMessageCommonService.GetProcessUser();
-                    string url = customerClientUrlService.GetCustomerPromotionUrl();
+                    string? url = GetMessageUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {

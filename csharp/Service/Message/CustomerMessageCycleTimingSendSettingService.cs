@@ -23,30 +23,7 @@ public class CustomerMessageCycleTimingSendSettingService
         CustomerMessageHelpMeMakeMoneyService.InitSetting(session);
         CustomerMessageNotRegisterService.InitSetting(session);
         CustomerMessageNoOrderService.InitSetting(session);
-        
-        {
-            // 会员未关注公众号推送
-
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.NoFollow).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.NoFollow;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = false;
-                setting.SmsSend = true;
-
-                setting.WechatMessageTemplate1 = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
-                setting.SmsMessageTemplate = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
-
-                session.Save(setting);
-                session.Flush();
-            }
-
-            setting.Placeholders = "";
-            session.Update(setting);
-            session.Flush();
-        }
+        CustomerMessageNoFollowService.InitSetting(session);
 
         {
             // 取消关注公众号推送

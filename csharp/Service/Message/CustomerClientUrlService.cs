@@ -21,6 +21,12 @@ public class CustomerClientUrlService
         return GetAutoLoginUrl(url);
     }
 
+    public string GetRegisterUrl()
+    {
+        string url = $"/mobile/register";
+        return GetAutoLoginUrl(url);
+    }
+
     public string GetWaitTransportOrderDetailUrl(CustomerInfo customer, int orderId)
     {
         string url = $"/mobile/order/detail/waiting-transport/{orderId}";
