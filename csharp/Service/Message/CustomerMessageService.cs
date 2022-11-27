@@ -5267,7 +5267,7 @@ namespace shunda.Service.Message;
 
                 #region 未注册会员推送
 
-                if (messageType == CustomerMessageType.WeiZhuCeHuiYuanTuiSong)
+                if (messageType == CustomerMessageType.NotRegister)
                 {
                     if (messageData != null && messageData.Length != 0)
                     {
@@ -5289,7 +5289,7 @@ namespace shunda.Service.Message;
                     {
                         /*
                         这个不可能定制，还没会员
-                        bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.WeiZhuCeHuiYuanTuiSong); // 实际周期发送的还不是可定制的
+                        bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NotRegister); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
                         */

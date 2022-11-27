@@ -47,11 +47,11 @@ public class CustomerMessageCycleTimingSendSettingService
         {
             // 未注册会员推送
 
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.WeiZhuCeHuiYuanTuiSong).Take(1).SingleOrDefault();
+            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.NotRegister).Take(1).SingleOrDefault();
             if (setting == null)
             {
                 setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.WeiZhuCeHuiYuanTuiSong;
+                setting.Type = CustomerMessageType.NotRegister;
                 setting.Status = CustomerMessageSettingStatus.Disabled;
                 setting.WeiXinSend = true;
                 setting.SmsSend = false;

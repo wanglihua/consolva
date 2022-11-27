@@ -116,53 +116,6 @@ public class CustomerMessageCommonService
             smsSend = setting.SmsSend;
             weiXinSend = setting.WechatSend;
 
-            #region 未注册会员推送
-
-            if (messageType == CustomerMessageType.WeiZhuCeHuiYuanTuiSong)
-            {
-                if (messageData != null && messageData.Length != 0)
-                {
-                    throw new Exception("未注册会员推送 消息发送参数数量不对！");
-                }
-
-                /*
-                 *
-                 * 消息无参数
-                 *
-                setting.WechatMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦。该红包即可以在澳拼消费，也可以提现。进入公众号【费率|下单】里面的【在线下单】即可注册会员呢，别错过机会哦！";
-                setting.SmsMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦！";
-                 *
-                 */
-
-                message = setting.WechatMessageTemplate1;
-
-                if (setting.Status == CustomerMessageSettingStatus.Enabled)
-                {
-                    /*
-                    这个不可能定制，还没会员
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.WeiZhuCeHuiYuanTuiSong); // 实际周期发送的还不是可定制的
-                    if (clientShouldSend)
-                    {
-                    */
-                    if (setting.WechatSend)
-                    {
-                        isSent = true;
-                        wechatMessageService.SendOrderNoticeTemplateMessage(weiXinFollower, "", "会员注册提醒", "澳拼客户", message, processUser);
-                    }
-
-                    /*
-                     这个是不可能发送的，发送的话还会出错，因为会员还没注册，电话都取不到
-                    if (setting.SmsSend)
-                    {
-                        isSent = true;
-                        smsService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
-                    }
-                    */
-                }
-            }
-
-            #endregion
-
             #region 已注册未下单推送
 
             if (messageType == CustomerMessageType.YiZhuCeXiaDanTuiSong)
