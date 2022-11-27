@@ -27,11 +27,11 @@ public class CustomerMessageCycleTimingSendSettingService
         {
             // 会员未关注公众号推送
 
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.HuiYuanWeiGuanZhuGongZhongHaoTuiSong).Take(1).SingleOrDefault();
+            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.NoFollow).Take(1).SingleOrDefault();
             if (setting == null)
             {
                 setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.HuiYuanWeiGuanZhuGongZhongHaoTuiSong;
+                setting.Type = CustomerMessageType.NoFollow;
                 setting.Status = CustomerMessageSettingStatus.Disabled;
                 setting.WechatSend = false;
                 setting.SmsSend = true;
@@ -51,11 +51,11 @@ public class CustomerMessageCycleTimingSendSettingService
         {
             // 取消关注公众号推送
 
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.QuXiaoGuanZhuGongZhongHaoTuiSong).Take(1).SingleOrDefault();
+            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.CancelFollow).Take(1).SingleOrDefault();
             if (setting == null)
             {
                 setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.QuXiaoGuanZhuGongZhongHaoTuiSong;
+                setting.Type = CustomerMessageType.CancelFollow;
                 setting.Status = CustomerMessageSettingStatus.Disabled;
                 setting.WechatSend = false;
                 setting.SmsSend = true;
@@ -75,11 +75,11 @@ public class CustomerMessageCycleTimingSendSettingService
         {
             // 定时提交打包提醒
 
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.DingShiTiJiaoDaBaoTiXing).Take(1).SingleOrDefault();
+            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.TimingSubmitPack).Take(1).SingleOrDefault();
             if (setting == null)
             {
                 setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.DingShiTiJiaoDaBaoTiXing;
+                setting.Type = CustomerMessageType.TimingSubmitPack;
                 setting.Status = CustomerMessageSettingStatus.Disabled;
                 setting.WechatSend = true;
                 setting.SmsSend = false;
@@ -99,11 +99,11 @@ public class CustomerMessageCycleTimingSendSettingService
         {
             // 公共申领件处理提醒
 
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.GongGongShenLingJianChuLiTiXing).Take(1).SingleOrDefault();
+            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.NewClaim).Take(1).SingleOrDefault();
             if (setting == null)
             {
                 setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.GongGongShenLingJianChuLiTiXing;
+                setting.Type = CustomerMessageType.NewClaim;
                 setting.Status = CustomerMessageSettingStatus.Disabled;
                 setting.WechatSend = true;
                 setting.SmsSend = false;

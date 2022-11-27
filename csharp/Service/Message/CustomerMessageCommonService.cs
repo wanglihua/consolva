@@ -118,7 +118,7 @@ public class CustomerMessageCommonService
 
             #region 会员未关注公众号推送
 
-            if (messageType == CustomerMessageType.HuiYuanWeiGuanZhuGongZhongHaoTuiSong)
+            if (messageType == CustomerMessageType.NoFollow)
             {
                 if (messageData != null && messageData.Length != 0)
                 {
@@ -138,7 +138,7 @@ public class CustomerMessageCommonService
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.HuiYuanWeiGuanZhuGongZhongHaoTuiSong); // 实际周期发送的还不是可定制的
+                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NoFollow); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
                         if (setting.WechatSend)
@@ -160,7 +160,7 @@ public class CustomerMessageCommonService
 
             #region 取消关注公众号推送
 
-            if (messageType == CustomerMessageType.QuXiaoGuanZhuGongZhongHaoTuiSong)
+            if (messageType == CustomerMessageType.CancelFollow)
             {
                 if (messageData != null && messageData.Length != 0)
                 {
@@ -180,7 +180,7 @@ public class CustomerMessageCommonService
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.QuXiaoGuanZhuGongZhongHaoTuiSong); // 实际周期发送的还不是可定制的
+                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.CancelFollow); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
                         if (setting.WechatSend)
@@ -202,7 +202,7 @@ public class CustomerMessageCommonService
 
             #region 定时提交打包提醒
 
-            if (messageType == CustomerMessageType.DingShiTiJiaoDaBaoTiXing)
+            if (messageType == CustomerMessageType.TimingSubmitPack)
             {
                 if (messageData == null || messageData.Length != 1)
                 {
@@ -222,7 +222,7 @@ public class CustomerMessageCommonService
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.DingShiTiJiaoDaBaoTiXing); // 实际周期发送的还不是可定制的
+                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.TimingSubmitPack); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
                         if (setting.WechatSend)
@@ -244,7 +244,7 @@ public class CustomerMessageCommonService
 
             #region 公共申领件处理提醒
 
-            if (messageType == CustomerMessageType.GongGongShenLingJianChuLiTiXing)
+            if (messageType == CustomerMessageType.NewClaim)
             {
                 if (messageData != null && messageData.Length != 0)
                 {
@@ -264,7 +264,7 @@ public class CustomerMessageCommonService
 
                 if (setting.Status == CustomerMessageSettingStatus.Enabled)
                 {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.GongGongShenLingJianChuLiTiXing); // 实际周期发送的还不是可定制的
+                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NewClaim); // 实际周期发送的还不是可定制的
                     if (clientShouldSend)
                     {
                         if (setting.WechatSend)

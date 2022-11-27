@@ -36,22 +36,22 @@ public class CustomerMessageType : CodeTypeBase
     /// <summary>
     /// 定时提醒，会员未关注公众号推送
     /// </summary>
-    public static readonly CustomerMessageType HuiYuanWeiGuanZhuGongZhongHao = new CustomerMessageType(650, "会员未关注公众号推送", "会员未关注公众号推送");
+    public static readonly CustomerMessageType NoFollow = new CustomerMessageType(650, "会员未关注公众号推送", "会员未关注公众号推送");
 
     /// <summary>
     /// 定时提醒，取消关注公众号推送
     /// </summary>
-    public static readonly CustomerMessageType QuXiaoGuanZhuGongZhongHao = new CustomerMessageType(700, "取消关注公众号推送", "取消关注公众号推送");
+    public static readonly CustomerMessageType CancelFollow = new CustomerMessageType(700, "取消关注公众号推送", "取消关注公众号推送");
 
     /// <summary>
     /// 定时提醒，定时提交打包提醒
     /// </summary>
-    public static readonly CustomerMessageType DingShiTiJiaoDaBao = new CustomerMessageType(800, "定时提交打包提醒", "定时提交打包提醒");
+    public static readonly CustomerMessageType TimingSubmitPack = new CustomerMessageType(800, "定时提交打包提醒", "定时提交打包提醒");
 
     /// <summary>
     /// 定时提醒，公共申领件处理提醒
     /// </summary>
-    public static readonly CustomerMessageType GongGongShenLingJianChuLi = new CustomerMessageType(900, "公共申领件处理提醒", "公共申领件处理提醒");
+    public static readonly CustomerMessageType NewClaim = new CustomerMessageType(900, "公共申领件处理提醒", "公共申领件处理提醒");
 
     /// <summary>
     /// 实时提醒，我赚到的钱提醒
@@ -201,10 +201,10 @@ public class CustomerMessageType : CodeTypeBase
             HelpMeMakeMoney,
             NotRegister,
             NoOrder,
-            HuiYuanWeiGuanZhuGongZhongHao,
-            QuXiaoGuanZhuGongZhongHao,
-            DingShiTiJiaoDaBao,
-            GongGongShenLingJianChuLi,
+            NoFollow,
+            CancelFollow,
+            TimingSubmitPack,
+            NewClaim,
             WoZhuanDaoDeQian,
             WoDeShenLingJian,
             YuBaoHuoZhi,
