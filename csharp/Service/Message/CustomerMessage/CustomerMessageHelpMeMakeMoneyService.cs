@@ -4,6 +4,7 @@ using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Message.CustomerMessage;
 
@@ -27,6 +28,35 @@ public class CustomerMessageHelpMeMakeMoneyService
         this.customerMessageCommonService = customerMessageCommonService;
         this.customerClientUrlService = customerClientUrlService;
         this.customerCodeService = customerCodeService;
+    }
+
+    public static void InitSetting(ISession session)
+    {
+        var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
+            .Where(e => e.Type == CustomerMessageType.HelpMeMakeMoney)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (setting == null)
+        {
+            setting = new CustomerMessageCycleTimingSendSettingInfo();
+            setting.Type = CustomerMessageType.HelpMeMakeMoney;
+            setting.Status = CustomerMessageSettingStatus.Disabled;
+            setting.WechatSend = true;
+            setting.SmsSend = false;
+
+            setting.WechatMessageTemplate1 = "嗨，老板，今天舜达帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！";
+            setting.WechatMessageTemplate2 = string.Empty;
+            setting.WechatMessageTemplate3 = string.Empty;
+            setting.SmsMessageTemplate = "嗨，老板，今天舜达帮您赚钱了吗？将【帮我赚钱】里您的专属海报转发朋友圈就可以赚钱哦！";
+
+            session.Save(setting);
+            session.Flush();
+        }
+
+        setting.Placeholders = "";
+        session.Update(setting);
+        session.Flush();
     }
 
     public void SendMessage(CustomerInfo customer)

@@ -30,6 +30,34 @@ public class CustomerMessageNotRegisterService
         this.customerCodeService = customerCodeService;
     }
 
+    public static void InitSetting(ISession session)
+    {
+        var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
+            .Where(e => e.Type == CustomerMessageType.NotRegister)
+            .Take(1)
+            .SingleOrDefault();
+        if (setting == null)
+        {
+            setting = new CustomerMessageCycleTimingSendSettingInfo();
+            setting.Type = CustomerMessageType.NotRegister;
+            setting.Status = CustomerMessageSettingStatus.Disabled;
+            setting.WechatSend = true;
+            setting.SmsSend = false;
+
+            setting.WechatMessageTemplate1 = "亲，舜达集运发红包了。现在注册会员，即送￥100红包哦。该红包即可以在舜达消费，也可以提现。进入公众号【费率|下单】里面的【在线下单】即可注册会员呢，别错过机会哦！";
+            setting.WechatMessageTemplate2 = string.Empty;
+            setting.WechatMessageTemplate3 = string.Empty;
+            setting.SmsMessageTemplate = "亲，舜达集运发红包了。现在注册会员，即送￥100红包哦！";
+
+            session.Save(setting);
+            session.Flush();
+        }
+
+        setting.Placeholders = "";
+        session.Update(setting);
+        session.Flush();
+    }
+
     public void SendMessage(CustomerInfo customer)
     {
         if (customer == null)

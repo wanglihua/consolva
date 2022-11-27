@@ -29,6 +29,32 @@ public class CustomerMessageNoOrderService
         this.customerCodeService = customerCodeService;
     }
 
+    public static void InitSetting(ISession session)
+    {
+        var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
+            .Where(e => e.Type == CustomerMessageType.NoOrder)
+            .Take(1)
+            .SingleOrDefault();
+        if (setting == null)
+        {
+            setting = new CustomerMessageCycleTimingSendSettingInfo();
+            setting.Type = CustomerMessageType.NoOrder;
+            setting.Status = CustomerMessageSettingStatus.Disabled;
+            setting.WechatSend = true;
+            setting.SmsSend = false;
+
+            setting.WechatMessageTemplate1 = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
+            setting.SmsMessageTemplate = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
+
+            session.Save(setting);
+            session.Flush();
+        }
+
+        setting.Placeholders = "";
+        session.Update(setting);
+        session.Flush();
+    }
+
     public void SendMessage(CustomerInfo customer)
     {
         if (customer == null)
