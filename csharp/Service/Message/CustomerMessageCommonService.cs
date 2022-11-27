@@ -72,17 +72,17 @@ public class CustomerMessageCommonService
     /// <summary>
     /// 发送公众号订阅者消息
     /// </summary>
-    public void SendWeiXinFollowerMessage(WeChatOfficialAccount account, CustomerMessageSendType sendType, CustomerMessageType messageType, WeiXinFollowerInfo weiXinFollower, params object[] messageData)
+    public void SendWeiXinFollowerMessage(CustomerMessageSendType sendType, CustomerMessageType messageType, params object[] messageData)
     {
         // todo 这里要修改
-        SendMessageWithOrder(sendType, messageType, null, weiXinFollower, null, messageData);
+        SendMessageWithOrder(sendType, messageType, null, null, messageData);
     }
 
     /// <summary>
     /// 发送客户消息，带有订单参数
     /// todo a 这里的 消息发送会被改造
     /// </summary>
-    public void SendMessageWithOrder(CustomerMessageSendType sendType, CustomerMessageType messageType, CustomerInfo customer, WeiXinFollowerInfo weiXinFollower, LogisticsOrderInfo order, params object[] messageData)
+    public void SendMessageWithOrder(CustomerMessageSendType sendType, CustomerMessageType messageType, CustomerInfo customer, LogisticsOrderInfo order, params object[] messageData)
     {
         // 这里的 customer 是有可能为 null 的
 

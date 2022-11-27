@@ -16,6 +16,7 @@ public class EntityNoUpdateMapping<T> : ClassMapping<T> where T : EntityNoUpdate
         Id(
             x => x.Id,
             map => {
+                map.Type(NHibernateUtil.Int32);
                 map.Column("id");
                 map.Generator(Generators.Native);
             }

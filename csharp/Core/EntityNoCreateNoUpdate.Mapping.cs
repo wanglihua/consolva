@@ -1,3 +1,4 @@
+using NHibernate;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
@@ -15,6 +16,7 @@ public class EntityNoCreateNoUpdateMapping<T> : ClassMapping<T> where T : Entity
         Id(
             x => x.Id,
             map => {
+                map.Type(NHibernateUtil.Int32);
                 map.Column("id");
                 map.Generator(Generators.Native);
             }

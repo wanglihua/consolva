@@ -16,6 +16,7 @@ public class EntityMapping<T> : ClassMapping<T> where T : Entity
         Id(
             x => x.Id,
             map => {
+                map.Type(NHibernateUtil.Int32);
                 map.Column("id");
                 map.Generator(Generators.Native);
             }
