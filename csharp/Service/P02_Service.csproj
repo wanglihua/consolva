@@ -48,9 +48,7 @@
       <Compile Remove="Message\CustomerMessage\CustomerMessageOrderDeliveredAirService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageOrderDeliveredAirService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessagePickupStationDeliverRateService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessagePickupStationDeliverRateService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageQuanBuRuKuTiJiaDaBoService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageQuanBuRuKuTiJiaDaBoService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageWoZhuanDaoDeQianService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageWoZhuanDaoDeQianService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiDaBaoAirService.cs" />
@@ -58,7 +56,6 @@
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiDaBaoService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageYiDaBaoService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiDaoGangService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageYiDaoGangService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiDaoMuDiCangService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageYiZhuanYunService.cs" />
       <Content Include="Message\CustomerMessage\CustomerMessageYiZhuanYunService.cs" />

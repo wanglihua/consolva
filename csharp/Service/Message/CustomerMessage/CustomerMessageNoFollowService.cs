@@ -101,17 +101,17 @@ public class CustomerMessageNoFollowService
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customerCode, message1, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false)
                     {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customerCode, message2, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false)
                     {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customerCode, message3, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customerCode, message3, processUser, url);
                     }
                 }
 
