@@ -1,7 +1,6 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using shunda.Domain.Customer;
 
 namespace shunda.Domain.Message;
 
