@@ -116,48 +116,6 @@ public class CustomerMessageCommonService
             smsSend = setting.SmsSend;
             weiXinSend = setting.WechatSend;
 
-            #region 帮我赚钱提醒
-
-            if (messageType == CustomerMessageType.HelpMeMakeMoney)
-            {
-                if (messageData != null && messageData.Length != 0)
-                {
-                    throw new Exception("帮我赚钱提醒 消息发送参数数量不对！");
-                }
-
-                /*
-                 *
-                 * 消息无参数
-                 *
-                setting.WechatMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！";
-                setting.SmsMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？将【帮我赚钱】里您的专属海报转发朋友圈就可以赚钱哦！";
-                 *
-                 */
-
-                message = setting.WechatMessageTemplate1;
-
-                if (setting.Status == CustomerMessageSettingStatus.Enabled)
-                {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.HelpMeMakeMoney); // 实际周期发送的还不是可定制的
-                    if (clientShouldSend)
-                    {
-                        if (setting.WechatSend)
-                        {
-                            isSent = true;
-                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customer?.CustomerCode, message, processUser);
-                        }
-
-                        if (setting.SmsSend)
-                        {
-                            isSent = true;
-                            smsService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
-                        }
-                    }
-                }
-            }
-
-            #endregion
-
             #region 未注册会员推送
 
             if (messageType == CustomerMessageType.WeiZhuCeHuiYuanTuiSong)
@@ -454,7 +412,7 @@ public class CustomerMessageCommonService
 
     public CustomerMessageRealTimeSendSettingInfo GetCustomerMessageRealTimeSendSetting(CustomerMessageType messageType)
     {
-        CustomerMessageRealTimeSendSettingInfo setting = session
+        CustomerMessageRealTimeSendSettingInfo? setting = session
             .Query<CustomerMessageRealTimeSendSettingInfo>()
             .Where(e => e.Type == messageType)
             .Take(1)
@@ -471,6 +429,26 @@ public class CustomerMessageCommonService
 
         return setting;
     }
+
+    public CustomerMessageCycleTimingSendSettingInfo GetCustomerMessageCycleTimingSendSetting(CustomerMessageType messageType)
+    {
+        CustomerMessageCycleTimingSendSettingInfo? setting = session
+            .Query<CustomerMessageCycleTimingSendSettingInfo>()
+            .Where(e => e.Type == messageType)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (setting == null)
+        {
+            // throw new Exception("指定的消息发送配置不存在！");
+            return new CustomerMessageCycleTimingSendSettingInfo() {
+                // 这样，新添加一个消息类型的时候，设置条目数据库还没生成，也不会在这里报错
+                Status = CustomerMessageSettingStatus.Disabled
+            };
+        }
+
+        return setting;
+    }    
 
     public string GetProcessUser()
     {
@@ -496,7 +474,7 @@ public class CustomerMessageCommonService
         return processUser;
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting)
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting)
     {
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
         customerMessage.SendType = sendType;
@@ -517,7 +495,6 @@ public class CustomerMessageCommonService
         customerMessage.Content = message;
         customerMessage.SmsSend = setting.SmsSend;
         customerMessage.WechatSend = setting.WechatSend;
-        customerMessage.PlanSendTime = DateTime.Now;
         customerMessage.SendTime = DateTime.Now;
         customerMessage.Status = messageStatus;
 
@@ -532,7 +509,8 @@ public class CustomerMessageCommonService
         return SaveCustomerMessage(sendType, customer, null, message, messageStatus, setting);
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo order, string message, bool isSent, CustomerMessageRealTimeSendSettingInfo setting)
+    // todo a 把这个方法去掉
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, bool isSent, CustomerMessageRealTimeSendSettingInfo setting)
     {
         var messageStatus = CustomerMessageStatus.NotSend;
         if (isSent)
@@ -542,6 +520,36 @@ public class CustomerMessageCommonService
 
         return SaveCustomerMessage(sendType, customer, order, message, messageStatus, setting);
     }
+
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting)
+    {
+        CustomerMessageInfo customerMessage = new CustomerMessageInfo();
+        customerMessage.SendType = sendType;
+        customerMessage.Type = setting.Type;
+        customerMessage.Customer = customer;
+
+        // 其实可以合成一句 customerMessage.Order = order;
+
+        if (order != null)
+        {
+            customerMessage.Order = order;
+        }
+        else
+        {
+            customerMessage.Order = null;
+        }
+
+        customerMessage.Content = message;
+        customerMessage.SmsSend = setting.SmsSend;
+        customerMessage.WechatSend = setting.WechatSend;
+        customerMessage.SendTime = DateTime.Now;
+        customerMessage.Status = messageStatus;
+
+        session.Save(customerMessage);
+        session.Flush();
+
+        return customerMessage.Id;
+    }    
 
     /// <summary>
     /// 一般保存的是订单为空的客户消息
