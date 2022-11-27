@@ -97,5 +97,13 @@ public class CustomerMessageInfoMapping : EntityMapping<CustomerMessageInfo>
             }
         );
 
+        Property(
+            x => x.Sender,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("sender");
+                map.NotNullable(true);
+            }
+        );
     }
 }

@@ -19,8 +19,8 @@ public class CustomerMessageViewRecordInfo
     /// 最后查看消息ID，非空
     /// </summary>
     [Required(ErrorMessage = "最后查看消息ID不能为空！")]
-    [JsonProperty("lastViewMessage")]
-    public virtual CustomerMessageInfo LastViewMessage { get; set; } = new CustomerMessageInfo();
+    [JsonProperty("lastViewMessageId")]
+    public virtual int LastViewMessageId { get; set; }
 
     /// <summary>
     /// 最后查看时间，非空

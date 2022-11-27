@@ -78,4 +78,10 @@ public class CustomerMessageInfo : Entity
     [JsonProperty("sendTime")]
     public virtual DateTime SendTime { get; set; } = DateTime.MinValue;
 
+    /// <summary>
+    /// 发送者，非空
+    /// </summary>
+    [Required(ErrorMessage = "发送时间不能为空！")]
+    [JsonProperty("sender")]
+    public virtual string Sender { get; set; } = string.Empty;
 }

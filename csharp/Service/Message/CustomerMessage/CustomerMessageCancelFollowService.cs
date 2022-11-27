@@ -91,12 +91,13 @@ public class CustomerMessageCancelFollowService
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
 
+            string processUser = CustomerMessageCommonService.ShundaSecretary;
+
             if (clientShouldSend)
             {
                 if (setting.WechatSend)
                 {
                     messageStatus = CustomerMessageStatus.Sent;
-                    string processUser = CustomerMessageCommonService.ShundaSecretary;
                     string? url = GetMessageUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
@@ -124,17 +125,17 @@ public class CustomerMessageCancelFollowService
 
             if (string.IsNullOrWhiteSpace(message1) == false)
             {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message1, messageStatus, setting);
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message1, messageStatus, setting, processUser);
             }
 
             if (string.IsNullOrWhiteSpace(message2) == false)
             {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message2, messageStatus, setting);
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message2, messageStatus, setting, processUser);
             }
 
             if (string.IsNullOrWhiteSpace(message3) == false)
             {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message3, messageStatus, setting);
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message3, messageStatus, setting, processUser);
             }
 
             session.Flush();

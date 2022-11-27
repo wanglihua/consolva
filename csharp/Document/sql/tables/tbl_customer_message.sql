@@ -12,8 +12,8 @@ CREATE TABLE tbl_customer_message
     sms_send     BOOL                     NOT NULL COMMENT '是否SMS发送',
     wechat_send  BOOL                     NOT NULL COMMENT '是否微信发送',
     send_time    DATETIME                 NOT NULL COMMENT '发送时间',
+    sender       VARCHAR(10)  DEFAULT ''  NOT NULL COMMENT '发送者',
     create_time  DATETIME                 NOT NULL COMMENT '创建时间',
-    update_time  DATETIME                 NOT NULL COMMENT '更新时间',
 
     INDEX ix_customer_message_type_id (type_id),
     INDEX ix_customer_message_create_time (create_time),

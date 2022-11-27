@@ -105,24 +105,12 @@ public class CustomerMessageCommonService
         return customerMessage.Id;
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting)
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting, string sender)
     {
         return SaveCustomerMessage(sendType, customer, null, message, messageStatus, setting);
     }
 
-    // todo a 把这个方法去掉
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, bool isSent, CustomerMessageRealTimeSendSettingInfo setting)
-    {
-        var messageStatus = CustomerMessageStatus.NotSend;
-        if (isSent)
-        {
-            messageStatus = CustomerMessageStatus.Sent;
-        }
-
-        return SaveCustomerMessage(sendType, customer, order, message, messageStatus, setting);
-    }
-
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting)
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting, string sender)
     {
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
         customerMessage.SendType = sendType;
@@ -145,24 +133,12 @@ public class CustomerMessageCommonService
         customerMessage.WechatSend = setting.WechatSend;
         customerMessage.SendTime = DateTime.Now;
         customerMessage.Status = messageStatus;
+        customerMessage.Sender = sender;
 
         session.Save(customerMessage);
         session.Flush();
 
         return customerMessage.Id;
-    }
-
-    /// <summary>
-    /// 一般保存的是订单为空的客户消息
-    /// </summary>
-    /// <param name="sendType"></param>
-    /// <param name="customer"></param>
-    /// <param name="message"></param>
-    /// <param name="isSent"></param>
-    /// <param name="setting"></param>
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, string message, bool isSent, CustomerMessageRealTimeSendSettingInfo setting)
-    {
-        return SaveCustomerMessage(sendType, customer, null, message, isSent, setting);
     }
 
     /// <summary>

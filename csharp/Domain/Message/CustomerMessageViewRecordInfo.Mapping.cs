@@ -24,14 +24,12 @@ public class CustomerMessageViewRecordInfoMapping : ClassMapping<CustomerMessage
             }
         );
 
-        ManyToOne(
-            x => x.LastViewMessage,
+        Property(
+            x => x.LastViewMessageId,
             map => {
-                map.Class(typeof(CustomerMessageInfo));
+                map.Type(NHibernateUtil.Int32);
                 map.Column("last_view_message_id");
                 map.NotNullable(true);
-                map.Cascade(Cascade.None);
-                map.Fetch(FetchKind.Select);
             }
         );
 
