@@ -49,31 +49,7 @@ public class CustomerMessageCycleTimingSendSettingService
             session.Update(setting);
             session.Flush();
         }
-
-        {
-            // 公共申领件处理提醒
-
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.NewClaim).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.NewClaim;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，客服发现您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
-                setting.SmsMessageTemplate = "亲，您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
-
-                session.Save(setting);
-                session.Flush();
-            }
-
-            setting.Placeholders = "";
-            session.Update(setting);
-            session.Flush();
-        }
-
+        
         session.Flush();
     }
 }

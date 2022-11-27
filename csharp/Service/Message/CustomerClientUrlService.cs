@@ -1,6 +1,5 @@
 using shunda.Core.Config;
 using shunda.Core.Service;
-using shunda.Domain.Customer;
 
 namespace shunda.Service.Message;
 
@@ -27,74 +26,74 @@ public class CustomerClientUrlService
         return GetAutoLoginUrl(url);
     }
 
-    public string GetWaitTransportOrderDetailUrl(CustomerInfo customer, int orderId)
+    public string GetWaitTransportOrderDetailUrl(int orderId)
     {
         string url = $"/mobile/order/detail/waiting-transport/{orderId}";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetTransportingOrderDetailUrl(CustomerInfo customer, int orderId)
+    public string GetTransportingOrderDetailUrl(int orderId)
     {
         string url = $"/mobile/order/detail/transporting/{orderId}";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetDeliveredOrderDetailUrl(CustomerInfo customer, int orderId)
+    public string GetDeliveredOrderDetailUrl(int orderId)
     {
         string url = $"/mobile/order/detail/delivered/{orderId}";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetHomeDeliverBatchConfirmUrl(CustomerInfo customer, int entryId)
+    public string GetHomeDeliverBatchConfirmUrl(int entryId)
     {
         string url = $"/mobile/home/deliver/batch/confirm/{entryId}";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetCustomerScoreUrl(CustomerInfo customer)
+    public string GetCustomerScoreUrl()
     {
         string url = $"/mobile/score";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetCustomerAccountUrl(CustomerInfo customer)
+    public string GetCustomerAccountUrl()
     {
         string url = $"/mobile/account";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetExpressCheckinListUrl(CustomerInfo customer)
+    public string GetExpressCheckinListUrl()
     {
         string url = $"/mobile/express/checkin/list";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetExpressCheckinDetailUrl(CustomerInfo customer, int claimId)
+    public string GetExpressCheckinDetailUrl(int claimId)
     {
         string url = $"/mobile/express/checkin/detail/{claimId}";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetExpressClaimListUrl(CustomerInfo customer)
+    public string GetExpressClaimListUrl()
     {
         string url = "/mobile/express/claim/list";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetExpressExpectListUrl(CustomerInfo customer)
+    public string GetExpressExpectListUrl()
     {
         string url = "/mobile/express/expect/list";
         return GetAutoLoginUrl(url);
     }
 
-    public string GetChatUrl(CustomerInfo customer)
+    public string GetChatUrl()
     {
         string url = "/mobile/chat";
         return GetAutoLoginUrl(url);
     }
 
     /*
-    public string GetChatRateUrl(CustomerInfo customer, CustomerChatRateMessageInfo chatRateMessage)
+    public string GetChatRateUrl(CustomerChatRateMessageInfo chatRateMessage)
     {
         string url = $"/mobile/chat/rate/{chatRateMessage.Code}";
         return GetAutoLoginUrl(url);

@@ -157,48 +157,6 @@ public class CustomerMessageCommonService
             }
 
             #endregion
-
-            #region 公共申领件处理提醒
-
-            if (messageType == CustomerMessageType.NewClaim)
-            {
-                if (messageData != null && messageData.Length != 0)
-                {
-                    throw new Exception("公共申领件处理提醒 消息发送参数数量不对！");
-                }
-
-                /*
-                 *
-                 * 消息无参数
-                 *
-                setting.WechatMessageTemplate = "亲，客服发现您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
-                setting.SmsMessageTemplate = "亲，您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
-                 *
-                 */
-
-                message = setting.WechatMessageTemplate1;
-
-                if (setting.Status == CustomerMessageSettingStatus.Enabled)
-                {
-                    bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NewClaim); // 实际周期发送的还不是可定制的
-                    if (clientShouldSend)
-                    {
-                        if (setting.WechatSend)
-                        {
-                            isSent = true;
-                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customer?.CustomerCode, message, processUser);
-                        }
-
-                        if (setting.SmsSend)
-                        {
-                            isSent = true;
-                            smsService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
-                        }
-                    }
-                }
-            }
-
-            #endregion
         }
 
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
