@@ -24,31 +24,8 @@ public class CustomerMessageCycleTimingSendSettingService
         CustomerMessageNotRegisterService.InitSetting(session);
         CustomerMessageNoOrderService.InitSetting(session);
         CustomerMessageNoFollowService.InitSetting(session);
-
-        {
-            // 取消关注公众号推送
-
-            var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>().Where(e => e.Type == CustomerMessageType.CancelFollow).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageCycleTimingSendSettingInfo();
-                setting.Type = CustomerMessageType.CancelFollow;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = false;
-                setting.SmsSend = true;
-
-                setting.WechatMessageTemplate1 = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
-                setting.SmsMessageTemplate = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
-
-                session.Save(setting);
-                session.Flush();
-            }
-
-            setting.Placeholders = "";
-            session.Update(setting);
-            session.Flush();
-        }
-
+        CustomerMessageCancelFollowService.InitSetting(session);
+        
         {
             // 定时提交打包提醒
 
