@@ -1,0 +1,117 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.SmsSendRecord.SmsSendRecordListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadSmsSendRecordList" })
+
+<table id="tblSmsSendRecordList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="smsSendRecordCheckAll"></label><input id="smsSendRecordCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(SmsSendRecordInfo.Mobile))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSmsSendRecordList">手机号</a>
+                </div>
+            </th>
+
+            <th style="width: 280px; text-align: center;">
+                <div>
+                    <a field="@(nameof(SmsSendRecordInfo.Message))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSmsSendRecordList">消息内容</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(SmsSendRecordInfo.SendMsgId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSmsSendRecordList">消息ID</a>
+                </div>
+            </th>
+
+            <th style="width: 80px; text-align: center;">
+                <div>
+                    <a field="@(nameof(SmsSendRecordInfo.SendCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSmsSendRecordList">返回代码</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(SmsSendRecordInfo.SendError))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSmsSendRecordList">返回错误</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(SmsSendRecordInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSmsSendRecordList">发送时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>ß
+    <tbody>
+        @if (Model.SmsSendRecordList != null && Model.SmsSendRecordList.Count() != 0)
+        {
+            int order = 1;
+            foreach (SmsSendRecordInfo smsSendRecord in Model.SmsSendRecordList)
+            {
+                <tr ondblclick="showSmsSendRecordDetail(@(smsSendRecord.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="smsSendRecordCheck_@(smsSendRecord.Id)"></label><input id="smsSendRecordCheck_@(smsSendRecord.Id)" type="checkbox" class="ace" value="@smsSendRecord.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(smsSendRecord.Mobile)
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @ListDataUtil.Render(smsSendRecord.Message)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(smsSendRecord.SendMsgId)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(smsSendRecord.SendCode)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(smsSendRecord.SendError)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @smsSendRecord.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadSmsSendRecordList" })
