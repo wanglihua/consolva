@@ -20,7 +20,9 @@ public class CustomerMessageRealTimeSendSettingController : Controller
     private ISession session;
     private CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService;
 
-    public CustomerMessageRealTimeSendSettingController(ISession session, CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService)
+    public CustomerMessageRealTimeSendSettingController(
+        ISession session,
+        CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService)
     {
         this.session = session;
         this.customerMessageRealTimeSendSettingService = customerMessageRealTimeSendSettingService;
@@ -91,14 +93,26 @@ public class CustomerMessageRealTimeSendSettingController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CustomerMessageRealTimeSendSettingInfo customerMessageRealTimeSendSetting = session.Get<CustomerMessageRealTimeSendSettingInfo>(id);
-        if (customerMessageRealTimeSendSetting == null)
+        CustomerMessageRealTimeSendSettingInfo setting = session.Get<CustomerMessageRealTimeSendSettingInfo>(id);
+        if (setting == null)
         {
             throw new ValidationException("指定的数据项不存在！");
         }
 
         CustomerMessageRealTimeSendSettingDetailModel model = new CustomerMessageRealTimeSendSettingDetailModel();
-        model.CustomerMessageRealTimeSendSetting = customerMessageRealTimeSendSetting;
+        model.SettingId = setting.Id;
+        model.Type = setting.Type;
+        model.WechatMessageTemplate1 = setting.WechatMessageTemplate1;
+        model.WechatMessageTemplate2 = setting.WechatMessageTemplate2;
+        model.WechatMessageTemplate3 = setting.WechatMessageTemplate3;
+        model.SmsMessageTemplate = setting.SmsMessageTemplate;
+        model.Status = setting.Status;
+        model.SmsSend = setting.SmsSend;
+        model.WechatSend = setting.WechatSend;
+        model.Placeholders = setting.Placeholders;
+        model.ClientCustomizable = setting.ClientCustomizable;
+        model.ClientTitle = setting.ClientTitle;
+        model.ClientDesc = setting.ClientDesc;
 
         model.MessageTypeList = CustomerMessageType.GetList();
         model.StatusList = CustomerMessageSettingStatus.GetList();
@@ -116,40 +130,28 @@ public class CustomerMessageRealTimeSendSettingController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
-        CustomerMessageRealTimeSendSettingInfo customerMessageRealTimeSendSettingFromUi = model.CustomerMessageRealTimeSendSetting;
-        int customerMessageRealTimeSendSettingId = customerMessageRealTimeSendSettingFromUi.Id;
+        int settingId = model.SettingId;
 
-        CustomerMessageRealTimeSendSettingInfo customerMessageRealTimeSendSetting = session.Get<CustomerMessageRealTimeSendSettingInfo>(customerMessageRealTimeSendSettingId);
-        if (customerMessageRealTimeSendSetting == null)
+        CustomerMessageRealTimeSendSettingInfo setting = session.Get<CustomerMessageRealTimeSendSettingInfo>(settingId);
+        if (setting == null)
         {
             throw new ValidationException("配置信息不存在！");
         }
 
-        customerMessageRealTimeSendSetting.WechatMessageTemplate1 = customerMessageRealTimeSendSettingFromUi.WechatMessageTemplate1;
-        customerMessageRealTimeSendSetting.WechatMessageTemplate2 = customerMessageRealTimeSendSettingFromUi.WechatMessageTemplate2;
-        customerMessageRealTimeSendSetting.WechatMessageTemplate3 = customerMessageRealTimeSendSettingFromUi.WechatMessageTemplate3;
-        customerMessageRealTimeSendSetting.SmsMessageTemplate = customerMessageRealTimeSendSettingFromUi.SmsMessageTemplate;
-        customerMessageRealTimeSendSetting.Status = customerMessageRealTimeSendSettingFromUi.Status;
-        customerMessageRealTimeSendSetting.SmsSend = customerMessageRealTimeSendSettingFromUi.SmsSend;
-        customerMessageRealTimeSendSetting.WechatSend = customerMessageRealTimeSendSettingFromUi.WechatSend;
+        setting.WechatMessageTemplate1 = model.WechatMessageTemplate1;
+        setting.WechatMessageTemplate2 = model.WechatMessageTemplate2 ?? string.Empty;
+        setting.WechatMessageTemplate3 = model.WechatMessageTemplate3 ?? string.Empty;
+        setting.SmsMessageTemplate = model.SmsMessageTemplate;
+        setting.Status = model.Status;
+        setting.SmsSend = model.SmsSend;
+        setting.WechatSend = model.WechatSend;
         // 占位符 PlaceHolders 不在这里保存修改
 
-        customerMessageRealTimeSendSetting.ClientCustomizable = customerMessageRealTimeSendSettingFromUi.ClientCustomizable;
-        if (customerMessageRealTimeSendSettingFromUi.ClientTitle == null)
-        {
-            customerMessageRealTimeSendSettingFromUi.ClientTitle = String.Empty;
-        }
+        setting.ClientCustomizable = model.ClientCustomizable;
+        setting.ClientTitle = model.ClientTitle;
+        setting.ClientDesc = model.ClientDesc;
 
-        customerMessageRealTimeSendSetting.ClientTitle = customerMessageRealTimeSendSettingFromUi.ClientTitle;
-
-        if (customerMessageRealTimeSendSettingFromUi.ClientDesc == null)
-        {
-            customerMessageRealTimeSendSettingFromUi.ClientDesc = string.Empty;
-        }
-
-        customerMessageRealTimeSendSetting.ClientDesc = customerMessageRealTimeSendSettingFromUi.ClientDesc;
-
-        session.Update(customerMessageRealTimeSendSetting);
+        session.Update(setting);
 
         session.Flush();
 
