@@ -1,6 +1,7 @@
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
+using shunda.Domain.Express;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
@@ -74,7 +75,7 @@ public class CustomerMessageExpressExpectEnterService
         return message;
     }
 
-    public void SendMessage(CustomerInfo customer, string trackingNo)
+    public void SendMessage(CustomerInfo customer, ExpressExpectInfo expressExpect)
     {
         if (customer == null)
         {
@@ -87,6 +88,7 @@ public class CustomerMessageExpressExpectEnterService
         }
 
         string customerCode = customerCodeService.GetCustomerCode(customer.Id);
+        string trackingNo = expressExpect.TrackingNo;
 
         CustomerMessageCycleTimingSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageCycleTimingSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled)

@@ -20,6 +20,7 @@ using shunda.Domain.Storage;
 using shunda.Service.Customer;
 using shunda.Service.Express;
 using shunda.Service.Logistics;
+using shunda.Service.Message.CustomerMessage;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
@@ -44,7 +45,8 @@ public class ExpressCheckinController : Controller
     private readonly CheckinTrackingNoService checkinTrackingNoService;
     private readonly StorageLocService storageLocService;
     private readonly ExpressCheckinConfigService expressCheckinConfigService;
-    // private readonly CustomerMessageService customerMessageService;
+    private readonly CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService;
+    private readonly CustomerMessageExpressCheckinService customerMessageExpressCheckinService;
     private readonly ExpressLogService expressLogService;
     private readonly ExpressSizeWeightService expressSizeWeightService;
     private readonly ExpressPhotoService expressPhotoService;
@@ -62,7 +64,8 @@ public class ExpressCheckinController : Controller
         CheckinTrackingNoService checkinTrackingNoService,
         StorageLocService storageLocService,
         ExpressCheckinConfigService expressCheckinConfigService,
-        // CustomerMessageService customerMessageService,
+        CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService,
+        CustomerMessageExpressCheckinService customerMessageExpressCheckinService,
         ExpressLogService expressLogService,
         ExpressSizeWeightService expressSizeWeightService,
         ExpressPhotoService expressPhotoService,
@@ -79,7 +82,8 @@ public class ExpressCheckinController : Controller
         this.checkinTrackingNoService = checkinTrackingNoService;
         this.storageLocService = storageLocService;
         this.expressCheckinConfigService = expressCheckinConfigService;
-        // this.customerMessageService = customerMessageService;
+        this.customerMessageExpressExpectEnterService = customerMessageExpressExpectEnterService;
+        this.customerMessageExpressCheckinService = customerMessageExpressCheckinService;
         this.expressLogService = expressLogService;
         this.expressSizeWeightService = expressSizeWeightService;
         this.expressPhotoService = expressPhotoService;
@@ -498,6 +502,8 @@ public class ExpressCheckinController : Controller
         int expressId = model.ExpressId;
         bool isCreate = expressId == 0;
 
+        ExpressInfo? express = null;
+
         lock (ExpressCheckinLockObject) // lock 时，数据库事务应该放在 lock 区域之内
         {
             ITransaction? transaction = null;
@@ -505,8 +511,6 @@ public class ExpressCheckinController : Controller
             try
             {
                 transaction = session.BeginTransaction();
-
-                ExpressInfo? express = null;
 
                 if (isCreate == false)
                 {
@@ -704,13 +708,13 @@ public class ExpressCheckinController : Controller
 
                 session.SaveOrUpdate(express);
                 session.Flush();
-                
+
                 // 入库跟踪号，这时生成，生成的号不会浪费
 
                 if (isCreate)
                 {
                     express.CheckinTrackingNo = checkinTrackingNoService.GetNextMainTrackinigNo();
-                    
+
                     session.Update(express);
                     session.Flush();
                 }
@@ -873,17 +877,14 @@ public class ExpressCheckinController : Controller
             // 发送消息提醒，虽然不在同一个事务内，但也是在前面都成功的情况下才发送的
             if (expressExpect != null) // 优先按预报的发送消息
             {
-                if (expressExpect.Customer != null) // 这个 Customer 应该不可空才对
-                {
-                    // todo b 加上 customerMessageService.SendMessageExpressExpectEnter(expressExpect.Customer, expressExpect.TrackingNo);
-                }
+                customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
             }
             else if (billCustomerId != 0) // 没预报但有面单会员ID
             {
                 CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
                 if (billCustomer != null)
                 {
-                    // todo b 加上 customerMessageService.SendMessageExpressCheckin(billCustomer);
+                    customerMessageExpressCheckinService.SendMessage(billCustomer, express);
                 }
             }
         }
