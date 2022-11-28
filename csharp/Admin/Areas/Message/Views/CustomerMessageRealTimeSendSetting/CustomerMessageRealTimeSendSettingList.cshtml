@@ -76,11 +76,11 @@
                         <div>
                             @if (setting.Status == CustomerMessageSettingStatus.Disabled)
                             {
-                                <span style="color: red;">@setting.Status?.Name</span>
+                                <span style="color: red;">@setting.Status.Name</span>
                             }
                             else
                             {
-                                <span>@setting.Status?.Name</span>
+                                <span style="color: blue;">@setting.Status.Name</span>
                             }
                         </div>
                         <div>

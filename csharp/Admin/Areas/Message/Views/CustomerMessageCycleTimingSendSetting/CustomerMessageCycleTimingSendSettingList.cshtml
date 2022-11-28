@@ -5,7 +5,7 @@
 @using shunda.Domain.Message
 @model shunda.Admin.Areas.Message.Models.CustomerMessageCycleTimingSendSetting.CustomerMessageCycleTimingSendSettingListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageCycleTimingSendSettingList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerMessageCycleTimingSendSettingList" })
 
 <table id="tblCustomerMessageCycleTimingSendSettingList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -24,7 +24,12 @@
                 <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.SmsMessageTemplate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">短信消息模板</a>
             </th>
             <th style="width: 100px; text-align: center;">
-                <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">启用状态</a>
+                <div>
+                    <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">启用状态</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.ClientCustomizable))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">客户端定制</a>
+                </div>
             </th>
             <th style="width: 100px; text-align: center;">
                 <div>
@@ -47,44 +52,63 @@
         @if (Model.CustomerMessageCycleTimingSendSettingList != null && Model.CustomerMessageCycleTimingSendSettingList.Count() != 0)
         {
             int order = 1;
-            foreach (CustomerMessageCycleTimingSendSettingInfo customerMessageCycleTimingSendSetting in Model.CustomerMessageCycleTimingSendSettingList)
+            foreach (CustomerMessageCycleTimingSendSettingInfo setting in Model.CustomerMessageCycleTimingSendSettingList)
             {
-                <tr ondblclick="showCustomerMessageCycleTimingSendSettingDetail(@(customerMessageCycleTimingSendSetting.Id));">
+                <tr ondblclick="showCustomerMessageCycleTimingSendSettingDetail(@(setting.Id));">
                     <td style="text-align: center;">
-                        <label for="customerMessageCycleTimingSendSettingCheck_@(customerMessageCycleTimingSendSetting.Id)"></label><input id="customerMessageCycleTimingSendSettingCheck_@(customerMessageCycleTimingSendSetting.Id)" type="checkbox" class="ace" value="@customerMessageCycleTimingSendSetting.Id"/><span class="lbl"></span>
+                        <label for="customerMessageCycleTimingSendSettingCheck_@(setting.Id)"></label><input id="customerMessageCycleTimingSendSettingCheck_@(setting.Id)" type="checkbox" class="ace" value="@setting.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td style="text-align: center;">@customerMessageCycleTimingSendSetting.Type?.Name</td>
-                    <td class="break-word">@customerMessageCycleTimingSendSetting.WechatMessageTemplate1</td>
-                    <td class="break-word">@customerMessageCycleTimingSendSetting.SmsMessageTemplate</td>
+                    <td style="text-align: center;">@setting.Type?.Name</td>
+                    <td class="break-word">@setting.WechatMessageTemplate1</td>
+                    <td class="break-word">@setting.SmsMessageTemplate</td>
                     <td style="text-align: center;">
-                        @customerMessageCycleTimingSendSetting.Status?.Name
+                        <div>
+                            @if (setting.Status == CustomerMessageSettingStatus.Disabled)
+                            {
+                                <span style="color: red;">@setting.Status.Name</span>
+                            }
+                            else
+                            {
+                                <span style="color: blue;">@setting.Status.Name</span>
+                            }
+                        </div>
+                        <div>
+                            @if (setting.ClientCustomizable == true)
+                            {
+                                <span style="color: blue;">可以定制</span>
+                            }
+                            else
+                            {
+                                <span>不能定制</span>
+                            }
+                        </div>
                     </td>
                     <td style="text-align: center;">
-                        @ListDataUtil.RenderBoolWithDiv(customerMessageCycleTimingSendSetting.SmsSend)
-                        @ListDataUtil.RenderBoolWithDiv(customerMessageCycleTimingSendSetting.WechatSend)
+                        @ListDataUtil.RenderBoolWithDiv(setting.SmsSend)
+                        @ListDataUtil.RenderBoolWithDiv(setting.WechatSend)
                     </td>
                     <td style="text-align: center;">
-                        @if (customerMessageCycleTimingSendSetting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Weeks)
+                        @if (setting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Weeks)
                         {
-                            <span>@(customerMessageCycleTimingSendSetting.IntervalWeeks)</span>
+                            <span>@(setting.IntervalWeeks)</span>
                             <span>周</span>
                         }
 
-                        @if (customerMessageCycleTimingSendSetting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Days)
+                        @if (setting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Days)
                         {
-                            <span>@(customerMessageCycleTimingSendSetting.IntervalDays)</span>
+                            <span>@(setting.IntervalDays)</span>
                             <span>天</span>
                         }
                     </td>
                     <td style="text-align: center;">
-                        @if (customerMessageCycleTimingSendSetting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Weeks)
+                        @if (setting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Weeks)
                         {
                             <span>周</span>
-                            <span>@(customerMessageCycleTimingSendSetting.SendWeekday)</span>
+                            <span>@(setting.SendWeekday)</span>
                             <span>,</span>
                         }
-                        <span>@(customerMessageCycleTimingSendSetting.SendHour)</span><span>时</span>
+                        <span>@(setting.SendHour)</span><span>时</span>
                     </td>
                     <td></td>
                 </tr>
@@ -101,4 +125,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageCycleTimingSendSettingList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerMessageCycleTimingSendSettingList" })

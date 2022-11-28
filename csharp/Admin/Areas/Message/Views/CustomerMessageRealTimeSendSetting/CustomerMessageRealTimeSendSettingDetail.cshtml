@@ -84,6 +84,15 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
+                                <label asp-for="Placeholders" class="col-xs-2 control-label">消息占位符</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="Placeholders" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
                                 <label asp-for="Status" class="col-xs-2 control-label">启用状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Status" class="input-sm form-control">
@@ -122,15 +131,6 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Placeholders" class="col-xs-2 control-label">消息占位符</label>
-                                <div class="col-xs-10">
-                                    <textarea asp-for="Placeholders" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12">
-                            <div class="form-group">
                                 <label asp-for="ClientCustomizable" class="col-xs-2 control-label">客户端可定制</label>
                                 <div class="col-xs-10">
                                     <select asp-for="ClientCustomizable" class="input-sm form-control">
@@ -145,11 +145,11 @@
                             <div class="form-group">
                                 <label asp-for="ClientTitle" class="col-xs-2 control-label">客户端标题</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="ClientTitle" type="text" class="input-sm form-control" />
+                                    <input asp-for="ClientTitle" type="text" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12">
                             <div class="form-group">
                                 <label asp-for="ClientDesc" class="col-xs-2 control-label">客户端描述</label>
@@ -158,7 +158,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </form>
             </div>
