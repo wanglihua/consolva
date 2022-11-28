@@ -55,6 +55,9 @@ public class CustomerMessageNotRegisterService
             setting.WechatMessageTemplate2 = string.Empty;
             setting.WechatMessageTemplate3 = string.Empty;
             setting.SmsMessageTemplate = "亲，舜达集运发红包了。现在注册会员，即送￥100红包哦！";
+            setting.ClientCustomizable = false;
+            setting.ClientTitle = messageType.Name;
+            setting.ClientDesc = messageType.Description;
 
             session.Save(setting);
             session.Flush();

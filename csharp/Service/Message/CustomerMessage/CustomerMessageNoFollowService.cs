@@ -53,6 +53,10 @@ public class CustomerMessageNoFollowService
             setting.WechatMessageTemplate1 = "亲，发现您未关注舜达公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！";
             setting.SmsMessageTemplate = "亲，发现您未关注舜达公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！";
 
+            setting.ClientCustomizable = false;
+            setting.ClientTitle = messageType.Name;
+            setting.ClientDesc = messageType.Description;
+
             session.Save(setting);
             session.Flush();
         }

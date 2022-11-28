@@ -53,6 +53,10 @@ public class CustomerMessageNoOrderService
             setting.WechatMessageTemplate1 = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
             setting.SmsMessageTemplate = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
 
+            setting.ClientCustomizable = false;
+            setting.ClientTitle = messageType.Name;
+            setting.ClientDesc = messageType.Description;
+
             session.Save(setting);
             session.Flush();
         }

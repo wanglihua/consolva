@@ -5,6 +5,11 @@ namespace shunda.Admin.Areas.Message.Models.CustomerMessageCycleTimingSendSettin
 
 public class CustomerMessageCycleTimingSendSettingDetailModel : CustomerMessageCycleTimingSendSettingSaveModel
 {
+    /// <summary>
+    /// 占位符
+    /// </summary>
+    public string Placeholders { get; set; } = string.Empty;
+
     [BindNever]
     public IList<CustomerMessageType> MessageTypeList { get; set; } = CustomerMessageType.GetList();
 

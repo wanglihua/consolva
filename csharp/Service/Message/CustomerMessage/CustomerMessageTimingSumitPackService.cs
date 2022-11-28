@@ -55,6 +55,10 @@ public class CustomerMessageTimingSumitPackService
             setting.SmsMessageTemplate = "亲，您的{order_code}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。";
             setting.Placeholders = "订单编号: {order_code}";
 
+            setting.ClientCustomizable = false;
+            setting.ClientTitle = messageType.Name;
+            setting.ClientDesc = messageType.Description;
+
             session.Save(setting);
             session.Flush();
         }

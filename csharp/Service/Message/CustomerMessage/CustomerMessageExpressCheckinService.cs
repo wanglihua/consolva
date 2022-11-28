@@ -56,6 +56,10 @@ public class CustomerMessageExpressCheckinService
             setting.SmsMessageTemplate = "亲，您快递单号【{tracking_no}】，已抵达国内收货仓，进入【已入库】完善货值即可立马完成入库哦！";
             setting.Placeholders = "快递单号：{tracking_no}";
 
+            setting.ClientCustomizable = false;
+            setting.ClientTitle = messageType.Name;
+            setting.ClientDesc = messageType.Description;
+
             session.Save(setting);
             session.Flush();
         }
