@@ -1,14 +1,13 @@
-using System.Linq;
-using Core;
-using Domain.Message;
 using NHibernate;
+using shunda.Core.Service;
+using shunda.Service.Message.CustomerMessage;
 
 namespace shunda.Service.Message;
 
 [Service(ServiceType.Scoped)]
 public class CustomerMessageCycleTimingSendSettingService
 {
-    private ISession session = null;
+    private ISession session;
 
     public CustomerMessageCycleTimingSendSettingService(ISession session)
     {

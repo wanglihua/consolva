@@ -1,14 +1,13 @@
-using System.Linq;
-using Core;
-using Domain.Message;
 using NHibernate;
+using shunda.Core.Service;
+using shunda.Service.Message.CustomerMessage;
 
 namespace shunda.Service.Message;
 
 [Service(ServiceType.Scoped)]
 public class CustomerMessageRealTimeSendSettingService
 {
-    private ISession session = null;
+    private ISession session;
 
     public CustomerMessageRealTimeSendSettingService(ISession session)
     {
@@ -20,6 +19,12 @@ public class CustomerMessageRealTimeSendSettingService
     /// </summary>
     public void InitSetting()
     {
+        CustomerMessageExpressExpectEnterService.InitSetting(session);
+        CustomerMessageExpressCheckinService.InitSetting(session);
+
+        session.Flush();
+
+        /*
         // var messageTypeList = CustomerMessageType.GetList();
         var settingList = session.Query<CustomerMessageRealTimeSendSettingInfo>()
             // .Where(e => messageTypeList.Contains(e.Type))
@@ -67,8 +72,7 @@ public class CustomerMessageRealTimeSendSettingService
             }
         }
 
-        CustomerMessageExpressExpectEnterService.InitSetting(session);
-        CustomerMessageExpressCheckinService.InitSetting(session);
+
 
         {
             // 我的问题件提醒
@@ -1123,5 +1127,7 @@ public class CustomerMessageRealTimeSendSettingService
         }
 
         session.Flush();
+        
+        */
     }
 }
