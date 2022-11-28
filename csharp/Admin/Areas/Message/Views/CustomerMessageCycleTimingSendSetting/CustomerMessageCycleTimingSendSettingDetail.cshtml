@@ -1,0 +1,216 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessageCycleTimingSendSetting.CustomerMessageCycleTimingSendSettingDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="customerMessageCycleTimingSendSettingDetailDialog">
+    <div class="modal-dialog" style="width: 840px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">定时任务推送设置详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="customerMessageCycleTimingSendSettingDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="CustomerMessageCycleTimingSendSetting.Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.Type" class="col-xs-2 control-label">消息类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageCycleTimingSendSetting.Type" class="input-sm form-control" disabled="disabled">
+                                        @foreach (CustomerMessageType messageType in Model.MessageTypeList)
+                                        {
+                                            <option value="@(messageType.Id)">@(messageType.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.WechatTemplate" class="col-xs-2 control-label">微信模板</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageCycleTimingSendSetting.WechatTemplate" class="input-sm form-control" disabled="disabled">
+                                        @foreach (CustomerMessageWeXinTemplateType templateType in Model.WeXinTemplateTypeList)
+                                        {
+                                            <option value="@(templateType.Id)">@(templateType.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        *@
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.WechatMessageTemplate1" class="col-xs-2 control-label">微信消息模板1</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageCycleTimingSendSetting.WechatMessageTemplate1" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.WechatMessageTemplate2" class="col-xs-2 control-label">微信消息模板2</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageCycleTimingSendSetting.WechatMessageTemplate2" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.WechatMessageTemplate3" class="col-xs-2 control-label">微信消息模板3</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageCycleTimingSendSetting.WechatMessageTemplate3" rows="2" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.SmsMessageTemplate" class="col-xs-2 control-label">短信消息模板</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageCycleTimingSendSetting.SmsMessageTemplate" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.Placeholders" class="col-xs-2 control-label">消息占位符</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageCycleTimingSendSetting.Placeholders" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerMessageCycleTimingSendSetting.SmsSend" class="col-xs-4 control-label">是否SMS发送</label>
+                                    <div class="col-xs-8">
+                                        <select asp-for="CustomerMessageCycleTimingSendSetting.SmsSend" class="input-sm form-control">
+                                            <option value="@(true.ToString())">是</option>
+                                            <option value="@(false.ToString())">否</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerMessageCycleTimingSendSetting.WechatSend" class="col-xs-4 control-label">是否微信发送</label>
+                                    <div class="col-xs-8">
+                                        <select asp-for="CustomerMessageCycleTimingSendSetting.WechatSend" class="input-sm form-control">
+                                            <option value="@(true.ToString())">是</option>
+                                            <option value="@(false.ToString())">否</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerMessageCycleTimingSendSetting.IntervalType" class="col-xs-4 control-label">周期类型</label>
+                                    <div class="col-xs-8">
+                                        <select asp-for="CustomerMessageCycleTimingSendSetting.IntervalType" class="input-sm form-control">
+                                            @foreach (var type in Model.IntervalTypeList)
+                                            {
+                                                <option value="@(type.Id)">@(type.Name)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerMessageCycleTimingSendSetting.Status" class="col-xs-4 control-label">启用状态</label>
+                                    <div class="col-xs-8">
+                                        <select asp-for="CustomerMessageCycleTimingSendSetting.Status" class="input-sm form-control">
+                                            @foreach (CustomerMessageSettingStatus status in Model.StatusList)
+                                            {
+                                                <option value="@(status.Id)">@(status.Name)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerMessageCycleTimingSendSetting.IntervalWeeks" class="col-xs-4 control-label">发送周期(周)</label>
+                                    <div class="col-xs-8">
+                                        <select asp-for="CustomerMessageCycleTimingSendSetting.IntervalWeeks" class="input-sm form-control">
+                                            @foreach (int intervalWeek in Model.IntervalWeeksList)
+                                            {
+                                                <option value="@(intervalWeek)">@(intervalWeek)周</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="CustomerMessageCycleTimingSendSetting.IntervalDays" class="col-xs-4 control-label">发送周期(天)</label>
+                                    <div class="col-xs-8">
+                                        <select asp-for="CustomerMessageCycleTimingSendSetting.IntervalDays" class="input-sm form-control">
+                                            @foreach (int intervalDay in Model.IntervalDaysList)
+                                            {
+                                                <option value="@(intervalDay)">@(intervalDay)天</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageCycleTimingSendSetting.SendWeekday" class="col-xs-2 control-label">发送时间</label>
+                                <div class="col-xs-5">
+                                    <select asp-for="CustomerMessageCycleTimingSendSetting.SendWeekday" class="input-sm form-control">
+                                        @foreach (int sendWeekDay in Model.SendWeekDayList)
+                                        {
+                                            <option value="@(sendWeekDay)">周@(sendWeekDay)</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xs-5">
+                                    <select asp-for="CustomerMessageCycleTimingSendSetting.SendHour" class="input-sm form-control">
+                                        @foreach (int sendHour in Model.SendHourList)
+                                        {
+                                            <option value="@(sendHour)">@(sendHour)时</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveCustomerMessageCycleTimingSendSetting();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

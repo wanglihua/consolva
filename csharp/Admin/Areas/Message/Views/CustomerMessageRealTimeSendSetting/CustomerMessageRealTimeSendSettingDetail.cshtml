@@ -1,0 +1,177 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessageRealTimeSendSetting.CustomerMessageRealTimeSendSettingDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="customerMessageRealTimeSendSettingDetailDialog">
+    <div class="modal-dialog" style="width: 880px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">实时任务推送设置详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="customerMessageRealTimeSendSettingDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="CustomerMessageRealTimeSendSetting.Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.Type" class="col-xs-2 control-label">消息类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageRealTimeSendSetting.Type" class="input-sm form-control" disabled="disabled">
+                                        @foreach (CustomerMessageType messageType in Model.MessageTypeList)
+                                        {
+                                            <option value="@(messageType.Id)">@(messageType.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.WechatTemplate" class="col-xs-2 control-label">微信模板</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageRealTimeSendSetting.WechatTemplate" class="input-sm form-control" disabled="disabled">
+                                        @foreach (CustomerMessageWeXinTemplateType templateType in Model.WeXinTemplateTypeList)
+                                        {
+                                            <option value="@(templateType.Id)">@(templateType.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        *@
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.WechatMessageTemplate1" class="col-xs-2 control-label">微信消息模板1</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageRealTimeSendSetting.WechatMessageTemplate1" rows="3"  class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.WechatMessageTemplate2" class="col-xs-2 control-label">微信消息模板2</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageRealTimeSendSetting.WechatMessageTemplate2" rows="3"  class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.WechatMessageTemplate3" class="col-xs-2 control-label">微信消息模板3</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageRealTimeSendSetting.WechatMessageTemplate3" rows="2"  class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.SmsMessageTemplate" class="col-xs-2 control-label">短信消息模板</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageRealTimeSendSetting.SmsMessageTemplate" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.Status" class="col-xs-2 control-label">启用状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageRealTimeSendSetting.Status" class="input-sm form-control">
+                                        @foreach (CustomerMessageSettingStatus status in Model.StatusList)
+                                        {
+                                            <option value="@(status.Id)">@(status.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.SmsSend" class="col-xs-2 control-label">是否SMS发送</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageRealTimeSendSetting.SmsSend" class="input-sm form-control">
+                                        <option value="@(true.ToString())">是</option>
+                                        <option value="@(false.ToString())">否</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.WechatSend" class="col-xs-2 control-label">是否微信发送</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageRealTimeSendSetting.WechatSend" class="input-sm form-control">
+                                        <option value="@(true.ToString())">是</option>
+                                        <option value="@(false.ToString())">否</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.Placeholders" class="col-xs-2 control-label">消息占位符</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageRealTimeSendSetting.Placeholders" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.ClientCustomizable" class="col-xs-2 control-label">客户端可定制</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CustomerMessageRealTimeSendSetting.ClientCustomizable" class="input-sm form-control">
+                                        <option value="@(true.ToString())">是，可以定制</option>
+                                        <option value="@(false.ToString())">否，不能定制</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.ClientTitle" class="col-xs-2 control-label">客户端标题</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CustomerMessageRealTimeSendSetting.ClientTitle" type="text" class="input-sm form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerMessageRealTimeSendSetting.ClientDesc" class="col-xs-2 control-label">客户端描述</label>
+                                <div class="col-xs-10">
+                                    <textarea asp-for="CustomerMessageRealTimeSendSetting.ClientDesc" rows="3" class="input-sm form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveCustomerMessageRealTimeSendSetting();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

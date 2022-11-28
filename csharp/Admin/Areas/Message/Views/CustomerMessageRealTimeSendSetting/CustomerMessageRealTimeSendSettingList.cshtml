@@ -1,0 +1,116 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessageRealTimeSendSetting.CustomerMessageRealTimeSendSettingListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageRealTimeSendSettingList"})
+
+<table id="tblCustomerMessageRealTimeSendSettingList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="customerMessageRealTimeSendSettingCheckAll"></label><input id="customerMessageRealTimeSendSettingCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 150px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">消息类型</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.ClientTitle))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">客户端标题</a>
+                </div>
+            </th>
+            <th style="width: 300px;">
+                <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.WechatMessageTemplate1))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">微信消息模板</a>
+            </th>
+            <th style="width: 300px;">
+                <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.SmsMessageTemplate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">短信消息模板</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">启用状态</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.ClientCustomizable))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">客户端定制</a>
+                </div>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.SmsSend))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">SMS发送</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerMessageRealTimeSendSettingInfo.WechatSend))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageRealTimeSendSettingList">微信发送</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerMessageRealTimeSendSettingList != null && Model.CustomerMessageRealTimeSendSettingList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CustomerMessageRealTimeSendSettingInfo setting in Model.CustomerMessageRealTimeSendSettingList)
+            {
+                <tr ondblclick="showCustomerMessageRealTimeSendSettingDetail(@(setting.Id));">
+                    <td style="text-align: center;">
+                        <label for="customerMessageRealTimeSendSettingCheck_@(setting.Id)"></label><input id="customerMessageRealTimeSendSettingCheck_@(setting.Id)" type="checkbox" class="ace" value="@setting.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <div>
+                            <span>
+                                @setting.Type?.Name
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                @ListDataUtil.Render(setting.ClientTitle)
+                            </span>
+                        </div>
+                    </td>
+                    <td class="break-word">@setting.WechatMessageTemplate1</td>
+                    <td class="break-word">@setting.SmsMessageTemplate</td>
+                    <td style="text-align: center;">
+                        <div>
+                            @if (setting.Status == CustomerMessageSettingStatus.Disabled)
+                            {
+                                <span style="color: red;">@setting.Status?.Name</span>
+                            }
+                            else
+                            {
+                                <span>@setting.Status?.Name</span>
+                            }
+                        </div>
+                        <div>
+                            @if (setting.ClientCustomizable == true)
+                            {
+                                <span style="color: blue;">可以定制</span>
+                            }
+                            else
+                            {
+                                <span>不能定制</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        @ListDataUtil.RenderBoolWithDiv(setting.SmsSend)
+                        @ListDataUtil.RenderBoolWithDiv(setting.WechatSend)
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageRealTimeSendSettingList"})

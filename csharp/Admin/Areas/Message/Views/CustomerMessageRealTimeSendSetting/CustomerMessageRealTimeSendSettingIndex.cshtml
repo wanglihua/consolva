@@ -1,0 +1,163 @@
+@using shunda.Admin.Areas.Message.Models.CustomerMessageRealTimeSendSetting
+@using shunda.Core
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessageRealTimeSendSetting.CustomerMessageRealTimeSendSettingIndexModel
+@{
+    ViewBag.Title = "实时任务推送设置列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="message-menu">消息推送</li>
+    <li class="active" data-menu="message-customer-message-real-time-send-setting-index-menu">实时任务推送设置列表</li>
+}
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <label for="typeNameQuery">消息类型</label>&nbsp;<input id="typeNameQuery" name="typeNameQuery" autocomplete="off" style="width: 220px; height: 30px;" placeholder="消息类型模糊查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerMessageRealTimeSendSettingList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+
+</div>
+
+<div id="customerMessageRealTimeSendSettingList" data-page-index="0" data-sort-field="@(nameof(CustomerMessageRealTimeSendSettingInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="customerMessageRealTimeSendSettingDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerMessageRealTimeSendSettingList();
+    });
+
+    function sortCustomerMessageRealTimeSendSettingList(sortField, sortDir) {
+        var list = $('#customerMessageRealTimeSendSettingList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerMessageRealTimeSendSettingList();
+    }
+
+    function loadCustomerMessageRealTimeSendSettingList(pageIndex) {
+        var list = $('#customerMessageRealTimeSendSettingList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerMessageRealTimeSendSetting")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerMessageRealTimeSendSettingListQueryParam.TypeNameQuery))': $("#typeNameQuery").val(),
+                '@(nameof(CustomerMessageRealTimeSendSettingListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerMessageRealTimeSendSettingListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerMessageRealTimeSendSettingListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerMessageRealTimeSendSettingList').html(data);
+
+                initListTable("#tblCustomerMessageRealTimeSendSettingList");
+            }
+        });
+    }
+
+    function showCustomerMessageRealTimeSendSettingDetail(id) {
+        $("#customerMessageRealTimeSendSettingDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#customerMessageRealTimeSendSettingDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CustomerMessageRealTimeSendSetting")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerMessageRealTimeSendSettingDetailDialogWrapper").html(data);
+                $("#customerMessageRealTimeSendSettingDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCustomerMessageRealTimeSendSetting() {
+        var form = $("#customerMessageRealTimeSendSettingDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerMessageRealTimeSendSetting.TypeId': {
+                    required: true,
+                    digits: true 
+                },
+                'CustomerMessageRealTimeSendSetting.WeiXinTemplateId': {
+                    required: true,
+                    digits: true 
+                },
+                'CustomerMessageRealTimeSendSetting.WeiXinMessageTemplate1': {
+                    required: true,
+                    maxlength: 500
+                },
+                'CustomerMessageRealTimeSendSetting.WeiXinMessageTemplate2': {
+                    maxlength: 500
+                },
+                'CustomerMessageRealTimeSendSetting.WeiXinMessageTemplate3': {
+                    maxlength: 500
+                },                                
+                'CustomerMessageRealTimeSendSetting.SmsMessageTemplate': {
+                    required: true,
+                    maxlength: 500
+                },
+                'CustomerMessageRealTimeSendSetting.StatusId': {
+                    required: true,
+                    digits: true 
+                },
+                'CustomerMessageRealTimeSendSetting.SmsSend': {
+                    required: true
+                },
+                'CustomerMessageRealTimeSendSetting.WeiXinSend': {
+                    required: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerMessageRealTimeSendSetting")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#customerMessageRealTimeSendSettingDetailDialog').modal('hide');
+                        loadCustomerMessageRealTimeSendSettingList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+</script>

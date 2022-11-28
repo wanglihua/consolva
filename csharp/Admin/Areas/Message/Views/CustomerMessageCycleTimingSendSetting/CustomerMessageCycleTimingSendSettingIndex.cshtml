@@ -1,0 +1,171 @@
+@using shunda.Admin.Areas.Message.Models.CustomerMessageCycleTimingSendSetting
+@using shunda.Core
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessageCycleTimingSendSetting.CustomerMessageCycleTimingSendSettingIndexModel
+@{
+    ViewBag.Title = "定时任务推送设置列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="message-menu">消息推送</li>
+    <li class="active" data-menu="message-customer-message-cycle-timing-send-setting-index-menu">定时任务推送设置列表</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerMessageCycleTimingSendSettingList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+
+    @*
+    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerMessageCycleTimingSendSettingDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerMessageCycleTimingSendSetting()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+    *@
+</div>
+
+<div id="customerMessageCycleTimingSendSettingList" data-page-index="0" data-sort-field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.Id))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<div id="customerMessageCycleTimingSendSettingDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerMessageCycleTimingSendSettingList();
+    });
+
+    function sortCustomerMessageCycleTimingSendSettingList(sortField, sortDir) {
+        var list = $('#customerMessageCycleTimingSendSettingList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerMessageCycleTimingSendSettingList();
+    }
+
+    function loadCustomerMessageCycleTimingSendSettingList(pageIndex) {
+        var list = $('#customerMessageCycleTimingSendSettingList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerMessageCycleTimingSendSetting")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerMessageCycleTimingSendSettingListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerMessageCycleTimingSendSettingListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerMessageCycleTimingSendSettingListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerMessageCycleTimingSendSettingList').html(data);
+
+                initListTable("#tblCustomerMessageCycleTimingSendSettingList");
+            }
+        });
+    }
+
+    function showCustomerMessageCycleTimingSendSettingDetail(id) {
+        $("#customerMessageCycleTimingSendSettingDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#customerMessageCycleTimingSendSettingDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CustomerMessageCycleTimingSendSetting")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerMessageCycleTimingSendSettingDetailDialogWrapper").html(data);
+                $("#customerMessageCycleTimingSendSettingDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCustomerMessageCycleTimingSendSetting() {
+        var form = $("#customerMessageCycleTimingSendSettingDetailForm");
+        var valid = validate(form,
+            {
+                'CustomerMessageCycleTimingSendSetting.TypeId': {
+                    required: true,
+                    digits: true 
+                },
+                'CustomerMessageCycleTimingSendSetting.WeiXinTemplateId': {
+                    required: true,
+                    digits: true 
+                },
+                'CustomerMessageCycleTimingSendSetting.WeiXinMessageTemplate1': {
+                    required: true,
+                    maxlength: 500
+                },
+                'CustomerMessageCycleTimingSendSetting.WeiXinMessageTemplate2': {
+                    maxlength: 500
+                },
+                'CustomerMessageCycleTimingSendSetting.WeiXinMessageTemplate3': {
+                    maxlength: 500
+                },
+                'CustomerMessageCycleTimingSendSetting.SmsMessageTemplate': {
+                    required: true,
+                    maxlength: 500
+                },
+                'CustomerMessageCycleTimingSendSetting.StatusId': {
+                    required: true,
+                    digits: true 
+                },
+                'CustomerMessageCycleTimingSendSetting.SmsSend': {
+                    required: true
+                },
+                'CustomerMessageCycleTimingSendSetting.WeiXinSend': {
+                    required: true
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerMessageCycleTimingSendSetting")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#customerMessageCycleTimingSendSettingDetailDialog').modal('hide');
+                        loadCustomerMessageCycleTimingSendSettingList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+</script>

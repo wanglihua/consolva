@@ -1,0 +1,104 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessageCycleTimingSendSetting.CustomerMessageCycleTimingSendSettingListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageCycleTimingSendSettingList"})
+
+<table id="tblCustomerMessageCycleTimingSendSettingList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="customerMessageCycleTimingSendSettingCheckAll"></label><input id="customerMessageCycleTimingSendSettingCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 150px; text-align: center;">
+                <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">消息类型</a>
+            </th>
+            <th style="width: 300px;">
+                <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.WechatMessageTemplate1))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">微信消息模板</a>
+            </th>
+            <th style="width: 300px;">
+                <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.SmsMessageTemplate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">短信消息模板</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">启用状态</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.SmsSend))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">SMS发送</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerMessageCycleTimingSendSettingInfo.WechatSend))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageCycleTimingSendSettingList">微信发送</a>
+                </div>
+            </th>
+            <th style="width: 80px;text-align: center;">
+                发送周期
+            </th>
+            <th style="width: 80px;text-align: center;">
+                发送时间
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerMessageCycleTimingSendSettingList != null && Model.CustomerMessageCycleTimingSendSettingList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CustomerMessageCycleTimingSendSettingInfo customerMessageCycleTimingSendSetting in Model.CustomerMessageCycleTimingSendSettingList)
+            {
+                <tr ondblclick="showCustomerMessageCycleTimingSendSettingDetail(@(customerMessageCycleTimingSendSetting.Id));">
+                    <td style="text-align: center;">
+                        <label for="customerMessageCycleTimingSendSettingCheck_@(customerMessageCycleTimingSendSetting.Id)"></label><input id="customerMessageCycleTimingSendSettingCheck_@(customerMessageCycleTimingSendSetting.Id)" type="checkbox" class="ace" value="@customerMessageCycleTimingSendSetting.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">@customerMessageCycleTimingSendSetting.Type?.Name</td>
+                    <td class="break-word">@customerMessageCycleTimingSendSetting.WechatMessageTemplate1</td>
+                    <td class="break-word">@customerMessageCycleTimingSendSetting.SmsMessageTemplate</td>
+                    <td style="text-align: center;">
+                        @customerMessageCycleTimingSendSetting.Status?.Name
+                    </td>
+                    <td style="text-align: center;">
+                        @ListDataUtil.RenderBoolWithDiv(customerMessageCycleTimingSendSetting.SmsSend)
+                        @ListDataUtil.RenderBoolWithDiv(customerMessageCycleTimingSendSetting.WechatSend)
+                    </td>
+                    <td style="text-align: center;">
+                        @if (customerMessageCycleTimingSendSetting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Weeks)
+                        {
+                            <span>@(customerMessageCycleTimingSendSetting.IntervalWeeks)</span>
+                            <span>周</span>
+                        }
+
+                        @if (customerMessageCycleTimingSendSetting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Days)
+                        {
+                            <span>@(customerMessageCycleTimingSendSetting.IntervalDays)</span>
+                            <span>天</span>
+                        }
+                    </td>
+                    <td style="text-align: center;">
+                        @if (customerMessageCycleTimingSendSetting.IntervalType == CustomerMessageCycleTimingSendIntervalType.Weeks)
+                        {
+                            <span>周</span>
+                            <span>@(customerMessageCycleTimingSendSetting.SendWeekday)</span>
+                            <span>,</span>
+                        }
+                        <span>@(customerMessageCycleTimingSendSetting.SendHour)</span><span>时</span>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageCycleTimingSendSettingList"})
