@@ -1,3 +1,5 @@
+# DROP TABLE IF EXISTS tbl_customer_message_cycle_timing_send_setting;
+
 CREATE TABLE tbl_customer_message_cycle_timing_send_setting
 (
     id                       INT                        NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',

@@ -39,13 +39,13 @@ public class CustomerMessageExpressExpectEnterService
 
     public static void InitSetting(ISession session)
     {
-        var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
+        var setting = session.Query<CustomerMessageRealTimeSendSettingInfo>()
             .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
         if (setting == null)
         {
-            setting = new CustomerMessageCycleTimingSendSettingInfo();
+            setting = new CustomerMessageRealTimeSendSettingInfo();
             setting.Type = messageType;
             setting.Status = CustomerMessageSettingStatus.Disabled;
             setting.WechatSend = true;
@@ -90,7 +90,7 @@ public class CustomerMessageExpressExpectEnterService
         string customerCode = customerCodeService.GetCustomerCode(customer.Id);
         string trackingNo = expressExpect.TrackingNo;
 
-        CustomerMessageCycleTimingSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageCycleTimingSendSetting(messageType);
+        CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled)
         {
             string message1 = TransferMessage(setting.WechatMessageTemplate1, trackingNo);
@@ -139,17 +139,17 @@ public class CustomerMessageExpressExpectEnterService
 
             if (string.IsNullOrWhiteSpace(message1) == false)
             {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message1, messageStatus, setting, processUser);
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
             }
 
             if (string.IsNullOrWhiteSpace(message2) == false)
             {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message2, messageStatus, setting, processUser);
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
             }
 
             if (string.IsNullOrWhiteSpace(message3) == false)
             {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message3, messageStatus, setting, processUser);
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
             }
 
             session.Flush();

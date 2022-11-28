@@ -75,7 +75,7 @@ public class CustomerMessageCommonService
         return setting;
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting)
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting, string sender)
     {
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
         customerMessage.SendType = sendType;
@@ -98,16 +98,12 @@ public class CustomerMessageCommonService
         customerMessage.WechatSend = setting.WechatSend;
         customerMessage.SendTime = DateTime.Now;
         customerMessage.Status = messageStatus;
+        customerMessage.Sender = sender;
 
         session.Save(customerMessage);
         session.Flush();
 
         return customerMessage.Id;
-    }
-
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting, string sender)
-    {
-        return SaveCustomerMessage(sendType, customer, null, message, messageStatus, setting);
     }
 
     public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting, string sender)
