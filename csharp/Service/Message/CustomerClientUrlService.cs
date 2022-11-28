@@ -68,9 +68,9 @@ public class CustomerClientUrlService
         return GetAutoLoginUrl(url);
     }
 
-    public string GetExpressCheckinDetailUrl(int claimId)
+    public string GetExpressCheckinDetailUrl(int expressId)
     {
-        string url = $"/mobile/express/checkin/detail/{claimId}";
+        string url = $"/mobile/express/checkin/detail/{expressId}";
         return GetAutoLoginUrl(url);
     }
 

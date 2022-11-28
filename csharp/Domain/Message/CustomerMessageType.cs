@@ -4,7 +4,7 @@ namespace shunda.Domain.Message;
 
 /// <summary>
 /// 客户消息类型
-/// todo 把这里面的拼音改成英文的
+/// todo 把这里面的拼音改成英文的，id 数字调整
 /// </summary>
 public class CustomerMessageType : CodeTypeBase
 {
@@ -59,9 +59,9 @@ public class CustomerMessageType : CodeTypeBase
     public static readonly CustomerMessageType WoZhuanDaoDeQian = new CustomerMessageType(1000, "我赚到的钱提醒", "我赚到的钱提醒");
 
     /// <summary>
-    /// 实时提醒，我的申领件提醒
+    /// 实时提醒，快递单入库提醒
     /// </summary>
-    public static readonly CustomerMessageType WoDeShenLingJian = new CustomerMessageType(1200, "我的申领件提醒", "我的申领件提醒");
+    public static readonly CustomerMessageType ExpressCheckin = new CustomerMessageType(1200, "快递单入库提醒", "快递单入库提醒");
 
     /// <summary>
     /// 实时提醒，预报货值提醒
@@ -206,7 +206,7 @@ public class CustomerMessageType : CodeTypeBase
             TimingSubmitPack,
             NewClaim,
             WoZhuanDaoDeQian,
-            WoDeShenLingJian,
+            ExpressCheckin,
             ExpressExpectEnter,
             WoDeWeiTiJian,
             YiDaBao,

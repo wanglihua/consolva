@@ -67,28 +67,8 @@ public class CustomerMessageRealTimeSendSettingService
             }
         }
 
-        {
-            // 我的申领件提醒
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.WoDeShenLingJianTiXing).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.WoDeShenLingJianTiXing;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，【我的申领件】刚刚有了新快递哦，快去一键认领吧！友情提醒：请及时将所有快递单号录入订单，以确保快速入库，及早转运！";
-                setting.SmsMessageTemplate = "亲，【我的申领件】刚刚有了新快递哦，快去一键认领吧！";
-                setting.Placeholders = "";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
         CustomerMessageExpressExpectEnterService.InitSetting(session);
+        CustomerMessageExpressCheckinService.InitSetting(session);
 
         {
             // 我的问题件提醒

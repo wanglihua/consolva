@@ -229,14 +229,14 @@ namespace shunda.Service.Message;
         /// 我的申领件提醒
         /// 
         /// </summary>
-        public void SendMessageWoDeShenLingJian(CustomerInfo customer)
+        public void SendMessageExpressCheckin(CustomerInfo customer)
         {
             if (customer?.Status == CustomerStatus.Frozen)
             {
                 return;
             }
 
-            CustomerMessageType messageType = CustomerMessageType.WoDeShenLingJianTiXing;
+            CustomerMessageType messageType = CustomerMessageType.ExpressCheckin;
             CustomerMessageRealTimeSendSettingInfo setting = GetCustomerMessageRealTimeSendSetting(messageType);
             if (setting.Status == CustomerMessageSettingStatus.Enabled)
             {
@@ -245,16 +245,16 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessageWoDeShenLingJian(setting.WechatMessageTemplate1);
-                string message2 = TransferMessageWoDeShenLingJian(setting.WechatMessageTemplate2);
-                string message3 = TransferMessageWoDeShenLingJian(setting.WechatMessageTemplate3);
+                string message1 = TransferMessageExpressCheckin(setting.WechatMessageTemplate1);
+                string message2 = TransferMessageExpressCheckin(setting.WechatMessageTemplate2);
+                string message3 = TransferMessageExpressCheckin(setting.WechatMessageTemplate3);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
                 if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
-                    clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.WoDeShenLingJianTiXing);
+                    clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.ExpressCheckin);
                 }
 
                 if (setting.WechatSend)
@@ -289,7 +289,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        smsService.SendSms(customer.Mobile, TransferMessageWoDeShenLingJian(setting.SmsMessageTemplate));
+                        smsService.SendSms(customer.Mobile, TransferMessageExpressCheckin(setting.SmsMessageTemplate));
                     }
                 }
 
@@ -312,7 +312,7 @@ namespace shunda.Service.Message;
             }
         }
 
-        private string TransferMessageWoDeShenLingJian(string message)
+        private string TransferMessageExpressCheckin(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {

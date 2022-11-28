@@ -50,7 +50,7 @@ public class StorageLocExpressInfo
 
     public override int GetHashCode()
     {
-        if ((StorageLoc?.Id ?? 0) == 0 || ExpressId == 0)
+        if (StorageLoc.Id == 0 || ExpressId == 0)
         {
             return base.GetHashCode();
         }

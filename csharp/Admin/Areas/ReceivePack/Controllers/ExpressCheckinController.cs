@@ -883,7 +883,7 @@ public class ExpressCheckinController : Controller
                 CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
                 if (billCustomer != null)
                 {
-                    // todo b 加上 customerMessageService.SendMessageWoDeShenLingJian(billCustomer);
+                    // todo b 加上 customerMessageService.SendMessageExpressCheckin(billCustomer);
                 }
             }
         }
