@@ -52,12 +52,12 @@ public class CustomerMessageCancelFollowService
 
             setting.WechatMessageTemplate1 = "亲，您取消关注舜达公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！";
             setting.SmsMessageTemplate = "亲，您取消关注舜达公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！";
+            setting.Placeholders = "";
 
             session.Save(setting);
             session.Flush();
         }
 
-        setting.Placeholders = "";
         session.Update(setting);
         session.Flush();
     }

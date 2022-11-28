@@ -59,19 +59,19 @@ namespace shunda.Service.CustomerMessage
                 string totalFee = order.OrderAmount.ToString("#0.00");
                 string feeCalDesc = order.FirstLogisticsMode?.FeeCalDesc ?? string.Empty;
 
-                string message1 = TransferMessage(setting.WeiXinMessageTemplate1, orderCode, totalFee, feeCalDesc);
-                string message2 = TransferMessage(setting.WeiXinMessageTemplate2, orderCode, totalFee, feeCalDesc);
-                string message3 = TransferMessage(setting.WeiXinMessageTemplate3, orderCode, totalFee, feeCalDesc);
+                string message1 = TransferMessage(setting.WechatMessageTemplate1, orderCode, totalFee, feeCalDesc);
+                string message2 = TransferMessage(setting.WechatMessageTemplate2, orderCode, totalFee, feeCalDesc);
+                string message3 = TransferMessage(setting.WechatMessageTemplate3, orderCode, totalFee, feeCalDesc);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer?.Id ?? 0, messageType);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {

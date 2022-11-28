@@ -52,19 +52,19 @@ namespace shunda.Service.CustomerMessage
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessage(setting.WeiXinMessageTemplate1, orderCate, score, gap);
-                string message2 = TransferMessage(setting.WeiXinMessageTemplate2, orderCate, score, gap);
-                string message3 = TransferMessage(setting.WeiXinMessageTemplate3, orderCate, score, gap);
+                string message1 = TransferMessage(setting.WechatMessageTemplate1, orderCate, score, gap);
+                string message2 = TransferMessage(setting.WechatMessageTemplate2, orderCate, score, gap);
+                string message3 = TransferMessage(setting.WechatMessageTemplate3, orderCate, score, gap);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer?.Id ?? 0, messageType);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {

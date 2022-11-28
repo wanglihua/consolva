@@ -875,7 +875,7 @@ public class ExpressCheckinController : Controller
             {
                 if (expressExpect.Customer != null) // 这个 Customer 应该不可空才对
                 {
-                    // todo b 加上 customerMessageService.SendMessageYuBaoHuoZhi(expressExpect.Customer, expressExpect.TrackingNo);
+                    // todo b 加上 customerMessageService.SendMessageExpressExpectEnter(expressExpect.Customer, expressExpect.TrackingNo);
                 }
             }
             else if (billCustomerId != 0) // 没预报但有面单会员ID

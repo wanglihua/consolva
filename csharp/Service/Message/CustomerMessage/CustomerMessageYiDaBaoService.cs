@@ -58,19 +58,19 @@ namespace shunda.Service.CustomerMessage
                 string orderCode = order.Code;
                 string totalFee = order.OrderAmount.ToString("#0.00");
 
-                string message1 = TransferMessage(setting.WeiXinMessageTemplate1, orderCode, totalFee);
-                string message2 = TransferMessage(setting.WeiXinMessageTemplate2, orderCode, totalFee);
-                string message3 = TransferMessage(setting.WeiXinMessageTemplate3, orderCode, totalFee);
+                string message1 = TransferMessage(setting.WechatMessageTemplate1, orderCode, totalFee);
+                string message2 = TransferMessage(setting.WechatMessageTemplate2, orderCode, totalFee);
+                string message3 = TransferMessage(setting.WechatMessageTemplate3, orderCode, totalFee);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer?.Id ?? 0, messageType);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {

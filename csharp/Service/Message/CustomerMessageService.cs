@@ -140,19 +140,19 @@ namespace shunda.Service.Message;
                 string trackingNo = goodsExpress.ExpressTrackingNo;
                 string goodsType = goodsExpress.GoodsType?.Name;
 
-                string message1 = TransferMessageKuaiDiDanHaoYiRuKu(setting.WeiXinMessageTemplate1, orderCode, trackingNo, warehouseName, goodsType);
-                string message2 = TransferMessageKuaiDiDanHaoYiRuKu(setting.WeiXinMessageTemplate2, orderCode, trackingNo, warehouseName, goodsType);
-                string message3 = TransferMessageKuaiDiDanHaoYiRuKu(setting.WeiXinMessageTemplate3, orderCode, trackingNo, warehouseName, goodsType);
+                string message1 = TransferMessageKuaiDiDanHaoYiRuKu(setting.WechatMessageTemplate1, orderCode, trackingNo, warehouseName, goodsType);
+                string message2 = TransferMessageKuaiDiDanHaoYiRuKu(setting.WechatMessageTemplate2, orderCode, trackingNo, warehouseName, goodsType);
+                string message3 = TransferMessageKuaiDiDanHaoYiRuKu(setting.WechatMessageTemplate3, orderCode, trackingNo, warehouseName, goodsType);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.KuaiDiDanHaoYiRuKuTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -245,19 +245,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessageWoDeShenLingJian(setting.WeiXinMessageTemplate1);
-                string message2 = TransferMessageWoDeShenLingJian(setting.WeiXinMessageTemplate2);
-                string message3 = TransferMessageWoDeShenLingJian(setting.WeiXinMessageTemplate3);
+                string message1 = TransferMessageWoDeShenLingJian(setting.WechatMessageTemplate1);
+                string message2 = TransferMessageWoDeShenLingJian(setting.WechatMessageTemplate2);
+                string message3 = TransferMessageWoDeShenLingJian(setting.WechatMessageTemplate3);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.WoDeShenLingJianTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -326,111 +326,6 @@ namespace shunda.Service.Message;
 
         #endregion
 
-        #region 预报货值提醒
-
-        /// <summary>
-        /// 预报货值提醒
-        /// </summary>
-        /// <param name="customer"></param>
-        /// <param name="trackingNo"></param>
-        /// <exception cref="ValidationException"></exception>
-        public void SendMessageYuBaoHuoZhi(CustomerInfo customer, string trackingNo)
-        {
-            if (customer?.Status == CustomerStatus.Frozen)
-            {
-                return;
-            }
-
-            CustomerMessageType messageType = CustomerMessageType.YuBaoHuoZhiTiXing;
-            CustomerMessageRealTimeSendSettingInfo setting = GetCustomerMessageRealTimeSendSetting(messageType);
-            if (setting.Status == CustomerMessageSettingStatus.Enabled)
-            {
-                if (customer == null)
-                {
-                    throw new ValidationException("消息发送指定的会员不能为空！");
-                }
-
-                string message1 = TransferMessageYuBaoHuoZhi(setting.WeiXinMessageTemplate1, trackingNo);
-                string message2 = TransferMessageYuBaoHuoZhi(setting.WeiXinMessageTemplate2, trackingNo);
-                string message3 = TransferMessageYuBaoHuoZhi(setting.WeiXinMessageTemplate3, trackingNo);
-
-                bool isSent = false;
-
-                bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
-                {
-                    clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.YuBaoHuoZhiTiXing);
-                }
-
-                if (setting.WeiXinSend)
-                {
-                    if (clientShouldSend)
-                    {
-                        isSent = true;
-                        string processUser = GetProcessUser();
-                        string abnormalClause = "【预报货值】通知";
-                        string url = customerClientUrlService.GetExpressExpectListUrl(customer);
-
-                        if (string.IsNullOrWhiteSpace(message1) == false)
-                        {
-                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message1, processUser, url);
-                        }
-
-                        if (string.IsNullOrWhiteSpace(message2) == false)
-                        {
-                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message2, processUser, url);
-                        }
-
-                        if (string.IsNullOrWhiteSpace(message3) == false)
-                        {
-                            wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", abnormalClause, customer.CustomerCode, message3, processUser, url);
-                        }
-                    }
-                }
-
-                if (setting.SmsSend)
-                {
-                    if (clientShouldSend)
-                    {
-                        isSent = true;
-                        smsService.SendSms(customer.Mobile, TransferMessageYuBaoHuoZhi(setting.SmsMessageTemplate, trackingNo));
-                    }
-                }
-
-                if (string.IsNullOrWhiteSpace(message1) == false)
-                {
-                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, isSent, setting);
-                }
-
-                if (string.IsNullOrWhiteSpace(message2) == false)
-                {
-                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, isSent, setting);
-                }
-
-                if (string.IsNullOrWhiteSpace(message3) == false)
-                {
-                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, isSent, setting);
-                }
-
-                session.Flush();
-            }
-        }
-
-        private string TransferMessageYuBaoHuoZhi(string message, string trackingNo)
-        {
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                return message;
-            }
-
-            // setting.Placeholders = "快递单号：{tracking_no}";
-            message = message.Replace("{tracking_no}", trackingNo);
-
-            return message;
-        }
-
-        #endregion
-
         #region 我的问题件提醒
 
         /// <summary>
@@ -454,19 +349,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessageWoDeWeiTiJian(setting.WeiXinMessageTemplate1);
-                string message2 = TransferMessageWoDeWeiTiJian(setting.WeiXinMessageTemplate2);
-                string message3 = TransferMessageWoDeWeiTiJian(setting.WeiXinMessageTemplate3);
+                string message1 = TransferMessageWoDeWeiTiJian(setting.WechatMessageTemplate1);
+                string message2 = TransferMessageWoDeWeiTiJian(setting.WechatMessageTemplate2);
+                string message3 = TransferMessageWoDeWeiTiJian(setting.WechatMessageTemplate3);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.WoDeWeiTiJianTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -565,19 +460,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageQuanBuRuKuTiJiaDaBo(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageQuanBuRuKuTiJiaDaBo(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageQuanBuRuKuTiJiaDaBo(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageQuanBuRuKuTiJiaDaBo(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageQuanBuRuKuTiJiaDaBo(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageQuanBuRuKuTiJiaDaBo(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.QuanBuRuKuTiJiaDaBoTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -676,19 +571,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageZiDongDaBaoYuGao(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageZiDongDaBaoYuGao(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageZiDongDaBaoYuGao(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageZiDongDaBaoYuGao(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageZiDongDaBaoYuGao(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageZiDongDaBaoYuGao(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.ZiDongDaBaoYuGao);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -787,19 +682,19 @@ namespace shunda.Service.Message;
                 string orderCode = order.Code;
                 string totalFee = order.OrderAmount.ToString("#0.00");
 
-                string message1 = TransferMessageYiDaBao(setting.WeiXinMessageTemplate1, orderCode, totalFee);
-                string message2 = TransferMessageYiDaBao(setting.WeiXinMessageTemplate2, orderCode, totalFee);
-                string message3 = TransferMessageYiDaBao(setting.WeiXinMessageTemplate3, orderCode, totalFee);
+                string message1 = TransferMessageYiDaBao(setting.WechatMessageTemplate1, orderCode, totalFee);
+                string message2 = TransferMessageYiDaBao(setting.WechatMessageTemplate2, orderCode, totalFee);
+                string message3 = TransferMessageYiDaBao(setting.WechatMessageTemplate3, orderCode, totalFee);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.YiDaBaoTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -900,19 +795,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageYiZhuanYun(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode, arriveTime);
-                string message2 = TransferMessageYiZhuanYun(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode, arriveTime);
-                string message3 = TransferMessageYiZhuanYun(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode, arriveTime);
+                string message1 = TransferMessageYiZhuanYun(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode, arriveTime);
+                string message2 = TransferMessageYiZhuanYun(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode, arriveTime);
+                string message3 = TransferMessageYiZhuanYun(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode, arriveTime);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.YiZhuanYunTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1014,19 +909,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageZhiFuErChengFangShiBianGengFeiYong(setting.WeiXinMessageTemplate1, orderCode, shipContainerCustomerCode);
-                string message2 = TransferMessageZhiFuErChengFangShiBianGengFeiYong(setting.WeiXinMessageTemplate2, orderCode, shipContainerCustomerCode);
-                string message3 = TransferMessageZhiFuErChengFangShiBianGengFeiYong(setting.WeiXinMessageTemplate3, orderCode, shipContainerCustomerCode);
+                string message1 = TransferMessageZhiFuErChengFangShiBianGengFeiYong(setting.WechatMessageTemplate1, orderCode, shipContainerCustomerCode);
+                string message2 = TransferMessageZhiFuErChengFangShiBianGengFeiYong(setting.WechatMessageTemplate2, orderCode, shipContainerCustomerCode);
+                string message3 = TransferMessageZhiFuErChengFangShiBianGengFeiYong(setting.WechatMessageTemplate3, orderCode, shipContainerCustomerCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.ZhiFuErChengFangShiBianGengFeiYongTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1128,19 +1023,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageYiDaoGang(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode);
-                string message2 = TransferMessageYiDaoGang(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode);
-                string message3 = TransferMessageYiDaoGang(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode);
+                string message1 = TransferMessageYiDaoGang(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode);
+                string message2 = TransferMessageYiDaoGang(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode);
+                string message3 = TransferMessageYiDaoGang(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.YiDaoGangTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1242,19 +1137,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageYiDaoMuDiCang(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode);
-                string message2 = TransferMessageYiDaoMuDiCang(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode);
-                string message3 = TransferMessageYiDaoMuDiCang(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode);
+                string message1 = TransferMessageYiDaoMuDiCang(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode);
+                string message2 = TransferMessageYiDaoMuDiCang(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode);
+                string message3 = TransferMessageYiDaoMuDiCang(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.YiDaoMuDiCangTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1360,19 +1255,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageDingDanZhuangTaiHuiBo(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode, orderOldStatus, orderPreStatus, orderStatusNextTime);
-                string message2 = TransferMessageDingDanZhuangTaiHuiBo(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode, orderOldStatus, orderPreStatus, orderStatusNextTime);
-                string message3 = TransferMessageDingDanZhuangTaiHuiBo(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode, orderOldStatus, orderPreStatus, orderStatusNextTime);
+                string message1 = TransferMessageDingDanZhuangTaiHuiBo(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode, orderOldStatus, orderPreStatus, orderStatusNextTime);
+                string message2 = TransferMessageDingDanZhuangTaiHuiBo(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode, orderOldStatus, orderPreStatus, orderStatusNextTime);
+                string message3 = TransferMessageDingDanZhuangTaiHuiBo(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode, orderOldStatus, orderPreStatus, orderStatusNextTime);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.DingDanZhuangTaiHuiBoTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1479,19 +1374,19 @@ namespace shunda.Service.Message;
                 string warehouseName = order.FirstLogisticsMode?.WarehouseTo?.Name;
                 string warehouseAddress = order.FirstLogisticsMode?.WarehouseTo?.Address;
 
-                string message1 = TransferMessageMuDiCangPiCiKeZiTi(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
-                string message2 = TransferMessageMuDiCangPiCiKeZiTi(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
-                string message3 = TransferMessageMuDiCangPiCiKeZiTi(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
+                string message1 = TransferMessageMuDiCangPiCiKeZiTi(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
+                string message2 = TransferMessageMuDiCangPiCiKeZiTi(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
+                string message3 = TransferMessageMuDiCangPiCiKeZiTi(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.MuDiCangPiCiKeZiTiTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1597,19 +1492,19 @@ namespace shunda.Service.Message;
                 string warehouseName = order.FirstLogisticsMode?.WarehouseTo?.Name;
                 string warehouseAddress = order.FirstLogisticsMode?.WarehouseTo?.Address;
 
-                string message1 = TransferMessageMuDiCangPiCiSaoMaYiChang(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
-                string message2 = TransferMessageMuDiCangPiCiSaoMaYiChang(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
-                string message3 = TransferMessageMuDiCangPiCiSaoMaYiChang(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
+                string message1 = TransferMessageMuDiCangPiCiSaoMaYiChang(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
+                string message2 = TransferMessageMuDiCangPiCiSaoMaYiChang(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
+                string message3 = TransferMessageMuDiCangPiCiSaoMaYiChang(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode, warehouseName, warehouseAddress);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.MuDiCangPiCiSaoMaYiChangTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1713,19 +1608,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageJiJiangSongHuoShangMen(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode);
-                string message2 = TransferMessageJiJiangSongHuoShangMen(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode);
-                string message3 = TransferMessageJiJiangSongHuoShangMen(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode);
+                string message1 = TransferMessageJiJiangSongHuoShangMen(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode);
+                string message2 = TransferMessageJiJiangSongHuoShangMen(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode);
+                string message3 = TransferMessageJiJiangSongHuoShangMen(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.JiJiangSongHuoShangMenTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1830,19 +1725,19 @@ namespace shunda.Service.Message;
                 string pickupStationPhone = order.SecondLogisticsMode?.PickupStation?.Phone;
                 string pickupStationAddress = order.SecondLogisticsMode?.PickupStation?.Address;
 
-                string message1 = TransferMessageQuHuoDianKeQuHuo(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
-                string message2 = TransferMessageQuHuoDianKeQuHuo(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
-                string message3 = TransferMessageQuHuoDianKeQuHuo(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
+                string message1 = TransferMessageQuHuoDianKeQuHuo(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
+                string message2 = TransferMessageQuHuoDianKeQuHuo(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
+                string message3 = TransferMessageQuHuoDianKeQuHuo(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.QuHuoDianKeQuHuoTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -1947,19 +1842,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageQuHuoDianSaoMaYiChang(setting.WeiXinMessageTemplate1, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
-                string message2 = TransferMessageQuHuoDianSaoMaYiChang(setting.WeiXinMessageTemplate2, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
-                string message3 = TransferMessageQuHuoDianSaoMaYiChang(setting.WeiXinMessageTemplate3, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
+                string message1 = TransferMessageQuHuoDianSaoMaYiChang(setting.WechatMessageTemplate1, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
+                string message2 = TransferMessageQuHuoDianSaoMaYiChang(setting.WechatMessageTemplate2, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
+                string message3 = TransferMessageQuHuoDianSaoMaYiChang(setting.WechatMessageTemplate3, orderCode, customerShipContainerCode, pickupStationName, pickupStationPhone, pickupStationAddress);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.QuHuoDianSaoMaYiChangTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2061,19 +1956,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order?.Code ?? "";
 
-                string message1 = TransferMessageQuHuoDianPanDianKuCun(setting.WeiXinMessageTemplate1, orderCode, stayDays);
-                string message2 = TransferMessageQuHuoDianPanDianKuCun(setting.WeiXinMessageTemplate2, orderCode, stayDays);
-                string message3 = TransferMessageQuHuoDianPanDianKuCun(setting.WeiXinMessageTemplate3, orderCode, stayDays);
+                string message1 = TransferMessageQuHuoDianPanDianKuCun(setting.WechatMessageTemplate1, orderCode, stayDays);
+                string message2 = TransferMessageQuHuoDianPanDianKuCun(setting.WechatMessageTemplate2, orderCode, stayDays);
+                string message3 = TransferMessageQuHuoDianPanDianKuCun(setting.WechatMessageTemplate3, orderCode, stayDays);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.QuHuoDianPanDianKuCunZaiCiTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2175,19 +2070,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageGst(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageGst(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageGst(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageGst(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageGst(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageGst(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.GstTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2276,19 +2171,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的快递单号不能为空！");
                 }
 
-                string message1 = TransferMessageOrderPhotoSignIn(setting.WeiXinMessageTemplate1, trackingNo);
-                string message2 = TransferMessageOrderPhotoSignIn(setting.WeiXinMessageTemplate2, trackingNo);
-                string message3 = TransferMessageOrderPhotoSignIn(setting.WeiXinMessageTemplate3, trackingNo);
+                string message1 = TransferMessageOrderPhotoSignIn(setting.WechatMessageTemplate1, trackingNo);
+                string message2 = TransferMessageOrderPhotoSignIn(setting.WechatMessageTemplate2, trackingNo);
+                string message3 = TransferMessageOrderPhotoSignIn(setting.WechatMessageTemplate3, trackingNo);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoSignInTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2418,19 +2313,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的快递单号不能为空！");
                 }
 
-                string message1 = TransferMessageOrderPhotoCheckIn(setting.WeiXinMessageTemplate1, trackingNo);
-                string message2 = TransferMessageOrderPhotoCheckIn(setting.WeiXinMessageTemplate2, trackingNo);
-                string message3 = TransferMessageOrderPhotoCheckIn(setting.WeiXinMessageTemplate3, trackingNo);
+                string message1 = TransferMessageOrderPhotoCheckIn(setting.WechatMessageTemplate1, trackingNo);
+                string message2 = TransferMessageOrderPhotoCheckIn(setting.WechatMessageTemplate2, trackingNo);
+                string message3 = TransferMessageOrderPhotoCheckIn(setting.WechatMessageTemplate3, trackingNo);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoCheckInTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2536,19 +2431,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的快递单号不能为空！");
                 }
 
-                string message1 = TransferMessageOrderVideoCheckIn(setting.WeiXinMessageTemplate1, trackingNo);
-                string message2 = TransferMessageOrderVideoCheckIn(setting.WeiXinMessageTemplate2, trackingNo);
-                string message3 = TransferMessageOrderVideoCheckIn(setting.WeiXinMessageTemplate3, trackingNo);
+                string message1 = TransferMessageOrderVideoCheckIn(setting.WechatMessageTemplate1, trackingNo);
+                string message2 = TransferMessageOrderVideoCheckIn(setting.WechatMessageTemplate2, trackingNo);
+                string message3 = TransferMessageOrderVideoCheckIn(setting.WechatMessageTemplate3, trackingNo);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderVideoCheckInTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2657,19 +2552,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageOrderPhotoIssue(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageOrderPhotoIssue(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageOrderPhotoIssue(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageOrderPhotoIssue(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageOrderPhotoIssue(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageOrderPhotoIssue(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoIssueTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2769,19 +2664,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageOrderPhotoCnDamage(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageOrderPhotoCnDamage(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageOrderPhotoCnDamage(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageOrderPhotoCnDamage(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageOrderPhotoCnDamage(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageOrderPhotoCnDamage(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoCnDamageTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2882,19 +2777,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageOrderPhotoReturn(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageOrderPhotoReturn(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageOrderPhotoReturn(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageOrderPhotoReturn(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageOrderPhotoReturn(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageOrderPhotoReturn(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoReturnTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -2995,19 +2890,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageOrderPhotoShip(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageOrderPhotoShip(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageOrderPhotoShip(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageOrderPhotoShip(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageOrderPhotoShip(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageOrderPhotoShip(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoShipTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3109,19 +3004,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageOrderPhotoAuDamage(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageOrderPhotoAuDamage(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageOrderPhotoAuDamage(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageOrderPhotoAuDamage(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageOrderPhotoAuDamage(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageOrderPhotoAuDamage(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoAuDamageTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3221,19 +3116,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order.Code;
 
-                string message1 = TransferMessageOrderPhotoDeliver(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageOrderPhotoDeliver(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageOrderPhotoDeliver(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageOrderPhotoDeliver(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageOrderPhotoDeliver(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageOrderPhotoDeliver(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderPhotoDeliverTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3324,19 +3219,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessageVipShengJi(setting.WeiXinMessageTemplate1, newVipLevel, logisticsFirstDiscount, logisticsSecondDiscount, mallDiscount, nextVipLevel);
-                string message2 = TransferMessageVipShengJi(setting.WeiXinMessageTemplate2, newVipLevel, logisticsFirstDiscount, logisticsSecondDiscount, mallDiscount, nextVipLevel);
-                string message3 = TransferMessageVipShengJi(setting.WeiXinMessageTemplate3, newVipLevel, logisticsFirstDiscount, logisticsSecondDiscount, mallDiscount, nextVipLevel);
+                string message1 = TransferMessageVipShengJi(setting.WechatMessageTemplate1, newVipLevel, logisticsFirstDiscount, logisticsSecondDiscount, mallDiscount, nextVipLevel);
+                string message2 = TransferMessageVipShengJi(setting.WechatMessageTemplate2, newVipLevel, logisticsFirstDiscount, logisticsSecondDiscount, mallDiscount, nextVipLevel);
+                string message3 = TransferMessageVipShengJi(setting.WechatMessageTemplate3, newVipLevel, logisticsFirstDiscount, logisticsSecondDiscount, mallDiscount, nextVipLevel);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.VipShengJiTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3430,19 +3325,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessageZaiXianKeFu(setting.WeiXinMessageTemplate1);
-                string message2 = TransferMessageZaiXianKeFu(setting.WeiXinMessageTemplate2);
-                string message3 = TransferMessageZaiXianKeFu(setting.WeiXinMessageTemplate3);
+                string message1 = TransferMessageZaiXianKeFu(setting.WechatMessageTemplate1);
+                string message2 = TransferMessageZaiXianKeFu(setting.WechatMessageTemplate2);
+                string message3 = TransferMessageZaiXianKeFu(setting.WechatMessageTemplate3);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.ZaiXianKeFuTuiSong);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3532,19 +3427,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessageAccountChange(setting.WeiXinMessageTemplate1, orderCate, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
-                string message2 = TransferMessageAccountChange(setting.WeiXinMessageTemplate2, orderCate, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
-                string message3 = TransferMessageAccountChange(setting.WeiXinMessageTemplate3, orderCate, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
+                string message1 = TransferMessageAccountChange(setting.WechatMessageTemplate1, orderCate, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
+                string message2 = TransferMessageAccountChange(setting.WechatMessageTemplate2, orderCate, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
+                string message3 = TransferMessageAccountChange(setting.WechatMessageTemplate3, orderCate, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.AccountChangeTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3671,19 +3566,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order?.Code;
 
-                string message1 = TransferMessageShipContainerTimeChange(setting.WeiXinMessageTemplate1, orderCode, customerContainerCode, changeTimeType, timeAfterChange, changeReason);
-                string message2 = TransferMessageShipContainerTimeChange(setting.WeiXinMessageTemplate2, orderCode, customerContainerCode, changeTimeType, timeAfterChange, changeReason);
-                string message3 = TransferMessageShipContainerTimeChange(setting.WeiXinMessageTemplate3, orderCode, customerContainerCode, changeTimeType, timeAfterChange, changeReason);
+                string message1 = TransferMessageShipContainerTimeChange(setting.WechatMessageTemplate1, orderCode, customerContainerCode, changeTimeType, timeAfterChange, changeReason);
+                string message2 = TransferMessageShipContainerTimeChange(setting.WechatMessageTemplate2, orderCode, customerContainerCode, changeTimeType, timeAfterChange, changeReason);
+                string message3 = TransferMessageShipContainerTimeChange(setting.WechatMessageTemplate3, orderCode, customerContainerCode, changeTimeType, timeAfterChange, changeReason);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.ShipContainerTimeChangeTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3783,19 +3678,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("快递单号不能为空！");
                 }
 
-                string message1 = TransferMessageExpressOverdueCheckin(setting.WeiXinMessageTemplate1, trackingNo);
-                string message2 = TransferMessageExpressOverdueCheckin(setting.WeiXinMessageTemplate2, trackingNo);
-                string message3 = TransferMessageExpressOverdueCheckin(setting.WeiXinMessageTemplate3, trackingNo);
+                string message1 = TransferMessageExpressOverdueCheckin(setting.WechatMessageTemplate1, trackingNo);
+                string message2 = TransferMessageExpressOverdueCheckin(setting.WechatMessageTemplate2, trackingNo);
+                string message3 = TransferMessageExpressOverdueCheckin(setting.WechatMessageTemplate3, trackingNo);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.ExpressOverdueCheckinTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -3892,19 +3787,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order?.Code;
 
-                string message1 = TransferMessageAuExpressTrackingNo(setting.WeiXinMessageTemplate1, orderCode, trackingNo, expressCompany, trackingUrl);
-                string message2 = TransferMessageAuExpressTrackingNo(setting.WeiXinMessageTemplate2, orderCode, trackingNo, expressCompany, trackingUrl);
-                string message3 = TransferMessageAuExpressTrackingNo(setting.WeiXinMessageTemplate3, orderCode, trackingNo, expressCompany, trackingUrl);
+                string message1 = TransferMessageAuExpressTrackingNo(setting.WechatMessageTemplate1, orderCode, trackingNo, expressCompany, trackingUrl);
+                string message2 = TransferMessageAuExpressTrackingNo(setting.WechatMessageTemplate2, orderCode, trackingNo, expressCompany, trackingUrl);
+                string message3 = TransferMessageAuExpressTrackingNo(setting.WechatMessageTemplate3, orderCode, trackingNo, expressCompany, trackingUrl);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.AuExpressTrackingNoTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -4004,19 +3899,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order?.Code;
 
-                string message1 = TransferMessageInternationalExpressTrackingNo(setting.WeiXinMessageTemplate1, orderCode, trackingNo, expressCompany, trackingUrl);
-                string message2 = TransferMessageInternationalExpressTrackingNo(setting.WeiXinMessageTemplate2, orderCode, trackingNo, expressCompany, trackingUrl);
-                string message3 = TransferMessageInternationalExpressTrackingNo(setting.WeiXinMessageTemplate3, orderCode, trackingNo, expressCompany, trackingUrl);
+                string message1 = TransferMessageInternationalExpressTrackingNo(setting.WechatMessageTemplate1, orderCode, trackingNo, expressCompany, trackingUrl);
+                string message2 = TransferMessageInternationalExpressTrackingNo(setting.WechatMessageTemplate2, orderCode, trackingNo, expressCompany, trackingUrl);
+                string message3 = TransferMessageInternationalExpressTrackingNo(setting.WechatMessageTemplate3, orderCode, trackingNo, expressCompany, trackingUrl);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.InternationalExpressTrackingNoTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -4119,19 +4014,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order?.Code;
 
-                string message1 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate1, orderCode, trackingNo, trackingContent);
-                string message2 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate2, orderCode, trackingNo, trackingContent);
-                string message3 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate3, orderCode, trackingNo, trackingContent);
+                string message1 = TransferMessageInternationalExpressStateUpdate(setting.WechatMessageTemplate1, orderCode, trackingNo, trackingContent);
+                string message2 = TransferMessageInternationalExpressStateUpdate(setting.WechatMessageTemplate2, orderCode, trackingNo, trackingContent);
+                string message3 = TransferMessageInternationalExpressStateUpdate(setting.WechatMessageTemplate3, orderCode, trackingNo, trackingContent);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.InternationalExpressStateUpdateTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -4231,19 +4126,19 @@ namespace shunda.Service.Message;
 
                 string orderCode = order?.Code;
 
-                string message1 = TransferMessageOrderNotPay(setting.WeiXinMessageTemplate1, orderCode);
-                string message2 = TransferMessageOrderNotPay(setting.WeiXinMessageTemplate2, orderCode);
-                string message3 = TransferMessageOrderNotPay(setting.WeiXinMessageTemplate3, orderCode);
+                string message1 = TransferMessageOrderNotPay(setting.WechatMessageTemplate1, orderCode);
+                string message2 = TransferMessageOrderNotPay(setting.WechatMessageTemplate2, orderCode);
+                string message3 = TransferMessageOrderNotPay(setting.WechatMessageTemplate3, orderCode);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderNotPayTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -4332,19 +4227,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("消息发送指定的会员不能为空！");
                 }
 
-                string message1 = TransferMessageOrderNotCreate(setting.WeiXinMessageTemplate1);
-                string message2 = TransferMessageOrderNotCreate(setting.WeiXinMessageTemplate2);
-                string message3 = TransferMessageOrderNotCreate(setting.WeiXinMessageTemplate3);
+                string message1 = TransferMessageOrderNotCreate(setting.WechatMessageTemplate1);
+                string message2 = TransferMessageOrderNotCreate(setting.WechatMessageTemplate2);
+                string message3 = TransferMessageOrderNotCreate(setting.WechatMessageTemplate3);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.OrderNotCreateTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -4434,19 +4329,19 @@ namespace shunda.Service.Message;
                 string customerCode = customer.CustomerCode;
                 string serviceUserName = user?.UserName;
 
-                string message1 = TransferMessageCustomerChatRate(setting.WeiXinMessageTemplate1, customerCode, serviceUserName);
-                string message2 = TransferMessageCustomerChatRate(setting.WeiXinMessageTemplate2, customerCode, serviceUserName);
-                string message3 = TransferMessageCustomerChatRate(setting.WeiXinMessageTemplate3, customerCode, serviceUserName);
+                string message1 = TransferMessageCustomerChatRate(setting.WechatMessageTemplate1, customerCode, serviceUserName);
+                string message2 = TransferMessageCustomerChatRate(setting.WechatMessageTemplate2, customerCode, serviceUserName);
+                string message3 = TransferMessageCustomerChatRate(setting.WechatMessageTemplate3, customerCode, serviceUserName);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.CustomerChatRateMessage);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -4542,19 +4437,19 @@ namespace shunda.Service.Message;
                     throw new ValidationException("快递单号不能为空！");
                 }
 
-                string message1 = TransferMessageCnStorageOverdue(setting.WeiXinMessageTemplate1, trackingNo);
-                string message2 = TransferMessageCnStorageOverdue(setting.WeiXinMessageTemplate2, trackingNo);
-                string message3 = TransferMessageCnStorageOverdue(setting.WeiXinMessageTemplate3, trackingNo);
+                string message1 = TransferMessageCnStorageOverdue(setting.WechatMessageTemplate1, trackingNo);
+                string message2 = TransferMessageCnStorageOverdue(setting.WechatMessageTemplate2, trackingNo);
+                string message3 = TransferMessageCnStorageOverdue(setting.WechatMessageTemplate3, trackingNo);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.CnStorageOverdueTiXing);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {
@@ -4681,19 +4576,19 @@ namespace shunda.Service.Message;
                 throw new ValidationException("送货上门第一次推送 联系电话不能为空！");
             }
 
-            string message1 = TransferMessageHomeDeliverFirstTuiSong(setting.WeiXinMessageTemplate1, orderCode, orderCodeList.Count, planDateBegin, planDateEnd, phone);
-            string message2 = TransferMessageHomeDeliverFirstTuiSong(setting.WeiXinMessageTemplate2, orderCode, orderCodeList.Count, planDateBegin, planDateEnd, phone);
-            string message3 = TransferMessageHomeDeliverFirstTuiSong(setting.WeiXinMessageTemplate3, orderCode, orderCodeList.Count, planDateBegin, planDateEnd, phone);
+            string message1 = TransferMessageHomeDeliverFirstTuiSong(setting.WechatMessageTemplate1, orderCode, orderCodeList.Count, planDateBegin, planDateEnd, phone);
+            string message2 = TransferMessageHomeDeliverFirstTuiSong(setting.WechatMessageTemplate2, orderCode, orderCodeList.Count, planDateBegin, planDateEnd, phone);
+            string message3 = TransferMessageHomeDeliverFirstTuiSong(setting.WechatMessageTemplate3, orderCode, orderCodeList.Count, planDateBegin, planDateEnd, phone);
 
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
             bool clientShouldSend = true;
-            if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
             {
                 clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.HomeDeliverFirstTuiSong);
             }
 
-            if (setting.WeiXinSend)
+            if (setting.WechatSend)
             {
                 if (clientShouldSend)
                 {
@@ -4826,19 +4721,19 @@ namespace shunda.Service.Message;
                 throw new ValidationException("送货上门第二次推送 联系电话不能为空！");
             }
 
-            string message1 = TransferMessageHomeDeliverSecondTuiSong(setting.WeiXinMessageTemplate1, orderCode, orderCodeList.Count, deliverDate, deliverTimeBegin, deliverTimeEnd, phone);
-            string message2 = TransferMessageHomeDeliverSecondTuiSong(setting.WeiXinMessageTemplate2, orderCode, orderCodeList.Count, deliverDate, deliverTimeBegin, deliverTimeEnd, phone);
-            string message3 = TransferMessageHomeDeliverSecondTuiSong(setting.WeiXinMessageTemplate3, orderCode, orderCodeList.Count, deliverDate, deliverTimeBegin, deliverTimeEnd, phone);
+            string message1 = TransferMessageHomeDeliverSecondTuiSong(setting.WechatMessageTemplate1, orderCode, orderCodeList.Count, deliverDate, deliverTimeBegin, deliverTimeEnd, phone);
+            string message2 = TransferMessageHomeDeliverSecondTuiSong(setting.WechatMessageTemplate2, orderCode, orderCodeList.Count, deliverDate, deliverTimeBegin, deliverTimeEnd, phone);
+            string message3 = TransferMessageHomeDeliverSecondTuiSong(setting.WechatMessageTemplate3, orderCode, orderCodeList.Count, deliverDate, deliverTimeBegin, deliverTimeEnd, phone);
 
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
             bool clientShouldSend = true;
-            if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
             {
                 clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.HomeDeliverSecondTuiSong);
             }
 
-            if (setting.WeiXinSend)
+            if (setting.WechatSend)
             {
                 if (clientShouldSend)
                 {
@@ -4973,19 +4868,19 @@ namespace shunda.Service.Message;
                 throw new ValidationException("送货上门第三次推送 司机电话不能为空！");
             }
 
-            string message1 = TransferMessageHomeDeliverThirdTuiSong(setting.WeiXinMessageTemplate1, orderCode, orderCodeList.Count, deliverTimeBegin, deliverTimeEnd, driverName, driverPhone);
-            string message2 = TransferMessageHomeDeliverThirdTuiSong(setting.WeiXinMessageTemplate2, orderCode, orderCodeList.Count, deliverTimeBegin, deliverTimeEnd, driverName, driverPhone);
-            string message3 = TransferMessageHomeDeliverThirdTuiSong(setting.WeiXinMessageTemplate3, orderCode, orderCodeList.Count, deliverTimeBegin, deliverTimeEnd, driverName, driverPhone);
+            string message1 = TransferMessageHomeDeliverThirdTuiSong(setting.WechatMessageTemplate1, orderCode, orderCodeList.Count, deliverTimeBegin, deliverTimeEnd, driverName, driverPhone);
+            string message2 = TransferMessageHomeDeliverThirdTuiSong(setting.WechatMessageTemplate2, orderCode, orderCodeList.Count, deliverTimeBegin, deliverTimeEnd, driverName, driverPhone);
+            string message3 = TransferMessageHomeDeliverThirdTuiSong(setting.WechatMessageTemplate3, orderCode, orderCodeList.Count, deliverTimeBegin, deliverTimeEnd, driverName, driverPhone);
 
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
             bool clientShouldSend = true;
-            if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
             {
                 clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.HomeDeliverThirdTuiSong);
             }
 
-            if (setting.WeiXinSend)
+            if (setting.WechatSend)
             {
                 if (clientShouldSend)
                 {
@@ -5107,19 +5002,19 @@ namespace shunda.Service.Message;
                 throw new ValidationException("送货上门第四次推送 司机电话不能为空！");
             }
 
-            string message1 = TransferMessageHomeDeliverFourthTuiSong(setting.WeiXinMessageTemplate1, orderCode, orderCodeList.Count, driverName, driverPhone);
-            string message2 = TransferMessageHomeDeliverFourthTuiSong(setting.WeiXinMessageTemplate2, orderCode, orderCodeList.Count, driverName, driverPhone);
-            string message3 = TransferMessageHomeDeliverFourthTuiSong(setting.WeiXinMessageTemplate3, orderCode, orderCodeList.Count, driverName, driverPhone);
+            string message1 = TransferMessageHomeDeliverFourthTuiSong(setting.WechatMessageTemplate1, orderCode, orderCodeList.Count, driverName, driverPhone);
+            string message2 = TransferMessageHomeDeliverFourthTuiSong(setting.WechatMessageTemplate2, orderCode, orderCodeList.Count, driverName, driverPhone);
+            string message3 = TransferMessageHomeDeliverFourthTuiSong(setting.WechatMessageTemplate3, orderCode, orderCodeList.Count, driverName, driverPhone);
 
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
             bool clientShouldSend = true;
-            if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
             {
                 clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.HomeDeliverFourthTuiSong);
             }
 
-            if (setting.WeiXinSend)
+            if (setting.WechatSend)
             {
                 if (clientShouldSend)
                 {
@@ -5221,7 +5116,7 @@ namespace shunda.Service.Message;
                 }
 
                 smsSend = setting.SmsSend;
-                weiXinSend = setting.WeiXinSend;
+                weiXinSend = setting.WechatSend;
 
                 #region 帮我赚钱提醒
 
@@ -5236,19 +5131,19 @@ namespace shunda.Service.Message;
                      *
                      * 消息无参数
                      *
-                    setting.WeiXinMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！";
+                    setting.WechatMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！";
                     setting.SmsMessageTemplate = "嗨，老板，今天澳拼帮您赚钱了吗？将【帮我赚钱】里您的专属海报转发朋友圈就可以赚钱哦！";
                      *
                      */
 
-                    message = setting.WeiXinMessageTemplate1;
+                    message = setting.WechatMessageTemplate1;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
                         bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.HelpMeMakeMoney); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
-                            if (setting.WeiXinSend)
+                            if (setting.WechatSend)
                             {
                                 isSent = true;
                                 wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customer?.CustomerCode, message, processUser);
@@ -5278,12 +5173,12 @@ namespace shunda.Service.Message;
                      *
                      * 消息无参数
                      *
-                    setting.WeiXinMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦。该红包即可以在澳拼消费，也可以提现。进入公众号【费率|下单】里面的【在线下单】即可注册会员呢，别错过机会哦！";
+                    setting.WechatMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦。该红包即可以在澳拼消费，也可以提现。进入公众号【费率|下单】里面的【在线下单】即可注册会员呢，别错过机会哦！";
                     setting.SmsMessageTemplate = "亲，澳拼集运发红包了。现在注册会员，即送￥100红包哦！";
                      *
                      */
 
-                    message = setting.WeiXinMessageTemplate1;
+                    message = setting.WechatMessageTemplate1;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
@@ -5293,7 +5188,7 @@ namespace shunda.Service.Message;
                         if (clientShouldSend)
                         {
                         */
-                        if (setting.WeiXinSend)
+                        if (setting.WechatSend)
                         {
                             isSent = true;
                             wechatMessageService.SendOrderNoticeTemplateMessage(weiXinFollower, "", "会员注册提醒", "澳拼客户", message, processUser);
@@ -5325,19 +5220,19 @@ namespace shunda.Service.Message;
                      *
                      * 消息无参数
                      *
-                    setting.WeiXinMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
+                    setting.WechatMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
                     setting.SmsMessageTemplate = "嗨，老板，澳拼很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
                      *
                      */
 
-                    message = setting.WeiXinMessageTemplate1;
+                    message = setting.WechatMessageTemplate1;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
                         bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NoOrder); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
-                            if (setting.WeiXinSend)
+                            if (setting.WechatSend)
                             {
                                 isSent = true;
                                 wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customer?.CustomerCode, message, processUser);
@@ -5367,19 +5262,19 @@ namespace shunda.Service.Message;
                      *
                      * 消息无参数
                      *
-                    setting.WeiXinMessageTemplate = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
+                    setting.WechatMessageTemplate = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
                     setting.SmsMessageTemplate = "亲，发现您未关注澳拼公众号哦。关注公众号，登录系统免密码，且会收到更丰富的实时通知哦！澳拼公众号：iepoch-au";
                      *
                      */
 
-                    message = setting.WeiXinMessageTemplate1;
+                    message = setting.WechatMessageTemplate1;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
                         bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NoFollow); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
-                            if (setting.WeiXinSend)
+                            if (setting.WechatSend)
                             {
                                 isSent = true;
                                 wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公众号关注提醒", customer?.CustomerCode, message, processUser);
@@ -5409,19 +5304,19 @@ namespace shunda.Service.Message;
                      *
                      * 消息无参数
                      *
-                    setting.WeiXinMessageTemplate = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
+                    setting.WechatMessageTemplate = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
                     setting.SmsMessageTemplate = "亲，您取消关注澳拼公众号，客服好伤心啊。关注公众号，登录系统免密码，实时通知更详细哦！澳拼公众号：iepoch-au";
                      *
                      */
 
-                    message = setting.WeiXinMessageTemplate1;
+                    message = setting.WechatMessageTemplate1;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
                         bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.CancelFollow); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
-                            if (setting.WeiXinSend)
+                            if (setting.WechatSend)
                             {
                                 isSent = true;
                                 wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "已取消关注提醒", customer?.CustomerCode, message, processUser);
@@ -5451,19 +5346,19 @@ namespace shunda.Service.Message;
                      *
                      * 0: 订单编号
                      *
-                    setting.WeiXinMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。早打包，早收到宝贝呢！";
+                    setting.WechatMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。早打包，早收到宝贝呢！";
                     setting.SmsMessageTemplate = "亲，您的{0}订单目前已是全部入库状态，如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。";
                      *
                      */
 
-                    message = string.Format(setting.WeiXinMessageTemplate1, messageData[0]);
+                    message = string.Format(setting.WechatMessageTemplate1, messageData[0]);
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
                         bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.TimingSubmitPack); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
-                            if (setting.WeiXinSend)
+                            if (setting.WechatSend)
                             {
                                 isSent = true;
                                 wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", messageData[0].ToString(), customer?.CustomerCode, message, processUser);
@@ -5493,19 +5388,19 @@ namespace shunda.Service.Message;
                      *
                      * 消息无参数
                      *
-                    setting.WeiXinMessageTemplate = "亲，客服发现您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
+                    setting.WechatMessageTemplate = "亲，客服发现您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
                     setting.SmsMessageTemplate = "亲，您有【提交打包】前状态的订单，不知公共申领区有没有您的包裹。方便的话，去看一下吧，万一有呢！";
                      *
                      */
 
-                    message = setting.WeiXinMessageTemplate1;
+                    message = setting.WechatMessageTemplate1;
 
                     if (setting.Status == CustomerMessageSettingStatus.Enabled)
                     {
                         bool clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customerId, CustomerMessageType.NewClaim); // 实际周期发送的还不是可定制的
                         if (clientShouldSend)
                         {
-                            if (setting.WeiXinSend)
+                            if (setting.WechatSend)
                             {
                                 isSent = true;
                                 wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customer?.CustomerCode, message, processUser);
@@ -5541,7 +5436,7 @@ namespace shunda.Service.Message;
 
             customerMessage.Content = message;
             customerMessage.SmsSend = smsSend;
-            customerMessage.WeiXinSend = weiXinSend;
+            customerMessage.WechatSend = weiXinSend;
             customerMessage.PlanSendTime = DateTime.Now;
             customerMessage.SendTime = DateTime.Now;
 
@@ -5623,7 +5518,7 @@ namespace shunda.Service.Message;
 
             customerMessage.Content = message;
             customerMessage.SmsSend = setting.SmsSend;
-            customerMessage.WeiXinSend = setting.WeiXinSend;
+            customerMessage.WechatSend = setting.WechatSend;
             customerMessage.PlanSendTime = DateTime.Now;
             customerMessage.SendTime = DateTime.Now;
             customerMessage.Status = messageStatus;

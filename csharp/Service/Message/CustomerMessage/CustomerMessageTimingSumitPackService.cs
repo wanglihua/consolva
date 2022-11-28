@@ -59,7 +59,6 @@ public class CustomerMessageTimingSumitPackService
             session.Flush();
         }
 
-        setting.Placeholders = "";
         session.Update(setting);
         session.Flush();
     }

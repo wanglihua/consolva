@@ -57,7 +57,6 @@ public class CustomerMessageNoFollowService
             session.Flush();
         }
 
-        setting.Placeholders = "";
         session.Update(setting);
         session.Flush();
     }

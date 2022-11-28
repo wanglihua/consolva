@@ -66,7 +66,7 @@ public class CustomerMessageType : CodeTypeBase
     /// <summary>
     /// 实时提醒，预报货值提醒
     /// </summary>
-    public static readonly CustomerMessageType YuBaoHuoZhi = new CustomerMessageType(1210, "预报货值提醒", "预报货值提醒");
+    public static readonly CustomerMessageType ExpressExpectEnter = new CustomerMessageType(1210, "预报货值提醒", "预报货值提醒");
 
     /// <summary>
     /// 实时提醒，我的问题件提醒
@@ -207,7 +207,7 @@ public class CustomerMessageType : CodeTypeBase
             NewClaim,
             WoZhuanDaoDeQian,
             WoDeShenLingJian,
-            YuBaoHuoZhi,
+            ExpressExpectEnter,
             WoDeWeiTiJian,
             YiDaBao,
             OrderAirYiDaBao,

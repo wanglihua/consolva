@@ -56,12 +56,12 @@ public class CustomerMessageHelpMeMakeMoneyService
             setting.WechatMessageTemplate2 = string.Empty;
             setting.WechatMessageTemplate3 = string.Empty;
             setting.SmsMessageTemplate = "嗨，老板，今天舜达帮您赚钱了吗？将【帮我赚钱】里您的专属海报转发朋友圈就可以赚钱哦！";
+            setting.Placeholders = string.Empty;
 
             session.Save(setting);
             session.Flush();
         }
-
-        setting.Placeholders = "";
+        
         session.Update(setting);
         session.Flush();
     }

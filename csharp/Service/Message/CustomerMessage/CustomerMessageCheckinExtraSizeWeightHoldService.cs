@@ -52,19 +52,19 @@ namespace shunda.Service.CustomerMessage
 
 
 
-                string message1 = TransferMessage(setting.WeiXinMessageTemplate1, trackingNo);
-                string message2 = TransferMessage(setting.WeiXinMessageTemplate2, trackingNo);
-                string message3 = TransferMessage(setting.WeiXinMessageTemplate3, trackingNo);
+                string message1 = TransferMessage(setting.WechatMessageTemplate1, trackingNo);
+                string message2 = TransferMessage(setting.WechatMessageTemplate2, trackingNo);
+                string message3 = TransferMessage(setting.WechatMessageTemplate3, trackingNo);
 
                 bool isSent = false;
 
                 bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend))
+                if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
                 {
                     clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer?.Id ?? 0, messageType);
                 }
 
-                if (setting.WeiXinSend)
+                if (setting.WechatSend)
                 {
                     if (clientShouldSend)
                     {

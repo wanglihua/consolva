@@ -60,7 +60,6 @@ public class CustomerMessageNotRegisterService
             session.Flush();
         }
 
-        setting.Placeholders = "";
         session.Update(setting);
         session.Flush();
     }

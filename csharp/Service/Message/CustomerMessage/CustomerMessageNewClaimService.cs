@@ -57,7 +57,6 @@ public class CustomerMessageNewClaimService
             session.Flush();
         }
 
-        setting.Placeholders = "";
         session.Update(setting);
         session.Flush();
     }
