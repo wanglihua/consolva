@@ -1,0 +1,131 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Message.Models.CustomerMessageManualSend.CustomerMessageManualSendModel
+@{
+    ViewBag.Title = "手动推送客户消息";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="message-menu">消息推送</li>
+    <li class="active" data-menu="message-manual-send-index-menu">手动推送</li>
+}
+
+<div>
+    <form id="messageManualSendForm" class="form-horizontal" role="form">
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                <div id="sendResult" class="form-group" style="display: none;">
+                    <label asp-for="CustomerIds" class="col-xs-1 control-label">发送结果</label>
+                    <div class="col-xs-11">
+                        <div id="weiXinSuccessCustomers" style="padding: 5px; margin: 5px;"></div>
+                        <div id="weiXinFailCustomers" style="padding: 5px; margin: 5px;"></div>
+                        <div id="smsSuccessCustomers" style="padding: 5px; margin: 5px;" ></div>
+                        <div id="smsFailCustomers" style="padding: 5px; margin: 5px;"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CustomerIds" class="col-xs-1 control-label">客户ID</label>
+                    <div class="col-xs-11">
+                        <textarea id="customerIds" asp-for="CustomerIds" style="width: 500px;" rows="10"></textarea>
+                        <div class="help-block">输入纯数字形式的客户Id，一行一个，或者用空格或英文逗号（,）隔开</div>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="RemarkMessage" class="col-xs-1 control-label">通知内容</label>
+                    <div class="col-xs-11">
+                        <textarea id="remarkMessage" asp-for="RemarkMessage" style="width: 500px;" rows="6"></textarea>
+                        <div class="help-block">注：微信推送限120个汉字 或 240个英文字母 ；短信推送限50个汉字 或 100个英文字母</div>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-1 control-label">发送方式</label>
+                    <div class="col-xs-11">
+                        <div style="display: inline-block;width: 20px;"></div>
+                        <label for="sendMethodWeiXin">
+                            <input id="sendMethodWeiXin" asp-for="SendByWechat" type="checkbox" style="width: 15px; height: 15px;"/>&nbsp;<span>微信发送</span>
+                        </label>
+                        <div style="display: inline-block; width: 50px;"></div>
+                        <label for="sendMethodSms">
+                            <input id="sendMethodSms" asp-for="SendBySms" type="checkbox" style="width: 15px; height: 15px;"/>&nbsp;<span>短信发送</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xs-offset-1 col-xs-12">
+                <button type="button" class="btn btn-primary" onclick="sendMessage();">手动推送</button>
+
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+    function sendMessage() {
+        var form = $("#messageManualSendForm");
+        var valid = validate(form,
+            {
+                'CustomerIds': {
+                    required: true,
+                    maxlength: 10000
+                },
+                'RemarkMessage': {
+                    required: true,
+                    maxlength: 240
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+
+            $("#sendResult").hide();
+            $("#weiXinSuccessCustomers").hide();
+            $("#weiXinFailCustomers").hide();
+            $("#smsSuccessCustomers").hide();
+            $("#smsFailCustomers").hide();
+
+            $.ajax({
+                url: '@Url.Action("Send", "CustomerMessageManualSend")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+
+                        $("#sendResult").show();
+
+                        if(data.sendByWeiXin) {
+                            $("#weiXinSuccessCustomers").show();
+                            $("#weiXinFailCustomers").show();
+
+                            $("#weiXinSuccessCustomers").html("微信发送成功：<span style='color:green;'>" + data.weiXinSuccessCustomers + "</span>");
+                            $("#weiXinFailCustomers").html("微信发送失败：<span style='color:red;'>" + data.weiXinFailCustomers) + "</span>";
+                        }
+
+                        if(data.sendBySms) {
+                            $("#smsSuccessCustomers").show();
+                            $("#smsFailCustomers").show();
+
+                            $("#smsSuccessCustomers").html("短信发送成功：<span style='color:green;'>" + data.smsSuccessCustomers + "</span>");
+                            $("#smsFailCustomers").html("短信发送失败：<span style='color: red;'>" + data.smsFailCustomers + "</span>");
+                        }
+
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+</script>

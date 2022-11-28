@@ -17,8 +17,8 @@ namespace shunda.Admin.Areas.Message.Controllers;
 [AdminAuth(PassRes.CustomerMessage.CycleTiming)]
 public class CustomerMessageCycleTimingSendSettingController : Controller
 {
-    private ISession session;
-    private CustomerMessageCycleTimingSendSettingService customerMessageCycleTimingSendSettingService;
+    private readonly ISession session;
+    private readonly CustomerMessageCycleTimingSendSettingService customerMessageCycleTimingSendSettingService;
 
     public CustomerMessageCycleTimingSendSettingController(
         ISession session,

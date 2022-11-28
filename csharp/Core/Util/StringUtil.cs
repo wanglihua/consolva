@@ -31,4 +31,47 @@ public static class StringUtil
 
         return str;
     }
+
+    private static readonly int chineseCharCodeBegin = Convert.ToInt32("4e00", 16);
+    private static readonly int chineseCharCodeEnd = Convert.ToInt32("9fff", 16);
+
+    /// <summary>
+    /// 获取字符串长度，一个汉字算 2 个长度，一个出字母和数字算 1 个长度
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static int GetStringLengthInByte(string str)
+    {
+        if (str == null)
+        {
+            return 0;
+        }
+
+        int length = 0;
+        for (int i = 0; i < str.Length; i++)
+        {
+            char c = str[i];
+
+            if (Char.IsDigit(c))
+            {
+                length += 1;
+            }
+            else if (Char.IsWhiteSpace(c))
+            {
+                length += 1;
+            }
+            else if (Char.ConvertToUtf32(str, i) >= chineseCharCodeBegin && Char.ConvertToUtf32(str, i) <= chineseCharCodeEnd)
+            {
+                length += 2;
+            }
+            else
+            {
+                length += 1;
+            }
+
+            // 中文字也会被判定为 Char.IsLetter 
+        }
+
+        return length;
+    }    
 }

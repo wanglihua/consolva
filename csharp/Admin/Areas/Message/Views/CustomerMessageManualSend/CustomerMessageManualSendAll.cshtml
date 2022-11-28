@@ -1,0 +1,82 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Message.Models.CustomerMessageManualSend.CustomerMessageManualSendAllModel
+@{
+    ViewBag.Title = "全员推送客户消息";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="message-menu">消息推送</li>
+    <li class="active" data-menu="message-manual-send-all-menu">全员推送</li>
+}
+
+<div>
+    <form id="messageManualSendForm" class="form-horizontal" role="form">
+
+        <div class="row">
+            <div class="col-xs-12">
+
+                <div class="form-group">
+                    <label asp-for="RemarkMessage" class="col-xs-1 control-label">通知内容</label>
+                    <div class="col-xs-11">
+                        <textarea id="remarkMessage" asp-for="RemarkMessage" style="width: 500px;" rows="6"></textarea>
+                        <div class="help-block">注：微信推送限140个汉字 或 200个英文字母 ；短信推送限50个汉字 或 100个英文字母</div>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-1 control-label">发送方式</label>
+                    <div class="col-xs-11">
+                        <div style="display: inline-block;width: 20px;"></div>
+                        <label for="sendMethodWeiXin">
+                            <input id="sendMethodWeiXin" asp-for="SendByWechat" type="checkbox" style="width: 15px; height: 15px;"/>&nbsp;<span>微信发送</span>
+                        </label>
+                        <div style="display: inline-block; width: 50px;"></div>
+                        <label for="sendMethodSms">
+                            <input id="sendMethodSms" asp-for="SendBySms" type="checkbox" style="width: 15px; height: 15px;"/>&nbsp;<span>短信发送</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xs-offset-1 col-xs-12">
+                <button type="button" class="btn btn-primary" onclick="sendMessage();">全员推送</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+    function sendMessage() {
+        var form = $("#messageManualSendForm");
+        var valid = validate(form,
+            {
+                'customerIds': {
+                    required: true,
+                    maxlength: 1000
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("SendAll", "CustomerMessageManualSend")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+
+</script>

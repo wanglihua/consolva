@@ -17,8 +17,8 @@ namespace shunda.Admin.Areas.Message.Controllers;
 [AdminAuth(PassRes.CustomerMessage.RealTime)]
 public class CustomerMessageRealTimeSendSettingController : Controller
 {
-    private ISession session;
-    private CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService;
+    private readonly ISession session;
+    private readonly CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService;
 
     public CustomerMessageRealTimeSendSettingController(
         ISession session,
