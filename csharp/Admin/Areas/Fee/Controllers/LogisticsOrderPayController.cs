@@ -102,9 +102,9 @@ public class LogisticsOrderPayController : Controller
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId));
         }
 
-        if (queryParam.OrderId != 0)
+        if (queryParam.OrderId != null)
         {
-            var orderId = queryParam.OrderId;
+            var orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Order.Id == orderId));
         }
 

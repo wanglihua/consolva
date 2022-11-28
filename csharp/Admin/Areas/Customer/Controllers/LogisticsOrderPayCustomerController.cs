@@ -49,7 +49,6 @@ public class LogisticsOrderPayCustomerController : Controller
     [Route("/admin/logistics/order/pay/customer/list")]
     public IActionResult List(LogisticsOrderPayCustomerListQueryParam queryParam)
     {
-        queryParam.OrderId = 0;
         if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
         {
             var orderCodeQuery = queryParam.OrderCodeQuery.Trim();
@@ -103,9 +102,9 @@ public class LogisticsOrderPayCustomerController : Controller
         var customerId = queryParam.CustomerId;
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId));
 
-        if (queryParam.OrderId != 0)
+        if (queryParam.OrderId != null)
         {
-            int orderId = queryParam.OrderId;
+            int orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Order.Id == orderId));
         }
 

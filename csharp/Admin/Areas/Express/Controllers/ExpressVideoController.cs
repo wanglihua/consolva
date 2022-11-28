@@ -139,9 +139,9 @@ public class ExpressVideoController : Controller
             criteria = criteria.Add(Restrictions.Where<ExpressVideoInfo>(e => e.Customer!.Id == customerIdQuery));
         }
 
-        if (queryParam.OrderId != 0)
+        if (queryParam.OrderId != null)
         {
-            int orderId = queryParam.OrderId;
+            int orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressVideoInfo.Order)}.{nameof(ExpressVideoInfo.Order.Id)}", orderId));
         }
 

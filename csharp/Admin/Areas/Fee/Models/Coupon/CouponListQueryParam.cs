@@ -14,9 +14,9 @@ public class CouponListQueryParam : ListQueryParam
     public string? CustomerCodeQuery { get; set; }
 
     public string? OrderCodeQuery { get; set; }
-    
+
     [BindNever]
-    public int OrderId { get; set; }
+    public int? OrderId { get; set; } = null;
 
     [ModelBinder(typeof(CouponStatusModelBinder))]
     public CouponStatus? StatusQuery { get; set; }

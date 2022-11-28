@@ -40,6 +40,16 @@ public class CustomerMessageController : Controller
     [Route("/admin/customer/message/list")]
     public IActionResult List(CustomerMessageListQueryParam queryParam)
     {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        {
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            queryParam.OrderId = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Select(e => e.Id)
+                .Take(1)
+                .FirstOrDefault();
+        }
+
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -105,18 +115,10 @@ public class CustomerMessageController : Controller
             criteria = criteria.Add(Restrictions.Where<CustomerMessageInfo>(e => e.WechatSend == sendByWechatQueryValue));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
+        if (queryParam.OrderId != null)
         {
-            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
-            var order = session.Query<LogisticsOrderInfo>()
-                .Where(e => e.Code == orderCodeQuery)
-                .Take(1)
-                .FirstOrDefault();
-            if (order != null)
-            {
-                int orderId = order.Id;
-                criteria = criteria.Add(Restrictions.Eq($"{nameof(CustomerMessageInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}", orderId));
-            }
+            int orderId = queryParam.OrderId.Value;
+            criteria = criteria.Add(Restrictions.Eq($"{nameof(CustomerMessageInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}", orderId));
         }
 
         return criteria;

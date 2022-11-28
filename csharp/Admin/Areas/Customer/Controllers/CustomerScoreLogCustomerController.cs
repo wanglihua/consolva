@@ -100,9 +100,9 @@ public class CustomerScoreLogCustomerController : Controller
             criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.ScoreType == queryParam.ScoreTypeQuery));
         }
 
-        if (queryParam.OrderId != 0)
+        if (queryParam.OrderId != null)
         {
-            int orderId = queryParam.OrderId;
+            int orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.LogisticsOrder!.Id == orderId));
         }
 

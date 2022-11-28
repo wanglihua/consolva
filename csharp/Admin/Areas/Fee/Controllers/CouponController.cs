@@ -137,9 +137,9 @@ public class CouponController : Controller
             criteria = criteria.Add(Restrictions.Eq($"{nameof(CouponInfo.Customer)}.{nameof(CustomerInfo.Id)}", customerIdQuery));
         }
 
-        if (queryParam.OrderId != 0)
+        if (queryParam.OrderId != null)
         {
-            int orderId = queryParam.OrderId;
+            int orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Eq($"{nameof(CouponInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}", orderId));
         }
 

@@ -6,7 +6,7 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Domain.Message;
 
-public class CustomerMessageInfoMapping : EntityMapping<CustomerMessageInfo>
+public class CustomerMessageInfoMapping : EntityNoUpdateMapping<CustomerMessageInfo>
 {
     public CustomerMessageInfoMapping()
     {

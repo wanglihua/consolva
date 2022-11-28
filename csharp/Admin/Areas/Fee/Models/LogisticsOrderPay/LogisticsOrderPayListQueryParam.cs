@@ -19,5 +19,5 @@ public class LogisticsOrderPayListQueryParam : ListQueryParam
     /// 用来存放 从 OrderCodeQuery 获得的 order id
     /// </summary>
     [BindNever]
-    public int OrderId { get; set; }
+    public int? OrderId { get; set; } = null;
 }

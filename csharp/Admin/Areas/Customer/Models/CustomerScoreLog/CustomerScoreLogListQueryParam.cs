@@ -13,7 +13,7 @@ public class CustomerScoreLogListQueryParam : ListQueryParam
     public CustomerScoreType? ScoreTypeQuery { get; set; }
 
     public string? OrderCodeQuery { get; set; }
-    
+
     [BindNever]
-    public int OrderId { get; set; }
+    public int? OrderId { get; set; } = null;
 }

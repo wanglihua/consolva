@@ -10,7 +10,7 @@ namespace shunda.Domain.Message;
 /// <summary>
 /// 客户消息
 /// </summary>
-public class CustomerMessageInfo : Entity
+public class CustomerMessageInfo : EntityNoUpdate
 {
     /// <summary>
     /// 消息发送类型，非空

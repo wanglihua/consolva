@@ -13,9 +13,9 @@ public class ExpressVideoListQueryParam : ListQueryParam
     public string? CustomerCodeQuery { get; set; }
 
     public string? OrderCodeQuery { get; set; }
-    
+
     [BindNever]
-    public int OrderId { get; set; }
+    public int? OrderId { get; set; } = null;
 
     public string? TrackingNoQuery { get; set; }
 
@@ -24,7 +24,7 @@ public class ExpressVideoListQueryParam : ListQueryParam
     public DateTime? EndDateQuery { get; set; }
 
     public string? UserNameQuery { get; set; }
-    
+
     [BindNever]
     public int UserId { get; set; }
 }

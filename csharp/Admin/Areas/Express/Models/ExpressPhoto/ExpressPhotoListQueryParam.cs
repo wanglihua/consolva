@@ -15,7 +15,7 @@ public class ExpressPhotoListQueryParam : ListQueryParam
     public string? OrderCodeQuery { get; set; }
 
     [BindNever]
-    public int OrderId { get; set; }
+    public int? OrderId { get; set; } = null;
 
     public string? TrackingNoQuery { get; set; }
 
@@ -24,7 +24,7 @@ public class ExpressPhotoListQueryParam : ListQueryParam
     public DateTime? EndDateQuery { get; set; }
 
     public string? UserNameQuery { get; set; }
-    
+
     [BindNever]
     public int UserId { get; set; }
 }

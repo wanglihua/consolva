@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Message;
 
@@ -21,4 +22,7 @@ public class CustomerMessageListQueryParam : ListQueryParam
     public bool? SendBySmsQuery { get; set; }
 
     public string? OrderCodeQuery { get; set; }
+
+    [BindNever]
+    public int? OrderId { get; set; } = null;
 }
