@@ -1,0 +1,134 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.Message.Models.CustomerMessage
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessage.CustomerMessageIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "客户消息列表";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="message-menu">消息推送</li>
+    <li class="active" data-menu="message-customer-message-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerMessageList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="messageTypeQuery">消息类型</label>&nbsp;
+    <select id="messageTypeQuery" name="messageTypeQuery" style="width: 150px; height: 30px;">
+        <option value="0">消息类型查询</option>
+        @foreach (CustomerMessageType messageType in Model.MessageTypeList)
+        {
+            <option value="@(messageType.Id)">@(messageType.Name)</option>
+        }
+    </select>&nbsp;
+
+    <label for="sendTypeQuery">发送类型</label>&nbsp;
+    <select id="sendTypeQuery" name="sendTypeQuery" style="width: 100px; height: 30px;">
+        <option value="0">发送类型查询</option>
+        @foreach (CustomerMessageSendType sendType in Model.SendTypeList)
+        {
+            <option value="@(sendType.Id)">@(sendType.Name)</option>
+        }
+    </select>&nbsp;
+
+    <label for="customerCodeQuery">客户ID</label>&nbsp;
+    <input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+
+    <label for="orderCodeQuery">订单编号</label>&nbsp;
+    <input id="orderCodeQuery" name="orderCodeQuery" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+
+    <label for="contentQuery">消息内容</label>&nbsp;
+    <input id="contentQuery" name="contentQuery" style="width: 100px; height: 30px;" placeholder="消息内容查询"/>&nbsp;
+
+    <label for="sendByWeiXinQuery">微信发送</label>&nbsp;
+    <select id="sendByWeiXinQuery" name="sendByWeiXinQuery" style="width: 110px; height: 30px;">
+        <option value="">是否微信发送</option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select>&nbsp;
+
+    <label for="sendBySmsQuery">短信发送</label>&nbsp;
+    <select id="sendBySmsQuery" name="sendBySmsQuery" style="width: 110px; height: 30px;">
+        <option value="">是否短信发送</option>
+        <option value="@(true.ToString())">是</option>
+        <option value="@(false.ToString())">否</option>
+    </select>&nbsp;
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerMessageList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerMessageList" data-page-index="0" data-sort-field="@(nameof(CustomerMessageInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerMessageDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerMessageList();
+    });
+
+    function sortCustomerMessageList(sortField, sortDir) {
+        var list = $('#customerMessageList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerMessageList();
+    }
+
+    function loadCustomerMessageList(pageIndex) {
+        var list = $('#customerMessageList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerMessage")",
+            type: "POST",
+            data: {
+                '@(nameof(CustomerMessageListQueryParam.MessageTypeQuery))': $('#messageTypeQuery').val(),
+                '@(nameof(CustomerMessageListQueryParam.SendTypeQuery))': $('#sendTypeQuery').val(),
+                '@(nameof(CustomerMessageListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                '@(nameof(CustomerMessageListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(CustomerMessageListQueryParam.ContentQuery))': $('#contentQuery').val(),
+                '@(nameof(CustomerMessageListQueryParam.SendByWechatQuery))': $('#sendByWeiXinQuery').val(),
+                '@(nameof(CustomerMessageListQueryParam.SendBySmsQuery))': $('#sendBySmsQuery').val(),
+                '@(nameof(CustomerMessageListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerMessageListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerMessageListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerMessageList').html(data);
+
+                initListTable("#tblCustomerMessageList");
+            }
+        });
+    }
+
+</script>

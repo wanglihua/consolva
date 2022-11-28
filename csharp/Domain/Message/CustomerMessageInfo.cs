@@ -84,4 +84,10 @@ public class CustomerMessageInfo : Entity
     [Required(ErrorMessage = "发送时间不能为空！")]
     [JsonProperty("sender")]
     public virtual string Sender { get; set; } = string.Empty;
+    
+    #region Cache
+
+    public virtual string CustomerCodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

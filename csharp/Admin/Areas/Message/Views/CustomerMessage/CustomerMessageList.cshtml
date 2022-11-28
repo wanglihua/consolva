@@ -1,0 +1,106 @@
+@{
+    Layout = null;
+}
+
+@using shunda.Core.Web
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessage.CustomerMessageListModel
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageList"})
+
+<table id="tblCustomerMessageList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="customerMessageCheckAll"></label><input id="customerMessageCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageInfo.SendType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">发送方式</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerMessageInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">消息类型</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">客户</a>
+                </div>
+            </th>
+            <th style="width: 250px; text-align: center;">
+                <a field="@(nameof(CustomerMessageInfo.Content))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">消息内容</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <a field="@(nameof(CustomerMessageInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">发送状态</a>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageInfo.SmsSend))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">SMS发送</a>
+                </div>
+                <div>
+                    <a field="@(nameof(CustomerMessageInfo.WechatSend))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">微信发送</a>
+                </div>
+            </th>
+            <th style="width: 140px; text-align: center;">
+                <div>
+                    <a field="@(nameof(CustomerMessageInfo.SendTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageList">实际发送时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerMessageList != null && Model.CustomerMessageList.Count() != 0)
+        {
+            int order = 1;
+            foreach (CustomerMessageInfo customerMessage in Model.CustomerMessageList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="customerMessageCheck_@(customerMessage.Id)"></label><input id="customerMessageCheck_@(customerMessage.Id)" type="checkbox" class="ace" value="@customerMessage.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <div>
+                            @customerMessage.SendType.Name
+
+                        </div>
+                        <div>
+                            @customerMessage.Type.Name
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @customerMessage.Customer?.CustomerCode
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        @customerMessage.Content
+                    </td>
+                    <td style=" text-align: center;">
+                        @customerMessage.Status.Name
+                    </td>
+                    <td style=" text-align: center;">
+                        @ListDataUtil.RenderBoolWithDiv(customerMessage.SmsSend)
+                        @ListDataUtil.RenderBoolWithDiv(customerMessage.WechatSend)
+                    </td>
+                    <td style="text-align: center;">
+                        @ListDataUtil.RenderDateTimeWithDiv(customerMessage.SendTime)
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadCustomerMessageList"})
