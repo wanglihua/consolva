@@ -83,14 +83,30 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
     {
         session.DefaultReadOnly = true;
 
-        CustomerMessageCycleTimingSendSettingInfo customerMessageCycleTimingSendSetting = session.Get<CustomerMessageCycleTimingSendSettingInfo>(id);
-        if (customerMessageCycleTimingSendSetting == null)
+        CustomerMessageCycleTimingSendSettingInfo setting = session.Get<CustomerMessageCycleTimingSendSettingInfo>(id);
+        if (setting == null)
         {
             throw new ValidationException("指定的数据项不存在！");
         }
 
         CustomerMessageCycleTimingSendSettingDetailModel model = new CustomerMessageCycleTimingSendSettingDetailModel();
-        model.CustomerMessageCycleTimingSendSetting = customerMessageCycleTimingSendSetting;
+        model.SettingId = setting.Id;
+        model.Type = setting.Type;
+        model.WechatMessageTemplate1 = setting.WechatMessageTemplate1;
+        model.WechatMessageTemplate2 = setting.WechatMessageTemplate2;
+        model.WechatMessageTemplate3 = setting.WechatMessageTemplate3;
+        model.SmsMessageTemplate = setting.SmsMessageTemplate;
+        model.Status = setting.Status;
+        model.SmsSend = setting.SmsSend;
+        model.WechatSend = setting.WechatSend;
+        model.IntervalType = setting.IntervalType;
+        model.IntervalWeeks = setting.IntervalWeeks;
+        model.IntervalDays = setting.IntervalDays;
+        model.SendWeekday = setting.SendWeekday;
+        model.SendHour = setting.SendHour;
+        model.ClientCustomizable = setting.ClientCustomizable;
+        model.ClientTitle = setting.ClientTitle;
+        model.ClientDesc = setting.ClientDesc;
 
         model.MessageTypeList = CustomerMessageType.GetList();
         model.StatusList = CustomerMessageSettingStatus.GetList();
@@ -145,30 +161,34 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
-        CustomerMessageCycleTimingSendSettingInfo customerMessageCycleTimingSendSettingFromUi = model.CustomerMessageCycleTimingSendSetting;
-        int customerMessageCycleTimingSendSettingId = customerMessageCycleTimingSendSettingFromUi.Id;
+        int settingId = model.SettingId;
 
-        CustomerMessageCycleTimingSendSettingInfo customerMessageCycleTimingSendSetting = session.Get<CustomerMessageCycleTimingSendSettingInfo>(customerMessageCycleTimingSendSettingId);
+        CustomerMessageCycleTimingSendSettingInfo setting = session.Get<CustomerMessageCycleTimingSendSettingInfo>(settingId);
 
-        if (customerMessageCycleTimingSendSetting == null)
+        if (setting == null)
         {
             throw new ValidationException("配置信息不存在！");
         }
 
-        customerMessageCycleTimingSendSetting.WechatMessageTemplate1 = customerMessageCycleTimingSendSettingFromUi.WechatMessageTemplate1;
-        customerMessageCycleTimingSendSetting.WechatMessageTemplate2 = customerMessageCycleTimingSendSettingFromUi.WechatMessageTemplate2;
-        customerMessageCycleTimingSendSetting.WechatMessageTemplate3 = customerMessageCycleTimingSendSettingFromUi.WechatMessageTemplate3;
-        customerMessageCycleTimingSendSetting.SmsMessageTemplate = customerMessageCycleTimingSendSettingFromUi.SmsMessageTemplate;
-        customerMessageCycleTimingSendSetting.Status = customerMessageCycleTimingSendSettingFromUi.Status;
-        customerMessageCycleTimingSendSetting.SmsSend = customerMessageCycleTimingSendSettingFromUi.SmsSend;
-        customerMessageCycleTimingSendSetting.WechatSend = customerMessageCycleTimingSendSettingFromUi.WechatSend;
-        customerMessageCycleTimingSendSetting.IntervalType = customerMessageCycleTimingSendSettingFromUi.IntervalType;
-        customerMessageCycleTimingSendSetting.IntervalWeeks = customerMessageCycleTimingSendSettingFromUi.IntervalWeeks;
-        customerMessageCycleTimingSendSetting.IntervalDays = customerMessageCycleTimingSendSettingFromUi.IntervalDays;
-        customerMessageCycleTimingSendSetting.SendWeekday = customerMessageCycleTimingSendSettingFromUi.SendWeekday;
-        customerMessageCycleTimingSendSetting.SendHour = customerMessageCycleTimingSendSettingFromUi.SendHour;
+        // 这里不保存 type
+        
+        setting.WechatMessageTemplate1 = model.WechatMessageTemplate1;
+        setting.WechatMessageTemplate2 = model.WechatMessageTemplate2 ?? string.Empty;
+        setting.WechatMessageTemplate3 = model.WechatMessageTemplate3 ?? string.Empty;
+        setting.SmsMessageTemplate = model.SmsMessageTemplate;
+        setting.Status = model.Status;
+        setting.SmsSend = model.SmsSend;
+        setting.WechatSend = model.WechatSend;
+        setting.IntervalType = model.IntervalType;
+        setting.IntervalWeeks = model.IntervalWeeks;
+        setting.IntervalDays = model.IntervalDays;
+        setting.SendWeekday = model.SendWeekday;
+        setting.SendHour = model.SendHour;
+        setting.ClientCustomizable = model.ClientCustomizable;
+        setting.ClientTitle = model.ClientTitle;
+        setting.ClientDesc = model.ClientDesc;
 
-        session.Update(customerMessageCycleTimingSendSetting);
+        session.Update(setting);
 
         session.Flush();
 

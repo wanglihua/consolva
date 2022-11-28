@@ -7,7 +7,7 @@ namespace shunda.Admin.Areas.Message.Models.CustomerMessageCycleTimingSendSettin
 
 public class CustomerMessageCycleTimingSendSettingSaveModel
 {
-    private int SettingId { get; set; }
+    public int SettingId { get; set; }
 
     /// <summary>
     /// 消息类型
