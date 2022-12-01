@@ -24,6 +24,10 @@
 /csharp/Client/obj/
 /csharp/Client/logs/
 
+/csharp/Terminal/bin/
+/csharp/Terminal/obj/
+/csharp/Terminal/logs/
+
 /csharp/Test/bin/
 /csharp/Test/obj/
 
