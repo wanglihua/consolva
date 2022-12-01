@@ -1,8 +1,0 @@
-
-
-查找
-find . -name '.DS_Store'
-
-查找并删除
-find . -name '.DS_Store' -type f -delete
-

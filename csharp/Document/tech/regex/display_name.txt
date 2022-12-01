@@ -1,7 +1,0 @@
-
-^ *\[DisplayName.*\]\n
-
-匹配所有 [DisplayName("display_name")]
-用空替换时可以替换整行
-
-. 匹配除换行符（\n、\r）之外的任何单个字符

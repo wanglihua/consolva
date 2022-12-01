@@ -2,47 +2,47 @@
 .vs
 .vscode
 *.DotSettings.user
-/csharp/shunda.sublime-workspace
+/shunda.sublime-workspace
 
-/csharp/Admin/bin/
-/csharp/Admin/obj/
-/csharp/Admin/logs/
-/csharp/Admin/wwwroot/static/msyh/
-/csharp/Admin/wwwroot/static/profile/
-/csharp/Admin/wwwroot/static/upload/
+/Admin/bin/
+/Admin/obj/
+/Admin/logs/
+/Admin/wwwroot/static/msyh/
+/Admin/wwwroot/static/profile/
+/Admin/wwwroot/static/upload/
 
-/csharp/Core/bin/
-/csharp/Core/obj/
+/Core/bin/
+/Core/obj/
 
-/csharp/Domain/bin/
-/csharp/Domain/obj/
+/Domain/bin/
+/Domain/obj/
 
-/csharp/Service/bin/
-/csharp/Service/obj/
+/Service/bin/
+/Service/obj/
 
-/csharp/Client/bin/
-/csharp/Client/obj/
-/csharp/Client/logs/
+/Client/bin/
+/Client/obj/
+/Client/logs/
 
-/csharp/Terminal/bin/
-/csharp/Terminal/obj/
-/csharp/Terminal/logs/
+/Terminal/bin/
+/Terminal/obj/
+/Terminal/logs/
 
-/csharp/Test/bin/
-/csharp/Test/obj/
+/Test/bin/
+/Test/obj/
 
-/csharp/Document/bin/
-/csharp/Document/obj/
+/Document/bin/
+/Document/obj/
 
-/csharp/Job/bin/
-/csharp/Job/obj/
-/csharp/Job/Logs/
+/Job/bin/
+/Job/obj/
+/Job/Logs/
 
-/csharp/Benchmark/bin/
-/csharp/Benchmark/obj/
-/csharp/Benchmark/Logs/
-/csharp/Benchmark/BenchmarkDotNet.Artifacts
+/Benchmark/bin/
+/Benchmark/obj/
+/Benchmark/Logs/
+/Benchmark/BenchmarkDotNet.Artifacts
 
-/csharp/.idea/
+/.idea/
 
-/csharp/Document/temp.txt
+/Document/temp.txt
