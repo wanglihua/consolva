@@ -12,8 +12,11 @@ public class HelloJob : JobBase
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public HelloJob(ISessionFactory sessionFactory) : base(sessionFactory)
+    private readonly IHttpClientFactory httpClientFactory;
+
+    public HelloJob(ISessionFactory sessionFactory, IHttpClientFactory httpClientFactory) : base(sessionFactory)
     {
+        this.httpClientFactory = httpClientFactory;
     }
 
     public static void Schedule(IScheduler scheduler)
@@ -32,6 +35,8 @@ public class HelloJob : JobBase
 
     public override void Execute()
     {
+        HttpClient httpClient = httpClientFactory.CreateClient();
+        
         IList<GroupInfo> groupList = session.Query<GroupInfo>().ToList();
 
         log.Trace("group count " + groupList.Count);

@@ -86,6 +86,8 @@ public class Program
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
+        services.AddHttpClient();
+
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
