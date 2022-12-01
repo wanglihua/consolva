@@ -134,12 +134,18 @@ public class WebUtil
         return request.Headers[HeaderNames.UserAgent][0];
     }
 
+    /*
+     
+  Request.Headers["User-Agent"]
+  {Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1 wechatdevtools/1.06.2210310 MicroMessenger/8.0.5 Language/zh_CN webview/}
+     */
+
     /// <summary>
     /// 是不是微信访问
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static bool IsWeiXinRequest(HttpRequest request)
+    public static bool IsWechatRequest(HttpRequest request)
     {
         if (request == null)
         {
@@ -191,7 +197,7 @@ public class WebUtil
     /// <returns></returns>
     public static bool ShouldShowJson(HttpRequest request)
     {
-        if (IsAjaxRequest(request) || IsFileUpload(request) || IsHeaderSessionIdRequest(request))
+        if (IsWechatRequest(request) || IsAjaxRequest(request) || IsFileUpload(request) || IsHeaderSessionIdRequest(request))
         {
             return true;
         }

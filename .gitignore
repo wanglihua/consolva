@@ -22,6 +22,7 @@
 
 /csharp/Client/bin/
 /csharp/Client/obj/
+/csharp/Client/logs/
 
 /csharp/Test/bin/
 /csharp/Test/obj/

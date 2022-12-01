@@ -168,7 +168,7 @@ public class LoginCustomerService
 
         {
             // 是否是微信环境访问，如果是将当前 open id 保存到用户信息里面去
-            if (WebUtil.IsWeiXinRequest(request))
+            if (WebUtil.IsWechatRequest(request))
             {
                 // 这是一个事务
                 wechatSessionService.BindOpenIdToCustomerAndValidatePromotionNewThread(customerId);
