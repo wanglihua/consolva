@@ -55,27 +55,27 @@ public class WechatAppAccessTokenService
         var task = httpClient.GetStringAsync(string.Join("", urlPartList));
         task.Wait();
 
-        AccessTokenResult? accessTokenResult = JsonConvert.DeserializeObject<AccessTokenResult>(task.Result);
+        var result = JsonConvert.DeserializeObject<AccessTokenResult>(task.Result);
 
-        if (accessTokenResult == null)
+        if (result == null)
         {
-            throw new Exception("微信小程序获取 access token 出错，未能获取返回结果！");
+            throw new Exception("微信小程序 Get Access Token 出错，未能获取返回结果！");
         }
 
-        if (accessTokenResult.ErrorCode != 0)
+        if (result.ErrorCode != 0)
         {
-            throw new Exception($"微信小程序获取 access token 出错, 错误代码:{accessTokenResult.ErrorCode}, 错误消息:{accessTokenResult.ErrorMessage}");
+            throw new Exception($"微信小程序 Get Access Token 出错, 错误代码:{result.ErrorCode}, 错误消息:{result.ErrorMessage}");
         }
 
-        log.Trace($"access token: {accessTokenResult.AccessToken}");
-        log.Trace($"token expire: {accessTokenResult.ExpiresIn}");
+        log.Trace($"access token: {result.AccessToken}");
+        log.Trace($"token expire: {result.ExpiresIn}");
 
-        accessToken = accessTokenResult.AccessToken;
+        accessToken = result.AccessToken;
 
-        TimeSpan timeout = TimeSpan.FromSeconds(accessTokenResult.ExpiresIn);
+        TimeSpan timeout = TimeSpan.FromSeconds(result.ExpiresIn);
         redisClient.Set(GetAccessTokenRedisKey(), accessToken, timeout);
         // 减去 5 分钟是保证redis中存储的 token 确定有效。
-        redisClient.Set(GetTokenExpireRedisKey(), DateTime.Now.AddSeconds(accessTokenResult.ExpiresIn - 5 * 60), timeout);
+        redisClient.Set(GetTokenExpireRedisKey(), DateTime.Now.AddSeconds(result.ExpiresIn - 5 * 60), timeout);
 
         return accessToken;
     }
