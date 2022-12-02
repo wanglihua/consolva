@@ -1,3 +1,4 @@
+using System.Globalization;
 using CSRedis;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
@@ -23,14 +24,7 @@ public class TestController : Controller
     [Route("/admin/test")]
     public IActionResult Index()
     {
-        // string token = wechatAppAccessTokenService.GetAccessToken();
-
-        CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
-        string token = redisClient.Get("token");
-
-        log.Trace($"token: {token}");
-        log.Trace($"token is null: {token == null}");
-
-        return Content(token ?? string.Empty);
+        string token = wechatAppAccessTokenService.GetAccessToken();
+        return Content(token);
     }
 }

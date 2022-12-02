@@ -1,5 +1,6 @@
 using CSRedis;
 using Newtonsoft.Json;
+using NLog;
 using shunda.Core.Config;
 using shunda.Core.Redis;
 using shunda.Core.Service;
@@ -13,6 +14,8 @@ namespace shunda.Service.Wechat.WechatApp;
 [Service(ServiceType.Scoped)]
 public class WechatAppAccessTokenService
 {
+    private static Logger log = LogManager.GetCurrentClassLogger();
+
     private readonly HttpClient httpClient;
 
     public WechatAppAccessTokenService(HttpClient httpClient)
@@ -63,6 +66,9 @@ public class WechatAppAccessTokenService
         {
             throw new Exception($"微信小程序获取 access token 出错, 错误代码:{accessTokenResult.ErrorCode}, 错误消息:{accessTokenResult.ErrorMessage}");
         }
+
+        log.Trace($"access token: {accessTokenResult.AccessToken}");
+        log.Trace($"token expire: {accessTokenResult.ExpiresIn}");
 
         accessToken = accessTokenResult.AccessToken;
 
