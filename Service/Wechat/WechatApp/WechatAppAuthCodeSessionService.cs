@@ -24,6 +24,11 @@ public class WechatAppAuthCodeSessionService
 
     public AuthCodeSessionResult GetResult(string code)
     {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            throw new Exception("微信小程序 auth.code2Session: code 不能为空");
+        }
+
         IList<string> urlPartList = new List<string>() {
             "https://api.weixin.qq.com/sns/jscode2session",
             "?grant_type=client_credential",
