@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using NLog;
-using shunda.Core.Config;
 using shunda.Core.Service;
 
 namespace shunda.Service.Wechat.WechatApp;
@@ -83,30 +82,30 @@ public class WechatAppPhoneNumberService
     public class PhoneNumberResult : WechatJsonResult
     {
         [JsonProperty("phone_info")]
-        public PhoneNumberResultPhone Phone { get; set; } = new PhoneNumberResultPhone();
-    }
+        public PhoneInfo Phone { get; set; } = new PhoneInfo();
 
-    public class PhoneNumberResultPhone
-    {
-        [JsonProperty("phoneNumber")]
-        public string PhoneNumber { get; set; } = string.Empty;
+        public class PhoneInfo
+        {
+            [JsonProperty("phoneNumber")]
+            public string PhoneNumber { get; set; } = string.Empty;
 
-        [JsonProperty("purePhoneNumber")]
-        public string PurePhoneNumber { get; set; } = string.Empty;
-        
-        [JsonProperty("countryCode")]
-        public int CountryCode { get; set; }
+            [JsonProperty("purePhoneNumber")]
+            public string PurePhoneNumber { get; set; } = string.Empty;
 
-        [JsonProperty("watermark")]
-        public PhoneNumberResultPhoneWatermark Watermark { get; set; } = new PhoneNumberResultPhoneWatermark();
-    }
+            [JsonProperty("countryCode")]
+            public int CountryCode { get; set; }
 
-    public class PhoneNumberResultPhoneWatermark
-    {
-        [JsonProperty("timestamp")]
-        public int TimeStamp { get; set; }
+            [JsonProperty("watermark")]
+            public WatermarkInfo Watermark { get; set; } = new WatermarkInfo();
 
-        [JsonProperty("appid")]
-        public string AppId { get; set; } = string.Empty;
+            public class WatermarkInfo
+            {
+                [JsonProperty("timestamp")]
+                public int TimeStamp { get; set; }
+
+                [JsonProperty("appid")]
+                public string AppId { get; set; } = string.Empty;
+            }            
+        }        
     }
 }
