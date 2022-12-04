@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NLog;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Service.Wechat.WechatApp;
 
@@ -17,10 +20,24 @@ public class WechatAppController : Controller
         this.wechatAppPhoneNumberService = wechatAppPhoneNumberService;
     }
 
+    public class GetPhoneNumberParam
+    {
+        [BindProperty(Name = "code")]
+        [JsonProperty("code")]
+        [Required(ErrorMessage = "获取电话号码, code 不能为空！")]
+        public string Code { get; set; } = string.Empty;
+    }
+
     [HttpPost]
     [Route("/client/wechat/app/get/phone/number")]
-    public IActionResult GetPhoneNumber(string code)
+    public IActionResult GetPhoneNumber([FromBody] GetPhoneNumberParam param)
     {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
+
+        string code = param.Code.Trim();
         string phoneNumber = wechatAppPhoneNumberService.GetPhoneNumber(code);
 
         log.Trace($"phone number: {phoneNumber}");
