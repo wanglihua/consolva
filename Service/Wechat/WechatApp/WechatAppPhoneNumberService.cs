@@ -14,14 +14,18 @@ public class WechatAppPhoneNumberService
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly HttpClient httpClient;
+    private readonly WechatAppAccessTokenService wechatAppAccessTokenService;
 
-    public WechatAppPhoneNumberService(HttpClient httpClient)
+    public WechatAppPhoneNumberService(HttpClient httpClient, WechatAppAccessTokenService wechatAppAccessTokenService)
     {
         this.httpClient = httpClient;
+        this.wechatAppAccessTokenService = wechatAppAccessTokenService;
     }
 
-    public string GetPhoneNumber(string accessToken, string code)
+    public string GetPhoneNumber(string code)
     {
+        string accessToken = wechatAppAccessTokenService.GetAccessToken();
+
         // POST https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=ACCESS_TOKEN
         IList<string> urlPartList = new List<string>() {
             "https://api.weixin.qq.com/wxa/business/getuserphonenumber",
@@ -52,8 +56,8 @@ public class WechatAppPhoneNumberService
         if (result.ErrorCode != 0)
         {
             throw new Exception($"微信小程序 phonenumber.getPhoneNumber 出错, 错误代码:{result.ErrorCode}, 错误消息:{result.ErrorMessage}");
-        }   
-        
+        }
+
         log.Trace($"phone number: {result.Phone.PhoneNumber}");
         log.Trace($"pure phone number: {result.Phone.PurePhoneNumber}");
         log.Trace($"country code: {result.Phone.CountryCode}");
@@ -105,7 +109,7 @@ public class WechatAppPhoneNumberService
 
                 [JsonProperty("appid")]
                 public string AppId { get; set; } = string.Empty;
-            }            
-        }        
+            }
+        }
     }
 }

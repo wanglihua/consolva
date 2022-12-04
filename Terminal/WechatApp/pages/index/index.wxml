@@ -24,9 +24,11 @@
         <van-button type="primary">Button</van-button>
 
         <van-button type="default">默认按钮</van-button>
-<van-button type="primary">主要按钮</van-button>
-<van-button type="info">信息按钮</van-button>
-<van-button type="warning">警告按钮</van-button>
-<van-button type="danger">危险按钮</van-button>
+        <van-button type="primary">主要按钮</van-button>
+        <van-button type="info">信息按钮</van-button>
+        <van-button type="warning">警告按钮</van-button>
+        <van-button type="danger">危险按钮</van-button>
+
+        <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">获取电话号码</button>
     </view>
 </view>

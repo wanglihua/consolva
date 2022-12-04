@@ -1,5 +1,6 @@
 // logs.js
-const util = require('../../utils/util.js')
+const app = getApp();
+const util = app.require('utils/util.js');
 
 Page({
     data: {
