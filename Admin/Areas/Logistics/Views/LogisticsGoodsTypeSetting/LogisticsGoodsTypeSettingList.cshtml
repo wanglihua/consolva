@@ -23,19 +23,19 @@
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 300px; text-align: center;">
                 <div>
-                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">物品类型说明</a>
+                    <span>物品类型说明</span>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 300px; text-align: center;">
                 <div>
-                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.SampleGoods))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">常见品名</a>
+                    <span>常见品名</span>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 80px; text-align: center;">
                 <div>
                     <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">状态</a>
                 </div>
@@ -73,12 +73,12 @@
                             @ListDataUtil.Render(logisticsGoodsTypeSetting.Type.Name)
                         </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" class="break-word">
                         <div>
                             @ListDataUtil.Render(logisticsGoodsTypeSetting.Description)
                         </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" class="break-word">
                         <div>
                             @ListDataUtil.Render(logisticsGoodsTypeSetting.SampleGoods)
                         </div>

@@ -15,6 +15,16 @@
         </a>
         <b class="arrow"></b>
         <ul class="submenu">
+        
+            @if (Model.HasPassRes(PassRes.Goods.GoodsTrade) || Model.HasPassRes(PassRes.Goods.GoodsListByType))
+            {
+                <li id="goods-logistics-goods-type-setting-menu">
+                    <a asp-area="Logistics" asp-controller="LogisticsGoodsTypeSetting" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>物品类型设置
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
 
             @if (Model.HasPassRes(PassRes.Goods.GoodsWarehouse))
             {

@@ -35,8 +35,29 @@ public class LogisticsGoodsTypeSettingController : Controller
     {
         LogisticsGoodsTypeSettingIndexModel model = new LogisticsGoodsTypeSettingIndexModel();
 
-        model.TypeList = LogisticsGoodsType.GetInnerList();
+        var goodsTypeList = LogisticsGoodsType.GetInnerList();
+
+        model.TypeList = goodsTypeList;
         model.StatusList = LogisticsGoodsTypeStatus.GetList();
+
+        var settingList = session.Query<LogisticsGoodsTypeSettingInfo>().ToList();
+
+        foreach (LogisticsGoodsType goodsType in goodsTypeList)
+        {
+            var setting = settingList.Where(e => e.Type == goodsType).Take(1).SingleOrDefault();
+            if (setting == null)
+            {
+                setting = new LogisticsGoodsTypeSettingInfo();
+                setting.Type = goodsType;
+                setting.Description = string.Empty;
+                setting.SampleGoods = string.Empty;
+                setting.Status = LogisticsGoodsTypeStatus.Enabled;
+
+                session.Save(setting);
+            }
+        }
+
+        session.Flush();
 
         return View("LogisticsGoodsTypeSettingIndex", model);
     }
@@ -63,7 +84,7 @@ public class LogisticsGoodsTypeSettingController : Controller
         }
 
         listQuery = listQuery.ThenByAlias(() => logisticsGoodsTypeSettingAlias!.Id).Desc;
-            
+
         IList<LogisticsGoodsTypeSettingInfo> logisticsGoodsTypeSettingList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -77,8 +98,8 @@ public class LogisticsGoodsTypeSettingController : Controller
 
         LogisticsGoodsTypeSettingListModel model = new LogisticsGoodsTypeSettingListModel(listPager);
         model.LogisticsGoodsTypeSettingList = logisticsGoodsTypeSettingList;
-        
-        model.LogisticsGoodsTypeSettingAlias = nameof(logisticsGoodsTypeSettingAlias);        
+
+        model.LogisticsGoodsTypeSettingAlias = nameof(logisticsGoodsTypeSettingAlias);
 
         return View("LogisticsGoodsTypeSettingList", model);
     }
@@ -145,65 +166,23 @@ public class LogisticsGoodsTypeSettingController : Controller
 
         int logisticsGoodsTypeSettingId = model.LogisticsGoodsTypeSettingId;
 
-        bool isCreate = logisticsGoodsTypeSettingId <= 0;
-
-        LogisticsGoodsTypeSettingInfo logisticsGoodsTypeSetting;
-
-        if (isCreate)
+        LogisticsGoodsTypeSettingInfo logisticsGoodsTypeSetting = session.Get<LogisticsGoodsTypeSettingInfo>(logisticsGoodsTypeSettingId);
+        if (logisticsGoodsTypeSetting == null)
         {
-            logisticsGoodsTypeSetting = new LogisticsGoodsTypeSettingInfo();
-        }
-        else
-        {
-            logisticsGoodsTypeSetting = session.Get<LogisticsGoodsTypeSettingInfo>(logisticsGoodsTypeSettingId);
-            if (logisticsGoodsTypeSetting == null)
-            {
-                throw new ValidationException($"指定的 物品类型介绍#{logisticsGoodsTypeSettingId} 不存在！");
-            }
+            throw new ValidationException($"指定的 物品类型介绍#{logisticsGoodsTypeSettingId} 不存在！");
         }
 
-        logisticsGoodsTypeSetting.Type = model.Type;
+        // logisticsGoodsTypeSetting.Type = model.Type;
         logisticsGoodsTypeSetting.Description = model.Description;
         logisticsGoodsTypeSetting.SampleGoods = model.SampleGoods;
         logisticsGoodsTypeSetting.Status = model.Status;
 
-        if (isCreate)
-        {
-            session.Save(logisticsGoodsTypeSetting);
-        }
-        else
-        {
-            session.Update(logisticsGoodsTypeSetting);
-        }
-
+        session.Update(logisticsGoodsTypeSetting);
         session.Flush();
 
         return Json(new {
             success = true,
             message = "保存成功！",
-        });
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/logistics/goods/type/setting/delete")]
-    [Transactional]
-    public IActionResult Delete(IdListParam param)
-    {
-        param.Validate("请选择要删除的物品类型介绍！");
-
-        var idList = param.IdList;
-
-        foreach (int id in idList)
-        {
-            LogisticsGoodsTypeSettingInfo logisticsGoodsTypeSetting = session.Load<LogisticsGoodsTypeSettingInfo>(id);
-            session.Delete(logisticsGoodsTypeSetting);
-        }
-
-        session.Flush();
-
-        return Json(new {
-            success = true,
-            message = "删除成功！",
         });
     }
 }
