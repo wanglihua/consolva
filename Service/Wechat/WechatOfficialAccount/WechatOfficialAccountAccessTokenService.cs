@@ -7,19 +7,19 @@ using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Wechat;
 
-namespace shunda.Service.Wechat;
+namespace shunda.Service.Wechat.WechatOfficialAccount;
 
 /// <summary>
-/// todo 如果公众号和小程序的 token 放在一个表里面，这里的逻辑要修改
+/// 这里的实现是用数据库表来存储的，跟现在微信小程序的实现不太一样
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class WechatAccessTokenService
+public class WechatOfficialAccountAccessTokenService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
 
-    public WechatAccessTokenService(ISession session)
+    public WechatOfficialAccountAccessTokenService(ISession session)
     {
         this.session = session;
     }

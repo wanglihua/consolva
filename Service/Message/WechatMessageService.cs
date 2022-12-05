@@ -3,7 +3,7 @@ using Senparc.Weixin.MP.AdvancedAPIs;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
-using shunda.Service.Wechat;
+using shunda.Service.Wechat.WechatOfficialAccount;
 #if !DEBUG
 using shunda.Core.Config;
 using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
@@ -16,11 +16,11 @@ public class WechatMessageService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private readonly WechatAccessTokenService wechatAccessTokenService;
+    private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;
 
-    public WechatMessageService(WechatAccessTokenService wechatAccessTokenService)
+    public WechatMessageService(WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService)
     {
-        this.wechatAccessTokenService = wechatAccessTokenService;
+        this.wechatOfficialAccountAccessTokenService = wechatOfficialAccountAccessTokenService;
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class WechatMessageService
         {
             try
             {
-                TemplateApi.SendTemplateMessage(wechatAccessTokenService.GetAccessToken(), openId, templateId, url, data);
+                TemplateApi.SendTemplateMessage(wechatOfficialAccountAccessTokenService.GetAccessToken(), openId, templateId, url, data);
                 return CustomerMessageStatus.Sent;
             }
             catch (Exception exp)
