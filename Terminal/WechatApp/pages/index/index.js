@@ -1,6 +1,8 @@
 // index.js
 // 获取应用实例
-const app = getApp()
+const app = getApp();
+
+import Notify from '@vant/weapp/notify/notify';
 
 Page({
     data: {
@@ -63,4 +65,9 @@ Page({
             },
         })        
     },
+    testClick(e) {
+        console.log(e);
+
+        app.post("/hello");
+    }
 })
