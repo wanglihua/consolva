@@ -32,12 +32,12 @@ public class LogisticsGoodsType : CodeTypeBase
     /// <summary>
     /// 食品类
     /// </summary>
-    public static readonly LogisticsGoodsType Food = new LogisticsGoodsType(4000, "食", "食品类", "【食】", "食品类");
+    public static readonly LogisticsGoodsType Food = new LogisticsGoodsType(4000, "食", "食品药品", "【食】", "食品药品");
 
     /// <summary>
     /// 含电类
     /// </summary>
-    public static readonly LogisticsGoodsType Electric = new LogisticsGoodsType(5000, "电", "含电类", "【电】", "含电类");   
+    public static readonly LogisticsGoodsType Electric = new LogisticsGoodsType(5000, "电", "含电类", "【电】", "含电类");
 
     /// <summary>
     /// 禁止类
