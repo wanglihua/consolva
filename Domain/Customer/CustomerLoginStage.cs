@@ -22,12 +22,12 @@ public class CustomerLoginStage : CodeTypeBase
     /// <summary>
     /// 微信公众号登录
     /// </summary>
-    public static readonly CustomerLoginStage WechatOfficalAccountLogin = new CustomerLoginStage(3000, "微信公众号登录", "微信公众号登录");
+    public static readonly CustomerLoginStage WechatOfficialAccountLogin = new CustomerLoginStage(3000, "微信公众号登录", "微信公众号登录");
 
     /// <summary>
     /// 微信小程序登录
     /// </summary>
-    public static readonly CustomerLoginStage WechatMiniProgramLogin = new CustomerLoginStage(4000, "微信小程序登录", "微信小程序登录");
+    public static readonly CustomerLoginStage WechatAppLogin = new CustomerLoginStage(4000, "微信小程序登录", "微信小程序登录");
 
     /// <summary>
     /// None
@@ -37,8 +37,8 @@ public class CustomerLoginStage : CodeTypeBase
     private static readonly IReadOnlyList<CustomerLoginStage> codeTypeList = new List<CustomerLoginStage>() {
         LoginAfterRegister,
         WebManualLogin,
-        WechatOfficalAccountLogin,
-        WechatMiniProgramLogin,
+        WechatOfficialAccountLogin,
+        WechatAppLogin,
     };
 
     private static readonly Dictionary<int, CustomerLoginStage> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

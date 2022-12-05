@@ -211,7 +211,7 @@ public class LoginCustomerService
         LoginInternal(customerId, request);
 
         // 客户端登录日志
-        customerLoginLogService.AddLog(CustomerLoginStage.WechatOfficalAccountLogin, customerId, request);
+        customerLoginLogService.AddLog(CustomerLoginStage.WechatOfficialAccountLogin, customerId, request);
 
         return new LoginResult(LoginResultCode.Success, customer);
     }

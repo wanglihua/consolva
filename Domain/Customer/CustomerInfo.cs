@@ -29,12 +29,28 @@ public class CustomerInfo : Entity
     public virtual Country Country { get; set; } = Country.None;
 
     /// <summary>
-    /// OpenId，非空
+    /// 微信小程序OpenId，非空
     /// </summary>
-    [Required(ErrorMessage = "OpenId不能为空！")]
-    [MaxLength(100, ErrorMessage = "OpenId长度不能大于100！")]
-    [JsonProperty("openId")]
-    public virtual string OpenId { get; set; } = string.Empty;
+    [Required(ErrorMessage = "微信小程序OpenId不能为空！")]
+    [MaxLength(100, ErrorMessage = "微信小程序OpenId长度不能大于100！")]
+    [JsonProperty("wechatAppOpenId")]
+    public virtual string WechatAppOpenId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 微信公众号OpenId，非空
+    /// </summary>
+    [Required(ErrorMessage = "微信公众号OpenId不能为空！")]
+    [MaxLength(100, ErrorMessage = "微信公众号OpenId长度不能大于100！")]
+    [JsonProperty("wechatOfficialAccountOpenId")]
+    public virtual string WechatOfficialAccountOpenId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 微信UnionId，非空
+    /// </summary>
+    [Required(ErrorMessage = "微信UnionId不能为空！")]
+    [MaxLength(100, ErrorMessage = "微信UnionId长度不能大于100！")]
+    [JsonProperty("wechatUnionId")]
+    public virtual string WechatUnionId { get; set; } = string.Empty;
 
     /// <summary>
     /// 手机号码，非空

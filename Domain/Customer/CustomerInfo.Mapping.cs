@@ -28,13 +28,31 @@ public class CustomerInfoMapping : EntityMapping<CustomerInfo>
         );
 
         Property(
-            x => x.OpenId,
+            x => x.WechatAppOpenId,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("open_id");
+                map.Column("wechat_app_open_id");
                 map.NotNullable(true);
             }
         );
+
+        Property(
+            x => x.WechatOfficialAccountOpenId,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("wechat_official_account_open_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.WechatUnionId,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("wechat_union_id");
+                map.NotNullable(true);
+            }
+        );        
 
         Property(
             x => x.Mobile,
