@@ -1,0 +1,117 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsGoodsTypeSetting.LogisticsGoodsTypeSettingListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsGoodsTypeSettingList" }))
+
+<table id="tblLogisticsGoodsTypeSettingList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="logisticsGoodsTypeSettingCheckAll"></label><input id="logisticsGoodsTypeSettingCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">物品类型</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">物品类型说明</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.SampleGoods))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">常见品名</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">状态</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsGoodsTypeSettingAlias).@(nameof(LogisticsGoodsTypeSettingInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsGoodsTypeSettingList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsGoodsTypeSettingList.Count != 0)
+        {
+            int itemIndex = 0;
+            foreach (LogisticsGoodsTypeSettingInfo logisticsGoodsTypeSetting in Model.LogisticsGoodsTypeSettingList)
+            {
+                <tr ondblclick="showLogisticsGoodsTypeSettingDetail(@(logisticsGoodsTypeSetting.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="logisticsGoodsTypeSettingCheck_@(logisticsGoodsTypeSetting.Id)"></label><input id="logisticsGoodsTypeSettingCheck_@(logisticsGoodsTypeSetting.Id)" type="checkbox" class="ace" value="@logisticsGoodsTypeSetting.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsGoodsTypeSetting.Type.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsGoodsTypeSetting.Description)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsGoodsTypeSetting.SampleGoods)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsGoodsTypeSetting.Status.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsGoodsTypeSetting.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsGoodsTypeSetting.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsGoodsTypeSettingList" }))
