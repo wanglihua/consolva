@@ -4,7 +4,7 @@ using NHibernate.Mapping.ByCode;
 
 namespace shunda.Domain.Customer;
 
-public class CustomerLoginLogInfoMapping : EntityMapping<CustomerLoginLogInfo>
+public class CustomerLoginLogInfoMapping : EntityNoCreateNoUpdateMapping<CustomerLoginLogInfo>
 {
     public CustomerLoginLogInfoMapping()
     {

@@ -8,7 +8,7 @@ namespace shunda.Domain.Customer;
 /// <summary>
 /// 客户登录日志
 /// </summary>
-public class CustomerLoginLogInfo : Entity
+public class CustomerLoginLogInfo : EntityNoCreateNoUpdate
 {
     /// <summary>
     /// 登录阶段，非空
