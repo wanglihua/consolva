@@ -26,25 +26,47 @@ public class CustomerService
     /// 通过 open id 自动创建客户
     /// 这里只管客户的创建，创建后的自动登录等的，有别的逻辑完成
     /// </summary>
-    /// <param name="openId"></param>
     /// <returns>新创建的客户id</returns>
-    public int CreateCustomerByOpenId(string openId)
+    public int CreateCustomerByOpenId(string wechatAppOpenId, string wechatOfficialAccountOpenId, string wechatUnionId)
     {
-        if (string.IsNullOrWhiteSpace(openId))
+        if (string.IsNullOrWhiteSpace(wechatAppOpenId) == true
+            && string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == true)
         {
-            throw new Exception("通过open id 创建客户，open id 不能为空！");
+            throw new Exception("通过open id 创建客户，微信小程序OpenId和微信公众号OpenId不能都为空！");
         }
 
-        openId = openId.Trim();
-        int customerIdExist = session.Query<CustomerInfo>()
-            .Where(e => e.OpenId == openId)
+        wechatAppOpenId = wechatAppOpenId.Trim();
+        wechatOfficialAccountOpenId = wechatOfficialAccountOpenId.Trim();
+        wechatUnionId = wechatUnionId.Trim();
+
+        var customerIdExistQuery = session.Query<CustomerInfo>();
+
+        if (string.IsNullOrWhiteSpace(wechatAppOpenId) == false)
+        {
+            customerIdExistQuery = customerIdExistQuery.Where(e => e.WechatAppOpenId == wechatAppOpenId);
+        }
+
+        if (string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == false)
+        {
+            customerIdExistQuery = customerIdExistQuery.Where(e => e.WechatOfficialAccountOpenId == wechatOfficialAccountOpenId);
+        }
+
+        int customerIdExist = customerIdExistQuery
             .Select(e => e.Id)
             .Take(1)
             .SingleOrDefault();
 
         if (customerIdExist != 0)
         {
-            throw new Exception($"open id #{openId} 对应的客户已经存在！");
+            if (string.IsNullOrWhiteSpace(wechatAppOpenId) == false)
+            {
+                throw new Exception($"微信小程序OpenId {wechatAppOpenId} 对应的客户已经存在！");
+            }
+
+            if (string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == false)
+            {
+                throw new Exception($"微信公众号OpenId {wechatOfficialAccountOpenId} 对应的客户已经存在！");
+            }            
         }
 
         string checkinCode = customerCheckinCodeService.GenerateNewCheckinCode();
@@ -53,7 +75,9 @@ public class CustomerService
         CustomerInfo customer = new CustomerInfo() {
             CheckinCode = checkinCode,
             Country = Country.None,
-            OpenId = openId,
+            WechatAppOpenId = wechatAppOpenId,
+            WechatOfficialAccountOpenId = wechatOfficialAccountOpenId,
+            WechatUnionId = wechatUnionId,
             Mobile = string.Empty,
             MobileValidated = false,
             Salt = salt,
