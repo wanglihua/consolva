@@ -591,7 +591,9 @@ public class CustomerController : Controller
                 customer.Account = 0m;
                 customer.TotalConsume = 0m;
 
-                customer.OpenId = "";
+                customer.WechatAppOpenId = string.Empty;
+                customer.WechatOfficialAccountOpenId = string.Empty;
+                customer.WechatUnionId = string.Empty;
 
                 customer.Level = CustomerLevel.Common;
                 customer.VipRank = CustomerVipRank.None;

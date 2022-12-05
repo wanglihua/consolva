@@ -65,7 +65,7 @@ public class WechatMessageService
     /// <returns>是否发送成功</returns>
     public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
     {
-        string openId = customer.OpenId;
+        string openId = customer.WechatOfficialAccountOpenId;
         if (string.IsNullOrWhiteSpace(openId))
         {
             return CustomerMessageStatus.SendFail; // 一般这时还没关注公众号，也算发送失败
@@ -110,7 +110,7 @@ public class WechatMessageService
     /// <returns>是否发送成功</returns>
     public CustomerMessageStatus SendOrderAbnormalNoticeTemplateMessage(CustomerInfo customer, string first, string abnormalCause, string remark, string sender)
     {
-        string openId = customer.OpenId;
+        string openId = customer.WechatOfficialAccountOpenId;
 #if DEBUG
         log.Trace("SendOrderAbnormalNoticeTemplateMessage: ");
         log.Trace($"openId: {openId}");

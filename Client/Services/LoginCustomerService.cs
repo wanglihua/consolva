@@ -184,34 +184,25 @@ public class LoginCustomerService
     }
 
     /// <summary>
-    /// 使用 open id 登录
+    /// 用户微信小程序和公众号登录
     /// </summary>
-    /// <param name="openId"></param>
+    /// <param name="customer"></param>
+    /// <param name="customerLoginStage"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public LoginResult Login(string openId, HttpRequest request)
+    public LoginResult Login(CustomerInfo customer, CustomerLoginStage customerLoginStage, HttpRequest request)
     {
-        int customerId = 0;
-
-        // 这是一个事务，或者没应用事务
-
-        CustomerInfo? customer = session.Query<CustomerInfo>().Where(e => e.OpenId == openId).Take(1).SingleOrDefault();
-        if (customer == null)
-        {
-            return new LoginResult(LoginResultCode.AccountNotExist, null);
-        }
-
         if (customer.Status == CustomerStatus.Frozen)
         {
             return new LoginResult(LoginResultCode.CustomerFrozen, null);
         }
 
-        customerId = customer.Id;
+        int customerId = customer.Id;
 
         LoginInternal(customerId, request);
 
         // 客户端登录日志
-        customerLoginLogService.AddLog(CustomerLoginStage.WechatOfficialAccountLogin, customerId, request);
+        customerLoginLogService.AddLog(customerLoginStage, customerId, request);
 
         return new LoginResult(LoginResultCode.Success, customer);
     }

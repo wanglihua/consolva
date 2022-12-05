@@ -123,7 +123,7 @@ public class CustomerMessageManualSendController : Controller
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(customer.OpenId))
+                if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId))
                 {
                     // throw new ValidationException($"指定的客户ID{customerId} open id 不存在，可能是因为没关注公众号！");
 
@@ -293,7 +293,7 @@ public class CustomerMessageManualSendController : Controller
 
         IList<CustomerInfo> customerList = session
             .Query<CustomerInfo>()
-            .Where(e => (e.OpenId != null && e.OpenId != "") || (e.Mobile != null && e.Mobile != ""))
+            .Where(e => (e.WechatOfficialAccountOpenId != null && e.WechatOfficialAccountOpenId != "") || (e.Mobile != null && e.Mobile != ""))
             .OrderBy(e => e.Id)
             .ToList();
 
@@ -312,7 +312,7 @@ public class CustomerMessageManualSendController : Controller
 
                 bool sent = false;
 
-                if (model.SendByWechat && (string.IsNullOrWhiteSpace(customer.OpenId) == false))
+                if (model.SendByWechat && (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId) == false))
                 {
                     sent = true;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);

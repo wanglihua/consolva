@@ -26,8 +26,8 @@ public class CustomerService
     /// 通过 open id 自动创建客户
     /// 这里只管客户的创建，创建后的自动登录等的，有别的逻辑完成
     /// </summary>
-    /// <returns>新创建的客户id</returns>
-    public int CreateCustomerByOpenId(string wechatAppOpenId, string wechatOfficialAccountOpenId, string wechatUnionId)
+    /// <returns>新创建的客户</returns>
+    public CustomerInfo CreateCustomerByOpenId(string wechatAppOpenId, string wechatOfficialAccountOpenId, string wechatUnionId)
     {
         if (string.IsNullOrWhiteSpace(wechatAppOpenId) == true
             && string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == true)
@@ -39,24 +39,23 @@ public class CustomerService
         wechatOfficialAccountOpenId = wechatOfficialAccountOpenId.Trim();
         wechatUnionId = wechatUnionId.Trim();
 
-        var customerIdExistQuery = session.Query<CustomerInfo>();
+        var customerExistQuery = session.Query<CustomerInfo>();
 
         if (string.IsNullOrWhiteSpace(wechatAppOpenId) == false)
         {
-            customerIdExistQuery = customerIdExistQuery.Where(e => e.WechatAppOpenId == wechatAppOpenId);
+            customerExistQuery = customerExistQuery.Where(e => e.WechatAppOpenId == wechatAppOpenId);
         }
 
         if (string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == false)
         {
-            customerIdExistQuery = customerIdExistQuery.Where(e => e.WechatOfficialAccountOpenId == wechatOfficialAccountOpenId);
+            customerExistQuery = customerExistQuery.Where(e => e.WechatOfficialAccountOpenId == wechatOfficialAccountOpenId);
         }
 
-        int customerIdExist = customerIdExistQuery
-            .Select(e => e.Id)
+        var customerExist = customerExistQuery
             .Take(1)
             .SingleOrDefault();
 
-        if (customerIdExist != 0)
+        if (customerExist != null)
         {
             if (string.IsNullOrWhiteSpace(wechatAppOpenId) == false)
             {
@@ -66,8 +65,16 @@ public class CustomerService
             if (string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == false)
             {
                 throw new Exception($"微信公众号OpenId {wechatOfficialAccountOpenId} 对应的客户已经存在！");
-            }            
+            }
+
+            // 这个代码基本得不到执行，实际也没啥意义
+            if (string.IsNullOrWhiteSpace(wechatUnionId) == false // 只有 union id 非空的时候，才能做这个判断。比如 小程序和公众号 先前绑定了，现在不绑定了
+                && customerExist.WechatUnionId != wechatUnionId)
+            {
+                throw new Exception("客户 wechat union id 不匹配！");
+            }
         }
+
 
         string checkinCode = customerCheckinCodeService.GenerateNewCheckinCode();
         string salt = passwordService.GenerateSalt();
@@ -107,6 +114,6 @@ public class CustomerService
 
         session.Flush();
 
-        return customerId;
+        return customer;
     }
 }
