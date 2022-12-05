@@ -2,8 +2,6 @@
 // 获取应用实例
 const app = getApp();
 
-import Notify from '@vant/weapp/notify/notify';
-
 Page({
     data: {
         motto: 'Hello World',
@@ -50,22 +48,13 @@ Page({
         })
     },
     getPhoneNumber(e) {
-        console.log(e.detail.code);
-
-        wx.request({
-            url: 'http://192.168.0.4:9003/client/wechat/app/get/phone/number',
-            method: "POST",
-            data: {
-                code: e.detail.code
-            },
-            success(res) {
-                console.log(res);
-            },
-        })        
+        app.post("/client/wechat/app/get/phone/number", {
+            code: e.detail.code
+        });
     },
     testClick(e) {
         console.log(e);
 
-        app.post("/hello");
+        app.post("/client/test");
     }
 })
