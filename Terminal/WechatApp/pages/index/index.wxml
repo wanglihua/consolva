@@ -30,6 +30,5 @@
         <van-button type="danger" bind:getphonenumber="getPhoneNumber">获取电话号码</van-button>
     </view>
 
-    <van-notify id="van-notify" />
     <van-toast id="van-toast" />
 </view>
