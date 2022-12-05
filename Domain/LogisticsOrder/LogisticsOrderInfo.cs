@@ -27,7 +27,7 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 客户ID，非空
@@ -58,7 +58,7 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "收货仓库不能为空！")]
     [JsonProperty("warehouse")]
-    public virtual WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public virtual WarehouseInfo Warehouse { get; set; } = new ();
 
     /// <summary>
     /// 物流方式类型，非空
@@ -74,21 +74,21 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("logisticsMode")]
-    public virtual LogisticsModeInfo FirstMode { get; set; } = new LogisticsModeInfo();
+    public virtual LogisticsModeInfo FirstMode { get; set; } = new ();
 
     /// <summary>
     /// 保险id，非空
     /// </summary>
     [Required(ErrorMessage = "保险id不能为空！")]
     [JsonProperty("insurance")]
-    public virtual LogisticsInsuranceInfo Insurance { get; set; } = new LogisticsInsuranceInfo();
+    public virtual LogisticsInsuranceInfo Insurance { get; set; } = new ();
 
     /// <summary>
     /// 纳税申报，非空
     /// </summary>
     [Required(ErrorMessage = "纳税申报不能为空！")]
     [JsonProperty("gst")]
-    public virtual LogisticsGstInfo Gst { get; set; } = new LogisticsGstInfo();
+    public virtual LogisticsGstInfo Gst { get; set; } = new ();
 
     /// <summary>
     /// 物品类型，非空

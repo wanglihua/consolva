@@ -13,7 +13,7 @@ public class WarehouseWorkerDetailModel : WarehouseWorkerSaveModel
     public IList<WarehouseWorkerType> TypeList { get; set; } = WarehouseWorkerType.GetList();
 
     [BindNever]
-    public WarehouseWorkerInfo WarehouseWorker { get; set; } = new WarehouseWorkerInfo();
+    public WarehouseWorkerInfo WarehouseWorker { get; set; } = new ();
 
     [BindNever]
     public string UserQuery { get; set; } = string.Empty;

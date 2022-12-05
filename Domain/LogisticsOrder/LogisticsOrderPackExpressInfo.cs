@@ -15,20 +15,20 @@ public class LogisticsOrderPackExpressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 订单打包，非空
     /// </summary>
     [Required(ErrorMessage = "订单打包不能为空！")]
     [JsonProperty("orderPack")]
-    public virtual LogisticsOrderPackInfo OrderPack { get; set; } = new LogisticsOrderPackInfo();
+    public virtual LogisticsOrderPackInfo OrderPack { get; set; } = new ();
 
     /// <summary>
     /// 快递单，非空
     /// </summary>
     [Required(ErrorMessage = "快递单不能为空！")]
     [JsonProperty("express")]
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual ExpressInfo Express { get; set; } = new ();
 
 }

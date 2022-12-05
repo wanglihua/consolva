@@ -16,5 +16,5 @@ public class AdminInfo : Entity
     /// <summary>
     /// 用户
     /// </summary>
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 }

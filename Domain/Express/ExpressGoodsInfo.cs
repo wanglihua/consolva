@@ -15,14 +15,14 @@ public class ExpressGoodsInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "快递单不能为空！")]
     [JsonProperty("express")]
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual ExpressInfo Express { get; set; } = new ();
 
     /// <summary>
     /// 物品扩展名，非空
     /// </summary>
     [Required(ErrorMessage = "物品扩展名不能为空！")]
     [JsonProperty("goods")]
-    public virtual LogisticsGoodsInfo Goods { get; set; } = new LogisticsGoodsInfo();
+    public virtual LogisticsGoodsInfo Goods { get; set; } = new ();
 
     /// <summary>
     /// 价格，非空

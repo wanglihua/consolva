@@ -16,7 +16,7 @@ public class LogisticsOrderPayInfo : Entity
     /// 订单
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 订单编号，非空
@@ -27,7 +27,7 @@ public class LogisticsOrderPayInfo : Entity
     /// 客户
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 支付类型

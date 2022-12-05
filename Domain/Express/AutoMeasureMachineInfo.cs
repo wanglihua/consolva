@@ -21,7 +21,7 @@ public class AutoMeasureMachineInfo : Entity
     /// <summary>
     /// 仓库，非空
     /// </summary>
-    public virtual WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public virtual WarehouseInfo Warehouse { get; set; } = new ();
 
     /// <summary>
     /// app key，非空

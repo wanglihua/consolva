@@ -12,7 +12,7 @@ public class PassResInfo : EntityNoCreateNoUpdate
     /// 类别
     /// </summary>
     [Required(ErrorMessage = "类别不能为空！")]
-    public virtual PassResCateInfo Cate { get; set; } = new PassResCateInfo();
+    public virtual PassResCateInfo Cate { get; set; } = new ();
 
     /// <summary>
     /// 名称

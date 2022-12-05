@@ -25,7 +25,7 @@ public class ExpressDumpInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "申领件不能为空！")]
     [JsonProperty("express")]
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual ExpressInfo Express { get; set; } = new ();
 
     /// <summary>
     /// 快递单号，非空
@@ -40,7 +40,7 @@ public class ExpressDumpInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "堆存用户不能为空！")]
     [JsonProperty("dumpUser")]
-    public virtual UserInfo DumpUser { get; set; } = new UserInfo();
+    public virtual UserInfo DumpUser { get; set; } = new ();
 
     /// <summary>
     /// 堆存时间，非空
@@ -54,14 +54,14 @@ public class ExpressDumpInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "堆存货架不能为空！")]
     [JsonProperty("shelf")]
-    public virtual ShelfInfo Shelf { get; set; } = new ShelfInfo();
+    public virtual ShelfInfo Shelf { get; set; } = new ();
 
     /// <summary>
     /// 堆存库位，非空
     /// </summary>
     [Required(ErrorMessage = "堆存库位不能为空！")]
     [JsonProperty("storageLoc")]
-    public virtual StorageLocInfo StorageLoc { get; set; } = new StorageLocInfo();
+    public virtual StorageLocInfo StorageLoc { get; set; } = new ();
 
     /// <summary>
     /// 盘点用户，可空

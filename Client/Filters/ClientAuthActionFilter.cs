@@ -54,11 +54,15 @@ public class ClientAuthActionFilter : IActionFilter
     {
         var request = context.HttpContext.Request;
         if (WebUtil.ShouldShowJson(request))
+        {
             context.Result = new JsonResult(new {
                 success = false,
                 message = "用户未登录，或登录会话过期，请重新登录！"
             });
+        }
         else
+        {
             context.Result = new RedirectResult(loginCustomerService.GetCustomerLoginUrl());
+        }
     }
 }

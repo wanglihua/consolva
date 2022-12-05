@@ -16,7 +16,7 @@ public class FeeRefundApplyInfo : Entity
     /// 物流订单
     /// </summary>
     [Required(ErrorMessage = "物流订单不能为空！")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 订单编号，非空
@@ -27,7 +27,7 @@ public class FeeRefundApplyInfo : Entity
     /// 会员
     /// </summary>
     [Required(ErrorMessage = "会员不能为空！")]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 类型
@@ -37,7 +37,7 @@ public class FeeRefundApplyInfo : Entity
     public virtual FeeRefundType Type { get; set; } = FeeRefundType.None;
 
     [Required(ErrorMessage = "退赔原因不能为空！")]
-    public virtual FeeRefundReasonInfo Reason { get; set; } = new FeeRefundReasonInfo();
+    public virtual FeeRefundReasonInfo Reason { get; set; } = new ();
 
     /// <summary>
     /// 退赔款原因
@@ -70,7 +70,7 @@ public class FeeRefundApplyInfo : Entity
     /// 申请人
     /// </summary>
     [Required(ErrorMessage = "申请人不能为空！")]
-    public virtual UserInfo ApplyUser { get; set; } = new UserInfo();
+    public virtual UserInfo ApplyUser { get; set; } = new ();
 
     /// <summary>
     /// 申请时间

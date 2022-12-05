@@ -10,7 +10,7 @@ public class UserTimeItem
     /// <summary>
     /// 操作用户
     /// </summary>
-    public UserInfo User { get; set; } = new UserInfo();
+    public UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 操作时间

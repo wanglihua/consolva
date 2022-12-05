@@ -60,7 +60,7 @@ public class LogisticsModeInfo : Entity
     /// 收货仓库
     /// </summary>
     [BindNever]
-    public virtual WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public virtual WarehouseInfo Warehouse { get; set; } = new ();
 
     /// <summary>
     /// 打包标签

@@ -18,14 +18,14 @@ public class FeeWriteOffApplyInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 订单，非空
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 订单编号，非空
@@ -51,7 +51,7 @@ public class FeeWriteOffApplyInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "核销原因Id不能为空！")]
     [JsonProperty("writeOffReason")]
-    public virtual ManualFeeReasonInfo WriteOffReason { get; set; } = new ManualFeeReasonInfo();
+    public virtual ManualFeeReasonInfo WriteOffReason { get; set; } = new ();
 
     /// <summary>
     /// 核销原因，非空
@@ -66,7 +66,7 @@ public class FeeWriteOffApplyInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "申请用户不能为空！")]
     [JsonProperty("applyUserId")]
-    public virtual UserInfo ApplyUser { get; set; } = new UserInfo();
+    public virtual UserInfo ApplyUser { get; set; } = new ();
 
     /// <summary>
     /// 审核用户，可空

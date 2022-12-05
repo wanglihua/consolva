@@ -16,7 +16,7 @@ public class LogisticsOrderFirstModeInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 订单编号，非空
@@ -47,7 +47,7 @@ public class LogisticsOrderFirstModeInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("firstMode")]
-    public virtual LogisticsModeInfo FirstMode { get; set; } = new LogisticsModeInfo();
+    public virtual LogisticsModeInfo FirstMode { get; set; } = new ();
 
     /// <summary>
     /// 渠道类型，非空

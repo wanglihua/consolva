@@ -9,5 +9,5 @@ public class LogisticsOrderPayCustomerIndexModel
     public int CustomerId { get; set; }
 
     [BindNever]
-    public CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public CustomerInfo Customer { get; set; } = new ();
 }

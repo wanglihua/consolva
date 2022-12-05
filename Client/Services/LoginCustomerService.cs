@@ -28,7 +28,7 @@ public class LoginCustomerService
 #if DEBUG
     public static TimeSpan SessionTimeout = TimeSpan.FromDays(10);
 #else
-        public static TimeSpan SessionTimeout = TimeSpan.FromMinutes(30);
+        public static TimeSpan SessionTimeout = TimeSpan.FromMinutes(120); // 120 分钟已经足够长
 #endif
 
     private static string aesKey = "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";

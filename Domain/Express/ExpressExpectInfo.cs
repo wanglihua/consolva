@@ -32,7 +32,7 @@ public class ExpressExpectInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 客户最后编辑时间，非空

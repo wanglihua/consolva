@@ -7,7 +7,7 @@ namespace shunda.Admin.Areas.Fee.Models.FeeRefundApprove;
 public class FeeRefundApproveDetailModel
 {
     [BindNever]
-    public FeeRefundApplyInfo FeeRefundApply { get; set; } = new FeeRefundApplyInfo();
+    public FeeRefundApplyInfo FeeRefundApply { get; set; } = new ();
 
     [Required(ErrorMessage = "退赔款申请单不能为空！")]
     public int ApplyId { get; set; }

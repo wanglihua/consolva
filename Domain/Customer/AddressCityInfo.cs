@@ -14,7 +14,7 @@ public class AddressCityInfo : EntityNoCreateNoUpdate
     /// </summary>
     [Required(ErrorMessage = "省编码不能为空！")]
     [JsonProperty("province")]
-    public virtual AddressProvinceInfo Province { get; set; } = new AddressProvinceInfo();
+    public virtual AddressProvinceInfo Province { get; set; } = new ();
 
     /// <summary>
     /// 名称，非空

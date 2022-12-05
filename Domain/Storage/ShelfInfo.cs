@@ -57,5 +57,5 @@ public class ShelfInfo : Entity
     /// </summary>
     // [Required(ErrorMessage = "仓库不能为空！")]
     [BindNever]
-    public virtual WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public virtual WarehouseInfo Warehouse { get; set; } = new ();
 }

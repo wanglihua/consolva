@@ -18,7 +18,7 @@ public class LogisticsOrderActionInfo : EntityNoUpdate
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 操作人，可空

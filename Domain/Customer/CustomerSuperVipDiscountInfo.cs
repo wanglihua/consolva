@@ -15,7 +15,7 @@ public class CustomerSuperVipDiscountInfo : Entity
     /// 会员
     /// </summary>
     [BindNever]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 折扣
@@ -27,7 +27,7 @@ public class CustomerSuperVipDiscountInfo : Entity
     /// 操作用户
     /// </summary>
     [BindNever]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 描述

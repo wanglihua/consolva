@@ -4,5 +4,5 @@ namespace shunda.Admin.Areas.Fee.Models.FeeRefundReason;
 
 public class FeeRefundReasonSaveModel
 {
-    public FeeRefundReasonInfo RefundReason { get; set; } = new FeeRefundReasonInfo();
+    public FeeRefundReasonInfo RefundReason { get; set; } = new ();
 }

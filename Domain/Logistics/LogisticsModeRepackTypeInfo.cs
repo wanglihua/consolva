@@ -15,7 +15,7 @@ public class LogisticsModeRepackTypeInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("logisticsMode")]
-    public virtual LogisticsModeInfo LogisticsMode { get; set; } = new LogisticsModeInfo();
+    public virtual LogisticsModeInfo LogisticsMode { get; set; } = new ();
 
     /// <summary>
     /// 打包方式，非空

@@ -33,7 +33,7 @@ public class CustomerMessageInfo : EntityNoUpdate
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 物流订单，可空

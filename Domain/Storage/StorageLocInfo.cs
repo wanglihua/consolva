@@ -36,13 +36,13 @@ public class StorageLocInfo : Entity
     // [DisplayName("规格")]
     // [Required(ErrorMessage = "规格不能为空！")]
     [BindNever]
-    public virtual StorageLocSpecInfo Spec { get; set; } = new StorageLocSpecInfo();
+    public virtual StorageLocSpecInfo Spec { get; set; } = new ();
 
     /// <summary>
     /// 货架
     /// </summary>
     [BindNever]
-    public virtual ShelfInfo Shelf { get; set; } = new ShelfInfo();
+    public virtual ShelfInfo Shelf { get; set; } = new ();
 
     /// <summary>
     /// 状态

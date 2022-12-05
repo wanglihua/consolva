@@ -14,7 +14,7 @@ public class AddressStreetInfo : EntityNoCreateNoUpdate
     /// </summary>
     [Required(ErrorMessage = "区域编码不能为空！")]
     [JsonProperty("area")]
-    public virtual AddressAreaInfo Area { get; set; } = new AddressAreaInfo();
+    public virtual AddressAreaInfo Area { get; set; } = new ();
 
     /// <summary>
     /// 名称，非空

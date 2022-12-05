@@ -11,10 +11,10 @@ public class GroupPassResInfo : EntityNoUpdate
     /// <summary>
     /// 群组
     /// </summary>
-    public virtual GroupInfo Group { get; set; } = new GroupInfo();
+    public virtual GroupInfo Group { get; set; } = new ();
 
     /// <summary>
     /// 资源
     /// </summary>
-    public virtual PassResInfo PassRes { get; set; } = new PassResInfo();
+    public virtual PassResInfo PassRes { get; set; } = new ();
 }

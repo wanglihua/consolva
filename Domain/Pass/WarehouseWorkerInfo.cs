@@ -24,14 +24,14 @@ public class WarehouseWorkerInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "仓库不能为空！")]
     [JsonProperty("warehouse")]
-    public virtual WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public virtual WarehouseInfo Warehouse { get; set; } = new ();
 
     /// <summary>
     /// 用户，非空
     /// </summary>
     [Required(ErrorMessage = "用户不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 描述，非空

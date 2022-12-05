@@ -12,7 +12,7 @@ public class UserLoginLogInfo : EntityNoCreateNoUpdate
     /// 登录用户
     /// </summary>
     [Required(ErrorMessage = "登录用户不能为空！")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// IP地址

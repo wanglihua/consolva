@@ -17,7 +17,7 @@ public class LogisticsOrderPackInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 物品类型，非空
@@ -32,7 +32,7 @@ public class LogisticsOrderPackInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流订单头程不能为空！")]
     [JsonProperty("orderFirstMode")]
-    public virtual LogisticsOrderFirstModeInfo OrderFirstMode { get; set; } = new LogisticsOrderFirstModeInfo();
+    public virtual LogisticsOrderFirstModeInfo OrderFirstMode { get; set; } = new ();
 
     /// <summary>
     /// 物流方式类型，非空
@@ -47,7 +47,7 @@ public class LogisticsOrderPackInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("firstMode")]
-    public virtual LogisticsModeInfo FirstMode { get; set; } = new LogisticsModeInfo();
+    public virtual LogisticsModeInfo FirstMode { get; set; } = new ();
 
     /// <summary>
     /// 长/cm，非空
@@ -89,7 +89,7 @@ public class LogisticsOrderPackInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "打包人员不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo PackUser { get; set; } = new UserInfo();
+    public virtual UserInfo PackUser { get; set; } = new ();
 
     /// <summary>
     /// 打包时间，非空

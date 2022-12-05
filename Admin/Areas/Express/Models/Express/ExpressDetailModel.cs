@@ -10,15 +10,15 @@ public class ExpressDetailModel
 {
     public ExpressListMenuCate Cate { get; set; } = ExpressListMenuCate.None;
 
-    public ExpressInfo Express { get; set; } = new ExpressInfo();
+    public ExpressInfo Express { get; set; } = new ();
 
-    public UserInfo AddUser { get; set; } = new UserInfo();
+    public UserInfo AddUser { get; set; } = new ();
 
-    public CustomerInfo? Customer { get; set; } = new CustomerInfo();
+    public CustomerInfo? Customer { get; set; } = new ();
 
     public ExpressExpectInfo? ExpressExpect { get; set; } = null;
 
-    public LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public LogisticsOrderInfo Order { get; set; } = new ();
 
     public IList<ExpressGoodsInfo> ExpressGoodsList { get; set; } = new List<ExpressGoodsInfo>();
 

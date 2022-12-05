@@ -7,7 +7,7 @@ namespace shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 public class LogisticsExpressCheckinIndexModel
 {
     [BindNever]
-    public WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public WarehouseInfo Warehouse { get; set; } = new ();
 
     [BindNever]
     public ExpressCheckinLabelType CheckinPrintType { get; set; } = ExpressCheckinLabelType.None; // todo a 改名

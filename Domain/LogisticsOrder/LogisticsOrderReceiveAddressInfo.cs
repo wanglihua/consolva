@@ -15,7 +15,7 @@ public class LogisticsOrderReceiveAddressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户id不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 收货人名，非空

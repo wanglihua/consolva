@@ -16,14 +16,14 @@ public class ExpressShelfScheduleInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "快递单不能为空！")]
     [JsonProperty("express")]
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual ExpressInfo Express { get; set; } = new ();
 
     /// <summary>
     /// 上架人，非空
     /// </summary>
     [Required(ErrorMessage = "上架人不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 排班类型，非空

@@ -16,7 +16,7 @@ public class LogisticsGoodsImageInfo : EntityNoUpdate
     /// </summary>
     [Required(ErrorMessage = "物流物品不能为空！")]
     [JsonProperty("goods")]
-    public virtual LogisticsGoodsInfo Goods { get; set; } = new LogisticsGoodsInfo();
+    public virtual LogisticsGoodsInfo Goods { get; set; } = new ();
 
     /// <summary>
     /// 存储路径，非空

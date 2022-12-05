@@ -16,7 +16,7 @@ public class LogisticsOrderSendAddressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "订单id不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 国家，非空
@@ -55,28 +55,28 @@ public class LogisticsOrderSendAddressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "省代码不能为空！")]
     [JsonProperty("province")]
-    public virtual AddressProvinceInfo Province { get; set; } = new AddressProvinceInfo();
+    public virtual AddressProvinceInfo Province { get; set; } = new ();
 
     /// <summary>
     /// 城市代码，非空
     /// </summary>
     [Required(ErrorMessage = "城市代码不能为空！")]
     [JsonProperty("city")]
-    public virtual AddressCityInfo City { get; set; } = new AddressCityInfo();
+    public virtual AddressCityInfo City { get; set; } = new ();
 
     /// <summary>
     /// 区域代码，非空
     /// </summary>
     [Required(ErrorMessage = "区域代码不能为空！")]
     [JsonProperty("area")]
-    public virtual AddressAreaInfo Area { get; set; } = new AddressAreaInfo();
+    public virtual AddressAreaInfo Area { get; set; } = new ();
 
     /// <summary>
     /// 街道代码，非空
     /// </summary>
     [Required(ErrorMessage = "街道代码不能为空！")]
     [JsonProperty("street")]
-    public virtual AddressStreetInfo Street { get; set; } = new AddressStreetInfo();
+    public virtual AddressStreetInfo Street { get; set; } = new ();
 
     /// <summary>
     /// 地址，非空

@@ -6,5 +6,5 @@ namespace shunda.Admin.Areas.Customer.Models.CustomerAddress;
 public class CustomerAddressReceiveDetailModel
 {
     [BindNever]
-    public CustomerReceiveAddressInfo CustomerAddress { get; set; } = new CustomerReceiveAddressInfo();
+    public CustomerReceiveAddressInfo CustomerAddress { get; set; } = new ();
 }

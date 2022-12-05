@@ -6,7 +6,7 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsGoods;
 
 public class LogisticsGoodsDetailModel
 {
-    public LogisticsGoodsInfo LogisticsGoods { get; set; } = new LogisticsGoodsInfo();
+    public LogisticsGoodsInfo LogisticsGoods { get; set; } = new ();
 
     [BindNever]
     public IList<LogisticsGoodsImageInfo> ImageList { get; set; } = new List<LogisticsGoodsImageInfo>();

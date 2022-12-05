@@ -14,7 +14,7 @@ public class AutoMeasureDataUploadRequestModel
     public string Sign { get; set; } = string.Empty;
 
     [JsonProperty("data")]
-    public ModelData Data { get; set; } = new ModelData();
+    public ModelData Data { get; set; } = new ();
 
     public class ModelData
     {

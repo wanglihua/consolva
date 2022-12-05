@@ -14,11 +14,11 @@ public class GroupMemberInfo : EntityNoUpdate
     /// </summary>
     // [Required(ErrorMessage = "群组不能为空！")]
     [BindNever]
-    public virtual GroupInfo Group { get; set; } = new GroupInfo();
+    public virtual GroupInfo Group { get; set; } = new ();
 
     /// <summary>
     /// 用户
     /// </summary>
     [BindNever]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 }

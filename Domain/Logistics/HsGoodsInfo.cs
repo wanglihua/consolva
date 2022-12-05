@@ -120,6 +120,6 @@ public class HsGoodsInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "添加人员不能为空！")]
     [JsonProperty("addUser")]
-    public virtual UserInfo AddUser { get; set; } = new UserInfo();
+    public virtual UserInfo AddUser { get; set; } = new ();
 
 }

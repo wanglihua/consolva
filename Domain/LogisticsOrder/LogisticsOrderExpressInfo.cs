@@ -16,12 +16,12 @@ public class LogisticsOrderExpressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
+    public virtual LogisticsOrderInfo Order { get; set; } = new ();
 
     /// <summary>
     /// 快递单号，非空
     /// </summary>
     [Required(ErrorMessage = "快递单号不能为空！")]
     [JsonProperty("express")]
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual ExpressInfo Express { get; set; } = new ();
 }

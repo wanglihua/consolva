@@ -15,7 +15,7 @@ public class LogisticsModeFeeRateInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("mode")]
-    public virtual LogisticsModeInfo Mode { get; set; } = new LogisticsModeInfo();
+    public virtual LogisticsModeInfo Mode { get; set; } = new ();
 
     /// <summary>
     /// 物品类型，非空
@@ -30,6 +30,6 @@ public class LogisticsModeFeeRateInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "通用费率不能为空！")]
     [JsonProperty("feeRate")]
-    public virtual LogisticsFeeRateInfo FeeRate { get; set; } = new LogisticsFeeRateInfo();
+    public virtual LogisticsFeeRateInfo FeeRate { get; set; } = new ();
 
 }

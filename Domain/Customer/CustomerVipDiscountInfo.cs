@@ -35,5 +35,5 @@ public class CustomerVipDiscountInfo : Entity
     /// 操作用户
     /// </summary>
     [BindNever]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 }

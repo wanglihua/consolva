@@ -86,7 +86,7 @@ public class WechatAppPhoneNumberService
     public class PhoneNumberResult : WechatJsonResult
     {
         [JsonProperty("phone_info")]
-        public PhoneInfo Phone { get; set; } = new PhoneInfo();
+        public PhoneInfo Phone { get; set; } = new ();
 
         public class PhoneInfo
         {
@@ -100,7 +100,7 @@ public class WechatAppPhoneNumberService
             public int CountryCode { get; set; }
 
             [JsonProperty("watermark")]
-            public WatermarkInfo Watermark { get; set; } = new WatermarkInfo();
+            public WatermarkInfo Watermark { get; set; } = new ();
 
             public class WatermarkInfo
             {

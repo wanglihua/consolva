@@ -55,14 +55,14 @@ public class LogisticsGoodsInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "添加人员不能为空！")]
     [JsonProperty("addUser")]
-    public virtual UserInfo AddUser { get; set; } = new UserInfo();
+    public virtual UserInfo AddUser { get; set; } = new ();
 
     /// <summary>
     /// 最后修改人，非空
     /// </summary>
     [Required(ErrorMessage = "最后修改人不能为空！")]
     [JsonProperty("updateUser")]
-    public virtual UserInfo UpdateUser { get; set; } = new UserInfo();
+    public virtual UserInfo UpdateUser { get; set; } = new ();
 
     /// <summary>
     /// 创建单号，非空

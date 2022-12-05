@@ -17,7 +17,7 @@ public class CustomerScoreLogInfo : Entity
     /// </summary>
     [DisplayName("客户id")]
     [Required(ErrorMessage = "客户id不能为空！")]
-    public virtual CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
     /// 积分变动类型

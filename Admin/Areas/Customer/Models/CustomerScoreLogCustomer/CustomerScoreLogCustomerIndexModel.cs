@@ -9,7 +9,7 @@ public class CustomerScoreLogCustomerIndexModel
     public int CustomerId { get; set; }
 
     [BindNever]
-    public CustomerInfo Customer { get; set; } = new CustomerInfo();
+    public CustomerInfo Customer { get; set; } = new ();
 
     [BindNever]
     public IList<CustomerScoreType> ScoreTypeList { get; set; } = CustomerScoreType.GetList();

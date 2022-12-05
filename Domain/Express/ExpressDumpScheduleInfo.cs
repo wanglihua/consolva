@@ -16,14 +16,14 @@ public class ExpressDumpScheduleInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "快递单不能为空！")]
     [JsonProperty("express")]
-    public virtual ExpressInfo Express { get; set; } = new ExpressInfo();
+    public virtual ExpressInfo Express { get; set; } = new ();
 
     /// <summary>
     /// 堆存人，非空
     /// </summary>
     [Required(ErrorMessage = "堆存人不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 堆存类型，非空

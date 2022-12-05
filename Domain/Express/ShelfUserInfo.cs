@@ -17,21 +17,21 @@ public class ShelfUserInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "用户不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 仓库，非空
     /// </summary>
     [Required(ErrorMessage = "仓库不能为空！")]
     [JsonProperty("warehouse")]
-    public virtual WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public virtual WarehouseInfo Warehouse { get; set; } = new ();
 
     /// <summary>
     /// 货架，非空
     /// </summary>
     [Required(ErrorMessage = "货架不能为空！")]
     [JsonProperty("shelf")]
-    public virtual ShelfInfo Shelf { get; set; } = new ShelfInfo();
+    public virtual ShelfInfo Shelf { get; set; } = new ();
 
     /// <summary>
     /// 类型，非空

@@ -13,11 +13,11 @@ public class UserPassResInfo : EntityNoUpdate
     /// 用户
     /// </summary>
     [Required(ErrorMessage = "用户不能为空！")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 资源
     /// </summary>
     [Required(ErrorMessage = "资源不能为空！")]
-    public virtual PassResInfo PassRes { get; set; } = new PassResInfo();
+    public virtual PassResInfo PassRes { get; set; } = new ();
 }

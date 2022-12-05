@@ -24,14 +24,14 @@ public class LogisticsGoodsLogInfo : EntityNoUpdate
     /// </summary>
     [Required(ErrorMessage = "物品不能为空！")]
     [JsonProperty("goods")]
-    public virtual LogisticsGoodsInfo Goods { get; set; } = new LogisticsGoodsInfo();
+    public virtual LogisticsGoodsInfo Goods { get; set; } = new ();
 
     /// <summary>
     /// 操作人，非空
     /// </summary>
     [Required(ErrorMessage = "操作人不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo User { get; set; } = new UserInfo();
+    public virtual UserInfo User { get; set; } = new ();
 
     /// <summary>
     /// 操作备注，非空

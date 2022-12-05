@@ -10,7 +10,7 @@ public class LogisticsExpressCheckinExpressModel
     #region bind never
 
     [BindNever]
-    public WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
+    public WarehouseInfo Warehouse { get; set; } = new ();
 
     [BindNever]
     public decimal? Length { get; set; }

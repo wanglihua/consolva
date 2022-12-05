@@ -10,7 +10,7 @@ public partial class LogisticsModeGoodsTypeInfo : Entity
     /// <summary>
     /// 物流方式，非空
     /// </summary>
-    public virtual LogisticsModeInfo LogisticsMode { get; set; } = new LogisticsModeInfo();
+    public virtual LogisticsModeInfo LogisticsMode { get; set; } = new ();
 
     /// <summary>
     /// 物品类型，非空

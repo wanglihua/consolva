@@ -7,12 +7,12 @@ public class StorageLocExpressInfo
     /// <summary>
     /// 仓位，非空
     /// </summary>
-    public virtual StorageLocInfo StorageLoc { get; set; } = new StorageLocInfo();
+    public virtual StorageLocInfo StorageLoc { get; set; } = new ();
 
     /// <summary>
     /// 货架，非空
     /// </summary>
-    public virtual ShelfInfo Shelf { get; set; } = new ShelfInfo();
+    public virtual ShelfInfo Shelf { get; set; } = new ();
 
     /// <summary>
     /// 快递单，非空
