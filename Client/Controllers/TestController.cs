@@ -19,8 +19,8 @@ public class TestController : Controller
     [Route("/client/test")]
     public IActionResult Index()
     {
-        // Thread.Sleep(3000);
-        //
+        Thread.Sleep(3000);
+
         // throw new ValidationException("操作发生错误！");
 
         return Json(new {
