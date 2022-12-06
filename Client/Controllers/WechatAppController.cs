@@ -52,7 +52,7 @@ public class WechatAppController : Controller
     {
         if (ModelState.IsValid == false)
         {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
         var result = wechatAppAuthCodeSessionService.GetResult(param.Code);
@@ -106,7 +106,7 @@ public class WechatAppController : Controller
     {
         if (ModelState.IsValid == false)
         {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
         string code = param.Code.Trim();

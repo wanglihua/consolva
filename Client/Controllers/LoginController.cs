@@ -43,7 +43,7 @@ public class LoginController : Controller
             //     throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
             // }
 
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(this.ModelState));
         }
 
         if (captchaService.CheckInputCode(model.Captcha) == false)

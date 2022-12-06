@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressExpect;
 using shunda.Client.Services;
+using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
+using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Express.Controllers;
@@ -12,11 +15,15 @@ public class ExpressExpectController : Controller
 {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly ExpressExpectService expressExpectService;
 
-    public ExpressExpectController(ISession session, LoginCustomerService loginCustomerService)
+    public ExpressExpectController(ISession session,
+        LoginCustomerService loginCustomerService,
+        ExpressExpectService expressExpectService)
     {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.expressExpectService = expressExpectService;
     }
 
     [HttpPost]
@@ -58,14 +65,13 @@ public class ExpressExpectController : Controller
             });
         }
 
-        ExpressExpectListModel model = new ExpressExpectListModel();
-        model.ExpressExpectCount = expressExpectCount;
-        model.ExpressExpectList = itemList;
-
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = model,
+            Data = new ExpressExpectListModel {
+                ExpressExpectCount = expressExpectCount,
+                ExpressExpectList = itemList,
+            },
         });
     }
 
@@ -92,5 +98,59 @@ public class ExpressExpectController : Controller
         }
 
         return query;
+    }
+
+    [HttpPost]
+    [Route("/client/express/expect/detail")]
+    public IActionResult Detail([FromBody] IdParam param)
+    {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int expressExpectId = param.Id;
+        var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
+
+        if (expressExpect == null)
+        {
+            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不存在！");
+        }
+
+        if (expressExpect.Customer.Id != loginCustomerId)
+        {
+            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前会员 #{loginCustomerId} ！");
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new ExpressExpectDetailModel() {
+                Id = expressExpect.Id,
+                TrackingNo = expressExpect.TrackingNo,
+                Description = expressExpect.Description,
+            },
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/expect/delete")]
+    public IActionResult Delete([FromBody] IdParam param)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        expressExpectService.Delete(expressExpectId: param.Id, customerId: loginCustomerId);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "快递单号预告删除成功！",
+        });
     }
 }
