@@ -136,6 +136,44 @@ public class ExpressExpectController : Controller
     }
 
     [HttpPost]
+    [Route("/client/express/expect/add/save")]
+    public IActionResult AddSave([FromBody] ExpressExpectAddModel model)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        expressExpectService.Add(loginCustomerId, model.TrackingNo, model.Description ?? string.Empty);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/expect/edit/save")]
+    public IActionResult EditSave([FromBody] ExpressExpectEditModel model)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        expressExpectService.Edit(model.Id, loginCustomerId, model.TrackingNo, model.Description ?? string.Empty);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    [HttpPost]
     [Route("/client/express/expect/delete")]
     public IActionResult Delete([FromBody] IdParam param)
     {
