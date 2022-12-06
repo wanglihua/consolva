@@ -23,9 +23,9 @@ public class TestController : Controller
 
         // throw new ValidationException("操作发生错误！");
 
-        return Json(new {
-            success = true,
-            message = "操作成功！",
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
         });
     }
 }

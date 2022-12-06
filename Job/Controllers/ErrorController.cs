@@ -24,9 +24,9 @@ public class ErrorController : Controller
 
         if (WebUtil.ShouldShowJson(Request))
         {
-            return Json(new {
-                success = false,
-                message = exp.Message,
+            return Json(new JsonResultData {
+                Success = false,
+                Message = exp.Message,
             });
         }
 

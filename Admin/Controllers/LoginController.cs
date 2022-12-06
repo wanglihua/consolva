@@ -59,9 +59,9 @@ public class LoginController : Controller
             throw new ValidationException("用户不存在或密码不正确！");
         }
 
-        return Json(new {
-            success = true,
-            message = "登录成功！"
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "登录成功！"
         });
     }
 
@@ -72,9 +72,9 @@ public class LoginController : Controller
     {
         loginUserService.Logout(Request, Response);
 
-        return Json(new {
-            success = true,
-            message = "注销成功！"
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "注销成功！"
         });
     }
 }

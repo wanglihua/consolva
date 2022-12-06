@@ -86,9 +86,9 @@ public class WechatAppController : Controller
 
         loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, Request);
 
-        return Json(new {
-            success = true,
-            message = "登录成功！",
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "登录成功！",
         });
     }
 
@@ -114,10 +114,12 @@ public class WechatAppController : Controller
 
         log.Trace($"phone number: {phoneNumber}");
 
-        return Json(new {
-            success = true,
-            message = "操作成功！",
-            phoneNumber = phoneNumber,
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new {
+                phoneNumber = phoneNumber,
+            }
         });
     }
 }

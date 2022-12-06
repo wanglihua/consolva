@@ -180,9 +180,9 @@ public class LogisticsGoodsTypeSettingController : Controller
         session.Update(logisticsGoodsTypeSetting);
         session.Flush();
 
-        return Json(new {
-            success = true,
-            message = "保存成功！",
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "保存成功！",
         });
     }
 }

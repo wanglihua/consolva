@@ -255,9 +255,9 @@ public class CouponController : Controller
             }
         }
 
-        return Json(new {
-            success = true,
-            message = "优惠券发放成功！",
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "优惠券发放成功！",
         });
     }
 
@@ -430,9 +430,9 @@ public class CouponController : Controller
             }
         });
 
-        return Json(new {
-            success = true,
-            message = "优惠券导入发放成功！",
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "优惠券导入发放成功！",
         });
     }
 
@@ -495,9 +495,9 @@ public class CouponController : Controller
 
         session.Flush();
 
-        return Json(new {
-            success = true,
-            message = "优惠券收回发放成功！",
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "优惠券收回发放成功！",
         });
     }
 }

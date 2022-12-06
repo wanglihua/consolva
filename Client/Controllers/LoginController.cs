@@ -101,9 +101,9 @@ public class LoginController : Controller
     {
         loginCustomerService.Logout(Request, Response);
 
-        return Json(new {
-            success = true,
-            message = "注销成功！"
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "注销成功！"
         });
     }
 }

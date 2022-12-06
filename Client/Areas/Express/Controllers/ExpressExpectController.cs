@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressExpect;
 using shunda.Client.Services;
+using shunda.Core.Web;
 using shunda.Domain.Express;
 using ISession = NHibernate.ISession;
 
@@ -61,10 +62,10 @@ public class ExpressExpectController : Controller
         model.ExpressExpectCount = expressExpectCount;
         model.ExpressExpectList = itemList;
 
-        return Json(new {
-            success = true,
-            message = "操作成功！",
-            data = model,
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = model,
         });
     }
 
