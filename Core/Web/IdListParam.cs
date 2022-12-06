@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace shunda.Core.Web;
 
 public class IdListParam
 {
     [BindProperty(Name = "idList")]
+    [JsonProperty("idList")]
     public IList<int> IdList { get; set; } = new List<int>();
 
     public void Validate(string message = "请选择要操作的数据项！")
