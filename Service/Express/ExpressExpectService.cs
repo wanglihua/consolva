@@ -106,6 +106,7 @@ public class ExpressExpectService
         expressExpectInDb.Customer = customer;
         expressExpectInDb.TrackingNo = trackingNo;
         expressExpectInDb.Description = description;
+        expressExpectInDb.LastEditTime = DateTime.Now;
         expressExpectInDb.Status = status;
 
         if (create)
@@ -196,8 +197,9 @@ public class ExpressExpectService
 
         expressExpect.TrackingNo = trackingNo;
         expressExpect.Description = description;
+        expressExpect.LastEditTime = DateTime.Now;
         expressExpect.Status = status;
-        
+
         session.Update(expressExpect);
         session.Flush();
     }

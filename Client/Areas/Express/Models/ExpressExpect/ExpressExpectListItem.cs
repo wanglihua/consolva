@@ -18,16 +18,16 @@ public class ExpressExpectListItem
     /// </summary>
     [JsonProperty("status")]
     public string Status { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// 是不是已到货
     /// </summary>
     [JsonProperty("enter")]
-    public bool Enter { get; set; }
+    public bool Enter { get; set; } = false;
     
     /// <summary>
     /// 对应的快递单号id
     /// </summary>
     [JsonProperty("expressId")]
-    public int ExpressId { get; set; }
+    public int? ExpressId { get; set; }
 }
