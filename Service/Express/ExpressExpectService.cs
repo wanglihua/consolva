@@ -121,6 +121,88 @@ public class ExpressExpectService
     }
 
     /// <summary>
+    /// 编辑快递单号预报
+    /// </summary>
+    /// <param name="expressExpectId"></param>
+    /// <param name="customerId">用于验证快递单号预报是不是属于当前会员</param>
+    /// <param name="trackingNo"></param>
+    /// <param name="description"></param>
+    public void Edit(int expressExpectId, int customerId, string trackingNo, string description)
+    {
+        var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
+        if (expressExpect == null)
+        {
+            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不存在！");
+        }
+
+        if (expressExpect.Customer.Id != customerId)
+        {
+            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前会员 #{customerId} ！");
+        }
+
+        if (string.IsNullOrWhiteSpace(trackingNo))
+        {
+            throw new ValidationException("快递单号不能为空！");
+        }
+
+        trackingNo = trackingNo.Trim().ToUpper();
+
+        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false)
+        {
+            throw new ValidationException("快递单号格式不正确或不能在快递单号中录入中文！");
+        }
+
+        var expressExpectInDb = session.Query<ExpressExpectInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .Take(1)
+            .SingleOrDefault();
+
+        // 已经存在
+        if (expressExpectInDb != null)
+        {
+            if (expressExpectInDb.Customer.Id != customerId) // 不是本人的
+            {
+                throw new ValidationException($"定的快递单号预报 {trackingNo} 别的会员已经添加，请检查是否录入有误！");
+            }
+
+            //走到这里肯定是本人的了，这里的逻辑跟添加的时候不一样些
+            throw new ValidationException($"指定的快递单号预报 {trackingNo} 已经存在，不能重复添加！");
+        }
+
+        var express = session.Query<ExpressInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .Take(1)
+            .SingleOrDefault();
+
+        ExpressExpectStatus status = ExpressExpectStatus.Create;
+        if (express != null)
+        {
+            if (express.Status == ExpressStatus.WaitPick)
+            {
+                status = ExpressExpectStatus.Enter;
+            }
+            else
+            {
+                if (express.Customer!.Id == customerId) // 被他人认领
+                {
+                    throw new ValidationException("预告快递单号对应的快递单已存在且已被他人认领，请检查是否录入有误！");
+                }
+                else // 自己认领的
+                {
+                    throw new ValidationException("预告快递单号对应的快递单已存在且已被本人认领，请检查是否录入有误！");
+                }
+            }
+        }
+
+        expressExpect.TrackingNo = trackingNo;
+        expressExpect.Description = description;
+        expressExpect.Status = status;
+        
+        session.Update(expressExpect);
+        session.Flush();
+    }
+
+    /// <summary>
     /// 设置快递单号预报已认领
     /// </summary>
     /// <param name="trackingNo">快递单号</param>
