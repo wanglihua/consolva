@@ -17,18 +17,4 @@
             <text class="userinfo-nickname">{{userInfo.nickName}}</text>
         </block>
     </view>
-    <view class="usermotto">
-        <text class="user-motto">{{motto}}</text>
-    </view>
-    <view>
-        <van-button type="primary">Button</van-button>
-
-        <van-button type="default" bind:click="testClick">默认按钮</van-button>
-        <van-button type="primary">主要按钮</van-button>
-        <van-button type="info">信息按钮</van-button>
-        <van-button type="warning">警告按钮</van-button>
-        <van-button type="danger" bind:getphonenumber="getPhoneNumber">获取电话号码</van-button>
-    </view>
-
-    <van-toast id="van-toast" />
 </view>

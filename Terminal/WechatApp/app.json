@@ -1,12 +1,14 @@
 {
     "pages": [
         "pages/index/index",
-        "pages/logs/logs"
+        "pages/logs/logs",
+        "pages/express/express_expect/express_expect",
+        "pages/express/express_expect/express_expect_list/express_expect_list"
     ],
     "window": {
         "backgroundTextStyle": "light",
         "navigationBarBackgroundColor": "#fff",
-        "navigationBarTitleText": "Weixin",
+        "navigationBarTitleText": "舜达集运",
         "navigationBarTextStyle": "black"
     },
     "usingComponents": {

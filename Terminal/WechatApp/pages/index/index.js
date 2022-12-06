@@ -4,7 +4,6 @@ const app = getApp();
 
 Page({
     data: {
-        motto: 'Hello World',
         userInfo: {},
         hasUserInfo: false,
         canIUse: wx.canIUse('button.open-type.getUserInfo'),
@@ -46,15 +45,5 @@ Page({
             userInfo: e.detail.userInfo,
             hasUserInfo: true
         })
-    },
-    getPhoneNumber(e) {
-        app.post("/client/wechat/app/get/phone/number", {
-            code: e.detail.code
-        });
-    },
-    testClick(e) {
-        console.log(e);
-
-        app.post("/client/test");
     }
 })
