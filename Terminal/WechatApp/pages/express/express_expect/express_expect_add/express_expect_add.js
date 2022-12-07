@@ -1,4 +1,7 @@
 // pages/express/express_expect/express_expect_add/express_expect_add.js
+
+const app = getApp();
+
 Page({
 
     /**
@@ -6,7 +9,10 @@ Page({
      */
     data: {
         trackingNo: "",
-        description: ""
+        description: "",
+
+        trackingNoHasError: false,
+        trackingNoErrorMsg: "",
     },
 
     /**
@@ -63,5 +69,20 @@ Page({
      */
     onShareAppMessage() {
 
+    },
+
+    onSaveClick() {
+        if(this.data.trackingNo == "") {
+            this.data.trackingNoHasError = true;
+            this.data.trackingNoErrorMsg = "快递单号不能为空！";
+            return;
+        }
+
+        this.data.trackingNoHasError = false;
+        this.data.trackingNoErrorMsg = "";
+
+    },
+    onCancelClick() {
+        wx.navigateBack();
     }
 })
