@@ -6,7 +6,6 @@
             <van-grid-item icon="photo-o" text="文字" badge="1" />
             <van-grid-item icon="photo-o" text="文字" dot />
             <van-grid-item icon="icons/express-expect.png" text="预报池" badge="1" />
-            <van-grid-item icon="svg/truck.svg" text="转运" icon-color="red" badge="1" />
         </van-grid>
     </view>
 </view>

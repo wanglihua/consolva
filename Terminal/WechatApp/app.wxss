@@ -1,5 +1,7 @@
 /**app.wxss**/
 
+@import "assets/iconfont/iconfont.wxss";
+
 .container {
     padding: 5rpx;
     margin: 5rpx;
