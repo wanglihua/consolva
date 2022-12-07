@@ -2,7 +2,8 @@
     "pages": [
         "pages/index/index",
         "pages/logs/logs",
-        "pages/express/express_expect/express_expect_list/express_expect_list"
+        "pages/express/express_expect/express_expect_list/express_expect_list",
+        "pages/express/express_expect/express_expect_add/express_expect_add"
     ],
     "window": {
         "backgroundTextStyle": "light",

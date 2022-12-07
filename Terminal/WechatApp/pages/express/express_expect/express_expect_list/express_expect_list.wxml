@@ -1,7 +1,7 @@
 <!--pages/express/express_expect/express_expect_list/express_expect_list.wxml-->
 <view class="container">
     <view style="padding: 10rpx 20rpx;">
-        <van-button type="primary" icon="add" plain block>添加快递单号</van-button>
+        <van-button type="primary" icon="add" plain block bind:click="onAddExpressExpectClick">添加快递单号</van-button>
     </view>
     <van-search value="{{ value }}" placeholder="请输入搜索关键词" />
 </view>

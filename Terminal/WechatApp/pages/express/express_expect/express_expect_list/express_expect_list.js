@@ -62,5 +62,11 @@ Page({
      */
     onShareAppMessage() {
 
+    },
+
+    onAddExpressExpectClick() {
+        wx.navigateTo({
+          url: '../express_expect_add/express_expect_add',
+        })
     }
 })
