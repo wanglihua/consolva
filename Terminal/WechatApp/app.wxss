@@ -1,11 +1,8 @@
 /**app.wxss**/
+
+@import "./assets/font/iconfont.wxss";
+
 .container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10rpx 10rpx;
+    padding: 5rpx;
     margin: 5rpx;
-    box-sizing: border-box;
 }
