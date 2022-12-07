@@ -99,7 +99,7 @@ public class ExpressExpectService
         bool create = false;
         if (expressExpectInDb == null)
         {
-            create = false;
+            create = true;
             expressExpectInDb = new ExpressExpectInfo();
         }
 

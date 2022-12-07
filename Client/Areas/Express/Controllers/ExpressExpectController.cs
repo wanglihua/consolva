@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressExpect;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -137,6 +138,7 @@ public class ExpressExpectController : Controller
 
     [HttpPost]
     [Route("/client/express/expect/add/save")]
+    [Transactional]
     public IActionResult AddSave([FromBody] ExpressExpectAddModel model)
     {
         if (ModelState.IsValid == false)
@@ -156,6 +158,7 @@ public class ExpressExpectController : Controller
 
     [HttpPost]
     [Route("/client/express/expect/edit/save")]
+    [Transactional]
     public IActionResult EditSave([FromBody] ExpressExpectEditModel model)
     {
         if (ModelState.IsValid == false)
