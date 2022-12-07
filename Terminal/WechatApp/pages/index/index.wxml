@@ -23,7 +23,6 @@
             <van-grid-item icon="photo-o" icon-prefix="iconfont" icon="express-expect" icon-color="green" text="预报池" badge="3" url="../express/express_expect/express_expect_list/express_expect_list"/>
             <van-grid-item icon="photo-o" text="文字" badge="1" />
             <van-grid-item icon="photo-o" text="文字" dot />
-            <van-grid-item icon="../../../../assets/images/logo.png" text="文字" badge="1" />
             <van-grid-item icon="../../../../assets/images/test.svg" text="文字" badge="1" />
         </van-grid>
     </view>
