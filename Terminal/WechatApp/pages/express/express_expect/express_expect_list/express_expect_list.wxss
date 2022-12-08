@@ -16,6 +16,11 @@
     color: white !important;
 }
 
+.express-expect-footer {
+    background-color: #efefef !important;
+}
+
+
 .express-expect-search {
     margin: 0 0 15rpx 0 !important;
     padding: 0 !important;

@@ -190,7 +190,7 @@ Page({
                             id: expressExpectId
                         }, function (res) {
                             wx.showToast({
-                                title: res.data.message,
+                                title: res.message,
                             });
 
                             that.setData({
