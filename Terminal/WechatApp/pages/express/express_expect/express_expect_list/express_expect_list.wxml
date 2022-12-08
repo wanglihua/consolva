@@ -35,5 +35,5 @@
         </view>
     </view>
 
-    <van-action-sheet show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:click-overlay="onActionSheetOverlayClick" bind:select="onActionSheetSelect" />
+    <van-action-sheet title="快递单号 {{ currentExpressExpect.trackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect" />
 </view>

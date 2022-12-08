@@ -152,12 +152,13 @@ Page({
             showActionSheet: true
         });
     },
-    onActionSheetOverlayClick(e) {
+    onActionSheetCloseClick(e) {
         this.setData({
             showActionSheet: false
         });
     },
     onActionSheetSelect(e) {
+        console.log(this.data.currentExpressExpect);
         console.log(e.detail);
     }
 })
