@@ -14,7 +14,7 @@
 <view class="container-bottom">
     <view style="padding-bottom: 200rpx;">
         <view wx:if="{{ expressExpectCount === 0 }}">
-            <van-empty description="暂时没有数据项！"/>
+            <van-empty description="暂时没有数据项！" />
         </view>
         <view wx:else>
             <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect" wx:for-index="index">
@@ -29,6 +29,9 @@
                     </van-cell-group>
                 </view>
             </block>
+            <view style="margin-top: 40rpx;">
+                <van-divider contentPosition="center">共 {{ expressExpectCount }} 项</van-divider>
+            </view>
         </view>
     </view>
 </view>

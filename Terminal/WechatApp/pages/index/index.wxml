@@ -2,7 +2,7 @@
 <view class="container">
     <view>
         <van-grid border="{{false}}" gutter="3">
-            <van-grid-item icon-prefix="iconfont" icon="express-expect" text="预报池" badge="3" url="../express/express_expect/express_expect_list/express_expect_list" />
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-color="#58727e" text="预报池" badge="3" url="../express/express_expect/express_expect_list/express_expect_list" />
             <van-grid-item icon-prefix="iconfont" icon="add" text="文字" dot />
             <van-grid-item icon-prefix="iconfont" icon="add" text="文字" dot/>
             <van-grid-item icon-prefix="iconfont" icon="express-expect" text="预报池" badge="1" />
