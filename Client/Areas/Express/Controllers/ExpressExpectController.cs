@@ -33,7 +33,7 @@ public class ExpressExpectController : Controller
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        int expressExpectCount = GetListQuery(loginCustomerId, queryParam).Count();
+        // int expressExpectCount = GetListQuery(loginCustomerId, queryParam).Count();
 
         IList<ExpressExpectInfo> expressExpectList = GetListQuery(loginCustomerId, queryParam)
             .OrderByDescending(e => e.Status)
@@ -66,6 +66,8 @@ public class ExpressExpectController : Controller
                 ExpressId = express?.Id, // 可能会是 null
             });
         }
+
+        int expressExpectCount = itemList.Count;
 
         return Json(new JsonResultData {
             Success = true,

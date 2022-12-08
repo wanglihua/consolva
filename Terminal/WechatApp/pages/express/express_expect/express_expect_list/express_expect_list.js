@@ -74,9 +74,24 @@ Page({
         app.post("/client/express/expect/list", {
             trackingNoQuery: this.data.trackingNoQuery,
         }, function (res) {
+
+            let expressExpectCount = res.data.expressExpectCount;
+            let expressExpectList = res.data.expressExpectList;
+
+            for (const expressExpect of expressExpectList) {
+                let headerClassName = "express-expect-header";
+                if (expressExpect.enter === true) {
+                    headerClassName = "express-expect-header-enter";
+                }
+
+                expressExpect.headerClassName = headerClassName;
+            }
+
+            console.log(expressExpectList);
+
             that.setData({
-                expressExpectList: res.data.expressExpectList,
-                expressExpectCount: res.data.expressExpectCount,
+                expressExpectList: expressExpectList,
+                expressExpectCount: expressExpectCount,
             });
         });
     },
