@@ -17,6 +17,6 @@
 }
 
 .express-expect-search {
-    margin: 0 0 10rpx 0 !important;
+    margin: 0 0 15rpx 0 !important;
     padding: 0 !important;
 }

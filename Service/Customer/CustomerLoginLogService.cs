@@ -55,6 +55,8 @@ public class CustomerLoginLogService
         {
             openId = string.Empty;
         }
+        
+        // todo 记录 client id 和 微信场景值
 
         CustomerLoginLogInfo customerLoginLog = new CustomerLoginLogInfo {
             Stage = stage,

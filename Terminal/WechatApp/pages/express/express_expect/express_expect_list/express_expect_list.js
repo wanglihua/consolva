@@ -98,5 +98,24 @@ Page({
         wx.navigateTo({
             url: '../express_expect_add/express_expect_add',
         })
+    },
+
+    onSearch(e) {
+        this.setData({
+            trackingNoQuery: e.detail,
+        });
+        this.loadExpressExpectList();
+    },
+    onSearchChange(e) {
+        this.setData({
+            trackingNoQuery: e.detail,
+        });
+        this.loadExpressExpectList();
+    },
+    onSearchClear() {
+        this.setData({
+            trackingNoQuery: "",
+        });
+        this.loadExpressExpectList();
     }
 })

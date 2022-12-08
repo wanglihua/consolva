@@ -5,8 +5,8 @@
             <view style="padding: 10rpx 0;">
                 <van-button type="primary" icon="add" plain block bind:click="onAddExpressExpectClick">添加快递单号</van-button>
             </view>
-            <van-search value="{{ trackingNoQuery }}" placeholder="请输入搜索关键词" custom-class="express-expect-search" bind:search="" bind:change="" bind:clear=""/>
-            <van-divider hairline customStyle="margin: 0;"/>
+            <van-search model:value="{{ trackingNoQuery }}" placeholder="请输入搜索关键词" custom-class="express-expect-search" bind:search="onSearch" bind:change="onSearchChange" bind:clear="onSearchClear" />
+            <van-divider hairline customStyle="margin: 0;" />
         </view>
     </view>
 </van-sticky>
@@ -16,12 +16,12 @@
         <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect">
             <view style="margin: 25rpx 0;">
                 <van-cell-group>
-                    <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" custom-class="{{ expressExpect.headerClassName }}" title-class="express-expect-header-title" value-class="express-expect-header-title"/>
-                    <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}"/>
-                    <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}"/>
-                    <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}"/>
-                    <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}"/>
-                    <van-cell title="操作" value="编辑，删除" border="{{ false }}" is-link/>
+                    <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" custom-class="{{ expressExpect.headerClassName }}" title-class="express-expect-header-title" value-class="express-expect-header-title" />
+                    <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}" />
+                    <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}" />
+                    <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}" />
+                    <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}" />
+                    <van-cell title="操作" value="编辑，删除" border="{{ false }}" is-link />
                 </van-cell-group>
             </view>
         </block>
