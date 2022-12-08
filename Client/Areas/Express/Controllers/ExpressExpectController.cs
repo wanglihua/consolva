@@ -181,6 +181,7 @@ public class ExpressExpectController : Controller
 
     [HttpPost]
     [Route("/client/express/expect/delete")]
+    [Transactional]
     public IActionResult Delete([FromBody] IdParam param)
     {
         if (ModelState.IsValid == false)

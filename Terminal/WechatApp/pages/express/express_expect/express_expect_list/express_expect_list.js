@@ -172,14 +172,41 @@ Page({
         console.log(e.detail);
 
         const expressExpectId = this.data.currentExpressExpect.id;
+        const trackingNo = this.data.currentExpressExpect.trackingNo;
         const action = e.detail.action;
+
+        const that = this;
 
         if (action === "edit") {
 
         }
 
         if (action === "delete") {
+            wx.showModal({
+                title: '删除确认',
+                content: '确实要删除 ' + trackingNo + ' 预报吗？',
+                success(res) {
+                    if (res.confirm) {
+                        app.post("/client/express/expect/delete", {
+                            id: expressExpectId
+                        }, function (res) {
+                            wx.showToast({
+                                title: res.data.message,
+                            });
 
+                            that.setData({
+                                showActionSheet: false
+                            });
+                        });
+                    }
+
+                    if (res.cancel) {
+                        that.setData({
+                            showActionSheet: false
+                        });
+                    }
+                }
+            });
         }
 
         if (action === "enterPrice") {
