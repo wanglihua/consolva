@@ -83,11 +83,14 @@ Page({
 
             for (const expressExpect of expressExpectList) {
                 let headerClassName = "express-expect-header";
+                let actions = "编辑，删除";
                 if (expressExpect.enter === true) {
                     headerClassName = "express-expect-header-enter";
+                    actions = actions + "，录货值";
                 }
 
                 expressExpect.headerClassName = headerClassName;
+                expressExpect.actions = actions;
             }
 
             that.setData({
