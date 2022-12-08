@@ -166,8 +166,11 @@ public class ExpressExpectService
                 throw new ValidationException($"定的快递单号预报 {trackingNo} 别的会员已经添加，请检查是否录入有误！");
             }
 
-            //走到这里肯定是本人的了，这里的逻辑跟添加的时候不一样些
-            throw new ValidationException($"指定的快递单号预报 {trackingNo} 已经存在，不能重复添加！");
+            if (expressExpectInDb.Id != expressExpectId)
+            {
+                //走到这里肯定是本人的了，这里的逻辑跟添加的时候不一样些
+                throw new ValidationException($"指定的快递单号预报 {trackingNo} 已经存在，不能重复添加！");
+            }
         }
 
         var express = session.Query<ExpressInfo>()

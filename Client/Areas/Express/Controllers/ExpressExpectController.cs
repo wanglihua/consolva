@@ -155,7 +155,7 @@ public class ExpressExpectController : Controller
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "添加保存成功！",
         });
     }
 
@@ -175,7 +175,7 @@ public class ExpressExpectController : Controller
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "编辑保存成功！",
         });
     }
 

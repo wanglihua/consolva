@@ -90,7 +90,7 @@ Page({
             description: this.data.description,
         }, function (res) {
             wx.showToast({
-                title: res.data.message,
+                title: res.message,
             });
 
             setTimeout(function () {

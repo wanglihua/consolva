@@ -19,7 +19,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-        this.loadExpressExpectList();
+        // this.loadExpressExpectList();
     },
 
     /**
@@ -33,7 +33,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
-
+        this.loadExpressExpectList();
     },
 
     /**
@@ -168,9 +168,6 @@ Page({
         });
     },
     onActionSheetSelect(e) {
-        console.log(this.data.currentExpressExpect);
-        console.log(e.detail);
-
         const expressExpectId = this.data.currentExpressExpect.id;
         const trackingNo = this.data.currentExpressExpect.trackingNo;
         const action = e.detail.action;
@@ -178,7 +175,9 @@ Page({
         const that = this;
 
         if (action === "edit") {
-
+            wx.navigateTo({
+                url: '../express_expect_edit/express_expect_edit?id=' + expressExpectId,
+            });
         }
 
         if (action === "delete") {
