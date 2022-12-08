@@ -73,20 +73,27 @@ Page({
 
     onSaveClick() {
         if (this.data.trackingNo == "") {
-            this.data.trackingNoHasError = true;
-            this.data.trackingNoErrorMsg = "快递单号不能为空！";
-            // return;
+            this.setData({
+                trackingNoHasError: true,
+                trackingNoErrorMsg: "快递单号不能为空！",
+            });
+            return;
         }
 
-        // todo 不知道为什么，这个不能工作
-        this.data.trackingNoHasError = false;
-        this.data.trackingNoErrorMsg = "";
+        this.setData({
+            trackingNoHasError: false,
+            trackingNoErrorMsg: "",
+        });        
 
         app.post("/client/express/expect/add/save", {
             trackingNo: this.data.trackingNo,
             description: this.data.description,
         }, function (res) {
-            setTimeout(function() {
+            wx.showToast({
+                title: res.data.message,
+            });
+
+            setTimeout(function () {
                 wx.navigateBack();
             }, 2000);
         });

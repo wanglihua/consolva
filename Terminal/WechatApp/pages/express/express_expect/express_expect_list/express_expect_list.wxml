@@ -3,19 +3,15 @@
     <view style="padding: 10rpx 20rpx;">
         <van-button type="primary" icon="add" plain block bind:click="onAddExpressExpectClick">添加快递单号</van-button>
     </view>
-    <van-search value="{{ trackingNoQuery }}" placeholder="请输入搜索关键词" />
+    <van-search value="{{ trackingNoQuery }}" placeholder="请输入搜索关键词"/>
 
-    <view style="background-color: green;">
-        Hello
-    </view>
     <van-cell-group>
-        <view style="background-color: green;">
-            dad
-            <van-cell title="单元格" value="内容" style="background-color: blue;" />
-        </view>
-        <van-cell title="单元格" value="内容" border="{{ false }}" />
-        <van-cell title="单元格" value="内容" border="{{ false }}" />
-        <van-cell title="单元格" value="内容" border="{{ false }}" />
-        <van-cell title="单元格" value="内容" border="{{ false }}" is-link />
+        <van-cell title="单元格" value="内容" custom-class="express-expect-header" title-class="express-expect-header-title" value-class="express-expect-header-title"/>
+        <van-cell title="单元格" value="内容" border="{{ false }}"/>
+        <van-cell title="单元格" value="内容" border="{{ false }}"/>
+        <van-cell title="单元格" value="内容" border="{{ false }}"/>
+        <van-cell title="单元格" value="内容" border="{{ false }}" is-link/>
     </van-cell-group>
+
+    <view>{{expressExpectCount}}</view>
 </view>

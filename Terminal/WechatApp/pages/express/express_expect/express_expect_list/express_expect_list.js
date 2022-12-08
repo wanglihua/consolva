@@ -1,4 +1,6 @@
 // pages/express/express_expect/express_expect_list/express_expect_list.js
+const app = getApp();
+
 Page({
 
     /**
@@ -6,13 +8,15 @@ Page({
      */
     data: {
         trackingNoQuery: "",
+        expressExpectList: [],
+        expressExpectCount: 0,
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-
+        this.loadExpressExpectList();
     },
 
     /**
@@ -64,9 +68,22 @@ Page({
 
     },
 
+    loadExpressExpectList() {
+        let that = this;
+
+        app.post("/client/express/expect/list", {
+            trackingNoQuery: this.data.trackingNoQuery,
+        }, function (res) {
+            that.setData({
+                expressExpectList: res.data.expressExpectList,
+                expressExpectCount: res.data.expressExpectCount,
+            });
+        });
+    },
+
     onAddExpressExpectClick() {
         wx.navigateTo({
-          url: '../express_expect_add/express_expect_add',
+            url: '../express_expect_add/express_expect_add',
         })
     }
 })

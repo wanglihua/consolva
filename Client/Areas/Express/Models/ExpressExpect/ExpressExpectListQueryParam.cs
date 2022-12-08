@@ -4,6 +4,6 @@ namespace shunda.Client.Areas.Express.Models.ExpressExpect;
 
 public class ExpressExpectListQueryParam
 {
-    [JsonProperty("trackingNo")]
+    [JsonProperty("trackingNoQuery")]
     public string? TrackingNoQuery { get; set; }
 }
