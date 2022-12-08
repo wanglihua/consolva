@@ -61,6 +61,7 @@ public class ExpressExpectController : Controller
                 TrackingNo = trackingNo,
                 Description = expressExpect.Description,
                 Status = status.Name,
+                AddTime = expressExpect.CreateTime.ToString("yyyy-MM-dd"),
                 Enter = status == ExpressExpectStatus.Enter,
                 ExpressId = express?.Id, // 可能会是 null
             });

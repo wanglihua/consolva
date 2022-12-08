@@ -20,6 +20,12 @@ public class ExpressExpectListItem
     public string Status { get; set; } = string.Empty;
 
     /// <summary>
+    /// 添加时间
+    /// </summary>
+    [JsonProperty("addTime")]
+    public string AddTime { get; set; } = string.Empty;
+
+    /// <summary>
     /// 是不是已到货
     /// </summary>
     [JsonProperty("enter")]

@@ -1,7 +1,6 @@
 {
     "pages": [
         "pages/index/index",
-        "pages/logs/logs",
         "pages/express/express_expect/express_expect_list/express_expect_list",
         "pages/express/express_expect/express_expect_add/express_expect_add",
         "pages/express/express_expect/express_expect_edit/express_expect_edit"
@@ -22,6 +21,8 @@
         "van-cell": "@vant/weapp/cell/index",
         "van-cell-group": "@vant/weapp/cell-group/index",
         "van-popup": "@vant/weapp/popup/index",
+        "van-sticky": "@vant/weapp/sticky/index",
+        "van-divider": "@vant/weapp/divider/index",
         "common": "components/common/common"
     },
     "sitemapLocation": "sitemap.json"
