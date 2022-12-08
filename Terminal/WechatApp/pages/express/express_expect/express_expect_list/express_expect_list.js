@@ -122,26 +122,33 @@ Page({
         this.loadExpressExpectList();
     },
     onActionCellClick(e) {
+        const currentExpressExpect = e.currentTarget.dataset.item;
         this.setData({
-            currentExpressExpect: e.currentTarget.dataset.item
+            currentExpressExpect: currentExpressExpect
         });
 
         const actionSheetActions = [];
 
         actionSheetActions.push({
-            id: "edit",
+            action: "edit",
             name: '编辑',
         });
 
         actionSheetActions.push({
-            id: "delete",
+            action: "delete",
             name: '删除',
+            // color: "red",
         });
 
+        let enterPriceDisabled = true;
+        if (currentExpressExpect.enter === true) {
+            enterPriceDisabled = false;
+        }
         actionSheetActions.push({
-            id: "enterPrice",
+            action: "enterPrice",
             name: '录货值',
-            subname: '录入货品价格，完成最终入库'
+            subname: '录入货品价格，完成最终入库',
+            disabled: enterPriceDisabled,
         });
 
         this.setData({
@@ -160,5 +167,24 @@ Page({
     onActionSheetSelect(e) {
         console.log(this.data.currentExpressExpect);
         console.log(e.detail);
+
+        const expressExpectId = this.data.currentExpressExpect.id;
+        const action = e.detail.action;
+
+        if (action === "edit") {
+
+        }
+
+        if (action === "delete") {
+
+        }
+
+        if (action === "enterPrice") {
+
+        }
+
+        this.setData({
+            showActionSheet: false
+        });
     }
 })
