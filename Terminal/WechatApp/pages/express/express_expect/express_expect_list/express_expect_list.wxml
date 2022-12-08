@@ -25,7 +25,7 @@
                         <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}" />
                         <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}" />
                         <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}" />
-                        <van-cell title="操作" value="编辑，删除" border="{{ false }}" is-link />
+                        <van-cell title="操作" value="编辑，删除" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" />
                     </van-cell-group>
                 </view>
             </block>
@@ -34,4 +34,6 @@
             </view>
         </view>
     </view>
+
+    <van-action-sheet show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:click-overlay="onActionSheetOverlayClick" bind:select="onActionSheetSelect" />
 </view>

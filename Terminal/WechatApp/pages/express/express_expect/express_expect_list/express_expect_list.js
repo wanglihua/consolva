@@ -10,6 +10,9 @@ Page({
         trackingNoQuery: "",
         expressExpectList: [],
         expressExpectCount: 0,
+        currentExpressExpect: {},
+        showActionSheet: false,
+        actionSheetActions: [],
     },
 
     /**
@@ -117,5 +120,44 @@ Page({
             trackingNoQuery: "",
         });
         this.loadExpressExpectList();
+    },
+    onActionCellClick(e) {
+        this.setData({
+            currentExpressExpect: e.currentTarget.dataset.item
+        });
+
+        const actionSheetActions = [];
+
+        actionSheetActions.push({
+            id: "edit",
+            name: '编辑',
+        });
+
+        actionSheetActions.push({
+            id: "delete",
+            name: '删除',
+        });
+
+        actionSheetActions.push({
+            id: "enterPrice",
+            name: '录货值',
+            subname: '录入货品价格，完成最终入库'
+        });
+
+        this.setData({
+            actionSheetActions: actionSheetActions
+        });
+
+        this.setData({
+            showActionSheet: true
+        });
+    },
+    onActionSheetOverlayClick(e) {
+        this.setData({
+            showActionSheet: false
+        });
+    },
+    onActionSheetSelect(e) {
+        console.log(e.detail);
     }
 })
