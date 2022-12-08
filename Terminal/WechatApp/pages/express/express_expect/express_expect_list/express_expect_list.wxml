@@ -3,15 +3,17 @@
     <view style="padding: 10rpx 20rpx;">
         <van-button type="primary" icon="add" plain block bind:click="onAddExpressExpectClick">添加快递单号</van-button>
     </view>
-    <van-search value="{{ trackingNoQuery }}" placeholder="请输入搜索关键词"/>
+    <van-search value="{{ trackingNoQuery }}" placeholder="请输入搜索关键词" />
 
-    <van-cell-group>
-        <van-cell title="单元格" value="内容" custom-class="express-expect-header" title-class="express-expect-header-title" value-class="express-expect-header-title"/>
-        <van-cell title="单元格" value="内容" border="{{ false }}"/>
-        <van-cell title="单元格" value="内容" border="{{ false }}"/>
-        <van-cell title="单元格" value="内容" border="{{ false }}"/>
-        <van-cell title="单元格" value="内容" border="{{ false }}" is-link/>
-    </van-cell-group>
-
-    <view>{{expressExpectCount}}</view>
+    <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect">
+        <view style="margin: 25rpx 0;">
+            <van-cell-group>
+                <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" custom-class="express-expect-header" title-class="express-expect-header-title" value-class="express-expect-header-title" />
+                <van-cell title="单元格" value="内容" border="{{ false }}" />
+                <van-cell title="单元格" value="内容" border="{{ false }}" />
+                <van-cell title="单元格" value="内容" border="{{ false }}" />
+                <van-cell title="单元格" value="内容" border="{{ false }}" is-link />
+            </van-cell-group>
+        </view>
+    </block>
 </view>
