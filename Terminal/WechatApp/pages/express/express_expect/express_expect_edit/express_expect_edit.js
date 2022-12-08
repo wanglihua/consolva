@@ -107,7 +107,7 @@ Page({
 
             setTimeout(function () {
                 wx.navigateBack();
-            }, 2000);
+            }, 1000);
         });
     },
     onCancelClick() {

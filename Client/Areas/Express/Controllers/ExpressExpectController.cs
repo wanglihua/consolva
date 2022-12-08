@@ -36,7 +36,7 @@ public class ExpressExpectController : Controller
         // int expressExpectCount = GetListQuery(loginCustomerId, queryParam).Count();
 
         IList<ExpressExpectInfo> expressExpectList = GetListQuery(loginCustomerId, queryParam)
-            .OrderByDescending(e => e.Status)
+            .OrderByDescending(e => e.Status).ThenByDescending(e => e.Id)
             .ToList();
 
         IList<string> trackingNoList = expressExpectList.Select(e => e.TrackingNo).ToList();
