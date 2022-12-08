@@ -23,6 +23,7 @@
         "van-popup": "@vant/weapp/popup/index",
         "van-sticky": "@vant/weapp/sticky/index",
         "van-divider": "@vant/weapp/divider/index",
+        "van-empty": "@vant/weapp/empty/index",
         "common": "components/common/common"
     },
     "sitemapLocation": "sitemap.json"

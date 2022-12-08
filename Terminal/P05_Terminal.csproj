@@ -7,8 +7,4 @@
         <RootNamespace>Terminal</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="WechatApp\miniprogram_npm\@assets" />
-    </ItemGroup>
-
 </Project>
