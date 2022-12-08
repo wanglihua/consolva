@@ -1,7 +1,7 @@
 /* pages/express/express_expect/express_expect_list/express_expect_list.wxss */
 
 .express-expect-header {
-    background-color:teal !important;
+    background-color: teal !important;
 }
 
 .express-expect-header-enter {
@@ -14,4 +14,9 @@
 
 .express-expect-header-value {
     color: white !important;
+}
+
+.express-expect-search {
+    margin: 0 0 10rpx 0 !important;
+    padding: 0 !important;
 }

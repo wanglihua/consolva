@@ -87,8 +87,6 @@ Page({
                 expressExpect.headerClassName = headerClassName;
             }
 
-            console.log(expressExpectList);
-
             that.setData({
                 expressExpectList: expressExpectList,
                 expressExpectCount: expressExpectCount,
