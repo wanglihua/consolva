@@ -1,3 +1,4 @@
+// 这个是新建项目的时候自带的，暂时就放在这里
 const formatTime = date => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
@@ -14,6 +15,24 @@ const formatNumber = n => {
     return n[1] ? n : `0${n}`
 }
 
+// 按id合并列表
+
+const distinctConcat = (a, b) => {
+    let arr = a.concat(b)
+    let result = []
+    let obj = {}
+
+    for (let i of arr) {
+        if (!obj[i.id]) {
+            result.push(i)
+            obj[i.id] = 1
+        }
+    }
+
+    return result
+}
+
 module.exports = {
-    formatTime
+    formatTime,
+    distinctConcat
 }

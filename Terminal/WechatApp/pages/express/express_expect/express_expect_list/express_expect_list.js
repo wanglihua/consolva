@@ -74,7 +74,7 @@ Page({
         let that = this;
 
         app.post("/client/express/expect/list", {
-            trackingNoQuery: this.data.trackingNoQuery,
+            trackingNoQuery: that.data.trackingNoQuery,
         }, function (res) {
 
             let expressExpectCount = res.data.expressExpectCount;
@@ -105,12 +105,6 @@ Page({
         })
     },
     onSearch(e) {
-        this.setData({
-            trackingNoQuery: e.detail,
-        });
-        this.loadExpressExpectList();
-    },
-    onSearchChange(e) {
         this.setData({
             trackingNoQuery: e.detail,
         });

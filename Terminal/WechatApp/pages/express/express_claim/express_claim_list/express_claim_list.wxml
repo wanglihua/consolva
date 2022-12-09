@@ -2,8 +2,8 @@
 <van-sticky>
     <view class="container-top">
         <view style="background-color: white;">
-            <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="express-claim-search" bind:search="onSearch" bind:change="onSearchChange" bind:clear="onSearchClear"/>
-            <van-divider hairline customStyle="margin: 0;"/>
+            <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="express-claim-search" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear" />
+            <van-divider hairline customStyle="margin: 0;" />
         </view>
     </view>
 </van-sticky>
@@ -11,18 +11,23 @@
 <view class="container-bottom">
     <view style="padding-bottom: 200rpx;">
         <view wx:if="{{ expressClaimCount === 0 }}">
-            <van-empty description="暂时没有数据项！"/>
+            <van-empty description="暂时没有数据项！" />
         </view>
         <view wx:else>
             <block wx:for="{{expressClaimList}}" wx:key="id" wx:for-item="expressClaim" wx:for-index="index">
                 <view style="margin: 25rpx 0;">
                     <van-cell-group>
-                        <van-cell title="{{ index + 1 }}、{{ expressClaim.trackingNo }}" value="{{ expressClaim.status }}" custom-class="express-claim-header" title-class="express-claim-header-title" value-class="express-claim-header-title"/>
-                        <van-cell title="快递单号" value="{{ expressClaim.trackingNo }}" border="{{ false }}"/>
-                        <van-cell title="状态" value="{{expressClaim.status}}" border="{{ false }}"/>
-                        <van-cell title="添加时间" value="{{expressClaim.addTime}}" border="{{ false }}"/>
-                        <van-cell title="备注" value="{{expressClaim.description}}" border="{{ false }}"/>
-                        <van-cell title="操作" value="{{expressClaim.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressClaim }}" custom-class="express-claim-footer"/>
+                        <van-cell title="{{ index + 1 }}、{{ expressClaim.checkinTrackingNo }}" value="{{ expressClaim.addDate }}" custom-class="express-claim-header" title-class="express-claim-header-title" value-class="express-claim-header-title" />
+                        <van-cell title="快递单号" value="{{ expressClaim.trackingNo }}" border="{{ false }}" />
+                        <van-cell title="快递公司" value="{{ expressClaim.expressCompany }}" border="{{ false }}" />
+                        <van-cell title="入库单号" value="{{ expressClaim.checkinTrackingNo }}" border="{{ false }}"/>
+                        <van-cell title="物品类型" value="{{ expressClaim.goodsType }}" border="{{ false }}" />
+                        <van-cell title="添加日期" value="{{ expressClaim.addDate }}" border="{{ false }}" />
+                        <van-cell title="面单会员" value="{{ expressClaim.billCustomerCode }}" border="{{ false }}" />
+                        <block wx:if="{{ expressClaim.warehouseRemark !== '' }}">
+                            <van-cell title="仓库备注" value="{{expressClaim.warehouseRemark}}" border="{{ false }}" />
+                        </block>
+                        <van-cell title="操作" value="{{expressClaim.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressClaim }}" custom-class="express-claim-footer" />
                     </van-cell-group>
                 </view>
             </block>
@@ -32,5 +37,5 @@
         </view>
     </view>
 
-    <van-action-sheet title="快递单号 {{ currentExpressClaim.trackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
+    <van-action-sheet title="入库单号 {{ currentExpressClaim.checkinTrackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect" />
 </view>

@@ -6,6 +6,7 @@ Page({
      */
     data: {
         query: "",
+        lastExpressId: 0,
         expressClaimList: [],
         expressClaimCount: 0,
         currentExpressClaim: {},
@@ -70,16 +71,30 @@ Page({
     },
 
     loadExpressClaimList() {
+        let that = this;
 
+        app.post("/client/express/claim/list", {
+            query: that.data.query,
+            lastExpressId: that.data.lastExpressId
+        }, function (res) {
+
+            let expressClaimCount = res.data.expressClaimCount;
+            let expressClaimList = res.data.expressClaimList;
+            let lastExpressId = res.data.lastExpressId;
+
+            for (const expressClaim of expressClaimList) {
+                expressClaim.actions = "查看详细，认领";
+            }
+
+            that.setData({
+                expressClaimList: expressClaimList,
+                expressClaimCount: expressClaimCount,
+                lastExpressId: lastExpressId,
+            });
+        });
     },
 
     onSearch(e) {
-        this.setData({
-            query: e.detail,
-        });
-        this.loadExpressClaimList();
-    },
-    onSearchChange(e) {
         this.setData({
             query: e.detail,
         });

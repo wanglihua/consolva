@@ -36,6 +36,7 @@ public class ExpressClaimController : Controller
 
         IList<ExpressInfo> expressClaimList = listQuery
             .OrderByDescending(e => e.Id) // 按Id降序排序
+            .Take(15) // 每次下拉去15个
             .ToList();
 
         IList<int> expressIdList = expressClaimList.Select(e => e.Id).ToList();
@@ -68,7 +69,8 @@ public class ExpressClaimController : Controller
 
         // 取最末尾，其实降序时就是最小的那一个Id
         var lastExpressClaim = expressClaimList.LastOrDefault();
-        int lastExpressId = lastExpressClaim?.Id ?? 0; // 如果取值0的话也不破坏逻辑，0的就正好就是没数据了，查询是 <0 也是数据
+        // 这里的 1 很重要，不要取0。如果取值1的话也不破坏逻辑，1的时候就正好就是没数据了，查询时 <1 也是数据
+        int lastExpressId = lastExpressClaim?.Id ?? 1;
 
         int expressClaimCount = GetListQuery(param).Count();
 
