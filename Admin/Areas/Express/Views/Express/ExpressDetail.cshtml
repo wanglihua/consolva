@@ -451,7 +451,7 @@
                                             url: "@Url.Action("SaveExpressCustomerServiceRemark", "Express")",
                                             type: "POST",
                                             data: {
-                                                'claimId': @(Model.Express.Id),
+                                                'expressId': @(Model.Express.Id),
                                                 'serviceRemark': $('#serviceRemark').val()
                                             },
                                             success: function(data) {
@@ -495,7 +495,7 @@
                                                             url: '@Url.Action("GetPrintDataById", "ExpressCheckin")',
                                                             type: "POST",
                                                             data: {
-                                                                "claimId": "@(Model.Express.Id)"
+                                                                "expressId": "@(Model.Express.Id)"
                                                             },
                                                             success: function(data) {
                                                                 hideMask();
@@ -516,7 +516,7 @@
                                                             url: '@Url.Action("GetPrintDataById", "ExpressCheckin")',
                                                             type: "POST",
                                                             data: {
-                                                                "claimId": "@(Model.Express.Id)"
+                                                                "expressId": "@(Model.Express.Id)"
                                                             },
                                                             success: function(data) {
                                                                 hideMask();
@@ -537,7 +537,7 @@
                                                             url: '@Url.Action("GetPrintDataById", "ExpressCheckin")',
                                                             type: "POST",
                                                             data: {
-                                                                "claimId": "@(Model.Express.Id)"
+                                                                "expressId": "@(Model.Express.Id)"
                                                             },
                                                             success: function(data) {
                                                                 hideMask();

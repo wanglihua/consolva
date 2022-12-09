@@ -278,21 +278,21 @@ public class ExpressListService
         criteria = criteria.CreateAlias($"{nameof(ExpressInfo.Order)}", "order", JoinType.LeftOuterJoin);
         */
 
-        var claimIds = queryParam.IdList;
-        if (string.IsNullOrWhiteSpace(claimIds) == false)
+        var expressIds = queryParam.IdList;
+        if (string.IsNullOrWhiteSpace(expressIds) == false)
         {
-            List<int> claimIdList = new List<int>();
-            IList<string> claimIdStrList = claimIds.Split(",", StringSplitOptions.RemoveEmptyEntries);
-            foreach (string claimIdStr in claimIdStrList)
+            List<int> expressIdList = new List<int>();
+            IList<string> expressIdStrList = expressIds.Split(",", StringSplitOptions.RemoveEmptyEntries);
+            foreach (string expressIdStr in expressIdStrList)
             {
-                if (int.TryParse(claimIdStr, out int claimId))
+                if (int.TryParse(expressIdStr, out int expressId))
                 {
-                    claimIdList.Add(claimId);
+                    expressIdList.Add(expressId);
                 }
             }
 
-            string claimIdProp = $"{nameof(ExpressInfo.Id)}";
-            criteria = criteria.Add(Restrictions.In(claimIdProp, claimIdList));
+            string expressIdProp = $"{nameof(ExpressInfo.Id)}";
+            criteria = criteria.Add(Restrictions.In(expressIdProp, expressIdList));
         }
 
         string claimOrderIdProp = $"{nameof(ExpressInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}";

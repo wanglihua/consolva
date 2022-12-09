@@ -46,20 +46,20 @@ namespace Service.Logistics
         /// 【生成或者重新生成】，如果已经有子单号，会删除后再生成
         /// 返回一个主单号
         /// </summary>
-        /// <param name="claimId"></param>
+        /// <param name="expressId"></param>
         /// <returns>主单号</returns>
-        public string Generate(int claimId)
+        public string Generate(int expressId)
         {
-            var express = session.Get<LogisticsClaimGoodsInfo>(claimId);
+            var express = session.Get<LogisticsClaimGoodsInfo>(expressId);
             if (express == null)
             {
-                throw new ValidationException($"指定的申领件#{claimId}不存在！");
+                throw new ValidationException($"指定的申领件#{expressId}不存在！");
             }
 
             // 主单号不存在就新生成一个，如果主单号存在（重新生成澳拼入库号时），就只是获取
 
             var aoPinTrackingNoExpressMain = session.Query<AoPinTrackingNoExpressInfo>()
-                .Where(e => e.Claim.Id == claimId && e.LogisticsExpress == null)
+                .Where(e => e.Claim.Id == expressId && e.LogisticsExpress == null)
                 .Take(1)
                 .SingleOrDefault();
 
@@ -94,7 +94,7 @@ namespace Service.Logistics
 
             // 删除已有的子单号
             session.Query<AoPinTrackingNoExpressInfo>()
-                .Where(e => e.Claim.Id == claimId && e.LogisticsExpress != null)
+                .Where(e => e.Claim.Id == expressId && e.LogisticsExpress != null)
                 .Delete();
 
             int totalQuantity = expressItemList.Sum(e => e.Quantity);
@@ -135,14 +135,14 @@ namespace Service.Logistics
         /// 获取已生成的子单号列表
         /// LogisticsExpress 不为空的单号列表，包括 ChildExpress 为空(也可能会有多个)和不为空的数据
         /// </summary>
-        /// <param name="claimId"></param>
+        /// <param name="expressId"></param>
         /// <returns></returns>
-        public IList<AoPinTrackingNoExpressInfo> ListSubTrackingNo(int claimId)
+        public IList<AoPinTrackingNoExpressInfo> ListSubTrackingNo(int expressId)
         {
             var aoPinTrackingNoExressList = session.Query<AoPinTrackingNoExpressInfo>()
                 .Fetch(e => e.LogisticsExpress) // 打印标签是会用到里面单号
                 .Fetch(e => e.ChildExpress) // 打印标签是会用到里面子单号，这个只会造成 left join ?
-                .Where(e => e.Claim.Id == claimId && e.LogisticsExpress != null)
+                .Where(e => e.Claim.Id == expressId && e.LogisticsExpress != null)
                 // .OrderBy(e => e.Id) // 最先生成的放最前面
                 .OrderBy(e => e.ChildExpress.TrackingNo) // 按子单号排序
                 .ToList();
