@@ -95,7 +95,7 @@ Page({
             trackingNoHasError: false,
             trackingNoErrorMsg: "",
         });
-
+        
         app.post("/client/express/expect/edit/save", {
             id: this.data.id,
             trackingNo: this.data.trackingNo,
@@ -104,9 +104,15 @@ Page({
             wx.showToast({
                 title: res.message,
             });
-
+            
             setTimeout(function () {
-                wx.navigateBack();
+                wx.navigateBack({
+                    complete: function (e) {
+                        const pages = getCurrentPages();
+                        const prevPage = pages[pages.length - 1];
+                        prevPage.loadExpressExpectList();
+                    }
+                });
             }, 1000);
         });
     },

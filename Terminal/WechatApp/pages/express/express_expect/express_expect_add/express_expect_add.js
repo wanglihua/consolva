@@ -83,7 +83,7 @@ Page({
         this.setData({
             trackingNoHasError: false,
             trackingNoErrorMsg: "",
-        });        
+        });
 
         app.post("/client/express/expect/add/save", {
             trackingNo: this.data.trackingNo,
@@ -94,7 +94,13 @@ Page({
             });
 
             setTimeout(function () {
-                wx.navigateBack();
+                wx.navigateBack({
+                    complete: function (e) {
+                        const pages = getCurrentPages();
+                        const prevPage = pages[pages.length - 1];
+                        prevPage.loadExpressExpectList();
+                    }
+                });
             }, 1000);
         });
     },
