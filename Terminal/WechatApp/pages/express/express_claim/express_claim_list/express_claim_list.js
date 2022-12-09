@@ -5,7 +5,12 @@ Page({
      * 页面的初始数据
      */
     data: {
-
+        query: "",
+        expressClaimList: [],
+        expressClaimCount: 0,
+        currentExpressClaim: {},
+        showActionSheet: false,
+        actionSheetActions: [],
     },
 
     /**
@@ -62,5 +67,28 @@ Page({
      */
     onShareAppMessage() {
 
-    }
+    },
+
+    loadExpressClaimList() {
+
+    },
+
+    onSearch(e) {
+        this.setData({
+            query: e.detail,
+        });
+        this.loadExpressClaimList();
+    },
+    onSearchChange(e) {
+        this.setData({
+            query: e.detail,
+        });
+        this.loadExpressClaimList();
+    },
+    onSearchClear() {
+        this.setData({
+            query: "",
+        });
+        this.loadExpressClaimList();
+    },
 })
