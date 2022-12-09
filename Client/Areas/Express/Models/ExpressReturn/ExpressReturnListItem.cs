@@ -47,23 +47,5 @@ public class ExpressReturnListItem
     public string Status { get; set; } = string.Empty;
 
     [JsonProperty("goodsList")]
-    public IList<ExpressReturnGoodsListItem> GoodsList { get; set; } = new List<ExpressReturnGoodsListItem>();
-}
-
-public class ExpressReturnGoodsListItem
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("goodsName")]
-    public string GoodsName { get; set; } = string.Empty;
-
-    [JsonProperty("quantity")]
-    public int Quantity { get; set; }
-
-    [JsonProperty("unit")]
-    public string Unit { get; set; } = string.Empty;
-
-    [JsonProperty("price")]
-    public string Price { get; set; } = string.Empty;
+    public IList<ExpressReturnListGoodsListItem> GoodsList { get; set; } = new List<ExpressReturnListGoodsListItem>();
 }
