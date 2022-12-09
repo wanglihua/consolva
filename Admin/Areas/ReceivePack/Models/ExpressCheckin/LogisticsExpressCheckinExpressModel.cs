@@ -69,6 +69,7 @@ public class LogisticsExpressCheckinExpressModel
     [MaxLength(100, ErrorMessage = "快递公司长度不能大于100！")]
     public string ExpressCompany { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "面单客户不能为空！")]
     [MaxLength(50, ErrorMessage = "面单客户长度不能大于50！")]
     public string BillCustomerCode { get; set; } = string.Empty;
 
