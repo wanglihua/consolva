@@ -2,17 +2,21 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressClaim;
 using shunda.Core.Web;
 using shunda.Domain.Express;
+using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Express.Controllers;
 
+[ExpressArea]
 public class ExpressClaimController : Controller
 {
     private readonly ISession session;
+    private readonly ExpressTrackingNoService expressTrackingNoService;
 
-    public ExpressClaimController(ISession session)
+    public ExpressClaimController(ISession session, ExpressTrackingNoService expressTrackingNoService)
     {
         this.session = session;
+        this.expressTrackingNoService = expressTrackingNoService;
     }
 
     [HttpPost]
@@ -53,7 +57,7 @@ public class ExpressClaimController : Controller
             expressClaimItemList.Add(new ExpressClaimListItem() {
                 Id = expressId,
                 BillCustomerCode = express.BillCustomerCode,
-                TrackingNo = express.TrackingNo,
+                TrackingNo = expressTrackingNoService.GetHiddenTrackingNo(express.TrackingNo),
                 CheckinTrackingNo = express.CheckinTrackingNo,
                 GoodsType = express.GoodsType.Name,
                 AddDate = express.AddTime.ToString("yyyy-MM-dd"),
