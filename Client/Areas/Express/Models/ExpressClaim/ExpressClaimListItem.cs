@@ -27,7 +27,4 @@ public class ExpressClaimListItem
 
     [JsonProperty("warehouseRemark")]
     public string WarehouseRemark { get; set; } = string.Empty;
-
-    [JsonProperty("mine")]
-    public bool Mine { get; set; } = false;
 }
