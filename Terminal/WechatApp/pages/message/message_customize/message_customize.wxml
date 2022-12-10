@@ -9,7 +9,7 @@
                 <van-cell title="{{ index + 1 }}、{{ messageCustomize.title }}" label="{{ messageCustomize.description }}">
                     <view>
                         <view style="display:block;">
-                            <van-switch checked="{{ true }}"/>
+                            <van-switch checked="{{ messageCustomize.send }}" data-item="{{ messageCustomize }}" bind:change="onSwitchChange"/>
                         </view>
                         <view style="display:block;">
                             {{ messageCustomize.sendHint }}

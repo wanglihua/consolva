@@ -67,6 +67,41 @@ Page({
 
     },
 
+    onSwitchChange(e) {
+        const messageCustomize = e.currentTarget.dataset.item;
+        const typeId = messageCustomize.typeId;
+        const send = e.detail;
+
+        // 这个设置让点击后马上就能看到视觉效果
+        const messageCustomizeList = this.data.messageCustomizeList;
+
+        for (const messageCustomize of messageCustomizeList) {
+            if (messageCustomize.typeId === typeId) {
+                messageCustomize.send = send;
+            }
+        }
+
+        this.setData({
+            messageCustomizeList: messageCustomizeList,
+        });
+
+        const that = this;
+        app.post("/client/customer/message/customize/save", {
+            typeId: typeId,
+            send: send
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            // 这是界面显示和数据库设置强制同步
+            that.setData({
+                messageCustomizeList: res.data.messageCustomizeList,
+                messageCustomizeCount: res.data.messageCustomizeCount,
+            });
+        });
+    },
+
     loadMessageCustomizeList() {
         let that = this;
 

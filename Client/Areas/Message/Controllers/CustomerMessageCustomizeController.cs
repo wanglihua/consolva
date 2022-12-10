@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Message.Models.CustomerMessageCustomize;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Message;
@@ -114,6 +115,7 @@ public class CustomerMessageCustomizeController : Controller
 
     [HttpPost]
     [Route("/client/customer/message/customize/save")]
+    [Transactional]
     public IActionResult Save([FromBody] CustomerMessageCustomizeSaveParam param)
     {
         if (ModelState.IsValid == false)
@@ -147,7 +149,7 @@ public class CustomerMessageCustomizeController : Controller
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "设置成功！",
             Data = new CustomerMessageCustomizeSaveModel() {
                 MessageCustomizeList = messageCustomizeList,
                 MessageCustomizeCount = messageCustomizeList.Count,
