@@ -165,7 +165,7 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/save")]
     [Transactional]
-    public IActionResult Save(StorageLocDetailModel model)
+    public IActionResult Save(StorageLocSaveModel model)
     {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
