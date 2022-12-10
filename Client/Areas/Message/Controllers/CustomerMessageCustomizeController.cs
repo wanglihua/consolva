@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Message.Models.CustomerMessageCustomize;
 using shunda.Client.Services;
+using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Message;
 using ISession = NHibernate.ISession;
@@ -100,5 +102,47 @@ public class CustomerMessageCustomizeController : Controller
         }
 
         return messageCustomizeList.OrderBy(e => e.TypeId).ToList(); // 按 type id 排序
+    }
+
+    [HttpPost]
+    [Route("/client/customer/message/customize/save")]
+    public IActionResult Save([FromBody] CustomerMessageCustomizeSaveParam param)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        CustomerMessageType messageType = CustomerMessageType.GetById(param.TypeId);
+
+        var messageCustomize = session.Query<CustomerMessageClientCustomizeInfo>()
+            .Where(e => e.CustomerId == loginCustomerId && e.MessageType == messageType)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (messageCustomize == null)
+        {
+            messageCustomize = new CustomerMessageClientCustomizeInfo() {
+                CustomerId = loginCustomerId,
+                MessageType = messageType,
+            };
+        }
+
+        messageCustomize.Send = param.Send;
+
+        session.SaveOrUpdate(messageCustomize);
+        session.Flush();
+
+        IList<CustomerMessageCustomizeListItem> messageCustomizeList = GetMessageCustomizeList();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new CustomerMessageCustomizeSaveModel() {
+                MessageCustomizeList = messageCustomizeList,
+            }
+        });
     }
 }
