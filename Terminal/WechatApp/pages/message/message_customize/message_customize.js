@@ -90,9 +90,10 @@ Page({
             typeId: typeId,
             send: send
         }, function (res) {
-            wx.showToast({
-                title: res.message,
-            });
+            // 不提示，体验更好
+            // wx.showToast({
+            //     title: res.message,
+            // });
 
             // 这是界面显示和数据库设置强制同步，同时也更新了 send hint，前面客户端设置时只设置了send，没有设置 send hint
             that.setData({
