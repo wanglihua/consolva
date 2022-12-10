@@ -132,11 +132,17 @@ public class ShelfController : Controller
             if (shelf == null) throw new ValidationException("指定的数据项不存在！");
         }
 
-        model.Shelf = shelf;
+        model.Id = shelf.Id;
+        model.Code = shelf.Code;
+        model.Name = shelf.Name;
+        model.Type = shelf.Type;
+        model.Cate = shelf.Cate;
+        model.Status = shelf.Status;
+        model.OrderNum = shelf.OrderNum;
+        model.WarehouseId = shelf.Warehouse?.Id ?? 0;
         model.ShelfStatusList = ShelfStatus.GetList();
         model.ShelfTypeList = ShelfType.GetList();
         model.ShelfCateList = ShelfCate.GetList();
-        model.WarehouseId = shelf.Warehouse?.Id ?? 0;
 
         return View("ShelfDetail", model);
     }
@@ -144,12 +150,14 @@ public class ShelfController : Controller
     [HttpPost]
     [Route("/admin/shelf/save")]
     [Transactional]
-    public IActionResult Save(ShelfDetailModel model)
+    public IActionResult Save(ShelfSaveModel model)
     {
-        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        if (!ModelState.IsValid)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
 
-        var shelfFromUi = model.Shelf;
-        var shelfId = shelfFromUi.Id;
+        var shelfId = model.Id;
 
         var isCreate = shelfId == 0;
 
@@ -160,18 +168,22 @@ public class ShelfController : Controller
         else
             shelf = session.Get<ShelfInfo>(shelfId);
 
-        shelf.Code = shelfFromUi.Code;
-        shelf.Name = shelfFromUi.Name;
-        shelf.Type = shelfFromUi.Type;
-        shelf.Cate = shelfFromUi.Cate;
-        shelf.Status = shelfFromUi.Status;
-        shelf.OrderNum = shelfFromUi.OrderNum;
+        shelf.Code = model.Code;
+        shelf.Name = model.Name;
+        shelf.Type = model.Type;
+        shelf.Cate = model.Cate;
+        shelf.Status = model.Status;
+        shelf.OrderNum = model.OrderNum;
         shelf.Warehouse = session.Get<WarehouseInfo>(model.WarehouseId);
 
         if (isCreate)
+        {
             session.Save(shelf);
+        }
         else
+        {
             session.Update(shelf);
+        }
 
         session.Flush();
 

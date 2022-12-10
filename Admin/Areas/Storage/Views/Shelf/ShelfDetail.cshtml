@@ -11,33 +11,33 @@
             </div>
             <div class="modal-body clearfix">
                 <form id="shelfDetailForm" class="form-horizontal" role="form">
-                    <input asp-for="Shelf.Id" type="hidden"/>
+                    <input asp-for="Id" type="hidden"/>
                     <input asp-for="WarehouseId" type="hidden"/>
                     <div class="row">
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Shelf.Code" class="col-xs-2 control-label">编码</label>
+                                <label asp-for="Code" class="col-xs-2 control-label">编码</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Shelf.Code" type="text" class="input-sm form-control"/>
+                                    <input asp-for="Code" type="text" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Shelf.Name" class="col-xs-2 control-label">货架名</label>
+                                <label asp-for="Name" class="col-xs-2 control-label">货架名</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Shelf.Name" type="text" class="input-sm form-control"/>
+                                    <input asp-for="Name" type="text" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Shelf.Type" class="col-xs-2 control-label">货架类型</label>
+                                <label asp-for="Type" class="col-xs-2 control-label">货架类型</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="Shelf.Type" class="input-sm form-control">
+                                    <select asp-for="Type" class="input-sm form-control">
                                         @foreach (var shelfType in Model.ShelfTypeList)
                                         {
                                             <option value="@shelfType.Id">@shelfType.Name</option>
@@ -49,9 +49,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Shelf.Cate" class="col-xs-2 control-label">货架类别</label>
+                                <label asp-for="Cate" class="col-xs-2 control-label">货架类别</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="Shelf.Cate" class="input-sm form-control">
+                                    <select asp-for="Cate" class="input-sm form-control">
                                         @foreach (var shelfCate in Model.ShelfCateList)
                                         {
                                             <option value="@shelfCate.Id">@shelfCate.Name</option>
@@ -63,9 +63,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Shelf.Status" class="col-xs-2 control-label">状态</label>
+                                <label asp-for="Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="Shelf.Status" class="input-sm form-control">
+                                    <select asp-for="Status" class="input-sm form-control">
                                         @foreach (var shelfStatusInfo in Model.ShelfStatusList)
                                         {
                                             <option value="@shelfStatusInfo.Id">@shelfStatusInfo.Name</option>
@@ -77,9 +77,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Shelf.OrderNum" class="col-xs-2 control-label">排序</label>
+                                <label asp-for="OrderNum" class="col-xs-2 control-label">排序</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Shelf.OrderNum" type="text" class="input-sm form-control"/>
+                                    <input asp-for="OrderNum" type="text" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>
