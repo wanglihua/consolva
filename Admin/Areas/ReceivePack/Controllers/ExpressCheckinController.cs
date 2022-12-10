@@ -418,6 +418,12 @@ public class ExpressCheckinController : Controller
                 errorMessageList.Add($"第 {index + 1} 个物品，扩展名不能为空！");
             }
 
+            var logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsModel.GoodsId);
+            if(logisticsGoods == null)
+            {
+                errorMessageList.Add($"第 {index + 1} 个物品，指定的扩展名不存在！");
+            }
+
             if (goodsModel.Quantity <= 0)
             {
                 // errorMessageList.Add($"第 {index + 1} 个物品，数量不能为空！");
@@ -789,12 +795,12 @@ public class ExpressCheckinController : Controller
                 }
 
                 // 保存物品
-                foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList)
+                foreach (LogisticsExpressCheckinExpressGoodsModel goodsModel in goodsModelList)
                 {
                     ExpressGoodsInfo? expressGoods = null;
-                    if (goodsItem.ExpressGoodsId != 0)
+                    if (goodsModel.ExpressGoodsId != 0)
                     {
-                        expressGoods = expressGoodsListInDb.Where(e => e.Id == goodsItem.ExpressGoodsId).Take(1).SingleOrDefault();
+                        expressGoods = expressGoodsListInDb.Where(e => e.Id == goodsModel.ExpressGoodsId).Take(1).SingleOrDefault();
                     }
 
                     if (expressGoods == null)
@@ -805,26 +811,26 @@ public class ExpressCheckinController : Controller
                     expressGoods.Express = express;
 
                     if (isCreate == false &&
-                        (expressGoods.Goods.Id != goodsItem.GoodsId
-                         || expressGoods.Quantity != goodsItem.Quantity
-                         || expressGoods.Unit != goodsItem.Unit))
+                        (expressGoods.Goods.Id != goodsModel.GoodsId
+                         || expressGoods.Quantity != goodsModel.Quantity
+                         || expressGoods.Unit != goodsModel.Unit))
                     {
-                        LogisticsGoodsInfo goodsEditAfter = session.Get<LogisticsGoodsInfo>(goodsItem.GoodsId);
+                        LogisticsGoodsInfo goodsEditAfter = session.Get<LogisticsGoodsInfo>(goodsModel.GoodsId);
                         if (expressGoods.Id != 0) // 这个时候是修改(isCreate == false)，编辑物品
                         {
                             LogisticsGoodsInfo goodsEditBefore = expressGoods.Goods;
 
-                            editDescList.Add($"修改物品: {goodsEditBefore?.Name}{expressGoods.Quantity}{expressGoods.Unit}=>{goodsEditAfter?.Name}{goodsItem.Quantity}{goodsItem.Unit}");
+                            editDescList.Add($"修改物品: {goodsEditBefore?.Name}{expressGoods.Quantity}{expressGoods.Unit}=>{goodsEditAfter?.Name}{goodsModel.Quantity}{goodsModel.Unit}");
                         }
                         else // 这个时候是修改(isCreate == false)，添加物品
                         {
-                            editDescList.Add($"添加物品: {goodsEditAfter?.Name}{goodsItem.Quantity}{goodsItem.Unit}");
+                            editDescList.Add($"添加物品: {goodsEditAfter?.Name}{goodsModel.Quantity}{goodsModel.Unit}");
                         }
                     }
 
-                    expressGoods.Goods = session.Get<LogisticsGoodsInfo>(goodsItem.GoodsId);
-                    expressGoods.Quantity = goodsItem.Quantity;
-                    expressGoods.Unit = goodsItem.Unit;
+                    expressGoods.Goods = session.Get<LogisticsGoodsInfo>(goodsModel.GoodsId); // 前面验证是否存在时，做了数据加载，这里一般就是从缓存中取得了
+                    expressGoods.Quantity = goodsModel.Quantity;
+                    expressGoods.Unit = goodsModel.Unit ?? string.Empty;
 
                     session.SaveOrUpdate(expressGoods);
                 }

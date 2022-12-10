@@ -29,7 +29,7 @@ public class LogisticsExpressCheckinExpressGoodsModel
 
     // [Required(ErrorMessage = "单位不能为空！")] 放到 controller 里面去判断了
     // [MaxLength(8, ErrorMessage = "单位长度不能大于8！")]
-    public string Unit { get; set; } = string.Empty;
+    public string? Unit { get; set; } // 放到 controller 中判断必填后，model里面只能先设置成 可空
 
     [BindNever]
     public IList<string> UnitList { get; set; } = new List<string>();
