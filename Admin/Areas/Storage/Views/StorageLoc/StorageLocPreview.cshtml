@@ -3,7 +3,11 @@
 @{
     Layout = null;
 
-    var maxColNumInAll = Model.StorageLocList.Max(e => e.ColNum);
+    var maxColNumInAll = 0;
+    if (Model.StorageLocList.Count != 0)
+    {
+        maxColNumInAll = Model.StorageLocList.Max(e => e.ColNum);
+    }
 
     var dialogWidth = 840 + (maxColNumInAll - 17) * 45;
 }
