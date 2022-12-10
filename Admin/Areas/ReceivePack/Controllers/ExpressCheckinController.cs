@@ -136,7 +136,7 @@ public class ExpressCheckinController : Controller
             .Take(1)
             .SingleOrDefault();
 
-        LogisticsExpressCheckinExpressModel model = new LogisticsExpressCheckinExpressModel();
+        LogisticsExpressCheckinExpressDetailModel model = new LogisticsExpressCheckinExpressDetailModel();
 
         model.WarehouseId = warehouseId;
         model.Warehouse = session.Get<WarehouseInfo>(warehouseId);
@@ -299,7 +299,7 @@ public class ExpressCheckinController : Controller
     [Route("/admin/logisitcs/express/checkin/storage/loc/spec/list")]
     public IActionResult StorageLocSpecList(int shelfId)
     {
-        LogisticsExpressCheckinExpressModel model = new LogisticsExpressCheckinExpressModel();
+        LogisticsExpressCheckinExpressDetailModel model = new LogisticsExpressCheckinExpressDetailModel();
 
         model.StorageLocSpecList = GetShelfStorageLocSpecList(shelfId);
 
@@ -377,7 +377,7 @@ public class ExpressCheckinController : Controller
     [HttpPost]
     [Route("/admin/express/checkin/save")]
     // 内部有事务
-    public IActionResult CheckinSave(LogisticsExpressCheckinExpressModel model)
+    public IActionResult CheckinSave(LogisticsExpressCheckinExpressSaveModel model)
     {
         if (!ModelState.IsValid)
         {
