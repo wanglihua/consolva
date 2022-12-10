@@ -63,17 +63,15 @@ public class CustomerMessageCustomizeController : Controller
             var msgCustomize = msgCustomizeList.Where(e => e.MessageType.Id == typeId).Take(1).SingleOrDefault();
 
             bool send = true;
-            string sendHint = "接收消息";
             if (msgCustomize != null && msgCustomize.Send == false)
             {
                 send = false;
-                sendHint = "不接收消息";
             }
 
             messageCustomizeList.Add(new CustomerMessageCustomizeListItem() {
                 TypeId = typeId,
                 Send = send,
-                SendHint = sendHint,
+                SendHint = GetSendHint(send),
                 Title = realTimeMsgSetting.ClientTitle,
                 Description = realTimeMsgSetting.ClientDesc,
             });
@@ -85,23 +83,32 @@ public class CustomerMessageCustomizeController : Controller
             var msgCustomize = msgCustomizeList.Where(e => e.MessageType.Id == typeId).Take(1).SingleOrDefault();
 
             bool send = true;
-            string sendHint = "接收消息";
             if (msgCustomize != null && msgCustomize.Send == false)
             {
                 send = false;
-                sendHint = "不接收消息";
             }
 
             messageCustomizeList.Add(new CustomerMessageCustomizeListItem() {
                 TypeId = typeId,
                 Send = send,
-                SendHint = sendHint,
+                SendHint = GetSendHint(send),
                 Title = cycleTimeMsgSetting.ClientTitle,
                 Description = cycleTimeMsgSetting.ClientDesc,
             });
         }
 
         return messageCustomizeList.OrderBy(e => e.TypeId).ToList(); // 按 type id 排序
+    }
+
+    [NonAction]
+    private string GetSendHint(bool send)
+    {
+        if (send == true)
+        {
+            return "接收消息";
+        }
+
+        return "不接收消息";
     }
 
     [HttpPost]
