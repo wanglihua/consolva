@@ -220,7 +220,7 @@ public class ExpressCheckinController : Controller
             foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
             {
                 LogisticsExpressCheckinExpressGoodsModel goodsModel = new LogisticsExpressCheckinExpressGoodsModel();
-                goodsModel.EntryId = expressGoods.Id;
+                goodsModel.ExpressGoodsId = expressGoods.Id;
                 goodsModel.UiIndex = expressGoods.Id.ToString();
                 goodsModel.GoodsId = expressGoods.Goods.Id;
                 goodsModel.GoodsName = expressGoods.Goods.Name;
@@ -413,7 +413,7 @@ public class ExpressCheckinController : Controller
         {
             LogisticsExpressCheckinExpressGoodsModel goodsModel = goodsModelList[index];
 
-            if (goodsModel.GoodsId == 0)
+            if (goodsModel.GoodsId <= 0)
             {
                 errorMessageList.Add($"第 {index + 1} 个物品，扩展名不能为空！");
             }
@@ -769,7 +769,7 @@ public class ExpressCheckinController : Controller
                         .ToList();
 
                     // 移除界面上没有，但数据库中有的物品
-                    IList<int> entryIdListFromUi = goodsModelList.Select(e => e.EntryId).ToList();
+                    IList<int> entryIdListFromUi = goodsModelList.Select(e => e.ExpressGoodsId).ToList();
                     IList<ExpressGoodsInfo> expressGoodsToDelete = expressGoodsListInDb
                         .Where(e => entryIdListFromUi.Contains(e.Id) == false)
                         .ToList();
@@ -792,9 +792,9 @@ public class ExpressCheckinController : Controller
                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList)
                 {
                     ExpressGoodsInfo? expressGoods = null;
-                    if (goodsItem.EntryId != 0)
+                    if (goodsItem.ExpressGoodsId != 0)
                     {
-                        expressGoods = expressGoodsListInDb.Where(e => e.Id == goodsItem.EntryId).Take(1).SingleOrDefault();
+                        expressGoods = expressGoodsListInDb.Where(e => e.Id == goodsItem.ExpressGoodsId).Take(1).SingleOrDefault();
                     }
 
                     if (expressGoods == null)
