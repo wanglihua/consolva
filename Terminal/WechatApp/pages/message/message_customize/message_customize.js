@@ -94,7 +94,7 @@ Page({
                 title: res.message,
             });
 
-            // 这是界面显示和数据库设置强制同步
+            // 这是界面显示和数据库设置强制同步，同时也更新了 send hint，前面客户端设置时只设置了send，没有设置 send hint
             that.setData({
                 messageCustomizeList: res.data.messageCustomizeList,
                 messageCustomizeCount: res.data.messageCustomizeCount,
