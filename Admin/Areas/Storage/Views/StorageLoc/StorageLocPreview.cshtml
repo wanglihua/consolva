@@ -64,7 +64,7 @@
 </style>
 
 <div class="modal fade" id="storageLocPreviewDialog">
-    <div class="modal-dialog" style="width:@(dialogWidth)px;">
+    <div class="modal-dialog" style="min-width: 500px; width:@(dialogWidth)px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
@@ -84,7 +84,11 @@
                     <div id="preview">
                         <div id="storageLocList">
                             @{
-                                var maxRowNum = Model.StorageLocList.Max(e => e.RowNum);
+                                var maxRowNum = 0;
+                                if (Model.StorageLocList.Count != 0)
+                                {
+                                    maxRowNum = Model.StorageLocList.Max(e => e.RowNum);
+                                }
 
                                 <div class="storageLocRow">
                                     <div class="colorBox" style="background-color: white;">
