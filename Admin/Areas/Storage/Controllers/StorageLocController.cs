@@ -419,12 +419,17 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/preview")]
-    public IActionResult Preview(StorageLocPreviewModel model)
+    public IActionResult Preview(StorageLocPreviewParam param)
     {
-        var shelfId = model.ShelfId;
+        var shelfId = param.ShelfId;
 
         var shelf = session.Get<ShelfInfo>(shelfId);
-        if (shelf == null) throw new ValidationException("指定的货架不存在！");
+        if (shelf == null)
+        {
+            throw new ValidationException("指定的货架不存在！");
+        }
+
+        StorageLocPreviewModel model = new StorageLocPreviewModel();
 
         model.Shelf = shelf;
 

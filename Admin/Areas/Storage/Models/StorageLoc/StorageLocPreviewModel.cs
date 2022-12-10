@@ -6,9 +6,6 @@ namespace shunda.Admin.Areas.Storage.Models.StorageLoc;
 public class StorageLocPreviewModel
 {
     [BindNever]
-    public int ShelfId { get; set; }
-
-    [BindNever]
     public WarehouseInfo Warehouse { get; set; } = new();
 
     [BindNever]

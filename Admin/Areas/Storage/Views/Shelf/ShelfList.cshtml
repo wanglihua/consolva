@@ -133,7 +133,7 @@
             url: '@Url.Action("Preview", "StorageLoc")',
             type: "POST",
             data: {
-                "@(nameof(StorageLocPreviewModel.ShelfId))": shelfId
+                "@(nameof(StorageLocPreviewParam.ShelfId))": shelfId
             },
             success: function(data) {
                 hideMask();
