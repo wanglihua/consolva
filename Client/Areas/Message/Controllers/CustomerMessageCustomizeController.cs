@@ -34,6 +34,7 @@ public class CustomerMessageCustomizeController : Controller
         });
     }
 
+    [NonAction]
     private IList<CustomerMessageCustomizeListItem> GetMessageCustomizeList()
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
