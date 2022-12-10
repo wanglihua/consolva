@@ -29,6 +29,7 @@
         "van-divider": "@vant/weapp/divider/index",
         "van-empty": "@vant/weapp/empty/index",
         "van-action-sheet": "@vant/weapp/action-sheet/index",
+        "van-switch": "@vant/weapp/switch/index",
         "common": "components/common/common"
     },
     "sitemapLocation": "sitemap.json"

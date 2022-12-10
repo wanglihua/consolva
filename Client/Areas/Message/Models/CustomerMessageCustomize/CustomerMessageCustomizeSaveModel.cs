@@ -6,4 +6,7 @@ public class CustomerMessageCustomizeSaveModel
 {
     [JsonProperty("messageCustomizeList")]
     public IList<CustomerMessageCustomizeListItem> MessageCustomizeList { get; set; } = new List<CustomerMessageCustomizeListItem>();
+
+    [JsonProperty("messageCustomizeCount")]
+    public int MessageCustomizeCount { get; set; }
 }

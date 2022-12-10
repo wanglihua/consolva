@@ -32,6 +32,7 @@ public class CustomerMessageCustomizeController : Controller
             Message = "操作成功！",
             Data = new CustomerMessageCustomizeListModel() {
                 MessageCustomizeList = messageCustomizeList,
+                MessageCustomizeCount = messageCustomizeList.Count,
             }
         });
     }
@@ -149,6 +150,7 @@ public class CustomerMessageCustomizeController : Controller
             Message = "操作成功！",
             Data = new CustomerMessageCustomizeSaveModel() {
                 MessageCustomizeList = messageCustomizeList,
+                MessageCustomizeCount = messageCustomizeList.Count,
             }
         });
     }

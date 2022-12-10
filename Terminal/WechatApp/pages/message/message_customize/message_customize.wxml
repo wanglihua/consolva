@@ -1,2 +1,15 @@
 <!--pages/message/message_customize/message_customize.wxml-->
-<text>pages/message/message_customize/message_customize.wxml</text>
+<view class="container">
+    <block wx:if="{{ messageCustomizeCount === 0 }}">
+        <van-empty description="暂时没有可定制的消息类型！"/>
+    </block>
+    <block wx:else>
+        <van-cell-group title="消息定制">
+            <block wx:for="{{ messageCustomizeList }}" wx:key="id" wx:for-item="messageCustomize" wx:for-index="index">
+                <van-cell title="{{ index + 1 }}、{{ messageCustomize.title }}" label="{{ messageCustomize.description }}">
+                    这是内容
+                </van-cell>
+            </block>
+        </van-cell-group>
+    </block>
+</view>

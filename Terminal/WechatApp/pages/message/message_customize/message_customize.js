@@ -1,18 +1,21 @@
 // pages/message/message_customize/message_customize.js
+const app = getApp();
+
 Page({
 
     /**
      * 页面的初始数据
      */
     data: {
-
+        messageCustomizeList: [],
+        messageCustomizeCount: 0,
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-
+        this.loadMessageCustomizeList();
     },
 
     /**
@@ -62,5 +65,24 @@ Page({
      */
     onShareAppMessage() {
 
-    }
+    },
+
+    loadMessageCustomizeList() {
+        let that = this;
+
+        app.post("/client/customer/message/customize/list", {
+            trackingNoQuery: that.data.trackingNoQuery,
+        }, function (res) {
+            const messageCustomizeCount = res.data.messageCustomizeCount;
+            const messageCustomizeList = res.data.messageCustomizeList;
+
+            that.setData({
+                messageCustomizeList: messageCustomizeList,
+                messageCustomizeCount: messageCustomizeCount,
+            });
+        });
+    },
+
+    saveMessageCustomize(e) {
+    },
 })

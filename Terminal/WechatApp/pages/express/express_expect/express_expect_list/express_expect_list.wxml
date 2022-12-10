@@ -5,35 +5,33 @@
             <view style="padding: 10rpx 0;">
                 <van-button type="primary" class-prefix="iconfont" icon="add" plain block bind:click="onAddExpressExpectClick">添加快递单号</van-button>
             </view>
-            <van-search model:value="{{ trackingNoQuery }}" placeholder="快递单号搜索" custom-class="express-expect-search" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear" />
-            <van-divider hairline customStyle="margin: 0;" />
+            <van-search model:value="{{ trackingNoQuery }}" placeholder="快递单号搜索" custom-class="express-expect-search" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>
+            <van-divider hairline customStyle="margin: 0;"/>
         </view>
     </view>
 </van-sticky>
 
 <view class="container-bottom">
-    <view style="padding-bottom: 200rpx;">
-        <view wx:if="{{ expressExpectCount === 0 }}">
-            <van-empty description="暂时没有数据项！" />
-        </view>
-        <view wx:else>
-            <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect" wx:for-index="index">
-                <view style="margin: 25rpx 0;">
-                    <van-cell-group>
-                        <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" custom-class="{{ expressExpect.headerClassName }}" title-class="express-expect-header-title" value-class="express-expect-header-title" />
-                        <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}" />
-                        <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}" />
-                        <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}" />
-                        <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}" />
-                        <van-cell title="操作" value="{{expressExpect.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" custom-class="express-expect-footer" />
-                    </van-cell-group>
-                </view>
-            </block>
-            <view style="margin-top: 40rpx;">
-                <van-divider contentPosition="center">共 {{ expressExpectCount }} 项</van-divider>
+    <block wx:if="{{ expressExpectCount === 0 }}">
+        <van-empty description="暂时没有数据项！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect" wx:for-index="index">
+            <view style="margin: 25rpx 0;">
+                <van-cell-group>
+                    <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" custom-class="{{ expressExpect.headerClassName }}" title-class="express-expect-header-title" value-class="express-expect-header-title"/>
+                    <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}"/>
+                    <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}"/>
+                    <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}"/>
+                    <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}"/>
+                    <van-cell title="操作" value="{{expressExpect.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" custom-class="express-expect-footer"/>
+                </van-cell-group>
             </view>
+        </block>
+        <view style="margin-top: 40rpx;">
+            <van-divider contentPosition="center">共 {{ expressExpectCount }} 项</van-divider>
         </view>
-    </view>
+    </block>
 
-    <van-action-sheet title="快递单号 {{ currentExpressExpect.trackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect" />
+    <van-action-sheet title="快递单号 {{ currentExpressExpect.trackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
 </view>
