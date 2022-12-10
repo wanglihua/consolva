@@ -5,9 +5,16 @@
     </block>
     <block wx:else>
         <van-cell-group title="消息定制">
-            <block wx:for="{{ messageCustomizeList }}" wx:key="id" wx:for-item="messageCustomize" wx:for-index="index">
+            <block wx:for="{{ messageCustomizeList }}" wx:key="typeId" wx:for-item="messageCustomize" wx:for-index="index">
                 <van-cell title="{{ index + 1 }}、{{ messageCustomize.title }}" label="{{ messageCustomize.description }}">
-                    这是内容
+                    <view>
+                        <view style="display:block;">
+                            <van-switch checked="{{ true }}"/>
+                        </view>
+                        <view style="display:block;">
+                            {{ messageCustomize.sendHint }}
+                        </view>
+                    </view>
                 </van-cell>
             </block>
         </van-cell-group>
