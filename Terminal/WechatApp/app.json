@@ -6,7 +6,8 @@
         "pages/express/express_expect/express_expect_edit/express_expect_edit",
         "pages/express/express_claim/express_claim_list/express_claim_list",
         "pages/express/express_checkin/express_checkin_list/express_checkin_list",
-        "pages/express/express_return/express_return_list/express_return_list"
+        "pages/express/express_return/express_return_list/express_return_list",
+        "pages/message/message_customize/message_customize"
     ],
     "window": {
         "backgroundTextStyle": "light",
