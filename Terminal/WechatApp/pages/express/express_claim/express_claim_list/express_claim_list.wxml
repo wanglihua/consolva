@@ -17,7 +17,7 @@
             <block wx:for="{{expressClaimList}}" wx:key="id" wx:for-item="expressClaim" wx:for-index="index">
                 <view style="margin: 25rpx 0;">
                     <van-cell-group>
-                        <van-cell title="{{ index + 1 }}、{{ expressClaim.checkinTrackingNo }}" value="{{ expressClaim.addDate }}" custom-class="express-claim-header" title-class="express-claim-header-title" value-class="express-claim-header-title" />
+                        <van-cell title="{{ index + 1 }}、{{ expressClaim.checkinTrackingNo }}" value="{{ expressClaim.addDate }}" border="{{ false }}" custom-class="express-claim-header" title-class="express-claim-header-title" value-class="express-claim-header-title" />
                         <van-cell title="快递单号" value="{{ expressClaim.trackingNo }}" border="{{ false }}" />
                         <van-cell title="快递公司" value="{{ expressClaim.expressCompany }}" border="{{ false }}" />
                         <van-cell title="入库单号" value="{{ expressClaim.checkinTrackingNo }}" border="{{ false }}"/>
