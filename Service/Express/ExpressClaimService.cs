@@ -1,5 +1,6 @@
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using ISession = NHibernate.ISession;
 
@@ -10,11 +11,18 @@ public class ExpressClaimService
 {
     private readonly ISession session;
     private readonly ExpressTrackingNoService expressTrackingNoService;
+    private readonly ExpressExpectService expressExpectService;
+    private readonly ExpressLogService expressLogService;
 
-    public ExpressClaimService(ISession session, ExpressTrackingNoService expressTrackingNoService)
+    public ExpressClaimService(ISession session,
+        ExpressTrackingNoService expressTrackingNoService,
+        ExpressExpectService expressExpectService,
+        ExpressLogService expressLogService)
     {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
+        this.expressExpectService = expressExpectService;
+        this.expressLogService = expressLogService;
     }
 
     /// <summary>
@@ -31,7 +39,15 @@ public class ExpressClaimService
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
-        if (expressTrackingNoService.IsTrackingNoMatch(express.TrackingNo, trackingNoInput) == false)
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null)
+        {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        string trackingNo = express.TrackingNo;
+
+        if (expressTrackingNoService.IsTrackingNoMatch(trackingNo, trackingNoInput) == false)
         {
             throw new ValidationException("快递单号匹配失败，请检查重新录入！");
         }
@@ -45,5 +61,32 @@ public class ExpressClaimService
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => e.Express.Id == expressId)
             .ToList();
+
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
+        {
+            if (expressGoods.Price <= 0)
+            {
+                throw new ValidationException($"物品 {expressGoods.Goods.Name} 价格为零，不能完成认领！");
+            }
+        }
+
+        express.ClaimTime = DateTime.Now;
+        express.Status = ExpressStatus.CheckIn;
+        express.Customer = customer;
+
+        session.Update(express);
+        session.Flush();
+
+        var expressExpect = session.Query<ExpressExpectInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (expressExpect != null)
+        {
+            expressExpectService.Pick(expressExpect.Id, customerId);
+        }
+        
+        expressLogService.CustomerLog(expressId, ExpressLogType.Claim, customerId);
     }
 }

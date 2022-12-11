@@ -46,7 +46,7 @@ public class ExpressLogType : CodeTypeBase
     /// <summary>
     /// 认领
     /// </summary>
-    public static readonly ExpressLogType Pick = new ExpressLogType(8000, "认领", "认领");
+    public static readonly ExpressLogType Claim = new ExpressLogType(8000, "认领", "认领");
 
     /// <summary>
     /// 删除
@@ -254,7 +254,7 @@ public class ExpressLogType : CodeTypeBase
         OnShelfPrepare,
         SubOnShelfConfirm,
         OnShelfConfirm,
-        Pick,
+        Claim,
         Delete,
         ThrowAway,
 

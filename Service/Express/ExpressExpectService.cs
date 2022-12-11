@@ -210,22 +210,19 @@ public class ExpressExpectService
     /// <summary>
     /// 设置快递单号预报已认领
     /// </summary>
-    /// <param name="trackingNo">快递单号</param>
+    /// <param name="expressExpectId">快递单号预报ID</param>
     /// <param name="customerId">用于验证快递单号预报是不是属于当前会员</param>
-    public void Pick(string trackingNo, int customerId)
+    public void Pick(int expressExpectId, int customerId)
     {
-        var expressExpect = session.Query<ExpressExpectInfo>()
-            .Where(e => e.TrackingNo == trackingNo)
-            .Take(1)
-            .SingleOrDefault();
+        var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
         if (expressExpect == null)
         {
-            throw new ValidationException($"指定的快递单号预告 #{trackingNo} 不存在！");
+            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不存在！");
         }
 
         if (expressExpect.Customer.Id != customerId)
         {
-            throw new ValidationException($"指定的快递单号预告 #{trackingNo} 不属于当前会员 #{customerId} ！");
+            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前会员 #{customerId} ！");
         }
 
         expressExpect.Status = ExpressExpectStatus.Checkin;
