@@ -417,11 +417,13 @@ public class ExpressCheckinController : Controller
             {
                 errorMessageList.Add($"第 {index + 1} 个物品，扩展名不能为空！");
             }
-
-            var logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsModel.GoodsId);
-            if(logisticsGoods == null)
+            else
             {
-                errorMessageList.Add($"第 {index + 1} 个物品，指定的扩展名不存在！");
+                var logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsModel.GoodsId);
+                if (logisticsGoods == null)
+                {
+                    errorMessageList.Add($"第 {index + 1} 个物品，指定的扩展名不存在！");
+                }
             }
 
             if (goodsModel.Quantity <= 0)
