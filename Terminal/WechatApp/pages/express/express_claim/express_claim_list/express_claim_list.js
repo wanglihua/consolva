@@ -2,10 +2,6 @@
 const app = getApp();
 
 Page({
-
-    /**
-     * 页面的初始数据
-     */
     data: {
         query: "",
         lastExpressId: 0,
@@ -16,60 +12,12 @@ Page({
         actionSheetActions: [],
     },
 
-    /**
-     * 生命周期函数--监听页面加载
-     */
     onLoad(options) {
         this.loadExpressClaimList();
     },
 
-    /**
-     * 生命周期函数--监听页面初次渲染完成
-     */
-    onReady() {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow() {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide() {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面卸载
-     */
-    onUnload() {
-
-    },
-
-    /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
-    onPullDownRefresh() {
-
-    },
-
-    /**
-     * 页面上拉触底事件的处理函数
-     */
     onReachBottom() {
-
-    },
-
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage() {
-
+        this.loadExpressClaimList();
     },
 
     loadExpressClaimList() {
@@ -109,5 +57,33 @@ Page({
             lastExpressId: 0,
         });
         this.loadExpressClaimList();
+    },
+    onActionCellClick(e) {
+        const currentExpressClaim = e.currentTarget.dataset.item;
+
+        const actionSheetActions = [];
+
+        actionSheetActions.push({
+            action: "detail",
+            name: '查看详细',
+            className: 'iconfont iconfont-view-detail',
+        });
+
+        actionSheetActions.push({
+            action: "claim",
+            name: '认领',
+            className: 'iconfont iconfont-claim-pick',
+        });
+
+        this.setData({
+            currentExpressClaim: currentExpressClaim,
+            actionSheetActions: actionSheetActions,
+            showActionSheet: true
+        });
+    },
+    onActionSheetCloseClick(e) {
+        this.setData({
+            showActionSheet: false
+        });
     },
 })
