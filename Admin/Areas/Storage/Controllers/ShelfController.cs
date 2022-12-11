@@ -8,6 +8,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
+using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Storage.Controllers;
@@ -17,10 +18,12 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 public class ShelfController : Controller
 {
     private readonly ISession session;
+    private readonly StorageLocExpressService storageLocExpressService;
 
-    public ShelfController(ISession session)
+    public ShelfController(ISession session, StorageLocExpressService storageLocExpressService)
     {
         this.session = session;
+        this.storageLocExpressService = storageLocExpressService;
     }
 
     [HttpGet]
@@ -224,6 +227,23 @@ public class ShelfController : Controller
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "删除成功！" }
+        });
+    }
+
+    /// <summary>
+    /// 更新仓位快递单
+    /// </summary>
+    [HttpPost]
+    [Route("/admin/shelf/update/storage/loc/express")]
+    [Transactional]
+    public IActionResult UpdateStorageLocExpress()
+    {
+        // 所有仓库所有货架的都更新了的
+        storageLocExpressService.UpdateAll();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "更新仓位快递单成功！",
         });
     }
 }

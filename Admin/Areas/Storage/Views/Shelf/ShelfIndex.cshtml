@@ -29,6 +29,10 @@
         <i class="ace-icon fa fa-trash-o"></i>
         删除
     </button>
+    <button type="button" class="btn btn-purple btn-sm" onclick="updateStorageLocExpress()">
+        <i class="ace-icon fa fa-refresh"></i>
+        更新仓位快递单
+    </button>
     <a type="button" class="btn btn-info btn-sm" asp-controller="Warehouse" asp-action="Index">
         <i class="ace-icon fa fa-arrow-left"></i>
         返回
@@ -245,6 +249,24 @@
                 });
             }
         );
+    }
+    
+    function updateStorageLocExpress() {
+        showMask("提交中...");
+        $.ajax({
+            url: '@Url.Action("UpdateStorageLocExpress", "Shelf")',
+            type: "POST",
+            data: {},
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                } 
+                
+                $.msg.show(data.message);
+            }
+        });
     }
 
 </script>
