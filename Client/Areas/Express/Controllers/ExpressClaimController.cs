@@ -122,6 +122,21 @@ public class ExpressClaimController : Controller
     }
 
     [HttpPost]
+    [Route("/client/express/claim/pick")]
+    public IActionResult Pick([FromBody] ExpressClaimPickParam param)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "快递单号认领成功！",
+        });
+    }
+
+    [HttpPost]
     [Route("/client/express/claim/match")]
     public IActionResult Match([FromBody] ExpressClaimMatchParam param)
     {

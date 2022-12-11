@@ -20,9 +20,11 @@ public class ExpressClaimPickParam
     {
         [JsonProperty("expressGoodsId")]
         public int ExpressGoodsId { get; set; }
-        
+
+        [JsonProperty("goodsName")]
+        public string GoodsName { get; set; } = string.Empty;
+
         [JsonProperty("price")]
         public decimal Price { get; set; }
     }
 }
-
