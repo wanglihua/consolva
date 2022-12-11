@@ -122,11 +122,56 @@ public class ExpressClaimController : Controller
         }
 
         int expressId = param.Id;
+        var express = session.Get<ExpressInfo>(expressId);
+        if (express == null)
+        {
+            throw new ValidationException($"指定的申领件#{expressId}不存在！");
+        }
 
+        ExpressClaimDetailModel model = new ExpressClaimDetailModel() {
+            Id = express.Id,
+            TrackingNo = express.TrackingNo,
+            AddDate = express.AddTime.ToString("yyyy-MM-dd"),
+            AddTime = express.AddTime.ToString("yyyy-MM-dd HH:mm"),
+            ExpressCompany = express.ExpressCompany,
+            BillCustomerCode = express.BillCustomerCode,
+            GoodsType = express.GoodsType.Name,
+            CheckinTrackingNo = express.CheckinTrackingNo,
+        };
+
+        var expressWarehouseRemark = session.Query<ExpressRemarkInfo>()
+            .Where(e => e.Express!.Id == expressId
+                        && e.Type == ExpressRemarkType.Warehouse)
+            .Take(1)
+            .SingleOrDefault();
+        model.WarehouseRemark = expressWarehouseRemark?.Remark ?? string.Empty;
+
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => e.Express.Id == expressId)
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        var expressGoodsItemList = new List<ExpressClaimDetailModel.ExpressGoodsItem>();
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
+        {
+            
+        }
+
+        var expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => e.Express!.Id == expressId)
+            .OrderBy(e => e.Id)
+            .ToList();
+        
+        var expressSizeWeightItemList = new List<ExpressClaimDetailModel.ExpressSizeWeightItem>();
+        foreach (ExpressSizeWeightInfo sizeWeight in expressSizeWeightList)
+        {
+            
+        }
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = model,
         });
     }
 
@@ -179,10 +224,10 @@ public class ExpressClaimController : Controller
                 .SingleOrDefault();
 
             expressGoods.Price = goodsPrice!.Price;
-            
+
             session.Update(expressGoods);
         }
-        
+
         session.Flush();
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();

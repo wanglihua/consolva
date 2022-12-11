@@ -25,8 +25,8 @@ public class ExpressClaimDetailModel
     [JsonProperty("addTime")]
     public string AddTime { get; set; } = string.Empty;
 
-    [JsonProperty("claimTime")]
-    public string ClaimTime { get; set; } = string.Empty;
+    // [JsonProperty("claimTime")]
+    // public string ClaimTime { get; set; } = string.Empty;
 
     [JsonProperty("expressCompany")]
     public string ExpressCompany { get; set; } = string.Empty;
