@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressClaim;
+using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -13,12 +15,19 @@ namespace shunda.Client.Areas.Express.Controllers;
 public class ExpressClaimController : Controller
 {
     private readonly ISession session;
+    private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressTrackingNoService expressTrackingNoService;
+    private readonly ExpressClaimService expressClaimService;
 
-    public ExpressClaimController(ISession session, ExpressTrackingNoService expressTrackingNoService)
+    public ExpressClaimController(ISession session,
+        LoginCustomerService loginCustomerService,
+        ExpressTrackingNoService expressTrackingNoService,
+        ExpressClaimService expressClaimService)
     {
         this.session = session;
+        this.loginCustomerService = loginCustomerService;
         this.expressTrackingNoService = expressTrackingNoService;
+        this.expressClaimService = expressClaimService;
     }
 
     [HttpPost]
@@ -123,12 +132,62 @@ public class ExpressClaimController : Controller
 
     [HttpPost]
     [Route("/client/express/claim/pick")]
+    [Transactional]
     public IActionResult Pick([FromBody] ExpressClaimPickParam param)
     {
         if (ModelState.IsValid == false)
         {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
+
+        int expressId = param.ExpressId;
+        string trackingNoInput = param.TrackingNoInput;
+        var goodsPriceList = param.GoodsPriceList;
+
+        var express = session.Get<ExpressInfo>(expressId);
+        if (express == null)
+        {
+            throw new ValidationException($"指定的申领件#{expressId}不存在！");
+        }
+
+        if (goodsPriceList == null || goodsPriceList.Count == 0)
+        {
+            throw new ValidationException("物品价格不能为空！");
+        }
+
+        // 检查快递单的物品是不是对有界面上传过来的价格，并且都是大于0的价格
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => e.Express.Id == expressId)
+            .ToList();
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
+        {
+            int expressGoodsId = expressGoods.Id;
+            var goodsPrice = goodsPriceList.Where(e => e.ExpressGoodsId == expressGoodsId)
+                .Take(1)
+                .SingleOrDefault();
+            if (goodsPrice == null || goodsPrice.Price <= 0)
+            {
+                throw new ValidationException($"您还未完善物品 {expressGoods.Goods.Name} 单价。请如实申报货值，虚假申报可能会导致高额税金、罚款、销毁物品！");
+            }
+        }
+
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
+        {
+            int expressGoodsId = expressGoods.Id;
+            var goodsPrice = goodsPriceList.Where(e => e.ExpressGoodsId == expressGoodsId)
+                .Take(1)
+                .SingleOrDefault();
+
+            expressGoods.Price = goodsPrice!.Price;
+            
+            session.Update(expressGoods);
+        }
+        
+        session.Flush();
+
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        expressClaimService.Pick(expressId, trackingNoInput, loginCustomerId);
 
         return Json(new JsonResultData {
             Success = true,
