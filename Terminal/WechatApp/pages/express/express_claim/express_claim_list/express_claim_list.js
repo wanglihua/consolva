@@ -86,4 +86,29 @@ Page({
             showActionSheet: false
         });
     },
+    onActionSheetSelect(e) {
+        const expressClaimId = this.data.currentExpressClaim.id;
+        const action = e.detail.action;
+
+        // console.log(expressClaimId);
+        // console.log(action);
+
+        const that = this;
+
+        if (action === "detail") {
+            wx.navigateTo({
+                url: '../express_claim_detail/express_claim_detail?id=' + expressClaimId,
+            });
+        }
+
+        if (action === "claim") {
+            wx.navigateTo({
+                url: '../express_claim_pick/express_claim_pick?id=' + expressClaimId,
+            });
+        }
+
+        this.setData({
+            showActionSheet: false,
+        });
+    }
 })
