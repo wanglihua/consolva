@@ -127,11 +127,13 @@ Page({
         actionSheetActions.push({
             action: "edit",
             name: '编辑',
+            className: 'iconfont iconfont-edit',
         });
 
         actionSheetActions.push({
             action: "delete",
             name: '删除',
+            className: 'iconfont iconfont-delete',
             // color: "red",
         });
 
@@ -143,6 +145,7 @@ Page({
             action: "enterPrice",
             name: '录货值',
             subname: '录入货品价格，完成最终入库',
+            className: 'iconfont iconfont-claim-pick',
             disabled: enterPriceDisabled,
         });
 

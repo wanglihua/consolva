@@ -14,10 +14,14 @@
     position: relative
 }
 
+/*
+这个去掉后大部分显示还是跟原来一样正常，
+但如果加上后，有些地方会显示不正常，特别是 action sheet 那里
 .iconfont,
 .iconfont:before {
     display: inline-block
 }
+ */
 
 .iconfont-back:before {
     content: "\e619";
