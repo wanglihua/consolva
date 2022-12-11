@@ -455,7 +455,7 @@ public class ExpressCheckinController : Controller
             throw new ValidationException("快递单号格式不符合规范！");
         }
 
-        int billCustomerId = customerCodeService.GetCustomerIdFromCustomerCode(model.BillCustomerCode);
+        int billCustomerId = customerCodeService.GetCustomerIdFromCustomerCode(model.BillCustomerCode); // todo a 这个面单客户应该如果处理，主要是考虑入库校验码的情况
 
         //  这个检查先不用了
         /*
