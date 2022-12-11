@@ -223,7 +223,8 @@ public class LogisticsGoodsImageService
         IList<ExpressPhotoInfo> expressPhotoList = session.QueryOver<ExpressPhotoInfo>(() => ep!)
             .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
             .Select(e => ep)
-            .Where(() => eg!.Goods.Id == goodsId && orderIdList.Contains(ep!.Order!.Id))
+            // .Where(() => eg!.Goods.Id == goodsId && orderIdList.Contains(ep!.Order!.Id)) 这个会报错 不支持 Contains()
+            .Where(Restrictions.And(Restrictions.Where(() => eg!.Goods.Id == goodsId), Restrictions.InG($"{nameof(ep)}.{nameof(ep.Order)}.{nameof(ep.Order.Id)}", orderIdList) ))
             .List<ExpressPhotoInfo>();
 
         foreach (var expressPhoto in expressPhotoList)
