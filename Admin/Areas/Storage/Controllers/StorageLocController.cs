@@ -223,7 +223,7 @@ public class StorageLocController : Controller
                 .SingleOrDefault();
             if (storageLocSameRowCol != null)
             {
-                throw new ValidationException("货架相当行列的仓位设置已经存在！");
+                throw new ValidationException("货架相同行列的仓位设置已经存在！");
             }
 
             storageLoc = new StorageLocInfo();
@@ -255,7 +255,7 @@ public class StorageLocController : Controller
                 .SingleOrDefault();
             if (storageLocSameRowCol != null)
             {
-                throw new ValidationException("货架相当行列的仓位设置已经存在！");
+                throw new ValidationException("货架相同行列的仓位设置已经存在！");
             }
 
             storageLoc = session.Get<StorageLocInfo>(storageLocId);
