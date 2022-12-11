@@ -99,12 +99,14 @@ Page({
     onSearch(e) {
         this.setData({
             query: e.detail,
+            lastExpressId: 0,
         });
         this.loadExpressClaimList();
     },
     onSearchClear() {
         this.setData({
             query: "",
+            lastExpressId: 0,
         });
         this.loadExpressClaimList();
     },
