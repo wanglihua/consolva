@@ -138,13 +138,17 @@ public class StorageLocController : Controller
         else
         {
             storageLoc = session.Get<StorageLocInfo>(storageLocId);
-            if (storageLoc == null) throw new ValidationException("指定的数据项不存在！");
-
-            if (storageLoc.Spec != null) model.SpecId = storageLoc.Spec.Id;
+            if (storageLoc == null)
+            {
+                throw new ValidationException("指定的数据项不存在！");
+            }
         }
 
         var shelfInfo = session.Get<ShelfInfo>(shelfId);
-        if (shelfInfo == null) throw new ValidationException("指定的货架数据项不存在！");
+        if (shelfInfo == null)
+        {
+            throw new ValidationException("指定的货架数据项不存在！");
+        }
 
         var shelfType = shelfInfo.Type;
         IList<StorageLocSpecInfo> storageLocSpecList = session
@@ -153,8 +157,15 @@ public class StorageLocController : Controller
             .OrderBy(e => e.Id)
             .ToList();
 
-        model.StorageLoc = storageLoc;
+        model.Id = storageLoc.Id;
+        model.Name = storageLoc.Name;
+        model.RowNum = storageLoc.RowNum;
+        model.ColNum = storageLoc.ColNum;
+        model.SpecId = storageLoc.Spec.Id;
         model.ShelfId = storageLoc.Shelf.Id;
+        model.Status = storageLoc.Status;
+        model.OrderNum = storageLoc.OrderNum;
+        model.OffShelfOrderNum = storageLoc.OffShelfOrderNum;
 
         model.StorageLocStatusList = StorageLocStatus.GetList();
         model.StorageLocSpecList = storageLocSpecList;
@@ -172,11 +183,20 @@ public class StorageLocController : Controller
         var loginUserId = loginUserService.GetLoginUserId();
         var loginUser = session.Get<UserInfo>(loginUserId)!;
 
-        var storageLocSpec = session.Load<StorageLocSpecInfo>(model.SpecId);
-        if (storageLocSpec == null) throw new ValidationException("指定的仓位规格不存在！");
+        var shelf = session.Load<ShelfInfo>(model.ShelfId);
+        if (shelf == null)
+        {
+            throw new ValidationException($"指定的货架#{model.ShelfId}不存在！");
+        }
 
-        var storageLocFromUi = model.StorageLoc;
-        var storageLocId = storageLocFromUi.Id;
+        var storageLocSpec = session.Load<StorageLocSpecInfo>(model.SpecId);
+        if (storageLocSpec == null)
+        {
+            throw new ValidationException($"指定的仓位规格#{model.SpecId}不存在！");
+        }
+
+
+        var storageLocId = model.Id;
 
         var isCreate = storageLocId == 0;
 
@@ -205,19 +225,22 @@ public class StorageLocController : Controller
             storageLoc = session.Get<StorageLocInfo>(storageLocId);
         }
 
-        storageLoc.RowNum = storageLocFromUi.RowNum;
-        storageLoc.ColNum = storageLocFromUi.ColNum;
+        storageLoc.RowNum = model.RowNum;
+        storageLoc.ColNum = model.ColNum;
 
-        if ((storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump) == false) storageLoc.Name = $"{storageLocFromUi.RowNum}层{storageLocFromUi.ColNum}列";
+        if ((storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump) == false)
+        {
+            storageLoc.Name = $"{model.RowNum}层{model.ColNum}列";
+        }
 
-        storageLoc.Shelf = session.Load<ShelfInfo>(model.ShelfId);
-        storageLoc.Status = storageLocFromUi.Status;
-        storageLoc.OrderNum = storageLocFromUi.OrderNum;
-        storageLoc.OffShelfOrderNum = storageLocFromUi.OffShelfOrderNum;
+        storageLoc.Shelf = shelf;
+        storageLoc.Status = model.Status;
+        storageLoc.OrderNum = model.OrderNum;
+        storageLoc.OffShelfOrderNum = model.OffShelfOrderNum;
 
-        storageLoc.Spec = session.Load<StorageLocSpecInfo>(model.SpecId);
+        storageLoc.Spec = storageLocSpec;
 
-        storageLoc.Status = storageLocFromUi.Status;
+        storageLoc.Status = model.Status;
 
         if (isCreate)
             session.Save(storageLoc);
