@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressClaim;
+using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Service.Express;
@@ -85,6 +87,7 @@ public class ExpressClaimController : Controller
         });
     }
 
+    [NonAction]
     private IQueryable<ExpressInfo> GetListQuery(ExpressClaimListParam param)
     {
         var query = session.Query<ExpressInfo>()
@@ -98,5 +101,52 @@ public class ExpressClaimController : Controller
         }
 
         return query;
+    }
+
+    [HttpPost]
+    [Route("/client/express/claim/detail")]
+    public IActionResult Detail([FromBody] IdParam param)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int expressId = param.Id;
+
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/claim/match")]
+    public IActionResult Match([FromBody] ExpressClaimMatchParam param)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int expressId = param.ExpressId;
+        string trackingNoInput = param.TrackingNoInput;
+
+        var express = session.Get<ExpressInfo>(expressId);
+        if (express == null)
+        {
+            throw new ValidationException($"指定的申领件#{expressId}不存在！");
+        }
+
+        bool match = expressTrackingNoService.IsTrackingNoMatch(express.TrackingNo, trackingNoInput);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new ExpressClaimMatchModel() {
+                Match = match,
+            }
+        });
     }
 }
