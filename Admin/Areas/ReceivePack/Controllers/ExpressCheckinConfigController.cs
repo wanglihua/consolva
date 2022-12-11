@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckinConfig;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -46,6 +47,7 @@ public class ExpressCheckinConfigController : Controller
 
     [HttpPost]
     [Route("/admin/express/checkin/config/save")]
+    [Transactional]
     public IActionResult Save(ExpressCheckinConfigIndexModel model)
     {
         if (!ModelState.IsValid)

@@ -507,22 +507,17 @@ public class ExpressCheckinController : Controller
 
         ExpressExpectInfo? expressExpect = null;
 
-        int expressId = model.ExpressId;
-        bool isCreate = expressId == 0;
+        int expressIdFromUi = model.ExpressId;
+        bool isCreate = expressIdFromUi == 0;
 
         ExpressInfo? express = null;
 
         lock (ExpressCheckinLockObject) // lock 时，数据库事务应该放在 lock 区域之内
         {
-            ITransaction? transaction = null;
-
-            try
-            {
-                transaction = session.BeginTransaction();
-
+            Transactional.Wrap(session, () => {
                 if (isCreate == false)
                 {
-                    express = session.Get<ExpressInfo>(expressId);
+                    express = session.Get<ExpressInfo>(expressIdFromUi);
                     if (express.TrackingNo != model.TrackingNo)
                     {
                         ExpressInfo? expressOther = session.Query<ExpressInfo>()
@@ -542,7 +537,7 @@ public class ExpressCheckinController : Controller
                         .Take(1)
                         .FirstOrDefault();
 
-                    if (express != null && express.Id != expressId)
+                    if (express != null && express.Id != expressIdFromUi)
                     {
                         throw new ValidationException("该快递单号存在其他入库记录！");
                     }
@@ -679,7 +674,7 @@ public class ExpressCheckinController : Controller
                 if (isCreate == false)
                 {
                     warehouseRemarkInDb = session.Query<ExpressRemarkInfo>()
-                        .Where(e => e.Express!.Id == expressId && e.Type == ExpressRemarkType.Warehouse)
+                        .Where(e => e.Express!.Id == expressIdFromUi && e.Type == ExpressRemarkType.Warehouse)
                         .Take(1)
                         .SingleOrDefault();
                     oldWarehouseRemark = warehouseRemarkInDb?.Remark ?? string.Empty;
@@ -700,7 +695,7 @@ public class ExpressCheckinController : Controller
                 express.BillCustomerId = billCustomerId;
 
                 // 如果是新入库的，或者是 原来的但修改了货架, 或者是修改了仓位规格
-                if (isCreate == true || ( /* isCreate == false && */ (express.StorageLoc?.Shelf?.Id ?? 0) != model.ShelfId || (express.StorageLoc?.Spec?.Id ?? 0) != model.StorageLocSpecId))
+                if (isCreate == true || ( /* isCreate == false && */ (express.StorageLoc?.Shelf?.Id ?? 0) != model.ShelfId || (express.StorageLoc?.Spec.Id ?? 0) != model.StorageLocSpecId))
                 {
                     StorageLocInfo recommandStorage = expressCheckinService.GetRecommandStorage(shelf, storageLocSpec); // 从这里取到的仓位ID，已经保证是仓位上物品不超过限制了
                     if (recommandStorage == null)
@@ -712,6 +707,7 @@ public class ExpressCheckinController : Controller
                     storageLocService.CheckStorageLoc((recommandStorage.Id), ShelfType.Normal);
 
                     express.StorageLoc = recommandStorage;
+                    express.Shelf = recommandStorage.Shelf;
                 }
 
                 session.SaveOrUpdate(express);
@@ -773,7 +769,7 @@ public class ExpressCheckinController : Controller
                 {
                     expressGoodsListInDb = session.Query<ExpressGoodsInfo>()
                         .Fetch(e => e.Goods)
-                        .Where(e => e.Express!.Id == expressId)
+                        .Where(e => e.Express!.Id == expressIdFromUi)
                         .ToList();
 
                     // 移除界面上没有，但数据库中有的物品
@@ -864,42 +860,34 @@ public class ExpressCheckinController : Controller
                 expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
 
                 expressCheckinService.SaveUserShelfSelect(loginUserId, model.ShelfId ?? 0, model.StorageLocSpecId ?? 0);
-
-                transaction.Commit();
-            }
-            catch (Exception exp)
-            {
-                transaction?.Rollback();
-
-                if (exp is ValidationException == false)
-                {
-                    log.Error(exp);
-                }
-
-                throw;
-            }
+            });
         }
 
         if (isCreate == true) // 只在首次入库的时候提醒，修改信息的时候不提醒
         {
-            // 发送消息提醒，虽然不在同一个事务内，但也是在前面都成功的情况下才发送的
-            if (expressExpect != null) // 优先按预报的发送消息
-            {
-                customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
-            }
-            else if (billCustomerId != 0) // 没预报但有面单会员ID
-            {
-                CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
-                if (billCustomer != null)
+            Transactional.Wrap(session, () => {
+                // 发送消息提醒，虽然不在同一个事务内，但也是在前面都成功的情况下才发送的
+                if (expressExpect != null) // 优先按预报的发送消息
                 {
-                    customerMessageExpressCheckinService.SendMessage(billCustomer, express);
+                    customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
                 }
-            }
+                else if (billCustomerId != 0) // 没预报但有面单会员ID
+                {
+                    CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
+                    if (billCustomer != null)
+                    {
+                        customerMessageExpressCheckinService.SendMessage(billCustomer, express);
+                    }
+                }
+            });
         }
 
-        expressSizeWeightService.BindAndSum(expressId);
-        expressPhotoService.BindExpressPhoto(expressId);
-        expressVideoService.BindExpressVideo(expressId);
+        Transactional.Wrap(session, () => {
+            int expressId = express?.Id ?? 0;
+            expressSizeWeightService.BindAndSum(expressId);
+            expressPhotoService.BindExpressPhoto(expressId);
+            expressVideoService.BindExpressVideo(expressId);
+        });
 
         return Json(new Dictionary<string, object>() {
             { "success", true },

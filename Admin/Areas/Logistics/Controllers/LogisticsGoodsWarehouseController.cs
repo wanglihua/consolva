@@ -159,6 +159,7 @@ public class LogisticsGoodsWarehouseController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/goods/warehouse/add/save")]
+    [Transactional]
     public IActionResult Save(LogisticsGoodsWarehouseSaveModel model)
     {
         if (!this.ModelState.IsValid)
