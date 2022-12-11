@@ -21,3 +21,28 @@
     padding: 0 20rpx 200rpx 20rpx;
     background-color: white;
 }
+
+.search-bar {
+    margin: 0 0 15rpx 0 !important;
+    padding: 0 !important;
+}
+
+.item-header {
+    background-color: teal !important;
+}
+
+.item-header-alt {
+    background-color: bisque !important;
+}
+
+.item-header-title {
+    color: white !important;
+}
+
+.item-header-value {
+    color: white !important;
+}
+
+.item-footer {
+    background-color: #efefef !important;
+}

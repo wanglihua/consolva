@@ -27,10 +27,10 @@ Page({
             let expressExpectList = res.data.expressExpectList;
 
             for (const expressExpect of expressExpectList) {
-                let headerClassName = "express-expect-header";
+                let headerClassName = "item-header";
                 let actions = "编辑，删除";
                 if (expressExpect.enter === true) {
-                    headerClassName = "express-expect-header-enter";
+                    headerClassName = "item-header-alt";
                     actions = actions + "，录货值";
                 }
 

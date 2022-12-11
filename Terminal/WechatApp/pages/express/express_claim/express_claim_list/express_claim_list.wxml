@@ -2,7 +2,7 @@
 <van-sticky>
     <view class="container-top">
         <view style="background-color: white;">
-            <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="express-claim-search" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear" />
+            <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear" />
             <van-divider hairline customStyle="margin: 0;" />
         </view>
     </view>
@@ -17,7 +17,7 @@
             <block wx:for="{{expressClaimList}}" wx:key="id" wx:for-item="expressClaim" wx:for-index="index">
                 <view style="margin: 25rpx 0;">
                     <van-cell-group>
-                        <van-cell title="{{ index + 1 }}、{{ expressClaim.checkinTrackingNo }}" value="{{ expressClaim.addDate }}" border="{{ false }}" custom-class="express-claim-header" title-class="express-claim-header-title" value-class="express-claim-header-title" />
+                        <van-cell title="{{ index + 1 }}、{{ expressClaim.checkinTrackingNo }}" value="{{ expressClaim.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
                         <van-cell title="快递单号" value="{{ expressClaim.trackingNo }}" border="{{ false }}" />
                         <van-cell title="快递公司" value="{{ expressClaim.expressCompany }}" border="{{ false }}" />
                         <van-cell title="入库单号" value="{{ expressClaim.checkinTrackingNo }}" border="{{ false }}"/>
@@ -27,7 +27,7 @@
                         <block wx:if="{{ expressClaim.warehouseRemark !== '' }}">
                             <van-cell title="仓库备注" value="{{expressClaim.warehouseRemark}}" border="{{ false }}" />
                         </block>
-                        <van-cell title="操作" value="{{expressClaim.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressClaim }}" custom-class="express-claim-footer" />
+                        <van-cell title="操作" value="{{expressClaim.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressClaim }}" custom-class="item-footer" />
                     </van-cell-group>
                 </view>
             </block>
