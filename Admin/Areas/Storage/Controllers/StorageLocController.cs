@@ -184,10 +184,15 @@ public class StorageLocController : Controller
     [Transactional]
     public IActionResult Save(StorageLocSaveModel model)
     {
-        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        if (!ModelState.IsValid)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
 
         var loginUserId = loginUserService.GetLoginUserId();
         var loginUser = session.Get<UserInfo>(loginUserId)!;
+
+        int shelfId = model.ShelfId;
 
         var shelf = session.Load<ShelfInfo>(model.ShelfId);
         if (shelf == null)
@@ -201,8 +206,9 @@ public class StorageLocController : Controller
             throw new ValidationException($"指定的仓位规格#{model.SpecId}不存在！");
         }
 
-
         var storageLocId = model.Id;
+        int rowNum = model.RowNum;
+        int colNum = model.ColNum;
 
         var isCreate = storageLocId == 0;
 
@@ -210,6 +216,16 @@ public class StorageLocController : Controller
 
         if (isCreate)
         {
+            var storageLocSameRowCol = session.Query<StorageLocInfo>()
+                .Where(e => e.Shelf.Id == shelfId
+                            && e.RowNum == rowNum && e.ColNum == colNum)
+                .Take(1)
+                .SingleOrDefault();
+            if (storageLocSameRowCol != null)
+            {
+                throw new ValidationException("货架相当行列的仓位设置已经存在！");
+            }
+
             storageLoc = new StorageLocInfo();
 
             if (storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump)
@@ -221,13 +237,27 @@ public class StorageLocController : Controller
                     .Take(1)
                     .SingleOrDefault();
 
-                if (storageLocNew != null) throw new ValidationException("相同名称的仓位号已存在！");
+                if (storageLocNew != null)
+                {
+                    throw new ValidationException("相同名称的仓位号已存在！");
+                }
 
                 storageLoc.Name = newStorageLocName;
             }
         }
         else
         {
+            var storageLocSameRowCol = session.Query<StorageLocInfo>()
+                .Where(e => e.Shelf.Id == shelfId
+                            && e.Id != storageLocId
+                            && e.RowNum == rowNum && e.ColNum == colNum)
+                .Take(1)
+                .SingleOrDefault();
+            if (storageLocSameRowCol != null)
+            {
+                throw new ValidationException("货架相当行列的仓位设置已经存在！");
+            }
+
             storageLoc = session.Get<StorageLocInfo>(storageLocId);
         }
 
