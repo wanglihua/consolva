@@ -109,23 +109,31 @@ public class ExpressSizeWeightInfo : Entity
     /// <summary>
     /// 单箱体积
     /// </summary>
-    public virtual decimal VolumeCache
+    public virtual decimal GetVolumeCache()
     {
-        get { return decimal.Round(Length * Width * Height / 100_00_00, 6, MidpointRounding.AwayFromZero); }
+        return decimal.Round(Length * Width * Height / 100_00_00, 6, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>
     /// 单箱体积重
     /// </summary>
-    public virtual decimal VolumeWeightCache
+    public virtual decimal GetVolumeWeightCache()
     {
-        get { return decimal.Round(Length * Width * Height / LogisticsConfig.VolumeWeightDenominator, 3, MidpointRounding.AwayFromZero); }
+        return decimal.Round(Length * Width * Height / LogisticsConfig.VolumeWeightDenominator, 3, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>
     /// 体积重实际重比值
     /// </summary>
-    public virtual decimal? VolumeWeightActualWeightRatioCache { get; set; }
+    public virtual decimal? GetVolumeWeightActualWeightRatioCache()
+    {
+        if (Weight == 0)
+        {
+            return null;
+        }
+
+        return GetVolumeWeightCache() / Weight;
+    }
 
     /// <summary>
     /// 子单号尺寸重量列表

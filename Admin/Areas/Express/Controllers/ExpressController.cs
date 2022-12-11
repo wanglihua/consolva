@@ -539,7 +539,7 @@ public class ExpressController : Controller
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.VolumeWeightCache}")));
+            cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.GetVolumeWeightCache()}")));
 
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressClaim;
 using shunda.Client.Services;
 using shunda.Core;
@@ -139,6 +140,7 @@ public class ExpressClaimController : Controller
             CheckinTrackingNo = express.CheckinTrackingNo,
         };
 
+        // 入库备注
         var expressWarehouseRemark = session.Query<ExpressRemarkInfo>()
             .Where(e => e.Express!.Id == expressId
                         && e.Type == ExpressRemarkType.Warehouse)
@@ -146,7 +148,9 @@ public class ExpressClaimController : Controller
             .SingleOrDefault();
         model.WarehouseRemark = expressWarehouseRemark?.Remark ?? string.Empty;
 
+        // 物品列表
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
             .Where(e => e.Express.Id == expressId)
             .OrderBy(e => e.Id)
             .ToList();
@@ -154,19 +158,53 @@ public class ExpressClaimController : Controller
         var expressGoodsItemList = new List<ExpressClaimDetailModel.ExpressGoodsItem>();
         foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
         {
-            
+            expressGoodsItemList.Add(new ExpressClaimDetailModel.ExpressGoodsItem() {
+                Id = expressGoods.Id,
+                ExpressId = expressGoods.Express.Id,
+                GoodsId = expressGoods.Goods.Id,
+                GoodsName = expressGoods.Goods.Name,
+                Price = expressGoods.Price.ToString("#0.00"),
+                Quantity = expressGoods.Quantity,
+                Unit = expressGoods.Unit,
+            });
         }
 
+        model.ExpressGoodsList = expressGoodsItemList;
+
+        // 尺寸重量
         var expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
             .Where(e => e.Express!.Id == expressId)
             .OrderBy(e => e.Id)
             .ToList();
-        
+
+        decimal totalVolume = 0;
+        decimal totalVolumeWeight = 0;
+        decimal totalActualWeight = 0;
+        int totalPackageCount = 0;
         var expressSizeWeightItemList = new List<ExpressClaimDetailModel.ExpressSizeWeightItem>();
         foreach (ExpressSizeWeightInfo sizeWeight in expressSizeWeightList)
         {
-            
+            totalVolume += sizeWeight.GetVolumeCache();
+            totalVolumeWeight += sizeWeight.GetVolumeWeightCache();
+            totalActualWeight += sizeWeight.Weight;
+            totalPackageCount += sizeWeight.PackageCount;
+
+            expressSizeWeightItemList.Add(new ExpressClaimDetailModel.ExpressSizeWeightItem() {
+                Id = sizeWeight.Id,
+                Length = sizeWeight.Length.ToString("#0.00"),
+                Width = sizeWeight.Width.ToString("#0.00"),
+                Height = sizeWeight.Height.ToString("#0.00"),
+                Weight = sizeWeight.Weight.ToString("#0.000"),
+                Volume = sizeWeight.GetVolumeCache().ToString("#0.000"),
+                VolumeWeight = sizeWeight.GetVolumeCache().ToString("#0.000"),
+            });
         }
+
+        model.TotalVolume = totalVolume.ToString("#0.000");
+        model.TotalVolumeWeight = totalVolumeWeight.ToString("#0.000");
+        model.TotalActualWeight = totalActualWeight.ToString("#0.000");
+        model.TotalPackageCount = totalPackageCount.ToString();
+        model.ExpressSizeWeightList = expressSizeWeightItemList;
 
         return Json(new JsonResultData {
             Success = true,

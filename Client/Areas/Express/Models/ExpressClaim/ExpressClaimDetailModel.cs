@@ -93,6 +93,9 @@ public class ExpressClaimDetailModel
         [JsonProperty("weight")]
         public string Weight { get; set; } = string.Empty;
 
+        [JsonProperty("volume")]
+        public string Volume { get; set; } = string.Empty;
+
         [JsonProperty("volumeWeight")]
         public string VolumeWeight { get; set; } = string.Empty;
     }
