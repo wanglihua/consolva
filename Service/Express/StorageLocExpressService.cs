@@ -38,6 +38,15 @@ public class StorageLocExpressService
     }
 
     /// <summary>
+    /// 更新货架所有仓位
+    /// 存储过程内部有数据库事务
+    /// </summary>
+    public void UpdateShelf(int shelfId)
+    {
+        session.CreateSQLQuery($"CALL storage_loc_express_update_shelf({shelfId})").List();
+    }
+
+    /// <summary>
     /// 更新所有
     /// 存储过程内部有数据库事务
     /// </summary>

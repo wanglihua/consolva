@@ -190,6 +190,8 @@ public class ShelfController : Controller
 
         session.Flush();
 
+        storageLocExpressService.UpdateShelf(shelf.Id);
+
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" }
