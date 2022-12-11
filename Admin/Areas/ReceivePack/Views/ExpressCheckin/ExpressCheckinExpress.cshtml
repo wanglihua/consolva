@@ -15,7 +15,7 @@
     autoRecordCheckinVideo = false;
     <h3 id="warehouseError" class="well">仓库参数不对，您进入的页面是否有误？</h3>
 }
-else if (string.IsNullOrWhiteSpace(Model.ExpressTrackingNo))
+else if (string.IsNullOrWhiteSpace(Model.TrackingNo))
 {
     autoRecordCheckinVideo = false;
     <h3 id="expressTrackingNoError" class="well">请输入快递单号</h3>
@@ -37,7 +37,7 @@ else
                 {
                     autoRecordCheckinVideo = false;
                     <h3 id="expressTrackingNoError" class="well">
-                        快递单号 @(Model.ExpressTrackingNo) 已成功入库，修改保存后将更新入库记录信息！
+                        快递单号 @(Model.TrackingNo) 已成功入库，修改保存后将更新入库记录信息！
                     </h3>
                 }
 
@@ -54,7 +54,7 @@ else
                                     <label for="expressTrackingNo">快递单号</label>
                                 </td>
                                 <td style="width: 388px">
-                                    <input id="expressTrackingNo" asp-for="ExpressTrackingNo" type="text" readonly="readonly" required="required" class="input-sm form-control"/>
+                                    <input id="expressTrackingNo" asp-for="TrackingNo" type="text" readonly="readonly" required="required" class="input-sm form-control"/>
                                 </td>
                                 <td style="width: 100px" class="lbl">
                                     <label for="expressCompany">物流公司</label>
@@ -270,7 +270,7 @@ else
     @if (autoRecordCheckinVideo)
     {
         <script type="text/javascript">
-            recordStart("@(Model.ExpressTrackingNo)");
+            recordStart("@(Model.TrackingNo)");
         </script>
     }
 
@@ -278,8 +278,8 @@ else
     {
         <script type="application/javascript">
             function saveAndPrint() {
-                recordFinish('@(Model.ExpressTrackingNo)');
-                saveExpressPrintLabel('@(Model.ExpressTrackingNo)');
+                recordFinish('@(Model.TrackingNo)');
+                saveExpressPrintLabel('@(Model.TrackingNo)');
             }
         </script>
     }
@@ -287,7 +287,7 @@ else
     {
         <script type="application/javascript">
             function saveAndPrint() {
-                saveExpressPrintLabel('@(Model.ExpressTrackingNo)');
+                saveExpressPrintLabel('@(Model.TrackingNo)');
             }
         </script>
     }

@@ -147,7 +147,7 @@
             url: "@Url.Action("Express", "ExpressCheckin")",
             data: {
                 warehouseId: "@(Model.Warehouse?.Id)",
-                expressTrackingNo: expressTrackingNo
+                trackingNo: expressTrackingNo
             },
             success: function (data) {
                 hideMask();

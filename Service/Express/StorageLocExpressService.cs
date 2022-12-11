@@ -1,5 +1,6 @@
 using System.Text;
 using shunda.Core.Service;
+using shunda.Domain.Express;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Express;
@@ -8,7 +9,7 @@ namespace shunda.Service.Express;
 public class StorageLocExpressService
 {
     private readonly ISession session;
-    
+
     public StorageLocExpressService(ISession session)
     {
         this.session = session;
@@ -41,7 +42,41 @@ public class StorageLocExpressService
     /// 存储过程内部有数据库事务
     /// </summary>
     public void UpdateAll()
-    { 
+    {
         session.CreateSQLQuery("CALL storage_loc_express_update_all()").List();
+    }
+
+    /// <summary>
+    /// 删除仓位上的快递，一般在删除仓位时调用
+    /// </summary>
+    public void Delete(int storageLocId)
+    {
+        var storageLocExpressList = session.Query<StorageLocExpressInfo>()
+            .Where(e => e.StorageLoc.Id == storageLocId)
+            .ToList();
+
+        foreach (var storageLocExpress in storageLocExpressList)
+        {
+            session.Delete(storageLocExpress);
+        }
+
+        session.Flush();
+    }
+
+    /// <summary>
+    /// 删除仓位上的快递，一般在删除仓位时调用
+    /// </summary>
+    public void Delete(IList<int> storageLocIdList)
+    {
+        var storageLocExpressList = session.Query<StorageLocExpressInfo>()
+            .Where(e => storageLocIdList.Contains(e.StorageLoc.Id))
+            .ToList();
+
+        foreach (var storageLocExpress in storageLocExpressList)
+        {
+            session.Delete(storageLocExpress);
+        }
+
+        session.Flush();
     }
 }

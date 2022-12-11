@@ -118,21 +118,21 @@ public class ExpressCheckinController : Controller
 
     [HttpPost]
     [Route("/admin/express/checkin/express")]
-    public IActionResult Express(int warehouseId, string expressTrackingNo)
+    public IActionResult Express(int warehouseId, string trackingNo)
     {
         int loginUserId = loginUserService.GetLoginUserId();
 
-        expressTrackingNo = expressTrackingNoService.RemoveUselessSuffix(expressTrackingNo);
+        trackingNo = expressTrackingNoService.RemoveUselessSuffix(trackingNo);
 
-        if (string.IsNullOrWhiteSpace(expressTrackingNo) == false)
+        if (string.IsNullOrWhiteSpace(trackingNo) == false)
         {
-            expressTrackingNo = expressTrackingNo.Trim().ToUpper();
+            trackingNo = trackingNo.Trim().ToUpper();
         }
 
         // 查看已经存在的, 还在仓位上的 tracking no 并把信息显示在这里
 
         ExpressInfo? expressExist = session.Query<ExpressInfo>()
-            .Where(e => e.TrackingNo == expressTrackingNo)
+            .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
             .SingleOrDefault();
 
@@ -140,7 +140,7 @@ public class ExpressCheckinController : Controller
 
         model.WarehouseId = warehouseId;
         model.Warehouse = session.Get<WarehouseInfo>(warehouseId);
-        model.ExpressTrackingNo = expressTrackingNo;
+        model.TrackingNo = trackingNo;
 
         int? expressExistShelfId = null;
         StorageLocInfo? storageLocExist = null;
@@ -170,7 +170,7 @@ public class ExpressCheckinController : Controller
                 .Take(1)
                 .SingleOrDefault();
 
-            expressExistShelfId = storageLocExist?.Shelf?.Id;
+            expressExistShelfId = storageLocExist?.Shelf.Id;
 
             model.StorageLocName = storageLocExist?.GetFullName() ?? string.Empty;
         }
@@ -237,7 +237,7 @@ public class ExpressCheckinController : Controller
         // 尺寸重量数据 begin
 
         IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
-            .Where(e => e.TrackingNo == expressTrackingNo)
+            .Where(e => e.TrackingNo == trackingNo)
             .ToList();
 
         ExpressSizeWeightInfo? expressSizeWeight = expressSizeWeightList
@@ -266,8 +266,8 @@ public class ExpressCheckinController : Controller
                 LogisticsExpressCheckinSizeWeightChildItem childItem = new LogisticsExpressCheckinSizeWeightChildItem();
 
                 childItem.ExpressChildId = expressChild.Id;
-                childItem.ParentTrackingNo = expressTrackingNo;
-                childItem.TrackingNo = expressChild.TrackingNoSub.Replace(expressTrackingNo + "-", "");
+                childItem.ParentTrackingNo = trackingNo;
+                childItem.TrackingNo = expressChild.TrackingNoSub.Replace(trackingNo + "-", "");
                 childItem.Length = expressChild.Length;
                 childItem.Width = expressChild.Width;
                 childItem.Height = expressChild.Height;
@@ -284,7 +284,7 @@ public class ExpressCheckinController : Controller
 
         // 是不是已经预报的快递单号
         var expressExpect = session.Query<ExpressExpectInfo>()
-            .Where(e => e.TrackingNo == expressTrackingNo)
+            .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
             .SingleOrDefault();
         model.ExpressExpect = expressExpect;
@@ -445,7 +445,7 @@ public class ExpressCheckinController : Controller
         UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         // 快递单号大写与去掉前后于中间的空格，订单创建时同样也要做这样的事情
-        string expressTrackingNo = model.ExpressTrackingNo.Trim().Replace(" ", "").ToUpper(); // 去空格再大写
+        string expressTrackingNo = model.TrackingNo.Trim().Replace(" ", "").ToUpper(); // 去空格再大写
 
         // 快递单号验证
         if (expressTrackingNoService.IsValidateTrackingNo(expressTrackingNo) == false)
@@ -521,7 +521,7 @@ public class ExpressCheckinController : Controller
                 if (isCreate == false)
                 {
                     express = session.Get<ExpressInfo>(expressId);
-                    if (express.TrackingNo != model.ExpressTrackingNo)
+                    if (express.TrackingNo != model.TrackingNo)
                     {
                         ExpressInfo? expressOther = session.Query<ExpressInfo>()
                             .Where(e => e.TrackingNo == expressTrackingNo)

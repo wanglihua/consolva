@@ -10,10 +10,12 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Express;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service;
+using shunda.Service.Express;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
@@ -25,20 +27,24 @@ public class StorageLocController : Controller
 {
     private static readonly string storageLocSpecAlias = "sls";
     private static readonly string storageLocShelfAlias = "s";
-    private readonly LoginUserService loginUserService;
+
     private readonly ISession session;
+    private readonly LoginUserService loginUserService;
     private readonly StorageLocDesignService storageLocDesignService;
     private readonly StorageLocLabelService storageLocLabelService;
+    private readonly StorageLocExpressService storageLocExpressService;
 
     public StorageLocController(ISession session,
+        LoginUserService loginUserService,
         StorageLocDesignService storageLocDesignService,
         StorageLocLabelService storageLocLabelService,
-        LoginUserService loginUserService)
+        StorageLocExpressService storageLocExpressService)
     {
         this.session = session;
+        this.loginUserService = loginUserService;
         this.storageLocDesignService = storageLocDesignService;
         this.storageLocLabelService = storageLocLabelService;
-        this.loginUserService = loginUserService;
+        this.storageLocExpressService = storageLocExpressService;
     }
 
     [HttpGet]
@@ -243,11 +249,18 @@ public class StorageLocController : Controller
         storageLoc.Status = model.Status;
 
         if (isCreate)
+        {
             session.Save(storageLoc);
+        }
         else
+        {
             session.Update(storageLoc);
+        }
 
         session.Flush();
+
+        // 生成或者更新仓位快递单
+        storageLocExpressService.UpdateSingle(storageLoc.Id);
 
         return Json(new Dictionary<string, object> {
             { "success", true },
@@ -372,20 +385,21 @@ public class StorageLocController : Controller
     [Transactional]
     public IActionResult Delete(int[] idList)
     {
-        /*
-        LogisticsOrderGoodsInfo orderGoods = session.Query<LogisticsOrderGoodsInfo>()
+        if (idList == null || idList.Length == 0)
+        {
+            throw new ValidationException("请选择要删除的数据项！");
+        }
+
+        var express = session.Query<ExpressInfo>()
             .Where(e => idList.Contains(e.StorageLoc.Id))
             .Take(1)
             .SingleOrDefault();
-
-        if (orderGoods != null)
+        if (express != null)
         {
-            return Json(new Dictionary<string, object>() {
-                { "success", false },
-                { "message", "有物品正引用选择的仓位, 删除失败!" },
-            });
+            throw new ValidationException("有物品正引用选择的仓位, 删除失败!");
         }
-        */
+
+        storageLocExpressService.Delete(idList);
 
         foreach (var id in idList)
         {

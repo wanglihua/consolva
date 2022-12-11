@@ -11,7 +11,7 @@ public class LogisticsExpressCheckinExpressSaveModel
 
     [Required(ErrorMessage = "快递单号不能为空！")]
     [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
-    public string ExpressTrackingNo { get; set; } = string.Empty;
+    public string TrackingNo { get; set; } = string.Empty;
 
     [MaxLength(100, ErrorMessage = "快递公司长度不能大于100！")]
     public string ExpressCompany { get; set; } = string.Empty;
