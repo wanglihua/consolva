@@ -5,7 +5,7 @@
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsGoodsWarehouse.LogisticsGoodsWarehouseListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsGoodsList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsGoodsList" })
 
 <table id="tblLogisticsGoodsList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -66,7 +66,7 @@
                             @logisticsGoods.Name
                         </div>
                         <div style="color: #08008c;">
-                            @logisticsGoods.Type.Name
+                            @ListDataUtil.Render(logisticsGoods.Type.Name)
                         </div>
                     </td>
                     <td style="text-align: center;">
@@ -98,4 +98,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsGoodsList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsGoodsList" })

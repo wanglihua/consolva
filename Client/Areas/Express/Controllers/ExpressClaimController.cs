@@ -20,7 +20,7 @@ public class ExpressClaimController : Controller
     }
 
     [HttpPost]
-    [Route("/express/claim/list")]
+    [Route("/client/express/claim/list")]
     public IActionResult List([FromBody] ExpressClaimListParam param)
     {
         // 这里只显示面单客户ID不能解析获得的快递单

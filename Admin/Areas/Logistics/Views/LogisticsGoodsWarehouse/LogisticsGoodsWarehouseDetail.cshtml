@@ -24,7 +24,6 @@
                                     <div class="form-group">
                                         <label asp-for="Type" class="col-xs-4 control-label">物品类型</label>
                                         <div class="col-xs-8">
-                                            <input id="goodsTypeValue" type="hidden" asp-for="Type"/>
                                             <select id="goodsType" asp-for="Type" class="input-sm form-control">
                                                 @foreach (LogisticsGoodsType goodsType in Model.TypeList)
                                                 {
@@ -34,10 +33,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-
-                            <div class="row">
 
                                 <div class="col-xs-6">
                                     <div class="form-group">
@@ -61,24 +56,11 @@
                                     </div>
                                 </div>
 
-                            </div>
-
-                            <div class="row">
-
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label asp-for="CreateExpressTrackingNo" class="col-xs-4 control-label">创建单号</label>
                                         <div class="col-xs-8">
                                             <input asp-for="CreateExpressTrackingNo" type="text" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-6" style="visibility: hidden;">
-                                    <div class="form-group">
-                                        <label for="mock" class="col-xs-4 control-label"></label>
-                                        <div class="col-xs-8">
-                                            <input id="mock" name="mock" type="text" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
