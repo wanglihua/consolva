@@ -1,7 +1,6 @@
 <!--pages/express/express_claim/express_claim_detail/express_claim_detail.wxml-->
 <view class="container">
-    <van-cell-group title="申领件详细">
-    </van-cell-group>
+    <van-cell-group title="申领件详细"/>
 
     <van-cell-group custom-class="item">
         <van-cell title="快递单详情" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
@@ -28,7 +27,16 @@
             <van-cell title="{{ index + 1 }}、单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}cm，单箱体积重：{{ sizeWeight.volumeWeight }}，单箱实际重：{{ sizeWeight.weight }}，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}"/>
         </block>
         <block wx:if="{{ express.expressSizeWeightList.length > 1 }}">
-        <van-cell title="总体积：{{ express.totalVolume }}立方，总体积重：{{ express.totalVolumeWeight }}kg，总实际重：{{ express.totalActualWeight }}kg，总箱数：{{ express.totalPackageCount }}" custom-class="item-footer"></van-cell>
+            <van-cell title="总体积：{{ express.totalVolume }}立方，总体积重：{{ express.totalVolumeWeight }}kg，总实际重：{{ express.totalActualWeight }}kg，总箱数：{{ express.totalPackageCount }}" custom-class="item-footer"></van-cell>
         </block>
+    </van-cell-group>
+
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="primary" class-prefix="iconfont" icon="claim-pick" block bind:click="onClaimClick">认领</van-button>
+        </van-cell>
+        <van-cell border="{{false}}">
+            <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onBackClick" style="margin-top: 10rpx;">返回</van-button>
+        </van-cell>
     </van-cell-group>
 </view>
