@@ -7,8 +7,8 @@ Page({
             expressGoodsList: [],
             expressSizeWeightList: [],
         },
-        trackingNoInputHasError: false,
-        trackingNoInputErrorMsg: "",
+        btnClaimDisabled: false,
+        btnClaimText: "认领",
     },
 
     onLoad(options) {
@@ -26,6 +26,13 @@ Page({
             that.setData({
                 express: express,
             });
+
+            if (express.claimed) {
+                that.setData({
+                    btnClaimDisabled: true,
+                    btnClaimText: "已认领",
+                });
+            }
         });
     },
 
