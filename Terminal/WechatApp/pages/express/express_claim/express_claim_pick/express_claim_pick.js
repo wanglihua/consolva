@@ -156,13 +156,29 @@ Page({
                 });
 
                 setTimeout(function () {
+                    if(express.enter){
+                        wx.navigateBack({
+                            complete: function (e) {
+                                const pages = getCurrentPages();
+                                const prevPage = pages[pages.length - 1];
+                                if(prevPage.loadExpressExpectList) {
+                                    prevPage.loadExpressExpectList();
+                                }
+                            }
+                        });
+                    } else {
+                        wx.navigateTo({
+                            url: '../express_claim_list/express_claim_list',
+                        });
+                    }
+
                     wx.navigateBack({
                         complete: function (e) {
                             const pages = getCurrentPages();
                             const prevPage = pages[pages.length - 1];
                             prevPage.loadExpressExpectList();
                         }
-                    });
+                    });                    
                 }, 1000);
             });
     },
