@@ -129,15 +129,31 @@ public class ExpressClaimController : Controller
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
+        // 客户端显示的快递单号，一般显示的都是带隐藏的
+        string trackingNoForClient = expressTrackingNoService.GetHiddenTrackingNo(express.TrackingNo);
+
+        // 查看有没有当前登录客户的相同单号的预报
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        string trackingNo = express.TrackingNo;
+        var expressExpect = session.Query<ExpressExpectInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId && e.TrackingNo == trackingNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (expressExpect != null)
+        {
+            trackingNoForClient = trackingNo; // 有登录客户同单号的预报的就不用带隐藏的了
+        }
+
         ExpressClaimDetailModel model = new ExpressClaimDetailModel() {
             Id = express.Id,
-            TrackingNo = expressTrackingNoService.GetHiddenTrackingNo(express.TrackingNo),
+            TrackingNo = trackingNoForClient,
             AddDate = express.AddTime.ToString("yyyy-MM-dd"),
             AddTime = express.AddTime.ToString("yyyy-MM-dd HH:mm"),
             ExpressCompany = express.ExpressCompany,
             BillCustomerCode = express.BillCustomerCode,
             GoodsType = express.GoodsType.Name,
             CheckinTrackingNo = express.CheckinTrackingNo,
+            ExpectDescription = expressExpect?.Description ?? string.Empty,
         };
 
         // 入库备注

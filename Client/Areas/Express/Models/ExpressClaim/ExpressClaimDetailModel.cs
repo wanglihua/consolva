@@ -46,6 +46,13 @@ public class ExpressClaimDetailModel
     [JsonProperty("totalPackageCount")]
     public int TotalPackageCount { get; set; }
 
+    /// <summary>
+    /// 预报中的客户备注
+    /// 认领时可以参考这个备注
+    /// </summary>
+    [JsonProperty("expectDescription")]
+    public string ExpectDescription { get; set; } = string.Empty;
+
     [JsonProperty("expressGoodsList")]
     public IList<ExpressGoodsItem> ExpressGoodsList { get; set; } = new List<ExpressGoodsItem>();
 

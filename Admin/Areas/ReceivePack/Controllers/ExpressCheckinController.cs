@@ -723,6 +723,7 @@ public class ExpressCheckinController : Controller
                     session.Flush();
                 }
 
+                /* 其实这个预报里面的描述不需要迁移成是快递单号的客户备注的，预报备注当前只是客户自己看看的
                 // 保存客户备注
                 if (isCreate) // 新增是才需要这个客户备注迁移
                 {
@@ -740,6 +741,7 @@ public class ExpressCheckinController : Controller
                         session.Flush();
                     }
                 }
+                */
 
                 // 保存入库备注
                 if (warehouseRemarkInDb == null)

@@ -33,7 +33,7 @@
 
     <van-cell-group custom-class="detail-buttons" border="{{false}}">
         <van-cell border="{{false}}">
-            <van-button type="primary" class-prefix="iconfont" icon="claim-pick" block bind:click="onClaimClick">认领</van-button>
+            <van-button type="info" class-prefix="iconfont" icon="claim-pick" block bind:click="onClaimClick">认领</van-button>
         </van-cell>
         <van-cell border="{{false}}">
             <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onBackClick" style="margin-top: 10rpx;">返回</van-button>

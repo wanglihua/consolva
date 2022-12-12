@@ -3,7 +3,7 @@
     <view class="container-top">
         <view style="background-color: white;">
             <view style="padding: 10rpx 0;">
-                <van-button type="primary" class-prefix="iconfont" icon="add" plain block bind:click="onAddExpressExpectClick">添加快递单号</van-button>
+                <van-button type="info" class-prefix="iconfont" icon="add" plain block bind:click="onAddExpressExpectClick">添加快递单号</van-button>
             </view>
             <van-search model:value="{{ trackingNoQuery }}" placeholder="快递单号搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>
             <van-divider hairline customStyle="margin: 0;"/>
