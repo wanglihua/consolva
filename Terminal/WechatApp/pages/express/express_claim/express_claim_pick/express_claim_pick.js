@@ -133,7 +133,38 @@ Page({
             return;
         }
 
+        const pickData = {
+            expressId: express.id,
+            trackingNoInput: trackingNoInput,
+        };
 
+        const goodsPriceList = [];
+        for (const expressGoods of expressGoodsList) {
+            goodsPriceList.push({
+                expressGoodsId: expressGoods.id,
+                goodsName: expressGoods.goodsName,
+                price: expressGoods.price,
+            });
+        }
+
+        pickData.goodsPriceList = goodsPriceList;
+
+        app.post("/client/express/claim/pick", pickData,
+            function (res) {
+                wx.showToast({
+                    title: res.message,
+                });
+
+                setTimeout(function () {
+                    wx.navigateBack({
+                        complete: function (e) {
+                            const pages = getCurrentPages();
+                            const prevPage = pages[pages.length - 1];
+                            prevPage.loadExpressExpectList();
+                        }
+                    });
+                }, 1000);
+            });
     },
 
     onBackClick() {
