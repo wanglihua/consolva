@@ -50,3 +50,7 @@
 .item-footer {
     background-color: #efefef !important;
 }
+
+.detail-buttons {
+    margin: 30rpx 40rpx;
+}
