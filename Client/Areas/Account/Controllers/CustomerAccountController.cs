@@ -5,6 +5,7 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Account.Controllers;
 
+[AccountArea]
 public class CustomerAccountController : Controller
 {
     private readonly ISession session;
