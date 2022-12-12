@@ -374,6 +374,12 @@ public class ExpressCheckinController : Controller
 
     private static readonly Object ExpressCheckinLockObject = new Object();
 
+    /// <summary>
+    /// 重新入库时快递单号修改信息时，快递单号是不能被修改的，否则许多逻辑也都要改
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    /// <exception cref="ValidationException"></exception>
     [HttpPost]
     [Route("/admin/express/checkin/save")]
     // 内部有事务
@@ -613,6 +619,13 @@ public class ExpressCheckinController : Controller
                     express.Status = ExpressStatus.WaitPick; // 初始化为 WaitPick     
                     express.ShelfStatus = ExpressShelfStatus.ToOnShelf; // 初始化为 待上架
                     express.AddTime = DateTime.Now;
+
+                    if (expressExpect != null)
+                    {
+                        express.ClaimTime = DateTime.Now;
+                        express.Status = ExpressStatus.Expect;
+                        express.Customer = expressExpect.Customer;
+                    }
                 }
 
                 IList<string> editDescList = new List<string>();
