@@ -16,7 +16,7 @@ Page({
     },
 
     onSaveClick() {
-        if (this.data.trackingNo === "") {
+        if (!this.data.trackingNo) {
             this.setData({
                 trackingNoHasError: true,
                 trackingNoErrorMsg: "快递单号不能为空！",
