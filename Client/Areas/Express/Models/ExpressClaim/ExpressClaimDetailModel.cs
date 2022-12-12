@@ -47,6 +47,13 @@ public class ExpressClaimDetailModel
     public int TotalPackageCount { get; set; }
 
     /// <summary>
+    /// 预报单号
+    /// 用于认领时自动填入快递单号
+    /// </summary>
+    [JsonProperty("expectTrackingNo")]
+    public string ExpectTrackingNo { get; set; } = string.Empty;
+
+    /// <summary>
     /// 预报中的客户备注
     /// 认领时可以参考这个备注
     /// </summary>

@@ -1,2 +1,30 @@
 <!--pages/express/express_claim/express_claim_pick/express_claim_pick.wxml-->
-<text>pages/express/express_claim/express_claim_pick/express_claim_pick.wxml</text>
+<view class="container">
+    <van-cell-group title="申领件认领"/>
+
+    <van-cell-group custom-class="item">
+        <van-cell title="快递单详情" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}"/>
+        <van-cell title="单号补全" value="{{ express.trackingNo }}" border="{{ false }}"/>
+        <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}"/>
+        <block wx:if="{{ express.expectDescription !== '' }}">
+            <van-cell title="预报备注" value="{{express.expectDescription}}" border="{{ false }}"/>
+        </block>
+    </van-cell-group>
+
+    <van-cell-group custom-class="item">
+        <van-cell title="物品列表" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <block wx:for="{{ express.expressGoodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="index">
+            <van-cell title="{{ index + 1 }}、{{ expressGoods.goodsName }}" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}"/>
+        </block>
+    </van-cell-group>
+
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="info" class-prefix="iconfont" icon="claim-pick" block bind:click="onClaimClick">认领</van-button>
+        </van-cell>
+        <van-cell border="{{false}}">
+            <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onBackClick" style="margin-top: 10rpx;">返回</van-button>
+        </van-cell>
+    </van-cell-group>
+</view>
