@@ -2,6 +2,8 @@
 
 const app = getApp();
 
+const util = app.require('utils/util.js');
+
 Page({
     data: {
         query: "",
@@ -30,7 +32,7 @@ Page({
         }, function (res) {
 
             let expressClaimCount = res.data.expressClaimCount;
-            let expressClaimList = res.data.expressClaimList;
+            let expressClaimList = util.distinctConcat(that.data.expressClaimList, res.data.expressClaimList);
             let lastExpressId = res.data.lastExpressId;
 
             for (const expressClaim of expressClaimList) {
