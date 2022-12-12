@@ -129,8 +129,15 @@ public class ExpressClaimController : Controller
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
-        // 查看有没有当前登录客户的相同单号的预报
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        bool claimed = ExpressStatus.IsCheckedIn(express.Status);
+        if (claimed && loginCustomerId != (express.Customer?.Id ?? 0))
+        {
+            throw new ValidationException("指定的申领件已经被认领，且认领人不是当前登录客户！");
+        }
+
+        // 查看有没有当前登录客户的相同单号的预报
         string trackingNo = express.TrackingNo;
         var expressExpect = session.Query<ExpressExpectInfo>()
             .Where(e => e.Customer.Id == loginCustomerId && e.TrackingNo == trackingNo)
@@ -148,6 +155,7 @@ public class ExpressClaimController : Controller
             CheckinTrackingNo = express.CheckinTrackingNo,
             ExpectTrackingNo = expressExpect?.TrackingNo ?? string.Empty,
             ExpectDescription = expressExpect?.Description ?? string.Empty,
+            Claimed = claimed,
         };
 
         // 入库备注

@@ -192,6 +192,8 @@ public class ExpressStatus : CodeTypeBase
 
     /// <summary>
     /// 是不是已入库及后续状态
+    ///
+    /// 这个也可以用来判断是不是已经被认领
     /// </summary>
     /// <param name="status"></param>
     /// <returns></returns>

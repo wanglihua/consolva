@@ -37,12 +37,40 @@ Page({
 
         const trackingNoInput = this.data.express.trackingNoInput;
         if (!trackingNoInput) {
+            const express = this.data.express;
+            express.trackingNoInputHasError = true;
+            express.trackingNoInputErrorMsg = "单号补全不能为空！";
             this.setData({
-                trackingNoInputHasError: true,
-                trackingNoInputErrorMsg: "单号补全不能为空！",
+                express: express,
             });
             return;
         }
+
+        let hasPriceInputError = false;
+        const expressGoodsList = this.data.express.expressGoodsList;
+        for (const expressGoods of expressGoodsList) {
+            // error="{{ expressGoods.inputHasError }}" error-message="{{ expressGoods.inputErrorMsg }}" 
+
+            const priceNum = parseFloat(expressGoods.price);
+            if (isNaN(priceNum) || priceNum <= 0) {
+                hasPriceInputError = true;
+                expressGoods.inputHasError = true;
+                expressGoods.inputErrorMsg = "请输入正确的物品价格！";
+            }
+        }
+
+        if (hasPriceInputError) {
+            const express = this.data.express;
+            express.expressGoodsList = expressGoodsList
+
+            this.setData({
+                express: express,
+            });
+
+            return;
+        }
+
+
     },
 
     onBackClick() {

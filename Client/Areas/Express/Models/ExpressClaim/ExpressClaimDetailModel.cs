@@ -60,6 +60,12 @@ public class ExpressClaimDetailModel
     [JsonProperty("expectDescription")]
     public string ExpectDescription { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 是不是已经认领了
+    /// </summary>
+    [JsonProperty("claimed")]
+    public bool Claimed { get; set; } = false;
+
     [JsonProperty("expressGoodsList")]
     public IList<ExpressGoodsItem> ExpressGoodsList { get; set; } = new List<ExpressGoodsItem>();
 
