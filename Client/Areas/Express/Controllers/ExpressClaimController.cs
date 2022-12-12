@@ -144,6 +144,13 @@ public class ExpressClaimController : Controller
             .Take(1)
             .SingleOrDefault();
 
+        bool enter = false;
+        if (expressExpect != null
+            && expressExpect.Status == ExpressExpectStatus.Enter)
+        {
+            enter = true;
+        }
+
         ExpressClaimDetailModel model = new ExpressClaimDetailModel() {
             Id = express.Id,
             TrackingNo = expressTrackingNoService.GetHiddenTrackingNo(trackingNo),
@@ -155,6 +162,7 @@ public class ExpressClaimController : Controller
             CheckinTrackingNo = express.CheckinTrackingNo,
             ExpectTrackingNo = expressExpect?.TrackingNo ?? string.Empty,
             ExpectDescription = expressExpect?.Description ?? string.Empty,
+            Enter = enter,
             Claimed = claimed,
         };
 

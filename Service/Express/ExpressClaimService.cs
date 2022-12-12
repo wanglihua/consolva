@@ -26,7 +26,7 @@ public class ExpressClaimService
     }
 
     /// <summary>
-    /// 快递单号认领
+    /// 快递单号认领 或 录货值
     /// </summary>
     /// <param name="expressId"></param>
     /// <param name="trackingNoInput"></param>
@@ -36,7 +36,7 @@ public class ExpressClaimService
         var express = session.Get<ExpressInfo>(expressId);
         if (express == null)
         {
-            throw new ValidationException($"指定的申领件#{expressId}不存在！");
+            throw new ValidationException($"指定的快递单#{expressId}不存在！");
         }
 
         var customer = session.Get<CustomerInfo>(customerId);
@@ -53,9 +53,9 @@ public class ExpressClaimService
         }
 
         // 检查下状态，不能重复认领
-        if (express.Status != ExpressStatus.WaitPick)
+        if (express.Status != ExpressStatus.Expect && express.Status != ExpressStatus.WaitPick)
         {
-            throw new ValidationException("当前快递单号状态不是待认领状态！");
+            throw new ValidationException("当前快递单号状态不是 待认领 或 录货值 状态！");
         }
 
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
@@ -66,7 +66,7 @@ public class ExpressClaimService
         {
             if (expressGoods.Price <= 0)
             {
-                throw new ValidationException($"物品 {expressGoods.Goods.Name} 价格为零，不能完成认领！");
+                throw new ValidationException($"物品 {expressGoods.Goods.Name} 价格不能为零！");
             }
         }
 
@@ -86,7 +86,7 @@ public class ExpressClaimService
         {
             expressExpectService.Pick(expressExpect.Id, customerId);
         }
-        
+
         expressLogService.CustomerLog(expressId, ExpressLogType.Claim, customerId);
     }
 }
