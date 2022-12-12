@@ -1,2 +1,5 @@
 <!--pages/express/express_claim/express_claim_detail/express_claim_detail.wxml-->
-<text>pages/express/express_claim/express_claim_detail/express_claim_detail.wxml</text>
+<view class="container">
+    <van-cell-group title="申领件详细">
+    </van-cell-group>
+</view>
