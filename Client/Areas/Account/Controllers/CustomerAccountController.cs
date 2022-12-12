@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Client.Areas.Account.Models.CustomerAccount;
 using shunda.Core.Web;
 using ISession = NHibernate.ISession;
 
@@ -22,6 +23,9 @@ public class CustomerAccountController : Controller
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new CustomerAccountIndexModel {
+                
+            }
         });
     }
 }
