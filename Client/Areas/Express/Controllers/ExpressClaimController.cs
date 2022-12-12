@@ -168,12 +168,19 @@ public class ExpressClaimController : Controller
         var expressGoodsItemList = new List<ExpressClaimDetailModel.ExpressGoodsItem>();
         foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
         {
+            // 价格为0的时候，值为空
+            string price = expressGoods.Price.ToString("#0.00");
+            if (expressGoods.Price <= 0)
+            {
+                price = string.Empty;
+            }
+
             expressGoodsItemList.Add(new ExpressClaimDetailModel.ExpressGoodsItem() {
                 Id = expressGoods.Id,
                 ExpressId = expressGoods.Express.Id,
                 GoodsId = expressGoods.Goods.Id,
                 GoodsName = expressGoods.Goods.Name,
-                Price = expressGoods.Price.ToString("#0.00"),
+                Price = price,
                 Quantity = expressGoods.Quantity,
                 Unit = expressGoods.Unit,
             });
