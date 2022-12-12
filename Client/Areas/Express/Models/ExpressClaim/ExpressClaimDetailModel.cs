@@ -44,7 +44,7 @@ public class ExpressClaimDetailModel
     public string TotalActualWeight { get; set; } = string.Empty;
 
     [JsonProperty("totalPackageCount")]
-    public string TotalPackageCount { get; set; } = string.Empty;
+    public int TotalPackageCount { get; set; }
 
     [JsonProperty("expressGoodsList")]
     public IList<ExpressGoodsItem> ExpressGoodsList { get; set; } = new List<ExpressGoodsItem>();
@@ -98,5 +98,8 @@ public class ExpressClaimDetailModel
 
         [JsonProperty("volumeWeight")]
         public string VolumeWeight { get; set; } = string.Empty;
+
+        [JsonProperty("packageCount")]
+        public int PackageCount { get; set; }
     }
 }

@@ -13,7 +13,7 @@
         <van-empty description="暂时没有数据项！"/>
     </view>
     <view wx:else>
-        <block wx:for="{{expressClaimList}}" wx:key="id" wx:for-item="express" wx:for-index="index">
+        <block wx:for="{{ expressClaimList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
             <van-cell-group custom-class="item">
                 <van-cell title="{{ index + 1 }}、{{ express.checkinTrackingNo }}" value="{{ express.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
                 <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}"/>

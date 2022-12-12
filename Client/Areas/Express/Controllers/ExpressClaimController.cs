@@ -197,13 +197,14 @@ public class ExpressClaimController : Controller
                 Weight = sizeWeight.Weight.ToString("#0.000"),
                 Volume = sizeWeight.GetVolumeCache().ToString("#0.000"),
                 VolumeWeight = sizeWeight.GetVolumeCache().ToString("#0.000"),
+                PackageCount = sizeWeight.PackageCount,
             });
         }
 
         model.TotalVolume = totalVolume.ToString("#0.000");
         model.TotalVolumeWeight = totalVolumeWeight.ToString("#0.000");
         model.TotalActualWeight = totalActualWeight.ToString("#0.000");
-        model.TotalPackageCount = totalPackageCount.ToString();
+        model.TotalPackageCount = totalPackageCount;
         model.ExpressSizeWeightList = expressSizeWeightItemList;
 
         return Json(new JsonResultData {
