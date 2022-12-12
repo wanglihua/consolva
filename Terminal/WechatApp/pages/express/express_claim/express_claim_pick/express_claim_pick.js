@@ -42,8 +42,6 @@ Page({
                 express: express,
             });
 
-            console.log(express);
-
             if (express.claimed) {
                 that.setData({
                     btnClaimDisabled: true,
@@ -63,7 +61,20 @@ Page({
     },
 
     onExpressGoodsPriceInput(e) {
+        const expressGoodsId = e.currentTarget.dataset.item.id;
+        const price = e.detail;
 
+        const express = this.data.express;
+        const expressGoodsList = express.expressGoodsList; // 这里的列表是引用了原来的
+        for (const expressGoods of expressGoodsList) { // 这里的每个元素都是引用了原来的实例
+            if (expressGoods.id === expressGoodsId) {
+                expressGoods.price = price;
+            }
+        }
+
+        this.setData({
+            express: express,
+        });
     },
 
     onClaimClick() {
@@ -71,8 +82,6 @@ Page({
         // console.log(!(null));
         // console.log(!(undefined));
         // console.log(!(""));
-
-        console.log(this.data.express);
 
         const express = this.data.express;
 
@@ -95,8 +104,6 @@ Page({
         let hasPriceInputError = false;
         const expressGoodsList = express.expressGoodsList;
         for (const expressGoods of expressGoodsList) {
-            // error="{{ expressGoods.inputHasError }}" error-message="{{ expressGoods.inputErrorMsg }}" 
-
             const priceNum = parseFloat(expressGoods.price);
             if (isNaN(priceNum) || priceNum <= 0) {
                 hasPriceInputError = true;
