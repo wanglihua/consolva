@@ -11,6 +11,7 @@ Page({
             expressGoodsList: [],
             expressSizeWeightList: [],
         },
+        pageTitle: "申领件详细",
         btnClaimDisabled: false,
         btnClaimText: "认领",
     },
@@ -41,6 +42,13 @@ Page({
             that.setData({
                 express: express,
             });
+
+            if (express.enter) {
+                that.setData({
+                    pageTitle: "货值录入",
+                    btnClaimText: "提交货值申报",
+                });
+            }
 
             if (express.claimed) {
                 that.setData({
