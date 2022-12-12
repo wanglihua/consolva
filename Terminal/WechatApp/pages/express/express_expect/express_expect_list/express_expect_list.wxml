@@ -17,16 +17,14 @@
     </block>
     <block wx:else>
         <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect" wx:for-index="index">
-            <view style="margin: 25rpx 0;">
-                <van-cell-group>
-                    <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" border="{{ false }}" custom-class="{{ expressExpect.headerClassName }}" title-class="item-header-title" value-class="item-header-value"/>
-                    <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}"/>
-                    <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}"/>
-                    <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}"/>
-                    <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}"/>
-                    <van-cell title="操作" value="{{expressExpect.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" custom-class="item-footer"/>
-                </van-cell-group>
-            </view>
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" border="{{ false }}" custom-class="{{ expressExpect.headerClassName }}" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}"/>
+                <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}"/>
+                <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}"/>
+                <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}"/>
+                <van-cell title="操作" value="{{expressExpect.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" custom-class="item-footer"/>
+            </van-cell-group>
         </block>
         <view style="margin-top: 40rpx;">
             <van-divider contentPosition="center">共 {{ expressExpectCount }} 项</van-divider>

@@ -1,18 +1,28 @@
 // pages/express/express_claim/express_claim_detail/express_claim_detail.js
+
+const app = getApp();
+
 Page({
-
-    /**
-     * 页面的初始数据
-     */
     data: {
-
+        express: {
+            expressGoodsList: [],
+            expressSizeWeightList: [],
+        }
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-
+        const id = options.id;
+        const that = this;
+        app.post("/client/express/claim/detail", {
+            id: id
+        }, function (res) {
+            that.setData({
+                express: res.data,
+            });
+        });
     },
 
     /**

@@ -131,7 +131,7 @@ public class ExpressClaimController : Controller
 
         ExpressClaimDetailModel model = new ExpressClaimDetailModel() {
             Id = express.Id,
-            TrackingNo = express.TrackingNo,
+            TrackingNo = expressTrackingNoService.GetHiddenTrackingNo(express.TrackingNo),
             AddDate = express.AddTime.ToString("yyyy-MM-dd"),
             AddTime = express.AddTime.ToString("yyyy-MM-dd HH:mm"),
             ExpressCompany = express.ExpressCompany,

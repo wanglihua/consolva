@@ -13,22 +13,20 @@
         <van-empty description="暂时没有数据项！"/>
     </view>
     <view wx:else>
-        <block wx:for="{{expressClaimList}}" wx:key="id" wx:for-item="expressClaim" wx:for-index="index">
-            <view style="margin: 25rpx 0;">
-                <van-cell-group>
-                    <van-cell title="{{ index + 1 }}、{{ expressClaim.checkinTrackingNo }}" value="{{ expressClaim.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                    <van-cell title="快递单号" value="{{ expressClaim.trackingNo }}" border="{{ false }}"/>
-                    <van-cell title="快递公司" value="{{ expressClaim.expressCompany }}" border="{{ false }}"/>
-                    <van-cell title="入库单号" value="{{ expressClaim.checkinTrackingNo }}" border="{{ false }}"/>
-                    <van-cell title="物品类型" value="{{ expressClaim.goodsType }}" border="{{ false }}"/>
-                    <van-cell title="添加日期" value="{{ expressClaim.addDate }}" border="{{ false }}"/>
-                    <van-cell title="面单会员" value="{{ expressClaim.billCustomerCode }}" border="{{ false }}"/>
-                    <block wx:if="{{ expressClaim.warehouseRemark !== '' }}">
-                        <van-cell title="仓库备注" value="{{expressClaim.warehouseRemark}}" border="{{ false }}"/>
-                    </block>
-                    <van-cell title="操作" value="{{expressClaim.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressClaim }}" custom-class="item-footer"/>
-                </van-cell-group>
-            </view>
+        <block wx:for="{{expressClaimList}}" wx:key="id" wx:for-item="express" wx:for-index="index">
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ express.checkinTrackingNo }}" value="{{ express.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}"/>
+                <van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}"/>
+                <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}"/>
+                <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}"/>
+                <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}"/>
+                <van-cell title="面单会员" value="{{ express.billCustomerCode }}" border="{{ false }}"/>
+                <block wx:if="{{ express.warehouseRemark !== '' }}">
+                    <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}"/>
+                </block>
+                <van-cell title="操作" value="{{express.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ express }}" custom-class="item-footer"/>
+            </van-cell-group>
         </block>
         <view style="margin-top: 40rpx;">
             <van-divider contentPosition="center">共 {{ expressClaimCount }} 项</van-divider>
