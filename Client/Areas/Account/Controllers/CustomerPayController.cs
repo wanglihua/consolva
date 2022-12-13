@@ -38,11 +38,28 @@ public class CustomerPayController : Controller
             .Take(15)
             .ToList();
 
+        IList<CustomerPayListItem> payItemList = orderPayList
+            .Select(e => new CustomerPayListItem() {
+                Id = e.Id,
+                TypeName = e.PayType.Name,
+                Amount = e.Amount.ToString("#0.00"),
+                OrderCode = e.OrderCode,
+                PayTime = e.CreateTime.ToString("yyyy-MM-dd HH:mm")
+            })
+            .ToList();
+
+        var lastPay = orderPayList.LastOrDefault();
+        int lastId = lastPay?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+
+        int orderPayCount = GetListQuery(param).Count();
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = new CustomerPayListModel {
+                PayList = payItemList,
+                PayCount = orderPayCount,
+                LastId = lastId,
             },
         });
     }
