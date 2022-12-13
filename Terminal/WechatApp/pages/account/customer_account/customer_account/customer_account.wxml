@@ -11,7 +11,7 @@
     <view style="margin-top: 50rpx;"></view>
     <van-cell-group title="余额充值">
         <van-field label="充值金额" placeholder="请输入充值金额">
-            <van-icon slot="left-icon" class-prefix="iconfont" name="charge" class="cell-left-icon"/>
+            <van-icon slot="left-icon" class-prefix="iconfont" name="charge" error="{{ amountInputHasError }}" model:value="{{ chargeAmount }}" error-message="{{ amountInputErrorMsg }}" class="cell-left-icon" border="{{ false }}" type="number" />
         </van-field>           
     </van-cell-group>    
 
