@@ -39,6 +39,12 @@
     background-color: bisque !important;
 }
 
+/* 这个要放在 item-header-title 的前面 */
+.van-cell__title {
+    /* color: #969799 !important;*/
+    color: #646566 !important;
+}
+
 .item-header-title {
     color: white !important;
 }
