@@ -4,7 +4,7 @@
         <van-cell title="当前余额" value="{{ currentAmount }}">
             <van-icon slot="icon" class-prefix="iconfont" name="account" class="cell-left-icon"/>
         </van-cell>
-        <van-cell title="余额明细" is-link>
+        <van-cell title="余额明细" is-link link-type="navigateTo" url="../customer_account_entry/customer_account_entry">
             <van-icon slot="icon" class-prefix="iconfont" name="account-entry" class="cell-left-icon"/>
         </van-cell>                
     </van-cell-group>

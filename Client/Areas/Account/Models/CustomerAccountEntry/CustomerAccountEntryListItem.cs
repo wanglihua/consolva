@@ -21,4 +21,7 @@ public class CustomerAccountEntryListItem
 
     [JsonProperty("description")]
     public string Description { get; set; } = string.Empty;
+
+    [JsonProperty("createTime")]
+    public string CreateTime { get; set; } = string.Empty;
 }

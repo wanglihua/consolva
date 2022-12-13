@@ -33,7 +33,7 @@ public class CustomerPayController : Controller
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
         }
 
-        IList<LogisticsOrderPayInfo> orderPayList = listQuery
+        var orderPayList = listQuery
             .OrderByDescending(e => e.Id)
             .Take(15)
             .ToList();

@@ -1,2 +1,18 @@
 <!--pages/account/customer_account/customer_account_entry/customer_account_entry.wxml-->
-<text>pages/account/customer_account/customer_account_entry/customer_account_entry.wxml</text>
+<view class="container">
+    <van-cell-group title="余额明细"/>
+</view>
+<view wx:if="{{ entryCount === 0 }}">
+    <van-empty description="暂时没有数据项！"/>
+</view>
+<view wx:else>
+    <block wx:for="{{ entryList }}" wx:key="id" wx:for-item="entry" wx:for-index="index">
+        <van-cell-group custom-class="item">
+            <van-cell title="{{ index + 1 }}、{{ entry.amount }}" value="{{ entry.createTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+            <van-cell title="快递单号" value="{{ entry.changeTypeName }}{{ entry.amount }}，变动前余额 {{ entry.amountBefore }}，变动后余额 {{ entry.amountAfter}}，{{ entry.description }}" border="{{ false }}"/>
+        </van-cell-group>
+    </block>
+    <view style="margin-top: 40rpx;">
+        <van-divider contentPosition="center">共 {{ entryCount }} 项</van-divider>
+    </view>
+</view>
