@@ -42,7 +42,7 @@ public class CustomerPayController : Controller
             .Select(e => new CustomerPayListItem() {
                 Id = e.Id,
                 TypeName = e.PayType.Name,
-                Amount = e.Amount.ToString("#0.00"),
+                Amount = e.Amount.ToString("#0.00") + "元",
                 OrderCode = e.OrderCode,
                 PayTime = e.CreateTime.ToString("yyyy-MM-dd HH:mm")
             })

@@ -1,7 +1,6 @@
 // pages/express/express_claim/express_claim_list/express_claim_list.js
 
 const app = getApp();
-
 const util = app.require('utils/util.js');
 
 Page({
@@ -24,16 +23,16 @@ Page({
     },
 
     loadExpressClaimList() {
-        let that = this;
+        const that = this;
 
         app.post("/client/express/claim/list", {
             query: that.data.query,
             lastId: that.data.lastId
         }, function (res) {
 
-            let expressClaimCount = res.data.expressClaimCount;
-            let expressClaimList = util.distinctConcat(that.data.expressClaimList, res.data.expressClaimList);
-            let lastId = res.data.lastId;
+            const expressClaimCount = res.data.expressClaimCount;
+            const expressClaimList = util.distinctConcat(that.data.expressClaimList, res.data.expressClaimList);
+            const lastId = res.data.lastId;
 
             for (const expressClaim of expressClaimList) {
                 expressClaim.actions = "查看详细，认领";
