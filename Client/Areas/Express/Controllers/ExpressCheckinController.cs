@@ -33,6 +33,8 @@ public class ExpressCheckinController : Controller
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        return session.Query<ExpressInfo>().Where(e => e.Customer!.Id == loginCustomerId);
+        return session.Query<ExpressInfo>()
+            .Where(e => e.Customer!.Id == loginCustomerId
+                        && (e.Status == ExpressStatus.WaitOrder || e.Status == ExpressStatus.CheckIn));
     }
 }
