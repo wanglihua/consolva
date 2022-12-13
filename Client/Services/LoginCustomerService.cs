@@ -26,21 +26,21 @@ public class LoginCustomerService
     /// 登陆失效时间，这个时间用于Redis的过期时间，公众号登陆时，不用这个时间，公众号登陆应该是长期可以的
     /// </summary>
 #if DEBUG
-    public static TimeSpan SessionTimeout = TimeSpan.FromDays(10);
+    public static TimeSpan SESSION_TIMEOUT => TimeSpan.FromDays(10);
 #else
-        public static TimeSpan SessionTimeout = TimeSpan.FromMinutes(120); // 120 分钟已经足够长
+    public static TimeSpan SESSION_TIMEOUT => TimeSpan.FromMinutes(120); // 120 分钟已经足够长
 #endif
 
-    private static string aesKey = "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";
-    private static string aesIv = "XHK4nB5iWlQhRNzu";
+    private static string AES_KEY => "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";
+    private static string AES_IV => "XHK4nB5iWlQhRNzu";
 
-    private ISession session;
-    private WebSessionService webSessionService;
-    private PasswordService passwordService;
-    private CustomerSupperPasswordService customerSupperPasswordService;
-    private CustomerCodeService customerCodeService;
-    private WechatSessionService wechatSessionService;
-    private CustomerLoginLogService customerLoginLogService;
+    private readonly ISession session;
+    private readonly WebSessionService webSessionService;
+    private readonly PasswordService passwordService;
+    private readonly CustomerSupperPasswordService customerSupperPasswordService;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly WechatSessionService wechatSessionService;
+    private readonly CustomerLoginLogService customerLoginLogService;
 
     public LoginCustomerService(ISession session,
         WebSessionService webSessionService,
@@ -69,7 +69,7 @@ public class LoginCustomerService
             return 0;
         }
 
-        var loginCustomerIdStr = EncryptProvider.AESDecrypt(loginCustomerIdStrEncrypted, aesKey, aesIv);
+        var loginCustomerIdStr = EncryptProvider.AESDecrypt(loginCustomerIdStrEncrypted, AES_KEY, AES_IV);
         if (int.TryParse(loginCustomerIdStr, out int loginCustomerId) == false)
         {
             return 0;
@@ -230,10 +230,10 @@ public class LoginCustomerService
 
     private void SetLoginCustomerId(int loginCustomerId)
     {
-        var loginCustomerIdStrEncrypted = EncryptProvider.AESEncrypt(loginCustomerId.ToString(), aesKey, aesIv);
+        var loginCustomerIdStrEncrypted = EncryptProvider.AESEncrypt(loginCustomerId.ToString(), AES_KEY, AES_IV);
 
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
-        redisClient.Set(GetLoginCustomerIdRedisKey(), loginCustomerIdStrEncrypted, SessionTimeout);
+        redisClient.Set(GetLoginCustomerIdRedisKey(), loginCustomerIdStrEncrypted, SESSION_TIMEOUT);
     }
 
     public void Logout(HttpRequest request, HttpResponse response)
