@@ -9,4 +9,7 @@ public class CustomerPayListModel
 
     [JsonProperty("payList")]
     public IList<CustomerPayListItem> PayList { get; set; } = new List<CustomerPayListItem>();
+
+    [JsonProperty("lastId")]
+    public int LastId { get; set; }    
 }

@@ -15,6 +15,6 @@ public class ExpressClaimListParam
     /// <summary>
     /// 前面列表末尾id
     /// </summary>
-    [JsonProperty("lastExpressId")]
-    public int LastExpressId { get; set; }
+    [JsonProperty("lastId")]
+    public int LastId { get; set; }
 }

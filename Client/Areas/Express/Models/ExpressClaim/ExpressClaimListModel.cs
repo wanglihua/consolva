@@ -10,6 +10,6 @@ public class ExpressClaimListModel
     [JsonProperty("expressClaimList")]
     public IList<ExpressClaimListItem> ExpressClaimList { get; set; } = new List<ExpressClaimListItem>();
 
-    [JsonProperty("lastExpressId")]
-    public int LastExpressId { get; set; }
+    [JsonProperty("lastId")]
+    public int LastId { get; set; }
 }

@@ -7,7 +7,7 @@ const util = app.require('utils/util.js');
 Page({
     data: {
         query: "",
-        lastExpressId: 0,
+        lastId: 0,
         expressClaimList: [],
         expressClaimCount: 0,
         currentExpressClaim: {},
@@ -28,12 +28,12 @@ Page({
 
         app.post("/client/express/claim/list", {
             query: that.data.query,
-            lastExpressId: that.data.lastExpressId
+            lastId: that.data.lastId
         }, function (res) {
 
             let expressClaimCount = res.data.expressClaimCount;
             let expressClaimList = util.distinctConcat(that.data.expressClaimList, res.data.expressClaimList);
-            let lastExpressId = res.data.lastExpressId;
+            let lastId = res.data.lastId;
 
             for (const expressClaim of expressClaimList) {
                 expressClaim.actions = "查看详细，认领";
@@ -42,7 +42,7 @@ Page({
             that.setData({
                 expressClaimList: expressClaimList,
                 expressClaimCount: expressClaimCount,
-                lastExpressId: lastExpressId,
+                lastId: lastId,
             });
         });
     },
@@ -50,14 +50,14 @@ Page({
     onSearch(e) {
         this.setData({
             query: e.detail,
-            lastExpressId: 0,
+            lastId: 0,
         });
         this.loadExpressClaimList();
     },
     onSearchClear() {
         this.setData({
             query: "",
-            lastExpressId: 0,
+            lastId: 0,
         });
         this.loadExpressClaimList();
     },
