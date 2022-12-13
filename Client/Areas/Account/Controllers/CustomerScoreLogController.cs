@@ -41,6 +41,16 @@ public class CustomerScoreLogController : Controller
 
         var scoreLogItemList = scoreLogList
             .Select(e => new CustomerScoreLogListItem() {
+                Id = e.Id,
+                TypeName = e.ScoreType.Name,
+                Score = (e.Score > 0 ? "+" : "") + e.Score.ToString("#0.00"),
+                Amount = e.Amount.ToString("#0.00"),
+                IsValidScore = e.IsValidScore,
+                Description = e.Description,
+                OrderId = e.LogisticsOrder?.Id,
+                OrderCode = e.LogisticsOrderCode ?? string.Empty,
+                OrderCustomerId = e.LogisticsOrderCustomer?.Id,
+                CreateTime = e.CreateTime.ToString("yyyy-MM-dd HH:mm"),
             })
             .ToList();
 

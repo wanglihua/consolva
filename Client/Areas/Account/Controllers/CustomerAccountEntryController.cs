@@ -42,7 +42,7 @@ public class CustomerAccountEntryController : Controller
             .Select(e => new CustomerAccountEntryListItem {
                 Id = e.Id,
                 ChangeTypeName = e.ChangeType.Name,
-                Amount = (e.Amount > 0 ? "+" : "-") + e.Amount.ToString("#0.00"),
+                Amount = (e.Amount > 0 ? "+" : "") + e.Amount.ToString("#0.00"),
                 AmountBefore = e.AccountBefore.ToString("#0.00"),
                 AmountAfter = e.AccountAfter.ToString("#0.00"),
                 Description = e.Description,
