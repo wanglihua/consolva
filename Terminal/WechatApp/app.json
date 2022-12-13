@@ -12,7 +12,9 @@
         "pages/message/message_customize/message_customize",
         "pages/account/customer_account/customer_account/customer_account",
         "pages/account/customer_account/customer_account_entry/customer_account_entry",
-        "pages/account/customer_pay/customer_pay"
+        "pages/account/customer_pay/customer_pay",
+        "pages/account/customer_score/customer_score/customer_score",
+        "pages/account/customer_score/customer_score_log/customer_score_log"
     ],
     "window": {
         "backgroundTextStyle": "light",
