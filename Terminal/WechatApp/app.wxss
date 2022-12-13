@@ -53,6 +53,11 @@
     color: white !important;
 }
 
+.cell-left-icon {
+    color: rgb(175, 136, 15);
+    margin-right: 10rpx;
+}
+
 .item-footer {
     background-color: #efefef !important;
 }

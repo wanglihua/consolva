@@ -1,6 +1,6 @@
 <!--pages/express/express_claim/express_claim_pick/express_claim_pick.wxml-->
 <view class="container">
-    <van-cell-group title="申领件认领"/>
+    <van-cell-group title="{{ pageTitle }}"/>
 
     <van-cell-group custom-class="item">
         <van-cell title="快递单详情" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
