@@ -81,9 +81,9 @@ public class ExpressClaimController : Controller
         }
 
         // 取最末尾，其实降序时就是最小的那一个Id
-        var lastExpressClaim = expressClaimList.LastOrDefault();
+        var lastData = expressClaimList.LastOrDefault();
         // 这里的 1 很重要，不要取0。如果取值1的话也不破坏逻辑，1的时候就正好就是没数据了，查询时 <1 也是数据
-        int lastId = lastExpressClaim?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
         int expressClaimCount = GetListQuery(param).Count();
 

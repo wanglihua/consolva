@@ -50,8 +50,8 @@ public class CustomerAccountEntryController : Controller
             })
             .ToList();
 
-        var lastEntry = accountEntryList.LastOrDefault();
-        int lastId = lastEntry?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+        var lastData = accountEntryList.LastOrDefault();
+        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
         int accountEntryCount = GetListQuery(param).Count();
 

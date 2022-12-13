@@ -3,8 +3,12 @@
 const app = getApp();
 
 Page({
-    
-    data: {},
+
+    data: {
+        lastId: 0,
+        logCount: 0,
+        logList: [],
+    },
 
     onLoad(options) {
 

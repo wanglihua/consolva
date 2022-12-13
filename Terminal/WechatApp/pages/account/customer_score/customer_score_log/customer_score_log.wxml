@@ -1,2 +1,19 @@
 <!--pages/account/customer_score/customer_score_log/customer_score_log.wxml-->
-<text>pages/account/customer_score/customer_score_log/customer_score_log.wxml</text>
+<view class="container">
+    <van-cell-group title="积分明细"/>
+
+    <view wx:if="{{ logCount === 0 }}">
+        <van-empty description="暂时没有数据项！"/>
+    </view>
+    <view wx:else>
+        <block wx:for="{{ logList }}" wx:key="id" wx:for-item="log" wx:for-index="index">
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ log.amount }}" value="{{ log.createTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="{{ log.changeTypeName }}{{ log.amount }}，变动前余额 {{ log.amountBefore }}，变动后余额 {{ log.amountAfter}}，{{ log.description }}" border="{{ false }}"/>
+            </van-cell-group>
+        </block>
+        <view class="bottom-divider">
+            <van-divider contentPosition="center">共 {{ logCount }} 项</van-divider>
+        </view>
+    </view>
+</view>
