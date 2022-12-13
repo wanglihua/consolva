@@ -1,7 +1,7 @@
 <!--pages/account/customer_account/customer_account/customer_account.wxml-->
 <view class="container">
     <van-cell-group title="余额">
-        <van-cell title="当前余额" value="100.00">
+        <van-cell title="当前余额" value="{{ currentAmount }}">
             <van-icon slot="icon" class-prefix="iconfont" name="account" class="cell-left-icon"/>
         </van-cell>
         <van-cell title="余额明细" is-link>
@@ -10,8 +10,9 @@
     </van-cell-group>
     <view style="margin-top: 50rpx;"></view>
     <van-cell-group title="余额充值">
-        <van-field label="充值金额" placeholder="请输入充值金额">
-            <van-icon slot="left-icon" class-prefix="iconfont" name="charge" error="{{ amountInputHasError }}" model:value="{{ chargeAmount }}" error-message="{{ amountInputErrorMsg }}" class="cell-left-icon" border="{{ false }}" type="number" />
+        <van-field label="充值金额" placeholder="请输入充值金额" model:value="{{ chargeAmount }}" error="{{ amountInputHasError }}" error-message="{{ amountInputErrorMsg }}" type="number" border="{{ false }}">
+            <!-- <van-icon slot="left-icon" class-prefix="iconfont" name="charge" class="cell-left-icon" /> -->
+            <view slot="right-icon">RMB</view>
         </van-field>           
     </van-cell-group>    
 

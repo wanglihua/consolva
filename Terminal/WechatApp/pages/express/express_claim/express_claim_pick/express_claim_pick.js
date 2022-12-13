@@ -22,7 +22,7 @@ Page({
         app.post("/client/express/claim/detail", {
             id: id
         }, function (res) {
-            let express = res.data;
+            const express = res.data;
             express.trackingNoInput = '';
             if (express.expectTrackingNo) {
                 express.trackingNoInput = express.expectTrackingNo;

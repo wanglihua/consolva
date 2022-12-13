@@ -1,4 +1,7 @@
 // pages/account/customer_account/customer_account/customer_account.js
+
+const app = getApp();
+
 Page({
 
     data: {
@@ -11,9 +14,15 @@ Page({
     onLoad(options) {
         this.loadCustomerAccount();
     },
-    
+
     loadCustomerAccount() {
-        
+        const that = this;
+        app.post("/client/customer/account", {}, function (res) {
+            const amount = res.data.amount;
+            that.setData({
+                currentAmount: amount,
+            });
+        });
     },
 
     onChargeClick(e) {
@@ -48,7 +57,12 @@ Page({
         });
 
         // todo 充值逻辑
-        
+
+
+        // 充值完成后
+        this.setData({
+            chargeAmount: '',
+        });
         this.loadCustomerAccount();
     },
 
