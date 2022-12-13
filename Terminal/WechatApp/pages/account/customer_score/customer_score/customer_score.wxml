@@ -1,2 +1,17 @@
 <!--pages/account/customer_score/customer_score/customer_score.wxml-->
-<text>pages/account/customer_score/customer_score/customer_score.wxml</text>
+<view class="container">
+    <van-cell-group title="积分">
+        <van-cell title="历史总积分" value="{{ totalScore }}">
+            <van-icon slot="icon" class-prefix="iconfont" name="score" class="cell-left-icon"/>
+        </van-cell>
+        <van-cell title="剩余积分" value="{{ validScore }}">
+            <van-icon slot="icon" class-prefix="iconfont" name="score" class="cell-left-icon"/>
+        </van-cell>
+        <van-cell title="VIP等级" value="{{ vipRank }}">
+            <van-icon slot="icon" class-prefix="iconfont" name="vip" class="cell-left-icon"/>
+        </van-cell>
+        <van-cell title="积分明细" is-link link-type="navigateTo" url="../customer_score_log/customer_score_log">
+            <van-icon slot="icon" class-prefix="iconfont" name="score-log" class="cell-left-icon"/>
+        </van-cell>
+    </van-cell-group>
+</view>
