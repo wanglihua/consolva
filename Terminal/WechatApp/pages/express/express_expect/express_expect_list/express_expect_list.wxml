@@ -26,7 +26,7 @@
                 <van-cell title="操作" value="{{expressExpect.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" custom-class="item-footer"/>
             </van-cell-group>
         </block>
-        <view style="margin-top: 40rpx;">
+        <view class="bottom-divider">
             <van-divider contentPosition="center">共 {{ expressExpectCount }} 项</van-divider>
         </view>
     </block>

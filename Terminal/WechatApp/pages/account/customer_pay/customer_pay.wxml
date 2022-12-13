@@ -1,18 +1,19 @@
 <!--pages/account/customer_pay/customer_pay.wxml-->
 <view class="container">
     <van-cell-group title="订单支付明细"/>
-</view>
-<view wx:if="{{ payCount === 0 }}">
-    <van-empty description="暂时没有数据项！"/>
-</view>
-<view wx:else>
-    <block wx:for="{{ payList }}" wx:key="id" wx:for-item="pay" wx:for-index="index">
-        <van-cell-group custom-class="item">
-            <van-cell title="{{ index + 1 }}、{{ pay.amount }}" value="{{ pay.payTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-            <van-cell title="快递单号" value="{{ pay.typeName }}，金额{{ pay.amount }}，订单编号 {{ pay.orderCode }}" border="{{ false }}"/>
-        </van-cell-group>
-    </block>
-    <view style="margin-top: 40rpx;">
-        <van-divider contentPosition="center">共 {{ payCount }} 项</van-divider>
+
+    <view wx:if="{{ payCount === 0 }}">
+        <van-empty description="暂时没有数据项！"/>
+    </view>
+    <view wx:else>
+        <block wx:for="{{ payList }}" wx:key="id" wx:for-item="pay" wx:for-index="index">
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ pay.amount }}" value="{{ pay.payTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="{{ pay.typeName }}，金额{{ pay.amount }}，订单编号 {{ pay.orderCode }}" border="{{ false }}"/>
+            </van-cell-group>
+        </block>
+        <view class="bottom-divider">
+            <van-divider contentPosition="center">共 {{ payCount }} 项</van-divider>
+        </view>
     </view>
 </view>

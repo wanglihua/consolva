@@ -28,7 +28,7 @@
                 <van-cell title="操作" value="{{express.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ express }}" custom-class="item-footer"/>
             </van-cell-group>
         </block>
-        <view style="margin-top: 40rpx;">
+        <view class="bottom-divider">
             <van-divider contentPosition="center">共 {{ expressClaimCount }} 项</van-divider>
         </view>
     </view>

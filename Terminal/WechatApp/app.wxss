@@ -65,3 +65,7 @@
 .detail-buttons {
     margin: 30rpx 40rpx;
 }
+
+.bottom-divider {
+    margin-top: 40rpx;
+}
