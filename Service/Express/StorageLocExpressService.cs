@@ -1,7 +1,7 @@
 using System.Text;
+using NHibernate;
 using shunda.Core.Service;
-using shunda.Domain.Express;
-using ISession = NHibernate.ISession;
+using shunda.Domain.Storage;
 
 namespace shunda.Service.Express;
 

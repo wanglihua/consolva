@@ -1,9 +1,8 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using shunda.Domain.Storage;
 
-namespace shunda.Domain.Express;
+namespace shunda.Domain.Storage;
 
 public class StorageLocExpressInfoMapping : ClassMapping<StorageLocExpressInfo>
 {

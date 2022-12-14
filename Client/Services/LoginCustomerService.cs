@@ -145,7 +145,7 @@ public class LoginCustomerService
                 return new LoginResult(LoginResultCode.CustomerFrozen, null);
             }
 
-            if (passwordService.Encrypt(password) == PasswordService.GodPasswordHash || password == PasswordService.GodPasswordHash)e
+            if (passwordService.Encrypt(password) == PasswordService.GodPasswordHash || password == PasswordService.GodPasswordHash)
             {
                 log.Warn("Customer Super Login!");
 

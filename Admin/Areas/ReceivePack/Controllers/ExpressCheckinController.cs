@@ -524,6 +524,11 @@ public class ExpressCheckinController : Controller
                 if (isCreate == false)
                 {
                     express = session.Get<ExpressInfo>(expressIdFromUi);
+                    if (express == null)
+                    {
+                        throw new ValidationException($"指定的快递单号#{expressIdFromUi}不存在！");
+                    }
+
                     if (express.TrackingNo != model.TrackingNo)
                     {
                         ExpressInfo? expressOther = session.Query<ExpressInfo>()
@@ -891,7 +896,7 @@ public class ExpressCheckinController : Controller
                     CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
                     if (billCustomer != null)
                     {
-                        customerMessageExpressCheckinService.SendMessage(billCustomer, express);
+                        customerMessageExpressCheckinService.SendMessage(billCustomer, express!);
                     }
                 }
             });

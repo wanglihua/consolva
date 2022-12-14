@@ -1,6 +1,4 @@
-using shunda.Domain.Storage;
-
-namespace shunda.Domain.Express;
+namespace shunda.Domain.Storage;
 
 public class StorageLocExpressInfo
 {
