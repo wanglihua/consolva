@@ -25,20 +25,20 @@ public class ExpressCheckinListItem
     [JsonProperty("checkinTrackingNo")]
     public string CheckinTrackingNo { get; set; } = string.Empty;
 
-    [JsonProperty("returnPickupCode")]
-    public string ReturnPickupCode { get; set; } = string.Empty;
+    // [JsonProperty("returnPickupCode")]
+    // public string ReturnPickupCode { get; set; } = string.Empty;
 
     [JsonProperty("addTime")]
     public string AddTime { get; set; } = string.Empty;
 
-    [JsonProperty("claimTime")]
-    public string ClaimTime { get; set; } = string.Empty;
+    // [JsonProperty("claimTime")]
+    // public string ClaimTime { get; set; } = string.Empty;
 
-    [JsonProperty("returnTrackingNo")]
-    public string ReturnTrackingNo { get; set; } = string.Empty;
-
-    [JsonProperty("returnExpressCompany")]
-    public string ReturnExpressCompany { get; set; } = string.Empty;
+    // [JsonProperty("returnTrackingNo")]
+    // public string ReturnTrackingNo { get; set; } = string.Empty;
+    //
+    // [JsonProperty("returnExpressCompany")]
+    // public string ReturnExpressCompany { get; set; } = string.Empty;
 
     [JsonProperty("customerRemark")]
     public string CustomerRemark { get; set; } = string.Empty;

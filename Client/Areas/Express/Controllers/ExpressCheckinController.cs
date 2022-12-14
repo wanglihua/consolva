@@ -1,9 +1,10 @@
-using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
+using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressCheckin;
 using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Express;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -45,6 +46,7 @@ public class ExpressCheckinController : Controller
         // 物品数据
         IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
 
@@ -63,32 +65,92 @@ public class ExpressCheckinController : Controller
             expressGoodsListMap[expressId] = thisExpressGoodsList;
         }
 
+        // 快递单备注，客户备注，仓库备注，客服备注
+        var expressRemarkList = session.Query<ExpressRemarkInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();
+
         // 构建两个列表
         IList<ExpressCheckinListItem> expressWaitOrderList = new List<ExpressCheckinListItem>();
         IList<ExpressCheckinListItem> expressCheckinList = new List<ExpressCheckinListItem>();
 
-        foreach (ExpressInfo express in expressList)
+        foreach (ExpressInfo express in expressList) // 按原来顺序循环，按原来顺序添加到 item list 中
         {
             int expressId = express.Id;
 
+            string customerRemark = expressRemarkList
+                .Where(e => e.Express != null
+                            && e.Express.Id == expressId
+                            && e.Type == ExpressRemarkType.Customer)
+                .Take(1)
+                .SingleOrDefault()?.Remark ?? string.Empty;
+
+            string warehouseRemark = expressRemarkList
+                .Where(e => e.Express != null
+                            && e.Express.Id == expressId
+                            && e.Type == ExpressRemarkType.Warehouse)
+                .Take(1)
+                .SingleOrDefault()?.Remark ?? string.Empty;
+
+            string serviceRemark = expressRemarkList
+                .Where(e => e.Express != null
+                            && e.Express.Id == expressId
+                            && e.Type == ExpressRemarkType.Service)
+                .Take(1)
+                .SingleOrDefault()?.Remark ?? string.Empty;
+
+            ExpressCheckinListItem item = new ExpressCheckinListItem() {
+                Id = express.Id,
+                TrackingNo = express.TrackingNo,
+                ExpressCompany = express.ExpressCompany,
+                GoodsType = express.GoodsType.Name,
+                Forbidden = express.GoodsType == LogisticsGoodsType.Forbidden,
+                CheckinTrackingNo = express.CheckinTrackingNo,
+                AddTime = express.AddTime.ToString("yyyy-MM-dd HH:mm"),
+                CustomerRemark = customerRemark,
+                WarehouseRemark = warehouseRemark,
+                ServiceRemark = serviceRemark,
+            };
+
+            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) // 一般这个判断肯定是成立的
+            {
+                IList<ExpressCheckinListGoodsListItem> goodsList = thisExpressGoodList
+                    .Select(e => new ExpressCheckinListGoodsListItem {
+                        Id = e.Id,
+                        GoodsName = e.Goods.Name,
+                        Quantity = e.Quantity,
+                        Price = e.Price.ToString("#0.00"),
+                        Unit = e.Unit,
+                    })
+                    .ToList();
+
+                item.GoodsList = goodsList;
+            }
+
             if (selectedExpressIdMap.ContainsKey(expressId))
             {
+                expressWaitOrderList.Add(item);
             }
             else
             {
+                expressCheckinList.Add(item);
             }
         }
-
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = new ExpressCheckinListModel {
+                ExpressWaitOrderList = expressWaitOrderList,
+                ExpressCheckinList = expressCheckinList,
+                ExpressWaitOrderCount = expressWaitOrderList.Count,
+                ExpressCheckinCount = expressCheckinList.Count,
                 ExpressTotalCount = expressCount,
             }
         });
     }
 
+    [NonAction]
     private IQueryable<ExpressInfo> GetListQuery(ExpressCheckinListParam param)
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
