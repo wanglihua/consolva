@@ -179,7 +179,7 @@ public class ExpressClaimController : Controller
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Fetch(e => e.Goods)
             .Where(e => e.Express.Id == expressId)
-            .OrderBy(e => e.Id)
+            .OrderBy(e => e.Id) // 快递单号物品都按id升序排
             .ToList();
 
         var expressGoodsItemList = new List<ExpressClaimDetailModel.ExpressGoodsItem>();
@@ -276,6 +276,7 @@ public class ExpressClaimController : Controller
         // 检查快递单的物品是不是对有界面上传过来的价格，并且都是大于0的价格
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => e.Express.Id == expressId)
+            .OrderBy(e => e.Id) // 快递单号物品都按id升序排
             .ToList();
         foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
         {
