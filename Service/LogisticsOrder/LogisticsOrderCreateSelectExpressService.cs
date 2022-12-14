@@ -1,6 +1,8 @@
+using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Express;
+using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
@@ -9,10 +11,12 @@ namespace shunda.Service.LogisticsOrder;
 public class LogisticsOrderCreateSelectExpressService
 {
     private readonly ISession session;
+    private readonly LogisticsOrderCreateSelectService logisticsOrderCreateSelectService;
 
-    public LogisticsOrderCreateSelectExpressService(ISession session)
+    public LogisticsOrderCreateSelectExpressService(ISession session, LogisticsOrderCreateSelectService logisticsOrderCreateSelectService)
     {
         this.session = session;
+        this.logisticsOrderCreateSelectService = logisticsOrderCreateSelectService;
     }
 
     /// <summary>
@@ -37,6 +41,36 @@ public class LogisticsOrderCreateSelectExpressService
         {
             throw new ValidationException($"指定的快递单号不属于指定的会员#{customerId}！");
         }
+
+        // 检查价格是不是设置了
+        var expressOrderList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
+            .Where(e => e.Express.Id == expressId)
+            .ToList();
+        foreach (ExpressGoodsInfo expressGoods in expressOrderList)
+        {
+            if (expressGoods.Price <= 0)
+            {
+                throw new ValidationException($"快递单号 {express.TrackingNo} 物品 {expressGoods.Goods.Name} 价格为0，不能转运，请点击单价修改！");
+            }
+        }
+
+        var createSelectExpress = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+            .Where(e => e.CustomerId == customerId && e.ExpressId == expressId)
+            .Take(1)
+            .SingleOrDefault();
+        if (createSelectExpress == null)
+        {
+            createSelectExpress = new LogisticsOrderCreateSelectExpressInfo {
+                CustomerId = customerId,
+                ExpressId = expressId
+            };
+
+            session.Save(createSelectExpress);
+            session.Flush();
+        }
+
+        logisticsOrderCreateSelectService.MakeInvalid(customerId);
     }
 
     /// <summary>
@@ -60,6 +94,18 @@ public class LogisticsOrderCreateSelectExpressService
         if ((express.Customer?.Id ?? 0) != customerId)
         {
             throw new ValidationException($"指定的快递单号不属于指定的会员#{customerId}！");
-        }        
+        }
+
+        var createSelectExpress = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+            .Where(e => e.CustomerId == customerId && e.ExpressId == expressId)
+            .Take(1)
+            .SingleOrDefault();
+        if (createSelectExpress != null)
+        {
+            session.Delete(createSelectExpress);
+            session.Flush();
+        }
+
+        logisticsOrderCreateSelectService.MakeInvalid(customerId);        
     }
 }
