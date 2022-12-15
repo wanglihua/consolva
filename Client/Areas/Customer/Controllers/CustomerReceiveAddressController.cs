@@ -5,6 +5,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Customer.Controllers;
@@ -67,6 +68,24 @@ public class CustomerReceiveAddressController : Controller
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
+        int addressId = model.Id;
+        if (addressId == 0)
+        {
+        }
+        else
+        {
+            var address = session.Get<CustomerReceiveAddressInfo>(addressId);
+            if (address == null)
+            {
+                throw new ValidationException($"指定的收货地址#{addressId}不存在！");
+            }
+
+            if (address.Customer.Id != loginCustomerId)
+            {
+                throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
+            }
+        }
+
         return Json(new JsonResultData {
             Success = true,
             Message = "收货地址保存成功！",
@@ -75,9 +94,41 @@ public class CustomerReceiveAddressController : Controller
 
     [HttpPost]
     [Route("/client/customer/receive/address/set/default")]
+    [Transactional]
     public IActionResult SetDefault([FromBody] CustomerReceiveAddressSetDefaultParam param)
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        int addressId = param.Id;
+        var address = session.Get<CustomerReceiveAddressInfo>(addressId);
+        if (address == null)
+        {
+            throw new ValidationException($"指定的收货地址#{addressId}不存在！");
+        }
+
+        if (address.Customer.Id != loginCustomerId)
+        {
+            throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
+        }
+
+        // 将其他的有默认标记的地址，设置成非默认地址
+        // 一般应该也只有一个
+        var addressDefaultList = session.Query<CustomerReceiveAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId && e.IsDefault == true)
+            .ToList();
+        foreach (var addressDefault in addressDefaultList)
+        {
+            addressDefault.IsDefault = false;
+            session.Update(addressDefault);
+        }
+
+        session.Flush();
+
+        // 设置当前为默认
+        address.IsDefault = true;
+        session.Update(address);
+
+        session.Flush();
 
         var model = GetListData(param);
 
@@ -99,6 +150,21 @@ public class CustomerReceiveAddressController : Controller
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        int addressId = param.Id;
+        var address = session.Get<CustomerReceiveAddressInfo>(addressId);
+        if (address == null)
+        {
+            throw new ValidationException($"指定的收货地址#{addressId}不存在！");
+        }
+
+        if (address.Customer.Id != loginCustomerId)
+        {
+            throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
+        }
+
+        session.Delete(address);
+        session.Flush();
 
         var model = GetListData(param);
 
