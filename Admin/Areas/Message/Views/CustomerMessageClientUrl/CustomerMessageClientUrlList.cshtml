@@ -17,19 +17,19 @@
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 150px; text-align: center;">
                 <div>
                     <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.MessageType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">消息类型</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.TerminalType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">终端类型</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 380px; text-align: center;">
                 <div>
                     <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.ClientUrl))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">客户端URL</a>
                 </div>
@@ -72,7 +72,7 @@
                             @ListDataUtil.Render(customerMessageClientUrl.TerminalType.Name)
                         </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" class="break-word">
                         <div>
                             @ListDataUtil.Render(customerMessageClientUrl.ClientUrl)
                         </div>

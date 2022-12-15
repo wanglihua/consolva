@@ -65,7 +65,7 @@ public class CustomerMessageClientUrlController : Controller
         }
 
         listQuery = listQuery.ThenByAlias(() => customerMessageClientUrlAlias!.Id).Desc;
-            
+
         IList<CustomerMessageClientUrlInfo> customerMessageClientUrlList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -79,8 +79,8 @@ public class CustomerMessageClientUrlController : Controller
 
         CustomerMessageClientUrlListModel model = new CustomerMessageClientUrlListModel(listPager);
         model.CustomerMessageClientUrlList = customerMessageClientUrlList;
-        
-        model.CustomerMessageClientUrlAlias = nameof(customerMessageClientUrlAlias);        
+
+        model.CustomerMessageClientUrlAlias = nameof(customerMessageClientUrlAlias);
 
         return View("CustomerMessageClientUrlList", model);
     }
@@ -128,8 +128,11 @@ public class CustomerMessageClientUrlController : Controller
         model.TerminalType = customerMessageClientUrl.TerminalType;
         model.ClientUrl = customerMessageClientUrl.ClientUrl;
 
-        model.MessageTypeList = CustomerMessageType.GetList();
         model.TerminalTypeList = TerminalType.GetList();
+
+        var messageTypeListAll = CustomerMessageType.GetList();
+        var messageTypeListExist = session.Query<CustomerMessageClientUrlInfo>().Select(e => e.MessageType).ToList();
+        model.MessageTypeList = messageTypeListAll.Where(e => messageTypeListExist.Contains(e) == false).ToList();        
 
         return View("CustomerMessageClientUrlDetail", model);
     }
