@@ -33,29 +33,87 @@ public class WechatMessageService
     /// <returns>是否发送成功</returns>
     public CustomerMessageStatus SendTemplateMessage(string openId, string templateId, object data, string? url = null)
     {
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            url = null; // 现在不清楚底层API是不是要求这个为 null，先设置成 null 再说
-        }
-
         if (string.IsNullOrWhiteSpace(openId) == false)
         {
-            try
-            {
-                TemplateApi.SendTemplateMessage(wechatOfficialAccountAccessTokenService.GetAccessToken(), openId, templateId, url, data);
-                return CustomerMessageStatus.Sent;
-            }
-            catch (Exception exp)
-            {
-                log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
-                log.Error(exp);
+            string accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
 
-                return CustomerMessageStatus.SendFail;
-            }
+            // 这是非多线程发送
+            // try
+            // {
+            //     TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data);
+            //     return CustomerMessageStatus.Sent;
+            // }
+            // catch (Exception exp)
+            // {
+            //     log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
+            //     log.Error(exp);
+            //
+            //     return CustomerMessageStatus.SendFail;
+            // }
+
+            // 这是多线程发送
+            SendTemplateMessageThreadParam param = new SendTemplateMessageThreadParam {
+                AccessToken = accessToken,
+                OpenId = openId,
+                TemplateId = templateId,
+                Url = url,
+                Data = data,
+            };
+
+            new Thread(new ParameterizedThreadStart(SendTemplateMessageNewThread)).Start(param);
+
+            return CustomerMessageStatus.Sent; // 不管线程中是否发送成功，这里暂时返回是已发送
         }
 
         return CustomerMessageStatus.SendFail; // 一般这时还没关注公众号，也算发送失败
     }
+
+    #region 多线程发送
+
+    private class SendTemplateMessageThreadParam
+    {
+        public string AccessToken { get; set; } = string.Empty;
+
+        public string OpenId { get; set; } = string.Empty;
+
+        public string TemplateId { get; set; } = string.Empty;
+
+        public string? Url { get; set; }
+
+        public object Data { get; set; } = new();
+    }
+
+    private void SendTemplateMessageNewThread(object? paramObj)
+    {
+        SendTemplateMessageThreadParam? param = paramObj as SendTemplateMessageThreadParam;
+        if (param == null)
+        {
+            return;
+        }
+
+        string accessToken = param.AccessToken;
+        string openId = param.OpenId;
+        string templateId = param.TemplateId;
+        string? url = param.Url;
+        object data = param.Data;
+
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            url = null;
+        }
+
+        try
+        {
+            TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data);
+        }
+        catch (Exception exp)
+        {
+            log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
+            log.Error(exp);
+        }
+    }
+
+    #endregion
 
     /// <summary>
     /// 发送订单通知
@@ -70,11 +128,6 @@ public class WechatMessageService
     /// <returns>是否发送成功</returns>
     public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
     {
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            url = null; // 现在不清楚底层API是不是要求这个为 null，先设置成 null 再说
-        }
-
         string openId = customer.WechatOfficialAccountOpenId;
         if (string.IsNullOrWhiteSpace(openId))
         {

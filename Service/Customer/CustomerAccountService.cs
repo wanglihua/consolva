@@ -3,6 +3,7 @@ using NLog;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
+using shunda.Service.Message.CustomerMessage;
 
 namespace shunda.Service.Customer;
 
@@ -11,11 +12,13 @@ public class CustomerAccountService
 {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
+    private readonly ISession session;
+    private readonly CustomerMessageAccountChangeService customerMessageAccountChangeService;
 
-    public CustomerAccountService(ISession session)
+    public CustomerAccountService(ISession session, CustomerMessageAccountChangeService customerMessageAccountChangeService)
     {
         this.session = session;
+        this.customerMessageAccountChangeService = customerMessageAccountChangeService;
     }
 
     /// <summary>
@@ -60,18 +63,7 @@ public class CustomerAccountService
         session.Flush();
 
         // 发送余额变动消息，区分海运和空运
-
-        /*
-         todo a 后面补上这个消息发送
-        try
-        {
-            customerMessageService.SendMessageAccountChange(customer, orderCate, changeType.Name, accountEntry.Amount, accountEntry.AccountBefore ?? 0, accountEntry.AccountAfter ?? 0);
-        }
-        catch (Exception exp)
-        {
-            log.Error(exp);
-        }
-        */
+        customerMessageAccountChangeService.SendMessage(customer, changeType.Name, accountEntry.Amount, accountEntry.AccountBefore, accountEntry.AccountAfter);
     }
 
     /// <summary>
