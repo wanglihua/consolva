@@ -15,7 +15,7 @@ public class CustomerReceiveAddressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户id不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new ();
+    public virtual CustomerInfo Customer { get; set; } = new();
 
     /// <summary>
     /// 国家，非空
@@ -83,6 +83,8 @@ public class CustomerReceiveAddressInfo : Entity
 
     /// <summary>
     /// 邮政编码，非空
+    /// 在英国，澳大利亚等，可能用 postcode 更合适
+    /// 在美国 用 zipcode 较适合
     /// </summary>
     [Required(ErrorMessage = "邮政编码不能为空！")]
     [MaxLength(10, ErrorMessage = "邮政编码长度不能大于10！")]
