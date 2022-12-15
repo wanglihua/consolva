@@ -1,0 +1,106 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Message
+@model shunda.Admin.Areas.Message.Models.CustomerMessageClientUrl.CustomerMessageClientUrlListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerMessageClientUrlList" }))
+
+<table id="tblCustomerMessageClientUrlList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="customerMessageClientUrlCheckAll"></label><input id="customerMessageClientUrlCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.MessageType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">消息类型</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.TerminalType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">终端类型</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.ClientUrl))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">客户端URL</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerMessageClientUrlAlias).@(nameof(CustomerMessageClientUrlInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerMessageClientUrlList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerMessageClientUrlList.Count != 0)
+        {
+            int itemIndex = 0;
+            foreach (CustomerMessageClientUrlInfo customerMessageClientUrl in Model.CustomerMessageClientUrlList)
+            {
+                <tr ondblclick="showCustomerMessageClientUrlDetail(@(customerMessageClientUrl.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="customerMessageClientUrlCheck_@(customerMessageClientUrl.Id)"></label><input id="customerMessageClientUrlCheck_@(customerMessageClientUrl.Id)" type="checkbox" class="ace" value="@customerMessageClientUrl.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerMessageClientUrl.MessageType.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerMessageClientUrl.TerminalType.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerMessageClientUrl.ClientUrl)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @customerMessageClientUrl.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @customerMessageClientUrl.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerMessageClientUrlList" }))

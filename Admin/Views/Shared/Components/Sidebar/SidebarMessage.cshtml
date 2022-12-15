@@ -26,7 +26,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.CycleTiming))
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting))
             {
                 <li id="message-customer-message-cycle-timing-send-setting-index-menu">
                     <a asp-area="Message" asp-controller="CustomerMessageCycleTimingSendSetting" asp-action="Index">
@@ -37,7 +37,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.RealTime))
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting))
             {
                 <li id="message-customer-message-real-time-send-setting-index-menu">
                     <a asp-area="Message" asp-controller="CustomerMessageRealTimeSendSetting" asp-action="Index">
@@ -59,7 +59,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageList))
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageView))
             {
                 <li id="message-customer-message-index-menu">
                     <a asp-area="Message" asp-controller="CustomerMessage" asp-action="Index">
@@ -70,12 +70,22 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.SmsSendRecord))
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageView))
             {
                 <li id="message-sms-send-record-index-menu">
                     <a asp-area="Message" asp-controller="SmsSendRecord" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         短信发送记录
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting))
+            {
+                <li id="message-customer-message-client-url-menu">
+                    <a asp-area="Message" asp-controller="CustomerMessageClientUrl" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>客户消息链接
                     </a>
                     <b class="arrow"></b>
                 </li>

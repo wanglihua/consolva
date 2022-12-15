@@ -14,7 +14,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Message.Controllers;
 
 [MessageArea]
-[AdminAuth(PassRes.CustomerMessage.CycleTiming)]
+[AdminAuth(PassRes.CustomerMessage.MessageSetting)]
 public class CustomerMessageCycleTimingSendSettingController : Controller
 {
     private readonly ISession session;

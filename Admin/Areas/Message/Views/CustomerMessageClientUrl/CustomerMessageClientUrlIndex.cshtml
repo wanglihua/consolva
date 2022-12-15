@@ -1,0 +1,194 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Message
+@model CustomerMessageClientUrlIndexModel
+@using shunda.Admin.Areas.Message.Models.CustomerMessageClientUrl
+@{
+    ViewData[ViewDataKey.Title] = "客户消息链接";
+    Layout = "_AdminLayout";
+}
+
+@*
+
+        <li id="message-menu">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-copy"></i>
+                <span class="menu-text">消息推送</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+
+                <li id="message-customer-message-client-url-menu">
+                    <a asp-area="Message" asp-controller="CustomerMessageClientUrl" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>客户消息链接
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+
+*@
+
+@section Breadcrumb {
+    <li class="parent" data-menu="message-menu">消息推送</li>
+    <li class="active" data-menu="message-customer-message-client-url-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerMessageClientUrlList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerMessageClientUrlDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerMessageClientUrl()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerMessageClientUrlList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerMessageClientUrlList" data-page-index="0" data-sort-field="@(nameof(CustomerMessageClientUrlInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerMessageClientUrlDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerMessageClientUrlList();
+    });
+
+    function sortCustomerMessageClientUrlList(sortField, sortDir) {
+        var list = $('#customerMessageClientUrlList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerMessageClientUrlList();
+    }
+
+    function loadCustomerMessageClientUrlList(pageIndex) {
+        var list = $('#customerMessageClientUrlList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerMessageClientUrl")",
+            type: "POST",
+            data: {
+                "@(nameof(CustomerMessageClientUrlListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(CustomerMessageClientUrlListQueryParam.SortField))": sortField,
+                "@(nameof(CustomerMessageClientUrlListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerMessageClientUrlList').html(data);
+
+                initListTable("#tblCustomerMessageClientUrlList");
+            }
+        });
+    }
+
+    function showCustomerMessageClientUrlDetail(id) {
+        $("#customerMessageClientUrlDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#customerMessageClientUrlDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CustomerMessageClientUrl")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerMessageClientUrlDetailDialogWrapper").html(data);
+                $("#customerMessageClientUrlDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCustomerMessageClientUrl() {
+        var form = $("#customerMessageClientUrlDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerMessageClientUrl")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#customerMessageClientUrlDetailDialog').modal('hide');
+                    loadCustomerMessageClientUrlList();
+                }
+            });
+        }
+    }
+
+    function deleteCustomerMessageClientUrl() {
+        var idList = getSelectIdList('#tblCustomerMessageClientUrlList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "CustomerMessageClientUrl")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadCustomerMessageClientUrlList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

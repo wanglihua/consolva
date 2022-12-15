@@ -12,7 +12,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Message.Controllers;
 
 [MessageArea]
-[AdminAuth(PassRes.CustomerMessage.SmsSendRecord)]
+[AdminAuth(PassRes.CustomerMessage.MessageView)]
 public class SmsSendRecordController : Controller
 {
     private static Logger log = LogManager.GetCurrentClassLogger();

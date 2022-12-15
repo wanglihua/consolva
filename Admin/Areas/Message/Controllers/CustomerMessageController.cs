@@ -13,7 +13,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Message.Controllers;
 
 [MessageArea]
-[AdminAuth(PassRes.CustomerMessage.MessageList)]
+[AdminAuth(PassRes.CustomerMessage.MessageView)]
 public class CustomerMessageController : Controller
 {
     private ISession session;
