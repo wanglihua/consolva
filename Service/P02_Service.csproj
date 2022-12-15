@@ -61,7 +61,6 @@
       <Content Include="Message\CustomerMessage\CustomerMessageYiZhuanYunService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageZhiFuErChengFangShiBianGengFeiYongService.cs" />
       <Compile Remove="Message\CustomerMessage\CustomerMessageZiDongDaBaoYuGaoService.cs" />
-      <Content Include="Message\CustomerMessage\CustomerMessageZiDongDaBaoYuGaoService.cs" />
       <Compile Remove="Message\CustomerMessageService.cs" />
       <Content Include="Message\CustomerMessageService.cs" />
     </ItemGroup>
