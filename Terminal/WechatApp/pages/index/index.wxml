@@ -2,17 +2,18 @@
 <view class="container">
     <view>
         <van-grid border="{{false}}" gutter="3">
-            <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-color="#58727e" text="申领件" badge="3" url="../express/express_claim/express_claim_list/express_claim_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-color="#58727e" text="预报池" badge="3" url="../express/express_expect/express_expect_list/express_expect_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-color="#58727e" text="已入库" badge="3" url="../express/express_checkin/express_checkin_list/express_checkin_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-color="#58727e" text="退运池" badge="3" url="../express/express_return/express_return_list/express_return_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="account" icon-color="#58727e" text="余额" url="../account/customer_account/customer_account/customer_account"/>
-            <van-grid-item icon-prefix="iconfont" icon="score" icon-color="#58727e" text="积分" url="../account/customer_score/customer_score/customer_score"/>
-            <van-grid-item icon-prefix="iconfont" icon="pay" icon-color="#58727e" text="支付明细" url="../account/customer_pay/customer_pay"/>
-            <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-color="#58727e" text="消息定制" url="../message/message_customize/message_customize"/>
+            <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="申领件" badge="3" url="../express/express_claim/express_claim_list/express_claim_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="3" url="../express/express_expect/express_expect_list/express_expect_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="3" url="../express/express_checkin/express_checkin_list/express_checkin_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text="退运池" badge="3" url="../express/express_return/express_return_list/express_return_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额" url="../account/customer_account/customer_account/customer_account"/>
+            <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="../account/customer_score/customer_score/customer_score"/>
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="../account/customer_pay/customer_pay"/>
+            <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="../message/message_customize/message_customize"/>
+            <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="../message/message_customize/message_customize"/>
 
-            <van-grid-item icon-prefix="iconfont" icon="add" icon-color="#58727e" text="文字" dot/>
-            <van-grid-item icon-prefix="iconfont" icon="add" icon-color="#58727e" text="文字" dot/>
+            <van-grid-item icon-prefix="iconfont" icon="add" icon-class="home-grid-icon" text="文字" dot/>
+            <van-grid-item icon-prefix="iconfont" icon="add" icon-class="home-grid-icon" text="文字" dot/>
         </van-grid>
     </view>
 </view>
