@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressCheckin;
 using shunda.Client.Services;
+using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
@@ -25,6 +27,18 @@ public class ExpressCheckinController : Controller
     [HttpPost]
     [Route("/client/express/checkin/list")]
     public IActionResult List([FromBody] ExpressCheckinListParam param)
+    {
+        ExpressCheckinListModel model = GetListData(param);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = model,
+        });
+    }
+
+    [NonAction]
+    private ExpressCheckinListModel GetListData(ExpressCheckinListParam param)
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
@@ -137,17 +151,13 @@ public class ExpressCheckinController : Controller
             }
         }
 
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-            Data = new ExpressCheckinListModel {
-                ExpressWaitOrderList = expressWaitOrderList,
-                ExpressCheckinList = expressCheckinList,
-                ExpressWaitOrderCount = expressWaitOrderList.Count,
-                ExpressCheckinCount = expressCheckinList.Count,
-                ExpressTotalCount = expressCount,
-            }
-        });
+        return new ExpressCheckinListModel {
+            ExpressWaitOrderList = expressWaitOrderList,
+            ExpressCheckinList = expressCheckinList,
+            ExpressWaitOrderCount = expressWaitOrderList.Count,
+            ExpressCheckinCount = expressCheckinList.Count,
+            ExpressTotalCount = expressCount,
+        };
     }
 
     [NonAction]
@@ -166,5 +176,58 @@ public class ExpressCheckinController : Controller
         }
 
         return query;
+    }
+
+    [HttpPost]
+    [Route("/client/express/checkin/add/wait/order")]
+    public IActionResult AddWaitOrder([FromBody] ExpressCheckinAddWaitOrderParam param)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        ExpressCheckinListModel model = GetListData(param);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "加入到待创建订单成功！",
+            Data = model, // 同时获取列表数据，这样就不用再获取一次列表数据
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/checkin/add/wait/order/all")]
+    public IActionResult AddWaitOrderAll([FromBody] ExpressCheckinAddWaitOrderAllParam param)
+    {
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "全部加入到待创建订单成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/checkin/remove/wait/order")]
+    public IActionResult RemoveWaitOrder([FromBody] ExpressCheckinRemoveWaitOrderParam param)
+    {
+        if (ModelState.IsValid == false)
+        {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "从待创建订单移除成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/checkin/remove/wait/order/all")]
+    public IActionResult RemoveWaitOrderAll([FromBody] ExpressCheckinRemoveWaitOrderAllParam param)
+    {
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "从待创建订单全部移除成功！",
+        });
     }
 }
