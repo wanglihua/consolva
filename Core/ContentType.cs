@@ -15,5 +15,5 @@ public class ContentType
 
     public static readonly string ImagePng = "image/png";
 
-    public static readonly string Svg = "text/xml";
+    public static readonly string Svg = "image/svg+xml; charset=utf-8";
 }
