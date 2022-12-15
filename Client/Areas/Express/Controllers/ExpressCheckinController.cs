@@ -8,6 +8,7 @@ using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Express.Controllers;
@@ -17,11 +18,13 @@ public class ExpressCheckinController : Controller
 {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService;
 
-    public ExpressCheckinController(ISession session, LoginCustomerService loginCustomerService)
+    public ExpressCheckinController(ISession session, LoginCustomerService loginCustomerService, LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService)
     {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.logisticsOrderCreateSelectExpressService = logisticsOrderCreateSelectExpressService;
     }
 
     [HttpPost]
@@ -187,6 +190,11 @@ public class ExpressCheckinController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        int expressId = param.ExpressId;
+
+        logisticsOrderCreateSelectExpressService.AddWaitOrder(expressId: expressId, customerId: loginCustomerId);
+
         ExpressCheckinListModel model = GetListData(param);
 
         return Json(new JsonResultData {
@@ -200,9 +208,16 @@ public class ExpressCheckinController : Controller
     [Route("/client/express/checkin/add/wait/order/all")]
     public IActionResult AddWaitOrderAll([FromBody] ExpressCheckinAddWaitOrderAllParam param)
     {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        logisticsOrderCreateSelectExpressService.AddWaitOrderAll(customerId: loginCustomerId);
+
+        ExpressCheckinListModel model = GetListData(param);
+
         return Json(new JsonResultData {
             Success = true,
             Message = "全部加入到待创建订单成功！",
+            Data = model,
         });
     }
 
@@ -215,9 +230,17 @@ public class ExpressCheckinController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        int expressId = param.ExpressId;
+
+        logisticsOrderCreateSelectExpressService.RemoveWaitOrder(expressId: expressId, customerId: loginCustomerId);
+
+        ExpressCheckinListModel model = GetListData(param);
+
         return Json(new JsonResultData {
             Success = true,
             Message = "从待创建订单移除成功！",
+            Data = model,
         });
     }
 
@@ -225,9 +248,16 @@ public class ExpressCheckinController : Controller
     [Route("/client/express/checkin/remove/wait/order/all")]
     public IActionResult RemoveWaitOrderAll([FromBody] ExpressCheckinRemoveWaitOrderAllParam param)
     {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        logisticsOrderCreateSelectExpressService.RemoveWaitOrderAll(customerId: loginCustomerId);
+
+        ExpressCheckinListModel model = GetListData(param);
+
         return Json(new JsonResultData {
             Success = true,
             Message = "从待创建订单全部移除成功！",
+            Data = model,
         });
     }
 }
