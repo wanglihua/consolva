@@ -74,6 +74,58 @@ public class LogisticsOrderCreateSelectExpressService
     }
 
     /// <summary>
+    /// 添加客户所有已入库快递单号至待建单
+    /// </summary>
+    /// <param name="customerId"></param>
+    public void AddWaitOrderAll(int customerId)
+    {
+        // 同时，物品列表查询时，相当于对应的快递单实体已经预取了
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => e.Customer!.Id == customerId && e.Status == ExpressStatus.CheckIn)
+            .ToList();
+
+        // 检查物品价格设置
+        var expressIdList = expressList.Select(e => e.Id).ToList();
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+
+        foreach (var expressGoods in expressGoodsList)
+        {
+            if (expressGoods.Price <= 0)
+            {
+                throw new ValidationException($"快递单号{expressGoods.Express.TrackingNo} 物品 {expressGoods.Goods.Name} 价格为零，不能转运，请点击单价修改！");
+            }
+        }
+
+        var createSelectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+            .Where(e => e.CustomerId == customerId)
+            .ToList();
+
+        foreach (var expressId in expressIdList)
+        {
+            var createSelectExpress = createSelectExpressList
+                .Where(e => e.ExpressId == expressId)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (createSelectExpress == null) // 当前不是待建单的才需要保存
+            {
+                createSelectExpress = new LogisticsOrderCreateSelectExpressInfo {
+                    ExpressId = expressId,
+                    CustomerId = customerId,
+                };
+
+                session.Save(createSelectExpress);
+            }
+        }
+
+        session.Flush();
+
+        logisticsOrderCreateSelectService.MakeInvalid(customerId);
+    }
+
+    /// <summary>
     /// 将已入库快递单号从待建单移除
     /// </summary>
     /// <param name="expressId"></param>
@@ -106,6 +158,26 @@ public class LogisticsOrderCreateSelectExpressService
             session.Flush();
         }
 
-        logisticsOrderCreateSelectService.MakeInvalid(customerId);        
+        logisticsOrderCreateSelectService.MakeInvalid(customerId);
+    }
+
+    /// <summary>
+    /// 将客户所有已入库快递单号从待建单移除
+    /// </summary>
+    /// <param name="customerId"></param>
+    public void RemoveWaitOrderAll(int customerId)
+    {
+        var createSelectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+            .Where(e => e.CustomerId == customerId)
+            .ToList();
+
+        foreach (var createSelectExpress in createSelectExpressList)
+        {
+            session.Delete(createSelectExpress);
+        }
+
+        session.Flush();
+
+        logisticsOrderCreateSelectService.MakeInvalid(customerId);
     }
 }
