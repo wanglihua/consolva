@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Account.Models.CustomerPay;
+namespace shunda.Client.Areas.Customer.Models.CustomerPay;
 
 public class CustomerPayListParam
 {

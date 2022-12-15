@@ -1,28 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Client.Areas.Account.Models.CustomerAccountEntry;
+using shunda.Client.Areas.Customer.Models.CustomerScoreLog;
 using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Areas.Account.Controllers;
+namespace shunda.Client.Areas.Customer.Controllers;
 
-[AccountArea]
-public class CustomerAccountEntryController : Controller
+[CustomerArea]
+public class CustomerScoreLogController : Controller
 {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
 
-    public CustomerAccountEntryController(ISession session, LoginCustomerService loginCustomerService)
+    public CustomerScoreLogController(ISession session,
+        LoginCustomerService loginCustomerService)
     {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
     }
 
     [HttpPost]
-    [Route("/client/customer/account/entry/list")]
-    public IActionResult List([FromBody] CustomerAccountEntryListParam param)
+    [Route("/client/customer/score/log")]
+    public IActionResult List([FromBody] CustomerScoreLogListParam param)
     {
         var listQuery = GetListQuery(param);
 
@@ -33,45 +34,48 @@ public class CustomerAccountEntryController : Controller
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
         }
 
-        var accountEntryList = listQuery
+        var scoreLogList = listQuery
             .OrderByDescending(e => e.Id)
             .Take(15)
             .ToList();
 
-        var entryItemList = accountEntryList
-            .Select(e => new CustomerAccountEntryListItem {
+        var scoreLogItemList = scoreLogList
+            .Select(e => new CustomerScoreLogListItem() {
                 Id = e.Id,
-                ChangeTypeName = e.ChangeType.Name,
-                Amount = (e.Amount > 0 ? "+" : "") + e.Amount.ToString("#0.00"),
-                AmountBefore = e.AccountBefore.ToString("#0.00"),
-                AmountAfter = e.AccountAfter.ToString("#0.00"),
+                TypeName = e.ScoreType.Name,
+                Score = (e.Score > 0 ? "+" : "") + e.Score.ToString("#0.00"),
+                Amount = e.Amount.ToString("#0.00"),
+                IsValidScore = e.IsValidScore,
                 Description = e.Description,
+                OrderId = e.LogisticsOrder?.Id,
+                OrderCode = e.LogisticsOrderCode ?? string.Empty,
+                OrderCustomerId = e.LogisticsOrderCustomer?.Id,
                 CreateTime = e.CreateTime.ToString("yyyy-MM-dd HH:mm"),
             })
             .ToList();
 
-        var lastData = accountEntryList.LastOrDefault();
+        var lastData = scoreLogList.LastOrDefault();
         int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
-        int accountEntryCount = GetListQuery(param).Count();
+        int logCount = GetListQuery(param).Count();
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = new CustomerAccountEntryListModel {
-                EntryList = entryItemList,
-                EntryCount = accountEntryCount,
+            Data = new CustomerScoreLogListModel {
+                LogList = scoreLogItemList,
+                LogCount = logCount,
                 LastId = lastId,
             }
         });
     }
 
     [NonAction]
-    private IQueryable<CustomerAccountEntryInfo> GetListQuery(CustomerAccountEntryListParam param)
+    private IQueryable<CustomerScoreLogInfo> GetListQuery(CustomerScoreLogListParam param)
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        return session.Query<CustomerAccountEntryInfo>()
+        return session.Query<CustomerScoreLogInfo>()
             .Where(e => e.Customer.Id == loginCustomerId);
     }
 }

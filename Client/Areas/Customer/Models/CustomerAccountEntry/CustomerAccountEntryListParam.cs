@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Account.Models.CustomerAccountEntry;
+namespace shunda.Client.Areas.Customer.Models.CustomerAccountEntry;
 
 public class CustomerAccountEntryListParam
 {

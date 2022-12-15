@@ -1,44 +1,52 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Client.Areas.Account.Models.CustomerAccount;
+using shunda.Client.Areas.Customer.Models.CustomerScore;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Areas.Account.Controllers;
+namespace shunda.Client.Areas.Customer.Controllers;
 
-[AccountArea]
-public class CustomerAccountController : Controller
+[CustomerArea]
+public class CustomerScoreController : Controller
 {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
 
-    public CustomerAccountController(ISession session, LoginCustomerService loginCustomerService)
+    public CustomerScoreController(ISession session, LoginCustomerService loginCustomerService)
     {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
     }
 
     [HttpPost]
-    [Route("/client/customer/account")]
+    [Route("/client/customer/score")]
     public IActionResult Index()
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-
         var customer = session.Get<CustomerInfo>(loginCustomerId);
         if (customer == null)
         {
             throw new ValidationException($"指定的客户#{loginCustomerId}不存在！");
         }
 
-        var amount = customer.Account;
+        string totalScore = customer.TotalScore.ToString("#0.00");
+        string validScore = customer.ValidScore.ToString("#0.00");
+
+        string vipRank = customer.Level.Name; // 普通会员，超级VIP
+        if (customer.Level == CustomerLevel.Vip)
+        {
+            vipRank = customer.VipRank.Name; // VIP1, VIP2,...
+        }
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = new CustomerAccountIndexModel {
-                Amount = amount.ToString("#0.00"),
+            Data = new CustomerScoreIndexModel {
+                TotalScore = totalScore,
+                ValidScore = validScore,
+                VipRank = vipRank,
             }
         });
     }

@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Client.Areas.Account.Models.CustomerPay;
+using shunda.Client.Areas.Customer.Models.CustomerPay;
 using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Fee;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Areas.Account.Controllers;
+namespace shunda.Client.Areas.Customer.Controllers;
 
-[AccountArea]
+[CustomerArea]
 public class CustomerPayController : Controller
 {
     private readonly ISession session;

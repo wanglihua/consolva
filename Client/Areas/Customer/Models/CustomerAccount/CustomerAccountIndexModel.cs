@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Account.Models.CustomerAccount;
+namespace shunda.Client.Areas.Customer.Models.CustomerAccount;
 
 public class CustomerAccountIndexModel
 {
