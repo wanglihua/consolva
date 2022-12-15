@@ -335,7 +335,7 @@ public class CustomerScoreService
     /// <param name="score">积分</param>
     /// <param name="description">描述</param>
     /// <returns>余额</returns>
-    public decimal ScoreToBalance(int customerId, decimal score, string description = "")
+    public decimal ScoreToAccount(int customerId, decimal score, string description = "")
     {
         var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
