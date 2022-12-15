@@ -11,6 +11,7 @@ using NHibernate.SqlCommand;
 using NLog;
 using shunda.Domain;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Message;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Message.Controllers;
@@ -25,10 +26,12 @@ public class CustomerMessageClientUrlController : Controller
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
 
-    public CustomerMessageClientUrlController(ISession session)
+    public CustomerMessageClientUrlController(ISession session, CustomerMessageClientUrlService customerMessageClientUrlService)
     {
         this.session = session;
+        this.customerMessageClientUrlService = customerMessageClientUrlService;
     }
 
     [HttpGet]
@@ -132,7 +135,7 @@ public class CustomerMessageClientUrlController : Controller
 
         var messageTypeListAll = CustomerMessageType.GetList();
         var messageTypeListExist = session.Query<CustomerMessageClientUrlInfo>().Select(e => e.MessageType).ToList();
-        model.MessageTypeList = messageTypeListAll.Where(e => messageTypeListExist.Contains(e) == false).ToList();        
+        model.MessageTypeList = messageTypeListAll.Where(e => messageTypeListExist.Contains(e) == false).ToList();
 
         return View("CustomerMessageClientUrlDetail", model);
     }
@@ -181,6 +184,8 @@ public class CustomerMessageClientUrlController : Controller
 
         session.Flush();
 
+        customerMessageClientUrlService.MakeCacheExpire();
+
         return Json(new JsonResultData {
             Success = true,
             Message = "保存成功！",
@@ -203,6 +208,8 @@ public class CustomerMessageClientUrlController : Controller
         }
 
         session.Flush();
+
+        customerMessageClientUrlService.MakeCacheExpire();
 
         return Json(new JsonResultData {
             Success = true,

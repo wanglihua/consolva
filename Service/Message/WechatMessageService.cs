@@ -33,6 +33,11 @@ public class WechatMessageService
     /// <returns>是否发送成功</returns>
     public CustomerMessageStatus SendTemplateMessage(string openId, string templateId, object data, string? url = null)
     {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            url = null; // 现在不清楚底层API是不是要求这个为 null，先设置成 null 再说
+        }
+
         if (string.IsNullOrWhiteSpace(openId) == false)
         {
             try
@@ -65,6 +70,11 @@ public class WechatMessageService
     /// <returns>是否发送成功</returns>
     public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
     {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            url = null; // 现在不清楚底层API是不是要求这个为 null，先设置成 null 再说
+        }
+
         string openId = customer.WechatOfficialAccountOpenId;
         if (string.IsNullOrWhiteSpace(openId))
         {

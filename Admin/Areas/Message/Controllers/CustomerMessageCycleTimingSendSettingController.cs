@@ -19,13 +19,16 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 {
     private readonly ISession session;
     private readonly CustomerMessageCycleTimingSendSettingService customerMessageCycleTimingSendSettingService;
+    private readonly CustomerMessageCommonService customerMessageCommonService;
 
     public CustomerMessageCycleTimingSendSettingController(
         ISession session,
-        CustomerMessageCycleTimingSendSettingService customerMessageCycleTimingSendSettingService)
+        CustomerMessageCycleTimingSendSettingService customerMessageCycleTimingSendSettingService,
+        CustomerMessageCommonService customerMessageCommonService)
     {
         this.session = session;
         this.customerMessageCycleTimingSendSettingService = customerMessageCycleTimingSendSettingService;
+        this.customerMessageCommonService = customerMessageCommonService;
     }
 
     [HttpGet]
@@ -171,7 +174,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
         }
 
         // 这里不保存 type
-        
+
         setting.WechatMessageTemplate1 = model.WechatMessageTemplate1;
         setting.WechatMessageTemplate2 = model.WechatMessageTemplate2 ?? string.Empty;
         setting.WechatMessageTemplate3 = model.WechatMessageTemplate3 ?? string.Empty;
@@ -191,6 +194,8 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
         session.Update(setting);
 
         session.Flush();
+
+        customerMessageCommonService.MakeSettingCacheInvalid();
 
         return Json(new Dictionary<string, object>() {
             { "success", true },

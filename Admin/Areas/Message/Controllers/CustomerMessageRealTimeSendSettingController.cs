@@ -19,13 +19,16 @@ public class CustomerMessageRealTimeSendSettingController : Controller
 {
     private readonly ISession session;
     private readonly CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService;
+    private readonly CustomerMessageCommonService customerMessageCommonService;
 
     public CustomerMessageRealTimeSendSettingController(
         ISession session,
-        CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService)
+        CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService,
+        CustomerMessageCommonService customerMessageCommonService)
     {
         this.session = session;
         this.customerMessageRealTimeSendSettingService = customerMessageRealTimeSendSettingService;
+        this.customerMessageCommonService = customerMessageCommonService;
     }
 
     [HttpGet]
@@ -154,6 +157,8 @@ public class CustomerMessageRealTimeSendSettingController : Controller
         session.Update(setting);
 
         session.Flush();
+
+        customerMessageCommonService.MakeSettingCacheInvalid();
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
