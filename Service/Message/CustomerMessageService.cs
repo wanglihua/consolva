@@ -44,7 +44,7 @@ namespace shunda.Service.Message;
         private SmsService smsService = null;
         private WechatMessageService wechatMessageService = null;
         private LoginUserService loginUserService = null;
-        private CustomerClientUrlService customerClientUrlService = null;
+        private CustomerMessageClientUrlService customerMessageClientUrlService = null;
         private CustomerMessageClientCustomizeService customerMessageClientCustomizeService = null;
 
         private string userName = string.Empty; // 初始是空的
@@ -53,14 +53,14 @@ namespace shunda.Service.Message;
             SmsService smsService,
             WechatMessageService wechatMessageService,
             LoginUserService loginUserService,
-            CustomerClientUrlService customerClientUrlService,
+            CustomerMessageClientUrlService customerMessageClientUrlService,
             CustomerMessageClientCustomizeService customerMessageClientCustomizeService)
         {
             this.session = session;
             this.smsService = smsService;
             this.wechatMessageService = wechatMessageService;
             this.loginUserService = loginUserService;
-            this.customerClientUrlService = customerClientUrlService;
+            this.customerMessageClientUrlService = customerMessageClientUrlService;
             this.customerMessageClientCustomizeService = customerMessageClientCustomizeService;
         }
 
@@ -265,7 +265,7 @@ namespace shunda.Service.Message;
                         string processUser = GetProcessUser();
                         string abnormalClause = "【申领件】通知";
 
-                        string url = customerClientUrlService.GetExpressClaimListUrl(customer);
+                        string url = customerMessageClientUrlService.GetExpressClaimListUrl(customer);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -700,7 +700,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -813,7 +813,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -927,7 +927,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1041,7 +1041,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1155,7 +1155,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1273,7 +1273,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1392,7 +1392,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1510,7 +1510,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1626,7 +1626,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1743,7 +1743,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1860,7 +1860,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -1974,7 +1974,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -2202,7 +2202,7 @@ namespace shunda.Service.Message;
                             .SingleOrDefault();
                         if (claim != null)
                         {
-                            url = customerClientUrlService.GetExpressCheckinDetailUrl(customer, claim.Id);
+                            url = customerMessageClientUrlService.GetExpressCheckinDetailUrl(customer, claim.Id);
                         }
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
@@ -2337,7 +2337,7 @@ namespace shunda.Service.Message;
                             .SingleOrDefault();
                         if (claim != null)
                         {
-                            url = customerClientUrlService.GetExpressCheckinDetailUrl(customer, claim.Id);
+                            url = customerMessageClientUrlService.GetExpressCheckinDetailUrl(customer, claim.Id);
                         }
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
@@ -2456,7 +2456,7 @@ namespace shunda.Service.Message;
                             .SingleOrDefault();
                         if (claim != null)
                         {
-                            url = customerClientUrlService.GetExpressCheckinDetailUrl(customer, claim.Id);
+                            url = customerMessageClientUrlService.GetExpressCheckinDetailUrl(customer, claim.Id);
                         }
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
@@ -2569,7 +2569,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -2682,7 +2682,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
 
-                        string url = customerClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -2795,7 +2795,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
 
-                        string url = customerClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -2908,7 +2908,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
 
-                        string url = customerClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetWaitTransportOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3021,7 +3021,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3133,7 +3133,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetDeliveredOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetDeliveredOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3236,7 +3236,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetCustomerScoreUrl(customer);
+                        string url = customerMessageClientUrlService.GetCustomerScoreUrl(customer);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3343,7 +3343,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
                         string processUser = GetProcessUser();
-                        string url = customerClientUrlService.GetChatUrl(customer);
+                        string url = customerMessageClientUrlService.GetChatUrl(customer);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3444,7 +3444,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetCustomerAccountUrl(customer);
+                        string url = customerMessageClientUrlService.GetCustomerAccountUrl(customer);
 
                         string messageTitle = "账户余额变动提醒";
 
@@ -3583,7 +3583,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3695,7 +3695,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetExpressExpectListUrl(customer);
+                        string url = customerMessageClientUrlService.GetExpressExpectListUrl(customer);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3804,7 +3804,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -3919,7 +3919,7 @@ namespace shunda.Service.Message;
 
                         string sender = "空运客服";
 
-                        string orderDetailUrl = customerClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
+                        string orderDetailUrl = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -4032,7 +4032,7 @@ namespace shunda.Service.Message;
                     {
                         isSent = true;
 
-                        string orderDetailUrl = customerClientUrlService.GetTransportingOrderDetailUrl(order.Customer, order.Id);
+                        string orderDetailUrl = customerMessageClientUrlService.GetTransportingOrderDetailUrl(order.Customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -4244,7 +4244,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetExpressCheckinListUrl(customer);
+                        string url = customerMessageClientUrlService.GetExpressCheckinListUrl(customer);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -4346,7 +4346,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetChatRateUrl(customer, chatRateMessage);
+                        string url = customerMessageClientUrlService.GetChatRateUrl(customer, chatRateMessage);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -4454,7 +4454,7 @@ namespace shunda.Service.Message;
                     if (clientShouldSend)
                     {
                         isSent = true;
-                        string url = customerClientUrlService.GetExpressCheckinListUrl(customer);
+                        string url = customerMessageClientUrlService.GetExpressCheckinListUrl(customer);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {
@@ -4593,7 +4593,7 @@ namespace shunda.Service.Message;
                 if (clientShouldSend)
                 {
                     string processUser = defaultProcessUser; // GetProcessUser();
-                    var url = customerClientUrlService.GetHomeDeliverBatchConfirmUrl(firstEntry.Customer, firstEntry.Id); // 客户端Url
+                    var url = customerMessageClientUrlService.GetHomeDeliverBatchConfirmUrl(firstEntry.Customer, firstEntry.Id); // 客户端Url
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
@@ -4738,7 +4738,7 @@ namespace shunda.Service.Message;
                 if (clientShouldSend)
                 {
                     string processUser = defaultProcessUser; // GetProcessUser();
-                    string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, firstOrder.Id);
+                    string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, firstOrder.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
@@ -4885,7 +4885,7 @@ namespace shunda.Service.Message;
                 if (clientShouldSend)
                 {
                     string processUser = defaultProcessUser; // GetProcessUser();
-                    string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, firstOrder.Id);
+                    string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, firstOrder.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {
@@ -5019,7 +5019,7 @@ namespace shunda.Service.Message;
                 if (clientShouldSend)
                 {
                     string processUser = defaultProcessUser; // GetProcessUser();
-                    string url = customerClientUrlService.GetTransportingOrderDetailUrl(customer, firstOrder.Id);
+                    string url = customerMessageClientUrlService.GetTransportingOrderDetailUrl(customer, firstOrder.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {

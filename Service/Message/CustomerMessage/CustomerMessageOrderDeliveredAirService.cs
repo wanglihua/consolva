@@ -15,16 +15,16 @@ namespace shunda.Service.CustomerMessage
     {
         private ISession session = null;
         private CustomerMessageCommonService customerMessageCommonService = null;
-        private CustomerClientUrlService customerClientUrlService = null;
+        private CustomerMessageClientUrlService customerMessageClientUrlService = null;
 
         public CustomerMessageOrderDeliveredAirService(
             ISession session,
             CustomerMessageCommonService customerMessageCommonService,
-            CustomerClientUrlService customerClientUrlService)
+            CustomerMessageClientUrlService customerMessageClientUrlService)
         {
             this.session = session;
             this.customerMessageCommonService = customerMessageCommonService;
-            this.customerClientUrlService = customerClientUrlService;
+            this.customerMessageClientUrlService = customerMessageClientUrlService;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace shunda.Service.CustomerMessage
                     {
                         isSent = true;
                         string processUser = customerMessageCommonService.GetProcessUser();
-                        string url = customerClientUrlService.GetDeliveredOrderDetailUrl(customer, order.Id);
+                        string url = customerMessageClientUrlService.GetDeliveredOrderDetailUrl(customer, order.Id);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {

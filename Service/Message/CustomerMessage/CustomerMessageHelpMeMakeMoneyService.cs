@@ -1,6 +1,7 @@
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
@@ -16,26 +17,21 @@ public class CustomerMessageHelpMeMakeMoneyService
 {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerClientUrlService customerClientUrlService;
+    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageHelpMeMakeMoneyService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerClientUrlService customerClientUrlService,
+        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService)
     {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerClientUrlService = customerClientUrlService;
+        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
     private static CustomerMessageType messageType => CustomerMessageType.HelpMeMakeMoney;
-
-    private string? GetMessageUrl()
-    {
-        return customerClientUrlService.GetCustomerPromotionUrl();
-    }
 
     public static void InitSetting(ISession session)
     {
@@ -105,7 +101,8 @@ public class CustomerMessageHelpMeMakeMoneyService
                 if (setting.WechatSend)
                 {
                     messageStatus = CustomerMessageStatus.Sent;
-                    string? url = GetMessageUrl();
+                    // string? url = GetMessageUrl();
+                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {

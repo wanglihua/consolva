@@ -1,5 +1,6 @@
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Message;
@@ -16,17 +17,17 @@ public class CustomerMessageAccountChangeService
 {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerClientUrlService customerClientUrlService;
+    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
     
     public CustomerMessageAccountChangeService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerClientUrlService customerClientUrlService,
+        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService)
     {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerClientUrlService = customerClientUrlService;
+        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
@@ -34,6 +35,6 @@ public class CustomerMessageAccountChangeService
 
     private string? GetMessageUrl()
     {
-        return customerClientUrlService.GetCustomerAccountUrl();
+        return customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
     }    
 }

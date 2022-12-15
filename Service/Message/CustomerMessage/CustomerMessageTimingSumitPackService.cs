@@ -1,5 +1,6 @@
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Message;
@@ -16,26 +17,21 @@ public class CustomerMessageTimingSumitPackService
 {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerClientUrlService customerClientUrlService;
+    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageTimingSumitPackService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerClientUrlService customerClientUrlService,
+        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService)
     {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerClientUrlService = customerClientUrlService;
+        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
     private static CustomerMessageType messageType => CustomerMessageType.TimingSubmitPack;
-
-    private string? GetMessageUrl(int orderId)
-    {
-        return customerClientUrlService.GetTransportingOrderDetailUrl(orderId);
-    }
 
     public static void InitSetting(ISession session)
     {
@@ -117,7 +113,8 @@ public class CustomerMessageTimingSumitPackService
                 if (setting.WechatSend)
                 {
                     messageStatus = CustomerMessageStatus.Sent;
-                    string? url = GetMessageUrl(orderId);
+                    // string? url = GetMessageUrl(orderId);
+                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {

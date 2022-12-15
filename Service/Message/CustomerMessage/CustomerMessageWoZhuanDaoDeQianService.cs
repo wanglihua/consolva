@@ -15,16 +15,16 @@ namespace shunda.Service.CustomerMessage
     {
         private ISession session = null;
         private CustomerMessageCommonService customerMessageCommonService = null;
-        private CustomerClientUrlService customerClientUrlService = null;
+        private CustomerMessageClientUrlService customerMessageClientUrlService = null;
 
         public CustomerMessageWoZhuanDaoDeQianService(
             ISession session,
             CustomerMessageCommonService customerMessageCommonService,
-            CustomerClientUrlService customerClientUrlService)
+            CustomerMessageClientUrlService customerMessageClientUrlService)
         {
             this.session = session;
             this.customerMessageCommonService = customerMessageCommonService;
-            this.customerClientUrlService = customerClientUrlService;
+            this.customerMessageClientUrlService = customerMessageClientUrlService;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace shunda.Service.CustomerMessage
 
                         string defaultProcessUser = CustomerMessageCommonService.DefaultProcessUser;
 
-                        string messageUrl = customerClientUrlService.GetCustomerScoreUrl(customer);
+                        string messageUrl = customerMessageClientUrlService.GetCustomerScoreUrl(customer);
 
                         if (string.IsNullOrWhiteSpace(message1) == false)
                         {

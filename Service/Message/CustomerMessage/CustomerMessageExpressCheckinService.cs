@@ -1,5 +1,6 @@
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Message;
@@ -16,27 +17,21 @@ public class CustomerMessageExpressCheckinService
 {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerClientUrlService customerClientUrlService;
+    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageExpressCheckinService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerClientUrlService customerClientUrlService,
+        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService)
     {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerClientUrlService = customerClientUrlService;
+        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
     private static CustomerMessageType messageType => CustomerMessageType.ExpressCheckin;
-
-    private string? GetMessageUrl(ExpressInfo express)
-    {
-        int expressId = express.Id;
-        return customerClientUrlService.GetExpressCheckinDetailUrl(expressId);
-    }
 
     public static void InitSetting(ISession session)
     {
@@ -123,7 +118,8 @@ public class CustomerMessageExpressCheckinService
                 if (setting.WechatSend)
                 {
                     messageStatus = CustomerMessageStatus.Sent;
-                    string? url = GetMessageUrl(express);
+                    // string? url = GetMessageUrl(express);
+                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
                     {

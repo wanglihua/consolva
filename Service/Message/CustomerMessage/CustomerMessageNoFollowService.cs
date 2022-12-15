@@ -15,17 +15,17 @@ public class CustomerMessageNoFollowService
 {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerClientUrlService customerClientUrlService;
+    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageNoFollowService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerClientUrlService customerClientUrlService,
+        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService)
     {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerClientUrlService = customerClientUrlService;
+        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 

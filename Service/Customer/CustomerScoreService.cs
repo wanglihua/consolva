@@ -18,7 +18,7 @@ public class CustomerScoreService
     // private readonly CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService;
     // private readonly CustomerVipDiscountService customerVipDiscountService;
     private readonly CustomerAccountService customerAccountService;
-    // private readonly CustomerClientUrlService customerClientUrlService;
+    // private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
 
     public CustomerScoreService(ISession session,
             // CustomerService customerService,
@@ -26,7 +26,7 @@ public class CustomerScoreService
             // CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService,
             // CustomerVipDiscountService customerVipDiscountService,
             CustomerAccountService customerAccountService)
-        // CustomerClientUrlService customerClientUrlService)
+        // CustomerMessageClientUrlService customerMessageClientUrlService)
     {
         this.session = session;
         // this.customerService = customerService;
@@ -34,7 +34,7 @@ public class CustomerScoreService
         // this.customerMessageWoZhuanDaoDeQianService = customerMessageWoZhuanDaoDeQianService;
         // this.customerVipDiscountService = customerVipDiscountService;
         this.customerAccountService = customerAccountService;
-        // this.customerClientUrlService = customerClientUrlService;
+        // this.customerMessageClientUrlService = customerMessageClientUrlService;
     }
 
     // todo 这里面要优化，特别是跟数据库事务相关的方面的。
