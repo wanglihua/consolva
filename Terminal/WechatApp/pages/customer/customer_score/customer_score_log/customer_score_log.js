@@ -1,4 +1,4 @@
-// pages/account/customer_score/customer_score_log/customer_score_log.js
+// pages/customer/customer_score/customer_score_log/customer_score_log.js
 
 const app = getApp();
 

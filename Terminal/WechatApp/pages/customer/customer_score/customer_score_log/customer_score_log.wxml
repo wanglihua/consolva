@@ -1,4 +1,4 @@
-<!--pages/account/customer_score/customer_score_log/customer_score_log.wxml-->
+<!--pages/customer/customer_score/customer_score_log/customer_score_log.wxml-->
 <view class="container">
     <van-cell-group title="积分明细"/>
 

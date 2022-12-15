@@ -1,4 +1,4 @@
-<!--pages/account/customer_account/customer_account/customer_account.wxml-->
+<!--pages/customer/customer_account/customer_account/customer_account.wxml-->
 <view class="container">
     <van-cell-group title="余额">
         <van-cell title="当前余额" value="{{ currentAmount }}">

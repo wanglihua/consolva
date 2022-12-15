@@ -1,4 +1,4 @@
-<!--pages/account/customer_score/customer_score/customer_score.wxml-->
+<!--pages/customer/customer_score/customer_score/customer_score.wxml-->
 <view class="container">
     <van-cell-group title="积分">
         <van-cell title="历史总积分" value="{{ totalScore }}">

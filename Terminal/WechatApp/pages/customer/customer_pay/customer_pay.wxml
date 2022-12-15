@@ -1,4 +1,4 @@
-<!--pages/account/customer_pay/customer_pay.wxml-->
+<!--pages/customer/customer_pay/customer_pay.wxml-->
 <view class="container">
     <van-cell-group title="订单支付明细"/>
 

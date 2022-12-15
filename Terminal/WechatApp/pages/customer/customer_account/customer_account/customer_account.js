@@ -1,4 +1,4 @@
-// pages/account/customer_account/customer_account/customer_account.js
+// pages/customer/customer_account/customer_account/customer_account.js
 
 const app = getApp();
 
