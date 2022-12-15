@@ -12,19 +12,20 @@ namespace shunda.Service.Customer;
 public class CustomerScoreService
 {
     private readonly ISession session;
+
     // private readonly CustomerService customerService;
     // private readonly CustomerMessageService customerMessageService;
     // private readonly CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService;
     // private readonly CustomerVipDiscountService customerVipDiscountService;
-    // private readonly CustomerAccountService customerAccountService;
+    private readonly CustomerAccountService customerAccountService;
     // private readonly CustomerClientUrlService customerClientUrlService;
 
-    public CustomerScoreService(ISession session)
-        // CustomerService customerService,
-        // CustomerMessageService customerMessageService,
-        // CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService,
-        // CustomerVipDiscountService customerVipDiscountService,
-        // CustomerAccountService customerAccountService,
+    public CustomerScoreService(ISession session,
+            // CustomerService customerService,
+            // CustomerMessageService customerMessageService,
+            // CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService,
+            // CustomerVipDiscountService customerVipDiscountService,
+            CustomerAccountService customerAccountService)
         // CustomerClientUrlService customerClientUrlService)
     {
         this.session = session;
@@ -32,7 +33,7 @@ public class CustomerScoreService
         // this.customerMessageService = customerMessageService;
         // this.customerMessageWoZhuanDaoDeQianService = customerMessageWoZhuanDaoDeQianService;
         // this.customerVipDiscountService = customerVipDiscountService;
-        // this.customerAccountService = customerAccountService;
+        this.customerAccountService = customerAccountService;
         // this.customerClientUrlService = customerClientUrlService;
     }
 
@@ -336,13 +337,7 @@ public class CustomerScoreService
     /// <returns>余额</returns>
     public decimal ScoreToBalance(int customerId, decimal score, string description = "")
     {
-        /*
-        if (orderCate == null || orderCate == LogisticsOrderCate.None)
-        {
-            throw new ValidationException("积分换余额订单类别不能为空！");
-        }
-
-        CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
+        var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
             throw new ValidationException("指定的会员不存在！");
@@ -353,39 +348,18 @@ public class CustomerScoreService
             throw new ValidationException("需要兑换余额的积分应该大于0！");
         }
 
-        if (description == null)
+        if (customer.ValidScore <= 0)
         {
-            throw new ValidationException("描述不能为NULL！");
+            throw new ValidationException("会员当前没有可用剩余积分，操作失败！");
         }
 
-        if (orderCate == LogisticsOrderCate.Sea)
+        if (customer.ValidScore < score)
         {
-            if (customer.ValidScore.HasValue == false)
-            {
-                throw new ValidationException("会员当前没有可用剩余海运积分，操作失败！");
-            }
-
-            if (customer.ValidScore.Value < score)
-            {
-                throw new ValidationException("会员积分少于需要兑换余额的剩余海运积分，操作失败！");
-            }
+            throw new ValidationException("会员积分少于需要兑换余额的剩余积分，操作失败！");
         }
 
-        if (orderCate == LogisticsOrderCate.Air)
-        {
-            if (customer.ValidScoreAir.HasValue == false)
-            {
-                throw new ValidationException("会员当前没有可用剩余空运积分，操作失败！");
-            }
-
-            if (customer.ValidScoreAir.Value < score)
-            {
-                throw new ValidationException("会员积分少于需要兑换余额的剩余空运积分，操作失败！");
-            }
-        }
-
-        CustomerScoreRuleInfo scoreToBalanceRule = session.Query<CustomerScoreRuleInfo>()
-            .Where(e => e.OrderCate == orderCate && e.Type == CustomerScoreType.ScoreToBalance)
+        CustomerScoreRuleInfo? scoreToBalanceRule = session.Query<CustomerScoreRuleInfo>()
+            .Where(e => e.Type == CustomerScoreType.ScoreToBalance)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -409,23 +383,14 @@ public class CustomerScoreService
         decimal amount = (score / scoreToBalanceRule.Score) * scoreToBalanceRule.Amount;
 
         // 减少积分
-        if (orderCate == LogisticsOrderCate.Sea)
-        {
-            customer.ValidScore -= score;
-        }
-
-        if (orderCate == LogisticsOrderCate.Air)
-        {
-            customer.ValidScoreAir -= score;
-        }
+        customer.ValidScore -= score;
 
         session.Update(customer);
         session.Flush();
 
         // 记录积分变动日志
         CustomerScoreLogInfo scoreLog = new CustomerScoreLogInfo();
-        scoreLog.OrderCate = orderCate;
-        scoreLog.Customer = session.Load<CustomerInfo>(customerId);
+        scoreLog.Customer = customer;
         scoreLog.ScoreType = CustomerScoreType.ScoreToBalance;
         scoreLog.Score = -score;
         scoreLog.Amount = amount;
@@ -436,12 +401,8 @@ public class CustomerScoreService
         session.Flush();
 
         // 增加余额，记录余额变动日志
-        customerAccountService.Change(orderCate, CustomerAccountChangeType.ScoreToAccount, customer.Id, amount, description);
+        customerAccountService.Change(CustomerAccountChangeType.ScoreToAccount, customer.Id, amount, description);
 
         return amount;
-        */
-
-        return 0; // todo 临时
     }
 }
-

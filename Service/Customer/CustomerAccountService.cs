@@ -62,7 +62,7 @@ public class CustomerAccountService
         // 发送余额变动消息，区分海运和空运
 
         /*
-         todo 后面补上这个消息发送
+         todo a 后面补上这个消息发送
         try
         {
             customerMessageService.SendMessageAccountChange(customer, orderCate, changeType.Name, accountEntry.Amount, accountEntry.AccountBefore ?? 0, accountEntry.AccountAfter ?? 0);
