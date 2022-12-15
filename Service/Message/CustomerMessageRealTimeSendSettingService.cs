@@ -677,28 +677,6 @@ public class CustomerMessageRealTimeSendSettingService
         }
 
         {
-            // 账户余额变动提醒
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.AccountChangeTiXing).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.AccountChangeTiXing;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好，您的账户余额有变动，变动原因：{change_reason}，变动金额{account_change_amount}，变动前余额{account_before_amount}，变动后余额{account_after_amount}！
-                setting.WechatMessageTemplate1 = "您好，您的账户余额有变动，变动原因：{change_reason}，变动金额{account_change_amount}，变动前余额{account_before_amount}，变动后余额{account_after_amount}！";
-                setting.SmsMessageTemplate = "您好，您的账户余额有变动，变动原因：{change_reason}，变动金额{account_change_amount}，变动前余额{account_before_amount}，变动后余额{account_after_amount}！";
-                setting.Placeholders = "订单类别(海运或空运)：{order_cate}，变动原因：{change_reason}，账户余额变动金额：{account_change_amount}，账户变动前余额：{account_before_amount}，账户变动后余额：{account_after_amount}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
             // 船航时间更改提醒
 
             var setting = settingList.Where(e => e.Type == CustomerMessageType.ShipContainerTimeChangeTiXing).Take(1).SingleOrDefault();
