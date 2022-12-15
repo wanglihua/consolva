@@ -200,7 +200,7 @@ public class ExpressCheckinController : Controller
         return Json(new JsonResultData {
             Success = true,
             Message = "加入到待创建订单成功！",
-            Data = model, // 同时获取列表数据，这样就不用再获取一次列表数据
+            Data = model, // 同时获取列表数据，这样就不用客户端再获取一次列表数据
         });
     }
 
@@ -217,7 +217,7 @@ public class ExpressCheckinController : Controller
         return Json(new JsonResultData {
             Success = true,
             Message = "全部加入到待创建订单成功！",
-            Data = model,
+            Data = model, // 同时获取列表数据，这样就不用客户端再获取一次列表数据
         });
     }
 
@@ -240,7 +240,7 @@ public class ExpressCheckinController : Controller
         return Json(new JsonResultData {
             Success = true,
             Message = "从待创建订单移除成功！",
-            Data = model,
+            Data = model, // 同时获取列表数据，这样就不用客户端再获取一次列表数据
         });
     }
 
@@ -257,7 +257,7 @@ public class ExpressCheckinController : Controller
         return Json(new JsonResultData {
             Success = true,
             Message = "从待创建订单全部移除成功！",
-            Data = model,
+            Data = model, // 同时获取列表数据，这样就不用客户端再获取一次列表数据
         });
     }
 }
