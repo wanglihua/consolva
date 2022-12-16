@@ -39,12 +39,17 @@ public class CustomerMessageController : Controller
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
         }
 
+
         var msgList = listQuery
             .OrderByDescending(e => e.Id)
             .Take(15)
             .ToList();
 
         var msgItemList = msgList.Select(e => new CustomerMessageListItem {
+            Id = e.Id,
+            Type = e.Type.Name,
+            Time = e.SendTime.ToString("yyyy-MM-dd HH:mm"),
+            Content = e.Content,
         }).ToList();
 
         var lastData = msgList.LastOrDefault();
@@ -52,7 +57,10 @@ public class CustomerMessageController : Controller
 
         int msgCount = GetListQuery(param).Count();
 
-        customerMessageClientViewRecordService.RecordView(loginCustomerId, msgList.FirstOrDefault()?.Id ?? 0);
+        if (param.LastId == ListLastIdModel.LAST_ID_NOT_SET_VALUE) // 只需要这个时候设置就可以了，就是界面打开第一次加载列表的时候
+        {
+            customerMessageClientViewRecordService.RecordView(loginCustomerId, msgList.FirstOrDefault()?.Id ?? 0);
+        }
 
         return Json(new JsonResultData {
             Success = true,
