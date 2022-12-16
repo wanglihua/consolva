@@ -13,9 +13,6 @@
             <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" url="../message/message_list/message_list"/>
             <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="../message/message_customize/message_customize"/>
             <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="../customer/customer_address/customer_address/customer_address"/>
-
-            <van-grid-item icon-prefix="iconfont" icon="add" icon-class="home-grid-icon" text="文字" dot/>
-            <van-grid-item icon-prefix="iconfont" icon="add" icon-class="home-grid-icon" text="文字" dot/>
         </van-grid>
     </view>
 </view>
