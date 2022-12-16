@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 namespace shunda.Domain.Message;
 
 /// <summary>
-/// 客户消息查看
+/// 客户消息客户端查看记录
 /// </summary>
-public class CustomerMessageViewRecordInfo
+public class CustomerMessageClientViewRecordInfo
 {
     /// <summary>
     /// 客户，非空
@@ -38,12 +38,12 @@ public class CustomerMessageViewRecordInfo
             return false;
         }
 
-        if (obj is CustomerMessageViewRecordInfo == false)
+        if (obj is CustomerMessageClientViewRecordInfo == false)
         {
             return false;
         }
 
-        CustomerMessageViewRecordInfo? another = obj as CustomerMessageViewRecordInfo;
+        CustomerMessageClientViewRecordInfo? another = obj as CustomerMessageClientViewRecordInfo;
         if (another == null)
         {
             return false;

@@ -10,6 +10,7 @@
             <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额" url="../customer/customer_account/customer_account/customer_account"/>
             <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="../customer/customer_score/customer_score/customer_score"/>
             <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="../customer/customer_pay/customer_pay"/>
+            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" url="../message/message_customize/message_customize"/>
             <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="../message/message_customize/message_customize"/>
             <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="../customer/customer_address/customer_address/customer_address"/>
 

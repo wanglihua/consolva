@@ -4,16 +4,16 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace shunda.Domain.Message;
 
-public class CustomerMessageViewRecordInfoMapping : ClassMapping<CustomerMessageViewRecordInfo>
+public class CustomerMessageClientViewRecordInfoMapping : ClassMapping<CustomerMessageClientViewRecordInfo>
 {
-    public CustomerMessageViewRecordInfoMapping()
+    public CustomerMessageClientViewRecordInfoMapping()
     {
         Lazy(true);
         DynamicInsert(false);
         DynamicUpdate(true);
         Cache(x => x.Usage(CacheUsage.ReadWrite));
 
-        Table("tbl_customer_message_view_record");
+        Table("tbl_customer_message_client_view_record");
 
         Id(
             x => x.CustomerId,
