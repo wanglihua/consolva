@@ -1,2 +1,19 @@
 <!--pages/message/message_list/message_list.wxml-->
-<text>pages/message/message_list/message_list.wxml</text>
+<view class="container">
+    <van-cell-group title="消息列表"/>
+
+    <view wx:if="{{ messageCount === 0 }}">
+        <van-empty description="暂时没有数据项！"/>
+    </view>
+    <view wx:else>
+        <block wx:for="{{ messageList }}" wx:key="id" wx:for-item="msg" wx:for-index="index">
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ msg.type }}" value="{{ msg.time }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="{{ msg.content }}" border="{{ false }}"/>
+            </van-cell-group>
+        </block>
+        <view class="bottom-divider">
+            <van-divider contentPosition="center">共 {{ messageCount }} 项</van-divider>
+        </view>
+    </view>
+</view>
