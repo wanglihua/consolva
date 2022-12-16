@@ -4,7 +4,6 @@ const app = getApp();
 const util = app.require('utils/util.js');
 
 Page({
-
     data: {
         lastId: 0,
         logCount: 0,
@@ -12,11 +11,11 @@ Page({
     },
 
     onLoad(options) {
-        this.loadScoreLogList;
+        this.loadScoreLogList();
     },
 
     onReachBottom() {
-        this.loadScoreLogList;
+        this.loadScoreLogList();
     },
 
     loadScoreLogList() {
