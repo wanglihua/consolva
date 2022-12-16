@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Customer.Models.CustomerScore;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -65,6 +66,7 @@ public class CustomerScoreController : Controller
 
     [HttpPost]
     [Route("/client/customer/score/to/account")]
+    [Transactional]
     public IActionResult ScoreToAccount([FromBody] CustomerScoreToAccountModel model)
     {
         if (!this.ModelState.IsValid)

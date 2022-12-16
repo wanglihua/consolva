@@ -8,7 +8,7 @@ Page({
         totalScore: 0,
         validScore: 0,
         vipRank: '',
-        exchangeScore: 0,
+        exchangeScore: '',
         exchangeScoreInputHasError: false,
         exchangeScoreInputErrorMsg: '',
     },
@@ -66,6 +66,7 @@ Page({
             });
 
             that.setData({
+                exchangeScore: '',
                 totalScore: res.data.totalScore,
                 validScore: res.data.validScore,
                 vipRank: res.data.vipRank,
