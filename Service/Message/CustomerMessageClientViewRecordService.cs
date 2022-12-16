@@ -14,6 +14,11 @@ public class CustomerMessageClientViewRecordService
         this.session = session;
     }
 
+    public int GetLastViewMessageId(int customerId)
+    {
+        return session.Get<CustomerMessageClientViewRecordInfo>(customerId)?.LastViewMessageId ?? 0;
+    }
+
     public void RecordView(int customerId)
     {
         // 客户消息列表中的最后一条消息 id，也是客户在客户端查看的最近的一条消息 id
@@ -30,11 +35,7 @@ public class CustomerMessageClientViewRecordService
 
     public void RecordView(int customerId, int lastMessageId)
     {
-        var viewRecord = session.Query<CustomerMessageClientViewRecordInfo>()
-            .Where(e => e.CustomerId == customerId)
-            .Take(1)
-            .SingleOrDefault();
-
+        var viewRecord = session.Get<CustomerMessageClientViewRecordInfo>(customerId);
         if (viewRecord == null)
         {
             viewRecord = new CustomerMessageClientViewRecordInfo() {
