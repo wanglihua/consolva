@@ -50,26 +50,22 @@ public class CouponService
 
         var hasCoupon = coupon != null;
 
-        // todo a 后面补上
-
-        /*
-        
-        var createSelect = session.Query<LogisticsOrderCreateSelectInfo>()
-            .Where(e => e.CustomerId == customerId)
-            .Take(1)
-            .SingleOrDefault();
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
 
         // 如果是 false 应该把 create select 中的置空，万一前面有选择
-        if (hasCoupon == false && (createSelect?.CouponId ?? 0) != 0)
+        if (createSelect != null && hasCoupon == false && (createSelect.CouponId ?? 0) != 0)
         {
-            session.Query<LogisticsOrderCreateSelectInfo>()
-                .Where(e => e.CustomerId == customerId)
-                .UpdateBuilder()
-                .Set(e => e.CouponId, 0)
-                .Update();
+            // session.Query<LogisticsOrderCreateSelectInfo>()
+            //     .Where(e => e.CustomerId == customerId)
+            //     .UpdateBuilder()
+            //     .Set(e => e.CouponId, 0)
+            //     .Update();
+
+            createSelect.CouponId = 0;
+            session.Update(createSelect);
+
+            session.Flush();
         }
-        
-        */
 
         return hasCoupon;
     }

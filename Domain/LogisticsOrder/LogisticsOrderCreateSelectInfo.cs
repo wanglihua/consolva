@@ -13,6 +13,7 @@ public class LogisticsOrderCreateSelectInfo
 {
     /// <summary>
     /// 会员ID，非空
+    /// 主键
     /// </summary>
     [Required(ErrorMessage = "会员ID不能为空！")]
     [JsonProperty("customerId")]

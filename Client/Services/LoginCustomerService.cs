@@ -219,13 +219,25 @@ public class LoginCustomerService
 
         string clientIp = WebUtil.GetClientIp(request);
         DateTime now = DateTime.Now;
-        session.Query<CustomerInfo>()
-            .Where(e => e.Id == customerId)
-            .UpdateBuilder()
-            .Set(e => e.LastLogin, now)
-            .Set(e => e.UpdateTime, now)
-            .Set(e => e.LastIp, clientIp)
-            .Update();
+
+        // 不使用 UpdateBuilder()，数据库更新了，session 中的值会不更新
+        // session.Query<CustomerInfo>()
+        //     .Where(e => e.Id == customerId)
+        //     .UpdateBuilder()
+        //     .Set(e => e.LastLogin, now)
+        //     .Set(e => e.UpdateTime, now)
+        //     .Set(e => e.LastIp, clientIp)
+        //     .Update();
+
+        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        if (customer != null)
+        {
+            customer.LastLogin = now;
+            customer.LastIp = clientIp;
+
+            session.Update(customer);
+            session.Flush();
+        }
     }
 
     private void SetLoginCustomerId(int loginCustomerId)
