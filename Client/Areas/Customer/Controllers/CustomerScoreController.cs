@@ -29,10 +29,22 @@ public class CustomerScoreController : Controller
     public IActionResult Index()
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-        var customer = session.Get<CustomerInfo>(loginCustomerId);
+        var model = GetCustomerScoreData(loginCustomerId);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = model,
+        });
+    }
+
+    [NonAction]
+    private CustomerScoreIndexModel GetCustomerScoreData(int customerId)
+    {
+        var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
-            throw new ValidationException($"指定的客户#{loginCustomerId}不存在！");
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
 
         string totalScore = customer.TotalScore.ToString("#0.00");
@@ -44,15 +56,11 @@ public class CustomerScoreController : Controller
             vipRank = customer.VipRank.Name; // VIP1, VIP2,...
         }
 
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-            Data = new CustomerScoreIndexModel {
-                TotalScore = totalScore,
-                ValidScore = validScore,
-                VipRank = vipRank,
-            }
-        });
+        return new CustomerScoreIndexModel {
+            TotalScore = totalScore,
+            ValidScore = validScore,
+            VipRank = vipRank,
+        };
     }
 
     [HttpPost]
@@ -70,9 +78,12 @@ public class CustomerScoreController : Controller
 
         decimal amount = customerScoreService.ScoreToAccount(loginCustomerId, score);
 
+        var indexModel = GetCustomerScoreData(loginCustomerId);
+
         return Json(new JsonResultData {
             Success = true,
             Message = $"兑换成功，兑换积分 {score.ToString("#0.00")}，换得余额 {amount.ToString("#0.00")}！",
+            Data = indexModel,
         });
     }
 }

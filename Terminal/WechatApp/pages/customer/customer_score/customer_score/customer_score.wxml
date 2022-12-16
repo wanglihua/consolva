@@ -16,9 +16,7 @@
     </van-cell-group>
     <view style="margin-top: 80rpx;"></view>
     <van-cell-group title="积分换余额">
-        <van-field label="兑换积分" placeholder="请输入要兑换的积分" model:value="{{ exchangeScore }}" error="{{ exchangeScoretInputHasError }}" error-message="{{ exchangeScoreInputErrorMsg }}" type="number" border="{{ false }}">
-            <!-- <van-icon slot="left-icon" class-prefix="iconfont" name="charge" class="cell-left-icon" /> -->
-            <view slot="right-icon">分</view>
+        <van-field label="兑换积分" placeholder="请输入要兑换的积分" model:value="{{ exchangeScore }}" error="{{ exchangeScoreInputHasError }}" error-message="{{ exchangeScoreInputErrorMsg }}" type="number" border="{{ false }}">
         </van-field>
     </van-cell-group>
 
