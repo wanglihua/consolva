@@ -1,0 +1,58 @@
+using NHibernate;
+using shunda.Core.Service;
+using shunda.Domain.Message;
+
+namespace shunda.Service.Message;
+
+[Service(ServiceType.Scoped)]
+public class CustomerMessageClientViewRecordService
+{
+    private readonly ISession session;
+
+    public CustomerMessageClientViewRecordService(ISession session)
+    {
+        this.session = session;
+    }
+
+    public void RecordView(int customerId)
+    {
+        // 客户消息列表中的最后一条消息 id，也是客户在客户端查看的最近的一条消息 id
+        // 如果还没有消息，那么这个 lastMessageId 的值就是 0
+        var lastMessageId = session.Query<CustomerMessageInfo>()
+            .Where(e => e.Customer.Id == customerId)
+            .OrderByDescending(e => e.Id)
+            .Select(e => e.Id)
+            .Take(1)
+            .SingleOrDefault();
+
+        RecordView(customerId, lastMessageId);
+    }
+
+    public void RecordView(int customerId, int lastMessageId)
+    {
+        var viewRecord = session.Query<CustomerMessageClientViewRecordInfo>()
+            .Where(e => e.CustomerId == customerId)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (viewRecord == null)
+        {
+            viewRecord = new CustomerMessageClientViewRecordInfo() {
+                CustomerId = customerId,
+                LastViewMessageId = lastMessageId,
+                LastViewTime = DateTime.Now,
+            };
+
+            session.Save(viewRecord);
+        }
+        else
+        {
+            viewRecord.LastViewMessageId = lastMessageId;
+            viewRecord.LastViewTime = DateTime.Now;
+
+            session.Update(viewRecord);
+        }
+
+        session.Flush();
+    }
+}
