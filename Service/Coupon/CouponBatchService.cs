@@ -63,7 +63,10 @@ public class CouponBatchService
             }
 
             // 检查合法性
-            couponRuleDeductService.CheckRuleValid(rule);
+            if (checkValid)
+            {
+                couponRuleDeductService.CheckRuleValid(rule);
+            }
         }
         else if (batch.Type == CouponType.Discount)
         {
@@ -84,7 +87,10 @@ public class CouponBatchService
             }
 
             // 检查合法性
-            couponRuleDiscountService.CheckRuleValid(rule);
+            if (checkValid)
+            {
+                couponRuleDiscountService.CheckRuleValid(rule);
+            }
         }
         else if (batch.Type == CouponType.PriceBreak)
         {
@@ -105,7 +111,10 @@ public class CouponBatchService
             }
 
             // 检查合法性
-            couponRulePriceBreakService.CheckRuleValid(rule);
+            if (checkValid)
+            {
+                couponRulePriceBreakService.CheckRuleValid(rule);
+            }
         }
         else
         {
