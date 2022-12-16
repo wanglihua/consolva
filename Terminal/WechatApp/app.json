@@ -15,7 +15,8 @@
         "pages/customer/customer_pay/customer_pay",
         "pages/customer/customer_score/customer_score/customer_score",
         "pages/customer/customer_score/customer_score_log/customer_score_log",
-        "pages/customer/customer_address/customer_address/customer_address"
+        "pages/customer/customer_address/customer_address/customer_address",
+        "pages/message/message_list/message_list"
     ],
     "window": {
         "backgroundTextStyle": "light",

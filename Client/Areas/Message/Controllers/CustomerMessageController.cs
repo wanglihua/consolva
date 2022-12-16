@@ -39,7 +39,6 @@ public class CustomerMessageController : Controller
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
         }
 
-
         var msgList = listQuery
             .OrderByDescending(e => e.Id)
             .Take(15)
