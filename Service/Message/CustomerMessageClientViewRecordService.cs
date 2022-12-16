@@ -48,10 +48,13 @@ public class CustomerMessageClientViewRecordService
         }
         else
         {
-            viewRecord.LastViewMessageId = lastMessageId;
-            viewRecord.LastViewTime = DateTime.Now;
+            if (lastMessageId > viewRecord.LastViewMessageId) // 这个判断必须要有，因为分页查看时，可能会记录一个比较小的值，要排除这种可能
+            {
+                viewRecord.LastViewMessageId = lastMessageId;
+                viewRecord.LastViewTime = DateTime.Now;
 
-            session.Update(viewRecord);
+                session.Update(viewRecord);
+            }
         }
 
         session.Flush();

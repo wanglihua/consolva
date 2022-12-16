@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Message.Models.CustomerMessage;
+using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Message;
@@ -27,12 +28,39 @@ public class CustomerMessageController : Controller
     [Route("/client/customer/message/list")]
     public IActionResult List([FromBody] CustomerMessageListParam param)
     {
-        // customerMessageClientViewRecordService
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        var listQuery = GetListQuery(param);
+
+        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE)
+        {
+            // 跟降序排序匹配
+            int lastIdQuery = param.LastId;
+            listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
+        }
+
+        var msgList = listQuery
+            .OrderByDescending(e => e.Id)
+            .Take(15)
+            .ToList();
+
+        var msgItemList = msgList.Select(e => new CustomerMessageListItem {
+        }).ToList();
+
+        var lastData = msgList.LastOrDefault();
+        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+
+        int msgCount = GetListQuery(param).Count();
+
+        customerMessageClientViewRecordService.RecordView(loginCustomerId, msgList.FirstOrDefault()?.Id ?? 0);
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = new CustomerMessageListModel {
+                MessageList = msgItemList,
+                MessageCount = msgCount,
+                LastId = lastId,
             },
         });
     }
