@@ -8,6 +8,9 @@ Page({
         totalScore: 0,
         validScore: 0,
         vipRank: '',
+        chargeAmount: 0,
+        amountInputHasError: false,
+        amountInputErrorMsg: '',
     },
 
     onLoad(options) {
@@ -23,5 +26,13 @@ Page({
                 vipRank: res.data.vipRank,
             });
         });
+    },
+
+    onExchangeClick(e) {
+        
+    },
+
+    onBackClick(e) {
+        wx.navigateBack();
     }
 })

@@ -14,4 +14,20 @@
             <van-icon slot="icon" class-prefix="iconfont" name="score-log" class="cell-left-icon"/>
         </van-cell>
     </van-cell-group>
+    <view style="margin-top: 80rpx;"></view>
+    <van-cell-group title="积分换余额">
+        <van-field label="兑换积分" placeholder="请输入要兑换的积分" model:value="{{ exchangeScore }}" error="{{ exchangeScoretInputHasError }}" error-message="{{ exchangeScoreInputErrorMsg }}" type="number" border="{{ false }}">
+            <!-- <van-icon slot="left-icon" class-prefix="iconfont" name="charge" class="cell-left-icon" /> -->
+            <view slot="right-icon">分</view>
+        </van-field>
+    </van-cell-group>
+
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="info" class-prefix="iconfont" icon="charge" block bind:click="onExchangeClick">兑换余额</van-button>
+        </van-cell>
+        <van-cell border="{{false}}">
+            <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onBackClick" style="margin-top: 10rpx;">返回</van-button>
+        </van-cell>
+    </van-cell-group>
 </view>
