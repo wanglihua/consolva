@@ -61,8 +61,10 @@ Page({
         app.post("/client/customer/score/to/account", {
             score: exchangeScoreNum,
         }, function (res) {
-            wx.showToast({
-                title: res.message,
+            wx.showModal({
+                title: '成功',
+                content: res.message,
+                showCancel: false
             });
 
             that.setData({

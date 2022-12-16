@@ -21,6 +21,7 @@ public class CustomerMessageRealTimeSendSettingService
     {
         CustomerMessageExpressExpectEnterService.InitSetting(session);
         CustomerMessageExpressCheckinService.InitSetting(session);
+        CustomerMessageAccountChangeService.InitSetting(session);
 
         session.Flush();
 
