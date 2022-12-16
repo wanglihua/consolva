@@ -1,6 +1,7 @@
 // pages/customer/customer_account/customer_account_entry/customer_account_entry.js
 
 const app = getApp();
+const util = app.require('utils/util.js');
 
 Page({
 
@@ -11,12 +12,20 @@ Page({
     },
 
     onLoad(options) {
+        this.loadAccountEntryList();
+    },
+
+    onReachBottom() {
+        this.loadAccountEntryList();
+    },
+
+    loadAccountEntryList() {
         const that = this;
         app.post("/client/customer/account/entry/list", {
             lastId: that.data.lastId,
         }, function (res) {
             const entryCount = res.data.entryCount;
-            const entryList = res.data.entryList;
+            const entryList = util.distinctConcat(that.data.entryList, res.data.entryList);
             const lastId = res.data.lastId;
 
             that.setData({

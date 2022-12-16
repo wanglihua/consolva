@@ -58,24 +58,35 @@ Page({
         });
 
         const that = this;
-        app.post("/client/customer/score/to/account", {
-            score: exchangeScoreNum,
-        }, function (res) {
-            wx.showModal({
-                title: '成功',
-                content: res.message,
-                showCancel: false
-            });
 
-            that.setData({
-                exchangeScore: '',
-                totalScore: res.data.totalScore,
-                validScore: res.data.validScore,
-                vipRank: res.data.vipRank,
-            });
+        wx.showModal({
+            title: '兑换确认',
+            content: '确实要把 ' + exchangeScore + ' 积分兑换成余额吗？',
+            success(res) {
+                if (res.confirm) {
+                    app.post("/client/customer/score/to/account", {
+                        score: exchangeScoreNum,
+                    }, function (res) {
+                        wx.showModal({
+                            title: '成功',
+                            content: res.message,
+                            showCancel: false
+                        });
 
-            // that.loadCustomerScore(); 不用再次加载，兑换成功后的返回数据里面已经相当于重新加载了
-        })
+                        that.setData({
+                            exchangeScore: '',
+                            totalScore: res.data.totalScore,
+                            validScore: res.data.validScore,
+                            vipRank: res.data.vipRank,
+                        });
+
+                        // that.loadCustomerScore(); 不用再次加载，兑换成功后的返回数据里面已经相当于重新加载了
+                    });
+                }
+            }
+        });
+
+
     },
 
     onBackClick(e) {

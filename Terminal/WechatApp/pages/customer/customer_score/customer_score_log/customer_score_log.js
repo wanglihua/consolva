@@ -1,6 +1,7 @@
 // pages/customer/customer_score/customer_score_log/customer_score_log.js
 
 const app = getApp();
+const util = app.require('utils/util.js');
 
 Page({
 
@@ -11,6 +12,14 @@ Page({
     },
 
     onLoad(options) {
+        this.loadScoreLogList;
+    },
+
+    onReachBottom() {
+        this.loadScoreLogList;
+    },
+
+    loadScoreLogList() {
         const that = this;
         app.post("/client/customer/score/log", {
             lastId: that.data.lastId,
@@ -36,11 +45,10 @@ Page({
             }
 
             that.setData({
-                logList: logList,
+                logList: util.distinctConcat(that.data.logList, logList),
                 logCount: logCount,
                 lastId: lastId,
             });
-        })
-
+        });
     }
 })
