@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Message.Models.CustomerMessage;
 using shunda.Client.Models;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Message;
 using shunda.Service.Message;
@@ -26,6 +27,7 @@ public class CustomerMessageController : Controller
 
     [HttpPost]
     [Route("/client/customer/message/list")]
+    [Transactional]
     public IActionResult List([FromBody] CustomerMessageListParam param)
     {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
