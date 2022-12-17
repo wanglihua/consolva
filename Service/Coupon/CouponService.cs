@@ -193,44 +193,84 @@ public class CouponService
     public void SetCouponUsed(int couponId, LogisticsOrderInfo order, decimal actualDiscountAmount)
     {
         var now = DateTime.Now;
-        session.Query<CouponInfo>()
-            .Where(e => e.Id == couponId)
-            .UpdateBuilder()
-            .Set(e => e.Order, order)
-            .Set(e => e.ActualDiscountAmount, actualDiscountAmount)
-            .Set(e => e.Status, CouponStatus.Use)
-            .Set(e => e.UseTime, now)
-            .Set(e => e.UpdateTime, now)
-            .Update();
+        // session.Query<CouponInfo>()
+        //     .Where(e => e.Id == couponId)
+        //     .UpdateBuilder()
+        //     .Set(e => e.Order, order)
+        //     .Set(e => e.ActualDiscountAmount, actualDiscountAmount)
+        //     .Set(e => e.Status, CouponStatus.Use)
+        //     .Set(e => e.UseTime, now)
+        //     .Set(e => e.UpdateTime, now)
+        //     .Update();
+
+        var coupon = session.Get<CouponInfo>(couponId);
+        if (coupon == null)
+        {
+            throw new ValidationException($"指定的优惠券#{couponId}不存在！");
+        }
+
+        coupon.Order = order;
+        coupon.ActualDiscountAmount = actualDiscountAmount;
+        coupon.Status = CouponStatus.Use;
+        coupon.UseTime = now;
+
+        session.Update(coupon);
+        session.Flush();
     }
 
     public void UpdateActualDiscountAmount(int couponId, decimal actualDiscountAmount)
     {
         var now = DateTime.Now;
-        session.Query<CouponInfo>()
-            .Where(e => e.Id == couponId)
-            .UpdateBuilder()
-            .Set(e => e.ActualDiscountAmount, actualDiscountAmount)
-            .Set(e => e.UpdateTime, now)
-            .Update();
+        // session.Query<CouponInfo>()
+        //     .Where(e => e.Id == couponId)
+        //     .UpdateBuilder()
+        //     .Set(e => e.ActualDiscountAmount, actualDiscountAmount)
+        //     .Set(e => e.UpdateTime, now)
+        //     .Update();
+
+        var coupon = session.Get<CouponInfo>(couponId);
+        if (coupon == null)
+        {
+            throw new ValidationException($"指定的优惠券#{couponId}不存在！");
+        }
+
+        coupon.ActualDiscountAmount = actualDiscountAmount;
+
+        session.Update(coupon);
+        session.Flush();
     }
 
     /// <summary>
-    /// 清楚订单使用的优惠券
+    /// 清除订单使用的优惠券
     /// </summary>
     /// <param name="orderId"></param>
     public void setCouponNotUsed(int orderId)
     {
         var now = DateTime.Now;
-        session.Query<CouponInfo>()
+        // session.Query<CouponInfo>()
+        //     .Where(e => e.Order!.Id == orderId)
+        //     .UpdateBuilder()
+        //     .Set(e => e.Order, (LogisticsOrderInfo?)null)
+        //     .Set(e => e.ActualDiscountAmount, 0)
+        //     .Set(e => e.Status, CouponStatus.Pick) // 这里暂时不考虑过期的问题
+        //     .Set(e => e.UseTime, (DateTime?)null)
+        //     .Set(e => e.UpdateTime, now)
+        //     .Update();
+
+        var orderCouponList = session.Query<CouponInfo>() // 一般也就只有一张
             .Where(e => e.Order!.Id == orderId)
-            .UpdateBuilder()
-            .Set(e => e.Order, (LogisticsOrderInfo?)null)
-            .Set(e => e.ActualDiscountAmount, 0)
-            .Set(e => e.Status, CouponStatus.Pick) // 这里暂时不考虑过期的问题
-            .Set(e => e.UseTime, (DateTime?)null)
-            .Set(e => e.UpdateTime, now)
-            .Update();
+            .ToList();
+        foreach (var coupon in orderCouponList)
+        {
+            coupon.Order = null;
+            coupon.ActualDiscountAmount = 0;
+            coupon.Status = CouponStatus.Pick; // 这里暂时不考虑优惠券这时实际已经过期的问题
+            coupon.UseTime = null;
+
+            session.Update(coupon);
+        }
+
+        session.Flush();
     }
 
     public void SetCouponUsedAndSumSaveBatchTotalUsed(int couponId, LogisticsOrderInfo order, decimal actualDiscountAmount)
