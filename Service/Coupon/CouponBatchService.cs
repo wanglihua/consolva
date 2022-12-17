@@ -3,12 +3,12 @@ using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Coupon;
+using shunda.Domain.Customer;
 
 namespace shunda.Service.Coupon;
 
 [Service(ServiceType.Scoped)]
-public class CouponBatchService
-{
+public class CouponBatchService {
     private ISession session;
     private CouponRuleDeductService couponRuleDeductService;
     private CouponRuleDiscountService couponRuleDiscountService;
@@ -18,17 +18,15 @@ public class CouponBatchService
         ISession session,
         CouponRuleDeductService couponRuleDeductService,
         CouponRuleDiscountService couponRuleDiscountService,
-        CouponRulePriceBreakService couponRulePriceBreakService)
-    {
+        CouponRulePriceBreakService couponRulePriceBreakService) {
         this.session = session;
         this.couponRuleDeductService = couponRuleDeductService;
         this.couponRuleDiscountService = couponRuleDiscountService;
         this.couponRulePriceBreakService = couponRulePriceBreakService;
     }
 
-    public bool HasBatchToPick()
-    {
-        CheckAndSetStatus();
+    public bool HasBatchToPick() {
+        CheckAndSetExpire();
 
         DateTime today = DateTime.Today;
         var batchId = session.Query<CouponBatchInfo>()
@@ -42,108 +40,92 @@ public class CouponBatchService
         return batchId != 0;
     }
 
-    public void CheckRuleExist(int batchId)
-    {
+    public void CheckRuleExist(int batchId) {
         CheckRuleExistValid(batchId, checkValid: false, adminCheck: true);
     }
 
-    public void CheckRuleValid(int batchId)
-    {
+    public void CheckRuleValid(int batchId) {
         CheckRuleExistValid(batchId, checkValid: true, adminCheck: true);
     }
 
-    private void CheckRuleExistValid(int batchId, bool checkValid, bool adminCheck = true)
-    {
+    private void CheckRuleExistValid(int batchId, bool checkValid, bool adminCheck = true) {
         var batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"指定优惠券批次#{batchId}不存在！");
         }
 
-        if (batch.Type == CouponType.Deduct)
-        {
+        if (batch.Type == CouponType.Deduct) {
             var rule = session.Query<CouponRuleDeductInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)
                 .SingleOrDefault();
-            if (rule == null)
-            {
-                if (adminCheck == true)
-                {
+            if (rule == null) {
+                if (adminCheck == true) {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请先编辑优惠规则！");
                 }
-                else
-                {
+                else {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请联系管理员！");
                 }
             }
 
             // 检查合法性
-            if (checkValid)
-            {
+            if (checkValid) {
                 couponRuleDeductService.CheckRuleValid(rule);
             }
         }
-        else if (batch.Type == CouponType.Discount)
-        {
+        else if (batch.Type == CouponType.Discount) {
             var rule = session.Query<CouponRuleDiscountInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)
                 .SingleOrDefault();
-            if (rule == null)
-            {
-                if (adminCheck == true)
-                {
+            if (rule == null) {
+                if (adminCheck == true) {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请先编辑优惠规则！");
                 }
-                else
-                {
+                else {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请联系管理员！");
                 }
             }
 
             // 检查合法性
-            if (checkValid)
-            {
+            if (checkValid) {
                 couponRuleDiscountService.CheckRuleValid(rule);
             }
         }
-        else if (batch.Type == CouponType.PriceBreak)
-        {
+        else if (batch.Type == CouponType.PriceBreak) {
             var rule = session.Query<CouponRulePriceBreakInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)
                 .SingleOrDefault();
-            if (rule == null)
-            {
-                if (adminCheck == true)
-                {
+            if (rule == null) {
+                if (adminCheck == true) {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请先编辑优惠规则！");
                 }
-                else
-                {
+                else {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请联系管理员！");
                 }
             }
 
             // 检查合法性
-            if (checkValid)
-            {
+            if (checkValid) {
                 couponRulePriceBreakService.CheckRuleValid(rule);
             }
         }
-        else
-        {
+        else {
             throw new Exception($"优惠券批次#{batchId}类型未知！");
         }
     }
 
+    public void CheckAndSetExpire() {
+        CheckAndSetExpire(-1);
+    }
+
     /// <summary>
-    /// 检查批次数据，并设置正确的状态
+    /// 检查批次数据是否过期，并设置正确的过期状态
+    /// 一般是在展示的时候调用，领取的时候发现时间过期时也可以调用
     /// <param name="batchId">需要检查的批次，如果batchId不大于0，就表示检查所有批次</param>
     /// </summary>
-    public void CheckAndSetStatus(int batchId)
-    {
+    public void CheckAndSetExpire(int batchId) {
         var now = DateTime.Now;
         var today = now.Date;
 
@@ -152,18 +134,15 @@ public class CouponBatchService
         var expireBatchQuery = session.Query<CouponBatchInfo>()
             .Where(e => e.Expire < today // 已过期 
                         && mayExpireStatusList.Contains(e.Status)); // 不是新创建和已完结的状态
-        if (batchId > 0)
-        {
+        if (batchId > 0) {
             expireBatchQuery = expireBatchQuery.Where(e => e.Id == batchId);
         }
 
         IList<CouponBatchInfo> expireBatchList = expireBatchQuery.ToList();
 
         IList<int> expireBatchIdList = expireBatchList.Select(e => e.Id).ToList();
-        if (expireBatchIdList != null && expireBatchIdList.Count != 0)
-        {
-            foreach (CouponBatchInfo batch in expireBatchList)
-            {
+        if (expireBatchIdList != null && expireBatchIdList.Count != 0) {
+            foreach (CouponBatchInfo batch in expireBatchList) {
                 batch.Status = CouponBatchStatus.Expire;
 
                 session.Update(batch);
@@ -175,8 +154,7 @@ public class CouponBatchService
                 .Where(e => expireBatchIdList.Contains(e.Batch.Id) // 已过期，，且批次不是新创建和已完结的状态
                             && e.Status == CouponStatus.Pick) // 未使用，只是领取创建了
                 .ToList();
-            foreach (CouponInfo coupon in expireCouponList)
-            {
+            foreach (CouponInfo coupon in expireCouponList) {
                 coupon.Status = CouponStatus.Expire;
 
                 session.Update(coupon);
@@ -185,32 +163,49 @@ public class CouponBatchService
             session.Flush();
         }
 
-        var pickedBatchListQuery = session.Query<CouponBatchInfo>()
-            .Where(e => e.Status == CouponBatchStatus.Release
-                        && e.PickQuantity >= e.TotalQuantity);
-
-        if (batchId > 0)
-        {
-            pickedBatchListQuery = pickedBatchListQuery.Where(e => e.Id == batchId);
-        }
-
-        IList<CouponBatchInfo> pickedBatchList = pickedBatchListQuery.ToList();
-
-        foreach (CouponBatchInfo batch in pickedBatchList)
-        {
-            batch.Status = CouponBatchStatus.Picked;
-
-            session.Update(batch);
-        }
-
-        session.Flush();
+        // 这个这里就不设置了，领取的时候设置这个 已领取状态 就可以了
+        // var pickedBatchListQuery = session.Query<CouponBatchInfo>()
+        //     .Where(e => e.Status == CouponBatchStatus.Release
+        //                 && e.PickQuantity >= e.TotalQuantity);
+        //
+        // if (batchId > 0)
+        // {
+        //     pickedBatchListQuery = pickedBatchListQuery.Where(e => e.Id == batchId);
+        // }
+        //
+        // IList<CouponBatchInfo> pickedBatchList = pickedBatchListQuery.ToList();
+        //
+        // foreach (CouponBatchInfo batch in pickedBatchList)
+        // {
+        //     batch.Status = CouponBatchStatus.Picked;
+        //
+        //     session.Update(batch);
+        // }
+        //
+        // session.Flush();
     }
 
-    public void SumAndSaveBatchTotalPicked(int batchId)
-    {
+    /// <summary>
+    /// 检查批次数据是否已领完，并设置正确的领完状态
+    /// 同时也更新了领取数量
+    /// 一般是在领取的时候调用的
+    /// </summary>
+    public void CheckAndSetPicked(CouponBatchInfo batch, int pickedCount) {
+        if (pickedCount >= batch.TotalQuantity) {
+            batch.PickQuantity = pickedCount; // 更新数量
+
+            if (batch.Status == CouponBatchStatus.Release) {
+                batch.Status = CouponBatchStatus.Picked; // 更新状态
+            }
+
+            session.Update(batch);
+            session.Flush();
+        }
+    }
+
+    public void SumAndSaveBatchTotalPicked(int batchId) {
         var batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"指定的优惠券批次#{batchId}不存在！");
         }
 
@@ -220,27 +215,15 @@ public class CouponBatchService
             .Select(e => e.Id)
             .Count();
 
-        /*
-         采用这种更新方式，应该是不会立即把数据库中的值反映到实体属性值中
-        session.Query<CouponBatchInfo>()
-            .Where(e => e.Id == batchId)
-            .UpdateBuilder()
-            .Set(e => e.PickQuantity, batchCouponPickedCount)
-            .Update();
-            
-         */
-
         batch.PickQuantity = batchCouponPickedCount;
         session.Update(batch);
 
         session.Flush();
     }
 
-    public void SumAndSaveBatchTotalUsed(int batchId)
-    {
+    public void SumAndSaveBatchTotalUsed(int batchId) {
         var batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"指定的优惠券批次#{batchId}不存在！");
         }
 
@@ -250,32 +233,83 @@ public class CouponBatchService
             .Select(e => e.Id)
             .Count();
 
-        /*
-         采用这种更新方式，应该是不会立即把数据库中的值反映到实体属性值中
-        session.Query<CouponBatchInfo>()
-            .Where(e => e.Id == batchId)
-            .UpdateBuilder()
-            .Set(e => e.UseQuantity, batchCouponUsedCount)
-            .Update();
-         */
-
         batch.UseQuantity = batchCouponUsedCount;
         session.Update(batch);
 
         session.Flush();
     }
 
-    public void Pick(int batchId, int customerId)
-    {
+    public void Pick(int batchId, int customerId) {
         DateTime now = DateTime.Now;
         DateTime today = DateTime.Today;
 
         var batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"指定的优惠券批次#${batchId}不存在！");
         }
-        
+
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        // 判断批次是否有效
+        if (batch.Status == CouponBatchStatus.New) {
+            throw new ValidationException($"指定的优惠券批次 {batch.Name} 未投放！");
+        }
+
+        if (batch.Status == CouponBatchStatus.Picked) {
+            throw new ValidationException($"指定的优惠券批次 {batch.Name} 已领取完！");
+        }
+
+        if (batch.Status == CouponBatchStatus.Complete) {
+            throw new ValidationException($"指定的优惠券批次 {batch.Name} 已完结！");
+        }
+
+        if (batch.Status == CouponBatchStatus.Expire) {
+            throw new ValidationException($"指定的优惠券批次 {batch.Name} 已过期！");
+        }
+
+        if (batch.Expire < today) {
+            CheckAndSetExpire(batchId);
+            throw new ValidationException($"指定的优惠券批次 {batch.Name} 已过期！");
+        }
+
+        // 判断批次是否已经抢完，这是当前会员抢之前的检查和设置
+        int batchPickedCount = session.Query<CouponInfo>()
+            .Where(e => e.Batch.Id == batchId)
+            .Count();
+        if (batchPickedCount >= batch.TotalQuantity) {
+            CheckAndSetPicked(batch, batchPickedCount);
+            throw new ValidationException($"指定的优惠券批次 {batch.Name} 已领取完！");
+        }
+
+        // 判断会员当前是不是还可以继续抢券，会员在这个批次中抢的数量是不是超过了可抢数量，后台发放的不算
+        int customerPickedCount = session.Query<CouponInfo>()
+            .Where(e => e.Batch.Id == batchId
+                        && e.Customer.Id == customerId
+                        && e.GetMethod == CouponGetMethod.Pick) // 只计算会员领取的
+            .Count();
+        if (customerPickedCount >= batch.MaxQtyPerCustomer) {
+            throw new ValidationException($"该批次最多可领{batch.MaxQtyPerCustomer}张，您已领取！");
+        }
+
+        var coupon = new CouponInfo {
+            Batch = batch,
+            Code = string.Empty, // 后面会做修正
+            Customer = customer,
+            PickTime = now,
+            GetMethod = CouponGetMethod.Pick,
+            Status = CouponStatus.Pick,
+        };
+
+        session.Save(coupon);
+        session.Flush();
+
+
         // todo 完成
+
+        // 检查并按需要设置批次已经领取完状态，这是当前会员抢之后的检查和设置
+        CheckAndSetPicked(batch, batchPickedCount + 1); // 每次抢一张，抢了之后再判断是不是抢完了
     }
 }
