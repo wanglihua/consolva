@@ -39,7 +39,7 @@ public class CouponService
     /// <returns></returns>
     public bool HasCouponToUseBeforeOrderCreate(int customerId)
     {
-        couponBatchService.CheckAndSetStatus(); // 这个检查应该要加上，因为这里在决定优惠券使用界面是否出现之前的
+        couponBatchService.CheckAndSetExpire(); // 这个检查应该要加上，因为这里在决定优惠券使用界面是否出现之前的
 
         var coupponStatusPick = CouponStatus.Pick;
         var coupon = session.Query<CouponInfo>()

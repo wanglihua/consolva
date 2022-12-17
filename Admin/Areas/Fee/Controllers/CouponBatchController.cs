@@ -39,7 +39,7 @@ public class CouponBatchController : Controller
         model.StatusList = CouponBatchStatus.GetList();
 
         // 在这个时机检查和设置已过期状态
-        couponBatchService.CheckAndSetStatus();
+        couponBatchService.CheckAndSetExpire();
 
         return View("CouponBatchIndex", model);
     }

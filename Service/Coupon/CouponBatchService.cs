@@ -9,17 +9,20 @@ namespace shunda.Service.Coupon;
 
 [Service(ServiceType.Scoped)]
 public class CouponBatchService {
-    private ISession session;
-    private CouponRuleDeductService couponRuleDeductService;
-    private CouponRuleDiscountService couponRuleDiscountService;
-    private CouponRulePriceBreakService couponRulePriceBreakService;
+    private readonly ISession session;
+    private readonly CouponCodeService couponCodeService;
+    private readonly CouponRuleDeductService couponRuleDeductService;
+    private readonly CouponRuleDiscountService couponRuleDiscountService;
+    private readonly CouponRulePriceBreakService couponRulePriceBreakService;
 
     public CouponBatchService(
         ISession session,
+        CouponCodeService couponCodeService,
         CouponRuleDeductService couponRuleDeductService,
         CouponRuleDiscountService couponRuleDiscountService,
         CouponRulePriceBreakService couponRulePriceBreakService) {
         this.session = session;
+        this.couponCodeService = couponCodeService;
         this.couponRuleDeductService = couponRuleDeductService;
         this.couponRuleDiscountService = couponRuleDiscountService;
         this.couponRulePriceBreakService = couponRulePriceBreakService;
@@ -306,8 +309,14 @@ public class CouponBatchService {
         session.Save(coupon);
         session.Flush();
 
+        coupon.Code = couponCodeService.Generate(batchId, batch.Type, coupon.Id);
+        session.Update(coupon);
+        session.Flush();
 
-        // todo 完成
+        // 更新批次已认领数量，不更新其实也可以的，后面的 CheckAndSetPicked 里面也会更新这个的。
+        batch.PickQuantity = batchPickedCount + 1;
+        session.Update(batch);
+        session.Flush();
 
         // 检查并按需要设置批次已经领取完状态，这是当前会员抢之后的检查和设置
         CheckAndSetPicked(batch, batchPickedCount + 1); // 每次抢一张，抢了之后再判断是不是抢完了
