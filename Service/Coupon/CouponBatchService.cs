@@ -26,6 +26,22 @@ public class CouponBatchService
         this.couponRulePriceBreakService = couponRulePriceBreakService;
     }
 
+    public bool HasBatchToPick()
+    {
+        CheckAndSetStatus();
+
+        DateTime today = DateTime.Today;
+        var batchId = session.Query<CouponBatchInfo>()
+            .Where(e => e.Status == CouponBatchStatus.Release // 投放状态
+                        && e.Expire >= today) // 未过有效期
+            .OrderByDescending(e => e.Id)
+            .Select(e => e.Id)
+            .Take(1)
+            .SingleOrDefault();
+
+        return batchId != 0;
+    }
+
     public void CheckRuleExist(int batchId)
     {
         CheckRuleExistValid(batchId, checkValid: false, adminCheck: true);
@@ -123,29 +139,29 @@ public class CouponBatchService
     }
 
     /// <summary>
-    /// 跟kotlin里面的同名方法逻辑一致的
+    /// 检查批次数据，并设置正确的状态
+    /// <param name="batchId">需要检查的批次，如果batchId不大于0，就表示检查所有批次</param>
     /// </summary>
-    public void CheckAndSetStatus()
+    public void CheckAndSetStatus(int batchId)
     {
         var now = DateTime.Now;
         var today = now.Date;
 
         IList<CouponBatchStatus> mayExpireStatusList = CouponBatchStatus.GetMayExpireStatusList();
-        IList<CouponBatchInfo> expireBatchList = session.Query<CouponBatchInfo>()
-            .Where(e => e.Expire < today // 已过期 
-                        && mayExpireStatusList.Contains(e.Status)) // 不是新创建和已完结的状态
-            .ToList();
-        IList<int> expireBatchIdList = expireBatchList.Select(e => e.Id).ToList();
 
+        var expireBatchQuery = session.Query<CouponBatchInfo>()
+            .Where(e => e.Expire < today // 已过期 
+                        && mayExpireStatusList.Contains(e.Status)); // 不是新创建和已完结的状态
+        if (batchId > 0)
+        {
+            expireBatchQuery = expireBatchQuery.Where(e => e.Id == batchId);
+        }
+
+        IList<CouponBatchInfo> expireBatchList = expireBatchQuery.ToList();
+
+        IList<int> expireBatchIdList = expireBatchList.Select(e => e.Id).ToList();
         if (expireBatchIdList != null && expireBatchIdList.Count != 0)
         {
-            // session.Query<CouponBatchInfo>()
-            //     .Where(e => expireBatchIdList.Contains(e.Id)) // 已过期，且不是新创建和已完结的状态
-            //     .UpdateBuilder()
-            //     .Set(e => e.Status, CouponBatchStatus.Expire)
-            //     .Set(e => e.UpdateTime, now)
-            //     .Update();
-
             foreach (CouponBatchInfo batch in expireBatchList)
             {
                 batch.Status = CouponBatchStatus.Expire;
@@ -154,14 +170,6 @@ public class CouponBatchService
             }
 
             session.Flush();
-
-            // session.Query<CouponInfo>()
-            //     .Where(e => expireBatchIdList.Contains(e.Batch.Id) // 已过期，，且批次不是新创建和已完结的状态
-            //                 && e.Status == CouponStatus.Pick) // 未使用，只是领取创建了
-            //     .UpdateBuilder()
-            //     .Set(e => e.Status, CouponStatus.Expire)
-            //     .Set(e => e.UpdateTime, now)
-            //     .Update();
 
             IList<CouponInfo> expireCouponList = session.Query<CouponInfo>()
                 .Where(e => expireBatchIdList.Contains(e.Batch.Id) // 已过期，，且批次不是新创建和已完结的状态
@@ -177,18 +185,17 @@ public class CouponBatchService
             session.Flush();
         }
 
-        // session.Query<CouponBatchInfo>()
-        //     .Where(e => e.Status == CouponBatchStatus.Release
-        //                 && e.PickQuantity >= e.TotalQuantity
-        //     )
-        //     .UpdateBuilder()
-        //     .Set(e => e.Status, CouponBatchStatus.Picked)
-        //     .Update();
-
-        IList<CouponBatchInfo> pickedBatchList = session.Query<CouponBatchInfo>()
+        var pickedBatchListQuery = session.Query<CouponBatchInfo>()
             .Where(e => e.Status == CouponBatchStatus.Release
-                        && e.PickQuantity >= e.TotalQuantity)
-            .ToList();
+                        && e.PickQuantity >= e.TotalQuantity);
+
+        if (batchId > 0)
+        {
+            pickedBatchListQuery = pickedBatchListQuery.Where(e => e.Id == batchId);
+        }
+
+        IList<CouponBatchInfo> pickedBatchList = pickedBatchListQuery.ToList();
+
         foreach (CouponBatchInfo batch in pickedBatchList)
         {
             batch.Status = CouponBatchStatus.Picked;
@@ -256,5 +263,19 @@ public class CouponBatchService
         session.Update(batch);
 
         session.Flush();
+    }
+
+    public void Pick(int batchId, int customerId)
+    {
+        DateTime now = DateTime.Now;
+        DateTime today = DateTime.Today;
+
+        var batch = session.Get<CouponBatchInfo>(batchId);
+        if (batch == null)
+        {
+            throw new ValidationException($"指定的优惠券批次#${batchId}不存在！");
+        }
+        
+        // todo 完成
     }
 }
