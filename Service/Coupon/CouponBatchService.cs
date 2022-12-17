@@ -65,8 +65,7 @@ public class CouponBatchService {
             if (rule == null) {
                 if (adminCheck == true) {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请先编辑优惠规则！");
-                }
-                else {
+                } else {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请联系管理员！");
                 }
             }
@@ -75,8 +74,7 @@ public class CouponBatchService {
             if (checkValid) {
                 couponRuleDeductService.CheckRuleValid(rule);
             }
-        }
-        else if (batch.Type == CouponType.Discount) {
+        } else if (batch.Type == CouponType.Discount) {
             var rule = session.Query<CouponRuleDiscountInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)
@@ -84,8 +82,7 @@ public class CouponBatchService {
             if (rule == null) {
                 if (adminCheck == true) {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请先编辑优惠规则！");
-                }
-                else {
+                } else {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请联系管理员！");
                 }
             }
@@ -94,8 +91,7 @@ public class CouponBatchService {
             if (checkValid) {
                 couponRuleDiscountService.CheckRuleValid(rule);
             }
-        }
-        else if (batch.Type == CouponType.PriceBreak) {
+        } else if (batch.Type == CouponType.PriceBreak) {
             var rule = session.Query<CouponRulePriceBreakInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)
@@ -103,8 +99,7 @@ public class CouponBatchService {
             if (rule == null) {
                 if (adminCheck == true) {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请先编辑优惠规则！");
-                }
-                else {
+                } else {
                     throw new ValidationException($"指定优惠券批次#{batchId}优惠规则不存在，请联系管理员！");
                 }
             }
@@ -113,8 +108,7 @@ public class CouponBatchService {
             if (checkValid) {
                 couponRulePriceBreakService.CheckRuleValid(rule);
             }
-        }
-        else {
+        } else {
             throw new Exception($"优惠券批次#{batchId}类型未知！");
         }
     }
