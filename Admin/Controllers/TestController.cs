@@ -1,14 +1,9 @@
-using System.Globalization;
-using CSRedis;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate.Linq;
 using NLog;
 using shunda.Core.Hibernate;
-using shunda.Core.Redis;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
-using shunda.Domain.Customer;
-using shunda.Service.Wechat.WechatApp;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Controllers;
@@ -38,20 +33,6 @@ public class TestController : Controller {
                 Expire = e.Batch.Expire,
             })
             .ToList();
-
-        var customer = session.Get<CustomerInfo>(1);
-        if (customer != null) {
-            customer.LastLogin = DateTime.Now;
-            session.Update(customer);
-        
-            session.Flush();
-        }
-
-        session.Query<CustomerInfo>()
-            .Where(e => e.Id == 1)
-            .UpdateBuilder()
-            .Set(e => e.LastLogin, DateTime.Now)
-            .Update();
 
         return Json(new JsonResultData {
             Success = true,
