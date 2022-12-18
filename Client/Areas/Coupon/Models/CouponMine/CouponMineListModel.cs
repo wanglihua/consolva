@@ -6,4 +6,7 @@ public class CouponMineListModel
 {
     [JsonProperty("couponList")]
     public IList<CouponMineListItem> CouponList = new List<CouponMineListItem>();
+
+    [JsonProperty("hasBatchToPick")]
+    public bool HasBatchToPick { get; set; }
 }

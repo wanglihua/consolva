@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NHibernate.Linq;
 using shunda.Client.Areas.Coupon.Models.CouponMine;
 using shunda.Client.Services;
 using shunda.Core.Web;
@@ -28,13 +29,28 @@ public class CouponMineController : Controller {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         couponBatchService.CheckAndSetExpire();
 
-        session.Query<CouponInfo>()
-            .Where(e => e.Customer.Id == loginCustomerId && e.Status == CouponStatus.Pick)
+        var couponItemList = session.Query<CouponInfo>()
+            .Fetch(e => e.Batch)
+            .Where(e => e.Customer.Id == loginCustomerId
+                        && e.Status == CouponStatus.Pick)
+            .Select(e => new CouponMineListItem {
+                Id = e.Id,
+                Code = e.Code,
+                Type = e.Batch.Type.Name,
+                Rule = e.Batch.Rule,
+                RuleDesc = e.Batch.RuleDesc,
+            })
             .ToList();
-        
+
+        var hasBatchToPick = couponBatchService.HasBatchToPick();
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new CouponMineListModel {
+                CouponList = couponItemList,
+                HasBatchToPick = hasBatchToPick,
+            },
         });
     }
 }
