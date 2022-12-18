@@ -5,6 +5,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NLog;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -48,6 +49,7 @@ public class WechatAppController : Controller
 
     [HttpPost]
     [Route("/client/wechat/app/login")]
+    [Transactional]
     public IActionResult Login([FromBody] LoginParam param)
     {
         if (ModelState.IsValid == false)

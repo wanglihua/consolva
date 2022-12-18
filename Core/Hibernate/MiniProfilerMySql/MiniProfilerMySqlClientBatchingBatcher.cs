@@ -10,36 +10,30 @@ using NHibernate.Transaction;
 
 namespace shunda.Core.Hibernate.MiniProfilerMySql;
 
-public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher
-{
+public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
     private int batchSize;
     private int totalExpectedRowsAffected;
     private MySqlClientSqlCommandSet currentBatch;
     private StringBuilder currentBatchCommandsLog;
 
     public MiniProfilerMySqlClientBatchingBatcher(ConnectionManager connectionManager, IInterceptor interceptor)
-        : base(connectionManager, interceptor)
-    {
+        : base(connectionManager, interceptor) {
         batchSize = Factory.Settings.AdoBatchSize;
         currentBatch = CreateConfiguredBatch();
         currentBatchCommandsLog = new StringBuilder().AppendLine("Batch commands:");
     }
 
-    public override int BatchSize
-    {
+    public override int BatchSize {
         get { return batchSize; }
         set { batchSize = value; }
     }
 
-    protected override int CountOfStatementsInCurrentBatch
-    {
+    protected override int CountOfStatementsInCurrentBatch {
         get { return currentBatch.CountOfCommands; }
     }
 
-    public override void AddToBatch(IExpectation expectation)
-    {
-        if (CountOfStatementsInCurrentBatch == 0)
-        {
+    public override void AddToBatch(IExpectation expectation) {
+        if (CountOfStatementsInCurrentBatch == 0) {
             CheckReaders();
         }
 
@@ -50,123 +44,111 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher
 
         string lineWithParameters = string.Empty;
         SqlStatementLogger sqlStatementLogger = Factory.Settings.SqlStatementLogger;
-        if (sqlStatementLogger.IsDebugEnabled || Log.IsDebugEnabled())
-        {
+        if (sqlStatementLogger.IsDebugEnabled || Log.IsDebugEnabled()) {
             lineWithParameters = sqlStatementLogger.GetCommandLineWithParameters(currentCommand);
             lineWithParameters = sqlStatementLogger.DetermineActualStyle(FormatStyle.Basic).Formatter.Format(lineWithParameters);
             currentBatchCommandsLog.Append("command ").Append(currentBatch.CountOfCommands).Append(":").AppendLine(lineWithParameters);
         }
 
-        if (Log.IsDebugEnabled())
-        {
+        if (Log.IsDebugEnabled()) {
             Log.Debug("Adding to batch:{0}", lineWithParameters);
         }
 
         currentBatch.Append(((MiniProfilerMySqlDbCommand)currentCommand).Command);
 
-        if (currentBatch.CountOfCommands >= batchSize)
-        {
+        if (currentBatch.CountOfCommands >= batchSize) {
             // DoExecuteBatch(currentCommand);
             ExecuteBatchWithTiming(currentCommand);
         }
     }
 
-    protected void ProfiledPrepare(DbCommand cmd)
-    {
-        try
-        {
+    protected void ProfiledPrepare(DbCommand cmd) {
+        try {
             DbConnection sessionConnection = ConnectionManager.GetConnection();
 
-            if (cmd.Connection != null)
-            {
+            if (cmd.Connection != null) {
                 // make sure the commands connection is the same as the Sessions connection
                 // these can be different when the session is disconnected and then reconnected
-                if (cmd.Connection != sessionConnection)
-                {
+                if (cmd.Connection != sessionConnection) {
                     cmd.Connection = sessionConnection;
                 }
-            }
-            else
-            {
+            } else {
                 cmd.Connection = (sessionConnection as MiniProfilerMySqlDbConnection)?.Connection;
             }
 
-            MiniProfilerMySqlDbTransaction? transaction = (MiniProfilerMySqlDbTransaction?)typeof(AdoTransaction).InvokeMember(
-                "trans",
-                BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance,
-                null,
-                ConnectionManager.CurrentTransaction,
-                null);
+            MiniProfilerMySqlDbTransaction? transaction = null;
+            try {
+                transaction = (MiniProfilerMySqlDbTransaction?)typeof(AdoTransaction).InvokeMember(
+                    "trans",
+                    BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    ConnectionManager.CurrentTransaction,
+                    null);
+            }
+            catch {
+                // 貌似不启用事务时，这里总是会报错
+            }
 
-            if (transaction != null)
-            {
+            if (transaction != null) {
                 cmd.Transaction = transaction.Transaction;
             }
 
             Factory.ConnectionProvider.Driver.PrepareCommand(cmd);
         }
-        catch (InvalidOperationException ioe)
-        {
+        catch (InvalidOperationException ioe) {
             throw new ADOException("While preparing " + cmd.CommandText + " an error occurred", ioe);
         }
     }
 
-    protected override void DoExecuteBatch(DbCommand cmd)
-    {
-        try
-        {
+    protected override void DoExecuteBatch(DbCommand cmd) {
+        if (cmd.Transaction == null) {
+            throw new ValidationException("操作未启用数据库事务！");
+        }
+
+        try {
             Log.Debug("Executing batch");
             CheckReaders();
 
             ProfiledPrepare(cmd);
 
-            if (Factory.Settings.SqlStatementLogger.IsDebugEnabled)
-            {
+            if (Factory.Settings.SqlStatementLogger.IsDebugEnabled) {
                 Factory.Settings.SqlStatementLogger.LogBatchCommand(currentBatchCommandsLog.ToString());
             }
 
             int rowCount;
-            try
-            {
+            try {
                 rowCount = currentBatch.ExecuteNonQuery();
             }
-            catch (DbException ex)
-            {
+            catch (DbException ex) {
                 throw ADOExceptionHelper.Convert(Factory.SQLExceptionConverter, (Exception)ex, "could not execute batch command.");
             }
 
             Expectations.VerifyOutcomeBatched(totalExpectedRowsAffected, rowCount, cmd);
         }
-        finally
-        {
+        finally {
             ClearCurrentBatch();
         }
     }
 
-    private MySqlClientSqlCommandSet CreateConfiguredBatch()
-    {
+    private MySqlClientSqlCommandSet CreateConfiguredBatch() {
         return new MySqlClientSqlCommandSet(batchSize);
     }
 
-    private void ClearCurrentBatch()
-    {
+    private void ClearCurrentBatch() {
         currentBatch.Dispose();
         totalExpectedRowsAffected = 0;
         currentBatch = CreateConfiguredBatch();
 
-        if (Factory.Settings.SqlStatementLogger.IsDebugEnabled)
-        {
+        if (Factory.Settings.SqlStatementLogger.IsDebugEnabled) {
             currentBatchCommandsLog = new StringBuilder().AppendLine("Batch commands:");
         }
     }
 
-    public override async Task AddToBatchAsync(IExpectation expectation, CancellationToken cancellationToken)
-    {
+    public override async Task AddToBatchAsync(IExpectation expectation, CancellationToken cancellationToken) {
         MiniProfilerMySqlClientBatchingBatcher clientBatchingBatcher = this;
         cancellationToken.ThrowIfCancellationRequested();
         ConfiguredTaskAwaitable configuredTaskAwaitable;
-        if (clientBatchingBatcher.CountOfStatementsInCurrentBatch == 0)
-        {
+        if (clientBatchingBatcher.CountOfStatementsInCurrentBatch == 0) {
             configuredTaskAwaitable = clientBatchingBatcher.CheckReadersAsync(cancellationToken).ConfigureAwait(false);
             await configuredTaskAwaitable;
         }
@@ -179,82 +161,67 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher
 
         string lineWithParameters = string.Empty;
         SqlStatementLogger sqlStatementLogger = clientBatchingBatcher.Factory.Settings.SqlStatementLogger;
-        if (sqlStatementLogger.IsDebugEnabled || Log.IsDebugEnabled())
-        {
+        if (sqlStatementLogger.IsDebugEnabled || Log.IsDebugEnabled()) {
             lineWithParameters = sqlStatementLogger.GetCommandLineWithParameters(batchUpdate);
             lineWithParameters = sqlStatementLogger.DetermineActualStyle(FormatStyle.Basic).Formatter.Format(lineWithParameters);
             clientBatchingBatcher.currentBatchCommandsLog.Append("command ").Append(clientBatchingBatcher.currentBatch.CountOfCommands).Append(":").AppendLine(lineWithParameters);
         }
 
-        if (Log.IsDebugEnabled())
-        {
+        if (Log.IsDebugEnabled()) {
             Log.Debug("Adding to batch:{0}", lineWithParameters);
         }
 
         clientBatchingBatcher.currentBatch.Append(((MiniProfilerMySqlDbCommand)batchUpdate).Command);
-        if (clientBatchingBatcher.currentBatch.CountOfCommands >= clientBatchingBatcher.batchSize)
-        {
+        if (clientBatchingBatcher.currentBatch.CountOfCommands >= clientBatchingBatcher.batchSize) {
             configuredTaskAwaitable = clientBatchingBatcher.DoExecuteBatchAsync(batchUpdate, cancellationToken).ConfigureAwait(false);
             await configuredTaskAwaitable;
         }
     }
 
-    protected override async Task DoExecuteBatchAsync(DbCommand cmd, CancellationToken cancellationToken)
-    {
+    protected override async Task DoExecuteBatchAsync(DbCommand cmd, CancellationToken cancellationToken) {
         MiniProfilerMySqlClientBatchingBatcher clientBatchingBatcher = this;
         cancellationToken.ThrowIfCancellationRequested();
-        try
-        {
+        try {
             Log.Debug("Executing batch");
             await clientBatchingBatcher.CheckReadersAsync(cancellationToken).ConfigureAwait(false);
 
             ProfiledPrepare(cmd);
 
-            if (clientBatchingBatcher.Factory.Settings.SqlStatementLogger.IsDebugEnabled)
-            {
+            if (clientBatchingBatcher.Factory.Settings.SqlStatementLogger.IsDebugEnabled) {
                 clientBatchingBatcher.Factory.Settings.SqlStatementLogger.LogBatchCommand(clientBatchingBatcher.currentBatchCommandsLog.ToString());
             }
 
             int rowCount;
-            try
-            {
+            try {
                 rowCount = clientBatchingBatcher.currentBatch.ExecuteNonQuery();
             }
-            catch (DbException ex)
-            {
+            catch (DbException ex) {
                 throw ADOExceptionHelper.Convert(clientBatchingBatcher.Factory.SQLExceptionConverter, (Exception)ex, "could not execute batch command.");
             }
 
             Expectations.VerifyOutcomeBatched(clientBatchingBatcher.totalExpectedRowsAffected, rowCount, cmd);
         }
-        finally
-        {
+        finally {
             clientBatchingBatcher.ClearCurrentBatch();
         }
     }
 
-    public override void CloseCommands()
-    {
+    public override void CloseCommands() {
         base.CloseCommands();
-        try
-        {
+        try {
             ClearCurrentBatch();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Log.Warn(ex, "Exception clearing batch");
         }
     }
 
-    protected override void Dispose(bool isDisposing)
-    {
+    protected override void Dispose(bool isDisposing) {
         base.Dispose(isDisposing);
-        try
-        {
+        try {
             currentBatch.Dispose();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             Log.Warn(ex, "Exception closing batcher");
         }
     }
