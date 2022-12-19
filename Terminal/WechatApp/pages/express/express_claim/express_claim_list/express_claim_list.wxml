@@ -9,6 +9,8 @@
 </van-sticky>
 
 <view class="container-bottom">
+    <!--<van-cell-group title="申领件"/>-->
+
     <view wx:if="{{ expressClaimCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
     </view>

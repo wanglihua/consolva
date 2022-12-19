@@ -12,6 +12,8 @@
 </van-sticky>
 
 <view class="container-bottom">
+    <!--<van-cell-group title="预报池"/>-->
+    
     <block wx:if="{{ expressExpectCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
     </block>
