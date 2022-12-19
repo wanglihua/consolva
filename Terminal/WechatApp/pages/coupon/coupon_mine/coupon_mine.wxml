@@ -1,5 +1,11 @@
 <!--pages/coupon/coupon_mine/coupon_mine.wxml-->
 <view class="container">
+    <view style="padding: 10rpx 0;">
+        <van-button type="info" class-prefix="iconfont" icon="coupon" plain block bind:click="onCouponPickClick">
+            领取优惠券<van-icon class-prefix="iconfont" name="double-right" />
+        </van-button>
+    </view>
+    
     <van-cell-group title="我的优惠券"/>
 
     <block wx:if="{{ couponCount === 0 }}">
