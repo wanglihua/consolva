@@ -16,7 +16,7 @@ Page({
 
     loadMyCouponList() {
         const that = this;
-        app.post("/client/coupon/mine/", {}, function (res) {
+        app.post("/client/coupon/mine/list", {}, function (res) {
             that.setData({
                 couponList: that.data.couponList,
                 couponCount: that.data.couponCount,

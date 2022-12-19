@@ -1,6 +1,18 @@
 <!--pages/coupon/coupon_mine/coupon_mine.wxml-->
 <view class="container">
     <van-cell-group title="我的优惠券"/>
-    
-    
+
+    <block wx:if="{{ couponCount === 0 }}">
+        <van-empty description="您当前没有可用的优惠券！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{ couponList }}" wx:key="id" wx:for-item="coupon" wx:for-index="index">
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" value="{{ coupon.type }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="编号" value="{{ coupon.code }}" border="{{ false }}"/>
+                <van-cell title="有效期" value="{{ coupon.expire }}" border="{{ false }}"/>
+                <van-cell title="优惠" value="{{ coupon.ruleDesc }}" border="{{ false }}"/>
+            </van-cell-group>
+        </block>
+    </block>
 </view>
