@@ -4,11 +4,25 @@ const app = getApp();
 const util = app.require('utils/util.js');
 
 Page({
-
-    data: {},
+    data: {
+        couponList: [],
+        couponCount: 0,
+        hasBatchToPick: false,
+    },
 
     onLoad(options) {
+        this.loadMyCouponList();
+    },
 
+    loadMyCouponList() {
+        const that = this;
+        app.post("/client/coupon/mine/", {}, function (res) {
+            that.setData({
+                couponList: that.data.couponList,
+                couponCount: that.data.couponCount,
+                hasBatchToPick: that.data.hasBatchToPick,
+            });
+        });
     },
 
 })

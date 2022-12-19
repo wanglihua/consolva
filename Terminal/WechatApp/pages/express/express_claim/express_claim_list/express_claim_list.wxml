@@ -11,10 +11,10 @@
 <view class="container-bottom">
     <!--<van-cell-group title="申领件"/>-->
 
-    <view wx:if="{{ expressClaimCount === 0 }}">
+    <block wx:if="{{ expressClaimCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
-    </view>
-    <view wx:else>
+    </block>
+    <block wx:else>
         <block wx:for="{{ expressClaimList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
             <van-cell-group custom-class="item">
                 <van-cell title="{{ index + 1 }}、{{ express.checkinTrackingNo }}" value="{{ express.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
@@ -33,7 +33,7 @@
         <view class="bottom-divider">
             <van-divider contentPosition="center">共 {{ expressClaimCount }} 项</van-divider>
         </view>
-    </view>
+    </block>
 
     <van-action-sheet title="入库单号 {{ currentExpressClaim.checkinTrackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
 </view>

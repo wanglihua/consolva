@@ -2,10 +2,10 @@
 <view class="container">
     <van-cell-group title="余额明细"/>
 
-    <view wx:if="{{ entryCount === 0 }}">
+    <block wx:if="{{ entryCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
-    </view>
-    <view wx:else>
+    </block>
+    <block wx:else>
         <block wx:for="{{ entryList }}" wx:key="id" wx:for-item="entry" wx:for-index="index">
             <van-cell-group custom-class="item">
                 <van-cell title="{{ index + 1 }}、{{ entry.amount }}" value="{{ entry.createTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
@@ -15,5 +15,5 @@
         <view class="bottom-divider">
             <van-divider contentPosition="center">共 {{ entryCount }} 项</van-divider>
         </view>
-    </view>
+    </block>
 </view>

@@ -2,10 +2,10 @@
 <view class="container">
     <van-cell-group title="积分明细"/>
 
-    <view wx:if="{{ logCount === 0 }}">
+    <block wx:if="{{ logCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
-    </view>
-    <view wx:else>
+    </block>
+    <block wx:else>
         <block wx:for="{{ logList }}" wx:key="id" wx:for-item="log" wx:for-index="index">
             <van-cell-group custom-class="item">
                 <van-cell title="{{ index + 1 }}、{{ log.score }}" value="{{ log.createTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
@@ -15,5 +15,5 @@
         <view class="bottom-divider">
             <van-divider contentPosition="center">共 {{ logCount }} 项</van-divider>
         </view>
-    </view>
+    </block>
 </view>

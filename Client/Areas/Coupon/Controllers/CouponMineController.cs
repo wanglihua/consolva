@@ -42,6 +42,8 @@ public class CouponMineController : Controller {
             })
             .ToList();
 
+        int couponCount = couponItemList.Count;
+
         var hasBatchToPick = couponBatchService.HasBatchToPick();
 
         return Json(new JsonResultData {
@@ -49,6 +51,7 @@ public class CouponMineController : Controller {
             Message = "操作成功！",
             Data = new CouponMineListModel {
                 CouponList = couponItemList,
+                CouponCount = couponCount,
                 HasBatchToPick = hasBatchToPick,
             },
         });
