@@ -14,22 +14,19 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 
 [AdminAuth(AdminOnly = true)]
 [PassArea]
-public class UserPassResController : Controller
-{
+public class UserPassResController : Controller {
     private static readonly string passResCateAlias = "prc";
     private readonly PassResService passResService;
     private readonly ISession session;
 
-    public UserPassResController(ISession session, PassResService passResService)
-    {
+    public UserPassResController(ISession session, PassResService passResService) {
         this.session = session;
         this.passResService = passResService;
     }
 
     [HttpGet]
     [Route("/admin/user/pass/res/{userId:int}")]
-    public IActionResult Index(int userId)
-    {
+    public IActionResult Index(int userId) {
         var user = session.Get<UserInfo>(userId);
         if (user == null) return Content("指定的用户 Id 不存在！");
 
@@ -42,8 +39,7 @@ public class UserPassResController : Controller
 
     [HttpPost]
     [Route("/admin/user/pass/res/list")]
-    public IActionResult List(UserPassResListQueryParam queryParam)
-    {
+    public IActionResult List(UserPassResListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -63,8 +59,7 @@ public class UserPassResController : Controller
         foreach (var passResId in grantedPassResIdList) grantedPassResIdMap[passResId] = true;
 
         IList<UserPassResListItem> userPassResItemList = new List<UserPassResListItem>();
-        foreach (var passResInfo in passResList)
-        {
+        foreach (var passResInfo in passResList) {
             var userPassResListItem = new UserPassResListItem();
             userPassResListItem.PassResId = passResInfo.Id;
             userPassResListItem.CateName = passResInfo.Cate.Name;
@@ -84,21 +79,18 @@ public class UserPassResController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(UserPassResListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(UserPassResListQueryParam queryParam) {
         var criteria = session.CreateCriteria<PassResInfo>();
         criteria = criteria.CreateAlias(nameof(PassResInfo.Cate), passResCateAlias);
 
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(queryParam.PassResNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.PassResNameQuery) == false) {
             var passResNameQuery = queryParam.PassResNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<PassResInfo>(e => e.Name).IsInsensitiveLike(passResNameQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CateNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CateNameQuery) == false) {
             var cateNameQuery = queryParam.CateNameQuery.Trim();
             criteria.Add(Restrictions.InsensitiveLike($"{passResCateAlias}.{nameof(PassResCateInfo.Name)}", cateNameQuery, MatchMode.Anywhere));
         }
@@ -109,14 +101,12 @@ public class UserPassResController : Controller
     [HttpPost]
     [Route("/admin/user/pass/res/grant")]
     [Transactional]
-    public IActionResult Grant(UserPassResGrantModel model)
-    {
+    public IActionResult Grant(UserPassResGrantModel model) {
         var passResId = model.PassResId;
         var userId = model.UserId;
 
         var count = session.Query<UserPassResInfo>().Where(e => e.PassRes.Id == passResId && e.User.Id == userId).Count();
-        if (count == 0)
-        {
+        if (count == 0) {
             var userPassResInfo = new UserPassResInfo();
             userPassResInfo.PassRes = session.Load<PassResInfo>(passResId);
             userPassResInfo.User = session.Load<UserInfo>(userId);
@@ -136,12 +126,17 @@ public class UserPassResController : Controller
     [HttpPost]
     [Route("/admin/user/pass/res/revoke")]
     [Transactional]
-    public IActionResult Revoke(UserPassResRevokeModel model)
-    {
+    public IActionResult Revoke(UserPassResRevokeModel model) {
         var passResId = model.PassResId;
         var userId = model.UserId;
 
-        session.Query<UserPassResInfo>().Where(e => e.PassRes.Id == passResId && e.User.Id == userId).Delete();
+        var userPassResList = session.Query<UserPassResInfo>()
+            .Where(e => e.PassRes.Id == passResId && e.User.Id == userId)
+            .ToList();
+        foreach (var userPassRes in userPassResList) {
+            session.Delete(userPassRes);
+        }
+
         session.Flush();
 
         passResService.CachePassResIdMapForAllUser();

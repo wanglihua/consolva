@@ -13,19 +13,16 @@ namespace shunda.Service.Wechat.WechatOfficialAccount;
 /// 这里的实现是用数据库表来存储的，跟现在微信小程序的实现不太一样
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class WechatOfficialAccountAccessTokenService
-{
+public class WechatOfficialAccountAccessTokenService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
 
-    public WechatOfficialAccountAccessTokenService(ISession session)
-    {
+    public WechatOfficialAccountAccessTokenService(ISession session) {
         this.session = session;
     }
 
-    public string GetAccessToken()
-    {
+    public string GetAccessToken() {
         DateTime now = DateTime.Now;
 
         // 获取最新的 access token
@@ -42,16 +39,20 @@ public class WechatOfficialAccountAccessTokenService
                 if (now.Date.Day == 1 && now.Hour > 4 && now.Hour < 8) // 每月的 1日，4个小时内最多过期两次，最多也就执行2次了。
                 {
                     int latestId = wechatAccessToken.Id;
-                    session.Query<WechatAccessTokenInfo>()
+                    var tokenList = session.Query<WechatAccessTokenInfo>()
                         .Where(e => e.Id < latestId) // 这里暂时用 < 
-                        .Delete();
+                        .ToList();
+                    foreach (var token in tokenList) {
+                        session.Delete(token);
+                    }
+
+                    session.Flush();
                 }
             }
 
             AccessTokenResult tokenResult = AccessTokenContainer.GetAccessTokenResult(WeChatConfig.AppId, true);
 
-            if (string.IsNullOrWhiteSpace(tokenResult.access_token))
-            {
+            if (string.IsNullOrWhiteSpace(tokenResult.access_token)) {
                 throw new Exception("获取token出错：" + tokenResult.errmsg);
             }
 

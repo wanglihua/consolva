@@ -326,12 +326,19 @@ public class LogisticsModeController : Controller {
         session.Flush();
 
         // 数据库里面有界面上没有的删除
-        foreach (var repackType in repackTypeListInDb)
-            if (repackTypeIdList.Contains(repackType.Id) == false)
-                session.Query<LogisticsModeRepackTypeInfo>()
+        foreach (var repackType in repackTypeListInDb) {
+            if (repackTypeIdList.Contains(repackType.Id) == false) {
+                var modeRepackList = session.Query<LogisticsModeRepackTypeInfo>()
                     .Where(e => e.LogisticsMode.Id == modeId
                                 && e.RepackType == repackType)
-                    .Delete();
+                    .ToList();
+                foreach (var modeRepack in modeRepackList) {
+                    session.Delete(modeRepack);
+                }
+
+                session.Flush();
+            }
+        }
 
         session.Flush();
 
@@ -359,11 +366,18 @@ public class LogisticsModeController : Controller {
         }
 
         // 物品类型关联 数据库里面有界面上没有的删除
-        foreach (var goodsType in goodsTypeListInDb)
-            if (goodsTypeIdList.Contains(goodsType.Id) == false)
-                session.Query<LogisticsModeGoodsTypeInfo>()
+        foreach (var goodsType in goodsTypeListInDb) {
+            if (goodsTypeIdList.Contains(goodsType.Id) == false) {
+                var modeGoodsTypeList = session.Query<LogisticsModeGoodsTypeInfo>()
                     .Where(e => e.LogisticsMode.Id == modeId && e.GoodsType == goodsType)
-                    .Delete();
+                    .ToList();
+                foreach (var modeGoodsType in modeGoodsTypeList) {
+                    session.Delete(modeGoodsType);
+                }
+
+                session.Flush();
+            }
+        }
 
         session.Flush();
 

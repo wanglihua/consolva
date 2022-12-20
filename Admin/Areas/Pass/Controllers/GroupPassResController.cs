@@ -14,22 +14,19 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 
 [AdminAuth(AdminOnly = true)]
 [PassArea]
-public class GroupPassResController : Controller
-{
+public class GroupPassResController : Controller {
     private static readonly string passResCateAlias = "prc";
     private readonly PassResService passResService;
     private readonly ISession session;
 
-    public GroupPassResController(ISession session, PassResService passResService)
-    {
+    public GroupPassResController(ISession session, PassResService passResService) {
         this.session = session;
         this.passResService = passResService;
     }
 
     [HttpGet]
     [Route("/admin/group/pass/res/{groupId:int}")]
-    public IActionResult Index(int groupId)
-    {
+    public IActionResult Index(int groupId) {
         var group = session.Get<GroupInfo>(groupId);
         if (group == null) return Content("指定的群组 Id 不存在！");
 
@@ -42,8 +39,7 @@ public class GroupPassResController : Controller
 
     [HttpPost]
     [Route("/admin/group/pass/res/list")]
-    public IActionResult List(GroupPassResListQueryParam queryParam)
-    {
+    public IActionResult List(GroupPassResListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -63,8 +59,7 @@ public class GroupPassResController : Controller
         foreach (var passResId in grantedPassResIdList) grantedPassResIdMap[passResId] = true;
 
         IList<GroupPassResListItem> groupPassResItemList = new List<GroupPassResListItem>();
-        foreach (var passResInfo in passResList)
-        {
+        foreach (var passResInfo in passResList) {
             var groupPassResListItem = new GroupPassResListItem();
             groupPassResListItem.PassResId = passResInfo.Id;
             groupPassResListItem.CateName = passResInfo.Cate.Name;
@@ -84,21 +79,18 @@ public class GroupPassResController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(GroupPassResListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(GroupPassResListQueryParam queryParam) {
         var criteria = session.CreateCriteria<PassResInfo>();
         criteria = criteria.CreateAlias(nameof(PassResInfo.Cate), passResCateAlias);
 
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(queryParam.PassResNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.PassResNameQuery) == false) {
             var passResNameQuery = queryParam.PassResNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<PassResInfo>(e => e.Name).IsInsensitiveLike(passResNameQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CateNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CateNameQuery) == false) {
             var cateNameQuery = queryParam.CateNameQuery.Trim();
             criteria.Add(Restrictions.InsensitiveLike($"{passResCateAlias}.{nameof(PassResCateInfo.Name)}", cateNameQuery, MatchMode.Anywhere));
         }
@@ -109,14 +101,12 @@ public class GroupPassResController : Controller
     [HttpPost]
     [Route("/admin/group/pass/res/grant")]
     [Transactional]
-    public IActionResult Grant(GroupPassResGrantModel model)
-    {
+    public IActionResult Grant(GroupPassResGrantModel model) {
         var passResId = model.PassResId;
         var groupId = model.GroupId;
 
         var count = session.Query<GroupPassResInfo>().Where(e => e.PassRes.Id == passResId && e.Group.Id == groupId).Count();
-        if (count == 0)
-        {
+        if (count == 0) {
             var groupPassResInfo = new GroupPassResInfo();
             groupPassResInfo.PassRes = session.Load<PassResInfo>(passResId);
             groupPassResInfo.Group = session.Load<GroupInfo>(groupId);
@@ -136,12 +126,17 @@ public class GroupPassResController : Controller
     [HttpPost]
     [Route("/admin/group/pass/res/revoke")]
     [Transactional]
-    public IActionResult Revoke(GroupPassResRevokeModel model)
-    {
+    public IActionResult Revoke(GroupPassResRevokeModel model) {
         var passResId = model.PassResId;
         var groupId = model.GroupId;
 
-        session.Query<GroupPassResInfo>().Where(e => e.PassRes.Id == passResId && e.Group.Id == groupId).Delete();
+        var groupPassResList = session.Query<GroupPassResInfo>()
+            .Where(e => e.PassRes.Id == passResId && e.Group.Id == groupId)
+            .ToList();
+        foreach (var groupPassRes in groupPassResList) {
+            session.Delete(groupPassRes);
+        }
+
         session.Flush();
 
         passResService.CachePassResIdMapForAllUser();
