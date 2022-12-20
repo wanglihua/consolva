@@ -23,23 +23,30 @@ public class LogisticsFeeRateExpressController : Controller {
     [HttpGet]
     [Route("/admin/logistics/fee/rate/express/{logisticsModeId:int}")]
     public IActionResult Index(int logisticsModeId) {
-        var model = new LogisticsFeeRateExpressIndexModel();
-        model.LogisticsModeId = logisticsModeId;
         var logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
-        model.LogisticsMode = logisticsMode;
+        if (logisticsMode == null) {
+            throw new ValidationException($"指定的物流方式#{logisticsModeId}不存在！");
+        }
 
-        var logisticsFeeRateExpressInfo = session
+        var feeRate = session
             .Query<LogisticsFeeRateExpressInfo>()
             .Where(e => e.LogisticsMode.Id == logisticsModeId)
             .Take(1)
             .SingleOrDefault();
 
-        if (logisticsFeeRateExpressInfo == null) {
-            logisticsFeeRateExpressInfo = new LogisticsFeeRateExpressInfo();
-            logisticsFeeRateExpressInfo.LogisticsMode = logisticsMode;
-        }
+        var model = new LogisticsFeeRateExpressIndexModel();
+        model.LogisticsModeId = logisticsModeId;
+        model.LogisticsMode = logisticsMode;
 
-        model.LogisticsFeeRateExpress = logisticsFeeRateExpressInfo;
+        if (feeRate != null) {
+            model.StartWeight = feeRate.StartWeight;
+            model.StartPrice = feeRate.StartPrice;
+            model.StepWeight = feeRate.StepWeight;
+            model.StepPrice = feeRate.StepPrice;
+            model.StartFreeMinWeight = feeRate.StartFreeMinWeight;
+            model.WeightBreakStart = feeRate.WeightBreakStart;
+            model.WeightBreakDiscount = feeRate.WeightBreakDiscount;
+        }
 
         return View("LogisticsFeeRateExpressIndex", model);
     }
@@ -52,47 +59,39 @@ public class LogisticsFeeRateExpressController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
-        var logisticsFeeRateExpressFromUi = model.LogisticsFeeRateExpress;
-        var logisticsFeeRateExpressId = logisticsFeeRateExpressFromUi.Id;
+        var modeId = model.LogisticsModeId;
+        var logisticsMode = session.Get<LogisticsModeInfo>(modeId);
+        if (logisticsMode == null) {
+            throw new ValidationException($"指定的物流方式#{modeId}不存在！");
+        }
 
-
-        var logisticsModeId = model.LogisticsFeeRateExpress.LogisticsMode.Id;
-        var logisticsFeeRateExpress = session
+        var feeRate = session
             .Query<LogisticsFeeRateExpressInfo>()
-            .Where(e => e.LogisticsMode.Id == logisticsModeId)
+            .Where(e => e.LogisticsMode.Id == modeId)
             .Take(1)
             .SingleOrDefault();
 
         var isCreate = true;
-        if (logisticsFeeRateExpress == null) {
+        if (feeRate == null) {
             isCreate = true;
-            logisticsFeeRateExpress = new LogisticsFeeRateExpressInfo();
+            feeRate = new LogisticsFeeRateExpressInfo();
+            feeRate.LogisticsMode = logisticsMode;
         } else {
             isCreate = false;
-
-            // 删除掉其他的可能的这个物流方式的多余的费率，防止不合法的多余数据的出现
-            // 这个可以用唯一索引替换 session.Query<LogisticsFeeRateExpressInfo>()
-            //      .Where(e => e.LogisticsModeId == logisticsModeId && e.Id != logisticsFeeRateExpressId)
-            //      .Delete();
-
-            if (logisticsFeeRateExpress.LogisticsMode.Id != logisticsFeeRateExpressFromUi.LogisticsModeId) {
-                throw new ValidationException("指定的物流方式Id和当前费率不匹配！");
-            }
         }
 
-        logisticsFeeRateExpress.LogisticsModeId = logisticsFeeRateExpressFromUi.LogisticsModeId;
-        logisticsFeeRateExpress.StartWeight = logisticsFeeRateExpressFromUi.StartWeight;
-        logisticsFeeRateExpress.StartPrice = logisticsFeeRateExpressFromUi.StartPrice;
-        logisticsFeeRateExpress.StepWeight = logisticsFeeRateExpressFromUi.StepWeight;
-        logisticsFeeRateExpress.StepPrice = logisticsFeeRateExpressFromUi.StepPrice;
-        logisticsFeeRateExpress.StartFreeMinWeight = logisticsFeeRateExpressFromUi.StartFreeMinWeight;
-        logisticsFeeRateExpress.WeightBreakStart = logisticsFeeRateExpressFromUi.WeightBreakStart;
-        logisticsFeeRateExpress.WeightBreakDiscount = logisticsFeeRateExpressFromUi.WeightBreakDiscount;
+        feeRate.StartWeight = model.StartWeight;
+        feeRate.StartPrice = model.StartPrice;
+        feeRate.StepWeight = model.StepWeight;
+        feeRate.StepPrice = model.StepPrice;
+        feeRate.StartFreeMinWeight = model.StartFreeMinWeight;
+        feeRate.WeightBreakStart = model.WeightBreakStart;
+        feeRate.WeightBreakDiscount = model.WeightBreakDiscount;
 
         if (isCreate) {
-            session.Save(logisticsFeeRateExpress);
+            session.Save(feeRate);
         } else {
-            session.Update(logisticsFeeRateExpress);
+            session.Update(feeRate);
         }
 
         session.Flush();
@@ -100,7 +99,7 @@ public class LogisticsFeeRateExpressController : Controller {
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
-            { "id", logisticsFeeRateExpress.Id }
+            { "id", feeRate.Id }
         });
     }
 }
