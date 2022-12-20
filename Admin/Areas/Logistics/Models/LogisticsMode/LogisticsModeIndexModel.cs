@@ -1,21 +1,18 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain;
 using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsMode;
 
-public class LogisticsModeIndexModel
-{
+public class LogisticsModeIndexModel {
     /// <summary>
-    ///     物流类型 Id
+    /// 国家
     /// </summary>
     [BindNever]
-    public int TypeId { get; set; }
+    public Country Country { get; set; } = Country.None;
 
-    /// <summary>
-    ///     物流类型
-    /// </summary>
     [BindNever]
-    public LogisticsModeType Type { get; set; } = LogisticsModeType.None;
+    public IList<Country> CountryList { get; set; } = Country.GetNoChinaList();
 
     [BindNever]
     public IList<LogisticsModeType> LogisticsModeTypeList { get; set; } = new List<LogisticsModeType>();

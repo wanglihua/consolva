@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain
 @using shunda.Domain.Logistics
 @using shunda.Domain.Pass.PassRes
 @model shunda.Admin.Models.Sidebar.SidebarModel
@@ -30,7 +31,7 @@
             @if (Model.HasPassRes(PassRes.Logistics.LogisticsModeList))
             {
                 <li id="logistics-logistics-mode-index-menu">
-                    <a asp-area="Logistics" asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(LogisticsModeType.Express.Id)">
+                    <a asp-area="Logistics" asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Country.Australia.Id)">
                         <i class="menu-icon fa fa-caret-right"></i>
                         物流列表
                     </a>

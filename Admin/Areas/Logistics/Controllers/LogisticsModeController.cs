@@ -7,6 +7,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
@@ -26,12 +27,12 @@ public class LogisticsModeController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/mode/{typeId:int}")]
-    public IActionResult Index(int typeId) {
+    [Route("/admin/logistics/mode/{countryId:int}")]
+    public IActionResult Index(int countryId) {
         var model = new LogisticsModeIndexModel();
-        model.TypeId = typeId;
-        model.Type = LogisticsModeType.GetById(typeId);
+        model.Country = Country.GetById(countryId);
 
+        model.CountryList = Country.GetNoChinaList();
         model.LogisticsModeTypeList = LogisticsModeType.GetList();
         model.StatusList = LogisticsModeStatus.GetList();
 
@@ -70,7 +71,7 @@ public class LogisticsModeController : Controller {
 
         var model = new LogisticsModeListModel(listPager);
         model.LogisticsModeList = logisticsModeList;
-        model.ModeType = LogisticsModeType.GetById(queryParam.TypeIdQuery ?? 0);
+        model.Country = queryParam.Country;
 
         return View("LogisticsModeList", model);
     }
@@ -85,9 +86,10 @@ public class LogisticsModeController : Controller {
 
         criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Cate == LogisticsModeCate.Customer));
 
+        criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Country == queryParam.Country));
 
-        if (queryParam.TypeIdQuery != null && queryParam.TypeIdQuery.Value != 0) {
-            var typeQuery = LogisticsModeType.GetById(queryParam.TypeIdQuery.Value);
+        if (queryParam.TypeQuery != null && queryParam.TypeQuery != LogisticsModeType.None) {
+            var typeQuery = queryParam.TypeQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Type == typeQuery));
         }
 

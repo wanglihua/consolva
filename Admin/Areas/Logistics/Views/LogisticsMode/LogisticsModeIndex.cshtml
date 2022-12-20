@@ -32,23 +32,23 @@
 
 <div style="margin-bottom: 8px;">
     <ul class="nav nav-tabs">
-        @foreach (var type in Model.LogisticsModeTypeList)
+        @foreach (var country in Model.CountryList)
         {
             var activeClass = "";
-            if (type.Id == Model.TypeId)
+            if (country == Model.Country)
             {
                 activeClass = " active ";
             }
 
             <li class="@(activeClass)">
-                <a asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(type.Id)">@type.Name</a>
+                <a asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(country.Id)">@country.Name</a>
             </li>
         }
     </ul>
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <span style="font-weight: bold;">@(Model.Type.Name)</span>&nbsp;&nbsp;
+    <span style="font-weight: bold;">@(Model.Country.Name)</span>&nbsp;&nbsp;
 
     <label for="codeQuery">编码</label>&nbsp;
     <input id="codeQuery" name="codeQuery" style="width: 120px; height: 30px;" placeholder="编号查询"/>&nbsp;
@@ -112,7 +112,7 @@
             url: "@Url.Action("List", "LogisticsMode")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsModeListQueryParam.TypeIdQuery))': @(Model.TypeId),
+                '@(nameof(LogisticsModeListQueryParam.Country))': @(Model.Country.Id),
                 '@(nameof(LogisticsModeListQueryParam.CodeQuery))': $('#codeQuery').val(),
                 '@(nameof(LogisticsModeListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(LogisticsModeListQueryParam.StatusQuery))': $('#statusQuery').val(),
