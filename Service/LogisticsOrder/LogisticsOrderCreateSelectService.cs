@@ -1,7 +1,7 @@
+using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.LogisticsOrder;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
 
