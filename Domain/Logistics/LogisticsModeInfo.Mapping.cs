@@ -12,6 +12,15 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
         Table("tbl_logistics_mode");
 
         Property(
+            x => x.Country,
+            map => {
+                map.Type<CountryHibernateType>();
+                map.Column("country_id");
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.Cate,
             map => {
                 map.Type<LogisticsModeCateHibernateType>();

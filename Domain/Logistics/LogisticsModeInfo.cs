@@ -9,8 +9,12 @@ namespace shunda.Domain.Logistics;
 /// <summary>
 /// 物流方式
 /// </summary>
-public class LogisticsModeInfo : Entity
-{
+public class LogisticsModeInfo : Entity {
+    /// <summary>
+    /// 国家
+    /// </summary>
+    public virtual Country Country { get; set; } = Country.None;
+
     /// <summary>
     /// 类别
     /// 客户端费率物流，内部费率物流
@@ -60,7 +64,7 @@ public class LogisticsModeInfo : Entity
     /// 收货仓库
     /// </summary>
     [BindNever]
-    public virtual WarehouseInfo Warehouse { get; set; } = new ();
+    public virtual WarehouseInfo Warehouse { get; set; } = new();
 
     /// <summary>
     /// 打包标签
