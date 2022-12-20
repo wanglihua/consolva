@@ -9,8 +9,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 订单创建选择记录
 /// </summary>
-public class LogisticsOrderCreateSelectInfo
-{
+public class LogisticsOrderCreateSelectInfo {
     /// <summary>
     /// 会员ID，非空
     /// 主键
@@ -22,15 +21,15 @@ public class LogisticsOrderCreateSelectInfo
     /// <summary>
     /// 物品类型，可空
     /// </summary>
-    [JsonProperty("goodsTypeId")]
-    public virtual int? GoodsTypeId { get; set; } = null;
+    [JsonProperty("goodsType")]
+    public virtual LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
     /// 国家，可空
     /// </summary>
     [JsonProperty("country")]
     [ModelBinder(typeof(CountryModelBinder))]
-    public virtual Country Country { get; set; } = Country.None;
+    public virtual Country? Country { get; set; } = Country.None;
 
     /// <summary>
     /// 头程方式，可空
@@ -43,43 +42,43 @@ public class LogisticsOrderCreateSelectInfo
     /// 头程物流，可空
     /// </summary>
     [JsonProperty("firstModeId")]
-    public virtual int? FirstModeId { get; set; } = null;
+    public virtual int FirstModeId { get; set; }
 
     /// <summary>
     /// 收货地址，可空
     /// </summary>
     [JsonProperty("addressReceiveId")]
-    public virtual int? AddressReceiveId { get; set; } = null;
+    public virtual int AddressReceiveId { get; set; }
 
     /// <summary>
     /// 发货地址，可空
     /// </summary>
     [JsonProperty("addressSendId")]
-    public virtual int? AddressSendId { get; set; } = null;
+    public virtual int AddressSendId { get; set; }
 
     /// <summary>
     /// 保险，可空
     /// </summary>
     [JsonProperty("insuranceId")]
-    public virtual int? InsuranceId { get; set; } = null;
+    public virtual int InsuranceId { get; set; }
 
     /// <summary>
     /// GST，可空
     /// </summary>
     [JsonProperty("gstId")]
-    public virtual int? GstId { get; set; } = null;
+    public virtual int GstId { get; set; }
 
     /// <summary>
     /// 优惠券id，可空
     /// </summary>
     [JsonProperty("couponId")]
-    public virtual int? CouponId { get; set; } = null;
+    public virtual int CouponId { get; set; }
 
     /// <summary>
     /// 总费用，可空
     /// </summary>
     [JsonProperty("totalFee")]
-    public virtual decimal? TotalFee { get; set; } = null;
+    public virtual decimal TotalFee { get; set; }
 
     /// <summary>
     /// 数据是否有效，非空
@@ -87,5 +86,4 @@ public class LogisticsOrderCreateSelectInfo
     [Required(ErrorMessage = "数据是否有效不能为空！")]
     [JsonProperty("valid")]
     public virtual bool Valid { get; set; } = false;
-
 }

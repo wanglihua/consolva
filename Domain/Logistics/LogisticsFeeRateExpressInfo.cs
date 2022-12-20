@@ -7,13 +7,12 @@ namespace shunda.Domain.Logistics;
 /// <summary>
 /// 中澳快递具体费率
 /// </summary>
-public class LogisticsFeeRateExpressInfo : Entity
-{
+public class LogisticsFeeRateExpressInfo : Entity {
     /// <summary>
     /// 物流方式id
     /// </summary>
-    [Required(ErrorMessage = "物流方式id不能为空！")]
-    public virtual int LogisticsModeId { get; set; }
+    [Required(ErrorMessage = "物流方式不能为空！")]
+    public virtual LogisticsModeInfo LogisticsMode { get; set; } = new LogisticsModeInfo();
 
     /// <summary>
     /// 起步重量

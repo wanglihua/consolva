@@ -1,20 +1,21 @@
 using NHibernate;
+using NHibernate.Mapping.ByCode;
 using shunda.Core;
 
 namespace shunda.Domain.Logistics;
 
-public class LogisticsFeeRateExpressInfoMapping : EntityMapping<LogisticsFeeRateExpressInfo>
-{
-    public LogisticsFeeRateExpressInfoMapping()
-    {
+public class LogisticsFeeRateExpressInfoMapping : EntityMapping<LogisticsFeeRateExpressInfo> {
+    public LogisticsFeeRateExpressInfoMapping() {
         Table("tbl_logistics_fee_rate_express");
 
-        Property(
-            x => x.LogisticsModeId,
+        ManyToOne(
+            x => x.LogisticsMode,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Class(typeof(LogisticsModeInfo));
                 map.Column("logistics_mode_id");
                 map.NotNullable(true);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 

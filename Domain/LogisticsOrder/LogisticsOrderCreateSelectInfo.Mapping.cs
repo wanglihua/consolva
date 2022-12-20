@@ -5,10 +5,8 @@ using shunda.Domain.Logistics;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrderCreateSelectInfo>
-{
-    public LogisticsOrderCreateSelectInfoMapping()
-    {
+public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrderCreateSelectInfo> {
+    public LogisticsOrderCreateSelectInfoMapping() {
         Lazy(true);
         DynamicInsert(false);
         DynamicUpdate(true);
@@ -26,11 +24,11 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
         );
 
         Property(
-            x => x.GoodsTypeId,
+            x => x.GoodsType,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Type<LogisticsGoodsTypeHibernateType>();
                 map.Column("goods_type_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -39,7 +37,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type<CountryHibernateType>();
                 map.Column("country_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -48,7 +46,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type<LogisticsModeTypeHibernateType>();
                 map.Column("first_type_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -57,7 +55,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("first_mode_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -66,7 +64,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("address_receive_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -75,7 +73,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("address_send_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -84,7 +82,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("insurance_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -93,7 +91,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("gst_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -102,7 +100,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("coupon_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -111,7 +109,7 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
             map => {
                 map.Type(NHibernateUtil.Decimal);
                 map.Column("total_fee");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 

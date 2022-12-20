@@ -19,19 +19,16 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 /// </summary>
 [LogisticsArea]
 [AdminAuth(PassRes.Logistics.LogisticsModeList)]
-public class LogisticsModeInnerController : Controller
-{
+public class LogisticsModeInnerController : Controller {
     private readonly ISession session;
 
-    public LogisticsModeInnerController(ISession session)
-    {
+    public LogisticsModeInnerController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/logistics/mode/inner/{typeId:int}")]
-    public IActionResult Index(int typeId)
-    {
+    public IActionResult Index(int typeId) {
         var model = new LogisticsModeInnerIndexModel();
         model.TypeId = typeId;
         model.Type = LogisticsModeType.GetById(typeId);
@@ -44,8 +41,7 @@ public class LogisticsModeInnerController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/mode/inner/list")]
-    public IActionResult List(LogisticsModeInnerListQueryParam queryParam)
-    {
+    public IActionResult List(LogisticsModeInnerListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -67,8 +63,7 @@ public class LogisticsModeInnerController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(LogisticsModeInnerListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(LogisticsModeInnerListQueryParam queryParam) {
         var criteria = session.CreateCriteria<LogisticsModeInfo>();
 
         criteria = criteria.SetReadOnly(true);
@@ -77,27 +72,23 @@ public class LogisticsModeInnerController : Controller
 
         criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Cate == LogisticsModeCate.Inner));
 
-        if (queryParam.TypeIdQuery != null && queryParam.TypeIdQuery.Value != 0)
-        {
+        if (queryParam.TypeIdQuery != null && queryParam.TypeIdQuery.Value != 0) {
             var typeQuery = LogisticsModeType.GetById(queryParam.TypeIdQuery.Value);
             criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Type == typeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CodeQuery) == false) {
             var codeQuery = queryParam.CodeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsModeInfo>(e => e.Code).IsLike(codeQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false) {
             var nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsModeInfo>(e => e.Name).IsLike(nameQuery, MatchMode.Anywhere));
         }
 
 
-        if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsModeStatus.None)
-        {
+        if (queryParam.StatusQuery != null && queryParam.StatusQuery != LogisticsModeStatus.None) {
             var statusQuery = queryParam.StatusQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Status == statusQuery));
         }
@@ -107,8 +98,7 @@ public class LogisticsModeInnerController : Controller
 
     [HttpGet]
     [Route("/admin/logistics/mode/inner/detail/{id:int}/{typeId:int?}")]
-    public IActionResult Detail(int id, int? typeId)
-    {
+    public IActionResult Detail(int id, int? typeId) {
         session.DefaultReadOnly = true;
 
         session.DefaultReadOnly = true;
@@ -118,17 +108,14 @@ public class LogisticsModeInnerController : Controller
         var model = new LogisticsModeInnerDetailModel();
 
         LogisticsModeInfo logisticsMode;
-        if (id == 0)
-        {
+        if (id == 0) {
             logisticsMode = new LogisticsModeInfo();
 
             if (typeId.HasValue)
                 logisticsMode.Type = LogisticsModeType.GetById(typeId.Value);
             else
                 logisticsMode.Type = LogisticsModeType.GetById(typeList.First().Id);
-        }
-        else
-        {
+        } else {
             logisticsMode = session.Get<LogisticsModeInfo>(id);
             if (logisticsMode == null) throw new ValidationException("指定的数据项不存在！");
         }
@@ -153,8 +140,7 @@ public class LogisticsModeInnerController : Controller
     [HttpPost]
     [Route("/admin/logistics/mode/inner/save")]
     [Transactional]
-    public IActionResult Save(LogisticsModeInnerDetailModel model)
-    {
+    public IActionResult Save(LogisticsModeInnerDetailModel model) {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var logisticsModeId = model.Id;
@@ -163,13 +149,10 @@ public class LogisticsModeInnerController : Controller
 
         LogisticsModeInfo logisticsMode;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             logisticsMode = new LogisticsModeInfo();
             logisticsMode.Cate = LogisticsModeCate.Inner;
-        }
-        else
-        {
+        } else {
             logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
         }
 
@@ -205,14 +188,21 @@ public class LogisticsModeInnerController : Controller
     [HttpPost]
     [Route("/admin/logistics/mode/inner/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (var modeId in idList)
-        {
+    public IActionResult Delete(int[] idList) {
+        foreach (var modeId in idList) {
             var logisticsMode = session.Load<LogisticsModeInfo>(modeId);
 
             // 先删除关联的费率数据
-            if (logisticsMode.Type == LogisticsModeType.CnAuExpress) session.Query<LogisticsFeeRateExpressInfo>().Where(e => e.LogisticsModeId == modeId).Delete();
+            if (logisticsMode.Type == LogisticsModeType.Express) {
+                var feeRateExpressList = session.Query<LogisticsFeeRateExpressInfo>()
+                    .Where(e => e.LogisticsMode.Id == modeId)
+                    .ToList();
+                foreach (var feeRateExpress in feeRateExpressList) {
+                    session.Delete(feeRateExpress);
+                }
+
+                session.Flush();
+            }
 
             session.Delete(logisticsMode);
         }
