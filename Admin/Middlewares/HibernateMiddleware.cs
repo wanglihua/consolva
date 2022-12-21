@@ -4,8 +4,8 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Middlewares;
 
 /// <summary>
-///     当前只是用来关闭 session
-///     应该是配置成最后一个执行的middleware
+/// 当前只是用来关闭 session
+/// 应该是配置成最后一个执行的middleware
 /// </summary>
 public class HibernateMiddleware
 {

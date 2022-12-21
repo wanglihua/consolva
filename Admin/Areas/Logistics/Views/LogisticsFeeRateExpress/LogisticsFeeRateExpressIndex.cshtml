@@ -10,13 +10,13 @@
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
     <li class="active" data-menu="logistics-logistics-mode-index-menu">
-        <a asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(Model.LogisticsMode.Type.Id)">物流列表</a>
+        <a asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">物流列表</a>
     </li>
 
     @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner)
     {
         <li>
-            <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-typeId="@(Model.LogisticsMode.Type.Id)">内部物流列表</a>
+            <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">内部物流列表</a>
         </li>
     }
 
@@ -33,7 +33,7 @@
 
     @if (Model.LogisticsMode.Cate == LogisticsModeCate.Customer)
     {
-        <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(Model.LogisticsMode.Type.Id)">
+        <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
         </a>
@@ -41,7 +41,7 @@
 
     @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner)
     {
-        <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsModeInner" asp-action="Index" asp-route-typeId="@(Model.LogisticsMode.Type.Id)">
+        <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
         </a>

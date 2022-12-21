@@ -4,8 +4,8 @@ using shunda.Core.Web;
 namespace shunda.Admin.Middlewares;
 
 /// <summary>
-///     这个 middleware 的作用是保持 cookie 中一直有一个 session id，
-///     保持 WebSessionService的成员SessionId中的值 和 cookie 中的 session id 一致
+/// 这个 middleware 的作用是保持 cookie 中一直有一个 session id，
+/// 保持 WebSessionService的成员SessionId中的值 和 cookie 中的 session id 一致
 /// </summary>
 public class SessionIdMiddleware
 {

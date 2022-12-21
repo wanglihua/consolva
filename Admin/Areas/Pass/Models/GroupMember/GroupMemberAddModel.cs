@@ -10,13 +10,13 @@ public class GroupMemberAddModel
     public int GroupId { get; set; }
 
     /// <summary>
-    ///     用户在成员添加页面显示当前群组的一些信息
+    /// 用户在成员添加页面显示当前群组的一些信息
     /// </summary>
     [BindNever]
     public GroupInfo? Group { get; set; }
 
     /// <summary>
-    ///     要添加到群组的用户的登录名
+    /// 要添加到群组的用户的登录名
     /// </summary>
     [Required(ErrorMessage = "登录名不能为空！")]
     [MaxLength(100, ErrorMessage = "登录名长度不能大于100！")]

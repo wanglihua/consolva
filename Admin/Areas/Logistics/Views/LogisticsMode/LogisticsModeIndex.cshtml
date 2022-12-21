@@ -2,6 +2,7 @@
 @using shunda.Admin.Areas.Logistics.Models.LogisticsMode
 @using shunda.Core
 @using shunda.Core.Web
+@using shunda.Domain
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsMode.LogisticsModeIndexModel
 @{
@@ -71,7 +72,7 @@
 
 
 <div>
-    <a asp-controller="LogisticsModeInner" asp-action="Index" target="_blank">内部计费物流</a>
+    <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(Country.GetNoChinaList().First().Id)" target="_blank">内部计费物流</a>
 </div>
 
 

@@ -7,8 +7,10 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsMode;
 
 public class LogisticsModeListQueryParam : ListQueryParam {
     // 这个不能为空，必须要有一个值
+    [ModelBinder(typeof(CountryModelBinder))]
     public Country Country { get; set; } = Country.None;
 
+    [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
     public LogisticsModeType? TypeQuery { get; set; }
 
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]

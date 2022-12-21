@@ -9,7 +9,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Filters;
 
 /// <summary>
-///     "services.AddScoped&lt;HibernateActionFilter&gt;();" // 必须是 AddScoped
+/// "services.AddScoped&lt;HibernateActionFilter&gt;();" // 必须是 AddScoped
 /// </summary>
 public class HibernateActionFilter : IActionFilter
 {

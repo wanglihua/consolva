@@ -6,7 +6,7 @@ using shunda.Service;
 namespace shunda.Admin.Filters;
 
 /// <summary>
-///     这个只用于记录网站请求记录
+/// 这个只用于记录网站请求记录
 /// </summary>
 public class RequestLogActionFilter : IActionFilter
 {

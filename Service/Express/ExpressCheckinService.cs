@@ -30,9 +30,9 @@ public class ExpressCheckinService
     /// <param name="warehouseId">warehouseId</param>
     /// <param name="userId">userId</param>
     /// <param name="shelfIdInclude">
-    ///     确切包含的一个货架ID，
-    ///     比如是修改已经存在的申领件的信息，这时就必须要包含这个货架，不管这个货架的仓位是不是已经都占用了
-    ///     当然，这时要求这个货架应该是指定仓库内的
+    /// 确切包含的一个货架ID，
+    /// 比如是修改已经存在的申领件的信息，这时就必须要包含这个货架，不管这个货架的仓位是不是已经都占用了
+    /// 当然，这时要求这个货架应该是指定仓库内的
     /// </param>
     /// <returns></returns>
     public IList<ShelfInfo> GetAvaibleShelfList(int warehouseId, int userId, int? shelfIdInclude)

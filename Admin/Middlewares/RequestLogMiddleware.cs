@@ -3,7 +3,7 @@ using NLog;
 namespace shunda.Admin.Middlewares;
 
 /// <summary>
-///     这个只用于网站请求时间
+/// 这个只用于网站请求时间
 /// </summary>
 public class RequestLogMiddleware
 {

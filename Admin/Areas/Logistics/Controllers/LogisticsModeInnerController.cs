@@ -7,6 +7,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
@@ -15,7 +16,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Logistics.Controllers;
 
 /// <summary>
-///     内部计费物流管理
+/// 内部计费物流管理
 /// </summary>
 [LogisticsArea]
 [AdminAuth(PassRes.Logistics.LogisticsModeList)]
@@ -27,12 +28,12 @@ public class LogisticsModeInnerController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/mode/inner/{typeId:int}")]
-    public IActionResult Index(int typeId) {
+    [Route("/admin/logistics/mode/inner/{countryId:int}")]
+    public IActionResult Index(int countryId) {
         var model = new LogisticsModeInnerIndexModel();
-        model.TypeId = typeId;
-        model.Type = LogisticsModeType.GetById(typeId);
+        model.Country = Country.GetById(countryId);
 
+        model.CountryList = Country.GetNoChinaList();
         model.LogisticsModeTypeList = LogisticsModeType.GetList();
         model.StatusList = LogisticsModeStatus.GetList();
 
@@ -57,7 +58,7 @@ public class LogisticsModeInnerController : Controller {
 
         var model = new LogisticsModeInnerListModel(listPager);
         model.LogisticsModeList = logisticsModeList;
-        model.ModeType = LogisticsModeType.GetById(queryParam.TypeIdQuery ?? 0);
+        model.ModeType = queryParam.TypeQuery ?? LogisticsModeType.None;
 
         return View("LogisticsModeInnerList", model);
     }
@@ -72,8 +73,10 @@ public class LogisticsModeInnerController : Controller {
 
         criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Cate == LogisticsModeCate.Inner));
 
-        if (queryParam.TypeIdQuery != null && queryParam.TypeIdQuery.Value != 0) {
-            var typeQuery = LogisticsModeType.GetById(queryParam.TypeIdQuery.Value);
+        criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Country == queryParam.Country));
+
+        if (queryParam.TypeQuery != null && queryParam.TypeQuery != LogisticsModeType.None) {
+            var typeQuery = queryParam.TypeQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsModeInfo>(e => e.Type == typeQuery));
         }
 
@@ -97,13 +100,11 @@ public class LogisticsModeInnerController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/mode/inner/detail/{id:int}/{typeId:int?}")]
-    public IActionResult Detail(int id, int? typeId) {
+    [Route("/admin/logistics/mode/inner/detail/{id:int}/{countryId:int?}")]
+    public IActionResult Detail(int id, int? countryId) {
         session.DefaultReadOnly = true;
 
         session.DefaultReadOnly = true;
-
-        var typeList = LogisticsModeType.GetList();
 
         var model = new LogisticsModeInnerDetailModel();
 
@@ -111,16 +112,20 @@ public class LogisticsModeInnerController : Controller {
         if (id == 0) {
             logisticsMode = new LogisticsModeInfo();
 
-            if (typeId.HasValue)
-                logisticsMode.Type = LogisticsModeType.GetById(typeId.Value);
-            else
-                logisticsMode.Type = LogisticsModeType.GetById(typeList.First().Id);
+            if (countryId.HasValue) {
+                logisticsMode.Country = Country.GetById(countryId.Value);
+            } else {
+                logisticsMode.Country = Country.GetById(Country.GetNoChinaList().First().Id);
+            }
         } else {
             logisticsMode = session.Get<LogisticsModeInfo>(id);
-            if (logisticsMode == null) throw new ValidationException("指定的数据项不存在！");
+            if (logisticsMode == null) {
+                throw new ValidationException("指定的数据项不存在！");
+            }
         }
 
         model.Id = logisticsMode.Id;
+        model.Country = logisticsMode.Country;
         model.Type = logisticsMode.Type;
         model.Code = logisticsMode.Code;
         model.Name = logisticsMode.Name;
@@ -156,6 +161,7 @@ public class LogisticsModeInnerController : Controller {
             logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
         }
 
+        logisticsMode.Country = model.Country;
         logisticsMode.Type = model.Type;
         logisticsMode.Code = model.Code;
         logisticsMode.Name = model.Name;

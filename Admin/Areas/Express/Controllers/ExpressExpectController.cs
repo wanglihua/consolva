@@ -14,7 +14,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Express.Controllers;
 
 /// <summary>
-///     快递单号预报 控制器
+/// 快递单号预报 控制器
 /// </summary>
 [ExpressArea]
 [AdminAuth(PassRes.Express.ExpressExpect)]

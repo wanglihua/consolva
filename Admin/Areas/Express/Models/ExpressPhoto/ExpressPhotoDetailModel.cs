@@ -9,7 +9,7 @@ public class ExpressPhotoDetailModel : ExpressPhotoSaveModel
     public IList<ExpressPhotoType> PhotoTypeList { get; set; } = ExpressPhotoType.GetList();
 
     /// <summary>
-    ///     完整的图片URL
+    /// 完整的图片URL
     /// </summary>
     [BindNever]
     public string FullImageUrl { get; set; } = string.Empty;

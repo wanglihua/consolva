@@ -615,7 +615,7 @@ public class StorageLocController : Controller
     }
 
     /// <summary>
-    ///     这是按一个货架生成
+    /// 这是按一个货架生成
     /// </summary>
     /// <param name="shelfId"></param>
     /// <returns></returns>
@@ -667,7 +667,7 @@ public class StorageLocController : Controller
     }
 
     /// <summary>
-    ///     这是按整个仓库生成
+    /// 这是按整个仓库生成
     /// </summary>
     /// <param name="warehouseId"></param>
     /// <returns></returns>

@@ -12,7 +12,7 @@
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
     <li class="active" data-menu="logistics-logistics-mode-index-menu">
-        <a asp-controller="LogisticsMode" asp-action="Index" asp-route-typeId="@(Model.Type.Id)">
+        <a asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Model.Country.Id)">
             物流列表
         </a>
     </li>
@@ -24,7 +24,7 @@
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsModeDetail(0)">
+    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsModeDetail(0, '@(Model.Country.Id)')">
         <i class="ace-icon fa fa-plus"></i>
         新增
     </button>
@@ -36,16 +36,16 @@
 
 <div style="margin-bottom: 8px;">
     <ul class="nav nav-tabs">
-        @foreach (var type in Model.LogisticsModeTypeList)
+        @foreach (var country in Model.CountryList)
         {
             var activeClass = "";
-            if (type.Id == Model.TypeId)
+            if (country.Id == Model.Country.Id)
             {
                 activeClass = " active ";
             }
 
             <li class="@(activeClass)">
-                <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-typeId="@(type.Id)">@(type.Name)&nbsp;内部费率</a>
+                <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(country.Id)">@(country.Name)&nbsp;内部费率</a>
             </li>
         }
     </ul>
@@ -109,7 +109,7 @@
             url: "@Url.Action("List", "LogisticsModeInner")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsModeInnerListQueryParam.TypeIdQuery))': @(Model.TypeId),
+                '@(nameof(LogisticsModeInnerListQueryParam.Country))': @(Model.Country.Id),
                 '@(nameof(LogisticsModeInnerListQueryParam.CodeQuery))': $('#codeQuery').val(),
                 '@(nameof(LogisticsModeInnerListQueryParam.NameQuery))': $('#nameQuery').val(),
                 '@(nameof(LogisticsModeInnerListQueryParam.StatusQuery))': $('#statusQuery').val(),
@@ -132,9 +132,15 @@
         });
     }
 
-    function showLogisticsModeDetail(id) {
-        var url = "@Url.Action("Detail", "LogisticsModeInner", new { id = 88888 })";
+    function showLogisticsModeDetail(id, countryId) {
+        var url = "@Url.Action("Detail", "LogisticsModeInner", new { id = 88888, countryId = 99999 })";
         url = url.replace("88888", id);
+        
+        if (countryId) {
+            url = url.replace("99999", countryId);
+        } else {
+            url = url.replace("/99999", "");
+        }
         window.location.href = url;
     }
 
