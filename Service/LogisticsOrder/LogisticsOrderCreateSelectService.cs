@@ -1,6 +1,7 @@
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 
@@ -14,7 +15,22 @@ public class LogisticsOrderCreateSelectService {
         this.session = session;
     }
 
-    public void SaveCountry() {
+    public void SaveCountry(int customerId, Country country) {
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                Country = country,
+                Valid = false,
+            };
+            session.Save(createSelect);
+        } else {
+            createSelect.Country = country;
+            createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+
+        session.Flush();
     }
 
     public void SaveGoodsType(int customerId, LogisticsGoodsType goodsType) {
@@ -25,10 +41,53 @@ public class LogisticsOrderCreateSelectService {
                 GoodsType = goodsType,
                 Valid = false,
             };
-
             session.Save(createSelect);
         } else {
             createSelect.GoodsType = goodsType;
+            createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+
+        session.Flush();
+    }
+
+    public void SaveFirstMode(int customerId, int firstModeId) {
+        var firstMode = session.Get<LogisticsModeInfo>(firstModeId);
+        if (firstMode == null) {
+            throw new ValidationException($"指定的物流方式#{firstModeId}不存在！");
+        }
+
+        var firstType = firstMode.Type;
+
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                FirstType = firstType,
+                FirstModeId = firstModeId,
+                Valid = false,
+            };
+            session.Save(createSelect);
+        } else {
+            createSelect.FirstType = firstType;
+            createSelect.FirstModeId = firstModeId;
+            createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+    }
+
+    public void SaveReceiveAddress(int customerId, int receiveAddressId) {
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                AddressReceiveId = receiveAddressId,
+                Valid = false,
+            };
+            session.Save(createSelect);
+        } else {
+            createSelect.AddressReceiveId = receiveAddressId;
+            createSelect.Valid = false;
             session.Update(createSelect);
         }
 

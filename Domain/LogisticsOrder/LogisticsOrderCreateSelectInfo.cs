@@ -42,43 +42,43 @@ public class LogisticsOrderCreateSelectInfo {
     /// 头程物流，可空
     /// </summary>
     [JsonProperty("firstModeId")]
-    public virtual int FirstModeId { get; set; }
+    public virtual int FirstModeId { get; set; } = 0;
 
     /// <summary>
     /// 收货地址，可空
     /// </summary>
     [JsonProperty("addressReceiveId")]
-    public virtual int AddressReceiveId { get; set; }
+    public virtual int AddressReceiveId { get; set; } = 0;
 
     /// <summary>
     /// 发货地址，可空
     /// </summary>
     [JsonProperty("addressSendId")]
-    public virtual int AddressSendId { get; set; }
+    public virtual int AddressSendId { get; set; } = 0;
 
     /// <summary>
     /// 保险，可空
     /// </summary>
     [JsonProperty("insuranceId")]
-    public virtual int InsuranceId { get; set; }
+    public virtual int InsuranceId { get; set; } = 0;
 
     /// <summary>
     /// GST，可空
     /// </summary>
     [JsonProperty("gstId")]
-    public virtual int GstId { get; set; }
+    public virtual int GstId { get; set; } = 0;
 
     /// <summary>
     /// 优惠券id，可空
     /// </summary>
     [JsonProperty("couponId")]
-    public virtual int CouponId { get; set; }
+    public virtual int CouponId { get; set; } = 0;
 
     /// <summary>
     /// 总费用，可空
     /// </summary>
     [JsonProperty("totalFee")]
-    public virtual decimal TotalFee { get; set; }
+    public virtual decimal TotalFee { get; set; } = 0.0m;
 
     /// <summary>
     /// 数据是否有效，非空
