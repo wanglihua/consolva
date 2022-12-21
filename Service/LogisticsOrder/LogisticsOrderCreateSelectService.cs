@@ -1,7 +1,9 @@
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain;
+using shunda.Domain.Customer;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 
@@ -77,6 +79,36 @@ public class LogisticsOrderCreateSelectService {
     }
 
     public void SaveReceiveAddress(int customerId, int receiveAddressId) {
+        CustomerReceiveAddressInfo receiveAddress = session.Get<CustomerReceiveAddressInfo>(receiveAddressId);
+        if (receiveAddress == null) {
+            throw new ValidationException($"指定的收货地址#{receiveAddressId}不存在！");
+        }
+
+        // 判断是否有非英文字符
+        if (StringUtil.AllEnglish(receiveAddress.FirstName) == false) {
+            throw new ValidationException("[first name] 有非英文字符，请更正！");
+        }
+
+        if (StringUtil.HasDigit(receiveAddress.FirstName) == true) {
+            throw new ValidationException("[first name] 有数字字符，请更正！");
+        }
+
+        if (StringUtil.AllEnglish(receiveAddress.LastName) == false) {
+            throw new ValidationException("[last name] 有非英文字符，请更正！");
+        }
+
+        if (StringUtil.HasDigit(receiveAddress.LastName) == true) {
+            throw new ValidationException("[last name] 有数字字符，请更正！");
+        }
+
+        if (StringUtil.AllEnglish(receiveAddress.Address) == false) {
+            throw new ValidationException("[门牌号/路名] 中有非英文字符，请更正！");
+        }
+
+        if (StringUtil.AllEnglish(receiveAddress.City) == false) {
+            throw new ValidationException("[区/Suburb] 中有非英文字符，请更正！");
+        }
+
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
             createSelect = new LogisticsOrderCreateSelectInfo {
