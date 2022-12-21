@@ -1,77 +1,84 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain;
 using shunda.Domain.Logistics;
 using shunda.Domain.Storage;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsMode;
 
-public class LogisticsModeDetailModel
-{
+public class LogisticsModeDetailModel {
     public static readonly string FeeRateFieldPrefix = "fee_rate_";
 
     /// <summary>
-    ///     Id
+    /// Id
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    ///     类型
+    /// 国家
+    /// </summary>
+    [Required(ErrorMessage = "国家不能为空！")]
+    [ModelBinder(typeof(CountryModelBinder))]
+    public Country Country { get; set; } = Country.None;
+
+    /// <summary>
+    /// 类型
     /// </summary>
     [Required(ErrorMessage = "物流类型不能为空！")]
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
     public LogisticsModeType Type { get; set; } = LogisticsModeType.None;
 
     /// <summary>
-    ///     包裹大小件类型
+    /// 包裹大小件类型
     /// </summary>
     [ModelBinder(typeof(LogisticsModePackSizeTypeModelBinder))]
     public LogisticsModePackSizeType PackSizeType { get; set; } = LogisticsModePackSizeType.None;
 
     /// <summary>
-    ///     编码
+    /// 编码
     /// </summary>
     [Required(ErrorMessage = "编码不能为空！")]
     [MaxLength(100, ErrorMessage = "编码长度不能大于100！")]
     public string Code { get; set; } = string.Empty;
 
     /// <summary>
-    ///     名称
+    /// 名称
     /// </summary>
     [Required(ErrorMessage = "名称不能为空！")]
     [MaxLength(200, ErrorMessage = "名称长度不能大于200！")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    ///     描述
+    /// 描述
     /// </summary>
     [Required(ErrorMessage = "描述不能为空！")]
     [MaxLength(500, ErrorMessage = "描述长度不能大于500！")]
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    ///     普通类通用费率
+    /// 普通类通用费率
     /// </summary>
     public int? CommonFeeRateId { get; set; }
 
     /// <summary>
-    ///     特货类通用费率
+    /// 特货类通用费率
     /// </summary>
     public int? SpecialFeeRateId { get; set; }
 
     /// <summary>
-    ///     费用计算描述
+    /// 费用计算描述
     /// </summary>
     public string? FeeCalDesc { get; set; }
 
     /// <summary>
-    ///     收货仓库
+    /// 收货仓库
     /// </summary>
     [Required(ErrorMessage = "收货仓库不能为空！")]
     public int WarehouseId { get; set; }
 
     /// <summary>
-    ///     打包标签
+    /// 打包标签
     /// </summary>
     [ModelBinder(typeof(LogisticsPackLabelTypeModelBinder))]
     public LogisticsPackLabelType PackLabelType { get; set; } = LogisticsPackLabelType.None;
@@ -80,35 +87,35 @@ public class LogisticsModeDetailModel
     public IList<LogisticsPackLabelType> PackLabelTypeList { get; } = LogisticsPackLabelType.GetList();
 
     /// <summary>
-    ///     渠道类型
+    /// 渠道类型
     /// </summary>
     [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
     public LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
 
     /// <summary>
-    ///     快递公司名称
+    /// 快递公司名称
     /// </summary>
     public string? ExpressCompanyName { get; set; }
 
     /// <summary>
-    ///     快递公司网址
+    /// 快递公司网址
     /// </summary>
     public string? ExpressCompanyUrl { get; set; }
 
     /// <summary>
-    ///     状态
+    /// 状态
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public LogisticsModeStatus Status { get; set; } = LogisticsModeStatus.None;
 
     /// <summary>
-    ///     内部状态
+    /// 内部状态
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
 
     /// <summary>
-    ///     物流方式关联通用费率
+    /// 物流方式关联通用费率
     /// </summary>
     public IList<LogisticsModeFeeRateInfo> ModeFeeRateList { get; set; } = new List<LogisticsModeFeeRateInfo>();
 
@@ -123,6 +130,9 @@ public class LogisticsModeDetailModel
 
     [BindNever]
     public IList<LogisticsModeChannel> ChannelList { get; set; } = new List<LogisticsModeChannel>();
+
+    [BindNever]
+    public IList<Country> CountryList { get; set; } = new List<Country>();
 
     [BindNever]
     public IList<LogisticsModeType> LogisticsModeTypeList { get; set; } = new List<LogisticsModeType>();
@@ -140,18 +150,17 @@ public class LogisticsModeDetailModel
     public IList<LogisticsModeStatus> StatusList { get; set; } = new List<LogisticsModeStatus>();
 
     /// <summary>
-    ///     对应的内部计费物流方式列表
+    /// 对应的内部计费物流方式列表
     /// </summary>
     public int? InnerModeId { get; set; }
 
     /// <summary>
-    ///     对应的内部计费物流方式列表
+    /// 对应的内部计费物流方式列表
     /// </summary>
     [BindNever]
     public IList<LogisticsModeInfo> InnerModeList { get; set; } = new List<LogisticsModeInfo>();
 
-    public string GetFeeRateFieldName(LogisticsGoodsType goodsType)
-    {
+    public string GetFeeRateFieldName(LogisticsGoodsType goodsType) {
         return $"{FeeRateFieldPrefix}{goodsType?.Id ?? 0}";
     }
 

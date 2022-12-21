@@ -113,8 +113,8 @@ public class LogisticsModeController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/mode/detail/{id:int}/{typeId:int?}")]
-    public IActionResult Detail(int id, int? typeId) {
+    [Route("/admin/logistics/mode/detail/{id:int}/{countryId:int?}")]
+    public IActionResult Detail(int id, int? countryId) {
         session.DefaultReadOnly = true;
 
         var typeList = LogisticsModeType.GetList();
@@ -125,10 +125,11 @@ public class LogisticsModeController : Controller {
         if (id == 0) {
             logisticsMode = new LogisticsModeInfo();
 
-            if (typeId.HasValue)
-                logisticsMode.Type = LogisticsModeType.GetById(typeId.Value);
-            else
-                logisticsMode.Type = LogisticsModeType.GetById(typeList.First().Id);
+            if (countryId.HasValue) {
+                logisticsMode.Country = Country.GetById(countryId.Value);
+            } else {
+                logisticsMode.Country = Country.GetById(Country.GetNoChinaList().First().Id);
+            }
 
             logisticsMode.Channel = LogisticsModeChannel.Other; // 新建时在界面上优先显示其他
 
@@ -139,7 +140,9 @@ public class LogisticsModeController : Controller {
             model.ModeFeeRateList = new List<LogisticsModeFeeRateInfo>(); // 保证列表非空
         } else {
             logisticsMode = session.Get<LogisticsModeInfo>(id);
-            if (logisticsMode == null) throw new ValidationException("指定的数据项不存在！");
+            if (logisticsMode == null) {
+                throw new ValidationException("指定的数据项不存在！");
+            }
 
             IList<LogisticsModeRepackTypeInfo> repackTypeList = session
                 .Query<LogisticsModeRepackTypeInfo>()
@@ -164,6 +167,7 @@ public class LogisticsModeController : Controller {
         }
 
         model.Id = logisticsMode.Id;
+        model.Country = logisticsMode.Country;
         model.Type = logisticsMode.Type;
         model.PackSizeType = logisticsMode.PackSizeType;
         model.Code = logisticsMode.Code;
@@ -179,8 +183,11 @@ public class LogisticsModeController : Controller {
 
         model.FeeCalDesc = logisticsMode.FeeCalDesc;
 
-        if (logisticsMode.Warehouse != null) model.WarehouseId = logisticsMode.Warehouse.Id;
+        if (logisticsMode.Warehouse != null) {
+            model.WarehouseId = logisticsMode.Warehouse.Id;
+        }
 
+        model.CountryList = Country.GetNoChinaList();
         model.LogisticsModeTypeList = typeList;
         model.PackSizeTypeList = LogisticsModePackSizeType.GetList();
 
@@ -263,6 +270,7 @@ public class LogisticsModeController : Controller {
         else
             logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
 
+        logisticsMode.Country = model.Country;
         logisticsMode.Type = model.Type;
 
         if (model.PackSizeType == null) model.PackSizeType = LogisticsModePackSizeType.None;
