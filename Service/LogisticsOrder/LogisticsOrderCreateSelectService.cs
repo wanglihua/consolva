@@ -94,6 +94,79 @@ public class LogisticsOrderCreateSelectService {
         session.Flush();
     }
 
+    public void SaveSendAddress(int customerId, int sendAddressId) {
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                AddressSendId = sendAddressId,
+                Valid = false,
+            };
+            session.Save(createSelect);
+        } else {
+            createSelect.AddressSendId = sendAddressId;
+            createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+
+        session.Flush();
+    }
+
+    public void SaveInsurance(int customerId, int insuranceId) {
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                InsuranceId = insuranceId,
+                Valid = false,
+            };
+            session.Save(createSelect);
+        } else {
+            createSelect.InsuranceId = insuranceId;
+            createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+
+        session.Flush();
+    }
+
+    public void SaveGst(int customerId, int gstId) {
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                GstId = gstId,
+                Valid = false,
+            };
+            session.Save(createSelect);
+        } else {
+            createSelect.GstId = gstId;
+            createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+
+        session.Flush();
+    }
+
+
+    public void SaveCoupon(int customerId, int couponId) {
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                CouponId = couponId,
+                Valid = false,
+            };
+            session.Save(createSelect);
+        } else {
+            createSelect.CouponId = couponId;
+            createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+
+        session.Flush();
+    }
+
     /// <summary>
     /// 标记订单创建选择失效
     /// </summary>
