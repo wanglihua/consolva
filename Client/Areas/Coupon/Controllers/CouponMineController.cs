@@ -29,16 +29,21 @@ public class CouponMineController : Controller {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         couponBatchService.CheckAndSetExpire();
 
-        var couponItemList = session.Query<CouponInfo>()
+        var couponList = session.Query<CouponInfo>()
             .Fetch(e => e.Batch)
             .Where(e => e.Customer.Id == loginCustomerId
                         && e.Status == CouponStatus.Pick)
+            .OrderByDescending(e => e.Id)
+            .ToList();
+
+        var couponItemList = couponList
             .Select(e => new CouponMineListItem {
                 Id = e.Id,
                 Code = e.Code,
                 Type = e.Batch.Type.Name,
                 Rule = e.Batch.Rule,
                 RuleDesc = e.Batch.RuleDesc,
+                Expire = e.Batch.Expire.ToString("yyyy-MM-dd"),
             })
             .ToList();
 
