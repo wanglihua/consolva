@@ -16,11 +16,14 @@
         "pages/customer/customer_pay/customer_pay",
         "pages/customer/customer_score/customer_score/customer_score",
         "pages/customer/customer_score/customer_score_log/customer_score_log",
-        "pages/customer/customer_address/customer_address/customer_address",
         "pages/coupon/coupon_mine/coupon_mine",
         "pages/coupon/coupon_pick/coupon_pick",
         "pages/coupon/coupon_order/coupon_order",
-        "pages/coupon/coupon_pay/coupon_pay"
+        "pages/coupon/coupon_pay/coupon_pay",
+        "pages/customer/customer_address/customer_address_receive/customer_address_receive_list",
+        "pages/customer/customer_address/customer_address_receive/customer_address_receive_detail",
+        "pages/customer/customer_address/customer_address_send/customer_address_send_list",
+        "pages/customer/customer_address/customer_address_send/customer_address_send_detail"
     ],
     "window": {
         "backgroundTextStyle": "light",
