@@ -7,8 +7,11 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
+using shunda.Domain.Fee;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Coupon.Controllers;
@@ -19,15 +22,18 @@ public class CouponPayController : Controller {
     private readonly LoginCustomerService loginCustomerService;
     private readonly CouponService couponService;
     private readonly CouponBatchService couponBatchService;
+    private readonly LogisticsOrderFeeService logisticsOrderFeeService;
 
     public CouponPayController(ISession session,
         LoginCustomerService loginCustomerService,
         CouponService couponService,
-        CouponBatchService couponBatchService) {
+        CouponBatchService couponBatchService,
+        LogisticsOrderFeeService logisticsOrderFeeService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.couponService = couponService;
         this.couponBatchService = couponBatchService;
+        this.logisticsOrderFeeService = logisticsOrderFeeService;
     }
 
     [HttpPost]
@@ -112,6 +118,113 @@ public class CouponPayController : Controller {
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        int orderId = param.OrderId;
+        int selectCouponId = param.CouponId;
+
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        if (order.Customer.Id != loginCustomerId) {
+            throw new ValidationException($"订单#{orderId}不属于当前登录用户！");
+        }
+
+        CouponInfo? selectCoupon = null;
+        if (selectCouponId != 0) {
+            selectCoupon = session.Get<CouponInfo>(selectCouponId);
+            if (selectCoupon == null) {
+                throw new ValidationException($"指定的优惠券#{selectCouponId}不存在！");
+            }
+
+            // 检查有效性
+            couponService.CheckCouponValidWhenPay(couponId: selectCouponId, orderId: orderId, customerId: loginCustomerId);
+        }
+
+        var orderCoupon = session.Query<CouponInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+
+        if ((selectCoupon?.Id ?? 0) == (orderCoupon?.Id ?? 0)) {
+            // 如果当前的选择就是原来的，那就什么都不用做
+            return Json(new Dictionary<string, object>() {
+                { "success", true },
+                { "message", "优惠券选择未修改，无需保存！" },
+            });
+        }
+
+        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
+        var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
+        var firstAndSecondFeeList = orderFeeList.Where(e => logisticsFeeTypeList.Contains(e.Type)).ToList();
+        decimal firstAndSecondFee = 0.0m;
+        foreach (var fee in firstAndSecondFeeList) {
+            firstAndSecondFee += fee.Fee;
+        }
+
+        decimal couponDiscount = 0m;
+        if (selectCoupon != null) {
+            var couponDiscountResult = couponService.CalculateCouponDiscount(selectCouponId, firstAndSecondFee);
+            if (couponDiscountResult.Success == false) {
+                throw new ValidationException(couponDiscountResult.Message);
+            }
+
+            couponDiscount = couponDiscountResult.Discount;
+        }
+
+        // 把原来的取消掉
+        if (orderCoupon != null) {
+            couponService.setCouponNotUsed(orderId: orderId);
+        }
+
+        // 把新的设置上
+        if (selectCoupon != null) {
+            couponService.SetCouponUsed(selectCouponId, order, couponDiscount);
+        }
+
+        var orderCouponBatchId = orderCoupon?.Batch.Id ?? 0;
+        if (orderCouponBatchId != 0) {
+            couponBatchService.SumAndSaveBatchTotalUsed(orderCouponBatchId);
+        }
+
+        var couponBatchId = selectCoupon?.Batch.Id ?? 0;
+        if (couponBatchId != 0) {
+            couponBatchService.SumAndSaveBatchTotalUsed(couponBatchId);
+        }
+
+        // 先把原来的优惠券费用删除掉
+        var couponOrderFeeList = orderFeeList
+            .Where(e => e.Type == LogisticsOrderFeeType.CouponDiscountFee)
+            .ToList();
+        if (couponOrderFeeList.Count != 0) {
+            foreach (var couponOrderFee in couponOrderFeeList) // 一般也只有一个
+            {
+                session.Delete(couponOrderFee);
+            }
+        }
+
+        session.Flush();
+
+        if (selectCoupon != null) {
+            // 插入新的优惠券费用
+            var couponFee = new LogisticsOrderFeeInfo();
+            couponFee.Customer = order.Customer;
+            couponFee.Order = order;
+            couponFee.GoodsType = LogisticsGoodsType.None;
+            couponFee.Type = LogisticsOrderFeeType.CouponDiscountFee;
+            couponFee.Description = "优惠券实扣," + (selectCoupon?.Code ?? string.Empty);
+            couponFee.Fee = -couponDiscount;
+
+            session.Save(couponFee);
+            session.Flush();
+        }
+
+        // 更新订单总费用和支付状态
+        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(order);
 
         return Json(new JsonResultData {
             Success = true,

@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using NHibernate;
+using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Coupon;
@@ -205,12 +206,18 @@ public class CouponService {
     /// <param name="orderId"></param>
     public void setCouponNotUsed(int orderId) {
         var orderCouponList = session.Query<CouponInfo>() // 一般也就只有一张
+            .Fetch(e => e.Batch)
             .Where(e => e.Order!.Id == orderId)
             .ToList();
         foreach (var coupon in orderCouponList) {
             coupon.Order = null;
             coupon.ActualDiscountAmount = 0;
-            coupon.Status = CouponStatus.Pick; // 这里暂时不考虑优惠券这时实际已经过期的问题
+            if (coupon.Batch.Status == CouponBatchStatus.Expire) {
+                coupon.Status = CouponStatus.Expire;
+            } else {
+                coupon.Status = CouponStatus.Pick;
+            }
+
             coupon.UseTime = null;
 
             session.Update(coupon);
