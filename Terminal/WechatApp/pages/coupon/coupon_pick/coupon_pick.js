@@ -5,6 +5,7 @@ const util = app.require('utils/util.js');
 
 Page({
     data: {
+        batchCount: 0,
         batchList: [],
     },
 
@@ -16,12 +17,28 @@ Page({
         const that = this;
         app.post("/client/coupon/pick/list", {}, function (res) {
             that.setData({
+                batchCount: res.data.batchCount,
                 batchList: res.data.batchList,
             });
         });
     },
 
     onCouponPickClick(e) {
-        console.log(e);
+        console.log(e.currentTarget.dataset.item);
+        const batchId = e.currentTarget.dataset.item.id;
+
+        const that = this;
+        app.post("/client/coupon/pick/save", {
+            batchId: batchId,
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            that.setData({
+                batchCount: res.data.batchCount,
+                batchList: res.data.batchList,
+            });
+        });
     }
 })

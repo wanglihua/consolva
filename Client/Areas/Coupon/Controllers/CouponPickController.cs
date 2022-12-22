@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Coupon.Models.CouponPick;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
 using shunda.Service.Coupon;
@@ -61,6 +62,7 @@ public class CouponPickController : Controller {
 
     [HttpPost]
     [Route("/client/coupon/pick/save")]
+    [Transactional]
     public IActionResult Save([FromBody] CouponPickSaveParam param) {
         int batchId = param.BatchId;
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
