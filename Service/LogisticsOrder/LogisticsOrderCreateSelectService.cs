@@ -127,6 +127,19 @@ public class LogisticsOrderCreateSelectService {
     }
 
     public void SaveSendAddress(int customerId, int sendAddressId) {
+        CustomerSendAddressInfo sendAddress = session.Get<CustomerSendAddressInfo>(sendAddressId);
+        if (sendAddress == null) {
+            throw new ValidationException($"指定的发货地址#{sendAddressId}不存在！");
+        }
+
+        if (StringUtil.AllChinese(sendAddress.LastName) == false) {
+            throw new ValidationException("发件人姓中有非中文字符，请更正！");
+        }
+
+        if (StringUtil.AllChinese(sendAddress.FirstName) == false) {
+            throw new ValidationException("发件人名中有非中文字符，请更正！");
+        }
+
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
             createSelect = new LogisticsOrderCreateSelectInfo {
@@ -179,7 +192,6 @@ public class LogisticsOrderCreateSelectService {
 
         session.Flush();
     }
-
 
     public void SaveCoupon(int customerId, int couponId) {
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
