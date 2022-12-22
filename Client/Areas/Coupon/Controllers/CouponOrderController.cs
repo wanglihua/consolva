@@ -46,14 +46,15 @@ public class CouponOrderController : Controller {
             .OrderByDescending(e => e.Id)
             .ToList();
 
-        var couponItemList = couponList.Select(e => new CouponOrderListItem {
-            Id = e.Id,
-            Code = e.Code,
-            Type = e.Batch.Type.Name,
-            Rule = e.Batch.Rule,
-            RuleDesc = e.Batch.RuleDesc,
-            Expire = e.Batch.Expire.ToString("yyyy-MM-dd HH:mm")
-        }).ToList();
+        var couponItemList = couponList
+            .Select(e => new CouponOrderListItem {
+                Id = e.Id,
+                Code = e.Code,
+                Type = e.Batch.Type.Name,
+                Rule = e.Batch.Rule,
+                RuleDesc = e.Batch.RuleDesc,
+                Expire = e.Batch.Expire.ToString("yyyy-MM-dd HH:mm")
+            }).ToList();
 
         // 之前选择的 优惠券 如果不在当前可用优惠券列表中，就置空，选择已无效
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(loginCustomerId);
