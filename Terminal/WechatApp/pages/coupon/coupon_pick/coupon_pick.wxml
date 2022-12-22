@@ -1,2 +1,24 @@
 <!--pages/coupon/coupon_pick/coupon_pick.wxml-->
-<text>pages/coupon/coupon_pick/coupon_pick.wxml</text>
+<view class="container">
+    <block wx:if="{{ batchCount === 0 }}">
+        <van-empty description="当前没有可以领取的优惠券，或批次优惠券已经抢完！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{ batchList }}" wx:key="id" wx:for-item="batch" wx:for-index="index">
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ batch.rule }}" value="{{ batch.type }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="批次" value="{{ batch.name }}" border="{{ false }}"/>
+                <van-cell title="类型" value="{{ batch.type }}" border="{{ false }}"/>
+                <van-cell title="优惠" value="{{ batch.ruleDesc }}" border="{{ false }}"/>
+                <van-cell title="有效期" value="{{ batch.expire }}" border="{{ false }}"/>
+                <van-cell title="" border="{{ false }}" custom-class="item-footer">
+                    <block slot="right-icon">
+                        <view style="text-align: right;">
+                            <van-button type="info" class-prefix="iconfont" icon="coupon" size="small" bind:click="onCouponPickClick" data-item="{{ batch }}">点击领取优惠券</van-button>
+                        </view>
+                    </block>
+                </van-cell>
+            </van-cell-group>
+        </block>
+    </block>
+</view>

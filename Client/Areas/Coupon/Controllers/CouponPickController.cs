@@ -30,12 +30,16 @@ public class CouponPickController : Controller {
             .Where(e => e.Status == CouponBatchStatus.Release
                         && e.Expire > today)
             .OrderByDescending(e => e.Id)
+            .ToList();
+
+        var batchItemList = batchList
             .Select(e => new CouponPickListItem {
                 Id = e.Id,
                 Name = e.Name,
                 Type = e.Type.Name,
                 Rule = e.Rule,
                 RuleDesc = e.RuleDesc,
+                Expire = e.Expire.ToString("yyyy-MM-dd"),
             })
             .ToList();
 
@@ -43,7 +47,8 @@ public class CouponPickController : Controller {
             Success = true,
             Message = "操作成功！",
             Data = new CouponPickListModel {
-                BatchList = batchList,
+                BatchList = batchItemList,
+                BatchCount = batchList.Count,
             },
         });
     }

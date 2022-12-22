@@ -18,9 +18,9 @@ Page({
         const that = this;
         app.post("/client/coupon/mine/list", {}, function (res) {
             that.setData({
-                couponList: that.data.couponList,
-                couponCount: that.data.couponCount,
-                hasBatchToPick: that.data.hasBatchToPick,
+                couponList: res.data.couponList,
+                couponCount: res.data.couponCount,
+                hasBatchToPick: res.data.hasBatchToPick,
             });
         });
     },

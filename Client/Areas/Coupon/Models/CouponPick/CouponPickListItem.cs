@@ -18,4 +18,7 @@ public class CouponPickListItem
 
     [JsonProperty("ruleDesc")]
     public string RuleDesc { get; set; } = string.Empty;
+
+    [JsonProperty("expire")]
+    public string Expire { get; set; } = string.Empty;
 }
