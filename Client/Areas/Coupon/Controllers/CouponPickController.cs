@@ -25,6 +25,16 @@ public class CouponPickController : Controller {
     [HttpPost]
     [Route("/client/coupon/pick/list")]
     public IActionResult List([FromBody] CouponPickListParam param) {
+        var model = GetListData(param);
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = model,
+        });
+    }
+
+    [NonAction]
+    private CouponPickListModel GetListData(CouponPickListParam param) {
         DateTime today = DateTime.Today;
         var batchList = session.Query<CouponBatchInfo>()
             .Where(e => e.Status == CouponBatchStatus.Release
@@ -43,14 +53,10 @@ public class CouponPickController : Controller {
             })
             .ToList();
 
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-            Data = new CouponPickListModel {
-                BatchList = batchItemList,
-                BatchCount = batchList.Count,
-            },
-        });
+        return new CouponPickListModel {
+            BatchList = batchItemList,
+            BatchCount = batchList.Count,
+        };
     }
 
     [HttpPost]
@@ -61,9 +67,12 @@ public class CouponPickController : Controller {
 
         couponBatchService.Pick(batchId: batchId, customerId: loginCustomerId);
 
+        var listModel = GetListData(param);
+
         return Json(new JsonResultData {
             Success = true,
             Message = "优惠券领取成功！",
+            Data = listModel,
         });
     }
 }
