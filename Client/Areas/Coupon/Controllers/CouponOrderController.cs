@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using NHibernate.Persister.Entity;
 using shunda.Client.Areas.Coupon.Models.CouponOrder;
 using shunda.Client.Services;
+using shunda.Core;
 using shunda.Core.Hibernate;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
-using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
 using shunda.Service.LogisticsOrder;
@@ -80,7 +80,22 @@ public class CouponOrderController : Controller {
 
     [HttpPost]
     [Route("/client/coupon/order/save")]
+    [Transactional]
     public IActionResult Save([FromBody] CouponOrderSaveParam param) {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        if (ModelState.IsValid == false) {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int couponId = param.CouponId;
+
+        if (couponId != 0) {
+            couponService.CheckCouponValidBeforeOrderCreate(couponId: couponId, customerId: loginCustomerId);
+        }
+
+        logisticsOrderCreateSelectService.SaveCoupon(customerId: loginCustomerId, couponId: couponId);
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",

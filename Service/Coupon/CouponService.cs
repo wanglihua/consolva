@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using NHibernate;
-using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Coupon;
@@ -94,6 +93,12 @@ public class CouponService {
         }
     }
 
+    /// <summary>
+    /// 创建订单时检查优惠券的有效性
+    /// </summary>
+    /// <param name="couponId"></param>
+    /// <param name="orderId"></param>
+    /// <exception cref="ValidationException"></exception>
     public void CheckCouponValidAfterOrderCreate(int couponId, int orderId) {
         var coupon = session.Get<CouponInfo>(couponId);
         if (coupon == null) {
@@ -167,15 +172,6 @@ public class CouponService {
 
     public void SetCouponUsed(int couponId, LogisticsOrderInfo order, decimal actualDiscountAmount) {
         var now = DateTime.Now;
-        // session.Query<CouponInfo>()
-        //     .Where(e => e.Id == couponId)
-        //     .UpdateBuilder()
-        //     .Set(e => e.Order, order)
-        //     .Set(e => e.ActualDiscountAmount, actualDiscountAmount)
-        //     .Set(e => e.Status, CouponStatus.Use)
-        //     .Set(e => e.UseTime, now)
-        //     .Set(e => e.UpdateTime, now)
-        //     .Update();
 
         var coupon = session.Get<CouponInfo>(couponId);
         if (coupon == null) {
@@ -192,14 +188,6 @@ public class CouponService {
     }
 
     public void UpdateActualDiscountAmount(int couponId, decimal actualDiscountAmount) {
-        var now = DateTime.Now;
-        // session.Query<CouponInfo>()
-        //     .Where(e => e.Id == couponId)
-        //     .UpdateBuilder()
-        //     .Set(e => e.ActualDiscountAmount, actualDiscountAmount)
-        //     .Set(e => e.UpdateTime, now)
-        //     .Update();
-
         var coupon = session.Get<CouponInfo>(couponId);
         if (coupon == null) {
             throw new ValidationException($"指定的优惠券#{couponId}不存在！");
@@ -216,17 +204,6 @@ public class CouponService {
     /// </summary>
     /// <param name="orderId"></param>
     public void setCouponNotUsed(int orderId) {
-        var now = DateTime.Now;
-        // session.Query<CouponInfo>()
-        //     .Where(e => e.Order!.Id == orderId)
-        //     .UpdateBuilder()
-        //     .Set(e => e.Order, (LogisticsOrderInfo?)null)
-        //     .Set(e => e.ActualDiscountAmount, 0)
-        //     .Set(e => e.Status, CouponStatus.Pick) // 这里暂时不考虑过期的问题
-        //     .Set(e => e.UseTime, (DateTime?)null)
-        //     .Set(e => e.UpdateTime, now)
-        //     .Update();
-
         var orderCouponList = session.Query<CouponInfo>() // 一般也就只有一张
             .Where(e => e.Order!.Id == orderId)
             .ToList();
