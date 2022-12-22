@@ -11,6 +11,10 @@ Page({
     },
 
     onLoad(options) {
+        // this.loadMyCouponList();
+    },
+    
+    onShow(object) {
         this.loadMyCouponList();
     },
 

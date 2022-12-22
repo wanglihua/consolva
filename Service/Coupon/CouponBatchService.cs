@@ -293,7 +293,7 @@ public class CouponBatchService {
 
         var coupon = new CouponInfo {
             Batch = batch,
-            Code = string.Empty, // 后面会做修正
+            Code = Guid.NewGuid().ToString("N"), // 后面会做修正
             Customer = customer,
             PickTime = now,
             GetMethod = CouponGetMethod.Pick,

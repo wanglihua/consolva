@@ -24,7 +24,7 @@ Page({
     },
 
     onCouponPickClick(e) {
-        console.log(e.currentTarget.dataset.item);
+        // console.log(e.currentTarget.dataset.item);
         const batchId = e.currentTarget.dataset.item.id;
 
         const that = this;
