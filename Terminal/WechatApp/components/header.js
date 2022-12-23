@@ -1,5 +1,8 @@
 // components/header.js
 Component({
+    options: {
+        styleIsolation: 'isolated'
+    },
     /**
      * 组件的属性列表
      */
@@ -12,9 +15,12 @@ Component({
         chatIconMessageCount: 0,
     },
 
-    /**
-     * 组件的方法列表
-     */
+    pageLifetimes: {
+        show: function () {
+            console.log("pageLifetimes: show()")
+        }
+    },
+    
     methods: {
         onChatIconClick(e) {
             console.log(e);
