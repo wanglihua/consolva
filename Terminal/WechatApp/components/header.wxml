@@ -1,3 +1,15 @@
 <!--components/header.wxml-->
-
+<van-nav-bar
+        safe-area-inset-top="{{ false }}"
+        fixed="{{ true }}"
+        placeholder="{{ true }}"
+        bind:click-left="onClickLeft"
+        bind:click-right="onClickRight">
+    <view slot="left">
+        logo
+    </view>
+    <view slot="right">
+        vip
+    </view>
+</van-nav-bar>
 <chat-icon/>
