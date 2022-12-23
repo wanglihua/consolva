@@ -2,11 +2,13 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Customer.Models.CustomerReceiveAddress;
 
-public class CustomerReceiveAddressListModel
-{
-    [JsonProperty("addressList")]
-    public IList<CustomerReceiveAddressListItem> AddressList = new List<CustomerReceiveAddressListItem>();
+public class CustomerReceiveAddressListModel {
+    [JsonProperty("receiveAddressList")]
+    public IList<CustomerReceiveAddressListItem> ReceiveAddressList = new List<CustomerReceiveAddressListItem>();
 
-    [JsonProperty("addressCount")]
-    public int AddressCount { get; set; }
+    [JsonProperty("receiveAddressCount")]
+    public int ReceiveAddressCount { get; set; }
+
+    [JsonProperty("sendAddressCount")]
+    public int SendAddressCount { get; set; }
 }

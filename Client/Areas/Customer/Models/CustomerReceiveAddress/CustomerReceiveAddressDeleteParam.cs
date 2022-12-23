@@ -3,8 +3,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Customer.Models.CustomerReceiveAddress;
 
-public class CustomerReceiveAddressDeleteParam : CustomerReceiveAddressListParam
-{
+public class CustomerReceiveAddressDeleteParam : CustomerReceiveAddressListParam {
     [JsonProperty("id")]
     [Required(ErrorMessage = "地址id不能为空！")]
     public int Id { get; set; } = 0;

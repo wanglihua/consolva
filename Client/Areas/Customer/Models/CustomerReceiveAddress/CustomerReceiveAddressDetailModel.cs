@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
+
 namespace shunda.Client.Areas.Customer.Models.CustomerReceiveAddress;
 
-public class CustomerReceiveAddressDetailModel : CustomerReceiveAddressSaveModel
-{
+public class CustomerReceiveAddressDetailModel : CustomerReceiveAddressSaveModel {
+
 }
