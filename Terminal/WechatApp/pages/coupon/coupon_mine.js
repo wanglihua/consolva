@@ -31,7 +31,7 @@ Page({
 
     onCouponPickClick(e) {
         wx.navigateTo({
-            url: "../coupon_pick/coupon_pick",
+            url: "./coupon_pick",
         });
     },
 

@@ -1,6 +1,10 @@
 {
     "pages": [
         "pages/index/index",
+        "pages/coupon/coupon_mine",
+        "pages/coupon/coupon_pick",
+        "pages/coupon/coupon_order",
+        "pages/coupon/coupon_pay",        
         "pages/express/express_claim/express_claim_list/express_claim_list",
         "pages/express/express_claim/express_claim_detail/express_claim_detail",
         "pages/express/express_claim/express_claim_pick/express_claim_pick",
@@ -16,10 +20,6 @@
         "pages/customer/customer_pay/customer_pay",
         "pages/customer/customer_score/customer_score/customer_score",
         "pages/customer/customer_score/customer_score_log/customer_score_log",
-        "pages/coupon/coupon_mine/coupon_mine",
-        "pages/coupon/coupon_pick/coupon_pick",
-        "pages/coupon/coupon_order/coupon_order",
-        "pages/coupon/coupon_pay/coupon_pay",
         "pages/customer/customer_address/customer_address_receive/customer_address_receive_list",
         "pages/customer/customer_address/customer_address_receive/customer_address_receive_detail",
         "pages/customer/customer_address/customer_address_send/customer_address_send_list",
