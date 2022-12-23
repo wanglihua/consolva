@@ -5,6 +5,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using ISession = NHibernate.ISession;
 
@@ -44,6 +45,7 @@ public class CustomerReceiveAddressController : Controller {
         var receiveAddressItemList = receiveAddressList
             .Select(e => new CustomerReceiveAddressListItem {
                 Id = e.Id,
+                Country = e.Country.Name,
                 FirstName = e.FirstName,
                 LastName = e.LastName,
                 Mobile = e.Mobile,
@@ -93,6 +95,7 @@ public class CustomerReceiveAddressController : Controller {
 
         var model = new CustomerReceiveAddressDetailModel {
             Id = address.Id,
+            CountryId = address.Country.Id,
             FirstName = address.FirstName,
             LastName = address.LastName,
             Mobile = address.Mobile,
@@ -120,6 +123,11 @@ public class CustomerReceiveAddressController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
+        Country country = Country.GetById(model.CountryId);
+        if (country == Country.None || country == Country.China) {
+            throw new ValidationException("请选择正确的国家选项！");
+        }
+
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int addressId = model.Id;
@@ -137,6 +145,7 @@ public class CustomerReceiveAddressController : Controller {
             }
         }
 
+        address.Country = country;
         address.FirstName = model.FirstName;
         address.LastName = model.LastName;
         address.Mobile = model.Mobile;

@@ -11,23 +11,18 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Customer.Controllers;
 
 [CustomerArea]
-public class CustomerSendAddressController : Controller
-{
+public class CustomerSendAddressController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
 
-    public CustomerSendAddressController(ISession session, LoginCustomerService loginCustomerService)
-    {
+    public CustomerSendAddressController(ISession session, LoginCustomerService loginCustomerService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
     }
 
     [HttpPost]
     [Route("/client/customer/send/address/list")]
-    public IActionResult List([FromBody] CustomerSendAddressListParam param)
-    {
-        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-
+    public IActionResult List([FromBody] CustomerSendAddressListParam param) {
         var model = GetListData(param);
 
         return Json(new JsonResultData {
@@ -38,15 +33,22 @@ public class CustomerSendAddressController : Controller
     }
 
     [NonAction]
-    private CustomerSendAddressListModel GetListData(CustomerSendAddressListParam param)
-    {
+    private CustomerSendAddressListModel GetListData(CustomerSendAddressListParam param) {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        var query = session.Query<CustomerSendAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId);
+
+        var sendAddressList = query
+            .OrderByDescending(e => e.Id)
+            .ToList();
+        
+        
         return new CustomerSendAddressListModel();
     }
 
     [HttpPost]
     [Route("/client/customer/send/address/detail")]
-    public IActionResult Detail([FromBody] IdParam param)
-    {
+    public IActionResult Detail([FromBody] IdParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         return Json(new JsonResultData {
@@ -60,29 +62,22 @@ public class CustomerSendAddressController : Controller
     [HttpPost]
     [Route("/client/customer/send/address/save")]
     [Transactional]
-    public IActionResult Save([FromBody] CustomerSendAddressSaveModel model)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Save([FromBody] CustomerSendAddressSaveModel model) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int addressId = model.Id;
-        if (addressId == 0)
-        {
-        }
-        else
-        {
+        if (addressId == 0) {
+        } else {
             var address = session.Get<CustomerSendAddressInfo>(addressId);
-            if (address == null)
-            {
+            if (address == null) {
                 throw new ValidationException($"指定的发货地址#{addressId}不存在！");
             }
 
-            if (address.Customer.Id != loginCustomerId)
-            {
+            if (address.Customer.Id != loginCustomerId) {
                 throw new ValidationException($"指定的发货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
             }
         }
@@ -96,19 +91,16 @@ public class CustomerSendAddressController : Controller
     [HttpPost]
     [Route("/client/customer/send/address/set/default")]
     [Transactional]
-    public IActionResult SetDefault([FromBody] CustomerSendAddressSetDefaultParam param)
-    {
+    public IActionResult SetDefault([FromBody] CustomerSendAddressSetDefaultParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int addressId = param.Id;
         var address = session.Get<CustomerSendAddressInfo>(addressId);
-        if (address == null)
-        {
+        if (address == null) {
             throw new ValidationException($"指定的发货地址#{addressId}不存在！");
         }
 
-        if (address.Customer.Id != loginCustomerId)
-        {
+        if (address.Customer.Id != loginCustomerId) {
             throw new ValidationException($"指定的发货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
         }
 
@@ -117,8 +109,7 @@ public class CustomerSendAddressController : Controller
         var addressDefaultList = session.Query<CustomerSendAddressInfo>()
             .Where(e => e.Customer.Id == loginCustomerId && e.IsDefault == true)
             .ToList();
-        foreach (var addressDefault in addressDefaultList)
-        {
+        foreach (var addressDefault in addressDefaultList) {
             addressDefault.IsDefault = false;
             session.Update(addressDefault);
         }
@@ -143,10 +134,8 @@ public class CustomerSendAddressController : Controller
     [HttpPost]
     [Route("/client/customer/send/address/delete")]
     [Transactional]
-    public IActionResult Delete([FromBody] CustomerSendAddressDeleteParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Delete([FromBody] CustomerSendAddressDeleteParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -154,13 +143,11 @@ public class CustomerSendAddressController : Controller
 
         int addressId = param.Id;
         var address = session.Get<CustomerSendAddressInfo>(addressId);
-        if (address == null)
-        {
+        if (address == null) {
             throw new ValidationException($"指定的发货地址#{addressId}不存在！");
         }
 
-        if (address.Customer.Id != loginCustomerId)
-        {
+        if (address.Customer.Id != loginCustomerId) {
             throw new ValidationException($"指定的发货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
         }
 

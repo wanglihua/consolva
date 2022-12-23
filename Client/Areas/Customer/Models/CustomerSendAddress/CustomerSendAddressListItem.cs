@@ -5,4 +5,31 @@ namespace shunda.Client.Areas.Customer.Models.CustomerSendAddress;
 public class CustomerSendAddressListItem {
     [JsonProperty("id")]
     public int Id { get; set; }
+
+    [JsonProperty("firstName")]
+    public string FirstName { get; set; } = string.Empty;
+
+    [JsonProperty("lastName")]
+    public string LastName { get; set; } = string.Empty;
+
+    [JsonProperty("mobile")]
+    public string Mobile { get; set; } = string.Empty;
+
+    [JsonProperty("province")]
+    public string Province { get; set; } = string.Empty;
+
+    [JsonProperty("city")]
+    public string City { get; set; } = string.Empty;
+
+    [JsonProperty("area")]
+    public string Area { get; set; } = string.Empty;
+
+    [JsonProperty("address")]
+    public string Address { get; set; } = string.Empty;
+
+    [JsonProperty("zipcode")]
+    public string Zipcode { get; set; } = string.Empty;
+
+    [JsonProperty("isDefault")]
+    public bool IsDefault { get; set; }
 }

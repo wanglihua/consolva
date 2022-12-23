@@ -7,6 +7,10 @@ public class CustomerReceiveAddressSaveModel {
     [JsonProperty("id")]
     public int Id { get; set; }
 
+    [Required(ErrorMessage = "[国家]不能为空！")]
+    [JsonProperty("countryId")]
+    public int CountryId { get; set; }
+
     [Required(ErrorMessage = "[first name]不能为空！")]
     [JsonProperty("firstName")]
     public string FirstName { get; set; } = string.Empty;
