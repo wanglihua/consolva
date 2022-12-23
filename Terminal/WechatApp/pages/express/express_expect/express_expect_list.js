@@ -47,7 +47,7 @@ Page({
 
     onAddExpressExpectClick() {
         wx.navigateTo({
-            url: '../express_expect_add/express_expect_add',
+            url: './express_expect_add',
         })
     },
     onSearch(e) {
@@ -112,7 +112,7 @@ Page({
 
         if (action === "edit") {
             wx.navigateTo({
-                url: '../express_expect_edit/express_expect_edit?id=' + expressExpectId,
+                url: './express_expect_edit?id=' + expressExpectId,
             });
         }
 

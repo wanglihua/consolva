@@ -18,9 +18,9 @@
         "pages/express/express_claim/express_claim_list",
         "pages/express/express_claim/express_claim_detail",
         "pages/express/express_claim/express_claim_pick",
-        "pages/express/express_expect/express_expect_list/express_expect_list",
-        "pages/express/express_expect/express_expect_add/express_expect_add",
-        "pages/express/express_expect/express_expect_edit/express_expect_edit",
+        "pages/express/express_expect/express_expect_list",
+        "pages/express/express_expect/express_expect_add",
+        "pages/express/express_expect/express_expect_edit",
         "pages/express/express_return/express_return_list",
         "pages/message/message_customize",
         "pages/message/message_list"
