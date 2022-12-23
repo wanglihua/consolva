@@ -106,6 +106,8 @@ public class CustomerReceiveAddressController : Controller {
             Tfn = address.Tfn,
             Company = address.Company,
             UnitLoc = address.UnitLoc,
+
+            CountryList = Country.GetNoChinaList(),
         };
 
         return Json(new JsonResultData {
