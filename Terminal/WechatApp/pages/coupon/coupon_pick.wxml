@@ -1,4 +1,5 @@
 <!--pages/coupon/coupon_pick/coupon_pick.wxml-->
+<header/>
 <view class="container">
     <block wx:if="{{ batchCount === 0 }}">
         <van-empty description="当前没有可以领取的优惠券，或批次优惠券已经抢完！"/>

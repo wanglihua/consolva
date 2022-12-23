@@ -1,4 +1,5 @@
 <!--pages/express/express_claim/express_claim_list/express_claim_list.wxml-->
+<header/>
 <van-sticky>
     <view class="container-top">
         <view style="background-color: white;">

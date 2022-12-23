@@ -1,4 +1,5 @@
 <!--pages/express/express_expect/express_expect_add/express_expect_add.wxml-->
+<header/>
 <view class="container">
     <van-cell-group title="添加快递单号预报">
         <van-field model:value="{{ trackingNo }}" label="快递单号" placeholder="请输入预报快递单号" border="{{ false }}" error="{{trackingNoHasError}}" error-message="{{trackingNoErrorMsg}}"/>

@@ -1,4 +1,5 @@
 <!--pages/express/express_claim/express_claim_pick/express_claim_pick.wxml-->
+<header/>
 <view class="container">
     <van-cell-group title="{{ pageTitle }}"/>
 

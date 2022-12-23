@@ -1,12 +1,14 @@
 <!--components/chat_icon.wxml-->
-<view class="chatIcon">
-    <van-button type="info" round plain class-prefix="iconfont" icon="customer-service" size="small" bind:click="onChatIconClick">
-        <text>客服</text>
-        <block wx:if="{{ chatIconMessageCount > 0 }}">
-            <text class="chatIconMessageCount">{{chatIconMessageCount}}</text>
-        </block>
-    </van-button>
-</view>
+<block wx:if="{{ showChatIcon }}">
+    <view class="chatIcon">
+        <van-button type="info" round plain class-prefix="iconfont" icon="customer-service" size="small" bind:click="onChatIconClick">
+            <text>客服</text>
+            <block wx:if="{{ chatIconMessageCount > 0 }}">
+                <text class="chatIconMessageCount">{{chatIconMessageCount}}</text>
+            </block>
+        </van-button>
+    </view>
+</block>
 
 <van-popup
         show="{{ showChatForm }}"

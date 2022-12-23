@@ -11,6 +11,7 @@ Component({
 
     data: {
         chatIconMessageCount: 0,
+        showChatIcon: true,
         showChatForm: false,
     },
 
@@ -31,11 +32,13 @@ Component({
             // });
 
             this.setData({
+                showChatIcon: false,
                 showChatForm: true,
             });
         },
         onChatFormClose(e) {
             this.setData({
+                showChatIcon: true,
                 showChatForm: false,
             });
         },

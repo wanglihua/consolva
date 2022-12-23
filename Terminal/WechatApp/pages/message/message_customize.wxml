@@ -1,4 +1,5 @@
 <!--pages/message/message_customize/message_customize.wxml-->
+<header/>
 <view class="container">
     <block wx:if="{{ messageCustomizeCount === 0 }}">
         <van-empty description="暂时没有可定制的消息类型！"/>
