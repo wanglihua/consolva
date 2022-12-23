@@ -11,6 +11,7 @@ Component({
 
     data: {
         chatIconMessageCount: 0,
+        showChatForm: false,
     },
 
     pageLifetimes: {
@@ -23,11 +24,20 @@ Component({
         onChatIconClick(e) {
             // console.log(e);
 
-            let chatIconMessageCount = this.data.chatIconMessageCount;
-            chatIconMessageCount = chatIconMessageCount + 1;
+            // let chatIconMessageCount = this.data.chatIconMessageCount;
+            // chatIconMessageCount = chatIconMessageCount + 1;
+            // this.setData({
+            //     chatIconMessageCount: chatIconMessageCount,
+            // });
+
             this.setData({
-                chatIconMessageCount: chatIconMessageCount,
+                showChatForm: true,
             });
-        }
+        },
+        onChatFormClose(e) {
+            this.setData({
+                showChatForm: false,
+            });
+        },
     }
 })

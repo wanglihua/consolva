@@ -7,3 +7,13 @@
         </block>
     </van-button>
 </view>
+
+<van-popup
+        show="{{ showChatForm }}"
+        closeable
+        position="bottom"
+        custom-style="height: 95%"
+        bind:close="onChatFormClose"
+>
+    <chat-form/>
+</van-popup>
