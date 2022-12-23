@@ -12,19 +12,18 @@
         "pages/customer/customer_address/customer_address_send/customer_address_send_list",
         "pages/customer/customer_address/customer_address_send/customer_address_send_detail",
         "pages/customer/customer_pay/customer_pay",
-        "pages/express/express_claim/express_claim_list/express_claim_list",
-        "pages/express/express_claim/express_claim_detail/express_claim_detail",
-        "pages/express/express_claim/express_claim_pick/express_claim_pick",
+        "pages/customer/customer_score/customer_score",
+        "pages/customer/customer_score/customer_score_log",
+        "pages/express/express_checkin/express_checkin_list",
+        "pages/express/express_claim/express_claim_list",
+        "pages/express/express_claim/express_claim_detail",
+        "pages/express/express_claim/express_claim_pick",
         "pages/express/express_expect/express_expect_list/express_expect_list",
         "pages/express/express_expect/express_expect_add/express_expect_add",
         "pages/express/express_expect/express_expect_edit/express_expect_edit",
-        "pages/express/express_checkin/express_checkin_list/express_checkin_list",
         "pages/express/express_return/express_return_list/express_return_list",
-        "pages/message/message_customize/message_customize",
-        "pages/message/message_list/message_list",
-        
-        "pages/customer/customer_score/customer_score/customer_score",
-        "pages/customer/customer_score/customer_score_log/customer_score_log"
+        "pages/message/message_customize",
+        "pages/message/message_list"
     ],
     "window": {
         "backgroundTextStyle": "light",

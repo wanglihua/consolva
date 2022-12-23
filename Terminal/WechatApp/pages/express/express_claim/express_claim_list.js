@@ -99,13 +99,13 @@ Page({
 
         if (action === "detail") {
             wx.navigateTo({
-                url: '../express_claim_detail/express_claim_detail?id=' + expressClaimId,
+                url: './express_claim_detail?id=' + expressClaimId,
             });
         }
 
         if (action === "claim") {
             wx.navigateTo({
-                url: '../express_claim_pick/express_claim_pick?id=' + expressClaimId,
+                url: './express_claim_pick?id=' + expressClaimId,
             });
         }
 

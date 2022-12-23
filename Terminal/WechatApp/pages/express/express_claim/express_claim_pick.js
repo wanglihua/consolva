@@ -168,7 +168,7 @@ Page({
                         });
                     } else {
                         wx.navigateTo({
-                            url: '../express_claim_list/express_claim_list',
+                            url: './express_claim_list',
                         });
                     }
 

@@ -24,7 +24,7 @@ Page({
 
     onClaimClick() {
         wx.navigateTo({
-            url: '../express_claim_pick/express_claim_pick?id=' + this.data.express.id,
+            url: './express_claim_pick?id=' + this.data.express.id,
         });        
     },
 
