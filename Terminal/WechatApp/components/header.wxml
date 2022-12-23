@@ -1,0 +1,2 @@
+<!--components/header.wxml-->
+<view style="position:fixed; z-index: 999999; width: 50rpx; height: 25rpx; background-color: red; right: 10rpx; bottom: 40rpx;"></view>

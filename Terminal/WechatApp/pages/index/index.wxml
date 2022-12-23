@@ -1,4 +1,5 @@
 <!--index.wxml-->
+<header />
 <view class="container">
     <view>
         <van-grid border="{{false}}" gutter="3">

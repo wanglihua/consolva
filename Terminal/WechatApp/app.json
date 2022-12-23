@@ -48,7 +48,7 @@
         "van-switch": "@vant/weapp/switch/index",
         "van-tab": "@vant/weapp/tab/index",
         "van-tabs": "@vant/weapp/tabs/index",
-        "common": "components/common/common"
+        "header": "components/header"
     },
     "sitemapLocation": "sitemap.json"
 }
