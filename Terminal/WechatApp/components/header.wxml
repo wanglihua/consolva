@@ -1,2 +1,9 @@
 <!--components/header.wxml-->
-<view style="position:fixed; z-index: 999999; width: 50rpx; height: 25rpx; background-color: red; right: 10rpx; bottom: 40rpx;"></view>
+<view class="chatIcon">
+    <van-button type="info" round plain class-prefix="iconfont" icon="customer-service" size="small" bind:click="onChatIconClick">
+        <text>客服</text>
+        <block wx:if="{{ chatIconMessageCount > 0 }}">
+            <text class="chatIconMessageCount">{{chatIconMessageCount}}</text>
+        </block>
+    </van-button>
+</view>
