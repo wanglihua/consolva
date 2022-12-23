@@ -37,6 +37,7 @@ public class CustomerSendAddressController : Controller
         });
     }
 
+    [NonAction]
     private CustomerSendAddressListModel GetListData(CustomerSendAddressListParam param)
     {
         return new CustomerSendAddressListModel();
