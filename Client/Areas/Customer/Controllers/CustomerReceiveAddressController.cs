@@ -32,6 +32,7 @@ public class CustomerReceiveAddressController : Controller {
         });
     }
 
+    [NonAction]
     private CustomerReceiveAddressListModel GetListData(CustomerReceiveAddressListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         var query = session.Query<CustomerReceiveAddressInfo>()
@@ -76,9 +77,11 @@ public class CustomerReceiveAddressController : Controller {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int addressId = param.Id;
+        CustomerReceiveAddressInfo address;
         if (addressId == 0) {
+            address = new CustomerReceiveAddressInfo();
         } else {
-            var address = session.Get<CustomerReceiveAddressInfo>(addressId);
+            address = session.Get<CustomerReceiveAddressInfo>(addressId);
             if (address == null) {
                 throw new ValidationException($"指定的收货地址#{addressId}不存在！");
             }
@@ -86,13 +89,26 @@ public class CustomerReceiveAddressController : Controller {
             if (address.Customer.Id != loginCustomerId) {
                 throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
             }
-        }        
+        }
+
+        var model = new CustomerReceiveAddressDetailModel {
+            Id = address.Id,
+            FirstName = address.FirstName,
+            LastName = address.LastName,
+            Mobile = address.Mobile,
+            Address = address.Address,
+            City = address.City,
+            State = address.State,
+            Zipcode = address.Zipcode,
+            Tfn = address.Tfn,
+            Company = address.Company,
+            UnitLoc = address.UnitLoc,
+        };
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = new CustomerReceiveAddressDetailModel {
-            },
+            Data = model,
         });
     }
 
@@ -107,9 +123,11 @@ public class CustomerReceiveAddressController : Controller {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int addressId = model.Id;
+        CustomerReceiveAddressInfo address;
         if (addressId == 0) {
+            address = new CustomerReceiveAddressInfo();
         } else {
-            var address = session.Get<CustomerReceiveAddressInfo>(addressId);
+            address = session.Get<CustomerReceiveAddressInfo>(addressId);
             if (address == null) {
                 throw new ValidationException($"指定的收货地址#{addressId}不存在！");
             }
@@ -118,6 +136,20 @@ public class CustomerReceiveAddressController : Controller {
                 throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
             }
         }
+
+        address.FirstName = model.FirstName;
+        address.LastName = model.LastName;
+        address.Mobile = model.Mobile;
+        address.Address = model.Address;
+        address.City = model.City;
+        address.State = model.State;
+        address.Zipcode = model.Zipcode;
+        address.Tfn = model.Tfn;
+        address.Company = model.Company;
+        address.UnitLoc = model.UnitLoc;
+
+        session.SaveOrUpdate(address);
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,
@@ -199,7 +231,4 @@ public class CustomerReceiveAddressController : Controller {
             Data = model,
         });
     }
-
-    // 详细，编辑，删除时 检查是不是当前登录客户的地址
-    // 删除 和 设置默认地址 后，直接返回地址列表
 }
