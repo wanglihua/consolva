@@ -11,23 +11,18 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Customer.Controllers;
 
 [CustomerArea]
-public class CustomerReceiveAddressController : Controller
-{
+public class CustomerReceiveAddressController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
 
-    public CustomerReceiveAddressController(ISession session, LoginCustomerService loginCustomerService)
-    {
+    public CustomerReceiveAddressController(ISession session, LoginCustomerService loginCustomerService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
     }
 
     [HttpPost]
     [Route("/client/customer/receive/address/list")]
-    public IActionResult List([FromBody] CustomerReceiveAddressListParam param)
-    {
-        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-
+    public IActionResult List([FromBody] CustomerReceiveAddressListParam param) {
         var model = GetListData(param);
 
         return Json(new JsonResultData {
@@ -37,16 +32,61 @@ public class CustomerReceiveAddressController : Controller
         });
     }
 
-    private CustomerReceiveAddressListModel GetListData(CustomerReceiveAddressListParam param)
-    {
-        return new CustomerReceiveAddressListModel();
+    private CustomerReceiveAddressListModel GetListData(CustomerReceiveAddressListParam param) {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        var query = session.Query<CustomerReceiveAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId);
+
+        var receiveAddressList = query
+            .OrderByDescending(e => e.Id)
+            .ToList();
+        var receiveAddressItemList = receiveAddressList
+            .Select(e => new CustomerReceiveAddressListItem {
+                Id = e.Id,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                Mobile = e.Mobile,
+                Address = e.Address,
+                City = e.City,
+                State = e.State,
+                Zipcode = e.Zipcode,
+                Tfn = e.Tfn,
+                Company = e.Company,
+                UnitLoc = e.UnitLoc,
+                IsDefault = e.IsDefault,
+            })
+            .ToList();
+
+        int receiveAddressCount = query.Count();
+
+        int sendAddressCount = session.Query<CustomerSendAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId)
+            .Count();
+
+        return new CustomerReceiveAddressListModel {
+            ReceiveAddressList = receiveAddressItemList,
+            ReceiveAddressCount = receiveAddressCount,
+            SendAddressCount = sendAddressCount,
+        };
     }
 
     [HttpPost]
     [Route("/client/customer/receive/address/detail")]
-    public IActionResult Detail([FromBody] IdParam param)
-    {
+    public IActionResult Detail([FromBody] IdParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        int addressId = param.Id;
+        if (addressId == 0) {
+        } else {
+            var address = session.Get<CustomerReceiveAddressInfo>(addressId);
+            if (address == null) {
+                throw new ValidationException($"指定的收货地址#{addressId}不存在！");
+            }
+
+            if (address.Customer.Id != loginCustomerId) {
+                throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
+            }
+        }        
 
         return Json(new JsonResultData {
             Success = true,
@@ -59,29 +99,22 @@ public class CustomerReceiveAddressController : Controller
     [HttpPost]
     [Route("/client/customer/receive/address/save")]
     [Transactional]
-    public IActionResult Save([FromBody] CustomerReceiveAddressSaveModel model)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Save([FromBody] CustomerReceiveAddressSaveModel model) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int addressId = model.Id;
-        if (addressId == 0)
-        {
-        }
-        else
-        {
+        if (addressId == 0) {
+        } else {
             var address = session.Get<CustomerReceiveAddressInfo>(addressId);
-            if (address == null)
-            {
+            if (address == null) {
                 throw new ValidationException($"指定的收货地址#{addressId}不存在！");
             }
 
-            if (address.Customer.Id != loginCustomerId)
-            {
+            if (address.Customer.Id != loginCustomerId) {
                 throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
             }
         }
@@ -95,19 +128,16 @@ public class CustomerReceiveAddressController : Controller
     [HttpPost]
     [Route("/client/customer/receive/address/set/default")]
     [Transactional]
-    public IActionResult SetDefault([FromBody] CustomerReceiveAddressSetDefaultParam param)
-    {
+    public IActionResult SetDefault([FromBody] CustomerReceiveAddressSetDefaultParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int addressId = param.Id;
         var address = session.Get<CustomerReceiveAddressInfo>(addressId);
-        if (address == null)
-        {
+        if (address == null) {
             throw new ValidationException($"指定的收货地址#{addressId}不存在！");
         }
 
-        if (address.Customer.Id != loginCustomerId)
-        {
+        if (address.Customer.Id != loginCustomerId) {
             throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
         }
 
@@ -116,8 +146,7 @@ public class CustomerReceiveAddressController : Controller
         var addressDefaultList = session.Query<CustomerReceiveAddressInfo>()
             .Where(e => e.Customer.Id == loginCustomerId && e.IsDefault == true)
             .ToList();
-        foreach (var addressDefault in addressDefaultList)
-        {
+        foreach (var addressDefault in addressDefaultList) {
             addressDefault.IsDefault = false;
             session.Update(addressDefault);
         }
@@ -142,10 +171,8 @@ public class CustomerReceiveAddressController : Controller
     [HttpPost]
     [Route("/client/customer/receive/address/delete")]
     [Transactional]
-    public IActionResult Delete([FromBody] CustomerReceiveAddressDeleteParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Delete([FromBody] CustomerReceiveAddressDeleteParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -153,13 +180,11 @@ public class CustomerReceiveAddressController : Controller
 
         int addressId = param.Id;
         var address = session.Get<CustomerReceiveAddressInfo>(addressId);
-        if (address == null)
-        {
+        if (address == null) {
             throw new ValidationException($"指定的收货地址#{addressId}不存在！");
         }
 
-        if (address.Customer.Id != loginCustomerId)
-        {
+        if (address.Customer.Id != loginCustomerId) {
             throw new ValidationException($"指定的收货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
         }
 
