@@ -10,7 +10,7 @@
         <van-cell title="VIP等级" value="{{ vipRank }}">
             <van-icon slot="icon" class-prefix="iconfont" name="vip" class="cell-left-icon"/>
         </van-cell>
-        <van-cell title="积分明细" is-link link-type="navigateTo" url="../customer_score_log/customer_score_log">
+        <van-cell title="积分明细" is-link link-type="navigateTo" url="./customer_score_log">
             <van-icon slot="icon" class-prefix="iconfont" name="score-log" class="cell-left-icon"/>
         </van-cell>
     </van-cell-group>

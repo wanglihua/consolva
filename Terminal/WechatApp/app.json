@@ -4,7 +4,14 @@
         "pages/coupon/coupon_mine",
         "pages/coupon/coupon_pick",
         "pages/coupon/coupon_order",
-        "pages/coupon/coupon_pay",        
+        "pages/coupon/coupon_pay",
+        "pages/customer/customer_account/customer_account",
+        "pages/customer/customer_account/customer_account_entry",
+        "pages/customer/customer_address/customer_address_receive/customer_address_receive_list",
+        "pages/customer/customer_address/customer_address_receive/customer_address_receive_detail",
+        "pages/customer/customer_address/customer_address_send/customer_address_send_list",
+        "pages/customer/customer_address/customer_address_send/customer_address_send_detail",
+        "pages/customer/customer_pay/customer_pay",
         "pages/express/express_claim/express_claim_list/express_claim_list",
         "pages/express/express_claim/express_claim_detail/express_claim_detail",
         "pages/express/express_claim/express_claim_pick/express_claim_pick",
@@ -15,15 +22,9 @@
         "pages/express/express_return/express_return_list/express_return_list",
         "pages/message/message_customize/message_customize",
         "pages/message/message_list/message_list",
-        "pages/customer/customer_account/customer_account/customer_account",
-        "pages/customer/customer_account/customer_account_entry/customer_account_entry",
-        "pages/customer/customer_pay/customer_pay",
+        
         "pages/customer/customer_score/customer_score/customer_score",
-        "pages/customer/customer_score/customer_score_log/customer_score_log",
-        "pages/customer/customer_address/customer_address_receive/customer_address_receive_list",
-        "pages/customer/customer_address/customer_address_receive/customer_address_receive_detail",
-        "pages/customer/customer_address/customer_address_send/customer_address_send_list",
-        "pages/customer/customer_address/customer_address_send/customer_address_send_detail"
+        "pages/customer/customer_score/customer_score_log/customer_score_log"
     ],
     "window": {
         "backgroundTextStyle": "light",
