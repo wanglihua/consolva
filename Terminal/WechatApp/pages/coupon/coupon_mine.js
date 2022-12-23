@@ -14,7 +14,7 @@ Page({
         // this.loadMyCouponList();
     },
     
-    onShow(object) {
+    onShow() {
         this.loadMyCouponList();
     },
 

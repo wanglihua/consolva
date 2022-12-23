@@ -1,2 +1,7 @@
 <!--pages/customer/customer_address/customer_address_receive/customer_address_receive_list.wxml-->
-
+<view class="container">
+    <van-tabs active="receive" duration="{{ 0 }}" lazy-render="{{ false }}" bind:click="onTabClick">
+        <van-tab name="receive" title="收货地址"/>
+        <van-tab name="send" title="发货地址"/>
+    </van-tabs>
+</view>
