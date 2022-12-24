@@ -1,6 +1,6 @@
 <!--pages/express/express_expect/express_expect_list/express_expect_list.wxml-->
 <header/>
-<van-sticky>
+<van-sticky offset-top="{{ 46 }}">
     <view class="container-top">
         <view style="background-color: white;">
             <view style="padding: 10rpx 0;">

@@ -1,6 +1,6 @@
 <!--pages/express/express_claim/express_claim_list/express_claim_list.wxml-->
 <header/>
-<van-sticky>
+<van-sticky offset-top="{{ 46 }}">
     <view class="container-top">
         <view style="background-color: white;">
             <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>

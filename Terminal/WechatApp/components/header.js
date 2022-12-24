@@ -16,10 +16,13 @@ Component({
 
     methods: {
         onClickLeft() {
-            wx.showToast({title: '点击返回', icon: 'none'});
+            // wx.showToast({title: '点击返回', icon: 'none'});
+            wx.navigateTo({
+                url: "/pages/index/index",
+            });
         },
         onClickRight() {
-            wx.showToast({title: '点击按钮', icon: 'none'});
+            wx.showToast({title: '点击VIP', icon: 'none'});
         },
     },
 })
