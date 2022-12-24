@@ -1,3 +1,16 @@
 <!--pages/customer/customer_address/customer_address_receive/customer_address_receive_detail.wxml-->
 <header/>
-<text>pages/customer/customer_address/customer_address_receive/customer_address_receive_detail.wxml</text>
+<view class="container">
+    <van-cell-group title="添加收货地址">
+        <van-field model:value="{{ trackingNo }}" label="快递单号" placeholder="请输入预报快递单号" border="{{ false }}" error="{{trackingNoHasError}}" error-message="{{trackingNoErrorMsg}}"/>
+        <van-field model:value="{{ description }}" label="备注" type="textarea" autosize="{{ {minHeight:60, maxHeight:120 } }}" placeholder="请输入备注" border="{{ false }}"/>
+    </van-cell-group>
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="info" class-prefix="iconfont" icon="save" block bind:click="onSaveClick">保存</van-button>
+        </van-cell>
+        <van-cell border="{{false}}">
+            <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onCancelClick" style="margin-top: 10rpx;">取消</van-button>
+        </van-cell>
+    </van-cell-group>
+</view>

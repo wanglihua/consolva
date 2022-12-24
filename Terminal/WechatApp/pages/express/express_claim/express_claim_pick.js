@@ -176,7 +176,9 @@ Page({
                         complete: function (e) {
                             const pages = getCurrentPages();
                             const prevPage = pages[pages.length - 1];
-                            prevPage.loadExpressExpectList();
+                            if(prevPage.loadExpressExpectList) {
+                                prevPage.loadExpressExpectList();
+                            }
                         }
                     });                    
                 }, 1000);
