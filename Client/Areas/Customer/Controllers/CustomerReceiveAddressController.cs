@@ -60,7 +60,7 @@ public class CustomerReceiveAddressController : Controller {
             })
             .ToList();
 
-        int receiveAddressCount = query.Count();
+        int receiveAddressCount = receiveAddressList.Count();
 
         int sendAddressCount = session.Query<CustomerSendAddressInfo>()
             .Where(e => e.Customer.Id == loginCustomerId)

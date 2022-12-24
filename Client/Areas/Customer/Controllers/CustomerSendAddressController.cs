@@ -41,9 +41,48 @@ public class CustomerSendAddressController : Controller {
         var sendAddressList = query
             .OrderByDescending(e => e.Id)
             .ToList();
-        
-        
-        return new CustomerSendAddressListModel();
+
+        var provinceIdList = sendAddressList.Select(e => e.Province.Id).ToList();
+        var cityIdList = sendAddressList.Select(e => e.City.Id).ToList();
+        var areaIdList = sendAddressList.Select(e => e.Area.Id).ToList();
+
+        // 预取
+        var provinceList = session.Query<AddressProvinceInfo>()
+            .Where(e => provinceIdList.Contains(e.Id))
+            .ToList();
+        var cityList = session.Query<AddressCityInfo>()
+            .Where(e => cityIdList.Contains(e.Id))
+            .ToList();
+        var areaList = session.Query<AddressAreaInfo>()
+            .Where(e => areaIdList.Contains(e.Id))
+            .ToList();
+
+        var sendAddressItemList = sendAddressList
+            .Select(e => new CustomerSendAddressListItem {
+                Id = e.Id,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                Mobile = e.Mobile,
+                Province = e.Province.Name,
+                City = e.City.Name,
+                Area = e.Area.Name,
+                Address = e.Address,
+                Zipcode = e.Zipcode,
+                IsDefault = e.IsDefault,
+            })
+            .ToList();
+
+        int sendAdderssCount = sendAddressList.Count;
+
+        int receiveAddressCount = session.Query<CustomerReceiveAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId)
+            .Count();
+
+        return new CustomerSendAddressListModel {
+            SendAddressList = sendAddressItemList,
+            SendAddressCount = sendAdderssCount,
+            ReceiveAddressCount = receiveAddressCount,
+        };
     }
 
     [HttpPost]

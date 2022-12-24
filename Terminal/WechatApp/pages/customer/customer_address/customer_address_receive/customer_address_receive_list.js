@@ -3,10 +3,29 @@ const app = getApp();
 const util = app.require('utils/util.js');
 
 Page({
-    data: {},
+    data: {
+        receiveAddressList: [],
+        receiveAddressCount: 0,
+        sendAddressCount: 0,
+    },
 
     onLoad(options) {
+        this.loadReceiveAddressList();
+    },
 
+    loadReceiveAddressList() {
+        const that = this;
+        app.post("/client/customer/receive/address/list", {}, function (res) {
+            const receiveAddressList = res.data.receiveAddressList;
+            const receiveAddressCount = res.data.receiveAddressCount;
+            const sendAddressCount = res.data.sendAddressCount;
+
+            that.setData({
+                receiveAddressList: receiveAddressList,
+                receiveAddressCount: receiveAddressCount,
+                sendAddressCount: sendAddressCount,
+            });
+        });
     },
 
     onTabClick(e) {
