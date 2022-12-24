@@ -147,7 +147,7 @@
     @if (Model.CustomerSendAddressList != null && Model.CustomerSendAddressList.Count() != 0)
     {
         int index = 1;
-        foreach (CustomerSendAddressInfo customerAddress in Model.CustomerSendAddressList)
+        foreach (CustomerSendAddressInfo address in Model.CustomerSendAddressList)
         {
             <div class="addressBox">
                 <div class="order-num">#@(index++)&nbsp;<span style="background-color: red; color: white;">中</span></div>
@@ -157,14 +157,14 @@
                             <span >发货人</span>
                         </td>
                         <td class="addressDetail" style="width: 100px;">
-                            <span>@(customerAddress.LastName)@(customerAddress.FirstName)</span>
+                            <span>@(address.Name)</span>
                         </td>
 
                         <td class="addressLabel">
                             <span>手机</span>
                         </td>
                         <td class="addressDetail">
-                            <span>@customerAddress.Mobile</span>
+                            <span>@address.Mobile</span>
                         </td>
 
                         <td class="addressLabel">
@@ -180,21 +180,21 @@
                             <span>省份</span>
                         </td>
                         <td class="addressDetail">
-                            <span>@customerAddress.Province.Name</span>
+                            <span>@address.Province.Name</span>
                         </td>
 
                         <td class="addressLabel">
                             <span>城市</span>
                         </td>
                         <td class="addressDetail" style="width: 200px;">
-                            <span>@customerAddress.City.Name</span>
+                            <span>@address.City.Name</span>
                         </td>
 
                         <td class="addressLabel">
                             <span>地址</span>
                         </td>
                         <td class="addressDetail" style="width: 250px">
-                            <span>@customerAddress.Address</span>
+                            <span>@address.Address</span>
                         </td>
                     </tr>
 
@@ -203,14 +203,14 @@
                             <span>邮政编码</span>
                         </td>
                         <td class="addressDetail">
-                            <span>@customerAddress.Zipcode</span>
+                            <span>@address.Zipcode</span>
                         </td>
 
                         <td class="addressLabel">
                             <span>公司</span>
                         </td>
                         <td class="addressDetail">
-                            <span>@customerAddress.Company</span>
+                            <span>@address.Company</span>
                         </td>
 
                         <td class="addressLabel">
@@ -227,7 +227,7 @@
                             <span>默认地址</span>
                         </td>
                         <td class="addressDetail">
-                            @if (customerAddress.IsDefault)
+                            @if (address.IsDefault)
                             {
                                 <span class="default-address">是</span>
                             }

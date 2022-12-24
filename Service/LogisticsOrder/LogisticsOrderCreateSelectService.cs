@@ -132,12 +132,8 @@ public class LogisticsOrderCreateSelectService {
             throw new ValidationException($"指定的发货地址#{sendAddressId}不存在！");
         }
 
-        if (StringUtil.AllChinese(sendAddress.LastName) == false) {
-            throw new ValidationException("发件人姓中有非中文字符，请更正！");
-        }
-
-        if (StringUtil.AllChinese(sendAddress.FirstName) == false) {
-            throw new ValidationException("发件人名中有非中文字符，请更正！");
+        if (StringUtil.AllChinese(sendAddress.Name) == false) {
+            throw new ValidationException("发件人姓名中有非中文字符，请更正！");
         }
 
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);

@@ -66,8 +66,7 @@ public class CustomerSendAddressController : Controller {
         var sendAddressItemList = sendAddressList
             .Select(e => new CustomerSendAddressListItem {
                 Id = e.Id,
-                FirstName = e.FirstName,
-                LastName = e.LastName,
+                Name = e.Name,
                 Mobile = e.Mobile,
                 Province = e.Province.Name,
                 City = e.City.Name,

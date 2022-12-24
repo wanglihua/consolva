@@ -4,10 +4,8 @@ using NHibernate.Mapping.ByCode;
 
 namespace shunda.Domain.Customer;
 
-public class CustomerSendAddressInfoMapping : EntityMapping<CustomerSendAddressInfo>
-{
-    public CustomerSendAddressInfoMapping()
-    {
+public class CustomerSendAddressInfoMapping : EntityMapping<CustomerSendAddressInfo> {
+    public CustomerSendAddressInfoMapping() {
         Table("tbl_customer_send_address");
 
         ManyToOne(
@@ -31,19 +29,10 @@ public class CustomerSendAddressInfoMapping : EntityMapping<CustomerSendAddressI
         );
 
         Property(
-            x => x.FirstName,
+            x => x.Name,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("first_name");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.LastName,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("last_name");
+                map.Column("name");
                 map.NotNullable(true);
             }
         );
@@ -154,6 +143,5 @@ public class CustomerSendAddressInfoMapping : EntityMapping<CustomerSendAddressI
                 map.NotNullable(true);
             }
         );
-
     }
 }

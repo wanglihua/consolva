@@ -40,10 +40,47 @@ Page({
             });
         });
     },
+
     onSaveClick(e) {
         console.log(e);
+
+        // todo save
+        
+        
+        const that = this;
+        app.post("/client/customer/receive/address/save", {
+            id: that.data.id,
+            countryId: that.data.countryId,
+            firstName: that.data.firstName,
+            lastName: that.data.lastName,
+            mobile: that.data.mobile,
+            address: that.data.address,
+            city: that.data.city,
+            state: that.data.state,
+            zipcode: that.data.zipcode,
+            tfn: that.data.tfn,
+            company: that.data.company,
+            unitLoc: that.data.unitLoc,
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            setTimeout(function () {
+                wx.navigateBack({
+                    complete: function (e) {
+                        const pages = getCurrentPages();
+                        const prevPage = pages[pages.length - 1];
+                        if (prevPage.loadReceiveAddressList) {
+                            prevPage.loadReceiveAddressList();
+                        }
+                    }
+                });
+            }, 1000);
+        });
     },
+
     onCancelClick(e) {
-        console.log(e);
+        wx.navigateBack();
     }
 })

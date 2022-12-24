@@ -2,8 +2,10 @@
 <header/>
 <view class="container">
     <van-cell-group title="添加收货地址">
-        <van-field model:value="{{ trackingNo }}" label="快递单号" placeholder="请输入预报快递单号" border="{{ false }}" error="{{trackingNoHasError}}" error-message="{{trackingNoErrorMsg}}"/>
-        <van-field model:value="{{ description }}" label="备注" type="textarea" autosize="{{ {minHeight:60, maxHeight:120 } }}" placeholder="请输入备注" border="{{ false }}"/>
+        <van-field model:value="{{ countryId }}" label="国家" placeholder="请输入国家" border="{{ false }}"/>
+        <van-field model:value="{{ firstName }}" label="first name" placeholder="请输入名(first name)" border="{{ false }}"/>
+        <van-field model:value="{{ lastName }}" label="first name" placeholder="请输入姓(last name)" border="{{ false }}"/>
+        <van-field model:value="{{ address }}" label="门牌号/路名" type="textarea" autosize="{{ {minHeight:60, maxHeight:120 } }}" placeholder="请输入备注" border="{{ false }}"/>
     </van-cell-group>
     <van-cell-group custom-class="detail-buttons" border="{{false}}">
         <van-cell border="{{false}}">
