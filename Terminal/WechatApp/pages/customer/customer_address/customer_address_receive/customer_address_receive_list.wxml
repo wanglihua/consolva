@@ -6,7 +6,20 @@
         <van-tab name="send" title="发货地址"/>
     </van-tabs>
 
+    <view style="padding: 10rpx 10rpx;">
+        <van-button type="info" class-prefix="iconfont" icon="add" plain block bind:click="onAddCustomerReceiveAddress">添加收货地址</van-button>
+    </view>
+
     <block wx:if="{{ receiveAddressCount === 0 }}">
         <van-empty description="您还没有添加任何收货地址！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{ receiveAddressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">
+            <van-cell-group custom-class="item">
+                <van-cell title="{{ index + 1 }}、{{ address.firstName }} {{ address.lastName }} {{ address.mobile }}" value="{{ address.defaultStr }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="{{ address.fullAddress }}" border="{{ false }}"/>
+                <van-cell title="操作" value="{{address.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ address }}" custom-class="item-footer"/>
+            </van-cell-group>
+        </block>
     </block>
 </view>

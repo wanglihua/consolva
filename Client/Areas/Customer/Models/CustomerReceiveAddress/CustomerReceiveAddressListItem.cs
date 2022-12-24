@@ -41,4 +41,7 @@ public class CustomerReceiveAddressListItem {
 
     [JsonProperty("isDefault")]
     public bool IsDefault { get; set; }
+
+    [JsonProperty("fullAddress")]
+    public string FullAddress { get; set; } = string.Empty;
 }

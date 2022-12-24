@@ -7,6 +7,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
 using shunda.Domain.Customer;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Customer.Controllers;
@@ -15,10 +16,15 @@ namespace shunda.Client.Areas.Customer.Controllers;
 public class CustomerReceiveAddressController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly CustomerReceiveAddressService customerReceiveAddressService;
 
-    public CustomerReceiveAddressController(ISession session, LoginCustomerService loginCustomerService) {
+    public CustomerReceiveAddressController(ISession session,
+        LoginCustomerService loginCustomerService,
+        CustomerReceiveAddressService customerReceiveAddressService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.customerReceiveAddressService = customerReceiveAddressService;
     }
 
     [HttpPost]
@@ -57,6 +63,7 @@ public class CustomerReceiveAddressController : Controller {
                 Company = e.Company,
                 UnitLoc = e.UnitLoc,
                 IsDefault = e.IsDefault,
+                FullAddress = customerReceiveAddressService.GetFullAddress(e),
             })
             .ToList();
 

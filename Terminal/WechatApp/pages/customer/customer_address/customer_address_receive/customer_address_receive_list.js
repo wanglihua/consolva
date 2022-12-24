@@ -20,6 +20,14 @@ Page({
             const receiveAddressCount = res.data.receiveAddressCount;
             const sendAddressCount = res.data.sendAddressCount;
 
+            for (const address of receiveAddressList) {
+                if (address.isDefault) {
+                    address.defaultStr = '默认地址';
+                } else {
+                    address.defaultStr = '';
+                }
+            }
+
             that.setData({
                 receiveAddressList: receiveAddressList,
                 receiveAddressCount: receiveAddressCount,
@@ -35,5 +43,9 @@ Page({
                 url: "../customer_address_send/customer_address_send_list",
             });
         }
+    },
+
+    onAddCustomerReceiveAddress(e) {
+        console.log(e);
     },
 })

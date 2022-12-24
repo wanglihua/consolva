@@ -6,6 +6,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Customer.Controllers;
@@ -14,10 +15,15 @@ namespace shunda.Client.Areas.Customer.Controllers;
 public class CustomerSendAddressController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly CustomerSendAddressService customerSendAddressService;
 
-    public CustomerSendAddressController(ISession session, LoginCustomerService loginCustomerService) {
+    public CustomerSendAddressController(ISession session,
+        LoginCustomerService loginCustomerService,
+        CustomerSendAddressService customerSendAddressService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.customerSendAddressService = customerSendAddressService;
     }
 
     [HttpPost]
