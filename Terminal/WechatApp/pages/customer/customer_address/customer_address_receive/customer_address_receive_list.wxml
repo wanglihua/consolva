@@ -15,9 +15,13 @@
     </block>
     <block wx:else>
         <block wx:for="{{ receiveAddressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">
-            <van-cell-group custom-class="item">
-                <van-cell title="{{ index + 1 }}、{{ address.firstName }} {{ address.lastName }} {{ address.mobile }}" value="{{ address.defaultStr }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="{{ address.fullAddress }}" border="{{ false }}"/>
+            <van-cell-group custom-class="items">
+                <van-cell title="{{ index + 1 }}、{{ address.firstName }} {{ address.lastName }}" value="{{ address.defaultStr }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="国家: {{ address.country }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="收货人: {{ address.firstName }} {{ address.lastName }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="手机号码: {{ address.mobile }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="地址: {{ address.fullAddress }}" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
                 <van-cell title="操作" value="{{address.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ address }}" custom-class="item-footer"/>
             </van-cell-group>
         </block>

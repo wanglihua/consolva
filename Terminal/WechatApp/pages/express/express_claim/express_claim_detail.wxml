@@ -3,30 +3,33 @@
 <view class="container">
     <van-cell-group title="申领件详细"/>
 
-    <van-cell-group custom-class="item">
+    <van-cell-group custom-class="items">
         <van-cell title="快递单详情" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-        <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}"/>
-        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}"/>
-        <van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}"/>
-        <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}"/>
-        <van-cell title="面单会员" value="{{ express.billCustomerCode }}" border="{{ false }}"/>
+        <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="面单会员" value="{{ express.billCustomerCode }}" border="{{ false }}" custom-class="item"/>
         <block wx:if="{{ express.warehouseRemark !== '' }}">
-            <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}"/>
+            <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
         </block>
+        <view class="item-last-vspace"/>
     </van-cell-group>
 
-    <van-cell-group custom-class="item">
+    <van-cell-group custom-class="items">
         <van-cell title="物品列表" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <block wx:for="{{ express.expressGoodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="index">
-            <van-cell title="{{ index + 1 }}、{{ expressGoods.goodsName }}" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}"/>
+            <van-cell title="{{ index + 1 }}、{{ expressGoods.goodsName }}" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}" custom-class="item"/>
         </block>
+        <view class="item-last-vspace"/>
     </van-cell-group>
 
-    <van-cell-group custom-class="item">
+    <van-cell-group custom-class="items">
         <van-cell title="尺寸/体积重/实际重" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <block wx:for="{{ express.expressSizeWeightList }}" wx:key="id" wx:for-item="sizeWeight" wx:for-index="index">
-            <van-cell title="{{ index + 1 }}、单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}cm，单箱体积重：{{ sizeWeight.volumeWeight }}，单箱实际重：{{ sizeWeight.weight }}，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}"/>
+            <van-cell title="{{ index + 1 }}、单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}cm，单箱体积重：{{ sizeWeight.volumeWeight }}，单箱实际重：{{ sizeWeight.weight }}，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}" custom-class="item"/>
         </block>
+        <view class="item-last-vspace"/>
         <block wx:if="{{ express.expressSizeWeightList.length > 1 }}">
             <van-cell title="总体积：{{ express.totalVolume }}立方，总体积重：{{ express.totalVolumeWeight }}kg，总实际重：{{ express.totalActualWeight }}kg，总箱数：{{ express.totalPackageCount }}" custom-class="item-footer"></van-cell>
         </block>

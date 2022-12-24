@@ -8,9 +8,10 @@
     </block>
     <block wx:else>
         <block wx:for="{{ payList }}" wx:key="id" wx:for-item="pay" wx:for-index="index">
-            <van-cell-group custom-class="item">
+            <van-cell-group custom-class="items">
                 <van-cell title="{{ index + 1 }}、{{ pay.amount }}" value="{{ pay.payTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="{{ pay.typeName }}，金额{{ pay.amount }}，订单编号 {{ pay.orderCode }}" border="{{ false }}"/>
+                <van-cell title="{{ pay.typeName }}，金额{{ pay.amount }}，订单编号 {{ pay.orderCode }}" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
             </van-cell-group>
         </block>
         <view class="bottom-divider">

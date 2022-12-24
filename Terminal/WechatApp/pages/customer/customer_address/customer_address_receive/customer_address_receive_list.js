@@ -46,7 +46,7 @@ Page({
     },
 
     onAddCustomerReceiveAddress(e) {
-        console.log(e);
+        // console.log(e);
         wx.navigateTo({
             url: "./customer_address_receive_detail?id=0",
         });

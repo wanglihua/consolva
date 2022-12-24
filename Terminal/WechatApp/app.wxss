@@ -31,12 +31,21 @@
     padding: 0 !important;
 }
 
-.item {
+.items {
     margin: 25rpx 0;
 }
 
 .item-header {
     background-color: teal !important;
+}
+
+.item {
+    padding-bottom: 0 !important;
+}
+
+.item-last-vspace {
+    padding: 5px 0;
+    width: 100%;
 }
 
 .item-header-alt {

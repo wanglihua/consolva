@@ -8,9 +8,10 @@
     </block>
     <block wx:else>
         <block wx:for="{{ messageList }}" wx:key="id" wx:for-item="msg" wx:for-index="index">
-            <van-cell-group custom-class="item">
+            <van-cell-group custom-class="items">
                 <van-cell title="{{ index + 1 }}、{{ msg.type }}" value="{{ msg.time }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="{{ msg.content }}" border="{{ false }}"/>
+                <van-cell title="{{ msg.content }}" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
             </van-cell-group>
         </block>
         <view class="bottom-divider">

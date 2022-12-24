@@ -138,11 +138,17 @@ public class CustomerReceiveAddressController : Controller {
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        var customer = session.Get<CustomerInfo>(loginCustomerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{loginCustomerId}不存在！");
+        }
 
         int addressId = model.Id;
         CustomerReceiveAddressInfo address;
         if (addressId == 0) {
             address = new CustomerReceiveAddressInfo();
+            address.Customer = customer;
+            address.Status = CustomerAddressStatus.New;
         } else {
             address = session.Get<CustomerReceiveAddressInfo>(addressId);
             if (address == null) {

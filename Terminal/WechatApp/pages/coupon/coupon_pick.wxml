@@ -6,12 +6,13 @@
     </block>
     <block wx:else>
         <block wx:for="{{ batchList }}" wx:key="id" wx:for-item="batch" wx:for-index="index">
-            <van-cell-group custom-class="item">
+            <van-cell-group custom-class="items">
                 <van-cell title="{{ index + 1 }}、{{ batch.rule }}" value="{{ batch.type }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="批次" value="{{ batch.name }}" border="{{ false }}"/>
-                <van-cell title="类型" value="{{ batch.type }}" border="{{ false }}"/>
-                <van-cell title="优惠" value="{{ batch.ruleDesc }}" border="{{ false }}"/>
-                <van-cell title="有效期" value="{{ batch.expire }}" border="{{ false }}"/>
+                <van-cell title="批次" value="{{ batch.name }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="类型" value="{{ batch.type }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="优惠" value="{{ batch.ruleDesc }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="有效期" value="{{ batch.expire }}" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
                 <van-cell title="" border="{{ false }}" custom-class="item-footer">
                     <block slot="right-icon">
                         <view style="text-align: right;">

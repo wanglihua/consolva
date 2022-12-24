@@ -8,9 +8,10 @@
     </block>
     <block wx:else>
         <block wx:for="{{ logList }}" wx:key="id" wx:for-item="log" wx:for-index="index">
-            <van-cell-group custom-class="item">
+            <van-cell-group custom-class="items">
                 <van-cell title="{{ index + 1 }}、{{ log.score }}" value="{{ log.createTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="{{ log.typeName }} 变动积分 {{ log.score }}，{{ log.validScoreDesc }}{{ log.relatedOrderDesc }}相关金额{{ log.amount }}元{{ log.description }}。" border="{{ false }}"/>
+                <van-cell title="{{ log.typeName }} 变动积分 {{ log.score }}，{{ log.validScoreDesc }}{{ log.relatedOrderDesc }}相关金额{{ log.amount }}元{{ log.description }}。" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
             </van-cell-group>
         </block>
         <view class="bottom-divider">

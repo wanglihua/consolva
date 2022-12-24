@@ -23,7 +23,7 @@ public class CustomerReceiveAddressSaveModel {
     [JsonProperty("mobile")]
     public string Mobile { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "[地址详细]不能为空！")]
+    [Required(ErrorMessage = "[门牌号/路名]不能为空！")]
     [JsonProperty("address")]
     public string Address { get; set; } = string.Empty;
 

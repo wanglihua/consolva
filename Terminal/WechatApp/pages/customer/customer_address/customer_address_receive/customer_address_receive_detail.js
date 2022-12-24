@@ -42,9 +42,9 @@ Page({
     },
 
     onSaveClick(e) {
-        console.log(e);
+        // console.log(e);
 
-        // todo save
+        // todo validate
         
         
         const that = this;
