@@ -3,6 +3,7 @@
 const app = getApp();
 
 Page({
+    id: "index",
     data: {
     },
     onLoad() {

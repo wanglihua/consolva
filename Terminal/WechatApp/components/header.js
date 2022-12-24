@@ -1,4 +1,7 @@
 // components/header.js
+const app = getApp();
+const util = app.require('utils/util.js');
+
 Component({
     options: {
         styleIsolation: 'isolated'
@@ -20,6 +23,8 @@ Component({
             wx.navigateTo({
                 url: "/pages/index/index",
             });
+            
+            // app.goback("index");
         },
         onClickRight() {
             wx.showToast({title: '点击VIP', icon: 'none'});
