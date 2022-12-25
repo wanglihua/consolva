@@ -4,6 +4,20 @@ const util = app.require('utils/util.js');
 
 Page({
     data: {
+        countryOptions: [
+            {
+                text: '澳大利亚',
+                value: 2000
+            },
+            {
+                text: '美国',
+                value: 3000
+            },
+        ],
+        showCountrySelect: false,
+        countryFieldValue: '',
+        countryCascaderValue: 3000,
+
         id: 0,
         countryId: 0,
         firstName: '',
@@ -41,12 +55,39 @@ Page({
         });
     },
 
+    onCountryFieldTap(e) {
+        // console.log(e);
+        this.setData({
+            showCountrySelect: true,
+        });
+    },
+
+    onCountrySelectClose(e) {
+        // console.log(e);
+        this.setData({
+            showCountrySelect: false,
+        });
+    },
+
+    onCountrySelectFinish(e) {
+        console.log(e);
+        const {selectedOptions, value} = e.detail;
+        const fieldValue = selectedOptions
+            .map((option) => option.text)
+            .join('/');
+        this.setData({
+            countryFieldValue: fieldValue,
+            countryCascaderValue: value,
+            showCountrySelect: false,
+        })
+    },
+
     onSaveClick(e) {
         // console.log(e);
 
         // todo validate
-        
-        
+
+
         const that = this;
         app.post("/client/customer/receive/address/save", {
             id: that.data.id,

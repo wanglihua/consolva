@@ -2,7 +2,17 @@
 <header/>
 <view class="container">
     <van-cell-group title="添加收货地址">
-        <van-field model:value="{{ countryId }}" label="国家" placeholder="请输入国家" border="{{ false }}" custom-style="padding-bottom: 0;"/>
+        <van-field model:value="{{ countryId }}" label="国家" placeholder="请输入国家" border="{{ false }}" custom-style="padding-bottom: 0;" is-link readonly bind:tap="onCountryFieldTap" />
+        <van-popup show="{{ showCountrySelect }}" round position="bottom">
+            <van-cascader
+                    wx:if="{{ showCountrySelect }}"
+                    value="{{ countryCascaderValue }}"
+                    title="请选择收货国家"
+                    options="{{ countryOptions }}"
+                    bind:close="onCountrySelectClose"
+                    bind:finish="onCountrySelectFinish"
+            />
+        </van-popup>
         <van-field model:value="{{ firstName }}" label="first name" placeholder="请输入名(first name)" border="{{ false }}" custom-style="padding-bottom: 0;"/>
         <van-field model:value="{{ lastName }}" label="last name" placeholder="请输入姓(last name)" border="{{ false }}" custom-style="padding-bottom: 0;"/>
         <van-field model:value="{{ mobile }}" label="手机号码" placeholder="请输入手机号码" border="{{ false }}" custom-style="padding-bottom: 0;"/>
