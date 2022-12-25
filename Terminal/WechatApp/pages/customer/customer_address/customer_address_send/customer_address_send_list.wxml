@@ -8,5 +8,25 @@
 
     <view style="padding: 10rpx 10rpx;">
         <van-button type="info" class-prefix="iconfont" icon="add" plain block bind:click="onAddCustomerSendAddress">添加发货地址</van-button>
-    </view>    
+    </view>
+
+    <block wx:if="{{ sendAddressCount === 0 }}">
+        <van-empty description="您还没有添加任何发货地址！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{ sendAddressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">
+            <van-cell-group custom-class="items">
+                <van-cell title="{{ index + 1 }}、{{ address.name }}" value="{{ address.defaultStr }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="国家: {{ address.country }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="收货人: {{ address.name }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="手机号码: {{ address.mobile }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="地区: {{ address.province }}{{ address.city }}{{ address.area }}{{ address.street }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="地址: {{ address.address }}" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
+                <van-cell title="操作" value="{{address.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ address }}" custom-class="item-footer"/>
+            </van-cell-group>
+        </block>
+    </block>
+
+    <van-action-sheet title="{{ currentAddress.name }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
 </view>

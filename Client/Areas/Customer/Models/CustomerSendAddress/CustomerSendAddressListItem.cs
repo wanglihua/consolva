@@ -21,6 +21,9 @@ public class CustomerSendAddressListItem {
     [JsonProperty("area")]
     public string Area { get; set; } = string.Empty;
 
+    [JsonProperty("street")]
+    public string Street { get; set; } = string.Empty;
+
     [JsonProperty("address")]
     public string Address { get; set; } = string.Empty;
 

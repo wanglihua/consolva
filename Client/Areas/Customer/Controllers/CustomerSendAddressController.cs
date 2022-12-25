@@ -51,6 +51,7 @@ public class CustomerSendAddressController : Controller {
         var provinceIdList = sendAddressList.Select(e => e.Province.Id).ToList();
         var cityIdList = sendAddressList.Select(e => e.City.Id).ToList();
         var areaIdList = sendAddressList.Select(e => e.Area.Id).ToList();
+        var streetIdList = sendAddressList.Select(e => e.Street.Id).ToList();
 
         // 预取
         var provinceList = session.Query<AddressProvinceInfo>()
@@ -62,6 +63,9 @@ public class CustomerSendAddressController : Controller {
         var areaList = session.Query<AddressAreaInfo>()
             .Where(e => areaIdList.Contains(e.Id))
             .ToList();
+        var streetList = session.Query<AddressStreetInfo>()
+            .Where(e => streetIdList.Contains(e.Id))
+            .ToList();
 
         var sendAddressItemList = sendAddressList
             .Select(e => new CustomerSendAddressListItem {
@@ -71,6 +75,7 @@ public class CustomerSendAddressController : Controller {
                 Province = e.Province.Name,
                 City = e.City.Name,
                 Area = e.Area.Name,
+                Street = e.Street.Name,
                 Address = e.Address,
                 Zipcode = e.Zipcode,
                 IsDefault = e.IsDefault,
