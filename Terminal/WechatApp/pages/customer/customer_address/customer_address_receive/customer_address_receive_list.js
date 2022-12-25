@@ -38,11 +38,10 @@ Page({
         for (const address of receiveAddressList) {
             if (address.isDefault) {
                 address.defaultStr = '默认地址';
-
                 address.actions = "编辑，删除";
             } else {
                 address.defaultStr = '';
-                address.actions = "编辑，删除，设为默认";
+                address.actions = "设为默认，编辑，删除";
             }
         }
     },
@@ -113,7 +112,25 @@ Page({
         const that = this;
 
         if (action === "setDefault") {
+            app.post("/client/customer/receive/address/set/default", {
+                id: addressId,
+            }, function (res) {
+                wx.showToast({
+                    title: res.message,
+                });
 
+                const receiveAddressList = res.data.receiveAddressList;
+                const receiveAddressCount = res.data.receiveAddressCount;
+                const sendAddressCount = res.data.sendAddressCount;
+
+                that.fillListData(receiveAddressList);
+
+                that.setData({
+                    receiveAddressList: receiveAddressList,
+                    receiveAddressCount: receiveAddressCount,
+                    sendAddressCount: sendAddressCount,
+                });
+            });
         }
 
         if (action === "edit") {

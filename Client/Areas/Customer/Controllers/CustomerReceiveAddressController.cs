@@ -46,7 +46,8 @@ public class CustomerReceiveAddressController : Controller {
             .Where(e => e.Customer.Id == loginCustomerId);
 
         var receiveAddressList = query
-            .OrderByDescending(e => e.Id)
+            .OrderByDescending(e => e.IsDefault)
+            .ThenByDescending(e => e.Id)
             .ToList();
 
         // 确保有一个默认地址
