@@ -5,4 +5,8 @@
         <van-tab name="receive" title="收货地址"/>
         <van-tab name="send" title="发货地址"/>
     </van-tabs>
+
+    <view style="padding: 10rpx 10rpx;">
+        <van-button type="info" class-prefix="iconfont" icon="add" plain block bind:click="onAddCustomerSendAddress">添加发货地址</van-button>
+    </view>    
 </view>
