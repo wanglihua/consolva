@@ -7,16 +7,16 @@ Page({
         countryOptions: [
             {
                 text: '澳大利亚',
-                value: 2000
+                value: '2000',
             },
             {
                 text: '美国',
-                value: 3000
+                value: '3000',
             },
         ],
         showCountrySelect: false,
-        countryFieldValue: '',
-        countryCascaderValue: 3000,
+        countryFieldValue: '美国',
+        countryCascaderValue: '3000',
 
         id: 0,
         countryId: 0,
@@ -57,6 +57,7 @@ Page({
 
     onCountryFieldTap(e) {
         // console.log(e);
+
         this.setData({
             showCountrySelect: true,
         });

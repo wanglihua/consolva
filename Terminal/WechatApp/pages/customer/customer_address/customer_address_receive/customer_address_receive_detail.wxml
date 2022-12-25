@@ -2,10 +2,9 @@
 <header/>
 <view class="container">
     <van-cell-group title="添加收货地址">
-        <van-field model:value="{{ countryId }}" label="国家" placeholder="请输入国家" border="{{ false }}" custom-style="padding-bottom: 0;" is-link readonly bind:tap="onCountryFieldTap" />
+        <van-field model:value="{{ countryFieldValue }}" label="国家" placeholder="请选择收货国家" border="{{ false }}" custom-style="padding-bottom: 0;" is-link readonly bind:tap="onCountryFieldTap" />
         <van-popup show="{{ showCountrySelect }}" round position="bottom">
             <van-cascader
-                    wx:if="{{ showCountrySelect }}"
                     value="{{ countryCascaderValue }}"
                     title="请选择收货国家"
                     options="{{ countryOptions }}"
