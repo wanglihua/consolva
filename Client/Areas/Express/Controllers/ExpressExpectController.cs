@@ -12,16 +12,15 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Express.Controllers;
 
 [ExpressArea]
-public class ExpressExpectController : Controller
-{
+public class ExpressExpectController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressExpectService expressExpectService;
 
     public ExpressExpectController(ISession session,
         LoginCustomerService loginCustomerService,
-        ExpressExpectService expressExpectService)
-    {
+        ExpressExpectService expressExpectService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressExpectService = expressExpectService;
@@ -29,10 +28,20 @@ public class ExpressExpectController : Controller
 
     [HttpPost]
     [Route("/client/express/expect/list")]
-    public IActionResult List([FromBody] ExpressExpectListQueryParam queryParam)
-    {
+    public IActionResult List([FromBody] ExpressExpectListQueryParam queryParam) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
+        var model = GetListData(loginCustomerId, queryParam);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = model,
+        });
+    }
+
+    [NonAction]
+    private ExpressExpectListModel GetListData(int loginCustomerId, ExpressExpectListQueryParam queryParam) {
         // int expressExpectCount = GetListQuery(loginCustomerId, queryParam).Count();
 
         IList<ExpressExpectInfo> expressExpectList = GetListQuery(loginCustomerId, queryParam)
@@ -45,8 +54,7 @@ public class ExpressExpectController : Controller
             .ToList();
 
         IList<ExpressExpectListItem> itemList = new List<ExpressExpectListItem>();
-        foreach (ExpressExpectInfo expressExpect in expressExpectList)
-        {
+        foreach (ExpressExpectInfo expressExpect in expressExpectList) {
             string trackingNo = expressExpect.TrackingNo;
             var express = expressList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
 
@@ -69,22 +77,16 @@ public class ExpressExpectController : Controller
 
         int expressExpectCount = itemList.Count;
 
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-            Data = new ExpressExpectListModel {
-                ExpressExpectCount = expressExpectCount,
-                ExpressExpectList = itemList,
-            },
-        });
+        return new ExpressExpectListModel {
+            ExpressExpectCount = expressExpectCount,
+            ExpressExpectList = itemList,
+        };
     }
 
     [NonAction]
-    private IQueryable<ExpressExpectInfo> GetListQuery(int loginCustomerId, ExpressExpectListQueryParam queryParam)
-    {
+    private IQueryable<ExpressExpectInfo> GetListQuery(int loginCustomerId, ExpressExpectListQueryParam queryParam) {
         var trackingNoQuery = queryParam.TrackingNoQuery;
-        if (string.IsNullOrWhiteSpace(trackingNoQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(trackingNoQuery) == false) {
             trackingNoQuery = trackingNoQuery.Trim();
         }
 
@@ -96,8 +98,7 @@ public class ExpressExpectController : Controller
         var query = session.Query<ExpressExpectInfo>()
             .Where(e => e.Customer.Id == loginCustomerId && notCheckinStatusList.Contains(e.Status));
 
-        if (string.IsNullOrWhiteSpace(trackingNoQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(trackingNoQuery) == false) {
             query = query.Where(e => e.TrackingNo.Contains(trackingNoQuery));
         }
 
@@ -106,25 +107,21 @@ public class ExpressExpectController : Controller
 
     [HttpPost]
     [Route("/client/express/expect/detail")]
-    public IActionResult Detail([FromBody] IdParam param)
-    {
+    public IActionResult Detail([FromBody] IdParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        if (ModelState.IsValid == false)
-        {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
         int expressExpectId = param.Id;
         var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
 
-        if (expressExpect == null)
-        {
+        if (expressExpect == null) {
             throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不存在！");
         }
 
-        if (expressExpect.Customer.Id != loginCustomerId)
-        {
+        if (expressExpect.Customer.Id != loginCustomerId) {
             throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前会员 #{loginCustomerId} ！");
         }
 
@@ -142,10 +139,8 @@ public class ExpressExpectController : Controller
     [HttpPost]
     [Route("/client/express/expect/add/save")]
     [Transactional]
-    public IActionResult AddSave([FromBody] ExpressExpectAddModel model)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult AddSave([FromBody] ExpressExpectAddModel model) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -162,10 +157,8 @@ public class ExpressExpectController : Controller
     [HttpPost]
     [Route("/client/express/expect/edit/save")]
     [Transactional]
-    public IActionResult EditSave([FromBody] ExpressExpectEditModel model)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult EditSave([FromBody] ExpressExpectEditModel model) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -182,10 +175,8 @@ public class ExpressExpectController : Controller
     [HttpPost]
     [Route("/client/express/expect/delete")]
     [Transactional]
-    public IActionResult Delete([FromBody] IdParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Delete([FromBody] ExpressExpectDeleteParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -193,9 +184,13 @@ public class ExpressExpectController : Controller
 
         expressExpectService.Delete(expressExpectId: param.Id, customerId: loginCustomerId);
 
+        // 马上重新获取数据，客户端可以少一次访问
+        var model = GetListData(loginCustomerId, param);
+
         return Json(new JsonResultData {
             Success = true,
-            Message = "快递单号预告删除成功！",
+            Message = "单号删除成功！",
+            Data = model,
         });
     }
 }

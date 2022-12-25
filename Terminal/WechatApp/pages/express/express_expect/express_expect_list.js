@@ -26,23 +26,27 @@ Page({
             let expressExpectCount = res.data.expressExpectCount;
             let expressExpectList = res.data.expressExpectList;
 
-            for (const expressExpect of expressExpectList) {
-                let headerClassName = "item-header";
-                let actions = "编辑，删除";
-                if (expressExpect.enter === true) {
-                    headerClassName = "item-header-alt";
-                    actions = actions + "，录货值";
-                }
-
-                expressExpect.headerClassName = headerClassName;
-                expressExpect.actions = actions;
-            }
+            this.fillListData(expressExpectList);
 
             that.setData({
                 expressExpectList: expressExpectList,
                 expressExpectCount: expressExpectCount,
             });
         });
+    },
+
+    fillListData(expressExpectList) {
+        for (const expressExpect of expressExpectList) {
+            let headerClassName = "item-header";
+            let actions = "编辑，删除";
+            if (expressExpect.enter === true) {
+                headerClassName = "item-header-alt";
+                actions = actions + "，录货值";
+            }
+
+            expressExpect.headerClassName = headerClassName;
+            expressExpect.actions = actions;
+        }
     },
 
     onAddExpressExpectClick() {
@@ -106,6 +110,7 @@ Page({
     onActionSheetSelect(e) {
         const expressExpectId = this.data.currentExpressExpect.id;
         const trackingNo = this.data.currentExpressExpect.trackingNo;
+        const trackingNoQuery = this.data.trackingNoQuery;
         const action = e.detail.action;
 
         const that = this;
@@ -123,7 +128,8 @@ Page({
                 success(res) {
                     if (res.confirm) {
                         app.post("/client/express/expect/delete", {
-                            id: expressExpectId
+                            id: expressExpectId,
+                            trackingNoQuery: trackingNoQuery,
                         }, function (res) {
                             wx.showToast({
                                 title: res.message,
@@ -133,7 +139,16 @@ Page({
                                 showActionSheet: false
                             });
 
-                            that.loadExpressExpectList();
+                            // 立即设置列表数据
+                            const expressExpectList = res.data.expressExpectList;
+                            const expressExpectCount = res.data.expressExpectCount;
+
+                            that.fillListData(expressExpectList);
+
+                            that.setData({
+                                expressExpectList: expressExpectList,
+                                expressExpectCount: expressExpectCount,
+                            });
                         });
                     }
 

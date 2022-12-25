@@ -30,7 +30,7 @@ public class CustomerReceiveAddressController : Controller {
     [HttpPost]
     [Route("/client/customer/receive/address/list")]
     public IActionResult List([FromBody] CustomerReceiveAddressListParam param) {
-        var model = GetListData(param);
+        var model = GetListData(param, ensureDefault: false);
 
         return Json(new JsonResultData {
             Success = true,
@@ -40,7 +40,7 @@ public class CustomerReceiveAddressController : Controller {
     }
 
     [NonAction]
-    private CustomerReceiveAddressListModel GetListData(CustomerReceiveAddressListParam param) {
+    private CustomerReceiveAddressListModel GetListData(CustomerReceiveAddressListParam param, bool ensureDefault) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         var query = session.Query<CustomerReceiveAddressInfo>()
             .Where(e => e.Customer.Id == loginCustomerId);
@@ -48,6 +48,18 @@ public class CustomerReceiveAddressController : Controller {
         var receiveAddressList = query
             .OrderByDescending(e => e.Id)
             .ToList();
+
+        // 确保有一个默认地址
+        if (ensureDefault == true && receiveAddressList.Count != 0) {
+            bool hasDefaultAddress = receiveAddressList.Where(e => e.IsDefault == true).Count() != 0;
+            if (hasDefaultAddress == false) {
+                var defaultAddressToSet = receiveAddressList.First();
+                defaultAddressToSet.IsDefault = true;
+                session.Update(defaultAddressToSet);
+                session.Flush();
+            }
+        }
+
         var receiveAddressItemList = receiveAddressList
             .Select(e => new CustomerReceiveAddressListItem {
                 Id = e.Id,
@@ -177,7 +189,7 @@ public class CustomerReceiveAddressController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "收货地址保存成功！",
+            Message = "地址保存成功！",
         });
     }
 
@@ -215,11 +227,11 @@ public class CustomerReceiveAddressController : Controller {
 
         session.Flush();
 
-        var model = GetListData(param);
+        var model = GetListData(param, ensureDefault: false);
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "设置默认收货地址成功！",
+            Message = "设置默认成功！",
             Data = model,
         });
     }
@@ -247,11 +259,11 @@ public class CustomerReceiveAddressController : Controller {
         session.Delete(address);
         session.Flush();
 
-        var model = GetListData(param);
+        var model = GetListData(param, ensureDefault: true);
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "收货地址删除成功！",
+            Message = "地址删除成功！",
             Data = model,
         });
     }

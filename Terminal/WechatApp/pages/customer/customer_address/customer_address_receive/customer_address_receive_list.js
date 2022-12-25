@@ -24,16 +24,7 @@ Page({
             const receiveAddressCount = res.data.receiveAddressCount;
             const sendAddressCount = res.data.sendAddressCount;
 
-            for (const address of receiveAddressList) {
-                if (address.isDefault) {
-                    address.defaultStr = '默认地址';
-
-                    address.actions = "编辑，删除";
-                } else {
-                    address.defaultStr = '';
-                    address.actions = "编辑，删除，设置默认";
-                }
-            }
+            this.fillListData(receiveAddressList);
 
             that.setData({
                 receiveAddressList: receiveAddressList,
@@ -41,6 +32,19 @@ Page({
                 sendAddressCount: sendAddressCount,
             });
         });
+    },
+
+    fillListData(receiveAddressList) {
+        for (const address of receiveAddressList) {
+            if (address.isDefault) {
+                address.defaultStr = '默认地址';
+
+                address.actions = "编辑，删除";
+            } else {
+                address.defaultStr = '';
+                address.actions = "编辑，删除，设为默认";
+            }
+        }
     },
 
     onTabClick(e) {
@@ -64,11 +68,17 @@ Page({
 
         const actionSheetActions = [];
 
+        let setDefaultDisabled = false;
+        if (currentAddress.isDefault === true) {
+            setDefaultDisabled = true;
+        }
+
         actionSheetActions.push({
             action: "setDefault",
-            name: '设为默认地址',
+            name: '设为默认',
             className: 'iconfont iconfont-use-agreement',
-        });        
+            disabled: setDefaultDisabled,
+        });
 
         actionSheetActions.push({
             action: "edit",
@@ -104,9 +114,9 @@ Page({
 
         if (action === "setDefault") {
 
-        }        
+        }
 
-        if (action === "detail") {
+        if (action === "edit") {
             wx.navigateTo({
                 url: './customer_address_receive_detail?id=' + addressId,
             });
@@ -119,5 +129,5 @@ Page({
         this.setData({
             showActionSheet: false,
         });
-    }    
+    }
 })
