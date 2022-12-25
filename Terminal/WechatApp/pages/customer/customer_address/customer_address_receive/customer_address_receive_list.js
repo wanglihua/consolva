@@ -103,7 +103,9 @@ Page({
         });
     },
     onActionSheetSelect(e) {
-        const addressId = this.data.currentAddress.id;
+        const currentAddress = this.data.currentAddress;
+        const addressId = currentAddress.id;
+        const name = currentAddress.firstName + " " + currentAddress.lastName;
         const action = e.detail.action;
 
         // console.log(addressId);
@@ -140,7 +142,44 @@ Page({
         }
 
         if (action === "delete") {
+            wx.showModal({
+                title: '删除确认',
+                content: '确实要删除 ' + name + ' 地址吗？',
+                success(res) {
+                    if (res.confirm) {
+                        app.post("/client/customer/receive/address/delete", {
+                            id: addressId,
+                        }, function (res) {
+                            wx.showToast({
+                                title: res.message,
+                            });
 
+                            that.setData({
+                                showActionSheet: false
+                            });
+
+                            // 立即设置列表数据
+                            const receiveAddressList = res.data.receiveAddressList;
+                            const receiveAddressCount = res.data.receiveAddressCount;
+                            const sendAddressCount = res.data.sendAddressCount;
+
+                            that.fillListData(receiveAddressList);
+
+                            that.setData({
+                                receiveAddressList: receiveAddressList,
+                                receiveAddressCount: receiveAddressCount,
+                                sendAddressCount: sendAddressCount,
+                            });
+                        });
+                    }
+
+                    if (res.cancel) {
+                        that.setData({
+                            showActionSheet: false
+                        });
+                    }
+                }
+            });
         }
 
         this.setData({
