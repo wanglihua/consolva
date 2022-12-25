@@ -26,4 +26,6 @@
             </van-cell-group>
         </block>
     </block>
+
+    <van-action-sheet title="{{ currentAddress.firstName }} {{ currentAddress.lastName }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>    
 </view>

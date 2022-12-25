@@ -7,6 +7,10 @@ Page({
         receiveAddressList: [],
         receiveAddressCount: 0,
         sendAddressCount: 0,
+
+        showActionSheet: false,
+        actionSheetActions: [],
+        currentAddress: {},
     },
 
     onLoad(options) {
@@ -23,8 +27,11 @@ Page({
             for (const address of receiveAddressList) {
                 if (address.isDefault) {
                     address.defaultStr = '默认地址';
+
+                    address.actions = "编辑，删除";
                 } else {
                     address.defaultStr = '';
+                    address.actions = "编辑，删除，设置默认";
                 }
             }
 
@@ -51,4 +58,66 @@ Page({
             url: "./customer_address_receive_detail?id=0",
         });
     },
+
+    onActionCellClick(e) {
+        const currentAddress = e.currentTarget.dataset.item;
+
+        const actionSheetActions = [];
+
+        actionSheetActions.push({
+            action: "setDefault",
+            name: '设为默认地址',
+            className: 'iconfont iconfont-use-agreement',
+        });        
+
+        actionSheetActions.push({
+            action: "edit",
+            name: '编辑',
+            className: 'iconfont iconfont-edit',
+        });
+
+        actionSheetActions.push({
+            action: "delete",
+            name: '删除',
+            className: 'iconfont iconfont-delete',
+        });
+
+        this.setData({
+            currentAddress: currentAddress,
+            actionSheetActions: actionSheetActions,
+            showActionSheet: true
+        });
+    },
+    onActionSheetCloseClick(e) {
+        this.setData({
+            showActionSheet: false
+        });
+    },
+    onActionSheetSelect(e) {
+        const addressId = this.data.currentAddress.id;
+        const action = e.detail.action;
+
+        // console.log(addressId);
+        // console.log(action);
+
+        const that = this;
+
+        if (action === "setDefault") {
+
+        }        
+
+        if (action === "detail") {
+            wx.navigateTo({
+                url: './customer_address_receive_detail?id=' + addressId,
+            });
+        }
+
+        if (action === "delete") {
+
+        }
+
+        this.setData({
+            showActionSheet: false,
+        });
+    }    
 })
