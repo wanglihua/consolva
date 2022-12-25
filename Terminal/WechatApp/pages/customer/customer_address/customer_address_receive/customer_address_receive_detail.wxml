@@ -6,7 +6,7 @@
         <van-popup show="{{ showCountrySelect }}" round position="bottom">
             <van-cascader
                     value="{{ countryCascaderValue }}"
-                    title="请选择收货国家"
+                    title="选择收货国家"
                     options="{{ countryOptions }}"
                     bind:close="onCountrySelectClose"
                     bind:finish="onCountrySelectFinish"

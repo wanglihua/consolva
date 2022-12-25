@@ -1,3 +1,28 @@
 <!--pages/customer/customer_address/customer_address_send/customer_address_send_detail.wxml-->
 <header/>
-<text>pages/customer/customer_address/customer_address_send/customer_address_send_detail.wxml</text>
+<view class="container">
+    <van-cell-group title="添加发货地址">
+        <van-field model:value="{{ name }}" label="姓名" placeholder="请输入姓名" border="{{ false }}" custom-style="padding-bottom: 0;"/>
+        <van-field model:value="{{ mobile }}" label="手机号码" placeholder="请输入手机号码" border="{{ false }}" custom-style="padding-bottom: 0;"/>
+        <van-field model:value="{{ streetFieldValue }}" label="地区" placeholder="请选择地区" border="{{ false }}" custom-style="padding-bottom: 0;" is-link readonly bind:tap="onStreetFieldTap"/>
+        <van-popup show="{{ showStreetSelect }}" round position="bottom">
+            <van-cascader
+                    value="{{ streetCascaderValue }}"
+                    title="选择地区"
+                    options="{{ provinceOptions }}"
+                    bind:close="onStreetSelectClose"
+                    bind:finish="onStreetSelectFinish"
+            />
+        </van-popup>
+        <van-field model:value="{{ address }}" label="地址详细" type="textarea" autosize="{{ {minHeight:30, maxHeight:120} }}" placeholder="请输入地址详细" border="{{ false }}" custom-style="padding-bottom: 0;"/>
+        <van-field model:value="{{ zipcode }}" label="邮编" placeholder="请输入邮编" border="{{ false }}" custom-style="padding-bottom: 0;"/>
+    </van-cell-group>
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="info" class-prefix="iconfont" icon="save" block bind:click="onSaveClick">保存</van-button>
+        </van-cell>
+        <van-cell border="{{false}}">
+            <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onCancelClick" style="margin-top: 10rpx;">取消</van-button>
+        </van-cell>
+    </van-cell-group>
+</view>
