@@ -7,13 +7,9 @@ public class CustomerSendAddressSaveModel {
     [JsonProperty("id")]
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "[名]不能为空！")]
-    [JsonProperty("firstName")]
-    public string FirstName { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "[姓]不能为空！")]
-    [JsonProperty("lastName")]
-    public string LastName { get; set; } = string.Empty;
+    [Required(ErrorMessage = "[姓名]不能为空！")]
+    [JsonProperty("name")]
+    public string Name { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "[手机号码]不能为空！")]
     [JsonProperty("mobile")]
@@ -30,6 +26,10 @@ public class CustomerSendAddressSaveModel {
     [Required(ErrorMessage = "[区/县]不能为空！")]
     [JsonProperty("areaId")]
     public int AreaId { get; set; }
+
+    [Required(ErrorMessage = "[街道]不能为空！")]
+    [JsonProperty("streetId")]
+    public int StreetId { get; set; }
 
     [Required(ErrorMessage = "[地址详细]不能为空！")]
     [JsonProperty("address")]

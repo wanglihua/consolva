@@ -5,6 +5,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
@@ -100,11 +101,37 @@ public class CustomerSendAddressController : Controller {
     public IActionResult Detail([FromBody] IdParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
+        int addressId = param.Id;
+        CustomerSendAddressInfo address;
+        if (addressId == 0) {
+            address = new CustomerSendAddressInfo();
+        } else {
+            address = session.Get<CustomerSendAddressInfo>(addressId);
+            if (address == null) {
+                throw new ValidationException($"指定的发货地址#{addressId}不存在！");
+            }
+
+            if (address.Customer.Id != loginCustomerId) {
+                throw new ValidationException($"指定的发货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
+            }
+        }
+
+        var model = new CustomerSendAddressDetailModel {
+            Id = address.Id,
+            Name = address.Name,
+            Mobile = address.Mobile,
+            ProvinceId = address.Province.Id,
+            CityId = address.City.Id,
+            AreaId = address.Area.Id,
+            StreetId = address.Street.Id,
+            Address = address.Address,
+            Zipcode = address.Zipcode,
+        };
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = new CustomerSendAddressDetailModel {
-            },
+            Data = model,
         });
     }
 
@@ -117,11 +144,19 @@ public class CustomerSendAddressController : Controller {
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        var customer = session.Get<CustomerInfo>(loginCustomerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{loginCustomerId}不存在！");
+        }
 
         int addressId = model.Id;
+        CustomerSendAddressInfo address;
         if (addressId == 0) {
+            address = new CustomerSendAddressInfo();
+            address.Customer = customer;
+            address.Status = CustomerAddressStatus.New;
         } else {
-            var address = session.Get<CustomerSendAddressInfo>(addressId);
+            address = session.Get<CustomerSendAddressInfo>(addressId);
             if (address == null) {
                 throw new ValidationException($"指定的发货地址#{addressId}不存在！");
             }
@@ -130,6 +165,19 @@ public class CustomerSendAddressController : Controller {
                 throw new ValidationException($"指定的发货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
             }
         }
+
+        address.Country = Country.China;
+        address.Name = model.Name;
+        address.Mobile = model.Mobile;
+        address.Province = session.Get<AddressProvinceInfo>(model.ProvinceId);
+        address.City = session.Get<AddressCityInfo>(model.CityId);
+        address.Area = session.Get<AddressAreaInfo>(model.AreaId);
+        address.Street = session.Get<AddressStreetInfo>(model.StreetId);
+        address.Address = model.Address;
+        address.Zipcode = model.Zipcode;
+
+        session.SaveOrUpdate(address);
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,
@@ -211,7 +259,4 @@ public class CustomerSendAddressController : Controller {
             Data = model,
         });
     }
-
-    // 详细，编辑，删除时 检查是不是当前登录客户的地址
-    // 删除 和 设置默认地址 后，直接返回地址列表
 }
