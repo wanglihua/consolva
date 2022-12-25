@@ -145,7 +145,7 @@ public class CustomerReceiveAddressController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
-        Country country = Country.GetById(model.CountryId);
+        Country country = Country.GetById(model.CountryId ?? 0);
         if (country == Country.None || country == Country.China) {
             throw new ValidationException("请选择正确的国家选项！");
         }

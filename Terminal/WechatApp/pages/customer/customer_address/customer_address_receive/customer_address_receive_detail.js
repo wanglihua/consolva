@@ -96,9 +96,6 @@ Page({
         // todo validate
 
         let countryId = parseInt(this.data.countryCascaderValue);
-        if(!countryId) {
-            countryId = 0;
-        }
 
         const that = this;
         app.post("/client/customer/receive/address/save", {
