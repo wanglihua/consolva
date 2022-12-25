@@ -116,6 +116,14 @@ public class CustomerSendAddressController : Controller {
             }
         }
 
+        var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
+        var provinceItemList = provinceList
+            .Select(e => new CustomerSendAddressRegionItem {
+                Value = e.Id.ToString(),
+                Text = e.Name,
+            })
+            .ToList();
+
         var model = new CustomerSendAddressDetailModel {
             Id = address.Id,
             Name = address.Name,
@@ -126,12 +134,26 @@ public class CustomerSendAddressController : Controller {
             StreetId = address.Street.Id,
             Address = address.Address,
             Zipcode = address.Zipcode,
+
+            ProvinceList = provinceItemList,
         };
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = model,
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/customer/send/address/detail/city/list")]
+    public IActionResult CityList() {
+        
+        
+        
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
         });
     }
 

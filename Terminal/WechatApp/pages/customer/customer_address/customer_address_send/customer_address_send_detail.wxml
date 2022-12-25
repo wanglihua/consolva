@@ -11,11 +11,12 @@
                     title="选择地区"
                     options="{{ provinceOptions }}"
                     bind:close="onStreetSelectClose"
+                    bind:change="onStreetSelectChange"
                     bind:finish="onStreetSelectFinish"
             />
         </van-popup>
         <van-field model:value="{{ address }}" label="地址详细" type="textarea" autosize="{{ {minHeight:30, maxHeight:120} }}" placeholder="请输入地址详细" border="{{ false }}" custom-style="padding-bottom: 0;"/>
-        <van-field model:value="{{ zipcode }}" label="邮编" placeholder="请输入邮编" border="{{ false }}" custom-style="padding-bottom: 0;"/>
+        <van-field model:value="{{ zipcode }}" label="邮编" placeholder="请输入邮编" border="{{ false }}"/>
     </van-cell-group>
     <van-cell-group custom-class="detail-buttons" border="{{false}}">
         <van-cell border="{{false}}">

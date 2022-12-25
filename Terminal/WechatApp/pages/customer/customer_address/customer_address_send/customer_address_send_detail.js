@@ -42,6 +42,7 @@ Page({
                 // streetFieldValue: streetFieldValue,
                 // streetCascaderValue: streetCascaderValue,
                 // streetOptions: streetOptions,
+                provinceOptions: data.provinceList,
             });
         });
     },
@@ -56,6 +57,10 @@ Page({
         this.setData({
             showStreetSelect: false,
         });
+    },
+
+    onStreetSelectChange(e) {
+        console.log(e);
     },
 
     onStreetSelectFinish(e) {
