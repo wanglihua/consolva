@@ -26,7 +26,7 @@ Page({
             let expressExpectCount = res.data.expressExpectCount;
             let expressExpectList = res.data.expressExpectList;
 
-            this.fillListData(expressExpectList);
+            that.fillListData(expressExpectList);
 
             that.setData({
                 expressExpectList: expressExpectList,

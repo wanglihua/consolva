@@ -24,7 +24,7 @@ Page({
             const receiveAddressCount = res.data.receiveAddressCount;
             const sendAddressCount = res.data.sendAddressCount;
 
-            this.fillListData(receiveAddressList);
+            that.fillListData(receiveAddressList);
 
             that.setData({
                 receiveAddressList: receiveAddressList,
