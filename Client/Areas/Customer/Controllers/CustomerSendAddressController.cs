@@ -147,13 +147,25 @@ public class CustomerSendAddressController : Controller {
 
     [HttpPost]
     [Route("/client/customer/send/address/detail/city/list")]
-    public IActionResult CityList() {
-        
-        
-        
+    public IActionResult CityList([FromBody] CustomerSendAddressCityListParam param) {
+        int provinceId = param.ProvinceId;
+
+        var cityList = session.Query<AddressCityInfo>()
+            .Where(e => e.Province.Id == provinceId)
+            .OrderBy(e => e.Sort)
+            .ToList();
+
+        var cityItemList = cityList
+            .Select(e => new CustomerSendAddressRegionItem {
+                Value = e.Id.ToString(),
+                Text = e.Name,
+            })
+            .ToList();
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = cityItemList,
         });
     }
 

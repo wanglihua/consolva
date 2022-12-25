@@ -61,6 +61,21 @@ Page({
 
     onStreetSelectChange(e) {
         console.log(e);
+
+        const value = e.detail.value;
+
+        // 找到 index
+        let index = 0;
+
+        const dataKey = "provinceOptions[" + index + "].children";
+        const that = this;
+        app.post("/client/customer/send/address/detail/city/list", {
+            provinceId: parseInt(value),
+        }, function (res) {
+            that.setData({
+                "provinceOptions[0].children": res.data,
+            });
+        });
     },
 
     onStreetSelectFinish(e) {
