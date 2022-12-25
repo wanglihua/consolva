@@ -86,11 +86,6 @@ Page({
     },
 
     onClaimClick() {
-        // 下面三个都输出 true
-        // console.log(!(null));
-        // console.log(!(undefined));
-        // console.log(!(""));
-
         const express = this.data.express;
 
         const trackingNoInput = this.data.express.trackingNoInput;

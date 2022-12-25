@@ -29,7 +29,6 @@ Page({
     },
 
     onTabClick(e) {
-        // console.log(e.detail.name);
         if (e.detail.name === "receive") {
             wx.redirectTo({
                 url: "../customer_address_receive/customer_address_receive_list",

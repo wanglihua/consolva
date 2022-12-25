@@ -4,19 +4,10 @@ const util = app.require('utils/util.js');
 
 Page({
     data: {
-        countryOptions: [
-            {
-                text: '澳大利亚',
-                value: '2000',
-            },
-            {
-                text: '美国',
-                value: '3000',
-            },
-        ],
+        countryOptions: [],
         showCountrySelect: false,
-        countryFieldValue: '美国',
-        countryCascaderValue: '3000',
+        countryFieldValue: '',
+        countryCascaderValue: '',
 
         id: 0,
         countryId: 0,
@@ -38,40 +29,58 @@ Page({
         app.post("/client/customer/receive/address/detail", {
             id: id,
         }, function (res) {
+            const data = res.data;
+            const countryId = data.countryId;
+
+            let countryOptions = [];
+            let countryFieldValue = '';
+            let countryCascaderValue = '';
+            for (const country of data.countryList) {
+                countryOptions.push({
+                    value: country.id.toString(),
+                    text: country.name,
+                });
+
+                if (country.id === countryId) {
+                    countryFieldValue = country.name;
+                    countryCascaderValue = country.id;
+                }
+            }
+
             that.setData({
-                id: res.data.id,
-                countryId: res.data.countryId,
-                firstName: res.data.firstName,
-                lastName: res.data.lastName,
-                mobile: res.data.mobile,
-                address: res.data.address,
-                city: res.data.city,
-                state: res.data.state,
-                zipcode: res.data.zipcode,
-                tfn: res.data.tfn,
-                company: res.data.company,
-                unitLoc: res.data.unitLoc,
+                id: data.id,
+                countryId: data.countryId,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                mobile: data.mobile,
+                address: data.address,
+                city: data.city,
+                state: data.state,
+                zipcode: data.zipcode,
+                tfn: data.tfn,
+                company: data.company,
+                unitLoc: data.unitLoc,
+
+                countryFieldValue: countryFieldValue,
+                countryCascaderValue: countryCascaderValue,
+                countryOptions: countryOptions,
             });
         });
     },
 
     onCountryFieldTap(e) {
-        // console.log(e);
-
         this.setData({
             showCountrySelect: true,
         });
     },
 
     onCountrySelectClose(e) {
-        // console.log(e);
         this.setData({
             showCountrySelect: false,
         });
     },
 
     onCountrySelectFinish(e) {
-        console.log(e);
         const {selectedOptions, value} = e.detail;
         const fieldValue = selectedOptions
             .map((option) => option.text)
@@ -84,15 +93,14 @@ Page({
     },
 
     onSaveClick(e) {
-        // console.log(e);
-
         // todo validate
 
+        const countryId = parseInt(this.data.countryCascaderValue);
 
         const that = this;
         app.post("/client/customer/receive/address/save", {
             id: that.data.id,
-            countryId: that.data.countryId,
+            countryId: countryId,
             firstName: that.data.firstName,
             lastName: that.data.lastName,
             mobile: that.data.mobile,

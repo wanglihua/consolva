@@ -17,14 +17,11 @@ Component({
 
     pageLifetimes: {
         show: function () {
-            // console.log("pageLifetimes: show()")
         }
     },
 
     methods: {
         onChatIconClick(e) {
-            // console.log(e);
-
             // let chatIconMessageCount = this.data.chatIconMessageCount;
             // chatIconMessageCount = chatIconMessageCount + 1;
             // this.setData({

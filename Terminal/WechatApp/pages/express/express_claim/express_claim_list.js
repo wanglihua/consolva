@@ -92,11 +92,7 @@ Page({
         const expressClaimId = this.data.currentExpressClaim.id;
         const action = e.detail.action;
 
-        // console.log(expressClaimId);
-        // console.log(action);
-
         const that = this;
-
         if (action === "detail") {
             wx.navigateTo({
                 url: './express_claim_detail?id=' + expressClaimId,

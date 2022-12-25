@@ -47,7 +47,6 @@ Page({
     },
 
     onTabClick(e) {
-        // console.log(e.detail.name);
         if (e.detail.name === "send") {
             wx.redirectTo({
                 url: "../customer_address_send/customer_address_send_list",
@@ -56,7 +55,6 @@ Page({
     },
 
     onAddCustomerReceiveAddress(e) {
-        // console.log(e);
         wx.navigateTo({
             url: "./customer_address_receive_detail?id=0",
         });
@@ -107,9 +105,6 @@ Page({
         const addressId = currentAddress.id;
         const name = currentAddress.firstName + " " + currentAddress.lastName;
         const action = e.detail.action;
-
-        // console.log(addressId);
-        // console.log(action);
 
         const that = this;
 

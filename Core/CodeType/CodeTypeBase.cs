@@ -19,7 +19,8 @@ public abstract class CodeTypeBase
     /// <summary>
     /// 描述
     /// </summary>
-    [JsonProperty("description")]
+    // [JsonProperty("description")]
+    [JsonIgnore]
     public string Description { get; protected set; }
 
     public CodeTypeBase(int id, string name, string description)

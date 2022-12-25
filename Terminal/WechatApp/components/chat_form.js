@@ -13,7 +13,6 @@ Component({
 
     pageLifetimes: {
         show: function () {
-            // console.log("pageLifetimes: show()")
         }
     },
 
