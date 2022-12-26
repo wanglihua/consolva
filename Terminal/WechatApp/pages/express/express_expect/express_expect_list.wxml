@@ -20,7 +20,7 @@
     </block>
     <block wx:else>
         <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect" wx:for-index="index">
-            <van-cell-group custom-class="items">
+            <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ expressExpect }}">
                 <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" border="{{ false }}" custom-class="{{ expressExpect.headerClassName }}" title-class="item-header-title" value-class="item-header-value"/>
                 <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}" custom-class="item"/>

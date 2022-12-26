@@ -15,7 +15,7 @@
     </block>
     <block wx:else>
         <block wx:for="{{ sendAddressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">
-            <van-cell-group custom-class="items">
+            <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ address }}">
                 <van-cell title="{{ index + 1 }}、{{ address.name }}" value="{{ address.defaultStr }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
                 <van-cell title="国家: {{ address.country }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="收货人: {{ address.name }}" border="{{ false }}" custom-class="item"/>
