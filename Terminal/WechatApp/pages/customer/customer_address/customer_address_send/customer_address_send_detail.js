@@ -63,10 +63,12 @@ Page({
         console.log(e);
 
         const value = e.detail.value;
+        const tabIndex = e.detail.tabIndex;
 
         const that = this;
-        app.post("/client/customer/send/address/detail/city/list", {
-            provinceId: parseInt(value),
+        app.post("/client/customer/send/address/detail/region/list", {
+            regionId: parseInt(value),
+            tabIndex: tabIndex,
         }, function (res) {
             console.log(res);
             that.setData({

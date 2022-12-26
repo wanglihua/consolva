@@ -152,25 +152,28 @@ public class CustomerSendAddressController : Controller {
     public IActionResult RegionList([FromBody] CustomerSendAddressCityListParam param) {
         IList<CustomerSendAddressRegionItem> provinceItemList = new List<CustomerSendAddressRegionItem>();
         if (param.TabIndex == 0) {
-            int selectProvinceId = param.RegionId;
-            var province = session.Get<AddressProvinceInfo>(selectProvinceId);
+            int provinceId = param.RegionId;
+            var province = session.Get<AddressProvinceInfo>(provinceId);
             if (province == null) {
-                throw new ValidationException($"指定的省份#{selectProvinceId}不存在！");
+                throw new ValidationException($"指定的省份#{provinceId}不存在！");
             }
 
             var cityList = session.Query<AddressCityInfo>()
-                .Where(e => e.Province.Id == selectProvinceId)
+                .Where(e => e.Province.Id == provinceId)
                 .ToList();
 
+            // province
             provinceItemList = new List<CustomerSendAddressRegionItem> {
                 new CustomerSendAddressRegionItem {
                     Value = province.Id.ToString(),
                     Text = province.Name,
+                    // city
                     Children = cityList
                         .OrderBy(c => c.Sort)
                         .Select(c => new CustomerSendAddressRegionItem {
                             Value = c.Id.ToString(),
                             Text = c.Name,
+                            // area
                             Children = new List<CustomerSendAddressRegionItem>(),
                         }).ToList(),
                 }
@@ -191,19 +194,25 @@ public class CustomerSendAddressController : Controller {
                 .Where(e => e.City.Id == cityId)
                 .ToList();
 
+            // province
             provinceItemList = new List<CustomerSendAddressRegionItem> {
                 new CustomerSendAddressRegionItem {
                     Value = province.Id.ToString(),
                     Text = province.Name,
+                    // city
                     Children = new List<CustomerSendAddressRegionItem> {
                         new CustomerSendAddressRegionItem {
                             Value = city.Id.ToString(),
                             Text = city.Name,
+                            // area
                             Children = areaList
                                 .OrderBy(a => a.Sort)
                                 .Select(a => new CustomerSendAddressRegionItem {
                                     Value = a.Id.ToString(),
                                     Text = a.Name,
+
+                                    // street
+                                    Children = new List<CustomerSendAddressRegionItem>(),
                                 })
                                 .ToList()
                         }
@@ -218,6 +227,48 @@ public class CustomerSendAddressController : Controller {
             if (area == null) {
                 throw new ValidationException($"指定的区/县#{areaId}不存在！");
             }
+
+            NHibernateUtil.Initialize(area.City);
+            NHibernateUtil.Initialize(area.City.Province);
+
+            var city = area.City;
+            var province = city.Province;
+
+            var streetList = session.Query<AddressStreetInfo>()
+                .Where(e => e.Area.Id == areaId)
+                .ToList();
+
+            // province
+            provinceItemList = new List<CustomerSendAddressRegionItem> {
+                new CustomerSendAddressRegionItem {
+                    Value = province.Id.ToString(),
+                    Text = province.Name,
+                    // city
+                    Children = new List<CustomerSendAddressRegionItem> {
+                        new CustomerSendAddressRegionItem {
+                            Value = city.Id.ToString(),
+                            Text = city.Name,
+                            // area
+                            Children = new List<CustomerSendAddressRegionItem> {
+                                new CustomerSendAddressRegionItem {
+                                    Value = area.Id.ToString(),
+                                    Text = area.Name,
+                                    // street
+                                    Children = streetList
+                                        .OrderBy(a => a.Sort)
+                                        .Select(a => new CustomerSendAddressRegionItem {
+                                            Value = a.Id.ToString(),
+                                            Text = a.Name,
+                                            // no more
+                                            Children = null,
+                                        })
+                                        .ToList()
+                                }
+                            }
+                        }
+                    },
+                }
+            };
         }
 
         return Json(new JsonResultData {
