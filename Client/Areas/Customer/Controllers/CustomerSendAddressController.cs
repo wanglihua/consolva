@@ -114,22 +114,11 @@ public class CustomerSendAddressController : Controller {
     public IActionResult Detail([FromBody] IdParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        IList<CustomerSendAddressRegionItem> regionItemList = new List<CustomerSendAddressRegionItem>();
-
         int addressId = param.Id;
         CustomerSendAddressInfo address;
         string streetFieldValue = string.Empty;
         if (addressId == 0) {
             address = new CustomerSendAddressInfo();
-
-            var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
-            regionItemList = provinceList
-                .Select(e => new CustomerSendAddressRegionItem {
-                    Value = e.Id.ToString(),
-                    Text = e.Name,
-                    Children = new List<CustomerSendAddressRegionItem>(),
-                })
-                .ToList();
         } else {
             address = session.Get<CustomerSendAddressInfo>(addressId);
             if (address == null) {
@@ -141,39 +130,16 @@ public class CustomerSendAddressController : Controller {
             }
 
             streetFieldValue = $"{address.Province.Name}/{address.City.Name}/{address.Area.Name}/{address.Street.Name}";
-
-            int areaId = address.Area.Id;
-            IList<AddressStreetInfo> streetList = session.Query<AddressStreetInfo>()
-                .Where(e => e.Area.Id == areaId)
-                .ToList();
-            regionItemList = new List<CustomerSendAddressRegionItem> {
-                new CustomerSendAddressRegionItem {
-                    Value = address.Province.Id.ToString(),
-                    Text = address.Province.Name,
-                    Children = new List<CustomerSendAddressRegionItem> {
-                        new CustomerSendAddressRegionItem {
-                            Value = address.City.Id.ToString(),
-                            Text = address.City.Name,
-                            Children = new List<CustomerSendAddressRegionItem> {
-                                new CustomerSendAddressRegionItem {
-                                    Value = address.Area.Id.ToString(),
-                                    Text = address.Area.Name,
-                                    Children = streetList
-                                        .OrderByDescending(e => e.Sort)
-                                        .Select(e => new CustomerSendAddressRegionItem {
-                                            Value = e.Id.ToString(),
-                                            Text = e.Name,
-                                            Children = null,
-                                        })
-                                        .ToList(),
-                                }
-                            }
-                        }
-                    },
-                }
-            };
         }
 
+        var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
+        var regionItemList = provinceList
+            .Select(e => new CustomerSendAddressRegionItem {
+                Value = e.Id.ToString(),
+                Text = e.Name,
+                Children = new List<CustomerSendAddressRegionItem>(),
+            })
+            .ToList();
 
         string streetCascaderValue = string.Empty;
         if (address.Street.Id != 0) {

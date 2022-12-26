@@ -103,7 +103,7 @@ Page({
     onActionSheetSelect(e) {
         const currentAddress = this.data.currentAddress;
         const addressId = currentAddress.id;
-        const name = currentAddress.firstName + " " + currentAddress.lastName;
+        const name = currentAddress.name;
         const action = e.detail.action;
 
         const that = this;
