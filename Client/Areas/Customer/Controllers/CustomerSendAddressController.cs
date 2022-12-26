@@ -117,11 +117,17 @@ public class CustomerSendAddressController : Controller {
         }
 
         var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
+        var cityList = session.Query<AddressCityInfo>().OrderBy(e => e.Sort).ToList();
         var provinceItemList = provinceList
             .Select(e => new CustomerSendAddressRegionItem {
                 Value = e.Id.ToString(),
                 Text = e.Name,
-                Children = new List<CustomerSendAddressRegionItem>(),
+                Children = cityList
+                    .Where(c => c.Province.Id == e.Id)
+                    .Select(c => new CustomerSendAddressRegionItem {
+                        Value = c.Id.ToString(),
+                        Text = c.Name.ToString(),
+                    }).ToList(),
             })
             .ToList();
 
