@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NHibernate;
 using shunda.Client.Areas.Customer.Models.CustomerSendAddress;
 using shunda.Client.Services;
 using shunda.Core;
@@ -117,17 +118,11 @@ public class CustomerSendAddressController : Controller {
         }
 
         var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
-        var cityList = session.Query<AddressCityInfo>().OrderBy(e => e.Sort).ToList();
         var provinceItemList = provinceList
             .Select(e => new CustomerSendAddressRegionItem {
                 Value = e.Id.ToString(),
                 Text = e.Name,
-                Children = cityList
-                    .Where(c => c.Province.Id == e.Id)
-                    .Select(c => new CustomerSendAddressRegionItem {
-                        Value = c.Id.ToString(),
-                        Text = c.Name.ToString(),
-                    }).ToList(),
+                Children = new List<CustomerSendAddressRegionItem>(),
             })
             .ToList();
 
@@ -153,64 +148,75 @@ public class CustomerSendAddressController : Controller {
     }
 
     [HttpPost]
-    [Route("/client/customer/send/address/detail/city/list")]
-    public IActionResult CityList([FromBody] CustomerSendAddressCityListParam param) {
-        int selectProvinceId = param.ProvinceId;
-
-        // province
-        var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
-        var provinceItemList = provinceList
-            .Select(e => new CustomerSendAddressRegionItem {
-                Value = e.Id.ToString(),
-                Text = e.Name,
-                Children = new List<CustomerSendAddressRegionItem>(),
-            })
-            .ToList();
-
-        // city
-        var allCityList = session.Query<AddressCityInfo>()
-            .OrderBy(e => e.Sort)
-            .ToList();
-        foreach (var provinceItem in provinceItemList) {
-            // 这个判断一般总是成立的
-            if (int.TryParse(provinceItem.Value, out int provinceId)) {
-                provinceItem.Children = allCityList
-                    .Where(e => e.Province.Id == provinceId)
-                    .Select(e => new CustomerSendAddressRegionItem {
-                        Value = e.Id.ToString(),
-                        Text = e.Name,
-                        Children = new List<CustomerSendAddressRegionItem>(),
-                    })
-                    .ToList();
+    [Route("/client/customer/send/address/detail/region/list")]
+    public IActionResult RegionList([FromBody] CustomerSendAddressCityListParam param) {
+        IList<CustomerSendAddressRegionItem> provinceItemList = new List<CustomerSendAddressRegionItem>();
+        if (param.TabIndex == 0) {
+            int selectProvinceId = param.RegionId;
+            var province = session.Get<AddressProvinceInfo>(selectProvinceId);
+            if (province == null) {
+                throw new ValidationException($"指定的省份#{selectProvinceId}不存在！");
             }
+
+            var cityList = session.Query<AddressCityInfo>()
+                .Where(e => e.Province.Id == selectProvinceId)
+                .ToList();
+
+            provinceItemList = new List<CustomerSendAddressRegionItem> {
+                new CustomerSendAddressRegionItem {
+                    Value = province.Id.ToString(),
+                    Text = province.Name,
+                    Children = cityList
+                        .OrderBy(c => c.Sort)
+                        .Select(c => new CustomerSendAddressRegionItem {
+                            Value = c.Id.ToString(),
+                            Text = c.Name,
+                            Children = new List<CustomerSendAddressRegionItem>(),
+                        }).ToList(),
+                }
+            };
         }
 
-        // area
-        var provinceCityList = allCityList
-            .Where(e => e.Province.Id == selectProvinceId)
-            .OrderBy(e => e.Sort)
-            .ToList();
+        if (param.TabIndex == 1) {
+            int cityId = param.RegionId;
+            var city = session.Get<AddressCityInfo>(cityId);
+            if (city == null) {
+                throw new ValidationException($"指定的城市#{cityId}不存在！");
+            }
 
-        IList<int> provinceCityIdList = provinceCityList.Select(e => e.Id).ToList();
-        IList<AddressAreaInfo> provinceAreaList = session.Query<AddressAreaInfo>()
-            .Where(e => provinceCityIdList.Contains(e.City.Id))
-            .ToList();
+            NHibernateUtil.Initialize(city.Province);
+            var province = city.Province;
 
-        var selectProvinceValue = selectProvinceId.ToString();
-        var selectProvinceCityItemList = provinceItemList
-            .Where(e => e.Value == selectProvinceValue)
-            .Take(1)
-            .SingleOrDefault()?
-            .Children ?? new List<CustomerSendAddressRegionItem>();
-        foreach (var cityItem in selectProvinceCityItemList) {
-            // 一般这个判断总是成立的
-            if (int.TryParse(cityItem.Value, out int cityId)) {
-                cityItem.Children = provinceAreaList.Where(e => e.City.Id == cityId)
-                    .Select(e => new CustomerSendAddressRegionItem {
-                        Value = e.Id.ToString(),
-                        Text = e.Name,
-                    })
-                    .ToList();
+            var areaList = session.Query<AddressAreaInfo>()
+                .Where(e => e.City.Id == cityId)
+                .ToList();
+
+            provinceItemList = new List<CustomerSendAddressRegionItem> {
+                new CustomerSendAddressRegionItem {
+                    Value = province.Id.ToString(),
+                    Text = province.Name,
+                    Children = new List<CustomerSendAddressRegionItem> {
+                        new CustomerSendAddressRegionItem {
+                            Value = city.Id.ToString(),
+                            Text = city.Name,
+                            Children = areaList
+                                .OrderBy(a => a.Sort)
+                                .Select(a => new CustomerSendAddressRegionItem {
+                                    Value = a.Id.ToString(),
+                                    Text = a.Name,
+                                })
+                                .ToList()
+                        }
+                    },
+                }
+            };
+        }
+
+        if (param.TabIndex == 2) {
+            int areaId = param.RegionId;
+            var area = session.Get<AddressAreaInfo>(areaId);
+            if (area == null) {
+                throw new ValidationException($"指定的区/县#{areaId}不存在！");
             }
         }
 

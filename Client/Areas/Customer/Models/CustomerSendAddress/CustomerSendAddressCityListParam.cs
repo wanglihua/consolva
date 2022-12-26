@@ -1,8 +1,11 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Customer.Models.CustomerSendAddress; 
+namespace shunda.Client.Areas.Customer.Models.CustomerSendAddress;
 
 public class CustomerSendAddressCityListParam {
-    [JsonProperty("provinceId")]
-    public int ProvinceId { get; set; }
+    [JsonProperty("regionId")]
+    public int RegionId { get; set; }
+
+    [JsonProperty("tabIndex")]
+    public int TabIndex { get; set; }
 }
