@@ -6,6 +6,9 @@ public class CustomerSendAddressListItem {
     [JsonProperty("id")]
     public int Id { get; set; }
 
+    [JsonProperty("country")]
+    public string Country { get; set; } = string.Empty;
+
     [JsonProperty("name")]
     public string Name { get; set; } = string.Empty;
 

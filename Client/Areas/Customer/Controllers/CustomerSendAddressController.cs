@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using NHibernate;
 using shunda.Client.Areas.Customer.Models.CustomerSendAddress;
 using shunda.Client.Services;
 using shunda.Core;
@@ -31,7 +30,7 @@ public class CustomerSendAddressController : Controller {
     [HttpPost]
     [Route("/client/customer/send/address/list")]
     public IActionResult List([FromBody] CustomerSendAddressListParam param) {
-        var model = GetListData(param);
+        var model = GetListData(param, false);
 
         return Json(new JsonResultData {
             Success = true,
@@ -41,7 +40,7 @@ public class CustomerSendAddressController : Controller {
     }
 
     [NonAction]
-    private CustomerSendAddressListModel GetListData(CustomerSendAddressListParam param) {
+    private CustomerSendAddressListModel GetListData(CustomerSendAddressListParam param, bool ensureDefault) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         var query = session.Query<CustomerSendAddressInfo>()
             .Where(e => e.Customer.Id == loginCustomerId);
@@ -49,6 +48,17 @@ public class CustomerSendAddressController : Controller {
         var sendAddressList = query
             .OrderByDescending(e => e.Id)
             .ToList();
+
+        // 确保有一个默认地址
+        if (ensureDefault == true && sendAddressList.Count != 0) {
+            bool hasDefaultAddress = sendAddressList.Where(e => e.IsDefault == true).Count() != 0;
+            if (hasDefaultAddress == false) {
+                var defaultAddressToSet = sendAddressList.First();
+                defaultAddressToSet.IsDefault = true;
+                session.Update(defaultAddressToSet);
+                session.Flush();
+            }
+        }
 
         var provinceIdList = sendAddressList.Select(e => e.Province.Id).ToList();
         var cityIdList = sendAddressList.Select(e => e.City.Id).ToList();
@@ -72,6 +82,7 @@ public class CustomerSendAddressController : Controller {
         var sendAddressItemList = sendAddressList
             .Select(e => new CustomerSendAddressListItem {
                 Id = e.Id,
+                Country = e.Country.Name,
                 Name = e.Name,
                 Mobile = e.Mobile,
                 Province = e.Province.Name,
@@ -130,9 +141,6 @@ public class CustomerSendAddressController : Controller {
             Id = address.Id,
             Name = address.Name,
             Mobile = address.Mobile,
-            ProvinceId = address.Province.Id,
-            CityId = address.City.Id,
-            AreaId = address.Area.Id,
             StreetId = address.Street.Id,
             Address = address.Address,
             Zipcode = address.Zipcode,
@@ -187,9 +195,6 @@ public class CustomerSendAddressController : Controller {
                 throw new ValidationException($"指定的城市#{cityId}不存在！");
             }
 
-            NHibernateUtil.Initialize(city.Province);
-            var province = city.Province;
-
             var areaList = session.Query<AddressAreaInfo>()
                 .Where(e => e.City.Id == cityId)
                 .ToList();
@@ -220,12 +225,6 @@ public class CustomerSendAddressController : Controller {
             if (area == null) {
                 throw new ValidationException($"指定的区/县#{areaId}不存在！");
             }
-
-            NHibernateUtil.Initialize(area.City);
-            NHibernateUtil.Initialize(area.City.Province);
-
-            var city = area.City;
-            var province = city.Province;
 
             var streetList = session.Query<AddressStreetInfo>()
                 .Where(e => e.Area.Id == areaId)
@@ -288,22 +287,38 @@ public class CustomerSendAddressController : Controller {
             }
         }
 
+        int streetId = model.StreetId;
+        var street = session.Get<AddressStreetInfo>(streetId);
+        if (street == null) {
+            throw new ValidationException($"指定的街道#{streetId}不存在！");
+        }
+
         address.Country = Country.China;
         address.Name = model.Name;
         address.Mobile = model.Mobile;
-        address.Province = session.Get<AddressProvinceInfo>(model.ProvinceId);
-        address.City = session.Get<AddressCityInfo>(model.CityId);
-        address.Area = session.Get<AddressAreaInfo>(model.AreaId);
-        address.Street = session.Get<AddressStreetInfo>(model.StreetId);
+        address.Province = street.Area.City.Province;
+        address.City = street.Area.City;
+        address.Area = street.Area;
+        address.Street = street;
         address.Address = model.Address;
         address.Zipcode = model.Zipcode;
 
         session.SaveOrUpdate(address);
         session.Flush();
 
+        // 确保有一个默认地址
+        int addressCount = session.Query<CustomerSendAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId)
+            .Count();
+        if (addressCount == 1 && address.IsDefault == false) {
+            address.IsDefault = true;
+            session.Update(address);
+            session.Flush();
+        }
+
         return Json(new JsonResultData {
             Success = true,
-            Message = "发货地址保存成功！",
+            Message = "地址保存成功！",
         });
     }
 
@@ -341,11 +356,11 @@ public class CustomerSendAddressController : Controller {
 
         session.Flush();
 
-        var model = GetListData(param);
+        var model = GetListData(param, false);
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "设置默认发货地址成功！",
+            Message = "设置默认成功！",
             Data = model,
         });
     }
@@ -373,11 +388,11 @@ public class CustomerSendAddressController : Controller {
         session.Delete(address);
         session.Flush();
 
-        var model = GetListData(param);
+        var model = GetListData(param, true);
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "发货地址删除成功！",
+            Message = "地址删除成功！",
             Data = model,
         });
     }

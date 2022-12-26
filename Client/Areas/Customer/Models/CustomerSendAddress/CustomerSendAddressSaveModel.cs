@@ -15,19 +15,7 @@ public class CustomerSendAddressSaveModel {
     [JsonProperty("mobile")]
     public string Mobile { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "[省]不能为空！")]
-    [JsonProperty("provinceId")]
-    public int ProvinceId { get; set; }
-
-    [Required(ErrorMessage = "[市]不能为空！")]
-    [JsonProperty("cityId")]
-    public int CityId { get; set; }
-
-    [Required(ErrorMessage = "[区/县]不能为空！")]
-    [JsonProperty("areaId")]
-    public int AreaId { get; set; }
-
-    [Required(ErrorMessage = "[街道]不能为空！")]
+    [Required(ErrorMessage = "[地区]不能为空！")]
     [JsonProperty("streetId")]
     public int StreetId { get; set; }
 

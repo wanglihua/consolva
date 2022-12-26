@@ -98,6 +98,11 @@ Page({
         const that = this;
         app.post("/client/customer/send/address/save", {
             id: that.data.id,
+            name: that.data.name,
+            mobile: that.data.mobile,
+            streetId: parseInt(that.data.streetCascaderValue),
+            address: that.data.address,
+            zipcode: that.data.zipcode,
         }, function (res) {
             wx.showToast({
                 title: res.message,

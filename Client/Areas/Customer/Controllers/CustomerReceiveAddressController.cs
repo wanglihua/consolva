@@ -188,6 +188,16 @@ public class CustomerReceiveAddressController : Controller {
         session.SaveOrUpdate(address);
         session.Flush();
 
+        // 确保有一个默认地址
+        int addressCount = session.Query<CustomerReceiveAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId)
+            .Count();
+        if (addressCount == 1 && address.IsDefault == false) {
+            address.IsDefault = true;
+            session.Update(address);
+            session.Flush();
+        }
+
         return Json(new JsonResultData {
             Success = true,
             Message = "地址保存成功！",
