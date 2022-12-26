@@ -121,6 +121,7 @@ public class CustomerSendAddressController : Controller {
             .Select(e => new CustomerSendAddressRegionItem {
                 Value = e.Id.ToString(),
                 Text = e.Name,
+                Children = new List<CustomerSendAddressRegionItem>(),
             })
             .ToList();
 
@@ -148,24 +149,69 @@ public class CustomerSendAddressController : Controller {
     [HttpPost]
     [Route("/client/customer/send/address/detail/city/list")]
     public IActionResult CityList([FromBody] CustomerSendAddressCityListParam param) {
-        int provinceId = param.ProvinceId;
+        int selectProvinceId = param.ProvinceId;
 
-        var cityList = session.Query<AddressCityInfo>()
-            .Where(e => e.Province.Id == provinceId)
-            .OrderBy(e => e.Sort)
-            .ToList();
-
-        var cityItemList = cityList
+        // province
+        var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
+        var provinceItemList = provinceList
             .Select(e => new CustomerSendAddressRegionItem {
                 Value = e.Id.ToString(),
                 Text = e.Name,
+                Children = new List<CustomerSendAddressRegionItem>(),
             })
             .ToList();
+
+        // city
+        var allCityList = session.Query<AddressCityInfo>()
+            .OrderBy(e => e.Sort)
+            .ToList();
+        foreach (var provinceItem in provinceItemList) {
+            // 这个判断一般总是成立的
+            if (int.TryParse(provinceItem.Value, out int provinceId)) {
+                provinceItem.Children = allCityList
+                    .Where(e => e.Province.Id == provinceId)
+                    .Select(e => new CustomerSendAddressRegionItem {
+                        Value = e.Id.ToString(),
+                        Text = e.Name,
+                        Children = new List<CustomerSendAddressRegionItem>(),
+                    })
+                    .ToList();
+            }
+        }
+
+        // area
+        var provinceCityList = allCityList
+            .Where(e => e.Province.Id == selectProvinceId)
+            .OrderBy(e => e.Sort)
+            .ToList();
+
+        IList<int> provinceCityIdList = provinceCityList.Select(e => e.Id).ToList();
+        IList<AddressAreaInfo> provinceAreaList = session.Query<AddressAreaInfo>()
+            .Where(e => provinceCityIdList.Contains(e.City.Id))
+            .ToList();
+
+        var selectProvinceValue = selectProvinceId.ToString();
+        var selectProvinceCityItemList = provinceItemList
+            .Where(e => e.Value == selectProvinceValue)
+            .Take(1)
+            .SingleOrDefault()?
+            .Children ?? new List<CustomerSendAddressRegionItem>();
+        foreach (var cityItem in selectProvinceCityItemList) {
+            // 一般这个判断总是成立的
+            if (int.TryParse(cityItem.Value, out int cityId)) {
+                cityItem.Children = provinceAreaList.Where(e => e.City.Id == cityId)
+                    .Select(e => new CustomerSendAddressRegionItem {
+                        Value = e.Id.ToString(),
+                        Text = e.Name,
+                    })
+                    .ToList();
+            }
+        }
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = cityItemList,
+            Data = provinceItemList,
         });
     }
 

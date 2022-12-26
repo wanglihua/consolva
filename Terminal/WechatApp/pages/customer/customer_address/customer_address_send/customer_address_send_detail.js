@@ -64,21 +64,19 @@ Page({
 
         const value = e.detail.value;
 
-        // 找到 index
-        let index = 0;
-
-        const dataKey = "provinceOptions[" + index + "].children";
         const that = this;
         app.post("/client/customer/send/address/detail/city/list", {
             provinceId: parseInt(value),
         }, function (res) {
+            console.log(res);
             that.setData({
-                "provinceOptions[0].children": res.data,
+                provinceOptions: res.data,
             });
         });
     },
 
     onStreetSelectFinish(e) {
+        console.log(e);
         const {selectedOptions, value} = e.detail;
         const fieldValue = selectedOptions
             .map((option) => option.text)
