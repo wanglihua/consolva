@@ -11,7 +11,6 @@
 
 <view class="container-bottom">
     <!--<van-cell-group title="申领件"/>-->
-
     <block wx:if="{{ expressClaimCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
     </block>
