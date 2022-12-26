@@ -150,7 +150,7 @@ public class CustomerSendAddressController : Controller {
     [HttpPost]
     [Route("/client/customer/send/address/detail/region/list")]
     public IActionResult RegionList([FromBody] CustomerSendAddressCityListParam param) {
-        IList<CustomerSendAddressRegionItem> provinceItemList = new List<CustomerSendAddressRegionItem>();
+        IList<CustomerSendAddressRegionItem> regionItemList = new List<CustomerSendAddressRegionItem>();
         if (param.TabIndex == 0) {
             int provinceId = param.RegionId;
             var province = session.Get<AddressProvinceInfo>(provinceId);
@@ -163,7 +163,7 @@ public class CustomerSendAddressController : Controller {
                 .ToList();
 
             // province
-            provinceItemList = new List<CustomerSendAddressRegionItem> {
+            regionItemList = new List<CustomerSendAddressRegionItem> {
                 new CustomerSendAddressRegionItem {
                     Value = province.Id.ToString(),
                     Text = province.Name,
@@ -194,29 +194,22 @@ public class CustomerSendAddressController : Controller {
                 .Where(e => e.City.Id == cityId)
                 .ToList();
 
-            // province
-            provinceItemList = new List<CustomerSendAddressRegionItem> {
+            // city
+            regionItemList = new List<CustomerSendAddressRegionItem> {
                 new CustomerSendAddressRegionItem {
-                    Value = province.Id.ToString(),
-                    Text = province.Name,
-                    // city
-                    Children = new List<CustomerSendAddressRegionItem> {
-                        new CustomerSendAddressRegionItem {
-                            Value = city.Id.ToString(),
-                            Text = city.Name,
-                            // area
-                            Children = areaList
-                                .OrderBy(a => a.Sort)
-                                .Select(a => new CustomerSendAddressRegionItem {
-                                    Value = a.Id.ToString(),
-                                    Text = a.Name,
+                    Value = city.Id.ToString(),
+                    Text = city.Name,
+                    // area
+                    Children = areaList
+                        .OrderBy(a => a.Sort)
+                        .Select(a => new CustomerSendAddressRegionItem {
+                            Value = a.Id.ToString(),
+                            Text = a.Name,
 
-                                    // street
-                                    Children = new List<CustomerSendAddressRegionItem>(),
-                                })
-                                .ToList()
-                        }
-                    },
+                            // street
+                            Children = new List<CustomerSendAddressRegionItem>(),
+                        })
+                        .ToList()
                 }
             };
         }
@@ -238,35 +231,21 @@ public class CustomerSendAddressController : Controller {
                 .Where(e => e.Area.Id == areaId)
                 .ToList();
 
-            // province
-            provinceItemList = new List<CustomerSendAddressRegionItem> {
+            // area
+            regionItemList = new List<CustomerSendAddressRegionItem> {
                 new CustomerSendAddressRegionItem {
-                    Value = province.Id.ToString(),
-                    Text = province.Name,
-                    // city
-                    Children = new List<CustomerSendAddressRegionItem> {
-                        new CustomerSendAddressRegionItem {
-                            Value = city.Id.ToString(),
-                            Text = city.Name,
-                            // area
-                            Children = new List<CustomerSendAddressRegionItem> {
-                                new CustomerSendAddressRegionItem {
-                                    Value = area.Id.ToString(),
-                                    Text = area.Name,
-                                    // street
-                                    Children = streetList
-                                        .OrderBy(a => a.Sort)
-                                        .Select(a => new CustomerSendAddressRegionItem {
-                                            Value = a.Id.ToString(),
-                                            Text = a.Name,
-                                            // no more
-                                            Children = null,
-                                        })
-                                        .ToList()
-                                }
-                            }
-                        }
-                    },
+                    Value = area.Id.ToString(),
+                    Text = area.Name,
+                    // street
+                    Children = streetList
+                        .OrderBy(a => a.Sort)
+                        .Select(a => new CustomerSendAddressRegionItem {
+                            Value = a.Id.ToString(),
+                            Text = a.Name,
+                            // no more
+                            Children = null,
+                        })
+                        .ToList()
                 }
             };
         }
@@ -274,7 +253,7 @@ public class CustomerSendAddressController : Controller {
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = provinceItemList,
+            Data = regionItemList,
         });
     }
 

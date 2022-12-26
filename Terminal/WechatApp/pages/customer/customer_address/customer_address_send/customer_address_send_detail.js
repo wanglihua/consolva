@@ -66,15 +66,17 @@ Page({
         const tabIndex = e.detail.tabIndex;
 
         const that = this;
-        app.post("/client/customer/send/address/detail/region/list", {
-            regionId: parseInt(value),
-            tabIndex: tabIndex,
-        }, function (res) {
-            console.log(res);
-            that.setData({
-                provinceOptions: res.data,
+        if (tabIndex < 3) {
+            app.post("/client/customer/send/address/detail/region/list", {
+                regionId: parseInt(value),
+                tabIndex: tabIndex,
+            }, function (res) {
+                console.log(res);
+                that.setData({
+                    provinceOptions: res.data,
+                });
             });
-        });
+        }
     },
 
     onStreetSelectFinish(e) {
