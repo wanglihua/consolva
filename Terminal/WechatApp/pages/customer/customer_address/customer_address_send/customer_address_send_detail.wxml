@@ -9,7 +9,7 @@
             <van-cascader
                     value="{{ streetCascaderValue }}"
                     title="选择地区"
-                    options="{{ provinceOptions }}"
+                    options="{{ regionOptions }}"
                     bind:close="onStreetSelectClose"
                     bind:change="onStreetSelectChange"
                     bind:finish="onStreetSelectFinish"
