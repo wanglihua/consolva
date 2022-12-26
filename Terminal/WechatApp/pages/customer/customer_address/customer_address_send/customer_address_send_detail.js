@@ -4,7 +4,7 @@ const util = app.require('utils/util.js');
 
 Page({
     data: {
-        provinceOptions: [],
+        regionOptions: [],
         showStreetSelect: false,
         streetFieldValue: '',
         streetCascaderValue: '',
@@ -23,22 +23,6 @@ Page({
             id: id,
         }, function (res) {
             const data = res.data;
-            // const streetId = data.streetId;
-            //
-            // let streetOptions = [];
-            // let streetFieldValue = '';
-            // let streetCascaderValue = '';
-            // for (const street of data.streetList) {
-            //     streetOptions.push({
-            //         value: street.id.toString(),
-            //         text: street.name,
-            //     });
-            //
-            //     if (street.id === streetId) {
-            //         streetFieldValue = street.name;
-            //         streetCascaderValue = street.id;
-            //     }
-            // }
 
             that.setData({
                 id: data.id,
@@ -47,10 +31,9 @@ Page({
                 address: data.address,
                 zipcode: data.zipcode,
 
-                // streetFieldValue: streetFieldValue,
-                // streetCascaderValue: streetCascaderValue,
-                // streetOptions: streetOptions,
-                provinceOptions: data.provinceList,
+                streetFieldValue: data.streetFieldValue,
+                streetCascaderValue: data.streetCascaderValue,
+                regionOptions: data.regionList,
             });
         });
     },
@@ -78,7 +61,7 @@ Page({
                 tabIndex: tabIndex,
             }, function (res) {
                 that.setData({
-                    provinceOptions: res.data,
+                    regionOptions: res.data,
                 });
             });
         }

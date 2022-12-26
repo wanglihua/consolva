@@ -17,7 +17,7 @@ public class CustomerSendAddressSaveModel {
 
     [Required(ErrorMessage = "[地区]不能为空！")]
     [JsonProperty("streetId")]
-    public int StreetId { get; set; }
+    public int? StreetId { get; set; }
 
     [Required(ErrorMessage = "[地址详细]不能为空！")]
     [JsonProperty("address")]

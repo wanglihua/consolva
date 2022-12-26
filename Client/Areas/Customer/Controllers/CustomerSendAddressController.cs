@@ -115,6 +115,7 @@ public class CustomerSendAddressController : Controller {
 
         int addressId = param.Id;
         CustomerSendAddressInfo address;
+        string streetFieldValue = string.Empty;
         if (addressId == 0) {
             address = new CustomerSendAddressInfo();
         } else {
@@ -126,6 +127,8 @@ public class CustomerSendAddressController : Controller {
             if (address.Customer.Id != loginCustomerId) {
                 throw new ValidationException($"指定的发货地址#{addressId}不属于当前登录客户#{loginCustomerId}");
             }
+
+            streetFieldValue = $"{address.Province.Name}/{address.City.Name}/{address.Area.Name}/{address.Street.Name}";
         }
 
         var provinceList = session.Query<AddressProvinceInfo>().OrderBy(e => e.Sort).ToList();
@@ -137,6 +140,11 @@ public class CustomerSendAddressController : Controller {
             })
             .ToList();
 
+        string streetCascaderValue = string.Empty;
+        if (address.Street.Id != 0) {
+            streetCascaderValue = address.Street.Id.ToString();
+        }
+
         var model = new CustomerSendAddressDetailModel {
             Id = address.Id,
             Name = address.Name,
@@ -145,7 +153,9 @@ public class CustomerSendAddressController : Controller {
             Address = address.Address,
             Zipcode = address.Zipcode,
 
-            ProvinceList = provinceItemList,
+            StreetFieldValue = streetFieldValue,
+            StreetCascaderValue = streetCascaderValue,
+            RegionList = provinceItemList,
         };
 
         return Json(new JsonResultData {
@@ -287,7 +297,7 @@ public class CustomerSendAddressController : Controller {
             }
         }
 
-        int streetId = model.StreetId;
+        int streetId = model.StreetId ?? 0;
         var street = session.Get<AddressStreetInfo>(streetId);
         if (street == null) {
             throw new ValidationException($"指定的街道#{streetId}不存在！");
