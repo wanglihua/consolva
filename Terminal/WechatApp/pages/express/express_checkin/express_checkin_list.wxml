@@ -52,5 +52,8 @@
             </block>
         </block>
 
+        <view class="bottom-divider">
+            <van-divider contentPosition="center">共 {{ expressTotalCount }} 项</van-divider>
+        </view>
     </block>
 </view>
