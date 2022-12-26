@@ -151,13 +151,15 @@ Page({
                 });
 
                 setTimeout(function () {
-                    if(express.enter){
+                    if (express.enter) {
+                        const pages = getCurrentPages();
                         wx.navigateBack({
                             complete: function (e) {
-                                const pages = getCurrentPages();
-                                const prevPage = pages[pages.length - 1];
-                                if(prevPage.loadExpressExpectList) {
-                                    prevPage.loadExpressExpectList();
+                                if (pages.length >= 2) {
+                                    const prevPage = pages[pages.length - 2];
+                                    if (prevPage.loadExpressExpectList) {
+                                        prevPage.loadExpressExpectList();
+                                    }
                                 }
                             }
                         });
@@ -166,16 +168,6 @@ Page({
                             url: './express_claim_list',
                         });
                     }
-
-                    wx.navigateBack({
-                        complete: function (e) {
-                            const pages = getCurrentPages();
-                            const prevPage = pages[pages.length - 1];
-                            if(prevPage.loadExpressExpectList) {
-                                prevPage.loadExpressExpectList();
-                            }
-                        }
-                    });                    
                 }, 1000);
             });
     },

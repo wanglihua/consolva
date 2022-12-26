@@ -117,12 +117,14 @@ Page({
             });
 
             setTimeout(function () {
+                const pages = getCurrentPages();
                 wx.navigateBack({
                     complete: function (e) {
-                        const pages = getCurrentPages();
-                        const prevPage = pages[pages.length - 1];
-                        if (prevPage.loadReceiveAddressList) {
-                            prevPage.loadReceiveAddressList();
+                        if (pages.length >= 2) {
+                            const prevPage = pages[pages.length - 2];
+                            if (prevPage.loadReceiveAddressList) {
+                                prevPage.loadReceiveAddressList();
+                            }
                         }
                     }
                 });
