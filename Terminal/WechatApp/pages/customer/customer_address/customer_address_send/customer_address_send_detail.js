@@ -10,6 +10,10 @@ Page({
         streetCascaderValue: '',
 
         id: 0,
+        name: '',
+        mobile: '',
+        address: '',
+        zipcode: '',
     },
 
     onLoad(options) {
@@ -38,6 +42,10 @@ Page({
 
             that.setData({
                 id: data.id,
+                name: data.name,
+                mobile: data.mobile,
+                address: data.address,
+                zipcode: data.zipcode,
 
                 // streetFieldValue: streetFieldValue,
                 // streetCascaderValue: streetCascaderValue,
@@ -60,8 +68,6 @@ Page({
     },
 
     onStreetSelectChange(e) {
-        console.log(e);
-
         const value = e.detail.value;
         const tabIndex = e.detail.tabIndex;
 
@@ -71,7 +77,6 @@ Page({
                 regionId: parseInt(value),
                 tabIndex: tabIndex,
             }, function (res) {
-                console.log(res);
                 that.setData({
                     provinceOptions: res.data,
                 });
@@ -80,7 +85,6 @@ Page({
     },
 
     onStreetSelectFinish(e) {
-        console.log(e);
         const {selectedOptions, value} = e.detail;
         const fieldValue = selectedOptions
             .map((option) => option.text)
