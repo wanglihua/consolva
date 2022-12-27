@@ -166,12 +166,37 @@ Page({
         const action = e.detail.action;
 
         const that = this;
-        
-        
+
+        if (action === "removeFromOrder") {
+
+        }
+
+        if (action === "removeFromOrderAll") {
+
+        }
+
+        if (action === "addToOrder") {
+
+        }
+
+        if (action === "addToOrderAll") {
+
+        }
+
         if (action === "detail") {
             wx.navigateTo({
                 url: './express_checkin_detail?id=' + expressId,
             });
+        }
+
+        if (action === "editPrice") {
+            wx.navigateTo({
+                url: './express_checkin_price?id=' + expressId,
+            });
+        }
+
+        if (action === "applyReturn") {
+
         }
 
         this.setData({

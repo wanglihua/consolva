@@ -24,7 +24,8 @@
         "pages/express/express_return/express_return_list",
         "pages/message/message_customize",
         "pages/message/message_list",
-        "pages/express/express_checkin/express_checkin_detail"
+        "pages/express/express_checkin/express_checkin_detail",
+        "pages/express/express_checkin/express_checkin_price"
     ],
     "window": {
         "backgroundTextStyle": "light",
