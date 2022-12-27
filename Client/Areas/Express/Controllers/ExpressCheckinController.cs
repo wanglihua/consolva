@@ -284,6 +284,7 @@ public class ExpressCheckinController : Controller {
                 })
                 .ToList(),
         };
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
@@ -293,9 +294,31 @@ public class ExpressCheckinController : Controller {
 
     [HttpPost]
     [Route("/client/express/checkin/price/save")]
+    [Transactional]
     public IActionResult PriceSave([FromBody] ExpressCheckinPriceSaveParam param) {
+        if (ModelState.IsValid == false) {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        var expressId = param.ExpressId;
+        var express = session.Get<ExpressInfo>(expressId);
+        if (express == null) {
+            throw new ValidationException($"指定的快递单号#{expressId}不存在！");
+        }
+
+        if (param.GoodsPriceList == null || param.GoodsPriceList.Count == 0) {
+            throw new ValidationException("物品价格列表不能为空！");
+        }
         
-        
+        // 检查价格录入
+
+        var goodsIdList = param.GoodsPriceList.Select(e => e.Id).ToList();
+        var goodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => goodsIdList.Contains(e.Id))
+            .ToList();
+
+        var goodsPriceList = param.GoodsPriceList;
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
