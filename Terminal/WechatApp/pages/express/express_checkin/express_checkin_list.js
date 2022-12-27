@@ -82,6 +82,24 @@ Page({
 
         const actionSheetActions = [];
 
+        if (currentExpress.forbidden === false) {
+            if (currentExpress.waitOrder === true) {
+                actionSheetActions.push({
+                    action: "removeFromOrder",
+                    name: '暂不转运',
+                    subname: '从待转运列表移除快递单',
+                    className: 'iconfont iconfont-remove-from-order',
+                });
+            } else {
+                actionSheetActions.push({
+                    action: "addToOrder",
+                    name: '我要转运',
+                    subname: '添加快递单到待转运列表',
+                    className: 'iconfont iconfont-add-to-order',
+                });
+            }
+        }
+
         actionSheetActions.push({
             action: "detail",
             name: '查看详细',
@@ -93,6 +111,22 @@ Page({
             name: '修改价格',
             className: 'iconfont iconfont-edit',
         });
+
+        if (currentExpress.waitOrder === true) {
+            actionSheetActions.push({
+                action: "applyReturn",
+                name: '申请退运',
+                subname: '待转运不能申请退运',
+                className: 'iconfont iconfont-express-return',
+                disabled: true,
+            });
+        } else {
+            actionSheetActions.push({
+                action: "applyReturn",
+                name: '申请退运',
+                className: 'iconfont iconfont-express-return',
+            });
+        }
 
         this.setData({
             currentExpress: currentExpress,

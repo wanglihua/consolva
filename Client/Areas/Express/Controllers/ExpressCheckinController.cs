@@ -140,8 +140,10 @@ public class ExpressCheckinController : Controller {
             }
 
             if (selectedExpressIdMap.ContainsKey(expressId)) {
+                item.WaitOrder = true;
                 expressWaitOrderList.Add(item);
             } else {
+                item.WaitOrder = false;
                 expressCheckinList.Add(item);
             }
         }

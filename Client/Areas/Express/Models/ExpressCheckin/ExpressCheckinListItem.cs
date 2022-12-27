@@ -58,4 +58,7 @@ public class ExpressCheckinListItem {
 
     [JsonProperty("goodsCount")]
     public int GoodsCount { get; set; }
+
+    [JsonProperty("waitOrder")]
+    public bool WaitOrder { get; set; } = false;
 }
