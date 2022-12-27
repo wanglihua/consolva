@@ -13,7 +13,7 @@
                 <van-cell title="优惠" value="{{ batch.ruleDesc }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="有效期" value="{{ batch.expire }}" border="{{ false }}" custom-class="item"/>
                 <view class="item-last-vspace"/>
-                <van-cell title="" border="{{ false }}" custom-class="item-footer">
+                <van-cell title="" border="{{ false }}" custom-class="item-footer" value-class="item-footer-value">
                     <block slot="right-icon">
                         <view style="text-align: right;">
                             <van-button type="info" class-prefix="iconfont" icon="coupon" size="small" bind:click="onCouponPickClick" data-item="{{ batch }}">点击领取优惠券</van-button>

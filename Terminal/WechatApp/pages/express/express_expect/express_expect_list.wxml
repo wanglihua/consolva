@@ -27,7 +27,7 @@
                 <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="备注" value="{{expressExpect.description}}" border="{{ false }}" custom-class="item"/>
                 <view class="item-last-vspace"/>
-                <van-cell title="操作" value="{{expressExpect.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" custom-class="item-footer"/>
+                <van-cell title="操作" value="{{expressExpect.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressExpect }}" custom-class="item-footer" value-class="item-footer-value"/>
             </van-cell-group>
         </block>
         <view class="bottom-divider">

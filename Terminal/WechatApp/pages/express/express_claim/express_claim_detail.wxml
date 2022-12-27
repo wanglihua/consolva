@@ -31,7 +31,7 @@
         </block>
         <view class="item-last-vspace"/>
         <block wx:if="{{ express.expressSizeWeightList.length > 1 }}">
-            <van-cell title="总体积：{{ express.totalVolume }}立方，总体积重：{{ express.totalVolumeWeight }}kg，总实际重：{{ express.totalActualWeight }}kg，总箱数：{{ express.totalPackageCount }}" custom-class="item-footer"></van-cell>
+            <van-cell title="总体积：{{ express.totalVolume }}立方，总体积重：{{ express.totalVolumeWeight }}kg，总实际重：{{ express.totalActualWeight }}kg，总箱数：{{ express.totalPackageCount }}" custom-class="item-footer" value-class="item-footer-value"></van-cell>
         </block>
     </van-cell-group>
 

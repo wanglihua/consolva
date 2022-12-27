@@ -75,6 +75,10 @@
     background-color: #efefef !important;
 }
 
+.item-footer-value {
+    flex: 3 !important;
+}
+
 .detail-buttons {
     margin: 30rpx 40rpx;
 }

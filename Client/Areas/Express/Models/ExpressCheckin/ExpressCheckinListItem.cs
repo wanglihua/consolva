@@ -39,12 +39,14 @@ public class ExpressCheckinListItem {
     // [JsonProperty("returnExpressCompany")]
     // public string ReturnExpressCompany { get; set; } = string.Empty;
 
+    // 客户端暂时没用起来
     [JsonProperty("customerRemark")]
     public string CustomerRemark { get; set; } = string.Empty;
 
     [JsonProperty("warehouseRemark")]
     public string WarehouseRemark { get; set; } = string.Empty;
 
+    // 客户端暂时没用起来
     [JsonProperty("serviceRemark")]
     public string ServiceRemark { get; set; } = string.Empty;
 

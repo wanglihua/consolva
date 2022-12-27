@@ -29,6 +29,8 @@ Page({
             const expressTotalCount = res.data.expressTotalCount;
 
             for (const express of expressWaitOrderList) {
+                express.actions = "转运，查看详细，修改价格等";
+
                 if (express.forbidden === true) {
                     express.headerValueClass = 'item-header-value-forbidden';
                 } else {
@@ -37,6 +39,8 @@ Page({
             }
 
             for (const express of expressCheckinList) {
+                express.actions = "转运，查看详细，修改价格等";
+
                 if (express.forbidden === true) {
                     express.headerValueClass = 'item-header-value-forbidden';
                 } else {
