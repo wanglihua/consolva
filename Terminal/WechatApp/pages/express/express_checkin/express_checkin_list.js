@@ -167,33 +167,68 @@ Page({
     onActionSheetSelect(e) {
         const expressId = this.data.currentExpress.id;
         const action = e.detail.action;
+        const query = this.data.query;
 
         const that = this;
 
         if (action === "removeFromOrder") {
             app.post("/client/express/checkin/remove/wait/order", {
                 expressId: expressId,
-                query: that.data.query,
+                query: query,
             }, function (res) {
                 that.setupListData(res.data);
             });
         }
 
         if (action === "removeFromOrderAll") {
+            wx.showModal({
+                title: '确认',
+                content: '确实从待转运列表移除全部快递单吗？',
+                success(res) {
+                    if (res.confirm) {
+                        app.post("/client/express/checkin/remove/wait/order/all", {
+                            query: query,
+                        }, function (res) {
+                            wx.showToast({
+                                title: res.message,
+                            });
 
+                            // 立即设置列表数据
+                            that.setupListData(res.data);
+                        });
+                    }
+                }
+            });
         }
 
         if (action === "addToOrder") {
             app.post("/client/express/checkin/add/wait/order", {
                 expressId: expressId,
-                query: that.data.query,
+                query: query,
             }, function (res) {
                 that.setupListData(res.data);
             });
         }
 
         if (action === "addToOrderAll") {
+            wx.showModal({
+                title: '确认',
+                content: '确实要添加全部快递单到待转运列表吗？',
+                success(res) {
+                    if (res.confirm) {
+                        app.post("/client/express/checkin/add/wait/order/all", {
+                            query: query,
+                        }, function (res) {
+                            wx.showToast({
+                                title: res.message,
+                            });
 
+                            // 立即设置列表数据
+                            that.setupListData(res.data);
+                        });
+                    }
+                }
+            });
         }
 
         if (action === "detail") {

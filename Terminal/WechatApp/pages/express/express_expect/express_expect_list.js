@@ -135,10 +135,6 @@ Page({
                                 title: res.message,
                             });
 
-                            that.setData({
-                                showActionSheet: false
-                            });
-
                             // 立即设置列表数据
                             const expressExpectList = res.data.expressExpectList;
                             const expressExpectCount = res.data.expressExpectCount;
@@ -149,12 +145,6 @@ Page({
                                 expressExpectList: expressExpectList,
                                 expressExpectCount: expressExpectCount,
                             });
-                        });
-                    }
-
-                    if (res.cancel) {
-                        that.setData({
-                            showActionSheet: false
                         });
                     }
                 }
