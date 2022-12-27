@@ -309,19 +309,54 @@ public class ExpressCheckinController : Controller {
         if (param.GoodsPriceList == null || param.GoodsPriceList.Count == 0) {
             throw new ValidationException("物品价格列表不能为空！");
         }
-        
-        // 检查价格录入
 
-        var goodsIdList = param.GoodsPriceList.Select(e => e.Id).ToList();
-        var goodsList = session.Query<ExpressGoodsInfo>()
-            .Where(e => goodsIdList.Contains(e.Id))
+        var expressGoodsIdList = param.GoodsPriceList.Select(e => e.Id).ToList();
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
+            .Where(e => expressGoodsIdList.Contains(e.Id))
             .ToList();
 
         var goodsPriceList = param.GoodsPriceList;
 
+        // 检查物品
+        foreach (var goodsPrice in goodsPriceList) {
+            int expressGoodsId = goodsPrice.Id;
+            var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
+            if (expressGoods == null) {
+                throw new ValidationException($"指定的物品#{expressGoodsId}不存在！");
+            }
+        }
+
+        // 检查价格录入
+        foreach (var goodsPrice in goodsPriceList) {
+            if (int.TryParse(goodsPrice.Price, out int price) == false || price < 0) {
+                int expressGoodsId = goodsPrice.Id;
+                var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
+                // 由于前面的判断，肯定不为 null
+                if (expressGoods != null) {
+                    throw new ValidationException($"物品 {expressGoods.Goods.Name} 价格录入有误！");
+                }
+            }
+        }
+
+        foreach (var goodsPrice in goodsPriceList) {
+            // 由于前面判断，肯定成立
+            if (int.TryParse(goodsPrice.Price, out int price) == true && price > 0) {
+                int expressGoodsId = goodsPrice.Id;
+                var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
+                // 由于前面的判断，肯定不为 null
+                if (expressGoods != null) {
+                    expressGoods.Price = price;
+                    session.Update(expressGoods);
+                }
+            }
+        }
+
+        session.Flush();
+
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "价格保存成功！",
         });
     }
 }
