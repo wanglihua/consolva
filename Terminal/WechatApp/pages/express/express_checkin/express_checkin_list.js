@@ -90,6 +90,16 @@ Page({
                     subname: '从待转运列表移除快递单',
                     className: 'iconfont iconfont-remove-from-order',
                 });
+
+                const waitOrderCount = this.data.expressWaitOrderCount;
+                if (waitOrderCount >= 2) {
+                    actionSheetActions.push({
+                        action: "removeFromOrderAll",
+                        name: '全部暂不转运',
+                        subname: '从待转运列表移除全部' + waitOrderCount + '个快递单',
+                        className: 'iconfont iconfont-remove-from-order',
+                    });
+                }
             } else {
                 actionSheetActions.push({
                     action: "addToOrder",
@@ -97,6 +107,16 @@ Page({
                     subname: '添加快递单到待转运列表',
                     className: 'iconfont iconfont-add-to-order',
                 });
+
+                const checkinCount = this.data.expressCheckinCount;
+                if (checkinCount >= 2) {
+                    actionSheetActions.push({
+                        action: "addToOrderAll",
+                        name: '我要全部转运',
+                        subname: '添加全部' + checkinCount + '个快递单到待转运列表',
+                        className: 'iconfont iconfont-add-to-order',
+                    });
+                }
             }
         }
 
