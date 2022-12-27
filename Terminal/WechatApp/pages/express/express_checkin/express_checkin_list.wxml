@@ -62,4 +62,6 @@
             <van-divider contentPosition="center">共 {{ expressTotalCount }} 项</van-divider>
         </view>
     </block>
+
+    <van-action-sheet title="快递单号 {{ currentExpress.trackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
 </view>

@@ -11,6 +11,10 @@ Page({
         expressWaitOrderCount: 0,
         expressCheckinCount: 0,
         expressTotalCount: 0,
+
+        currentExpress: {},
+        showActionSheet: false,
+        actionSheetActions: [],
     },
 
     onLoad(options) {
@@ -71,5 +75,51 @@ Page({
             query: "",
         });
         this.loadExpressCheckinList();
+    },
+
+    onActionCellClick(e) {
+        const currentExpress = e.currentTarget.dataset.item;
+
+        const actionSheetActions = [];
+
+        actionSheetActions.push({
+            action: "detail",
+            name: '查看详细',
+            className: 'iconfont iconfont-view-detail',
+        });
+
+        actionSheetActions.push({
+            action: "editPrice",
+            name: '修改价格',
+            className: 'iconfont iconfont-edit',
+        });
+
+        this.setData({
+            currentExpress: currentExpress,
+            actionSheetActions: actionSheetActions,
+            showActionSheet: true
+        });
+    },
+
+    onActionSheetCloseClick(e) {
+        this.setData({
+            showActionSheet: false
+        });
+    },
+
+    onActionSheetSelect(e) {
+        const expressId = this.data.currentExpress.id;
+        const action = e.detail.action;
+
+        const that = this;
+        if (action === "detail") {
+            wx.navigateTo({
+                url: './express_checkin_detail?id=' + expressId,
+            });
+        }
+
+        this.setData({
+            showActionSheet: false,
+        });
     },
 })
