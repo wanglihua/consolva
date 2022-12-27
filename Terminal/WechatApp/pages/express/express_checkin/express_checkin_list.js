@@ -26,40 +26,43 @@ Page({
         app.post("/client/express/checkin/list", {
             query: that.data.query,
         }, function (res) {
-            const expressWaitOrderList = res.data.expressWaitOrderList;
-            const expressCheckinList = res.data.expressCheckinList;
-            const expressWaitOrderCount = res.data.expressWaitOrderCount;
-            const expressCheckinCount = res.data.expressCheckinCount;
-            const expressTotalCount = res.data.expressTotalCount;
+            that.setupListData(res.data);
+        });
+    },
 
-            for (const express of expressWaitOrderList) {
-                express.actions = "转运，查看详细，修改价格等";
+    setupListData(resData) {
+        const expressWaitOrderList = resData.expressWaitOrderList;
+        const expressCheckinList = resData.expressCheckinList;
+        const expressWaitOrderCount = resData.expressWaitOrderCount;
+        const expressCheckinCount = resData.expressCheckinCount;
+        const expressTotalCount = resData.expressTotalCount;
 
-                if (express.forbidden === true) {
-                    express.headerValueClass = 'item-header-value-forbidden';
-                } else {
-                    express.headerValueClass = 'item-header-value';
-                }
+        for (const express of expressWaitOrderList) {
+            express.actions = "转运，查看详细，修改价格等";
+
+            if (express.forbidden === true) {
+                express.headerValueClass = 'item-header-value-forbidden';
+            } else {
+                express.headerValueClass = 'item-header-value';
             }
+        }
 
-            for (const express of expressCheckinList) {
-                express.actions = "转运，查看详细，修改价格等";
+        for (const express of expressCheckinList) {
+            express.actions = "转运，查看详细，修改价格等";
 
-                if (express.forbidden === true) {
-                    express.headerValueClass = 'item-header-value-forbidden';
-                } else {
-                    express.headerValueClass = 'item-header-value';
-                }
+            if (express.forbidden === true) {
+                express.headerValueClass = 'item-header-value-forbidden';
+            } else {
+                express.headerValueClass = 'item-header-value';
             }
+        }
 
-            that.setData({
-                expressWaitOrderList: expressWaitOrderList,
-                expressCheckinList: expressCheckinList,
-                expressWaitOrderCount: expressWaitOrderCount,
-                expressCheckinCount: expressCheckinCount,
-                expressTotalCount: expressTotalCount,
-            });
-
+        this.setData({
+            expressWaitOrderList: expressWaitOrderList,
+            expressCheckinList: expressCheckinList,
+            expressWaitOrderCount: expressWaitOrderCount,
+            expressCheckinCount: expressCheckinCount,
+            expressTotalCount: expressTotalCount,
         });
     },
 
@@ -168,7 +171,12 @@ Page({
         const that = this;
 
         if (action === "removeFromOrder") {
-
+            app.post("/client/express/checkin/remove/wait/order", {
+                expressId: expressId,
+                query: that.data.query,
+            }, function (res) {
+                that.setupListData(res.data);
+            });
         }
 
         if (action === "removeFromOrderAll") {
@@ -176,7 +184,12 @@ Page({
         }
 
         if (action === "addToOrder") {
-
+            app.post("/client/express/checkin/add/wait/order", {
+                expressId: expressId,
+                query: that.data.query,
+            }, function (res) {
+                that.setupListData(res.data);
+            });
         }
 
         if (action === "addToOrderAll") {
@@ -196,7 +209,7 @@ Page({
         }
 
         if (action === "applyReturn") {
-
+            // todo
         }
 
         this.setData({

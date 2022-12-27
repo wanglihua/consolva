@@ -3,6 +3,7 @@ using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressCheckin;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -175,6 +176,7 @@ public class ExpressCheckinController : Controller {
 
     [HttpPost]
     [Route("/client/express/checkin/add/wait/order")]
+    [Transactional]
     public IActionResult AddWaitOrder([FromBody] ExpressCheckinAddWaitOrderParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
@@ -196,6 +198,7 @@ public class ExpressCheckinController : Controller {
 
     [HttpPost]
     [Route("/client/express/checkin/add/wait/order/all")]
+    [Transactional]
     public IActionResult AddWaitOrderAll([FromBody] ExpressCheckinAddWaitOrderAllParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
@@ -212,6 +215,7 @@ public class ExpressCheckinController : Controller {
 
     [HttpPost]
     [Route("/client/express/checkin/remove/wait/order")]
+    [Transactional]
     public IActionResult RemoveWaitOrder([FromBody] ExpressCheckinRemoveWaitOrderParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
@@ -233,6 +237,7 @@ public class ExpressCheckinController : Controller {
 
     [HttpPost]
     [Route("/client/express/checkin/remove/wait/order/all")]
+    [Transactional]
     public IActionResult RemoveWaitOrderAll([FromBody] ExpressCheckinRemoveWaitOrderAllParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
