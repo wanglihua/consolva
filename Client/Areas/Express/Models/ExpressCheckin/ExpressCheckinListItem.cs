@@ -24,30 +24,20 @@ public class ExpressCheckinListItem {
     [JsonProperty("checkinTrackingNo")]
     public string CheckinTrackingNo { get; set; } = string.Empty;
 
-    // [JsonProperty("returnPickupCode")]
-    // public string ReturnPickupCode { get; set; } = string.Empty;
-
     [JsonProperty("addDate")]
     public string AddDate { get; set; } = string.Empty;
 
-    // [JsonProperty("claimTime")]
-    // public string ClaimTime { get; set; } = string.Empty;
-
-    // [JsonProperty("returnTrackingNo")]
-    // public string ReturnTrackingNo { get; set; } = string.Empty;
-    //
-    // [JsonProperty("returnExpressCompany")]
-    // public string ReturnExpressCompany { get; set; } = string.Empty;
-
     // 客户端暂时没用起来
-    [JsonProperty("customerRemark")]
+    // [JsonProperty("customerRemark")]
+    [JsonIgnore]
     public string CustomerRemark { get; set; } = string.Empty;
 
     [JsonProperty("warehouseRemark")]
     public string WarehouseRemark { get; set; } = string.Empty;
 
     // 客户端暂时没用起来
-    [JsonProperty("serviceRemark")]
+    // [JsonProperty("serviceRemark")]
+    [JsonIgnore]
     public string ServiceRemark { get; set; } = string.Empty;
 
     [JsonProperty("status")]
