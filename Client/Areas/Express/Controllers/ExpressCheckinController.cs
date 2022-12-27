@@ -126,8 +126,8 @@ public class ExpressCheckinController : Controller {
 
             if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) // 一般这个判断肯定是成立的
             {
-                IList<ExpressCheckinListGoodsListItem> goodsList = thisExpressGoodList
-                    .Select(e => new ExpressCheckinListGoodsListItem {
+                IList<ExpressCheckinGoodsListItem> goodsList = thisExpressGoodList
+                    .Select(e => new ExpressCheckinGoodsListItem {
                         Id = e.Id,
                         GoodsName = e.Goods.Name,
                         Quantity = e.Quantity,
@@ -249,6 +249,56 @@ public class ExpressCheckinController : Controller {
             Success = true,
             Message = "全部移除成功！",
             Data = model, // 同时获取列表数据，这样就不用客户端再获取一次列表数据
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/checkin/price")]
+    public IActionResult Price([FromBody] IdParam param) {
+        if (ModelState.IsValid == false) {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int expressId = param.Id;
+        var express = session.Get<ExpressInfo>(expressId);
+        if (express == null) {
+            throw new ValidationException($"指定的快递单号#{expressId}不存在！");
+        }
+
+        var goodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
+            .Where(e => e.Express.Id == expressId)
+            .ToList();
+
+        var model = new ExpressCheckinPriceModel {
+            Id = express.Id,
+            TrackingNo = express.TrackingNo,
+            CheckinTrackingNo = express.CheckinTrackingNo,
+            GoodsList = goodsList.OrderBy(e => e.Id)
+                .Select(e => new ExpressCheckinGoodsListItem {
+                    Id = e.Id,
+                    GoodsName = e.Goods.Name,
+                    Quantity = e.Quantity,
+                    Unit = e.Unit,
+                    Price = e.Price.ToString("#0.00"),
+                })
+                .ToList(),
+        };
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = model,
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/express/checkin/price/save")]
+    public IActionResult PriceSave([FromBody] ExpressCheckinPriceSaveParam param) {
+        
+        
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
         });
     }
 }

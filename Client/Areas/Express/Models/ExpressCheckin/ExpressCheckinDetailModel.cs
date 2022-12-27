@@ -53,7 +53,7 @@ public class ExpressCheckinDetailModel {
     public bool WaitOrder { get; set; } = false;
 
     [JsonProperty("goodsList")]
-    public IList<ExpressCheckinDetailGoodsListItem> GoodsList = new List<ExpressCheckinDetailGoodsListItem>();
+    public IList<ExpressCheckinGoodsListItem> GoodsList = new List<ExpressCheckinGoodsListItem>();
 
     #region size weight
 

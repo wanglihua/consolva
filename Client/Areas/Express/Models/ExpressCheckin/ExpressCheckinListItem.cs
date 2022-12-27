@@ -44,7 +44,7 @@ public class ExpressCheckinListItem {
     public string Status { get; set; } = string.Empty;
 
     [JsonProperty("goodsList")]
-    public IList<ExpressCheckinListGoodsListItem> GoodsList = new List<ExpressCheckinListGoodsListItem>();
+    public IList<ExpressCheckinGoodsListItem> GoodsList = new List<ExpressCheckinGoodsListItem>();
 
     [JsonProperty("goodsCount")]
     public int GoodsCount { get; set; }
