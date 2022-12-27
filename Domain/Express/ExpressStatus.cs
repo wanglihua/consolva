@@ -5,8 +5,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 申领件状态
 /// </summary>
-public class ExpressStatus : CodeTypeBase
-{
+public class ExpressStatus : CodeTypeBase {
     /// <summary>
     /// 待认领
     /// </summary>
@@ -17,6 +16,8 @@ public class ExpressStatus : CodeTypeBase
     /// 快递单号有预报，相当于已完成认领，但还没录货值
     /// </summary>
     public static readonly ExpressStatus Expect = new ExpressStatus(2000, "已预报", "已预报");
+
+    //  todo 这里是不是可以加个状态 enter，录货值状态
 
     /// <summary>
     /// 已认领
@@ -40,6 +41,7 @@ public class ExpressStatus : CodeTypeBase
     /// </summary>
     public static readonly ExpressStatus ThrowAway = new ExpressStatus(6000, "已丢弃", "已丢弃");
 
+    // todo 这个状态，可以不要了
     /// <summary>
     /// 待建单
     /// 这是一个客户端操作时的一个临时选中状态，创建一个新订单时会用待建单状态的快递单号生成
@@ -123,26 +125,22 @@ public class ExpressStatus : CodeTypeBase
 
     private static readonly Dictionary<int, ExpressStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static ExpressStatus GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out ExpressStatus? codeType) == true)
-        {
+    public static ExpressStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out ExpressStatus? codeType) == true) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<ExpressStatus> GetList()
-    {
+    public static IList<ExpressStatus> GetList() {
         return codeTypeList.ToList();
     }
 
     /// <summary>
     /// 这些状态下，有可能还需要上架；别的状态的，即使前面没上过架，也都不需要上架了
     /// </summary>
-    public static IList<ExpressStatus> GetMayToOnShelfList()
-    {
+    public static IList<ExpressStatus> GetMayToOnShelfList() {
         return new List<ExpressStatus>() {
             WaitPick,
             Expect,
@@ -157,8 +155,7 @@ public class ExpressStatus : CodeTypeBase
     /// <summary>
     /// 获取下架及后续状态 
     /// </summary>
-    public static IList<ExpressStatus> GetOffShelfList()
-    {
+    public static IList<ExpressStatus> GetOffShelfList() {
         return new List<ExpressStatus>() {
             Returned,
             OffShelf,
@@ -174,8 +171,7 @@ public class ExpressStatus : CodeTypeBase
     /// <summary>
     /// 退运状态列表
     /// </summary>
-    public static IList<ExpressStatus> GetReturnList()
-    {
+    public static IList<ExpressStatus> GetReturnList() {
         return new List<ExpressStatus>() {
             WaitReturn,
             Returned,
@@ -197,17 +193,13 @@ public class ExpressStatus : CodeTypeBase
     /// </summary>
     /// <param name="status"></param>
     /// <returns></returns>
-    public static bool IsCheckedIn(ExpressStatus status)
-    {
-        if (status == null || status == None)
-        {
+    public static bool IsCheckedIn(ExpressStatus status) {
+        if (status == null || status == None) {
             return false;
         }
 
-        foreach (ExpressStatus notCheckedInStatus in codeTypeListNotCheckedIn)
-        {
-            if (notCheckedInStatus == status)
-            {
+        foreach (ExpressStatus notCheckedInStatus in codeTypeListNotCheckedIn) {
+            if (notCheckedInStatus == status) {
                 return false;
             }
         }
@@ -233,17 +225,13 @@ public class ExpressStatus : CodeTypeBase
     /// </summary>
     /// <param name="status"></param>
     /// <returns></returns>
-    public static bool IsOrderCreate(ExpressStatus status)
-    {
-        if (status == null || status == None)
-        {
+    public static bool IsOrderCreate(ExpressStatus status) {
+        if (status == null || status == None) {
             return false;
         }
 
-        foreach (ExpressStatus statusNoOrder in codeTypeListNoOrder)
-        {
-            if (statusNoOrder == status)
-            {
+        foreach (ExpressStatus statusNoOrder in codeTypeListNoOrder) {
+            if (statusNoOrder == status) {
                 return false;
             }
         }
@@ -258,12 +246,9 @@ public class ExpressStatus : CodeTypeBase
         Complete,
     };
 
-    public static bool IsPacked(ExpressStatus status)
-    {
-        foreach (ExpressStatus statusPacked in codeTypePacked)
-        {
-            if (statusPacked == status)
-            {
+    public static bool IsPacked(ExpressStatus status) {
+        foreach (ExpressStatus statusPacked in codeTypePacked) {
+            if (statusPacked == status) {
                 return true;
             }
         }
@@ -271,8 +256,7 @@ public class ExpressStatus : CodeTypeBase
         return false;
     }
 
-    public static IList<ExpressStatus> GetOccupyStorageLocStatusList()
-    {
+    public static IList<ExpressStatus> GetOccupyStorageLocStatusList() {
         return new List<ExpressStatus>() {
             WaitPick,
             Expect,
@@ -286,23 +270,18 @@ public class ExpressStatus : CodeTypeBase
     }
 
 
-    private ExpressStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private ExpressStatus(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class ExpressStatusHibernateType : CodeHibernateTypeBase<ExpressStatus>
-{
-    protected override ExpressStatus GetCodeTypeById(int id)
-    {
+public class ExpressStatusHibernateType : CodeHibernateTypeBase<ExpressStatus> {
+    protected override ExpressStatus GetCodeTypeById(int id) {
         return ExpressStatus.GetById(id);
     }
 }
 
-public class ExpressStatusModelBinder : CodeTypeModelBinderBase<ExpressStatus>
-{
-    protected override ExpressStatus GetCodeTypeById(int id)
-    {
+public class ExpressStatusModelBinder : CodeTypeModelBinderBase<ExpressStatus> {
+    protected override ExpressStatus GetCodeTypeById(int id) {
         return ExpressStatus.GetById(id);
     }
 }
