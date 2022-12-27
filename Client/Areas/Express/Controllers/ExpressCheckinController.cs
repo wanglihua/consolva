@@ -14,14 +14,12 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Express.Controllers;
 
 [ExpressArea]
-public class ExpressCheckinController : Controller
-{
+public class ExpressCheckinController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService;
 
-    public ExpressCheckinController(ISession session, LoginCustomerService loginCustomerService, LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService)
-    {
+    public ExpressCheckinController(ISession session, LoginCustomerService loginCustomerService, LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.logisticsOrderCreateSelectExpressService = logisticsOrderCreateSelectExpressService;
@@ -29,8 +27,7 @@ public class ExpressCheckinController : Controller
 
     [HttpPost]
     [Route("/client/express/checkin/list")]
-    public IActionResult List([FromBody] ExpressCheckinListParam param)
-    {
+    public IActionResult List([FromBody] ExpressCheckinListParam param) {
         ExpressCheckinListModel model = GetListData(param);
 
         return Json(new JsonResultData {
@@ -41,8 +38,7 @@ public class ExpressCheckinController : Controller
     }
 
     [NonAction]
-    private ExpressCheckinListModel GetListData(ExpressCheckinListParam param)
-    {
+    private ExpressCheckinListModel GetListData(ExpressCheckinListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         // 这个不分页，一次性全部取出来
@@ -68,12 +64,10 @@ public class ExpressCheckinController : Controller
             .ToList();
 
         IDictionary<int, IList<ExpressGoodsInfo>> expressGoodsListMap = new Dictionary<int, IList<ExpressGoodsInfo>>();
-        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
-        {
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
             int expressId = expressGoods.Express.Id;
 
-            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodsList) == false)
-            {
+            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodsList) == false) {
                 thisExpressGoodsList = new List<ExpressGoodsInfo>();
             }
 
@@ -116,14 +110,14 @@ public class ExpressCheckinController : Controller
                 .Take(1)
                 .SingleOrDefault()?.Remark ?? string.Empty;
 
-            ExpressCheckinListItem item = new ExpressCheckinListItem() {
+            ExpressCheckinListItem item = new ExpressCheckinListItem {
                 Id = express.Id,
                 TrackingNo = express.TrackingNo,
                 ExpressCompany = express.ExpressCompany,
                 GoodsType = express.GoodsType.Name,
                 Forbidden = express.GoodsType == LogisticsGoodsType.Forbidden,
                 CheckinTrackingNo = express.CheckinTrackingNo,
-                AddTime = express.AddTime.ToString("yyyy-MM-dd HH:mm"),
+                AddDate = express.AddTime.ToString("yyyy-MM-dd"),
                 CustomerRemark = customerRemark,
                 WarehouseRemark = warehouseRemark,
                 ServiceRemark = serviceRemark,
@@ -142,14 +136,12 @@ public class ExpressCheckinController : Controller
                     .ToList();
 
                 item.GoodsList = goodsList;
+                item.GoodsCount = goodsList.Count;
             }
 
-            if (selectedExpressIdMap.ContainsKey(expressId))
-            {
+            if (selectedExpressIdMap.ContainsKey(expressId)) {
                 expressWaitOrderList.Add(item);
-            }
-            else
-            {
+            } else {
                 expressCheckinList.Add(item);
             }
         }
@@ -164,16 +156,14 @@ public class ExpressCheckinController : Controller
     }
 
     [NonAction]
-    private IQueryable<ExpressInfo> GetListQuery(ExpressCheckinListParam param)
-    {
+    private IQueryable<ExpressInfo> GetListQuery(ExpressCheckinListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         var query = session.Query<ExpressInfo>()
             .Where(e => e.Customer!.Id == loginCustomerId
                         && (e.Status == ExpressStatus.WaitOrder || e.Status == ExpressStatus.CheckIn));
 
-        if (string.IsNullOrWhiteSpace(param.Query) == false)
-        {
+        if (string.IsNullOrWhiteSpace(param.Query) == false) {
             string queryStr = param.Query.Trim();
             query = query.Where(e => e.TrackingNo.Contains(queryStr) || e.CheckinTrackingNo.Contains(queryStr));
         }
@@ -183,10 +173,8 @@ public class ExpressCheckinController : Controller
 
     [HttpPost]
     [Route("/client/express/checkin/add/wait/order")]
-    public IActionResult AddWaitOrder([FromBody] ExpressCheckinAddWaitOrderParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult AddWaitOrder([FromBody] ExpressCheckinAddWaitOrderParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -206,8 +194,7 @@ public class ExpressCheckinController : Controller
 
     [HttpPost]
     [Route("/client/express/checkin/add/wait/order/all")]
-    public IActionResult AddWaitOrderAll([FromBody] ExpressCheckinAddWaitOrderAllParam param)
-    {
+    public IActionResult AddWaitOrderAll([FromBody] ExpressCheckinAddWaitOrderAllParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         logisticsOrderCreateSelectExpressService.AddWaitOrderAll(customerId: loginCustomerId);
@@ -223,10 +210,8 @@ public class ExpressCheckinController : Controller
 
     [HttpPost]
     [Route("/client/express/checkin/remove/wait/order")]
-    public IActionResult RemoveWaitOrder([FromBody] ExpressCheckinRemoveWaitOrderParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult RemoveWaitOrder([FromBody] ExpressCheckinRemoveWaitOrderParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -246,8 +231,7 @@ public class ExpressCheckinController : Controller
 
     [HttpPost]
     [Route("/client/express/checkin/remove/wait/order/all")]
-    public IActionResult RemoveWaitOrderAll([FromBody] ExpressCheckinRemoveWaitOrderAllParam param)
-    {
+    public IActionResult RemoveWaitOrderAll([FromBody] ExpressCheckinRemoveWaitOrderAllParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         logisticsOrderCreateSelectExpressService.RemoveWaitOrderAll(customerId: loginCustomerId);

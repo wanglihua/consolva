@@ -28,6 +28,22 @@ Page({
             const expressCheckinCount = res.data.expressCheckinCount;
             const expressTotalCount = res.data.expressTotalCount;
 
+            for (const express of expressWaitOrderList) {
+                if (express.forbidden === true) {
+                    express.headerValueClass = 'item-header-value-forbidden';
+                } else {
+                    express.headerValueClass = 'item-header-value';
+                }
+            }
+
+            for (const express of expressCheckinList) {
+                if (express.forbidden === true) {
+                    express.headerValueClass = 'item-header-value-forbidden';
+                } else {
+                    express.headerValueClass = 'item-header-value';
+                }
+            }
+
             that.setData({
                 expressWaitOrderList: expressWaitOrderList,
                 expressCheckinList: expressCheckinList,
@@ -45,7 +61,7 @@ Page({
         });
         this.loadExpressCheckinList();
     },
- 
+
     onSearchClear() {
         this.setData({
             query: "",

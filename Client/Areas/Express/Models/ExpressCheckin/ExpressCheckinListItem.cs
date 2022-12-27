@@ -2,8 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Express.Models.ExpressCheckin;
 
-public class ExpressCheckinListItem
-{
+public class ExpressCheckinListItem {
     [JsonProperty("id")]
     public int Id { get; set; }
 
@@ -20,7 +19,7 @@ public class ExpressCheckinListItem
     /// 是不是禁止类
     /// </summary>
     [JsonProperty("forbidden")]
-    public bool Forbidden { get; set; } 
+    public bool Forbidden { get; set; }
 
     [JsonProperty("checkinTrackingNo")]
     public string CheckinTrackingNo { get; set; } = string.Empty;
@@ -28,8 +27,8 @@ public class ExpressCheckinListItem
     // [JsonProperty("returnPickupCode")]
     // public string ReturnPickupCode { get; set; } = string.Empty;
 
-    [JsonProperty("addTime")]
-    public string AddTime { get; set; } = string.Empty;
+    [JsonProperty("addDate")]
+    public string AddDate { get; set; } = string.Empty;
 
     // [JsonProperty("claimTime")]
     // public string ClaimTime { get; set; } = string.Empty;
@@ -54,4 +53,7 @@ public class ExpressCheckinListItem
 
     [JsonProperty("goodsList")]
     public IList<ExpressCheckinListGoodsListItem> GoodsList = new List<ExpressCheckinListGoodsListItem>();
+
+    [JsonProperty("goodsCount")]
+    public int GoodsCount { get; set; }
 }
