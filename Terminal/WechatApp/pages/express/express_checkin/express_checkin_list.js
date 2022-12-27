@@ -96,7 +96,7 @@ Page({
                     actionSheetActions.push({
                         action: "removeFromOrderAll",
                         name: '全部暂不转运',
-                        subname: '从待转运列表移除全部' + waitOrderCount + '个快递单',
+                        subname: '从待转运列表移除全部快递单',
                         className: 'iconfont iconfont-remove-from-order',
                     });
                 }
@@ -113,7 +113,7 @@ Page({
                     actionSheetActions.push({
                         action: "addToOrderAll",
                         name: '我要全部转运',
-                        subname: '添加全部' + checkinCount + '个快递单到待转运列表',
+                        subname: '添加全部快递单到待转运列表',
                         className: 'iconfont iconfont-add-to-order',
                     });
                 }
@@ -166,6 +166,8 @@ Page({
         const action = e.detail.action;
 
         const that = this;
+        
+        
         if (action === "detail") {
             wx.navigateTo({
                 url: './express_checkin_detail?id=' + expressId,
