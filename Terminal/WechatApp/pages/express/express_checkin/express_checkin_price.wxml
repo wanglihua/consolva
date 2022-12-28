@@ -1,2 +1,12 @@
 <!--pages/express/express_checkin/express_checkin_price.wxml-->
-<text>pages/express/express_checkin/express_checkin_price.wxml</text>
+<header/>
+<view class="container">
+    <van-cell-group title="修改快递物品价格"/>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="快递单" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+</view>

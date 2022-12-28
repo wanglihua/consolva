@@ -4,10 +4,19 @@ const util = app.require('utils/util.js');
 
 Page({
     data: {
-
+        express: {},
     },
 
     onLoad(options) {
+        const id = options.id;
 
+        const that = this;
+        app.post("/client/express/checkin/price", {
+            id: id,
+        }, function (res) {
+            that.setData({
+                express: res.data,
+            });
+        });
     }
 })
