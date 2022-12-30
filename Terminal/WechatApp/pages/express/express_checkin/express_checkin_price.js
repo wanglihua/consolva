@@ -21,7 +21,15 @@ Page({
     },
 
     onExpressGoodsPriceInput(e) {
-        console.log(e);
+        const expressGoodsId = e.currentTarget.dataset.item.id;
+        const price = e.detail;
+
+        const expressGoodsList = this.data.express.goodsList;
+        for (const expressGoods of expressGoodsList) {
+            if (expressGoods.id === expressGoodsId) {
+                expressGoods.price = price;
+            }
+        }
     },
 
     onSavePriceClick(e) {

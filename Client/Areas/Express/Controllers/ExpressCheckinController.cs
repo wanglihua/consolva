@@ -344,7 +344,7 @@ public class ExpressCheckinController : Controller {
 
         // 检查价格录入
         foreach (var goodsPrice in goodsPriceList) {
-            if (int.TryParse(goodsPrice.Price, out int price) == false || price < 0) {
+            if (decimal.TryParse(goodsPrice.Price, out decimal price) == false || price < 0) {
                 int expressGoodsId = goodsPrice.Id;
                 var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
                 // 由于前面的判断，肯定不为 null
@@ -356,7 +356,7 @@ public class ExpressCheckinController : Controller {
 
         foreach (var goodsPrice in goodsPriceList) {
             // 由于前面判断，肯定成立
-            if (int.TryParse(goodsPrice.Price, out int price) == true && price > 0) {
+            if (decimal.TryParse(goodsPrice.Price, out decimal price) == true && price > 0) {
                 int expressGoodsId = goodsPrice.Id;
                 var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
                 // 由于前面的判断，肯定不为 null
