@@ -47,7 +47,8 @@ public class ExpressCheckinController : Controller {
             .OrderByDescending(e => e.Id)
             .ToList();
 
-        int expressCount = GetListQuery(param).Count();
+        // int expressCount = GetListQuery(param).Count(); 这个不用再查询一次
+        int expressCount = expressList.Count;
 
         // 已选择数据
         IList<int> selectedExpressIdList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
@@ -56,6 +57,18 @@ public class ExpressCheckinController : Controller {
             .ToList();
 
         IDictionary<int, bool> selectedExpressIdMap = selectedExpressIdList.ToDictionary(e => e, e => true);
+
+        // 数量
+        int expressWaitOrderTotalCount = 0;
+        int expressCheckinTotalCount = 0;
+        foreach (var express in expressList) {
+            int expressId = express.Id;
+            if (selectedExpressIdMap.ContainsKey(expressId)) {
+                expressWaitOrderTotalCount++;
+            } else {
+                expressCheckinTotalCount++;
+            }
+        }
 
         // 物品数据
         IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
@@ -86,8 +99,8 @@ public class ExpressCheckinController : Controller {
         IList<ExpressCheckinListItem> expressWaitOrderList = new List<ExpressCheckinListItem>();
         IList<ExpressCheckinListItem> expressCheckinList = new List<ExpressCheckinListItem>();
 
-        foreach (ExpressInfo express in expressList) // 按原来顺序循环，按原来顺序添加到 item list 中
-        {
+        // 按原来顺序循环，按原来顺序添加到 item list 中
+        foreach (ExpressInfo express in expressList) {
             int expressId = express.Id;
 
             string customerRemark = expressRemarkList
@@ -154,6 +167,8 @@ public class ExpressCheckinController : Controller {
             ExpressCheckinList = expressCheckinList,
             ExpressWaitOrderCount = expressWaitOrderList.Count,
             ExpressCheckinCount = expressCheckinList.Count,
+            ExpressWaitOrderTotalCount = expressWaitOrderTotalCount,
+            ExpressCheckinTotalCount = expressCheckinTotalCount,
             ExpressTotalCount = expressCount,
         };
     }
