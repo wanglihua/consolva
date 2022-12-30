@@ -152,7 +152,7 @@ Page({
         }
 
         if (action === "enterPrice") {
-            // todo 待快递单号那里完成后，这里补上
+            // todo a 待快递单号那里完成后，这里补上
         }
 
         this.setData({

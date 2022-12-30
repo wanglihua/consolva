@@ -9,4 +9,23 @@
         <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
         <view class="item-last-vspace"/>
     </van-cell-group>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="物品列表" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <block wx:for="{{ express.goodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="index">
+            <van-field label="{{ index + 1 }}、{{ expressGoods.goodsName }} {{ expressGoods.quantity }} {{ expressGoods.unit }}" placeholder="输入物品单价" value="{{ expressGoods.price }}" error="{{ expressGoods.inputHasError }}" error-message="{{ expressGoods.inputErrorMsg }}" border="{{ false }}" type="number" input-align="right" error-message-align="right" use-right-icon-slot bind:input="onExpressGoodsPriceInput" data-item="{{ expressGoods }}" custom-style="padding-bottom: 0;">
+                <view slot="right-icon">RMB/{{ expressGoods.unit }}</view>
+            </van-field>
+        </block>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="info" class-prefix="iconfont" icon="save" block bind:click="onSavePriceClick">保存价格</van-button>
+        </van-cell>
+        <van-cell border="{{false}}">
+            <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onBackClick" style="margin-top: 10rpx;">返回</van-button>
+        </van-cell>
+    </van-cell-group>
 </view>
