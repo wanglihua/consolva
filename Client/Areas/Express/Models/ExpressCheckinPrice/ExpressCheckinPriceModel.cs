@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
+using shunda.Client.Areas.Express.Models.ExpressCheckin;
 
-namespace shunda.Client.Areas.Express.Models.ExpressCheckin;
+namespace shunda.Client.Areas.Express.Models.ExpressCheckinPrice;
 
 public class ExpressCheckinPriceModel {
     [JsonProperty("id")]

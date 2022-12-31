@@ -20,7 +20,10 @@ public class ExpressCheckinController : Controller {
     private readonly LoginCustomerService loginCustomerService;
     private readonly LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService;
 
-    public ExpressCheckinController(ISession session, LoginCustomerService loginCustomerService, LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService) {
+    public ExpressCheckinController(ISession session,
+        LoginCustomerService loginCustomerService,
+        LogisticsOrderCreateSelectExpressService logisticsOrderCreateSelectExpressService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.logisticsOrderCreateSelectExpressService = logisticsOrderCreateSelectExpressService;
@@ -264,114 +267,6 @@ public class ExpressCheckinController : Controller {
             Success = true,
             Message = "全部移除成功！",
             Data = model, // 同时获取列表数据，这样就不用客户端再获取一次列表数据
-        });
-    }
-
-    [HttpPost]
-    [Route("/client/express/checkin/price")]
-    public IActionResult Price([FromBody] IdParam param) {
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
-
-        int expressId = param.Id;
-        var express = session.Get<ExpressInfo>(expressId);
-        if (express == null) {
-            throw new ValidationException($"指定的快递单号#{expressId}不存在！");
-        }
-
-        var goodsList = session.Query<ExpressGoodsInfo>()
-            .Fetch(e => e.Goods)
-            .Where(e => e.Express.Id == expressId)
-            .ToList();
-
-        var model = new ExpressCheckinPriceModel {
-            Id = express.Id,
-            TrackingNo = express.TrackingNo,
-            CheckinTrackingNo = express.CheckinTrackingNo,
-            GoodsList = goodsList.OrderBy(e => e.Id)
-                .Select(e => new ExpressCheckinGoodsListItem {
-                    Id = e.Id,
-                    GoodsName = e.Goods.Name,
-                    Quantity = e.Quantity,
-                    Unit = e.Unit,
-                    Price = e.Price.ToString("#0.00"),
-                })
-                .ToList(),
-        };
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-            Data = model,
-        });
-    }
-
-    [HttpPost]
-    [Route("/client/express/checkin/price/save")]
-    [Transactional]
-    public IActionResult PriceSave([FromBody] ExpressCheckinPriceSaveParam param) {
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
-
-        var expressId = param.ExpressId;
-        var express = session.Get<ExpressInfo>(expressId);
-        if (express == null) {
-            throw new ValidationException($"指定的快递单号#{expressId}不存在！");
-        }
-
-        if (param.GoodsPriceList == null || param.GoodsPriceList.Count == 0) {
-            throw new ValidationException("物品价格列表不能为空！");
-        }
-
-        var expressGoodsIdList = param.GoodsPriceList.Select(e => e.Id).ToList();
-        var expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Fetch(e => e.Goods)
-            .Where(e => expressGoodsIdList.Contains(e.Id))
-            .ToList();
-
-        var goodsPriceList = param.GoodsPriceList;
-
-        // 检查物品
-        foreach (var goodsPrice in goodsPriceList) {
-            int expressGoodsId = goodsPrice.Id;
-            var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
-            if (expressGoods == null) {
-                throw new ValidationException($"指定的物品#{expressGoodsId}不存在！");
-            }
-        }
-
-        // 检查价格录入
-        foreach (var goodsPrice in goodsPriceList) {
-            if (decimal.TryParse(goodsPrice.Price, out decimal price) == false || price < 0) {
-                int expressGoodsId = goodsPrice.Id;
-                var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
-                // 由于前面的判断，肯定不为 null
-                if (expressGoods != null) {
-                    throw new ValidationException($"物品 {expressGoods.Goods.Name} 价格录入有误！");
-                }
-            }
-        }
-
-        foreach (var goodsPrice in goodsPriceList) {
-            // 由于前面判断，肯定成立
-            if (decimal.TryParse(goodsPrice.Price, out decimal price) == true && price > 0) {
-                int expressGoodsId = goodsPrice.Id;
-                var expressGoods = expressGoodsList.Where(e => e.Id == expressGoodsId).Take(1).SingleOrDefault();
-                // 由于前面的判断，肯定不为 null
-                if (expressGoods != null) {
-                    expressGoods.Price = price;
-                    session.Update(expressGoods);
-                }
-            }
-        }
-
-        session.Flush();
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "价格保存成功！",
         });
     }
 }

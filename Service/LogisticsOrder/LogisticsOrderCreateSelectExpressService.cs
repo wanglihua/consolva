@@ -8,13 +8,11 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.LogisticsOrder;
 
 [Service(ServiceType.Scoped)]
-public class LogisticsOrderCreateSelectExpressService
-{
+public class LogisticsOrderCreateSelectExpressService {
     private readonly ISession session;
     private readonly LogisticsOrderCreateSelectService logisticsOrderCreateSelectService;
 
-    public LogisticsOrderCreateSelectExpressService(ISession session, LogisticsOrderCreateSelectService logisticsOrderCreateSelectService)
-    {
+    public LogisticsOrderCreateSelectExpressService(ISession session, LogisticsOrderCreateSelectService logisticsOrderCreateSelectService) {
         this.session = session;
         this.logisticsOrderCreateSelectService = logisticsOrderCreateSelectService;
     }
@@ -24,21 +22,17 @@ public class LogisticsOrderCreateSelectExpressService
     /// </summary>
     /// <param name="expressId"></param>
     /// <param name="customerId"></param>
-    public void AddWaitOrder(int expressId, int customerId)
-    {
+    public void AddWaitOrder(int expressId, int customerId) {
         var express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
-        if (express.Customer == null || express.Status != ExpressStatus.CheckIn)
-        {
+        if (express.Customer == null || express.Status != ExpressStatus.CheckIn) {
             throw new ValidationException($"快递单号#{expressId}未被认领，或不是已入库状态！");
         }
 
-        if ((express.Customer?.Id ?? 0) != customerId)
-        {
+        if ((express.Customer?.Id ?? 0) != customerId) {
             throw new ValidationException($"指定的快递单号不属于指定的会员#{customerId}！");
         }
 
@@ -47,10 +41,8 @@ public class LogisticsOrderCreateSelectExpressService
             .Fetch(e => e.Goods)
             .Where(e => e.Express.Id == expressId)
             .ToList();
-        foreach (ExpressGoodsInfo expressGoods in expressOrderList)
-        {
-            if (expressGoods.Price <= 0)
-            {
+        foreach (ExpressGoodsInfo expressGoods in expressOrderList) {
+            if (expressGoods.Price <= 0) {
                 throw new ValidationException($"快递单号 {express.TrackingNo} 物品 {expressGoods.Goods.Name} 价格为0，不能转运，请点击单价修改！");
             }
         }
@@ -59,8 +51,7 @@ public class LogisticsOrderCreateSelectExpressService
             .Where(e => e.CustomerId == customerId && e.ExpressId == expressId)
             .Take(1)
             .SingleOrDefault();
-        if (createSelectExpress == null)
-        {
+        if (createSelectExpress == null) {
             createSelectExpress = new LogisticsOrderCreateSelectExpressInfo {
                 CustomerId = customerId,
                 ExpressId = expressId
@@ -77,8 +68,7 @@ public class LogisticsOrderCreateSelectExpressService
     /// 添加客户所有已入库快递单号至待建单
     /// </summary>
     /// <param name="customerId"></param>
-    public void AddWaitOrderAll(int customerId)
-    {
+    public void AddWaitOrderAll(int customerId) {
         // 同时，物品列表查询时，相当于对应的快递单实体已经预取了
         var expressList = session.Query<ExpressInfo>()
             .Where(e => e.Customer!.Id == customerId && e.Status == ExpressStatus.CheckIn)
@@ -90,10 +80,8 @@ public class LogisticsOrderCreateSelectExpressService
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
 
-        foreach (var expressGoods in expressGoodsList)
-        {
-            if (expressGoods.Price <= 0)
-            {
+        foreach (var expressGoods in expressGoodsList) {
+            if (expressGoods.Price <= 0) {
                 throw new ValidationException($"快递单号{expressGoods.Express.TrackingNo} 物品 {expressGoods.Goods.Name} 价格为零，不能转运，请点击单价修改！");
             }
         }
@@ -102,8 +90,7 @@ public class LogisticsOrderCreateSelectExpressService
             .Where(e => e.CustomerId == customerId)
             .ToList();
 
-        foreach (var expressId in expressIdList)
-        {
+        foreach (var expressId in expressIdList) {
             var createSelectExpress = createSelectExpressList
                 .Where(e => e.ExpressId == expressId)
                 .Take(1)
@@ -130,21 +117,17 @@ public class LogisticsOrderCreateSelectExpressService
     /// </summary>
     /// <param name="expressId"></param>
     /// <param name="customerId"></param>
-    public void RemoveWaitOrder(int expressId, int customerId)
-    {
+    public void RemoveWaitOrder(int expressId, int customerId) {
         var express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
-        if (express.Customer == null || express.Status != ExpressStatus.CheckIn)
-        {
+        if (express.Customer == null || express.Status != ExpressStatus.CheckIn) {
             throw new ValidationException($"快递单号#{expressId}未被认领，或不是已入库状态！");
         }
 
-        if ((express.Customer?.Id ?? 0) != customerId)
-        {
+        if ((express.Customer?.Id ?? 0) != customerId) {
             throw new ValidationException($"指定的快递单号不属于指定的会员#{customerId}！");
         }
 
@@ -152,8 +135,7 @@ public class LogisticsOrderCreateSelectExpressService
             .Where(e => e.CustomerId == customerId && e.ExpressId == expressId)
             .Take(1)
             .SingleOrDefault();
-        if (createSelectExpress != null)
-        {
+        if (createSelectExpress != null) {
             session.Delete(createSelectExpress);
             session.Flush();
         }
@@ -165,14 +147,12 @@ public class LogisticsOrderCreateSelectExpressService
     /// 将客户所有已入库快递单号从待建单移除
     /// </summary>
     /// <param name="customerId"></param>
-    public void RemoveWaitOrderAll(int customerId)
-    {
+    public void RemoveWaitOrderAll(int customerId) {
         var createSelectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
             .Where(e => e.CustomerId == customerId)
             .ToList();
 
-        foreach (var createSelectExpress in createSelectExpressList)
-        {
+        foreach (var createSelectExpress in createSelectExpressList) {
             session.Delete(createSelectExpress);
         }
 
