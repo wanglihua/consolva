@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Express.Models.ExpressCheckin;
+namespace shunda.Client.Areas.Express.Models.ExpressCheckinDetail;
 
 public class ExpressCheckinDetailSizeWeightListItem {
     [JsonProperty("id")]

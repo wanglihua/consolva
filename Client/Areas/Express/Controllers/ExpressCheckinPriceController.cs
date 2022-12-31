@@ -31,10 +31,16 @@ public class ExpressCheckinPriceController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
         int expressId = param.Id;
         var express = session.Get<ExpressInfo>(expressId);
         if (express == null) {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
+        }
+
+        if ((express.Customer?.Id ?? 0) != loginCustomerId) {
+            throw new ValidationException($"指定的快递单号不属于当前登录会员#{loginCustomerId}！");
         }
 
         var goodsList = session.Query<ExpressGoodsInfo>()
@@ -81,7 +87,7 @@ public class ExpressCheckinPriceController : Controller {
         }
 
         if ((express.Customer?.Id ?? 0) != loginCustomerId) {
-            throw new ValidationException($"指定的快递单号不属于指定的会员#{loginCustomerId}！");
+            throw new ValidationException($"指定的快递单号不属于当前登录会员#{loginCustomerId}！");
         }
 
         if (param.GoodsPriceList == null || param.GoodsPriceList.Count == 0) {
