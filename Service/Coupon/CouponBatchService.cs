@@ -207,8 +207,7 @@ public class CouponBatchService {
         }
 
         var batchCouponPickedCount = session.Query<CouponInfo>()
-            .Where(e => e.Batch.Id == batchId
-                        && e.Status == CouponStatus.Pick)
+            .Where(e => e.Batch.Id == batchId)
             .Select(e => e.Id)
             .Count();
 
