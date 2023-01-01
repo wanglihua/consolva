@@ -1,1 +1,4 @@
 /* pages/express/express_checkin/express_checkin_detail.wxss */
+.express-detail-small-image {
+    margin-right: 15rpx;
+}

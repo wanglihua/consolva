@@ -52,6 +52,8 @@
         "van-tabs": "@vant/weapp/tabs/index",
         "van-nav-bar": "@vant/weapp/nav-bar/index",
         "van-cascader": "@vant/weapp/cascader/index",
+        "van-image": "@vant/weapp/image/index",
+        "van-loading": "@vant/weapp/loading/index",
         "header": "components/header"
     },
     "sitemapLocation": "sitemap.json"

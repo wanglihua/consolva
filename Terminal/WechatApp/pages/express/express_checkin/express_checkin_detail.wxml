@@ -45,10 +45,14 @@
         <block wx:if="{{ express.photoTypeList && express.photoTypeList.length !== 0 }}">
             <van-tabs>
                 <block wx:for="{{ express.photoTypeList }}" wx:key="id" wx:for-item="photoType" wx:for-index="index">
-                    <van-tab title="{{ photoType.name }}">
-                        <block wx:for="{{ photoType.photoList }}" wx:key="id" wx:for-item="photo" wx:for-index="index">
-                            内容 1
-                        </block>
+                    <van-tab title="{{ photoType.name }}" type="card">
+                        <view style="margin: 18rpx 0;">
+                            <block wx:for="{{ photoType.photoList }}" wx:key="id" wx:for-item="photo" wx:for-index="index">
+                                <van-image height="100rpx" fit="heightFix" lazy-load src="{{ photo.smallUrl }}" use-loading-slot custom-class="express-detail-small-image">
+                                    <van-loading slot="loading" type="spinner" size="20" vertical/>
+                                </van-image>
+                            </block>
+                        </view>
                     </van-tab>
                 </block>
             </van-tabs>
