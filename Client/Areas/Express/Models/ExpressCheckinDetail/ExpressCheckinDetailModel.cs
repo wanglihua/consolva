@@ -74,7 +74,14 @@ public class ExpressCheckinDetailModel {
     public int TotalPackageCount { get; set; }
 
     #endregion
-    
+
+    #region photo
+
+    [JsonProperty("totalPhotoCount")]
+    public int TotalPhotoCount { get; set; }
+
     [JsonProperty("photoTypeList")]
-    public IList<ExpressCheckinDetailPhotoTypeListItem> PhotoTypeList = new List<ExpressCheckinDetailPhotoTypeListItem>();    
+    public IList<ExpressCheckinDetailPhotoTypeListItem> PhotoTypeList = new List<ExpressCheckinDetailPhotoTypeListItem>();
+
+    #endregion
 }

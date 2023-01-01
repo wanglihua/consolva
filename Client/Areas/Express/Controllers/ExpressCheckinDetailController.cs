@@ -107,18 +107,21 @@ public class ExpressCheckinDetailController : Controller {
         var photoTypeList = photoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
 
         var photoTypeItemList = photoTypeList
-            .Select(e => new ExpressCheckinDetailPhotoTypeListItem {
-                Id = e.Id,
-                Name = e.Name,
-                PhotoList = photoList
-                    .Where(p => p.Type.Id == e.Id)
-                    .OrderBy(p => p.Id)
-                    .Select(p => new ExpressCheckinDetailPhotoListItem {
-                        Id = p.Id,
-                        SmallUrl = expressPhotoFileService.GetSmallImageFullUrlForApp(p, OssSiteLocType.HongKong),
-                        BigUrl = expressPhotoFileService.GetBigImageFullUrlForApp(p, OssSiteLocType.HongKong)
-                    })
-                    .ToList(),
+            .Select(e => {
+                var typePhotoList = photoList
+                    .Where(p => p.Type.Id == e.Id).ToList();
+                return new ExpressCheckinDetailPhotoTypeListItem {
+                    Id = e.Id,
+                    Name = e.Name,
+                    PhotoList = typePhotoList.OrderBy(p => p.Id)
+                        .Select(p => new ExpressCheckinDetailPhotoListItem {
+                            Id = p.Id,
+                            SmallUrl = expressPhotoFileService.GetSmallImageFullUrlForApp(p, OssSiteLocType.HongKong),
+                            BigUrl = expressPhotoFileService.GetBigImageFullUrlForApp(p, OssSiteLocType.HongKong)
+                        })
+                        .ToList(),
+                    PhotoCount = typePhotoList.Count,
+                };
             })
             .ToList();
 
@@ -148,6 +151,7 @@ public class ExpressCheckinDetailController : Controller {
             TotalPackageCount = packageCount,
 
             // photo
+            TotalPhotoCount = photoList.Count,
             PhotoTypeList = photoTypeItemList,
         };
 

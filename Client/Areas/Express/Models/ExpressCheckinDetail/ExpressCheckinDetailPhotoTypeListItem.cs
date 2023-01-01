@@ -9,6 +9,9 @@ public class ExpressCheckinDetailPhotoTypeListItem {
     [JsonProperty("name")]
     public string Name { get; set; } = string.Empty;
 
+    [JsonProperty("photoCount")]
+    public int PhotoCount { get; set; }
+
     [JsonProperty("photoList")]
     public IList<ExpressCheckinDetailPhotoListItem> PhotoList = new List<ExpressCheckinDetailPhotoListItem>();
 }

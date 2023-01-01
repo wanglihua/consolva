@@ -48,7 +48,7 @@
                     <van-tab title="{{ photoType.name }}" type="card">
                         <view style="margin: 18rpx 0;">
                             <block wx:for="{{ photoType.photoList }}" wx:key="id" wx:for-item="photo" wx:for-index="index">
-                                <van-image height="100rpx" fit="heightFix" lazy-load src="{{ photo.smallUrl }}" use-loading-slot custom-class="express-detail-small-image">
+                                <van-image height="160rpx" fit="heightFix" lazy-load src="{{ photo.smallUrl }}" use-loading-slot custom-class="express-detail-small-image">
                                     <van-loading slot="loading" type="spinner" size="20" vertical/>
                                 </van-image>
                             </block>
