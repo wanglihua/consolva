@@ -49,7 +49,7 @@
 }
 
 .item-header-alt {
-    background-color: bisque !important;
+    background-color: rgb(231, 174, 0) !important;
 }
 
 /* 这个要放在 item-header-title 的前面 */
