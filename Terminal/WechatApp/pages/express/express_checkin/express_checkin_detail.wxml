@@ -36,7 +36,25 @@
             </block>
         </block>
         <block wx:else>
-            <van-empty description="暂时没有数据项！"/>
+            <van-cell title="暂时没有尺寸重量数据！" border="{{ false }}"/>
+        </block>
+    </van-cell-group>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="快递单图片" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <block wx:if="{{ express.photoTypeList && express.photoTypeList.length !== 0 }}">
+            <van-tabs>
+                <block wx:for="{{ express.photoTypeList }}" wx:key="id" wx:for-item="photoType" wx:for-index="index">
+                    <van-tab title="{{ photoType.name }}">
+                        <block wx:for="{{ photoType.photoList }}" wx:key="id" wx:for-item="photo" wx:for-index="index">
+                            内容 1
+                        </block>
+                    </van-tab>
+                </block>
+            </van-tabs>
+        </block>
+        <block wx:else>
+            <van-cell title="暂时没有图片！" border="{{ false }}"/>
         </block>
     </van-cell-group>
 
@@ -44,5 +62,5 @@
         <van-cell border="{{false}}">
             <van-button type="default" class-prefix="iconfont" icon="back" plain block bind:click="onBackClick" style="margin-top: 10rpx;">返回</van-button>
         </van-cell>
-    </van-cell-group>    
+    </van-cell-group>
 </view>

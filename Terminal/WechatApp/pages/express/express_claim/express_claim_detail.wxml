@@ -36,7 +36,7 @@
             </block>
         </block>
         <block wx:else>
-            <van-empty description="暂时没有数据项！"/>
+            <van-cell title="暂时没有尺寸重量数据！" border="{{ false }}"/>
         </block>
     </van-cell-group>
 
