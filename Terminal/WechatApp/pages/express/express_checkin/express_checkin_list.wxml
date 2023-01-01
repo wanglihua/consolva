@@ -3,7 +3,7 @@
 <van-sticky offset-top="{{ 46 }}">
     <view class="container-top">
         <view style="background-color: white;">
-            <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>
+            <van-search model:value="{{ query }}" placeholder="快递单号，入库单号 模糊搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>
             <van-divider hairline customStyle="margin: 0;"/>
         </view>
     </view>
@@ -18,7 +18,7 @@
         <block wx:if="{{ expressWaitOrderCount > 0 }}">
             <block wx:for="{{ expressWaitOrderList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                 <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
-                    <van-cell title="{{ index + 1 }}、{{ express.checkinTrackingNo }}" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header-alt" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
+                    <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header-alt" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
                     <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
                     <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>-->
                     <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
@@ -39,7 +39,7 @@
         <block wx:if="{{ expressCheckinCount > 0 }}">
             <block wx:for="{{ expressCheckinList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                 <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
-                    <van-cell title="{{ index + 1 }}、{{ express.checkinTrackingNo }}" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
+                    <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
                     <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
                     <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>-->
                     <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
