@@ -41,14 +41,14 @@
     </van-cell-group>
 
     <van-cell-group custom-class="items">
-        <van-cell title="快递单图片" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <van-cell title="快递单图片" value="共{{ express.totalPhotoCount }}张" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <block wx:if="{{ express.photoTypeList && express.photoTypeList.length !== 0 }}">
             <van-tabs>
                 <block wx:for="{{ express.photoTypeList }}" wx:key="id" wx:for-item="photoType" wx:for-index="index">
-                    <van-tab title="{{ photoType.name }}" type="card">
+                    <van-tab title="{{ photoType.name }}({{ photoType.photoCount }}张)" type="card">
                         <view style="margin: 18rpx 0;">
                             <block wx:for="{{ photoType.photoList }}" wx:key="id" wx:for-item="photo" wx:for-index="index">
-                                <van-image height="160rpx" fit="heightFix" lazy-load src="{{ photo.smallUrl }}" use-loading-slot custom-class="express-detail-small-image">
+                                <van-image height="160rpx" fit="heightFix" lazy-load src="{{ photo.smallUrl }}" bind:click="onSmallPhotoClick" data-item="{{ photo }}" use-loading-slot custom-class="express-detail-small-image">
                                     <van-loading slot="loading" type="spinner" size="20" vertical/>
                                 </van-image>
                             </block>
@@ -56,6 +56,17 @@
                     </van-tab>
                 </block>
             </van-tabs>
+            <van-popup
+                    show="{{ showBigPhoto }}"
+                    closeable
+                    position="bottom"
+                    custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;"
+                    bind:close="onBigPhotoClose"
+            >
+                <van-image width="100%" height="100%" fit="contain" lazy-load src="{{ bigPhoto.bigUrl }}" use-loading-slot>
+                    <van-loading slot="loading" type="spinner" size="20" vertical/>
+                </van-image>
+            </van-popup>
         </block>
         <block wx:else>
             <van-cell title="暂时没有图片！" border="{{ false }}"/>
