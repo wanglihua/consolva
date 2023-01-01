@@ -4,6 +4,7 @@ using shunda.Client.Areas.Express.Models.ExpressCheckin;
 using shunda.Client.Areas.Express.Models.ExpressCheckinDetail;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -67,6 +68,37 @@ public class ExpressCheckinDetailController : Controller {
             })
             .ToList();
 
+        // size weight list
+        var sizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => e.Express!.Id == expressId)
+            .ToList();
+        decimal totalVolume = 0m;
+        decimal totalVolumeWeight = 0m;
+        decimal totalActualWeight = 0m;
+        int packageCount = 0;
+        if (sizeWeightList.Count != 0) {
+            totalVolume = sizeWeightList.Sum(e => e.Length * e.Weight * e.Height);
+            totalActualWeight = sizeWeightList.Sum(e => e.Weight);
+            packageCount = sizeWeightList.Sum(e => e.PackageCount);
+        }
+
+        totalVolumeWeight = totalVolume / LogisticsConfig.VolumeWeightDenominator;
+        totalVolume = totalVolume / 100_00_00; // 转成立方米
+
+        var sizeWeightItemList = sizeWeightList
+            .OrderBy(e => e.Id)
+            .Select(e => new ExpressCheckinDetailSizeWeightListItem {
+                Id = e.Id,
+                Length = e.Length.ToString("#0.00"),
+                Width = e.Width.ToString("#0.00"),
+                Height = e.Height.ToString("#0.00"),
+                VolumeWeight = (e.Length * e.Width * e.Height / LogisticsConfig.VolumeWeightDenominator).ToString("#0.000"),
+                AcutalWeight = e.Weight.ToString("#0.000"),
+                PackageCount = e.PackageCount,
+            })
+            .ToList();
+
+        // model
         ExpressCheckinDetailModel model = new ExpressCheckinDetailModel {
             Id = express.Id,
             TrackingNo = express.TrackingNo,
@@ -76,12 +108,22 @@ public class ExpressCheckinDetailController : Controller {
             CheckinTrackingNo = express.CheckinTrackingNo,
             AddDate = express.AddTime.ToString("yyyy-MM-dd"),
             ClaimDate = express.ClaimTime?.ToString("yyyy-MM-dd") ?? string.Empty,
-            Status = express.Status.Name,
-            GoodsCount = goodsCount,
-            WaitOrder = express.Status == ExpressStatus.WaitOrder,
             WarehouseRemark = warehouseRemark,
+            Status = express.Status.Name,
+            WaitOrder = express.Status == ExpressStatus.WaitOrder,
 
+            // goods
+            GoodsCount = goodsCount,
             GoodsList = goodsItemList,
+
+            // size weight
+            SizeWeightList = sizeWeightItemList,
+            TotalVolume = totalVolume.ToString("#0.000000"),
+            TotalVolumeWeight = totalVolumeWeight.ToString("#0.000"),
+            TotalActualWeight = totalActualWeight.ToString("#0.000"),
+            PackageCount = packageCount,
+            
+            // photo
         };
 
         return Json(new JsonResultData {

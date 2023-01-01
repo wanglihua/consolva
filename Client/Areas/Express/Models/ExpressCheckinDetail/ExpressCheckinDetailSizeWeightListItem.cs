@@ -21,6 +21,6 @@ public class ExpressCheckinDetailSizeWeightListItem {
     [JsonProperty("acutalWeight")]
     public string AcutalWeight { get; set; } = string.Empty;
 
-    [JsonProperty("quantity")]
-    public int Quantity { get; set; }
+    [JsonProperty("packageCount")]
+    public int PackageCount { get; set; }
 }

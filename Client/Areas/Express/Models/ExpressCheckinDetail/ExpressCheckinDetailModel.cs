@@ -74,4 +74,7 @@ public class ExpressCheckinDetailModel {
     public int PackageCount { get; set; }
 
     #endregion
+    
+    [JsonProperty("photoTypeList")]
+    public IList<ExpressCheckinDetailPhotoTypeListItem> PhotoTypeList = new List<ExpressCheckinDetailPhotoTypeListItem>();    
 }
