@@ -28,8 +28,8 @@ public class ExpressCheckinDetailModel {
     [JsonProperty("addDate")]
     public string AddDate { get; set; } = string.Empty;
 
-    [JsonProperty("claimTime")]
-    public string ClaimTime { get; set; } = string.Empty;
+    [JsonProperty("claimDate")]
+    public string ClaimDate { get; set; } = string.Empty;
 
     // 客户端暂时没用起来
     // [JsonProperty("customerRemark")]
@@ -47,11 +47,11 @@ public class ExpressCheckinDetailModel {
     [JsonProperty("status")]
     public string Status { get; set; } = string.Empty;
 
-    [JsonProperty("goodsCount")]
-    public int GoodsCount { get; set; }
-
     [JsonProperty("waitOrder")]
     public bool WaitOrder { get; set; } = false;
+
+    [JsonProperty("goodsCount")]
+    public int GoodsCount { get; set; }
 
     [JsonProperty("goodsList")]
     public IList<ExpressCheckinGoodsListItem> GoodsList = new List<ExpressCheckinGoodsListItem>();
