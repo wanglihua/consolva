@@ -9,6 +9,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
+using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Express.Controllers;
@@ -17,12 +18,15 @@ namespace shunda.Client.Areas.Express.Controllers;
 public class ExpressCheckinDetailController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly ExpressPhotoFileService expressPhotoFileService;
 
     public ExpressCheckinDetailController(ISession session,
-        LoginCustomerService loginCustomerService
+        LoginCustomerService loginCustomerService,
+        ExpressPhotoFileService expressPhotoFileService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.expressPhotoFileService = expressPhotoFileService;
     }
 
     [HttpPost]
@@ -52,7 +56,7 @@ public class ExpressCheckinDetailController : Controller {
             .SingleOrDefault();
         var warehouseRemark = expressWarehouseRemark?.Remark ?? string.Empty;
 
-        // 物品列表
+        // goods
         var goodsList = session.Query<ExpressGoodsInfo>()
             .Fetch(e => e.Goods)
             .Where(e => e.Express.Id == expressId)
@@ -68,7 +72,7 @@ public class ExpressCheckinDetailController : Controller {
             })
             .ToList();
 
-        // size weight list
+        // size weight
         var sizeWeightList = session.Query<ExpressSizeWeightInfo>()
             .Where(e => e.Express!.Id == expressId)
             .ToList();
@@ -98,6 +102,26 @@ public class ExpressCheckinDetailController : Controller {
             })
             .ToList();
 
+        // photo
+        var photoList = session.Query<ExpressPhotoInfo>().Where(e => e.Express!.Id == expressId).ToList();
+        var photoTypeList = photoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
+
+        var photoTypeItemList = photoTypeList
+            .Select(e => new ExpressCheckinDetailPhotoTypeListItem {
+                Id = e.Id,
+                Name = e.Name,
+                PhotoList = photoList
+                    .Where(p => p.Type.Id == e.Id)
+                    .OrderBy(p => p.Id)
+                    .Select(p => new ExpressCheckinDetailPhotoListItem {
+                        Id = p.Id,
+                        SmallUrl = expressPhotoFileService.GetSmallImageFullUrlForApp(p, OssSiteLocType.HongKong),
+                        BigUrl = expressPhotoFileService.GetBigImageFullUrlForApp(p, OssSiteLocType.HongKong)
+                    })
+                    .ToList(),
+            })
+            .ToList();
+
         // model
         ExpressCheckinDetailModel model = new ExpressCheckinDetailModel {
             Id = express.Id,
@@ -122,8 +146,9 @@ public class ExpressCheckinDetailController : Controller {
             TotalVolumeWeight = totalVolumeWeight.ToString("#0.000"),
             TotalActualWeight = totalActualWeight.ToString("#0.000"),
             PackageCount = packageCount,
-            
+
             // photo
+            PhotoTypeList = photoTypeItemList,
         };
 
         return Json(new JsonResultData {
