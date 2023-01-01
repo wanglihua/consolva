@@ -97,7 +97,7 @@ public class ExpressCheckinDetailController : Controller {
                 Width = e.Width.ToString("#0.00"),
                 Height = e.Height.ToString("#0.00"),
                 VolumeWeight = (e.Length * e.Width * e.Height / LogisticsConfig.VolumeWeightDenominator).ToString("#0.000"),
-                AcutalWeight = e.Weight.ToString("#0.000"),
+                ActualWeight = e.Weight.ToString("#0.000"),
                 PackageCount = e.PackageCount,
             })
             .ToList();
@@ -145,7 +145,7 @@ public class ExpressCheckinDetailController : Controller {
             TotalVolume = totalVolume.ToString("#0.000000"),
             TotalVolumeWeight = totalVolumeWeight.ToString("#0.000"),
             TotalActualWeight = totalActualWeight.ToString("#0.000"),
-            PackageCount = packageCount,
+            TotalPackageCount = packageCount,
 
             // photo
             PhotoTypeList = photoTypeItemList,

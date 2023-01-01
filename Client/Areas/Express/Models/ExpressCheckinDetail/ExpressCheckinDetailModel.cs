@@ -70,8 +70,8 @@ public class ExpressCheckinDetailModel {
     [JsonProperty("totalActualWeight")]
     public string TotalActualWeight { get; set; } = string.Empty;
 
-    [JsonProperty("packageCount")]
-    public int PackageCount { get; set; }
+    [JsonProperty("totalPackageCount")]
+    public int TotalPackageCount { get; set; }
 
     #endregion
     
