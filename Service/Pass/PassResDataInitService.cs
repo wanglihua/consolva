@@ -6,17 +6,14 @@ using shunda.Domain.Pass.PassRes;
 namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
-public class PassResDataInitService
-{
+public class PassResDataInitService {
     private ISession session;
 
-    public PassResDataInitService(ISession session)
-    {
+    public PassResDataInitService(ISession session) {
         this.session = session;
     }
 
-    public void InitData()
-    {
+    public void InitData() {
         List<PassResInfo> passResList = new List<PassResInfo>();
         passResList.AddRange(PassRes.Customer.AllData);
         passResList.AddRange(PassRes.CustomerMessage.AllData);
@@ -30,10 +27,8 @@ public class PassResDataInitService
 
         // 检查 pass res id 唯一性
         Dictionary<int, PassResInfo> passResIdMap = new Dictionary<int, PassResInfo>();
-        foreach (PassResInfo passRes in passResList)
-        {
-            if (passResIdMap.TryGetValue(passRes.Id, out PassResInfo? passResExist))
-            {
+        foreach (PassResInfo passRes in passResList) {
+            if (passResIdMap.TryGetValue(passRes.Id, out PassResInfo? passResExist)) {
                 throw new Exception($"授权资源 {passRes.Name} 和 {passResExist.Name} 两者 id#{passRes.Id} 相重！");
             }
 
@@ -45,8 +40,7 @@ public class PassResDataInitService
             .Where(e => passResIdList.Contains(e.Id))
             .ToList();
 
-        foreach (PassResInfo passRes in passResList)
-        {
+        foreach (PassResInfo passRes in passResList) {
             int passResId = passRes.Id;
             PassResInfo? passResInDb = passResListInDb
                 .Where(e => e.Id == passResId)
@@ -54,33 +48,28 @@ public class PassResDataInitService
                 .SingleOrDefault();
 
             bool shouldSave = false;
-            if (passResInDb == null)
-            {
+            if (passResInDb == null) {
                 shouldSave = true;
                 passResInDb = new PassResInfo();
                 passResInDb.Id = passRes.Id;
             }
 
-            if (passResInDb.Cate.Id != passRes.CateIdForCache)
-            {
+            if (passResInDb.Cate.Id != passRes.CateIdForCache) {
                 shouldSave = true;
                 passResInDb.Cate = session.Load<PassResCateInfo>(passRes.CateIdForCache);
             }
 
-            if (passResInDb.Name != passRes.Name)
-            {
+            if (passResInDb.Name != passRes.Name) {
                 shouldSave = true;
                 passResInDb.Name = passRes.Name;
             }
 
-            if (passResInDb.Description != passRes.Description)
-            {
+            if (passResInDb.Description != passRes.Description) {
                 shouldSave = true;
                 passResInDb.Description = passRes.Description;
             }
 
-            if (shouldSave)
-            {
+            if (shouldSave) {
                 session.SaveOrUpdate(passResInDb);
             }
         }

@@ -1,12 +1,10 @@
 namespace shunda.Domain.Pass.PassRes;
 
-public partial class PassRes
-{
+public partial class PassRes {
     /// <summary>
     /// 快递管理
     /// </summary>
-    public class Express
-    {
+    public class Express {
         /// <summary>
         /// 快递管理类别
         /// </summary>
@@ -21,6 +19,7 @@ public partial class PassRes
             new PassResInfo() { Id = ExpressExpect, Name = "预报单号", CateIdForCache = CateId },
             new PassResInfo() { Id = ExpressPhoto, Name = "快递单图片", CateIdForCache = CateId },
             new PassResInfo() { Id = ExpressPhotoDelete, Name = "快递单图片删除", CateIdForCache = CateId },
+            new PassResInfo() { Id = ExpressReturn, Name = "退运池", CateIdForCache = CateId },
             new PassResInfo() { Id = ExpressSizeWeight, Name = "快递单尺寸重量", CateIdForCache = CateId },
         };
 
@@ -57,8 +56,13 @@ public partial class PassRes
         public const int ExpressPhotoDelete = CateId + 50000;
 
         /// <summary>
+        /// 退运池
+        /// </summary>
+        public const int ExpressReturn = CateId + 60000;
+
+        /// <summary>
         /// 快递单尺寸重量
         /// </summary>
-        public const int ExpressSizeWeight = CateId + 60000;
+        public const int ExpressSizeWeight = CateId + 70000;
     }
 }
