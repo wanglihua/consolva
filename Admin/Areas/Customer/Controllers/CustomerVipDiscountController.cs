@@ -14,37 +14,40 @@ using shunda.Domain.Customer;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Customer.Controllers;
 
 [CustomerArea]
 [AdminAuth(PassRes.Customer.CustomerVipDiscount)]
-public class CustomerVipDiscountController : Controller
-{
+public class CustomerVipDiscountController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
+
     private readonly LoginUserService loginUserService;
+    private readonly CustomerVipDiscountExcelService customerVipDiscountExcelService;
 
     private readonly ISession session;
 
-    public CustomerVipDiscountController(ISession session, LoginUserService loginUserService)
-    {
+    public CustomerVipDiscountController(ISession session,
+        LoginUserService loginUserService,
+        CustomerVipDiscountExcelService customerVipDiscountExcelService
+    ) {
         this.session = session;
         this.loginUserService = loginUserService;
+        this.customerVipDiscountExcelService = customerVipDiscountExcelService;
     }
 
     [HttpGet]
     [Route("/admin/customer/vip/discount")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new CustomerVipDiscountIndexModel();
         return View("CustomerVipDiscountIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/customer/vip/discount/list")]
-    public IActionResult List(CustomerVipDiscountListQueryParam queryParam)
-    {
+    public IActionResult List(CustomerVipDiscountListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -65,8 +68,7 @@ public class CustomerVipDiscountController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CustomerVipDiscountListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(CustomerVipDiscountListQueryParam queryParam) {
         var criteria = session.CreateCriteria<CustomerVipDiscountInfo>();
 
         criteria = criteria.SetReadOnly(true);
@@ -76,21 +78,17 @@ public class CustomerVipDiscountController : Controller
 
     [HttpPost]
     [Route("/admin/customer/vip/discount/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         session.DefaultReadOnly = true;
 
         CustomerVipDiscountInfo? customerVipDiscount;
 
         var isCreate = false;
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             isCreate = true;
 
             customerVipDiscount = new CustomerVipDiscountInfo();
-        }
-        else
-        {
+        } else {
             isCreate = false;
 
             customerVipDiscount = session.Get<CustomerVipDiscountInfo>(id.Value);
@@ -111,8 +109,7 @@ public class CustomerVipDiscountController : Controller
     [HttpPost]
     [Route("/admin/customer/vip/discount/save")]
     [Transactional]
-    public IActionResult Save(CustomerVipDiscountDetailModel model)
-    {
+    public IActionResult Save(CustomerVipDiscountDetailModel model) {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var rank = model.Rank;
@@ -127,8 +124,7 @@ public class CustomerVipDiscountController : Controller
 
         CustomerVipDiscountInfo? customerVipDiscount;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             var vipDiscount = session.Query<CustomerVipDiscountInfo>()
                 .Where(e => e.Rank == rank)
                 .Take(1)
@@ -138,9 +134,7 @@ public class CustomerVipDiscountController : Controller
 
             customerVipDiscount = new CustomerVipDiscountInfo();
             customerVipDiscount.Rank = model.Rank; // 编辑时这个级别不能修改，所以只在新建时设置保存
-        }
-        else
-        {
+        } else {
             var vipDiscount = session.Query<CustomerVipDiscountInfo>()
                 .Where(e => e.Rank == rank && e.Id != customerVipDiscountId)
                 .Take(1)
@@ -171,10 +165,8 @@ public class CustomerVipDiscountController : Controller
     [HttpPost]
     [Route("/admin/customer/vip/discount/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (var id in idList)
-        {
+    public IActionResult Delete(int[] idList) {
+        foreach (var id in idList) {
             var customerVipDiscount = session.Load<CustomerVipDiscountInfo>(id);
             session.Delete(customerVipDiscount);
         }
@@ -189,83 +181,15 @@ public class CustomerVipDiscountController : Controller
 
     [HttpPost]
     [Route("/admin/customer/vip/discount/export")]
-    public IActionResult Export()
-    {
+    public IActionResult Export() {
         var fileName = "VIP折扣设置.xlsx";
-        var sheetName = "VIP折扣设置";
-
-        IWorkbook workbook = new XSSFWorkbook();
-        var sheet = workbook.CreateSheet(sheetName);
-
-        IList<CustomerVipDiscountInfo> vipDiscountList = session
-            .Query<CustomerVipDiscountInfo>()
-            .OrderBy(e => e.Id)
-            .ToList();
-
-        var rowHeight = 22;
-        var headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
-        var contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
-
-        // 会员VIP等级    历史总积分    折扣
-
-        var rowIndex = 0;
-
-        var row = sheet.CreateRow(rowIndex++);
-        row.HeightInPoints = rowHeight;
-
-        var cellIndex = 0;
-        var cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("会员VIP等级");
-
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("历史总积分");
-
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("折扣%");
-
-        foreach (var vipDiscount in vipDiscountList)
-        {
-            row = sheet.CreateRow(rowIndex++);
-            row.HeightInPoints = rowHeight;
-
-            cellIndex = 0;
-
-            // 会员VIP等级
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(vipDiscount.Rank.Name);
-
-            // 历史总积分
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(vipDiscount.Score.ToString("#0.00"));
-
-            // 折扣
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(vipDiscount.Discount.ToString("#0.00"));
-        }
-
-        var memoryStream = new MemoryStream();
-        workbook.Write(memoryStream);
-        memoryStream.Flush();
-
-        return File(memoryStream.ToArray(), ContentType.Xlsx, fileName);
+        var excel = customerVipDiscountExcelService.Export();
+        return File(excel, ContentType.Xlsx, fileName);
     }
 
     [HttpPost]
     [Route("/admin/customer/vip/discount/import")]
-    public IActionResult Import(IFormFile excelFile)
-    {
+    public IActionResult Import(IFormFile excelFile) {
         if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
@@ -278,8 +202,7 @@ public class CustomerVipDiscountController : Controller
 
         // 略过标题行，所以 rowIndex = 1 开始
         var lastRowNum = sheet.LastRowNum;
-        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
-        {
+        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++) {
             var row = sheet.GetRow(rowIndex);
 
             if (row == null) break;
@@ -287,8 +210,7 @@ public class CustomerVipDiscountController : Controller
             // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
             var cellIndex = 0;
             int lastCellNum = row.LastCellNum;
-            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++)
-            {
+            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++) {
                 var cell = row.GetCell(cellIndex);
                 if (cell == null) cell = row.CreateCell(cellIndex);
 
@@ -326,15 +248,13 @@ public class CustomerVipDiscountController : Controller
         }
 
 
-        foreach (var vipDiscount in vipDiscountList)
-        {
+        foreach (var vipDiscount in vipDiscountList) {
             var vipDiscountInDb = session.Query<CustomerVipDiscountInfo>()
                 .Where(e => e.Rank == vipDiscount.Rank)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (vipDiscountInDb == null)
-            {
+            if (vipDiscountInDb == null) {
                 vipDiscountInDb = new CustomerVipDiscountInfo();
                 vipDiscountInDb.Rank = vipDiscount.Rank;
             }
