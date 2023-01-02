@@ -1,16 +1,15 @@
 namespace shunda.Domain.Storage;
 
-public class StorageLocExpressInfo
-{
+public class StorageLocExpressInfo {
     /// <summary>
     /// 仓位，非空
     /// </summary>
-    public virtual StorageLocInfo StorageLoc { get; set; } = new ();
+    public virtual StorageLocInfo StorageLoc { get; set; } = new();
 
     /// <summary>
     /// 货架，非空
     /// </summary>
-    public virtual ShelfInfo Shelf { get; set; } = new ();
+    public virtual ShelfInfo Shelf { get; set; } = new();
 
     /// <summary>
     /// 快递单，非空
@@ -20,40 +19,33 @@ public class StorageLocExpressInfo
 
     #region override
 
-    public override bool Equals(object? obj)
-    {
-        if (obj == null)
-        {
+    public override bool Equals(object? obj) {
+        if (obj == null) {
             return false;
         }
 
-        if (obj is StorageLocExpressInfo == false)
-        {
+        if (obj is StorageLocExpressInfo == false) {
             return false;
         }
 
         StorageLocExpressInfo? storageLocExpressAnother = obj as StorageLocExpressInfo;
-        if (storageLocExpressAnother == null)
-        {
+        if (storageLocExpressAnother == null) {
             return false;
         }
 
-        if (StorageLoc?.Id == storageLocExpressAnother.StorageLoc?.Id && ExpressId == storageLocExpressAnother.ExpressId)
-        {
+        if (StorageLoc?.Id == storageLocExpressAnother.StorageLoc?.Id && ExpressId == storageLocExpressAnother.ExpressId) {
             return true;
         }
 
         return false;
     }
 
-    public override int GetHashCode()
-    {
-        if (StorageLoc.Id == 0 || ExpressId == 0)
-        {
+    public override int GetHashCode() {
+        if (StorageLoc.Id == 0 || ExpressId == 0) {
             return base.GetHashCode();
         }
 
-        return unchecked(StorageLoc.Id.GetHashCode() + unchecked(3 * ExpressId.GetHashCode()));
+        return (StorageLoc.Id.GetHashCode() + unchecked(3 * ExpressId.GetHashCode())) & 0x7FFFFFFF;
     }
 
     #endregion

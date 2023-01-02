@@ -52,7 +52,7 @@ public class LogisticsOrderCreateSelectExpressInfo
             return base.GetHashCode();
         }
 
-        return unchecked(CustomerId.GetHashCode() + unchecked(3 * ExpressId.GetHashCode()));
+        return (CustomerId.GetHashCode() + unchecked(3 * ExpressId.GetHashCode())) & 0x7FFFFFFF;
     }
 
     #endregion
