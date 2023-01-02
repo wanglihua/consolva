@@ -1,4 +1,5 @@
 using shunda.Core;
+using shunda.Service.Fee;
 
 namespace shunda.Admin.Areas.Fee.Models.LogisticsOrderPay;
 
@@ -8,5 +9,5 @@ public class LogisticsOrderPayDateStatListModel : ListModel
     {
     }
 
-    public IList<LogisticsOrderPayDateStatListItem> DateStatList { get; set; } = new List<LogisticsOrderPayDateStatListItem>();
+    public IList<LogisticsOrderPayDateStatItem> DateStatList { get; set; } = new List<LogisticsOrderPayDateStatItem>();
 }

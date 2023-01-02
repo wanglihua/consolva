@@ -33,11 +33,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.DateStatList != null && Model.DateStatList.Count != 0)
-        {
+        @if (Model.DateStatList != null && Model.DateStatList.Count != 0) {
             var order = 1;
-            foreach (var  dateStat in Model.DateStatList)
-            {
+            foreach (var  dateStat in Model.DateStatList) {
                 <tr>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
@@ -52,9 +50,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="9">
                     暂时没有数据！

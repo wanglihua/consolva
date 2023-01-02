@@ -1,7 +1,6 @@
-namespace shunda.Admin.Areas.Fee.Models.LogisticsOrderPay;
+namespace shunda.Service.Fee;
 
-public class LogisticsOrderPayDateStatListItem
-{
+public class LogisticsOrderPayDateStatItem {
     public DateTime Date { get; set; }
 
     public decimal AlipayAmount { get; set; }
