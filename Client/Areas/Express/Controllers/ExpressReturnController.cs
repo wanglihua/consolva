@@ -57,11 +57,10 @@ public class ExpressReturnController : Controller {
         }
 
         express.Status = ExpressStatus.WaitReturn;
+        express.ReturnApplyTime = DateTime.Now;
 
         session.Update(express);
         session.Flush();
-
-        // todo 退运信息记录
 
         return Json(new JsonResultData {
             Success = true,
