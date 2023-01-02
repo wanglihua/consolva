@@ -190,83 +190,12 @@ public class CustomerVipDiscountController : Controller {
     [HttpPost]
     [Route("/admin/customer/vip/discount/import")]
     public IActionResult Import(IFormFile excelFile) {
-        if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
-
-        IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
-        var sheet = workbook.GetSheetAt(0);
-        if (sheet == null) throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
-
-        var user = session.Load<UserInfo>(loginUserService.GetLoginUserId());
-
-        IList<CustomerVipDiscountInfo> vipDiscountList = new List<CustomerVipDiscountInfo>();
-
-        // 略过标题行，所以 rowIndex = 1 开始
-        var lastRowNum = sheet.LastRowNum;
-        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++) {
-            var row = sheet.GetRow(rowIndex);
-
-            if (row == null) break;
-
-            // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
-            var cellIndex = 0;
-            int lastCellNum = row.LastCellNum;
-            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++) {
-                var cell = row.GetCell(cellIndex);
-                if (cell == null) cell = row.CreateCell(cellIndex);
-
-                cell.SetCellType(CellType.String);
-            }
-
-            cellIndex = 0;
-
-            // 会员VIP等级
-            var rankName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(rankName)) break;
-
-            var rank = CustomerVipRank.GetByName(rankName);
-            if (rank == CustomerVipRank.None) throw new ValidationException($"第{rowIndex}行数据 会员VIP等级 为空或数据不合法，导入失败！");
-
-            // 历史总积分
-            var scoreStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(scoreStr)) throw new ValidationException($"第{rowIndex}行数据 历史总积分 不能为空，导入失败！");
-
-            if (decimal.TryParse(scoreStr, out var score) == false) throw new ValidationException($"第{rowIndex}行数据 历史总积分 数据格式有误，导入失败！");
-
-            // 折扣
-            var discountStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(discountStr)) throw new ValidationException($"第{rowIndex}行数据 折扣 不能为空，导入失败！");
-
-            if (decimal.TryParse(discountStr, out var Discount) == false) throw new ValidationException($"第{rowIndex}行数据 折扣 数据格式有误，导入失败！");
-
-            var vipDiscount = new CustomerVipDiscountInfo();
-            vipDiscount.Rank = rank;
-            vipDiscount.Score = score;
-            vipDiscount.Discount = Discount;
-            vipDiscount.User = user;
-
-            vipDiscountList.Add(vipDiscount);
+        if (excelFile == null) {
+            throw new ValidationException("导入失败，文件未上传！");
         }
 
-
-        foreach (var vipDiscount in vipDiscountList) {
-            var vipDiscountInDb = session.Query<CustomerVipDiscountInfo>()
-                .Where(e => e.Rank == vipDiscount.Rank)
-                .Take(1)
-                .SingleOrDefault();
-
-            if (vipDiscountInDb == null) {
-                vipDiscountInDb = new CustomerVipDiscountInfo();
-                vipDiscountInDb.Rank = vipDiscount.Rank;
-            }
-
-            vipDiscountInDb.Score = vipDiscount.Score;
-            vipDiscountInDb.Discount = vipDiscount.Discount;
-
-            session.SaveOrUpdate(vipDiscount);
-        }
-
-        session.Flush();
-
+        UserInfo loginUser = loginUserService.GetLoginUser();
+        customerVipDiscountExcelService.Import(excelFile, loginUser);
 
         return Json(new Dictionary<string, object> {
             { "success", true },
