@@ -23,8 +23,7 @@ namespace shunda.Admin.Areas.Storage.Controllers;
 
 [StorageArea]
 [AdminAuth(PassRes.Storage.Warehouse)]
-public class StorageLocController : Controller
-{
+public class StorageLocController : Controller {
     private static readonly string storageLocSpecAlias = "sls";
     private static readonly string storageLocShelfAlias = "s";
 
@@ -33,24 +32,25 @@ public class StorageLocController : Controller
     private readonly StorageLocDesignService storageLocDesignService;
     private readonly StorageLocLabelService storageLocLabelService;
     private readonly StorageLocExpressService storageLocExpressService;
+    private readonly StorageLocExcelService storageLocExcelService;
 
     public StorageLocController(ISession session,
         LoginUserService loginUserService,
         StorageLocDesignService storageLocDesignService,
         StorageLocLabelService storageLocLabelService,
-        StorageLocExpressService storageLocExpressService)
-    {
+        StorageLocExpressService storageLocExpressService,
+        StorageLocExcelService storageLocExcelService) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.storageLocDesignService = storageLocDesignService;
         this.storageLocLabelService = storageLocLabelService;
         this.storageLocExpressService = storageLocExpressService;
+        this.storageLocExcelService = storageLocExcelService;
     }
 
     [HttpGet]
     [Route("/admin/storage/loc/{shelfId:int}")]
-    public IActionResult Index(int shelfId)
-    {
+    public IActionResult Index(int shelfId) {
         var shelfInfo = session.Get<ShelfInfo>(shelfId);
         if (shelfInfo == null) return Content("指定的货架不存在！");
 
@@ -73,8 +73,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/list")]
-    public IActionResult List(StorageLocListQueryParam queryParam)
-    {
+    public IActionResult List(StorageLocListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -88,8 +87,7 @@ public class StorageLocController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<StorageLocInfo>();
 
-        foreach (var storageLocInfo in storageLocList)
-        {
+        foreach (var storageLocInfo in storageLocList) {
             // storageLocInfo.StatusName = storageLocInfo.StatusName;
         }
 
@@ -101,8 +99,7 @@ public class StorageLocController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(StorageLocListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(StorageLocListQueryParam queryParam) {
         var criteria = session.CreateCriteria<StorageLocInfo>();
         criteria = criteria.SetReadOnly(true);
 
@@ -112,14 +109,12 @@ public class StorageLocController : Controller
         var shelfId = queryParam.ShelfId;
         criteria = criteria.Add(Restrictions.Where<StorageLocInfo>(e => e.Shelf.Id == shelfId));
 
-        if (queryParam.RowNumQuery != null)
-        {
+        if (queryParam.RowNumQuery != null) {
             var rowNumQueryValue = queryParam.RowNumQuery.Value;
             criteria = criteria.Add(Restrictions.Where<StorageLocInfo>(e => e.RowNum == rowNumQueryValue));
         }
 
-        if (queryParam.ColNumQuery != null)
-        {
+        if (queryParam.ColNumQuery != null) {
             var colNumQueryValue = queryParam.ColNumQuery.Value;
             criteria = criteria.Add(Restrictions.Where<StorageLocInfo>(e => e.ColNum == colNumQueryValue));
         }
@@ -129,30 +124,24 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/detail")]
-    public IActionResult Detail(StorageLocDetailModel model)
-    {
+    public IActionResult Detail(StorageLocDetailModel model) {
         var storageLocId = model.Id;
         var shelfId = model.ShelfId;
 
         StorageLocInfo? storageLoc;
 
-        if (storageLocId == 0)
-        {
+        if (storageLocId == 0) {
             storageLoc = new StorageLocInfo();
             storageLoc.Shelf = session.Load<ShelfInfo>(shelfId);
-        }
-        else
-        {
+        } else {
             storageLoc = session.Get<StorageLocInfo>(storageLocId);
-            if (storageLoc == null)
-            {
+            if (storageLoc == null) {
                 throw new ValidationException("指定的数据项不存在！");
             }
         }
 
         var shelfInfo = session.Get<ShelfInfo>(shelfId);
-        if (shelfInfo == null)
-        {
+        if (shelfInfo == null) {
             throw new ValidationException("指定的货架数据项不存在！");
         }
 
@@ -182,10 +171,8 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/save")]
     [Transactional]
-    public IActionResult Save(StorageLocSaveModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(StorageLocSaveModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
@@ -195,14 +182,12 @@ public class StorageLocController : Controller
         int shelfId = model.ShelfId;
 
         var shelf = session.Load<ShelfInfo>(model.ShelfId);
-        if (shelf == null)
-        {
+        if (shelf == null) {
             throw new ValidationException($"指定的货架#{model.ShelfId}不存在！");
         }
 
         var storageLocSpec = session.Load<StorageLocSpecInfo>(model.SpecId);
-        if (storageLocSpec == null)
-        {
+        if (storageLocSpec == null) {
             throw new ValidationException($"指定的仓位规格#{model.SpecId}不存在！");
         }
 
@@ -214,22 +199,19 @@ public class StorageLocController : Controller
 
         StorageLocInfo? storageLoc;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             var storageLocSameRowCol = session.Query<StorageLocInfo>()
                 .Where(e => e.Shelf.Id == shelfId
                             && e.RowNum == rowNum && e.ColNum == colNum)
                 .Take(1)
                 .SingleOrDefault();
-            if (storageLocSameRowCol != null)
-            {
+            if (storageLocSameRowCol != null) {
                 throw new ValidationException("货架相同行列的仓位设置已经存在！");
             }
 
             storageLoc = new StorageLocInfo();
 
-            if (storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump)
-            {
+            if (storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump) {
                 var newStorageLocName = DateTime.Now.ToString("yyyyMMdd") + "_" + loginUser.LoginName;
 
                 var storageLocNew = session.Query<StorageLocInfo>()
@@ -237,24 +219,20 @@ public class StorageLocController : Controller
                     .Take(1)
                     .SingleOrDefault();
 
-                if (storageLocNew != null)
-                {
+                if (storageLocNew != null) {
                     throw new ValidationException("相同名称的仓位号已存在！");
                 }
 
                 storageLoc.Name = newStorageLocName;
             }
-        }
-        else
-        {
+        } else {
             var storageLocSameRowCol = session.Query<StorageLocInfo>()
                 .Where(e => e.Shelf.Id == shelfId
                             && e.Id != storageLocId
                             && e.RowNum == rowNum && e.ColNum == colNum)
                 .Take(1)
                 .SingleOrDefault();
-            if (storageLocSameRowCol != null)
-            {
+            if (storageLocSameRowCol != null) {
                 throw new ValidationException("货架相同行列的仓位设置已经存在！");
             }
 
@@ -264,8 +242,7 @@ public class StorageLocController : Controller
         storageLoc.RowNum = model.RowNum;
         storageLoc.ColNum = model.ColNum;
 
-        if ((storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump) == false)
-        {
+        if ((storageLocSpec.ShelfType == ShelfType.LongNoPickDump || storageLocSpec.ShelfType == ShelfType.LongNoProcessDump) == false) {
             storageLoc.Name = $"{model.RowNum}层{model.ColNum}列";
         }
 
@@ -278,12 +255,9 @@ public class StorageLocController : Controller
 
         storageLoc.Status = model.Status;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(storageLoc);
-        }
-        else
-        {
+        } else {
             session.Update(storageLoc);
         }
 
@@ -301,10 +275,8 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/enable")]
     [Transactional]
-    public IActionResult Enable(int[] idList)
-    {
-        foreach (var id in idList)
-        {
+    public IActionResult Enable(int[] idList) {
+        foreach (var id in idList) {
             var storageLoc = session.Get<StorageLocInfo>(id);
             if (storageLoc == null) throw new ValidationException("指定的仓位不存在！");
 
@@ -326,10 +298,8 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/disable")]
     [Transactional]
-    public IActionResult Disable(int[] idList)
-    {
-        foreach (var id in idList)
-        {
+    public IActionResult Disable(int[] idList) {
+        foreach (var id in idList) {
             var storageLoc = session.Get<StorageLocInfo>(id);
             if (storageLoc == null) throw new ValidationException("指定的仓位不存在！");
 
@@ -351,14 +321,12 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/batch/enable")]
     [Transactional]
-    public IActionResult BatchEnable(int shelfId)
-    {
+    public IActionResult BatchEnable(int shelfId) {
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>()
             .Where(e => e.Shelf.Id == shelfId)
             .ToList();
 
-        foreach (var storageLoc in storageLocList)
-        {
+        foreach (var storageLoc in storageLocList) {
             /*
             if (storageLoc.Status == StorageLocStatus.Enabled)
             {
@@ -382,14 +350,12 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/batch/disable")]
     [Transactional]
-    public IActionResult BatchDisable(int shelfId)
-    {
+    public IActionResult BatchDisable(int shelfId) {
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>()
             .Where(e => e.Shelf.Id == shelfId)
             .ToList();
 
-        foreach (var storageLoc in storageLocList)
-        {
+        foreach (var storageLoc in storageLocList) {
             /*
             if (storageLoc.Status == StorageLocStatus.Disabled)
             {
@@ -413,10 +379,8 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Delete(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("请选择要删除的数据项！");
         }
 
@@ -424,15 +388,13 @@ public class StorageLocController : Controller
             .Where(e => idList.Contains(e.StorageLoc.Id))
             .Take(1)
             .SingleOrDefault();
-        if (express != null)
-        {
+        if (express != null) {
             throw new ValidationException("有物品正引用选择的仓位, 删除失败!");
         }
 
         storageLocExpressService.Delete(idList);
 
-        foreach (var id in idList)
-        {
+        foreach (var id in idList) {
             var storageLoc = session.Load<StorageLocInfo>(id);
             session.Delete(storageLoc);
         }
@@ -447,8 +409,7 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/design")]
-    public IActionResult Design(StorageLocDesignModel model)
-    {
+    public IActionResult Design(StorageLocDesignModel model) {
         var shelfId = model.ShelfId;
 
         var shelf = session.Get<ShelfInfo>(shelfId);
@@ -468,8 +429,7 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/design/save")]
     [Transactional]
-    public IActionResult DesignSave(StorageLocDesignModel model)
-    {
+    public IActionResult DesignSave(StorageLocDesignModel model) {
         var shelfId = model.ShelfId;
 
         var shelf = session.Get<ShelfInfo>(shelfId);
@@ -486,13 +446,11 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/preview")]
-    public IActionResult Preview(StorageLocPreviewParam param)
-    {
+    public IActionResult Preview(StorageLocPreviewParam param) {
         var shelfId = param.ShelfId;
 
         var shelf = session.Get<ShelfInfo>(shelfId);
-        if (shelf == null)
-        {
+        if (shelf == null) {
             throw new ValidationException("指定的货架不存在！");
         }
 
@@ -544,8 +502,7 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/get/label/print/data")]
     [NoLoginRequired]
-    public IActionResult GetLabelPrintData(IList<int> idList)
-    {
+    public IActionResult GetLabelPrintData(IList<int> idList) {
         if (idList == null || idList.Count == 0) throw new ValidationException("请选择要打印标签的仓位！");
 
         IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>()
@@ -558,8 +515,7 @@ public class StorageLocController : Controller
 
         IList<IDictionary<string, string>> storageLocLabelList = new List<IDictionary<string, string>>();
 
-        foreach (var storageLoc in storageLocList)
-        {
+        foreach (var storageLoc in storageLocList) {
             var storageLocLabel = new Dictionary<string, string> {
                 { "fullName", storageLoc.GetFullName() },
                 { "shelfName", storageLoc.GetShelfName() },
@@ -580,8 +536,7 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/get/label/print/data/by/shelf")]
     [NoLoginRequired]
-    public IActionResult GetLabelPrintDataByShelf(int shelfId)
-    {
+    public IActionResult GetLabelPrintDataByShelf(int shelfId) {
         var shelf = session.Get<ShelfInfo>(shelfId);
         if (shelf == null) throw new ValidationException("指定的货架不存在！");
 
@@ -595,8 +550,7 @@ public class StorageLocController : Controller
 
         IList<IDictionary<string, string>> storageLocLabelList = new List<IDictionary<string, string>>();
 
-        foreach (var storageLoc in storageLocList)
-        {
+        foreach (var storageLoc in storageLocList) {
             var storageLocLabel = new Dictionary<string, string> {
                 { "fullName", storageLoc.GetFullName() },
                 { "shelfName", storageLoc.GetShelfName() },
@@ -623,8 +577,7 @@ public class StorageLocController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/auto/generate/off/shelf/order/num")]
     [Transactional]
-    public IActionResult AutoGenerateOffShelfOrderNum(int shelfId)
-    {
+    public IActionResult AutoGenerateOffShelfOrderNum(int shelfId) {
         var shelf = session.Get<ShelfInfo>(shelfId);
         if (shelf == null) throw new ValidationException("指定的货架不存在！");
 
@@ -636,22 +589,19 @@ public class StorageLocController : Controller
 
         // column list
         IList<int> columnList = storageLocList.OrderBy(e => e.ColNum).Select(e => e.ColNum).Distinct().ToList();
-        for (var columnIndex = 0; columnIndex < columnList.Count; columnIndex++)
-        {
+        for (var columnIndex = 0; columnIndex < columnList.Count; columnIndex++) {
             var column = columnList[columnIndex];
             IList<int> rowList = storageLocList.Where(e => e.ColNum == column).OrderBy(e => e.RowNum).Select(e => e.RowNum).Distinct().ToList();
 
             if (columnIndex % 2 == 0) rowList = rowList.Reverse().ToList();
 
-            foreach (var row in rowList)
-            {
+            foreach (var row in rowList) {
                 var storageLoc = storageLocList
                     .Where(e => e.ColNum == column && e.RowNum == row)
                     .Take(1)
                     .SingleOrDefault();
 
-                if (storageLoc != null)
-                {
+                if (storageLoc != null) {
                     storageLoc.OffShelfOrderNum = offShelfOrderNum++;
                     session.Save(storageLoc);
                 }
@@ -674,12 +624,10 @@ public class StorageLocController : Controller
     [HttpGet]
     [Route("/admin/storage/loc/auto/generate/off/shelf/order/num/warehouse")]
     [Transactional]
-    public IActionResult AutoGenerateOffShelfOrderNumWarehouse(int warehouseId)
-    {
+    public IActionResult AutoGenerateOffShelfOrderNumWarehouse(int warehouseId) {
         IList<ShelfInfo> shelfList = session.Query<ShelfInfo>().Where(e => e.Warehouse.Id == warehouseId && e.Status == ShelfStatus.Enabled).ToList();
 
-        foreach (var shelf in shelfList)
-        {
+        foreach (var shelf in shelfList) {
             var shelfId = shelf?.Id ?? 0;
 
             IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>()
@@ -690,22 +638,19 @@ public class StorageLocController : Controller
 
             // column list
             IList<int> columnList = storageLocList.OrderBy(e => e.ColNum).Select(e => e.ColNum).Distinct().ToList();
-            for (var columnIndex = 0; columnIndex < columnList.Count; columnIndex++)
-            {
+            for (var columnIndex = 0; columnIndex < columnList.Count; columnIndex++) {
                 var column = columnList[columnIndex];
                 IList<int> rowList = storageLocList.Where(e => e.ColNum == column).OrderBy(e => e.RowNum).Select(e => e.RowNum).Distinct().ToList();
 
                 if (columnIndex % 2 == 0) rowList = rowList.Reverse().ToList();
 
-                foreach (var row in rowList)
-                {
+                foreach (var row in rowList) {
                     var storageLoc = storageLocList
                         .Where(e => e.ColNum == column && e.RowNum == row)
                         .Take(1)
                         .SingleOrDefault();
 
-                    if (storageLoc != null)
-                    {
+                    if (storageLoc != null) {
                         storageLoc.OffShelfOrderNum = offShelfOrderNum++;
                         session.Save(storageLoc);
                     }
@@ -723,174 +668,31 @@ public class StorageLocController : Controller
 
     [HttpPost]
     [Route("/admin/storage/loc/export/off/shelf/order")]
-    public IActionResult ExportOffShelfOrder(int shelfId)
-    {
+    public IActionResult ExportOffShelfOrder(int shelfId) {
         var shelf = session.Get<ShelfInfo>(shelfId);
-        if (shelf == null) throw new ValidationException($"指定的货架{shelfId}，不存在！");
-
-        var fileName = "货架_" + shelf.Name + "_仓位下架顺序" + ".xlsx";
-        var sheetName = "仓位下架顺序";
-
-        IList<StorageLocInfo> storageLocList = session.Query<StorageLocInfo>()
-            .Where(e => e.Shelf.Id == shelfId && e.Status == StorageLocStatus.Enabled)
-            .OrderBy(e => e.RowNum).ThenBy(e => e.ColNum)
-            .ToList();
-
-        IWorkbook workbook = new XSSFWorkbook();
-        var sheet = workbook.CreateSheet(sheetName);
-
-        var rowHeight = 22;
-        var headerCenterCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook, HorizontalAlignment.Center);
-        var contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
-        var contentCenterCellStyle = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Center);
-
-        var dataFormat = workbook.CreateDataFormat();
-
-        var precision0Style = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Right);
-        precision0Style.DataFormat = dataFormat.GetFormat("0");
-
-        var precision1Style = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Right);
-        precision1Style.DataFormat = dataFormat.GetFormat("0.0");
-
-        var precision2Style = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Right);
-        precision2Style.DataFormat = dataFormat.GetFormat("0.00");
-
-        var precision3Style = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Right);
-        precision3Style.DataFormat = dataFormat.GetFormat("0.000");
-
-        var precision6Style = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Right);
-        precision6Style.DataFormat = dataFormat.GetFormat("0.000000");
-
-        var rowIndex = 0;
-
-        var row = sheet.CreateRow(rowIndex++);
-        row.HeightInPoints = rowHeight;
-
-        // 层 列 下架顺序
-
-        var cellIndex = 0;
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        var cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("层");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("列");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("下架顺序");
-
-        foreach (var sl in storageLocList)
-        {
-            row = sheet.CreateRow(rowIndex++);
-            row.HeightInPoints = rowHeight;
-
-            cellIndex = 0;
-
-            // 层
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = precision0Style;
-            cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(sl.RowNum);
-
-            // 列
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = precision0Style;
-            cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(sl.ColNum);
-
-            // 下架顺序
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = precision0Style;
-            cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(sl.OffShelfOrderNum);
+        if (shelf == null) {
+            throw new ValidationException($"指定的货架{shelfId}，不存在！");
         }
 
-        var memoryStream = new MemoryStream();
-        workbook.Write(memoryStream);
-        memoryStream.Flush();
-
-        return File(memoryStream.ToArray(), ContentType.Xlsx, fileName);
+        var fileName = "货架_" + shelf.Name + "_仓位下架顺序" + ".xlsx";
+        var excel = storageLocExcelService.ExportOffShelfOrder(shelfId);
+        return File(excel, ContentType.Xlsx, fileName);
     }
 
     [HttpPost]
     [Route("/admin/storage/loc/import/off/shelf/order")]
     [Transactional]
-    public IActionResult ImportOffShelfOrder(int shelfId, IFormFile excelFile)
-    {
+    public IActionResult ImportOffShelfOrder(int shelfId, IFormFile excelFile) {
         var shelf = session.Get<ShelfInfo>(shelfId);
-        if (shelf == null) throw new ValidationException($"指定的货架{shelfId}，不存在！");
-
-        if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
-
-
-        IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
-        var sheet = workbook.GetSheetAt(0);
-        if (sheet == null) throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
-
-        IList<StorageLocInfo> storageLocListInDb = session.Query<StorageLocInfo>()
-            .Where(e => e.Shelf.Id == shelfId)
-            .ToList();
-
-        IList<StorageLocInfo> storageLocListFromExcel = new List<StorageLocInfo>();
-
-        // 略过标题行，所以 rowIndex = 1 开始
-        var lastRowNum = sheet.LastRowNum;
-        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
-        {
-            var row = sheet.GetRow(rowIndex);
-
-            if (row == null) break;
-
-            // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
-            var cellIndex = 0;
-            int lastCellNum = row.LastCellNum;
-            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++) row.GetCell(cellIndex)?.SetCellType(CellType.String);
-
-            // 层 列 下架顺序
-            cellIndex = 0;
-            var rowNumStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(rowNumStr)) break;
-
-            var colNumStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            var offShelfOrderStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-
-            if (int.TryParse(rowNumStr, out var rowNum) == false) throw new ValidationException($"第{rowIndex}行数据 行数 数据格式不对！");
-
-            if (int.TryParse(colNumStr, out var colNum) == false) throw new ValidationException($"第{rowIndex}行数据 列数 数据格式不对！");
-
-            if (int.TryParse(offShelfOrderStr, out var offShelfOrderNum) == false) throw new ValidationException($"第{rowIndex}行数据 下架顺序 数据格式不对！");
-
-            var storageLoc = new StorageLocInfo();
-            storageLoc.RowNum = rowNum;
-            storageLoc.ColNum = colNum;
-            storageLoc.OffShelfOrderNum = offShelfOrderNum;
-
-            var slInDb = storageLocListInDb.Where(e => e.RowNum == storageLoc.RowNum && e.ColNum == storageLoc.ColNum).Take(1).SingleOrDefault();
-            if (slInDb == null) throw new ValidationException($"第{rowIndex}行数据 指定的行{rowNum}列{colNum}仓位，在当前货架不存在！");
-
-            storageLocListFromExcel.Add(storageLoc);
+        if (shelf == null) {
+            throw new ValidationException($"指定的货架{shelfId}，不存在！");
         }
 
-        foreach (var sl in storageLocListFromExcel)
-        {
-            var slInDb = storageLocListInDb.Where(e => e.RowNum == sl.RowNum && e.ColNum == sl.ColNum).Take(1).SingleOrDefault();
-
-            if (slInDb != null)
-            {
-                slInDb.OffShelfOrderNum = sl.OffShelfOrderNum;
-                session.Update(slInDb);
-            }
+        if (excelFile == null) {
+            throw new ValidationException("导入失败，文件未上传！");
         }
 
-        session.Flush();
+        storageLocExcelService.ImportOffShelfOrder(shelfId, excelFile);
 
         return Json(new Dictionary<string, object> {
             { "success", true },
