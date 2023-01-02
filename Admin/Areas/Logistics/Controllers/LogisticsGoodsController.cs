@@ -23,31 +23,31 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 
 [LogisticsArea]
 [AdminAuth(PassRes.Goods.GoodsListByType)]
-public class LogisticsGoodsController : Controller
-{
-    private ISession session;
-    private LoginUserService loginUserService;
-    private LogisticsGoodsImageService logisticsGoodsImageService;
-    private LogisticsGoodsLogService logisticsGoodsLogService;
+public class LogisticsGoodsController : Controller {
+    private readonly ISession session;
+    private readonly LoginUserService loginUserService;
+    private readonly LogisticsGoodsImageService logisticsGoodsImageService;
+    private readonly LogisticsGoodsLogService logisticsGoodsLogService;
+    private readonly LogisticsGoodsExcelService logisticsGoodsExcelService;
 
     public LogisticsGoodsController(ISession session,
         LoginUserService loginUserService,
         LogisticsGoodsImageService logisticsGoodsImageService,
-        LogisticsGoodsLogService logisticsGoodsLogService)
-    {
+        LogisticsGoodsLogService logisticsGoodsLogService,
+        LogisticsGoodsExcelService logisticsGoodsExcelService
+    ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsGoodsImageService = logisticsGoodsImageService;
         this.logisticsGoodsLogService = logisticsGoodsLogService;
+        this.logisticsGoodsExcelService = logisticsGoodsExcelService;
     }
 
     [HttpGet]
     [Route("/admin/logistics/goods/{typeId:int}")]
-    public IActionResult Index(int typeId)
-    {
+    public IActionResult Index(int typeId) {
         LogisticsGoodsType logisticsGoodsType = LogisticsGoodsType.GetById(typeId);
-        if (logisticsGoodsType == null || logisticsGoodsType == LogisticsGoodsType.None)
-        {
+        if (logisticsGoodsType == null || logisticsGoodsType == LogisticsGoodsType.None) {
             throw new ValidationException("指定的物品类型不存在！");
         }
 
@@ -59,8 +59,7 @@ public class LogisticsGoodsController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/goods/list")]
-    public IActionResult List(LogisticsGoodsListQueryParam queryParam)
-    {
+    public IActionResult List(LogisticsGoodsListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -74,8 +73,7 @@ public class LogisticsGoodsController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsGoodsInfo>();
 
-        foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList)
-        {
+        foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList) {
         }
 
         LogisticsGoodsListModel model = new LogisticsGoodsListModel(listPager);
@@ -85,8 +83,7 @@ public class LogisticsGoodsController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(LogisticsGoodsListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(LogisticsGoodsListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<LogisticsGoodsInfo>();
 
         criteria = criteria.SetReadOnly(true);
@@ -96,32 +93,27 @@ public class LogisticsGoodsController : Controller
         LogisticsGoodsType logisticsGoodsType = queryParam.TypeQuery ?? LogisticsGoodsType.None;
         criteria = criteria.Add(Restrictions.Where<LogisticsGoodsInfo>(e => e.Type == logisticsGoodsType));
 
-        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false) {
             string nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CnHsCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CnHsCodeQuery) == false) {
             string cnHsCodeQuery = queryParam.CnHsCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods!.CnHsCode).IsInsensitiveLike(cnHsCodeQuery, MatchMode.Exact)); // 相当于 Eq
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CnHsNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CnHsNameQuery) == false) {
             string cnHsNameQuery = queryParam.CnHsNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods!.CnHsName).IsInsensitiveLike(cnHsNameQuery, MatchMode.Exact));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.EnHsCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.EnHsCodeQuery) == false) {
             string enHsCodeQuery = queryParam.EnHsCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods!.EnHsCode).IsInsensitiveLike(enHsCodeQuery, MatchMode.Exact));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.EnHsNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.EnHsNameQuery) == false) {
             string enHsNameQuery = queryParam.EnHsNameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsGoodsInfo>(e => e.HsGoods!.EnHsName).IsInsensitiveLike(enHsNameQuery, MatchMode.Exact));
         }
@@ -131,8 +123,7 @@ public class LogisticsGoodsController : Controller
 
     [HttpGet]
     [Route("/admin/logistics/goods/detail/{id:int?}")]
-    public IActionResult Detail(int? id, int? statusId)
-    {
+    public IActionResult Detail(int? id, int? statusId) {
         session.DefaultReadOnly = true;
 
         var loginUser = loginUserService.GetLoginUser();
@@ -141,23 +132,18 @@ public class LogisticsGoodsController : Controller
 
         bool isCreate = false;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             logisticsGoods = new LogisticsGoodsInfo();
 
 
-            if (loginUser != null)
-            {
+            if (loginUser != null) {
                 logisticsGoods.AddUser = loginUser;
             }
 
             isCreate = true;
-        }
-        else
-        {
+        } else {
             logisticsGoods = session.Get<LogisticsGoodsInfo>(id.Value);
-            if (logisticsGoods == null)
-            {
+            if (logisticsGoods == null) {
                 throw new ValidationException("指定的数据项不存在！");
             }
 
@@ -180,20 +166,17 @@ public class LogisticsGoodsController : Controller
             .OrderByDescending(e => e)
             .ToList();
 
-        if (orderIdList.Count > 0)
-        {
+        if (orderIdList.Count > 0) {
             int orderId = orderIdList[0];
             logisticsGoods.FirstOrderExpressPhotoListCache = goodsImageItemList.Where(e => e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
         }
 
-        if (orderIdList.Count > 1)
-        {
+        if (orderIdList.Count > 1) {
             int orderId = orderIdList[1];
             logisticsGoods.SecondOrderExpressPhotoListCache = goodsImageItemList.Where(e => e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
         }
 
-        if (orderIdList.Count > 2)
-        {
+        if (orderIdList.Count > 2) {
             int orderId = orderIdList[2];
             logisticsGoods.ThirdOrderExpressPhotoListCache = goodsImageItemList.Where(e => e.Order!.Id == orderId).OrderBy(e => e.Id).ToList();
         }
@@ -213,13 +196,11 @@ public class LogisticsGoodsController : Controller
 
     [HttpGet]
     [Route("/admin/logistics/goods/view/{id:int}")]
-    public IActionResult View(int id)
-    {
+    public IActionResult View(int id) {
         session.DefaultReadOnly = true;
 
         LogisticsGoodsInfo? logisticsGoods = session.Get<LogisticsGoodsInfo>(id);
-        if (logisticsGoods == null)
-        {
+        if (logisticsGoods == null) {
             throw new ValidationException("指定的数据项不存在！");
         }
 
@@ -255,8 +236,7 @@ public class LogisticsGoodsController : Controller
     }
 
     [NonAction]
-    private void SetupDetailModel(LogisticsGoodsDetailModel model, LogisticsGoodsInfo logisticsGoods)
-    {
+    private void SetupDetailModel(LogisticsGoodsDetailModel model, LogisticsGoodsInfo logisticsGoods) {
         model.TypeList = LogisticsGoodsType.GetInnerList();
         model.StatusList = LogisticsGoodsStatus.GetList();
 
@@ -264,8 +244,7 @@ public class LogisticsGoodsController : Controller
 
         HsGoodsInfo? hsGoods = logisticsGoods.HsGoods;
 
-        if (hsGoods != null)
-        {
+        if (hsGoods != null) {
             model.HsGoodsId = hsGoods.Id;
 
             model.CnHsCode = hsGoods.CnHsCode;
@@ -286,10 +265,8 @@ public class LogisticsGoodsController : Controller
     [HttpPost]
     [Route("/admin/logistics/goods/save")]
     [Transactional]
-    public IActionResult Save(LogisticsGoodsDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(LogisticsGoodsDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -306,8 +283,7 @@ public class LogisticsGoodsController : Controller
     }
 
     [NonAction]
-    private LogisticsGoodsInfo SaveInternal(LogisticsGoodsDetailModel model)
-    {
+    private LogisticsGoodsInfo SaveInternal(LogisticsGoodsDetailModel model) {
         int loginUserId = loginUserService.GetLoginUserId();
         UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
@@ -318,14 +294,11 @@ public class LogisticsGoodsController : Controller
 
         LogisticsGoodsInfo? logisticsGoods = null;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             logisticsGoods = new LogisticsGoodsInfo();
             logisticsGoods.Status = LogisticsGoodsStatus.NotConfirmed;
             logisticsGoods.AddUser = loginUser;
-        }
-        else
-        {
+        } else {
             logisticsGoods = session.Get<LogisticsGoodsInfo>(logisticsGoodsId);
         }
 
@@ -335,15 +308,12 @@ public class LogisticsGoodsController : Controller
         logisticsGoods.BrandName = logisticsGoodsFromUi.BrandName ?? string.Empty;
         logisticsGoods.CreateExpressTrackingNo = logisticsGoodsFromUi.CreateExpressTrackingNo;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(logisticsGoods);
             session.Flush();
 
             logisticsGoodsLogService.AddLog(LogisticsGoodsLogType.Create, logisticsGoods.Id, loginUserId);
-        }
-        else
-        {
+        } else {
             logisticsGoods.UpdateUser = loginUser;
             session.Update(logisticsGoods);
             session.Flush();
@@ -355,12 +325,10 @@ public class LogisticsGoodsController : Controller
 
         int hsGoodsId = model.HsGoodsId;
 
-        if (model.HsGoodsAutoSelect == false)
-        {
+        if (model.HsGoodsAutoSelect == false) {
             string cnHsName = model.CnHsName;
             int count = session.Query<HsGoodsInfo>().Where(e => e.CnHsName == cnHsName).Count();
-            if (count != 0)
-            {
+            if (count != 0) {
                 throw new ValidationException($"{cnHsName}已经存在，请直接选择！"); // 用异常可以回滚前面的保存，事务会撤回
             }
 
@@ -393,10 +361,8 @@ public class LogisticsGoodsController : Controller
         session.Flush();
 
         // 保存图片， 其实这个现在一般也不用了
-        if (model.NewImageList != null && model.NewImageList.Count != 0)
-        {
-            foreach (var image in model.NewImageList)
-            {
+        if (model.NewImageList != null && model.NewImageList.Count != 0) {
+            foreach (var image in model.NewImageList) {
                 LogisticsGoodsImageInfo goodsImage = new LogisticsGoodsImageInfo();
                 goodsImage.Goods = logisticsGoods;
                 goodsImage.StorePath = image.StorePath;
@@ -409,11 +375,9 @@ public class LogisticsGoodsController : Controller
         session.Flush();
 
         // 当前没照片状态的，才需要这样的判断
-        if (logisticsGoods.Status == LogisticsGoodsStatus.PhotoRequired)
-        {
+        if (logisticsGoods.Status == LogisticsGoodsStatus.PhotoRequired) {
             bool hasPhoto = logisticsGoodsImageService.HasGoodsImage(logisticsGoods.Id);
-            if (hasPhoto)
-            {
+            if (hasPhoto) {
                 logisticsGoods.Status = LogisticsGoodsStatus.NotConfirmed;
 
                 session.Update(logisticsGoods);
@@ -427,10 +391,8 @@ public class LogisticsGoodsController : Controller
     [HttpPost]
     [Route("/admin/logistics/goods/save/confirm")]
     [Transactional]
-    public IActionResult SaveConfirm(LogisticsGoodsDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult SaveConfirm(LogisticsGoodsDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -441,8 +403,7 @@ public class LogisticsGoodsController : Controller
 
         LogisticsGoodsInfo logisticsGoods = SaveInternal(model);
 
-        if (logisticsGoods.Status == LogisticsGoodsStatus.PhotoRequired)
-        {
+        if (logisticsGoods.Status == LogisticsGoodsStatus.PhotoRequired) {
             throw new ValidationException("物品还没有任何关联照片，请设置物品创建单号，有单号相关订单照片后，再确认该物品名称！");
         }
 
@@ -465,15 +426,12 @@ public class LogisticsGoodsController : Controller
     [HttpPost]
     [Route("/admin/logistics/goods/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Delete(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("未指定要删除的物品！");
         }
 
-        foreach (int id in idList)
-        {
+        foreach (int id in idList) {
             LogisticsGoodsInfo logisticsGoods = session.Load<LogisticsGoodsInfo>(id);
             session.Delete(logisticsGoods);
         }
@@ -489,10 +447,8 @@ public class LogisticsGoodsController : Controller
     [HttpPost]
     [Route("/admin/logistics/goods/enable")]
     [Transactional]
-    public IActionResult Enable(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Enable(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("未指定要启用的物品！");
         }
 
@@ -500,16 +456,13 @@ public class LogisticsGoodsController : Controller
         UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => idList.Contains(e.Id)).ToList();
-        foreach (LogisticsGoodsInfo goods in goodsList)
-        {
-            if (goods.Status != LogisticsGoodsStatus.Disabled)
-            {
+        foreach (LogisticsGoodsInfo goods in goodsList) {
+            if (goods.Status != LogisticsGoodsStatus.Disabled) {
                 throw new ValidationException($"物品【{goods.Name}】当前状态不是已禁用状态！");
             }
         }
 
-        foreach (LogisticsGoodsInfo goods in goodsList)
-        {
+        foreach (LogisticsGoodsInfo goods in goodsList) {
             goods.UpdateUser = loginUser;
             goods.Status = LogisticsGoodsStatus.Confirmed;
             session.Update(goods);
@@ -517,8 +470,7 @@ public class LogisticsGoodsController : Controller
 
         session.Flush();
 
-        foreach (LogisticsGoodsInfo goods in goodsList)
-        {
+        foreach (LogisticsGoodsInfo goods in goodsList) {
             logisticsGoodsLogService.AddLog(LogisticsGoodsLogType.Enable, goods.Id, loginUserId);
         }
 
@@ -533,10 +485,8 @@ public class LogisticsGoodsController : Controller
     [HttpPost]
     [Route("/admin/logistics/goods/disable")]
     [Transactional]
-    public IActionResult Disable(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Disable(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("未指定要禁用的物品！");
         }
 
@@ -544,16 +494,13 @@ public class LogisticsGoodsController : Controller
         UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
 
         IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => idList.Contains(e.Id)).ToList();
-        foreach (LogisticsGoodsInfo goods in goodsList)
-        {
-            if (goods.Status != LogisticsGoodsStatus.Confirmed)
-            {
+        foreach (LogisticsGoodsInfo goods in goodsList) {
+            if (goods.Status != LogisticsGoodsStatus.Confirmed) {
                 throw new ValidationException($"物品【{goods.Name}】当前状态不是已确认状态！");
             }
         }
 
-        foreach (LogisticsGoodsInfo goods in goodsList)
-        {
+        foreach (LogisticsGoodsInfo goods in goodsList) {
             goods.UpdateUser = loginUser;
             goods.Status = LogisticsGoodsStatus.Disabled;
             session.Update(goods);
@@ -561,8 +508,7 @@ public class LogisticsGoodsController : Controller
 
         session.Flush();
 
-        foreach (LogisticsGoodsInfo goods in goodsList)
-        {
+        foreach (LogisticsGoodsInfo goods in goodsList) {
             logisticsGoodsLogService.AddLog(LogisticsGoodsLogType.Disable, goods.Id, loginUserId);
         }
 
@@ -578,16 +524,13 @@ public class LogisticsGoodsController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/goods/image/upload")]
-    public IActionResult ImageUpload(IFormFile imageFile)
-    {
-        if (imageFile == null)
-        {
+    public IActionResult ImageUpload(IFormFile imageFile) {
+        if (imageFile == null) {
             throw new ValidationException("文件未能上传成功！");
         }
 
         string fileExt = logisticsGoodsImageService.GetFileExt(imageFile.FileName);
-        if (fileExt.ToLower() != ".png".ToLower() && fileExt.ToLower() != ".jpg".ToLower() && fileExt.ToLower() != ".jpeg".ToLower())
-        {
+        if (fileExt.ToLower() != ".png".ToLower() && fileExt.ToLower() != ".jpg".ToLower() && fileExt.ToLower() != ".jpeg".ToLower()) {
             return Json(new Dictionary<string, object>() {
                 { "success", false },
                 { "message", "只支持 png 和 jpg,jpeg 格式的图片文件！" },
@@ -610,18 +553,15 @@ public class LogisticsGoodsController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/goods/image/delete")]
-    public IActionResult ImageDelete(int imageId)
-    {
+    public IActionResult ImageDelete(int imageId) {
         var logisticsGoodsImage = session.Get<LogisticsGoodsImageInfo>(imageId);
-        if (logisticsGoodsImage == null)
-        {
+        if (logisticsGoodsImage == null) {
             throw new ValidationException("指定的客服仓库交互图片不存在！");
         }
 
         var goodsId = logisticsGoodsImage.Goods.Id;
         var logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsId);
-        if (logisticsGoods == null)
-        {
+        if (logisticsGoods == null) {
             throw new ValidationException("图片对应的客服仓库交互不存在！");
         }
 
@@ -639,103 +579,16 @@ public class LogisticsGoodsController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/goods/export")]
-    public IActionResult Export(LogisticsGoodsListQueryParam queryParam)
-    {
+    public IActionResult Export(LogisticsGoodsListQueryParam queryParam) {
+        IList<LogisticsGoodsInfo> logisticsGoodsList = GetListCriteria(queryParam)
+            .List<LogisticsGoodsInfo>();
+
         var type = queryParam.TypeQuery;
 
         string fileName = type?.Name + "扩展名" + ".xlsx";
         string sheetName = type?.Name + "扩展名";
+        var excel = logisticsGoodsExcelService.Export(logisticsGoodsList, sheetName);
 
-        IWorkbook workbook = new XSSFWorkbook();
-        ISheet sheet = workbook.CreateSheet(sheetName);
-
-        IList<LogisticsGoodsInfo> logisticsGoodsList = GetListCriteria(queryParam)
-            .List<LogisticsGoodsInfo>();
-
-        int rowHeight = 22;
-        ICellStyle headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
-        ICellStyle contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
-        ICellStyle contentCenterCellStyle = ExcelUtil.CreateContentCellStyle(workbook, HorizontalAlignment.Center);
-
-        // 扩展名    物品类型    是否品牌    品牌    是否含电池或其他限制    是否含草木竹    是否含实木包装    是否禁止类    中国海关申报名    中国海关编码
-        int rowIndex = 0;
-
-        IRow row = sheet.CreateRow(rowIndex++);
-        row.HeightInPoints = rowHeight;
-
-        int cellIndex = 0;
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        ICell cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("扩展名");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("物品类型");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("品牌");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("中国海关申报名");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("中国海关编码");
-
-        foreach (LogisticsGoodsInfo goods in logisticsGoodsList)
-        {
-            row = sheet.CreateRow(rowIndex++);
-            row.HeightInPoints = rowHeight;
-
-            cellIndex = 0;
-
-            // 扩展名
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(goods.Name);
-
-            // 物品类型
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(goods.Type.Name);
-
-            // 品牌
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(goods.BrandName);
-
-            // 中国海关申报名
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(goods.HsGoods?.CnHsName);
-
-            // 中国海关编码
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(goods.HsGoods?.CnHsCode);
-        }
-
-        MemoryStream memoryStream = new MemoryStream();
-        workbook.Write(memoryStream);
-        memoryStream.Flush();
-
-        return File(memoryStream.ToArray(), ContentType.Xlsx, fileName);
+        return File(excel, ContentType.Xlsx, fileName);
     }
 }
