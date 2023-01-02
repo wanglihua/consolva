@@ -57,8 +57,7 @@ public class CustomerMessageManualSendController : Controller
     [AdminAuth(PassRes.CustomerMessage.ManualSend)]
     public IActionResult Send(CustomerMessageManualSendModel model)
     {
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+        var loginUser = loginUserService.GetLoginUser();
         string loginUserName = loginUser.UserName;
 
 
@@ -287,8 +286,7 @@ public class CustomerMessageManualSendController : Controller
             throw new ValidationException("微信发送或短信发送，必须至少选择其中一项！");
         }
 
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
+        UserInfo loginUser = loginUserService.GetLoginUser();
         string loginUserName = loginUser.UserName;
 
         IList<CustomerInfo> customerList = session

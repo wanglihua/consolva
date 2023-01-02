@@ -135,8 +135,7 @@ public class LogisticsGoodsController : Controller
     {
         session.DefaultReadOnly = true;
 
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo? loginUser = session.Get<UserInfo>(loginUserId);
+        var loginUser = loginUserService.GetLoginUser();
 
         LogisticsGoodsInfo? logisticsGoods = null;
 

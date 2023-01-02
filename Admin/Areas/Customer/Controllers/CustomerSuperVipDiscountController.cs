@@ -193,10 +193,8 @@ public class CustomerSuperVipDiscountController : Controller {
     [Route("/admin/customer/super/vip/discount/import")]
     [Transactional]
     public IActionResult Import(IFormFile excelFile) {
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId);
-
-        customerSuperVipDiscountExcelService.Import(excelFile, loginUser!);
+        UserInfo loginUser = loginUserService.GetLoginUser();
+        customerSuperVipDiscountExcelService.Import(excelFile, loginUser);
 
         return Json(new Dictionary<string, object> {
             { "success", true },

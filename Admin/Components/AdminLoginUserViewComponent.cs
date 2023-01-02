@@ -22,18 +22,19 @@ public class AdminLoginUserViewComponent : ViewComponent
         var model = new AdminLoginUserModel();
 
         var loginUserId = loginUserService.GetLoginUserId();
-        var user = session.Get<UserInfo>(loginUserId);
+        var user = session.Get<UserInfo>(loginUserId); // 这里采用查询数据的方式是为了应对 dev user
 
         if (user == null)
         {
-            if (loginUserId == UserInfo.DevUserId)
+            if (loginUserId == UserInfo.DevUserId) {
                 user = new UserInfo {
                     Id = UserInfo.DevUserId,
                     LoginName = UserInfo.DevLoginName,
                     UserName = UserInfo.DevLoginName
                 };
-            else
+            } else {
                 user = new UserInfo();
+            }
         }
 
         model.LoginName = user.LoginName;

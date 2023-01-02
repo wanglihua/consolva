@@ -124,7 +124,7 @@ public class CustomerChargeController : Controller
     {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
-        var loginUserId = loginUserService.GetLoginUserId();
+        UserInfo loginUser = loginUserService.GetLoginUser();
 
         var customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode);
         var customer = session.Get<CustomerInfo>(customerId);
@@ -140,7 +140,7 @@ public class CustomerChargeController : Controller
         customerCharge.Customer = customer;
         customerCharge.Amount = model.Amount;
         customerCharge.ManualChargeReason = model.ChargeReason;
-        customerCharge.User = session.Get<UserInfo>(loginUserId);
+        customerCharge.User = loginUser;
         customerCharge.Status = CustomerChargeStatus.New; // 先是这个状态，后面完成充值的时候会修改状态
 
         session.Save(customerCharge);
@@ -161,7 +161,7 @@ public class CustomerChargeController : Controller
     {
         if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
 
-        var loginUserId = loginUserService.GetLoginUserId();
+        UserInfo loginUser = loginUserService.GetLoginUser();
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
         var sheet = workbook.GetSheetAt(0);
@@ -228,7 +228,7 @@ public class CustomerChargeController : Controller
                 customerCharge.Customer = customer;
                 customerCharge.Amount = amount;
                 customerCharge.ManualChargeReason = string.Empty;
-                customerCharge.User = session.Get<UserInfo>(loginUserId);
+                customerCharge.User = loginUser;
                 customerCharge.Status = CustomerChargeStatus.New; // 先是这个状态，后面完成充值的时候会修改状态
 
                 session.Save(customerCharge);

@@ -122,8 +122,7 @@ public class HsGoodsController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
-        int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo? loginUser = session.Get<UserInfo>(loginUserId);
+        UserInfo loginUser = loginUserService.GetLoginUser();
 
         HsGoodsInfo hsGoodsFromUi = model.HsGoods;
         int hsGoodsIdFromUi = hsGoodsFromUi.Id;
