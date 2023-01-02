@@ -411,7 +411,7 @@ public class ExpressCheckinController : Controller {
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
+        var loginUser = loginUserService.GetLoginUser();
 
         // 快递单号大写与去掉前后于中间的空格，订单创建时同样也要做这样的事情
         string expressTrackingNo = model.TrackingNo.Trim().Replace(" ", "").ToUpper(); // 去空格再大写

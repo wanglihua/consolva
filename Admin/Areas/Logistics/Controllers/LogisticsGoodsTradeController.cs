@@ -303,7 +303,7 @@ public class LogisticsGoodsTradeController : Controller {
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
+        var loginUser = loginUserService.GetLoginUser();
 
         IList<LogisticsGoodsInfo> logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
             .Where(e => goodsIdList.Contains(e.Id))

@@ -285,7 +285,7 @@ public class LogisticsGoodsController : Controller {
     [NonAction]
     private LogisticsGoodsInfo SaveInternal(LogisticsGoodsDetailModel model) {
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
+        var loginUser = loginUserService.GetLoginUser();
 
         LogisticsGoodsInfo logisticsGoodsFromUi = model.LogisticsGoods;
         int logisticsGoodsId = logisticsGoodsFromUi.Id;
@@ -397,7 +397,7 @@ public class LogisticsGoodsController : Controller {
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
+        var loginUser = loginUserService.GetLoginUser();
 
         bool isCreate = model.LogisticsGoods.Id == 0;
 
@@ -453,7 +453,7 @@ public class LogisticsGoodsController : Controller {
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
+        var loginUser = loginUserService.GetLoginUser();
 
         IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => idList.Contains(e.Id)).ToList();
         foreach (LogisticsGoodsInfo goods in goodsList) {
@@ -491,7 +491,7 @@ public class LogisticsGoodsController : Controller {
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
+        var loginUser = loginUserService.GetLoginUser();
 
         IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => idList.Contains(e.Id)).ToList();
         foreach (LogisticsGoodsInfo goods in goodsList) {

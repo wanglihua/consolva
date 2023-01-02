@@ -157,7 +157,7 @@ public class LogisticsGoodsWarehouseController : Controller {
         }
 
         int loginUserId = loginUserService.GetLoginUserId();
-        UserInfo loginUser = session.Get<UserInfo>(loginUserId)!;
+        var loginUser = loginUserService.GetLoginUser();
 
         bool isCreate = true;
         LogisticsGoodsInfo? logisticsGoods = null;
