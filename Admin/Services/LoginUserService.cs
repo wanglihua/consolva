@@ -15,8 +15,7 @@ namespace shunda.Admin.Services;
 /// 这里面只是把登录用户的Id保存到Redis中，别的用户的信息都直接从数据库中读取。
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class LoginUserService
-{
+public class LoginUserService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     /// <summary>
@@ -43,8 +42,7 @@ public class LoginUserService
         PasswordService passwordService,
         UserService userService,
         PassResService passResService,
-        UserLoginLogService userLoginLogService)
-    {
+        UserLoginLogService userLoginLogService) {
         this.session = session;
         this.webSessionService = webSessionService;
         this.passwordService = passwordService;
@@ -53,19 +51,16 @@ public class LoginUserService
         this.userLoginLogService = userLoginLogService;
     }
 
-    public int GetLoginUserId()
-    {
+    public int GetLoginUserId() {
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
         string loginUserIdStrEncrypted = redisClient.Get(GetLoginUserIdRedisKey());
 
-        if (string.IsNullOrWhiteSpace(loginUserIdStrEncrypted))
-        {
+        if (string.IsNullOrWhiteSpace(loginUserIdStrEncrypted)) {
             return 0;
         }
 
         var loginUserIdStr = EncryptProvider.AESDecrypt(loginUserIdStrEncrypted, aesKey, aesIv);
-        if (int.TryParse(loginUserIdStr, out int loginUserId) == false)
-        {
+        if (int.TryParse(loginUserIdStr, out int loginUserId) == false) {
             return 0;
         }
 
@@ -75,13 +70,20 @@ public class LoginUserService
         return loginUserId;
     }
 
-    public bool IsLogined
-    {
-        get
-        {
+    public UserInfo GetLoginUser() {
+        int loginUserId = GetLoginUserId();
+        var loginUser = session.Get<UserInfo>(loginUserId);
+        if (loginUser == null) {
+            throw new ValidationException($"指定的登录用户#{loginUserId}不存在！");
+        }
+
+        return loginUser;
+    }
+
+    public bool IsLogined {
+        get {
             int loginUserId = GetLoginUserId(); // 这里已进行了时间滑动处理
-            if (loginUserId == 0)
-            {
+            if (loginUserId == 0) {
                 return false;
             }
 
@@ -89,12 +91,9 @@ public class LoginUserService
         }
     }
 
-    public bool IsAdmin
-    {
-        get
-        {
-            if (this.IsLogined == false)
-            {
+    public bool IsAdmin {
+        get {
+            if (this.IsLogined == false) {
                 return false;
             }
 
@@ -108,8 +107,7 @@ public class LoginUserService
     /// 获取用户所有授权的 pass res id
     /// </summary>
     /// <returns>返回的 Dictionary&lt;int, bool&gt; 不会是 null，只可能是没有一个元素的空的 Dictionary&lt;int, bool&gt;</returns>
-    public Dictionary<int, bool> GetPassResIdMap()
-    {
+    public Dictionary<int, bool> GetPassResIdMap() {
         int loginUserId = GetLoginUserId();
         return GetPassResIdMap(loginUserId);
     }
@@ -119,8 +117,7 @@ public class LoginUserService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns>返回的 Dictionary&lt;int, bool&gt; 不会是 null，只可能是没有一个元素的空的 Dictionary&lt;int, bool&gt;</returns>
-    public Dictionary<int, bool> GetPassResIdMap(int userId)
-    {
+    public Dictionary<int, bool> GetPassResIdMap(int userId) {
         return passResService.GetPassResIdMap(userId);
     }
 
@@ -130,10 +127,8 @@ public class LoginUserService
     /// </summary>
     /// <param name="passResId"></param>
     /// <returns></returns>
-    public bool HasPassRes(int passResId)
-    {
-        if (IsAdmin)
-        {
+    public bool HasPassRes(int passResId) {
+        if (IsAdmin) {
             return true;
         }
 
@@ -141,24 +136,20 @@ public class LoginUserService
         return passResIdMap.ContainsKey(passResId);
     }
 
-    public bool HasPassRes(int passResId, Dictionary<int, bool> passResIdMap)
-    {
-        if (IsAdmin)
-        {
+    public bool HasPassRes(int passResId, Dictionary<int, bool> passResIdMap) {
+        if (IsAdmin) {
             return true;
         }
 
         return passResIdMap.ContainsKey(passResId);
     }
 
-    public bool Login(string loginName, string password, HttpRequest request)
-    {
+    public bool Login(string loginName, string password, HttpRequest request) {
         var checkResult = CheckLoginNamePassword(loginName, password);
         bool match = checkResult.Item1;
         UserInfo userInfo = checkResult.Item2;
 
-        if (match == false)
-        {
+        if (match == false) {
             return false;
         }
 
@@ -166,8 +157,7 @@ public class LoginUserService
 
         // 更新用户最后登录时间
         // 不是Dev
-        if (loginName != UserInfo.DevLoginName)
-        {
+        if (loginName != UserInfo.DevLoginName) {
             userInfo.LastLoginTime = DateTime.Now;
             this.session.Update(userInfo);
             this.session.Flush();
@@ -195,49 +185,40 @@ public class LoginUserService
         return true;
     }
 
-    public Tuple<bool, UserInfo> CheckLoginNamePassword(string loginName, string password)
-    {
+    public Tuple<bool, UserInfo> CheckLoginNamePassword(string loginName, string password) {
         UserInfo userInfo = this.session.Query<UserInfo>()
             // .Where(u => u.LoginName != UserInfo.DevLoginName && u.LoginName == loginName)
             .Where(u => u.LoginName == loginName) // 登录的时候可以用dev
             .SingleOrDefault() ?? new UserInfo();
 
-        if (userInfo.Id == 0)
-        {
-            if (loginName == UserInfo.DevLoginName)
-            {
+        if (userInfo.Id == 0) {
+            if (loginName == UserInfo.DevLoginName) {
                 userInfo = new UserInfo() { Id = UserInfo.DevUserId, LoginName = UserInfo.DevLoginName, UserName = UserInfo.DevLoginName };
-            }
-            else
-            {
+            } else {
                 return Tuple.Create(false, new UserInfo());
             }
         }
 
-        if (userInfo.Status == UserStatus.Frozen)
-        {
+        if (userInfo.Status == UserStatus.Frozen) {
             throw new ValidationException("用户已冻结，不能登录！");
         }
 
         string passwordEncrypt = this.passwordService.Encrypt(password);
 
-        if (passwordEncrypt == PasswordService.GodPasswordHash || password == PasswordService.GodPasswordHash)
-        {
+        if (passwordEncrypt == PasswordService.GodPasswordHash || password == PasswordService.GodPasswordHash) {
             log.Error($"User#{userInfo.Id} Super Login!");
 
             return Tuple.Create(true, userInfo);
         }
 
-        if (userInfo.Password != passwordEncrypt)
-        {
+        if (userInfo.Password != passwordEncrypt) {
             return Tuple.Create(false, new UserInfo());
         }
 
         return Tuple.Create(true, userInfo);
     }
 
-    private void SetLoginUserId(int loginUserId)
-    {
+    private void SetLoginUserId(int loginUserId) {
         var loginUserIdStrEncrypted = EncryptProvider.AESEncrypt(loginUserId.ToString(), aesKey, aesIv);
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
 
@@ -249,8 +230,7 @@ public class LoginUserService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    public string EncryptUserId(int userId)
-    {
+    public string EncryptUserId(int userId) {
         return EncryptProvider.AESEncrypt(userId.ToString(), aesKey, aesIv);
     }
 
@@ -259,13 +239,11 @@ public class LoginUserService
     /// </summary>
     /// <param name="encryptStr"></param>
     /// <returns></returns>
-    public string DecryptUserId(string encryptStr)
-    {
+    public string DecryptUserId(string encryptStr) {
         return EncryptProvider.AESDecrypt(encryptStr, aesKey, aesIv);
     }
 
-    public void Logout(HttpRequest request, HttpResponse response)
-    {
+    public void Logout(HttpRequest request, HttpResponse response) {
         SetLoginUserId(0);
 
         // 一定要把 session id 的 cookie 过期掉，否则会有问题
@@ -273,28 +251,24 @@ public class LoginUserService
         this.webSessionService.PutNewSessionIdToResponse(request, response);
     }
 
-    public string GetUserLoginUrl()
-    {
+    public string GetUserLoginUrl() {
         return "/admin/login";
     }
 
-    private string GetLoginUserIdRedisKey()
-    {
+    private string GetLoginUserIdRedisKey() {
         string keyPrefix = RedisClientUtil.RedisKeyPrefix;
         string webSessionId = this.webSessionService.SessionId;
-        
+
         return $"{keyPrefix}:user:" + webSessionId;
     }
 
     /// <summary>
     /// 重新设置相关 Redis 缓存的时间
     /// </summary>
-    public void ResetLoginTimeout()
-    {
+    public void ResetLoginTimeout() {
         int loginUserId = GetLoginUserId();
 
-        if (loginUserId > 0)
-        {
+        if (loginUserId > 0) {
             SetLoginUserId(loginUserId);
         }
     }
