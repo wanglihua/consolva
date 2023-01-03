@@ -140,8 +140,8 @@ public class ExpressCheckinController : Controller {
                 ServiceRemark = serviceRemark,
             };
 
-            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) // 一般这个判断肯定是成立的
-            {
+            // 一般这个判断肯定是成立的
+            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) {
                 IList<ExpressCheckinGoodsListItem> goodsList = thisExpressGoodList
                     .Select(e => new ExpressCheckinGoodsListItem {
                         Id = e.Id,

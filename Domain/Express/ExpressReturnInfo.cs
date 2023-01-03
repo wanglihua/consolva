@@ -111,11 +111,12 @@ public class ExpressReturnInfo : Entity {
     public virtual DateTime ReturnApplyTime { get; set; } = DateTime.MinValue;
 
     /// <summary>
-    /// 退运取件码，可空
+    /// 退运取件码，非空
     /// </summary>
+    [Required(ErrorMessage = "退运取件码不能为空！")]
     [MaxLength(20, ErrorMessage = "退运取件码长度不能大于20！")]
     [JsonProperty("returnPickupCode")]
-    public virtual string? ReturnPickupCode { get; set; } = null;
+    public virtual string ReturnPickupCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 退运操作人，可空

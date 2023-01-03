@@ -142,7 +142,7 @@ public class ExpressReturnInfoMapping : EntityMapping<ExpressReturnInfo> {
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("return_pickup_code");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 

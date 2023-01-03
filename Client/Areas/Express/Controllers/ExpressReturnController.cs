@@ -1,4 +1,3 @@
-using System.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressReturn;
@@ -101,14 +100,17 @@ public class ExpressReturnController : Controller {
                 ExpressCompany = expressReturn.ExpressCompany,
                 GoodsType = expressReturn.GoodsType.Name,
                 AddDate = expressReturn.AddTime.ToString("yyyy-MM-dd"),
+                ReturnTrackingNo = expressReturn.ReturnTrackingNo,
+                ReturnExpressCompany = expressReturn.ReturnExpressCompany,
+                ReturnPickupCode = expressReturn.ReturnPickupCode,
                 CustomerRemark = customerRemark,
                 WarehouseRemark = warehouseRemark,
                 ServiceRemark = serviceRemark,
                 Status = expressReturn.Status.Name,
             };
-            
-            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) // 一般这个判断肯定是成立的
-            {
+
+            // 一般这个判断肯定是成立的
+            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) {
                 IList<ExpressReturnGoodsListItem> goodsList = thisExpressGoodList
                     .Select(e => new ExpressReturnGoodsListItem {
                         Id = e.Id,
@@ -120,7 +122,7 @@ public class ExpressReturnController : Controller {
                     .ToList();
 
                 item.GoodsList = goodsList;
-            }            
+            }
 
             expressReturnItemList.Add(item);
         }
@@ -226,7 +228,7 @@ public class ExpressReturnController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "退运申请成功！",
         });
     }
 }
