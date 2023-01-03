@@ -4,8 +4,7 @@
 @{
     Layout = null;
 }
-@if (Model.HasOneOfPassRes(PassRes.Express.All))
-{
+@if (Model.HasOneOfPassRes(PassRes.Express.All)) {
     <li id="express-menu">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-file-o"></i>
@@ -14,9 +13,8 @@
         </a>
         <b class="arrow"></b>
         <ul class="submenu">
-        
-            @if (Model.HasPassRes(PassRes.Express.ExpressList))
-            {
+
+            @if (Model.HasPassRes(PassRes.Express.ExpressList)) {
                 <li id="express-detail-menu">
                     <a asp-area="Express" asp-controller="Express" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>快递详情
@@ -25,8 +23,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Express.ExpressExpect))
-            {
+            @if (Model.HasPassRes(PassRes.Express.ExpressExpect)) {
                 <li id="express-express-expect-menu">
                     <a asp-area="Express" asp-controller="ExpressExpect" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>预报单号
@@ -35,8 +32,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Express.ExpressPhoto))
-            {
+            @if (Model.HasPassRes(PassRes.Express.ExpressPhoto)) {
                 <li id="express-photo-index-menu">
                     <a asp-area="Express" asp-controller="ExpressPhoto" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>快递单图片
@@ -45,8 +41,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Express.ExpressPhoto))
-            {
+            @if (Model.HasPassRes(PassRes.Express.ExpressPhoto)) {
                 <li id="express-video-index-menu">
                     <a asp-area="Express" asp-controller="ExpressVideo" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -56,12 +51,20 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Express.ExpressSizeWeight))
-            {
+            @if (Model.HasPassRes(PassRes.Express.ExpressSizeWeight)) {
                 <li id="express-size-weight-index-menu">
                     <a asp-area="Express" asp-controller="ExpressSizeWeight" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         快递单尺寸重量
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Express.ExpressReturn)) {
+                <li id="express-express-return-menu">
+                    <a asp-area="Express" asp-controller="ExpressReturn" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>快递退运
                     </a>
                     <b class="arrow"></b>
                 </li>

@@ -244,7 +244,28 @@ Page({
         }
 
         if (action === "applyReturn") {
-            // todo
+            wx.showModal({
+                title: '确认',
+                content: '【退运确认】并支付成功后，该快递将无法再次入库、转运，退运需谨慎；退运申请成功后，请及时在退运池更新快递【取件码】！',
+                success(res) {
+                    if (res.confirm) {
+                        app.post("/client/express/return/apply", {
+                            id: expressId,
+                        }, function (res) {
+                            wx.showToast({
+                                title: res.message,
+                            });
+
+                            setTimeout(function () {
+                                wx.navigateTo({
+                                    url: "../express_return/express_return_list",
+                                });
+                            }, 1000);
+                        });
+                    }
+                }
+            });
+
         }
 
         this.setData({
