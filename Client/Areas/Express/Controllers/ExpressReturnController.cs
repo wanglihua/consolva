@@ -42,10 +42,66 @@ public class ExpressReturnController : Controller {
             .Take(15)
             .ToList();
 
+        IList<int> expressIdList = expressReturnList.Select(e => e.Express.Id).ToList();
+        IList<ExpressRemarkInfo> expressRemarkList = session.Query<ExpressRemarkInfo>()
+            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .ToList();
+
+        IList<ExpressReturnListItem> expressReturnItemList = new List<ExpressReturnListItem>();
+        foreach (ExpressReturnInfo expressReturn in expressReturnList) {
+            int expressId = expressReturn.Express.Id;
+
+            string customerRemark = expressRemarkList
+                .Where(e => e.Express != null
+                            && e.Express.Id == expressId
+                            && e.Type == ExpressRemarkType.Customer)
+                .Take(1)
+                .SingleOrDefault()?.Remark ?? string.Empty;
+
+            string warehouseRemark = expressRemarkList
+                .Where(e => e.Express != null
+                            && e.Express.Id == expressId
+                            && e.Type == ExpressRemarkType.Warehouse)
+                .Take(1)
+                .SingleOrDefault()?.Remark ?? string.Empty;
+
+            string serviceRemark = expressRemarkList
+                .Where(e => e.Express != null
+                            && e.Express.Id == expressId
+                            && e.Type == ExpressRemarkType.Service)
+                .Take(1)
+                .SingleOrDefault()?.Remark ?? string.Empty;
+
+            ExpressReturnListItem item = new ExpressReturnListItem {
+                Id = expressReturn.Id,
+                CheckinTrackingNo = expressReturn.CheckinTrackingNo,
+                TrackingNo = expressReturn.TrackingNo,
+                ExpressCompany = expressReturn.ExpressCompany,
+                GoodsType = expressReturn.GoodsType.Name,
+                AddDate = expressReturn.AddTime.ToString("yyyy-MM-dd"),
+                CustomerRemark = customerRemark,
+                WarehouseRemark = warehouseRemark,
+                ServiceRemark = serviceRemark,
+                Status = expressReturn.Status.Name,
+            };
+
+            expressReturnItemList.Add(item);
+        }
+
+        // 取最末尾，其实降序时就是最小的那一个Id
+        var lastData = expressReturnList.LastOrDefault();
+        // 这里的 1 很重要，不要取0。如果取值1的话也不破坏逻辑，1的时候就正好就是没数据了，查询时 <1 也是数据
+        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+
+        int expressReturnCount = GetListQuery(param).Count();
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = new ExpressReturnListModel {
+                ExpressReturnCount = expressReturnCount,
+                ExpressReturnList = expressReturnItemList,
+                LastId = lastId,
             },
         });
     }
