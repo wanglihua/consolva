@@ -31,7 +31,7 @@ Page({
         }, function (res) {
 
             const expressClaimCount = res.data.expressClaimCount;
-            const expressClaimList = util.distinctConcat(that.data.expressClaimList, res.data.expressClaimList);
+            const expressClaimList = res.data.expressClaimList;
             const lastId = res.data.lastId;
 
             for (const expressClaim of expressClaimList) {
@@ -39,7 +39,7 @@ Page({
             }
 
             that.setData({
-                expressClaimList: expressClaimList,
+                expressClaimList: util.distinctConcat(that.data.expressClaimList, expressClaimList),
                 expressClaimCount: expressClaimCount,
                 lastId: lastId,
             });
