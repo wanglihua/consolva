@@ -216,47 +216,6 @@ public class ExpressInfo : Entity
     public virtual ExpressShelfStatus ShelfStatus { get; set; } = ExpressShelfStatus.None;
 
     /// <summary>
-    /// 退运快递单号，非空
-    /// </summary>
-    [Required(ErrorMessage = "退运快递单号不能为空！")]
-    [MaxLength(30, ErrorMessage = "退运快递单号长度不能大于30！")]
-    [JsonProperty("returnTrackingNo")]
-    public virtual string ReturnTrackingNo { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 退运快递公司，非空
-    /// </summary>
-    [Required(ErrorMessage = "退运快递公司不能为空！")]
-    [MaxLength(100, ErrorMessage = "退运快递公司长度不能大于100！")]
-    [JsonProperty("returnExpressCompany")]
-    public virtual string ReturnExpressCompany { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 退运申请时间，可空
-    /// </summary>
-    [JsonProperty("returnApplyTime")]
-    public virtual DateTime? ReturnApplyTime { get; set; } = null;
-
-    /// <summary>
-    /// 退运取件码，可空
-    /// </summary>
-    [MaxLength(20, ErrorMessage = "退运取件码长度不能大于20！")]
-    [JsonProperty("returnPickupCode")]
-    public virtual string? ReturnPickupCode { get; set; } = null;
-
-    /// <summary>
-    /// 退运操作人，可空
-    /// </summary>
-    [JsonProperty("returnUserId")]
-    public virtual int? ReturnUserId { get; set; } = null;
-
-    /// <summary>
-    /// 退运时间，可空
-    /// </summary>
-    [JsonProperty("returnTime")]
-    public virtual DateTime? ReturnTime { get; set; } = null;
-
-    /// <summary>
     /// 堆存用户，可空
     /// </summary>
     [JsonProperty("dumpUser")]

@@ -57,7 +57,7 @@ public class ExpressReturnController : Controller {
         }
 
         express.Status = ExpressStatus.WaitReturn;
-        express.ReturnApplyTime = DateTime.Now;
+        // express.ReturnApplyTime = DateTime.Now;
 
         session.Update(express);
         session.Flush();

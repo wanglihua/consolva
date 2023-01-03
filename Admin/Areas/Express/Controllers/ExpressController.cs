@@ -205,6 +205,12 @@ public class ExpressController : Controller {
             })
             .ToList();
 
+        var expressReturn = session.Query<ExpressReturnInfo>()
+            .Where(e => e.Express.Id == expressId)
+            .Take(1)
+            .SingleOrDefault();
+        model.ExpressReturn = expressReturn ?? new ExpressReturnInfo();
+
         return View("ExpressDetail", model);
     }
 

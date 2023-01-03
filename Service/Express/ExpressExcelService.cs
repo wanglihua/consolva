@@ -1,6 +1,7 @@
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Express;
 using ISession = NHibernate.ISession;
 
@@ -402,10 +403,10 @@ public class ExpressExcelService {
             cell.SetCellValue(warehouseRemark?.Remark ?? string.Empty);
         }
 
-        MemoryStream memoryStream = new MemoryStream();
+        using MemoryStream memoryStream = MemoryStreamUtil.GetStream();
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
-        return memoryStream.ToArray();
+        return memoryStream.GetBuffer();
     }
 }

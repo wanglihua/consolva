@@ -12,60 +12,33 @@
 
 @section Breadcrumb {
     <li class="parent" data-menu="express-menu">快递管理</li>
-    @if (Model.Cate == ExpressListMenuCate.All)
-    {
+    @if (Model.Cate == ExpressListMenuCate.All) {
         <li class="active" data-menu="express-detail-menu">快递详细</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.Expect)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.Expect) {
         <li class="active" data-menu="express-expect-menu">已预报</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.NotOrderLong)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.NotOrderLong) {
         <li class="active" data-menu="express-not-order-long-menu">长期未出库</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.NotPicked)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.NotPicked) {
         <li class="active" data-menu="express-not-picked-menu">未认领</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.NotPickedLong)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.NotPickedLong) {
         <li class="active" data-menu="express-not-picked-long-menu">长期未认领</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.Dumped)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.Dumped) {
         <li class="active" data-menu="express-dumped-menu">已堆存</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.OnShelf)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.OnShelf) {
         <li class="active" data-menu="express-on-shelf-menu">已上架</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.Picked)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.Picked) {
         <li class="active" data-menu="express-picked-menu">已认领</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.ToOffShelf)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.ToOffShelf) {
         <li class="active" data-menu="express-to-off-shelf-menu">待下架</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.ToOnShelf)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.ToOnShelf) {
         <li class="active" data-menu="express-to-on-shelf-menu">待上架</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.Return)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.Return) {
         <li class="active" data-menu="express-return-index-menu">退运池</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.WoodFrame)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.WoodFrame) {
         <li class="active" data-menu="express-wood-frame-menu">打木架</li>
-    }
-    else if (Model.Cate == ExpressListMenuCate.BarkClean)
-    {
+    } else if (Model.Cate == ExpressListMenuCate.BarkClean) {
         <li class="active" data-menu="express-bark-clean-menu">清理树皮杂物</li>
-    }
-    else
-    {
+    } else {
         <li class="active" data-menu="express-detail-menu">@(ViewData[ViewDataKey.Title])</li>
     }
     <li>
@@ -176,14 +149,11 @@
                                     <div class="form-group">
                                         <label asp-for="ExpressExpect!.CustomerCodeCache" class="col-xs-4 control-label">预报客户</label>
                                         <div class="col-xs-8">
-                                            @if (Model.ExpressExpect != null)
-                                            {
+                                            @if (Model.ExpressExpect != null) {
                                                 <label class="control-label">
                                                     <a href="@Url.Action("Detail", "Customer", new { id = Model.ExpressExpect?.Customer?.Id ?? 0 })" target="_blank">@(Model.ExpressExpect?.CustomerCodeCache)</a>
                                                 </label>
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <input asp-for="ExpressExpect!.CustomerCodeCache" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
@@ -289,8 +259,7 @@
 
                                 @{
                                     int seq = 0;
-                                    foreach (UserTimeItem userTime in Model.PackUserTimeList)
-                                    {
+                                    foreach (UserTimeItem userTime in Model.PackUserTimeList) {
                                         seq = seq + 1;
 
                                         <div class="col-xs-3">
@@ -319,8 +288,7 @@
 
                                 @{
                                     seq = 0;
-                                    foreach (UserTimeItem userTime in Model.ShipUserTimeList)
-                                    {
+                                    foreach (UserTimeItem userTime in Model.ShipUserTimeList) {
                                         seq = seq + 1;
 
                                         <div class="col-xs-3">
@@ -353,14 +321,11 @@
                                         <label asp-for="Customer!.CustomerCodeCache" class="col-xs-4 control-label">认领客户</label>
                                         <div class="col-xs-8">
                                             @*<input asp-for="Customer.CustomerCode" type="text" disabled="disabled" class="input-sm form-control"/>*@
-                                            @if (Model.Customer != null)
-                                            {
+                                            @if (Model.Customer != null) {
                                                 <label class="control-label">
                                                     <a href="@Url.Action("Detail", "Customer", new { id = Model.Customer?.Id ?? 0 })" target="_blank">@(Model.Customer?.CustomerCodeCache)</a>
                                                 </label>
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <input asp-for="Customer!.CustomerCodeCache" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
@@ -380,14 +345,11 @@
                                     <div class="form-group">
                                         <label asp-for="Express.Order!.Code" class="col-xs-4 control-label">所在订单</label>
                                         <div class="col-xs-8">
-                                            @if (Model.Express.Order != null)
-                                            {
+                                            @if (Model.Express.Order != null) {
                                                 <label class="control-label">
                                                     <a href="@Url.Action("Detail", "LogisticsOrder", new { id = Model.Express.Order?.Id ?? 0 })" target="_blank">@(Model.Express.Order?.Code)</a>
                                                 </label>
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <input asp-for="Express.Order!.Code" type="text" disabled="disabled" class="input-sm form-control"/>
                                             }
                                         </div>
@@ -406,20 +368,15 @@
 
                             <div class="row">
 
-                                @foreach (var remark in Model.ExpressRemarkList)
-                                {
-                                    if (remark.Type == ExpressRemarkType.Service)
-                                    {
+                                @foreach (var remark in Model.ExpressRemarkList) {
+                                    if (remark.Type == ExpressRemarkType.Service) {
                                         <div class="col-xs-6">
                                             <div class="form-group">
                                                 <label for="remark_@(remark.Id)" class="col-xs-2 control-label">@(remark.Type.Name)</label>
                                                 <div class="col-xs-10">
-                                                    @if (Model.CanCustomerServiceRemark == false)
-                                                    {
+                                                    @if (Model.CanCustomerServiceRemark == false) {
                                                         <textarea id="serviceRemark" rows="2" disabled="disabled" class="input-sm form-control"></textarea>
-                                                    }
-                                                    else
-                                                    {
+                                                    } else {
                                                         <textarea id="serviceRemark"  rows="2" class="input-sm form-control"></textarea>
                                                         <div style="padding: 5px 0; text-align: right; width: 100%">
                                                             <button type="button" class="btn btn-xs btn-default" onclick="saveServiceRemark()">保存客服留言</button>
@@ -428,9 +385,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <div class="col-xs-6">
                                             <div class="form-group">
                                                 <label for="remark_@(remark.Id)" class="col-xs-2 control-label">@(remark.Type.Name)</label>
@@ -571,69 +526,71 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12">
-                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelWoodFrame').toggle();">
-                            <div style="float: left;">
-                                快递退运
+                    @if (Model.ExpressReturn.Id > 0) {
+                        <div class="col-xs-12">
+                            <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelExpressReturn').toggle();">
+                                <div style="float: left;">
+                                    快递退运
+                                </div>
+                                <div style="float: right;">
+                                    显示/隐藏
+                                </div>
+                                <div style="clear: both;"></div>
                             </div>
-                            <div style="float: right;">
-                                显示/隐藏
+
+                            <div id="panelExpressReturn" style="display: block;">
+                                <div class="row">
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label asp-for="ExpressReturn.ReturnPickupCode" class="col-xs-4 control-label" style="color: blue;">退运取货码</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="ExpressReturn.ReturnPickupCode" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label asp-for="ExpressReturn.ReturnApplyTime" class="col-xs-4 control-label">退运申请时间</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="ExpressReturn.ReturnApplyTime" type="text" value="@(Model.ExpressReturn.ReturnApplyTime.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label asp-for="ExpressReturn.ReturnTime" class="col-xs-4 control-label">实际退运时间</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="ExpressReturn.ReturnTime" type="text" value="@(Model.ExpressReturn.ReturnTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label asp-for="ExpressReturn.ReturnTrackingNo" class="col-xs-4 control-label">退运快递单号</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="ExpressReturn.ReturnTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label asp-for="ExpressReturn.ReturnExpressCompany" class="col-xs-4 control-label">退运快递公司</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="ExpressReturn.ReturnExpressCompany" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
                             </div>
-                            <div style="clear: both;"></div>
                         </div>
-
-                        <div id="panelWoodFrame" style="display: block;">
-                            <div class="row">
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="Express.ReturnPickupCode" class="col-xs-4 control-label" style="color: blue;">退运取货码</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="Express.ReturnPickupCode" type="text" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="Express.ReturnApplyTime" class="col-xs-4 control-label">退运申请时间</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="Express.ReturnApplyTime" type="text" value="@(Model.Express.ReturnApplyTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="Express.ReturnTime" class="col-xs-4 control-label">实际退运时间</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="Express.ReturnTime" type="text" value="@(Model.Express.ReturnTime?.ToString("yyyy-MM-dd HH:mm"))" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="Express.ReturnTrackingNo" class="col-xs-4 control-label">退运快递单号</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="Express.ReturnTrackingNo" type="text" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <div class="form-group">
-                                        <label asp-for="Express.ReturnExpressCompany" class="col-xs-4 control-label">退运快递公司</label>
-                                        <div class="col-xs-8">
-                                            <input asp-for="Express.ReturnExpressCompany" type="text" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
+                    }
 
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelEntryList').toggle();">
@@ -664,11 +621,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model.ExpressGoodsList != null && Model.ExpressGoodsList.Count() != 0)
-                                    {
+                                    @if (Model.ExpressGoodsList != null && Model.ExpressGoodsList.Count() != 0) {
                                         int order = 1;
-                                        foreach (ExpressGoodsInfo item in Model.ExpressGoodsList)
-                                        {
+                                        foreach (ExpressGoodsInfo item in Model.ExpressGoodsList) {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
                                                 <td style="text-align: center;">@item.Goods.Name</td>
@@ -691,9 +646,7 @@
                                                 <td></td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <tr>
                                             <td colspan="5">
                                                 暂时没有数据！
@@ -749,11 +702,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model.ExpressSizeWeightList != null && Model.ExpressSizeWeightList.Count() != 0)
-                                    {
+                                    @if (Model.ExpressSizeWeightList != null && Model.ExpressSizeWeightList.Count() != 0) {
                                         int order = 1;
-                                        foreach (ExpressSizeWeightInfo item in Model.ExpressSizeWeightList)
-                                        {
+                                        foreach (ExpressSizeWeightInfo item in Model.ExpressSizeWeightList) {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
                                                 <td style="text-align: center;">@item.TrackingNoSub</td>
@@ -767,9 +718,7 @@
                                                 <td></td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <tr>
                                             <td colspan="10">
                                                 暂时没有数据！
@@ -796,23 +745,18 @@
                                 IList<ExpressPhotoType> photoTypeList = Model.ExpressPhotoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
                             }
 
-                            @if (Model.ExpressPhotoList != null && Model.ExpressPhotoList.Count() != 0)
-                            {
+                            @if (Model.ExpressPhotoList != null && Model.ExpressPhotoList.Count() != 0) {
                                 <ul id="orderPhotoList" class="nav nav-tabs">
                                     @{
                                         int index = 0;
-                                        foreach (ExpressPhotoType photoType in photoTypeList)
-                                        {
-                                            if (index == 0)
-                                            {
+                                        foreach (ExpressPhotoType photoType in photoTypeList) {
+                                            if (index == 0) {
                                                 <li class="active">
                                                     <a data-toggle="tab" href="#photoTab_@(photoType.Id)" aria-expanded="true">
                                                         @(photoType.Name)
                                                     </a>
                                                 </li>
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <li>
                                                     <a data-toggle="tab" href="#photoTab_@(photoType.Id)" aria-expanded="false">
                                                         @(photoType.Name)
@@ -828,11 +772,9 @@
                                 <div class="tab-content">
                                     @{
                                         index = 0;
-                                        foreach (ExpressPhotoType photoType in photoTypeList)
-                                        {
+                                        foreach (ExpressPhotoType photoType in photoTypeList) {
                                             string activeClass = "";
-                                            if (index == 0)
-                                            {
+                                            if (index == 0) {
                                                 activeClass = " active in ";
                                             }
 
@@ -841,8 +783,7 @@
                                                 @{
                                                     IList<ExpressPhotoInfo> typePhotoList = Model.ExpressPhotoList.Where(e => e.Type.Id == photoType.Id).ToList();
 
-                                                    foreach (ExpressPhotoInfo expressPhoto in typePhotoList)
-                                                    {
+                                                    foreach (ExpressPhotoInfo expressPhoto in typePhotoList) {
                                                         <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank" style="display: inline-block; margin: 5px;">
                                                             <img alt="" src="@(expressPhoto.SmallImageFullUrlCache)" style="height: 100px;"/>
                                                         </a>
@@ -855,9 +796,7 @@
                                         }
                                     }
                                 </div>
-                            }
-                            else
-                            {
+                            } else {
                                 <div style="padding: 5px;">
                                     暂时没有数据！
                                 </div>
@@ -896,19 +835,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model.ExpressLogList != null && Model.ExpressLogList.Count() != 0)
-                                    {
+                                    @if (Model.ExpressLogList != null && Model.ExpressLogList.Count() != 0) {
                                         int order = 1;
-                                        foreach (ExpressLogInfo log in Model.ExpressLogList)
-                                        {
+                                        foreach (ExpressLogInfo log in Model.ExpressLogList) {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
                                                 <td style="text-align: center;">@log.User?.UserName</td>
                                                 <td style="text-align: center;">@log.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                                                 <td style="text-align: center;">@log.Type.Name</td>
                                                 <td class="break-word">
-                                                    @if (log.Order != null)
-                                                    {
+                                                    @if (log.Order != null) {
                                                         <a asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(log.Order.Id)" target="_blank">@(log.Order.Code)</a>
                                                     }
                                                     <span>&nbsp;</span>
@@ -918,9 +854,7 @@
                                                 </td>
                                             </tr>
                                         }
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <tr>
                                             <td colspan="5">
                                                 暂时没有数据！

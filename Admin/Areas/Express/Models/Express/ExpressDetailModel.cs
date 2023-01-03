@@ -6,19 +6,20 @@ using shunda.Service.Express;
 
 namespace shunda.Admin.Areas.Express.Models.Express;
 
-public class ExpressDetailModel
-{
+public class ExpressDetailModel {
     public ExpressListMenuCate Cate { get; set; } = ExpressListMenuCate.None;
 
-    public ExpressInfo Express { get; set; } = new ();
+    public ExpressInfo Express { get; set; } = new();
 
-    public UserInfo AddUser { get; set; } = new ();
+    public ExpressReturnInfo ExpressReturn { get; set; } = new();
 
-    public CustomerInfo? Customer { get; set; } = new ();
+    public UserInfo AddUser { get; set; } = new();
+
+    public CustomerInfo? Customer { get; set; } = new();
 
     public ExpressExpectInfo? ExpressExpect { get; set; } = null;
 
-    public LogisticsOrderInfo Order { get; set; } = new ();
+    public LogisticsOrderInfo Order { get; set; } = new();
 
     public IList<ExpressGoodsInfo> ExpressGoodsList { get; set; } = new List<ExpressGoodsInfo>();
 
@@ -28,19 +29,14 @@ public class ExpressDetailModel
 
     public IList<ExpressLogInfo> ExpressLogList { get; set; } = new List<ExpressLogInfo>();
 
-    public string GetBoolStr(bool? value)
-    {
-        if (value == null)
-        {
+    public string GetBoolStr(bool? value) {
+        if (value == null) {
             return string.Empty;
         }
 
-        if (value.Value)
-        {
+        if (value.Value) {
             return "是";
-        }
-        else
-        {
+        } else {
             return "否";
         }
     }

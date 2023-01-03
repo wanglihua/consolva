@@ -9,10 +9,8 @@ using shunda.Domain.Storage;
 
 namespace shunda.Domain.Express;
 
-public class ExpressInfoMapping : EntityMapping<ExpressInfo>
-{
-    public ExpressInfoMapping()
-    {
+public class ExpressInfoMapping : EntityMapping<ExpressInfo> {
+    public ExpressInfoMapping() {
         Table("tbl_express");
 
         Property(
@@ -296,60 +294,6 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo>
             }
         );
 
-        Property(
-            x => x.ReturnTrackingNo,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("return_tracking_no");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.ReturnExpressCompany,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("return_express_company");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.ReturnApplyTime,
-            map => {
-                map.Type(NHibernateUtil.DateTime);
-                map.Column("return_apply_time");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.ReturnPickupCode,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("return_pickup_code");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.ReturnUserId,
-            map => {
-                map.Type(NHibernateUtil.Int32);
-                map.Column("return_user_id");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.ReturnTime,
-            map => {
-                map.Type(NHibernateUtil.DateTime);
-                map.Column("return_time");
-                map.NotNullable(false);
-            }
-        );
-
         ManyToOne(
             x => x.DumpUser,
             map => {
@@ -396,6 +340,5 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo>
                 map.NotNullable(true);
             }
         );
-
     }
 }
