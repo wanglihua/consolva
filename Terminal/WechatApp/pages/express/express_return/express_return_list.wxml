@@ -1,3 +1,47 @@
 <!--pages/express/express_return/express_return_list/express_return_list.wxml-->
 <header/>
-<text>pages/express/express_return/express_return_list/express_return_list.wxml</text>
+<van-sticky offset-top="{{ 46 }}">
+    <view class="container-top">
+        <view style="background-color: white;">
+            <van-search model:value="{{ query }}" placeholder="单号模糊搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>
+            <van-divider hairline customStyle="margin: 0;"/>
+        </view>
+    </view>
+</van-sticky>
+
+<view class="container-bottom">
+    <!--<van-cell-group title="退运池"/>-->
+    <block wx:if="{{ expressReturnCount === 0 }}">
+        <van-empty description="暂时没有数据项！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{ expressReturnList }}" wx:key="id" wx:for-item="expressReturn" wx:for-index="index">
+            <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ expressReturn }}">
+                <van-cell title="{{ index + 1 }}、{{ expressReturn.checkinTrackingNo }}" value="{{ expressReturn.status }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="入库单号" value="{{ expressReturn.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="原快递单号" value="{{ expressReturn.trackingNo }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="退运快递单号" value="{{ expressReturn.returnTrackingNo }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="退运快递公司" value="{{ expressReturn.returnExpressCompany }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="退运取件码" value="{{ expressReturn.returnPickupCode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物品类型" value="{{ expressReturn.goodsType }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="登记日期" value="{{ expressReturn.addDate }}" border="{{ false }}" custom-class="item"/>
+                <block wx:if="{{ expressReturn.customerRemark && expressReturn.customerRemark !== '' }}">
+                    <van-cell title="客户备注" value="{{expressReturn.customerRemark}}" border="{{ false }}" custom-class="item"/>
+                </block>
+                <block wx:if="{{ expressReturn.warehouseRemark && expressReturn.warehouseRemark !== '' }}">
+                    <van-cell title="仓库备注" value="{{expressReturn.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
+                </block>
+                <block wx:if="{{ expressReturn.serviceRemark && expressReturn.serviceRemark !== '' }}">
+                    <van-cell title="客服备注" value="{{expressReturn.serviceRemark}}" border="{{ false }}" custom-class="item"/>
+                </block>
+                <view class="item-last-vspace"/>
+                <van-cell title="操作" value="{{expressReturn.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ expressReturn }}" custom-class="item-footer" value-class="item-footer-value"/>
+            </van-cell-group>
+        </block>
+        <view class="bottom-divider">
+            <van-divider contentPosition="center">共 {{ expressReturnCount }} 项</van-divider>
+        </view>
+    </block>
+
+    <van-action-sheet title="入库单号 {{ currentExpressClaim.checkinTrackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
+</view>

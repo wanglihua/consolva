@@ -14,8 +14,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Express.Controllers;
 
 [ExpressArea]
-public class ExpressClaimController : Controller
-{
+public class ExpressClaimController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressTrackingNoService expressTrackingNoService;
@@ -24,8 +23,7 @@ public class ExpressClaimController : Controller
     public ExpressClaimController(ISession session,
         LoginCustomerService loginCustomerService,
         ExpressTrackingNoService expressTrackingNoService,
-        ExpressClaimService expressClaimService)
-    {
+        ExpressClaimService expressClaimService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressTrackingNoService = expressTrackingNoService;
@@ -34,14 +32,12 @@ public class ExpressClaimController : Controller
 
     [HttpPost]
     [Route("/client/express/claim/list")]
-    public IActionResult List([FromBody] ExpressClaimListParam param)
-    {
+    public IActionResult List([FromBody] ExpressClaimListParam param) {
         // 这里只显示面单客户ID不能解析获得的快递单
 
         var listQuery = GetListQuery(param);
 
-        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE)
-        {
+        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE) {
             // 跟降序排序匹配
             int lastIdQuery = param.LastId;
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
@@ -58,8 +54,7 @@ public class ExpressClaimController : Controller
             .ToList();
 
         IList<ExpressClaimListItem> expressClaimItemList = new List<ExpressClaimListItem>();
-        foreach (ExpressInfo express in expressClaimList)
-        {
+        foreach (ExpressInfo express in expressClaimList) {
             int expressId = express.Id;
 
             var expressRemark = expressRemarkList
@@ -99,16 +94,16 @@ public class ExpressClaimController : Controller
     }
 
     [NonAction]
-    private IQueryable<ExpressInfo> GetListQuery(ExpressClaimListParam param)
-    {
+    private IQueryable<ExpressInfo> GetListQuery(ExpressClaimListParam param) {
         var query = session.Query<ExpressInfo>()
             .Where(e => e.BillCustomerId == 0
                         && e.Status == ExpressStatus.WaitPick);
 
-        if (string.IsNullOrWhiteSpace(param.Query) == false)
-        {
+        if (string.IsNullOrWhiteSpace(param.Query) == false) {
             string queryStr = param.Query.Trim();
-            query = query.Where(e => e.TrackingNo.Contains(queryStr) || e.CheckinTrackingNo.Contains(queryStr));
+            query = query.Where(e => e.TrackingNo == queryStr // 这个精确搜索
+                                     || e.CheckinTrackingNo.Contains(queryStr) // 这个模糊搜索
+            );
         }
 
         return query;
@@ -116,25 +111,21 @@ public class ExpressClaimController : Controller
 
     [HttpPost]
     [Route("/client/express/claim/detail")]
-    public IActionResult Detail([FromBody] IdParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Detail([FromBody] IdParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
         int expressId = param.Id;
         var express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         bool claimed = ExpressStatus.IsCheckedIn(express.Status);
-        if (claimed && loginCustomerId != (express.Customer?.Id ?? 0))
-        {
+        if (claimed && loginCustomerId != (express.Customer?.Id ?? 0)) {
             throw new ValidationException("指定的申领件已经被认领，且认领人不是当前登录客户！");
         }
 
@@ -147,8 +138,7 @@ public class ExpressClaimController : Controller
 
         bool enter = false;
         if (expressExpect != null
-            && expressExpect.Status == ExpressExpectStatus.Enter)
-        {
+            && expressExpect.Status == ExpressExpectStatus.Enter) {
             enter = true;
         }
 
@@ -183,12 +173,10 @@ public class ExpressClaimController : Controller
             .ToList();
 
         var expressGoodsItemList = new List<ExpressClaimDetailModel.ExpressGoodsItem>();
-        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
-        {
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
             // 价格为0的时候，值为空
             string price = expressGoods.Price.ToString("#0.00");
-            if (expressGoods.Price <= 0)
-            {
+            if (expressGoods.Price <= 0) {
                 price = string.Empty;
             }
 
@@ -216,8 +204,7 @@ public class ExpressClaimController : Controller
         decimal totalActualWeight = 0;
         int totalPackageCount = 0;
         var expressSizeWeightItemList = new List<ExpressClaimDetailModel.ExpressSizeWeightItem>();
-        foreach (ExpressSizeWeightInfo sizeWeight in expressSizeWeightList)
-        {
+        foreach (ExpressSizeWeightInfo sizeWeight in expressSizeWeightList) {
             totalVolume += sizeWeight.GetVolumeCache();
             totalVolumeWeight += sizeWeight.GetVolumeWeightCache();
             totalActualWeight += sizeWeight.Weight;
@@ -251,10 +238,8 @@ public class ExpressClaimController : Controller
     [HttpPost]
     [Route("/client/express/claim/pick")]
     [Transactional]
-    public IActionResult Pick([FromBody] ExpressClaimPickParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Pick([FromBody] ExpressClaimPickParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -263,13 +248,11 @@ public class ExpressClaimController : Controller
         var goodsPriceList = param.GoodsPriceList;
 
         var express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
-        if (goodsPriceList == null || goodsPriceList.Count == 0)
-        {
+        if (goodsPriceList == null || goodsPriceList.Count == 0) {
             throw new ValidationException("物品价格不能为空！");
         }
 
@@ -278,20 +261,17 @@ public class ExpressClaimController : Controller
             .Where(e => e.Express.Id == expressId)
             .OrderBy(e => e.Id) // 快递单号物品都按id升序排
             .ToList();
-        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
-        {
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
             int expressGoodsId = expressGoods.Id;
             var goodsPrice = goodsPriceList.Where(e => e.ExpressGoodsId == expressGoodsId)
                 .Take(1)
                 .SingleOrDefault();
-            if (goodsPrice == null || goodsPrice.Price <= 0)
-            {
+            if (goodsPrice == null || goodsPrice.Price <= 0) {
                 throw new ValidationException($"您还未完善物品 {expressGoods.Goods.Name} 单价。请如实申报货值，虚假申报可能会导致高额税金、罚款、销毁物品！");
             }
         }
 
-        foreach (ExpressGoodsInfo expressGoods in expressGoodsList)
-        {
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
             int expressGoodsId = expressGoods.Id;
             var goodsPrice = goodsPriceList.Where(e => e.ExpressGoodsId == expressGoodsId)
                 .Take(1)
@@ -316,10 +296,8 @@ public class ExpressClaimController : Controller
 
     [HttpPost]
     [Route("/client/express/claim/match")]
-    public IActionResult Match([FromBody] ExpressClaimMatchParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Match([FromBody] ExpressClaimMatchParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
@@ -327,8 +305,7 @@ public class ExpressClaimController : Controller
         string trackingNoInput = param.TrackingNoInput;
 
         var express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
