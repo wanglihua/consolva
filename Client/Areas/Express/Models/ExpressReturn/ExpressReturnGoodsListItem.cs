@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Express.Models.ExpressReturn;
 
-public class ExpressReturnListGoodsListItem
+public class ExpressReturnGoodsListItem
 {
     [JsonProperty("id")]
     public int Id { get; set; }

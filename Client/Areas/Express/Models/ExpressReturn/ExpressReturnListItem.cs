@@ -44,5 +44,5 @@ public class ExpressReturnListItem
     public string Status { get; set; } = string.Empty;
 
     [JsonProperty("goodsList")]
-    public IList<ExpressReturnListGoodsListItem> GoodsList { get; set; } = new List<ExpressReturnListGoodsListItem>();
+    public IList<ExpressReturnGoodsListItem> GoodsList { get; set; } = new List<ExpressReturnGoodsListItem>();
 }

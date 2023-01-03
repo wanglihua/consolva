@@ -1,5 +1,6 @@
 using System.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
+using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressReturn;
 using shunda.Client.Models;
 using shunda.Client.Services;
@@ -42,7 +43,28 @@ public class ExpressReturnController : Controller {
             .Take(15)
             .ToList();
 
+        // 物品数据
         IList<int> expressIdList = expressReturnList.Select(e => e.Express.Id).ToList();
+
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+
+        IDictionary<int, IList<ExpressGoodsInfo>> expressGoodsListMap = new Dictionary<int, IList<ExpressGoodsInfo>>();
+        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
+            int expressId = expressGoods.Express.Id;
+
+            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodsList) == false) {
+                thisExpressGoodsList = new List<ExpressGoodsInfo>();
+            }
+
+            thisExpressGoodsList.Add(expressGoods);
+
+            expressGoodsListMap[expressId] = thisExpressGoodsList;
+        }
+
+        // 备注
         IList<ExpressRemarkInfo> expressRemarkList = session.Query<ExpressRemarkInfo>()
             .Where(e => expressIdList.Contains(e.Express!.Id))
             .ToList();
@@ -84,6 +106,21 @@ public class ExpressReturnController : Controller {
                 ServiceRemark = serviceRemark,
                 Status = expressReturn.Status.Name,
             };
+            
+            if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) // 一般这个判断肯定是成立的
+            {
+                IList<ExpressReturnGoodsListItem> goodsList = thisExpressGoodList
+                    .Select(e => new ExpressReturnGoodsListItem {
+                        Id = e.Id,
+                        GoodsName = e.Goods.Name,
+                        Quantity = e.Quantity,
+                        Price = e.Price.ToString("#0.00"),
+                        Unit = e.Unit,
+                    })
+                    .ToList();
+
+                item.GoodsList = goodsList;
+            }            
 
             expressReturnItemList.Add(item);
         }
