@@ -95,7 +95,7 @@ public class ExpressReturnInfoMapping : EntityMapping<ExpressReturnInfo> {
             map => {
                 map.Class(typeof(CustomerInfo));
                 map.Column("customer_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
             }

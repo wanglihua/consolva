@@ -24,9 +24,15 @@
                     <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="入库日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item"/>
-                    <block wx:if="{{ express.warehouseRemark !== '' }}">
+                    <block wx:if="{{ express.customerRemark && express.customerRemark !== '' }}">
+                        <van-cell title="客户备注" value="{{express.customerRemark}}" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <block wx:if="{{ express.warehouseRemark && express.warehouseRemark !== '' }}">
                         <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
                     </block>
+                    <block wx:if="{{ express.serviceRemark && express.serviceRemark !== '' }}">
+                        <van-cell title="客服备注" value="{{express.serviceRemark}}" border="{{ false }}" custom-class="item"/>
+                    </block>                    
                     <van-cell title="物品" value="共 {{ express.goodsCount }} 项目" border="{{ false }}" custom-class="item"/>
                     <block wx:for="{{ express.goodsList }}" wx:key="id" wx:for-item="goods" wx:for-index="goodsIndex">
                         <van-cell value="{{ express.goodsName }} {{ express.quantity }}{{ express.Unit }} × {{ express.price }}RMB" border="{{ false }}" custom-class="item"/>
@@ -45,8 +51,14 @@
                     <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="入库日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item"/>
-                    <block wx:if="{{ express.warehouseRemark !== '' }}">
+                    <block wx:if="{{ express.customerRemark && express.customerRemark !== '' }}">
+                        <van-cell title="客户备注" value="{{express.customerRemark}}" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <block wx:if="{{ express.warehouseRemark && express.warehouseRemark !== '' }}">
                         <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <block wx:if="{{ express.serviceRemark && express.serviceRemark !== '' }}">
+                        <van-cell title="客服备注" value="{{express.serviceRemark}}" border="{{ false }}" custom-class="item"/>
                     </block>
                     <van-cell title="物品" value="共 {{ express.goodsCount }} 项" border="{{ false }}" custom-class="item"/>
                     <block wx:for="{{ express.goodsList }}" wx:key="id" wx:for-item="goods" wx:for-index="goodsIndex">

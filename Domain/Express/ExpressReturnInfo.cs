@@ -74,10 +74,10 @@ public class ExpressReturnInfo : Entity {
     public virtual WarehouseInfo Warehouse { get; set; } = new WarehouseInfo();
 
     /// <summary>
-    /// 客户，可空
+    /// 客户，非空
     /// </summary>
     [JsonProperty("customer")]
-    public virtual CustomerInfo? Customer { get; set; } = null;
+    public virtual CustomerInfo Customer { get; set; } = new();
 
     /// <summary>
     /// 状态，非空
@@ -128,5 +128,4 @@ public class ExpressReturnInfo : Entity {
     /// </summary>
     [JsonProperty("returnTime")]
     public virtual DateTime? ReturnTime { get; set; } = null;
-
 }

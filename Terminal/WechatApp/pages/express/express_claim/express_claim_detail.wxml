@@ -10,7 +10,7 @@
         <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>-->
         <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="面单会员" value="{{ express.billCustomerCode }}" border="{{ false }}" custom-class="item"/>
-        <block wx:if="{{ express.warehouseRemark !== '' }}">
+        <block wx:if="{{ express.warehouseRemark && express.warehouseRemark !== '' }}">
             <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
         </block>
         <view class="item-last-vspace"/>

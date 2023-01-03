@@ -1,6 +1,7 @@
 using System.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressReturn;
+using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -24,12 +25,46 @@ public class ExpressReturnController : Controller {
     [HttpPost]
     [Route("/client/express/return/list")]
     public IActionResult List([FromBody] ExpressReturnListParam param) {
-        
-        
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        param.LoginCustomerId = loginCustomerId;
+
+        var listQuery = GetListQuery(param);
+
+        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE) {
+            // 跟降序排序匹配
+            int lastIdQuery = param.LastId;
+            listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
+        }
+
+        IList<ExpressReturnInfo> expressReturnList = listQuery
+            .OrderByDescending(e => e.Id) // 按Id降序排序
+            .Take(15)
+            .ToList();
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new ExpressReturnListModel {
+            },
         });
+    }
+
+    [NonAction]
+    private IQueryable<ExpressReturnInfo> GetListQuery(ExpressReturnListParam param) {
+        int loginCustomerId = param.LoginCustomerId;
+
+        var query = session.Query<ExpressReturnInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId);
+
+        if (string.IsNullOrWhiteSpace(param.Query) == false) {
+            string queryStr = param.Query.Trim();
+            query = query.Where(e => e.TrackingNo.Contains(queryStr)
+                                     || e.CheckinTrackingNo.Contains(queryStr)
+                                     || e.ReturnTrackingNo.Contains(queryStr));
+        }
+
+        return query;
     }
 
     /// <summary>

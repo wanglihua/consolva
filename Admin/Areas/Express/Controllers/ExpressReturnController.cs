@@ -40,7 +40,6 @@ public class ExpressReturnController : Controller {
         return View("ExpressReturnIndex", model);
     }
 
-
     [HttpPost]
     [Route("/admin/express/express/return/list")]
     public IActionResult List(ExpressReturnListQueryParam queryParam) {
