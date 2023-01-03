@@ -46,5 +46,57 @@ Page({
                 lastId: lastId,
             });
         });
+    },
+
+    onSearch(e) {
+        this.setData({
+            query: e.detail,
+            lastId: 0,
+        });
+        this.loadExpressReturnList();
+    },
+    onSearchClear() {
+        this.setData({
+            query: "",
+            lastId: 0,
+        });
+        this.loadExpressReturnList();
+    },
+    onActionCellClick(e) {
+        const currentExpressReturn = e.currentTarget.dataset.item;
+
+        const actionSheetActions = [];
+
+        actionSheetActions.push({
+            action: "detail",
+            name: '查看详细',
+            className: 'iconfont iconfont-view-detail',
+        });
+
+        this.setData({
+            currentExpressReturn: currentExpressReturn,
+            actionSheetActions: actionSheetActions,
+            showActionSheet: true
+        });
+    },
+    onActionSheetCloseClick(e) {
+        this.setData({
+            showActionSheet: false
+        });
+    },
+    onActionSheetSelect(e) {
+        const expressReturnId = this.data.currentExpressReturn.id;
+        const action = e.detail.action;
+
+        const that = this;
+        if (action === "detail") {
+            wx.navigateTo({
+                url: './express_return_detail?id=' + expressReturnId,
+            });
+        }
+
+        this.setData({
+            showActionSheet: false,
+        });
     }
 })
