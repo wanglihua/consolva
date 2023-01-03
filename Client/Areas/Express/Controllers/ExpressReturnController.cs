@@ -1,3 +1,4 @@
+using System.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Express.Models.ExpressReturn;
 using shunda.Client.Services;
@@ -56,10 +57,41 @@ public class ExpressReturnController : Controller {
             throw new ValidationException("指定的快递单号{express.TrackingNo}不是已入库状态！");
         }
 
+        var expressReturn = session.Query<ExpressReturnInfo>()
+            .Where(e => e.Express.Id == expressId)
+            .Take(1)
+            .SingleOrDefault();
+        if (expressReturn != null) {
+            throw new ValidationException($"快递单号{express.TrackingNo}已存在退运记录！");
+        }
+
+        // 更新 express 
         express.Status = ExpressStatus.WaitReturn;
-        // express.ReturnApplyTime = DateTime.Now;
 
         session.Update(express);
+        session.Flush();
+
+        // 创建 express return
+        expressReturn = new ExpressReturnInfo {
+            Express = express,
+            TrackingNo = express.TrackingNo,
+            CheckinTrackingNo = express.CheckinTrackingNo,
+            ExpressCompany = express.ExpressCompany,
+            GoodsType = express.GoodsType,
+            AddTime = express.AddTime,
+            AddUser = express.AddUser,
+            Warehouse = express.Warehouse,
+            Customer = express.Customer,
+            Status = express.Status,
+            ReturnTrackingNo = string.Empty,
+            ReturnExpressCompany = string.Empty,
+            ReturnApplyTime = DateTime.Now,
+            ReturnPickupCode = string.Empty,
+            ReturnUser = null,
+            ReturnTime = null,
+        };
+
+        session.Save(expressReturn);
         session.Flush();
 
         return Json(new JsonResultData {
