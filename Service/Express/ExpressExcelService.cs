@@ -54,9 +54,9 @@ public class ExpressExcelService {
         ICell cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue("澳拼入库号");
+        cell.SetCellValue("入库跟踪号");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 25 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -74,7 +74,7 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("物品类型");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 42 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -92,7 +92,7 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("订单状态");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 32 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -134,7 +134,7 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("认领客户");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 20 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -158,7 +158,7 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("当前仓库");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 36 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -168,21 +168,9 @@ public class ExpressExcelService {
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue("入库仓库");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("入库仓位号");
-
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
         cell.SetCellValue("入库人员");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 20 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -194,7 +182,7 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("上架人员");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 20 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -206,7 +194,7 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("下架人员");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
+        sheet.SetColumnWidth(cellIndex, 20 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -236,66 +224,79 @@ public class ExpressExcelService {
 
             cellIndex = 0;
 
+            // 入库跟踪号
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.CheckinTrackingNo);
 
+            // 快递单号
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.TrackingNo);
 
+            // 快递公司
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.ExpressCompany);
 
+            // 物品类型
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.GoodsType.Name);
 
+            // 扩展名
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.GoodsNamesCache);
 
+            // 所在订单
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.OrderCode); // 这里不要用 express.Order.Code，会导致一次数据库访问
 
+            // 订单状态
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.OrderStatusNameCache);
 
+            // 尺寸cm
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}")));
 
+            // 体积重kg
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.GetVolumeWeightCache()}")));
 
+            // 实际重kg
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.Weight}")));
 
+            // 包裹数量
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = precision0Style;
             cell.SetCellType(CellType.Numeric);
             cell.SetCellValue(express.PackageCount);
 
+            // 面单客户
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.BillCustomerCode);
 
+            // 是否预报
             string expectStr = "";
             if (express.ExpressExpectCache != null) {
                 expectStr = "有预报";
@@ -308,62 +309,73 @@ public class ExpressExcelService {
             cell.SetCellType(CellType.String);
             cell.SetCellValue(expectStr);
 
+            // 认领客户
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.CustomerCodeCache);
 
+            // 认领时间
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.ClaimTime?.ToString("yyyy-MM-dd HH:mm") ?? "");
 
+            // 快递状态
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.Status?.Name ?? "");
 
+            // 上架状态
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.ShelfStatus?.Name ?? "");
 
+            // 当前仓库
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.Warehouse.Name);
 
+            // 当前仓位号
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.StorageLocNameCache);
 
-
+            // 入库人员
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.AddUser.UserName);
 
+            // 入库时间
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.AddTime.ToString("yyyy-MM-dd HH:mm"));
 
+            // 上架人员
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.OnShelfUser?.UserName ?? string.Empty);
 
+            // 上架时间
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.OnShelfTime?.ToString("yyyy-MM-dd HH:mm") ?? "");
 
+            // 下架人员
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.OffShelfUser?.UserName ?? string.Empty);
 
+            // 下架时间
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
