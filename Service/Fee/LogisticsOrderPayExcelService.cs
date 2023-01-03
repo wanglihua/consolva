@@ -265,6 +265,6 @@ public class LogisticsOrderPayExcelService {
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
-        return memoryStream.ToArray();
+        return memoryStream.GetBuffer();
     }
 }

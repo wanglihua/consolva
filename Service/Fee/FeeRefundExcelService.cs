@@ -156,6 +156,6 @@ public class FeeRefundExcelService {
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
-        return memoryStream.ToArray();
+        return memoryStream.GetBuffer();
     }
 }

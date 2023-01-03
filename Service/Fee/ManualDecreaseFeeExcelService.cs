@@ -154,6 +154,6 @@ public class ManualDecreaseFeeExcelService {
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
-        return memoryStream.ToArray();
+        return memoryStream.GetBuffer();
     }
 }

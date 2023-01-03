@@ -109,7 +109,7 @@ public class StorageLocExcelService {
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
-        return memoryStream.ToArray();
+        return memoryStream.GetBuffer();
     }
 
     public void ImportOffShelfOrder(int shelfId, IFormFile excelFile) {

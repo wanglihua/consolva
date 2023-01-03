@@ -63,7 +63,7 @@ public static class ExcelUtil
         IFont font = workbook.CreateFont();
         font.FontName = "微软雅黑";
         // font.Boldweight = (short)FontBoldWeight.Normal;
-        font.IsBold = true;
+        font.IsBold = false;
         font.FontHeightInPoints = 10;
 
         cellStyle.SetFont(font);

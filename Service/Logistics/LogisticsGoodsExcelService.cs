@@ -101,6 +101,6 @@ public class LogisticsGoodsExcelService {
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
-        return memoryStream.ToArray();
+        return memoryStream.GetBuffer();
     }
 }

@@ -92,7 +92,7 @@ public class CustomerSuperVipDiscountExcelService {
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
-        return memoryStream.ToArray();
+        return memoryStream.GetBuffer();
     }
 
     public void Import(IFormFile excelFile, UserInfo loginUser) {

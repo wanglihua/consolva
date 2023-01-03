@@ -403,7 +403,7 @@ public class ExpressExcelService {
             cell.SetCellValue(warehouseRemark?.Remark ?? string.Empty);
         }
 
-        using MemoryStream memoryStream = MemoryStreamUtil.GetStream();
+        MemoryStream memoryStream = new MemoryStream();
         workbook.Write(memoryStream);
         memoryStream.Flush();
 
