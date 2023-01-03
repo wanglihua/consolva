@@ -1,0 +1,194 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model ExpressReturnIndexModel
+@using shunda.Admin.Areas.Express.Models.ExpressReturn
+@{
+    ViewData[ViewDataKey.Title] = "快递退运";
+    Layout = "_AdminLayout";
+}
+
+@*
+
+        <li id="express-menu">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-copy"></i>
+                <span class="menu-text">快递管理</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+
+                <li id="express-express-return-menu">
+                    <a asp-area="Express" asp-controller="ExpressReturn" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>快递退运
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+
+*@
+
+@section Breadcrumb {
+    <li class="parent" data-menu="express-menu">快递管理</li>
+    <li class="active" data-menu="express-express-return-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadExpressReturnList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showExpressReturnDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteExpressReturn()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressReturnList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="expressReturnList" data-page-index="0" data-sort-field="@(nameof(ExpressReturnInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="expressReturnDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadExpressReturnList();
+    });
+
+    function sortExpressReturnList(sortField, sortDir) {
+        var list = $('#expressReturnList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadExpressReturnList();
+    }
+
+    function loadExpressReturnList(pageIndex) {
+        var list = $('#expressReturnList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ExpressReturn")",
+            type: "POST",
+            data: {
+                "@(nameof(ExpressReturnListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ExpressReturnListQueryParam.SortField))": sortField,
+                "@(nameof(ExpressReturnListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#expressReturnList').html(data);
+
+                initListTable("#tblExpressReturnList");
+            }
+        });
+    }
+
+    function showExpressReturnDetail(id) {
+        $("#expressReturnDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#expressReturnDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ExpressReturn")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#expressReturnDetailDialogWrapper").html(data);
+                $("#expressReturnDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveExpressReturn() {
+        var form = $("#expressReturnDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ExpressReturn")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#expressReturnDetailDialog').modal('hide');
+                    loadExpressReturnList();
+                }
+            });
+        }
+    }
+
+    function deleteExpressReturn() {
+        var idList = getSelectIdList('#tblExpressReturnList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ExpressReturn")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadExpressReturnList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

@@ -1,0 +1,245 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Express.Models.ExpressReturn.ExpressReturnListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressReturnList" }))
+
+<table id="tblExpressReturnList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="expressReturnCheckAll"></label><input id="expressReturnCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressAlias).@(nameof(ExpressReturnInfo.Express.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">快递单</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">快递单号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.CheckinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">入库跟踪号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.ExpressCompany))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">快递公司</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">物品类型</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">入库时间</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AddUserAlias).@(nameof(ExpressReturnInfo.AddUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">添加用户</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.WarehouseAlias).@(nameof(ExpressReturnInfo.Warehouse.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">仓库</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerAlias).@(nameof(ExpressReturnInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">客户</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">状态</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.ReturnTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">退运快递单号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.ReturnExpressCompany))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">退运快递公司</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.ReturnApplyTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">退运申请时间</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.ReturnPickupCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">退运取件码</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ReturnUserAlias).@(nameof(ExpressReturnInfo.ReturnUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">退运操作人</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.ReturnTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">退运时间</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ExpressReturnAlias).@(nameof(ExpressReturnInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressReturnList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ExpressReturnList.Count != 0) {
+            int itemIndex = 0;
+            foreach (ExpressReturnInfo expressReturn in Model.ExpressReturnList) {
+                <tr ondblclick="showExpressReturnDetail(@(expressReturn.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="expressReturnCheck_@(expressReturn.Id)"></label><input id="expressReturnCheck_@(expressReturn.Id)" type="checkbox" class="ace" value="@expressReturn.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.Express?.Id)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.TrackingNo)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.CheckinTrackingNo)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.ExpressCompany)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.GoodsType.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.AddTime)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.AddUser?.Id)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.Warehouse?.Id)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.Customer?.Id)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.Status.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.ReturnTrackingNo)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.ReturnExpressCompany)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.ReturnApplyTime)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.ReturnPickupCode)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.ReturnUser?.Id)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(expressReturn.ReturnTime)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @expressReturn.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @expressReturn.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="21">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressReturnList" }))

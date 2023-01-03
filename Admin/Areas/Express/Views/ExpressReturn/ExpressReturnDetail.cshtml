@@ -1,0 +1,254 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain
+@using shunda.Domain.Express
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Express.Models.ExpressReturn.ExpressReturnDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="expressReturnDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">快递退运详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="expressReturnDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="ExpressReturnId" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExpressId" class="col-xs-2 control-label">快递单</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExpressId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="TrackingNo" class="col-xs-2 control-label">快递单号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="TrackingNo" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CheckinTrackingNo" class="col-xs-2 control-label">入库跟踪号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CheckinTrackingNo" type="text" required="required" maxlength="20" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ExpressCompany" class="col-xs-2 control-label">快递公司</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ExpressCompany" type="text" required="required" maxlength="100" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="GoodsType" class="col-xs-2 control-label">物品类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="GoodsType" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(LogisticsGoodsType type in Model.GoodsTypeList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="AddTime" class="col-xs-2 control-label">入库时间</label>
+                                <div class="col-xs-10">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="AddUserId" class="col-xs-2 control-label">添加用户</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="AddUserId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="WarehouseId" class="col-xs-2 control-label">仓库</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="WarehouseId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CustomerId" class="col-xs-2 control-label">客户</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CustomerId" type="number" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Status" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(ExpressStatus type in Model.StatusList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ReturnTrackingNo" class="col-xs-2 control-label">退运快递单号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ReturnTrackingNo" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ReturnExpressCompany" class="col-xs-2 control-label">退运快递公司</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ReturnExpressCompany" type="text" required="required" maxlength="100" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ReturnApplyTime" class="col-xs-2 control-label">退运申请时间</label>
+                                <div class="col-xs-10">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ReturnPickupCode" class="col-xs-2 control-label">退运取件码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ReturnPickupCode" type="text" maxlength="20" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ReturnUserId" class="col-xs-2 control-label">退运操作人</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ReturnUserId" type="number" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ReturnTime" class="col-xs-2 control-label">退运时间</label>
+                                <div class="col-xs-10">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveExpressReturn();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
