@@ -43,5 +43,5 @@
         </view>
     </block>
 
-    <van-action-sheet title="入库单号 {{ currentExpressClaim.checkinTrackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
+    <van-action-sheet title="入库单号 {{ currentExpressReturn.checkinTrackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
 </view>

@@ -33,6 +33,18 @@ Page({
             const expressReturnListAdd = res.data.expressReturnList;
 
             for (const expressReturn of expressReturnListAdd) {
+                if (!expressReturn.returnTrackingNo || expressReturn.returnTrackingNo === '') {
+                    expressReturn.returnTrackingNo = '无';
+                }
+
+                if (!expressReturn.returnExpressCompany || expressReturn.returnExpressCompany === '') {
+                    expressReturn.returnExpressCompany = '未知';
+                }
+
+                if (!expressReturn.returnPickupCode || expressReturn.returnPickupCode === '') {
+                    expressReturn.returnPickupCode = '点击更新取件码';
+                }
+
                 expressReturn.actions = "查看详细，更新取货码";
             }
 
