@@ -20,7 +20,7 @@ Component({
         onClickLeft() {
             wx.showToast({title: '点击logo', icon: 'none'});
             wx.navigateTo({
-                url: "/pages/index/index",
+                url: "/pages/home/home_index",
             });
             
             // app.goback("index");

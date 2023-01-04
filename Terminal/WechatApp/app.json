@@ -1,6 +1,6 @@
 {
     "pages": [
-        "pages/index/index",
+        "pages/home/home_index",
         "pages/coupon/coupon_mine",
         "pages/coupon/coupon_pick",
         "pages/coupon/coupon_order",
