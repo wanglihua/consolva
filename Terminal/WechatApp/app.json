@@ -58,5 +58,9 @@
         "van-loading": "@vant/weapp/loading/index",
         "header": "components/header"
     },
+    "networkTimeout": {
+        "request": 10000,
+        "downloadFile": 10000
+    },
     "sitemapLocation": "sitemap.json"
 }
