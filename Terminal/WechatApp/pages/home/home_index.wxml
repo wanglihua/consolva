@@ -1,19 +1,35 @@
 <!--index.wxml-->
 <header />
 <view class="container">
-    <view>
+    <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}" gutter="3">
-            <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="申领件" badge="3" url="../express/express_claim/express_claim_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="3" url="../express/express_expect/express_expect_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="3" url="../express/express_checkin/express_checkin_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text="退运池" badge="3" url="../express/express_return/express_return_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" url="../coupon/coupon_mine"/>
-            <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额" url="../customer/customer_account/customer_account"/>
-            <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="../customer/customer_score/customer_score"/>
-            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="../customer/customer_pay/customer_pay"/>
-            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" url="../message/message_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="../message/message_customize"/>
-            <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="../customer/customer_address/customer_address_receive/customer_address_receive_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="申领件" badge="3" url="../express/express_claim/express_claim_list" />
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="3" url="../express/express_expect/express_expect_list" />
+            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="3" url="../express/express_checkin/express_checkin_list" />
+            <van-grid-item icon-prefix="iconfont" icon="pay-list" icon-class="home-grid-icon" text="待支付" badge="3" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="pack-list" icon-class="home-grid-icon" text="待打包" badge="3" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="waiting-transport" icon-class="home-grid-icon" text="待转运" badge="3" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon" text="转运中" badge="3" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" text="已交付" badge="3" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text="退运池" badge="3" url="../express/express_return/express_return_list" />
+
+        </van-grid>
+    </view>
+
+    <view style="background-color: white; margin-bottom: 10rpx; padding-top: 10px;">
+        <van-grid border="{{false}}" gutter="3">
+            <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" url="../coupon/coupon_mine" />
+            <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额" url="../customer/customer_account/customer_account" />
+            <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="../customer/customer_score/customer_score" />
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="../customer/customer_pay/customer_pay" />
+            <van-grid-item icon-prefix="iconfont" icon="notice" icon-class="home-grid-icon" text="公告" badge="3" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" url="../message/message_list" />
+            <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="../message/message_customize" />
+            <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="../customer/customer_address/customer_address_receive/customer_address_receive_list" />
+
+            <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text="推广返利" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="profile" icon-class="home-grid-icon" text="个人中心" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="" />
         </van-grid>
     </view>
 </view>

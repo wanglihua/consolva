@@ -4,22 +4,22 @@
 
 .container {
     padding: 20rpx 20rpx 200rpx 20rpx;
-    background-color: white;
+    background-color: #f8f8f8;
 }
 
 .container-top {
     padding: 20rpx 20rpx 0 20rpx;
-    background-color: white;
+    background-color: #f8f8f8;
 }
 
 .container-middle {
     padding: 0rpx 20rpx;
-    background-color: white;
+    background-color: #f8f8f8;
 }
 
 .container-bottom {
     padding: 0 20rpx 200rpx 20rpx;
-    background-color: white;
+    background-color: #f8f8f8;
 }
 
 .home-grid-icon {
@@ -32,7 +32,8 @@
 }
 
 .items {
-    margin: 25rpx 0;
+    background-color: white !important;
+    margin: 25rpx 0 25rpx 0;
 }
 
 .item-header {
@@ -80,7 +81,8 @@
 }
 
 .detail-buttons {
-    margin: 30rpx 40rpx;
+    width: 100%;
+    margin: 30rpx 0;
 }
 
 .bottom-divider {
