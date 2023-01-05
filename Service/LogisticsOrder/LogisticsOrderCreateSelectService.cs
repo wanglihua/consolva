@@ -35,6 +35,11 @@ public class LogisticsOrderCreateSelectService {
         session.Flush();
     }
 
+    /// <summary>
+    /// 这个就在汇总的时候调用了
+    /// </summary>
+    /// <param name="customerId"></param>
+    /// <param name="goodsType"></param>
     public void SaveGoodsType(int customerId, LogisticsGoodsType goodsType) {
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
