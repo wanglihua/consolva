@@ -1,2 +1,5 @@
 <!--pages/order_create/order_create_country.wxml-->
-<text>pages/order_create/order_create_country.wxml</text>
+<header />
+<view class="container">
+    <van-cell-group title="目的国家"/>
+</view>
