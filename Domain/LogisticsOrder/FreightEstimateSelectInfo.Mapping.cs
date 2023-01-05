@@ -3,7 +3,7 @@ using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 using shunda.Domain.Logistics;
 
-namespace shunda.Domain.Fee;
+namespace shunda.Domain.LogisticsOrder;
 
 public class FreightEstimateSelectInfoMapping : ClassMapping<FreightEstimateSelectInfo> {
     public FreightEstimateSelectInfoMapping() {

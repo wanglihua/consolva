@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using shunda.Domain.Logistics;
 
-namespace shunda.Domain.Fee;
+namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 运费预估选择记录

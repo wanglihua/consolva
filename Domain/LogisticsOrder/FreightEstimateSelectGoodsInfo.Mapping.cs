@@ -1,7 +1,7 @@
 using NHibernate;
 using shunda.Core;
 
-namespace shunda.Domain.Fee;
+namespace shunda.Domain.LogisticsOrder;
 
 public class FreightEstimateSelectGoodsInfoMapping : EntityNoCreateNoUpdateMapping<FreightEstimateSelectGoodsInfo> {
     public FreightEstimateSelectGoodsInfoMapping() {

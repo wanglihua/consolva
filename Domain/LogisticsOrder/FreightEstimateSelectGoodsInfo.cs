@@ -1,6 +1,6 @@
 using shunda.Core;
 
-namespace shunda.Domain.Fee;
+namespace shunda.Domain.LogisticsOrder;
 
 public class FreightEstimateSelectGoodsInfo : EntityNoCreateNoUpdate {
     /// <summary>
