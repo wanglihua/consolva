@@ -2,9 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderCreateCountry;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
+using shunda.Domain.Express;
+using shunda.Domain.LogisticsOrder;
+using shunda.Service.Logistics;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -15,19 +19,37 @@ public class OrderCreateCountryController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly LogisticsOrderCreateSelectService logisticsOrderCreateSelectService;
+    private readonly LogisticsGoodsTypeService logisticsGoodsTypeService;
 
     public OrderCreateCountryController(ISession session,
         LoginCustomerService loginCustomerService,
-        LogisticsOrderCreateSelectService logisticsOrderCreateSelectService
+        LogisticsOrderCreateSelectService logisticsOrderCreateSelectService,
+        LogisticsGoodsTypeService logisticsGoodsTypeService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.logisticsOrderCreateSelectService = logisticsOrderCreateSelectService;
+        this.logisticsGoodsTypeService = logisticsGoodsTypeService;
     }
 
     [HttpPost]
     [Route("/client/order/create/country/list")]
+    [Transactional]
     public IActionResult List() {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        // 保存上一步快递单选择形成的物品类型
+        var selectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+            .Where(e => e.CustomerId == loginCustomerId)
+            .ToList();
+        var expressIdList = selectExpressList.Select(e => e.ExpressId).ToList();
+        var expressList = session.Query<ExpressInfo>().Where(e => expressIdList.Contains(e.Id)).ToList();
+        var goodsTypeList = expressList.Select(e => e.GoodsType).Distinct().ToList();
+        var goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(goodsTypeList);
+
+        logisticsOrderCreateSelectService.SaveGoodsType(loginCustomerId, goodsType);
+
+        // 显示国家列表
         var countryItemList = Country.GetNoChinaList()
             .Select(e => new OrderCreateCountryListItem {
                 CountryId = e.Id,
@@ -46,6 +68,7 @@ public class OrderCreateCountryController : Controller {
 
     [HttpPost]
     [Route("/client/order/create/country/save")]
+    [Transactional]
     public IActionResult Save([FromBody] OrderCreateCountrySaveParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));

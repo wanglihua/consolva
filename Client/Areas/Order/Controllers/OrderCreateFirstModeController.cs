@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderCreateFirstMode;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
@@ -63,6 +64,7 @@ public class OrderCreateFirstModeController : Controller {
 
     [HttpPost]
     [Route("/client/order/create/first/mode/save")]
+    [Transactional]
     public IActionResult Save([FromBody] OrderCreateFirstModeSaveParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
