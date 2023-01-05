@@ -27,7 +27,13 @@
         "pages/express/express_return/express_return_detail",
         "pages/express/express_return/express_return_pickup_code",
         "pages/message/message_customize",
-        "pages/message/message_list"
+        "pages/message/message_list",
+        "pages/order_create/order_create_country",
+        "pages/order_create/order_create_first_mode",
+        "pages/order_create/order_create_send_address",
+        "pages/order_create/order_create_receive_address",
+        "pages/order_create/order_create_insurance",
+        "pages/order_create/order_create_summary"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",
