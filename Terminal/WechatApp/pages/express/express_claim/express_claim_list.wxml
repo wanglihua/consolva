@@ -1,34 +1,32 @@
 <!--pages/express/express_claim/express_claim_list/express_claim_list.wxml-->
-<header/>
+<header />
 <van-sticky offset-top="{{ 46 }}">
     <view class="container-top" style="background-color: white;">
-        <view style="background-color: white;">
-            <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>
-            <van-divider hairline customStyle="margin: 0;"/>
-        </view>
+        <van-search model:value="{{ query }}" placeholder="单号搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear" />
+        <van-divider hairline customStyle="margin: 0;" />
     </view>
 </van-sticky>
 
 <view class="container-bottom">
     <!--<van-cell-group title="申领件"/>-->
     <block wx:if="{{ expressClaimCount === 0 }}">
-        <van-empty description="暂时没有数据项！"/>
+        <van-empty description="暂时没有数据项！" />
     </block>
     <block wx:else>
         <block wx:for="{{ expressClaimList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
             <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
-                <van-cell title="{{ index + 1 }}、{{ express.checkinTrackingNo }}" value="{{ express.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="{{ index + 1 }}、{{ express.checkinTrackingNo }}" value="{{ express.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
+                <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item" />
                 <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>-->
-                <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="面单会员" value="{{ express.billCustomerCode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="面单会员" value="{{ express.billCustomerCode }}" border="{{ false }}" custom-class="item" />
                 <block wx:if="{{ express.warehouseRemark && express.warehouseRemark !== '' }}">
-                    <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item" />
                 </block>
-                <view class="item-last-vspace"/>
-                <van-cell title="操作" value="{{express.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ express }}" custom-class="item-footer" value-class="item-footer-value"/>
+                <view class="item-last-vspace" />
+                <van-cell title="操作" value="{{express.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ express }}" custom-class="item-footer" value-class="item-footer-value" />
             </van-cell-group>
         </block>
         <view class="bottom-divider">
@@ -36,5 +34,5 @@
         </view>
     </block>
 
-    <van-action-sheet title="入库单号 {{ currentExpressClaim.checkinTrackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
+    <van-action-sheet title="入库单号 {{ currentExpressClaim.checkinTrackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect" />
 </view>

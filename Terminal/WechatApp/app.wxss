@@ -3,7 +3,7 @@
 @import "assets/iconfont/iconfont.wxss";
 
 .container {
-    padding: 20rpx 20rpx 200rpx 20rpx;
+    padding: 20rpx 20rpx 600rpx 20rpx;
     background-color: #f8f8f8;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .container-bottom {
-    padding: 0 20rpx 200rpx 20rpx;
+    padding: 0 20rpx 600rpx 20rpx;
     background-color: #f8f8f8;
 }
 
