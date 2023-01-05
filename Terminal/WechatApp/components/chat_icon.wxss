@@ -4,7 +4,7 @@
     z-index: 999999;
     background-color: transparent;
     right: 20rpx;
-    bottom: 80rpx;
+    bottom: 220rpx;
 }
 
 .chatIconMessageCount {

@@ -2,24 +2,24 @@
 
 @import "assets/iconfont/iconfont.wxss";
 
-.container {
-    padding: 20rpx 20rpx 600rpx 20rpx;
+page {
     background-color: #f8f8f8;
+}
+
+.container {
+    padding: 20rpx 20rpx 100rpx 20rpx;
 }
 
 .container-top {
     padding: 20rpx 20rpx 0 20rpx;
-    background-color: #f8f8f8;
 }
 
 .container-middle {
     padding: 0rpx 20rpx;
-    background-color: #f8f8f8;
 }
 
 .container-bottom {
-    padding: 0 20rpx 600rpx 20rpx;
-    background-color: #f8f8f8;
+    padding: 0 20rpx 100rpx 20rpx;
 }
 
 .home-grid-icon {

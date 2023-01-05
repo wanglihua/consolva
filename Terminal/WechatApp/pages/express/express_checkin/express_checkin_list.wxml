@@ -39,6 +39,18 @@
                     <van-cell title="操作" value="{{express.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ express }}" custom-class="item-footer" value-class="item-footer-value" />
                 </van-cell-group>
             </block>
+
+            <view style="width: 100%; padding-bottom: 30rpx; border-top: 1px solid #ebedf0; background-color: white; position: fixed; left: 0; bottom: 0; z-index: 88;">
+                <view style="padding: 10rpx 40rpx;">
+                    <view style="padding: 4rpx; text-align: right;">
+                        <text style="color: #646566; font-size: 12px;">已选择{{ expressWaitOrderCount }}个快递单</text>
+                    </view>
+                    <van-button type="info" class-prefix="iconfont" icon="create-order" block bind:click="">
+                        创建转运单
+                        <van-icon class-prefix="iconfont" name="double-right" />
+                    </van-button>
+                </view>
+            </view>
         </block>
         <block wx:if="{{ expressCheckinCount > 0 }}">
             <block wx:for="{{ expressCheckinList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
@@ -71,6 +83,8 @@
         <view class="bottom-divider">
             <van-divider contentPosition="center">共 {{ expressTotalCount }} 项</van-divider>
         </view>
+
+        <view style="height: 200rpx; width: 100%;" />
     </block>
 
     <van-action-sheet title="快递单号 {{ currentExpress.trackingNo }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect" />
