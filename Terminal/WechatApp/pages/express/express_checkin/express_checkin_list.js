@@ -272,4 +272,10 @@ Page({
             showActionSheet: false,
         });
     },
+
+    onCreateOrderClick(e) {
+        wx.navigateTo({
+            url: "../../order_create/order_create_country",
+        });
+    }
 })

@@ -7,10 +7,15 @@ Page({
     },
 
     onLoad(options) {
-
+        this.loadCountryList();
     },
-    
-    loadCountryList() {
 
+    loadCountryList() {
+        const that = this;
+        app.post("/client/order/create/country/list", {}, function (res) {
+            that.setData({
+                countryList: res.data.countryList,
+            });
+        });
     }
 })

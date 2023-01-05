@@ -1,7 +1,11 @@
 <!--pages/order_create/order_create_country.wxml-->
 <header />
 <view class="container">
-    <van-cell-group title="目的国家"/>
+    <van-cell-group title="目的国家" />
 
-    
+    <block wx:for="{{ countryList }}" wx:key="id" wx:for-item="country" wx:for-index="index">
+        <van-cell-group custom-class="items">
+            <van-cell title="{{ index + 1 }}、{{ country.countryName }}" value="{{ country.status }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
+        </van-cell-group>
+    </block>
 </view>

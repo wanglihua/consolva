@@ -45,7 +45,7 @@
                     <view style="padding: 4rpx; text-align: right;">
                         <text style="color: #646566; font-size: 12px;">已选择{{ expressWaitOrderCount }}个快递单</text>
                     </view>
-                    <van-button type="info" class-prefix="iconfont" icon="create-order" block bind:click="">
+                    <van-button type="info" class-prefix="iconfont" icon="create-order" block bind:click="onCreateOrderClick">
                         创建转运单
                         <van-icon class-prefix="iconfont" name="double-right" />
                     </van-button>
