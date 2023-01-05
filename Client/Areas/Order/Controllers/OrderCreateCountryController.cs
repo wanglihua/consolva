@@ -49,6 +49,10 @@ public class OrderCreateCountryController : Controller {
 
         logisticsOrderCreateSelectService.SaveGoodsType(loginCustomerId, goodsType);
 
+        // 当前选择
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(loginCustomerId);
+        int selectCountryId = createSelect?.Country?.Id ?? 0;
+
         // 显示国家列表
         var countryItemList = Country.GetNoChinaList()
             .Select(e => new OrderCreateCountryListItem {
@@ -62,6 +66,7 @@ public class OrderCreateCountryController : Controller {
             Message = "操作成功！",
             Data = new OrderCreateCountryListModel {
                 CountryList = countryItemList,
+                SelectCountryId = selectCountryId,
             }
         });
     }
