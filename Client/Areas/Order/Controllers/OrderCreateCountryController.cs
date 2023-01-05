@@ -28,9 +28,19 @@ public class OrderCreateCountryController : Controller {
     [HttpPost]
     [Route("/client/order/create/country/list")]
     public IActionResult List() {
+        var countryItemList = Country.GetNoChinaList()
+            .Select(e => new OrderCreateCountryListItem {
+                CountryId = e.Id,
+                CountryName = e.Name,
+            })
+            .ToList();
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new OrderCreateCountryListModel {
+                CountryList = countryItemList,
+            }
         });
     }
 
