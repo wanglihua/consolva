@@ -33,7 +33,12 @@
         "pages/order_create/order_create_send_address",
         "pages/order_create/order_create_receive_address",
         "pages/order_create/order_create_insurance",
-        "pages/order_create/order_create_summary"
+        "pages/order_create/order_create_summary",
+        "pages/freight_estimate/freight_estimate_goods",
+        "pages/freight_estimate/freight_estimate_country",
+        "pages/freight_estimate/freight_estimate_first_mode",
+        "pages/freight_estimate/freight_estimate_receive_address",
+        "pages/freight_estimate/freight_estimate_summary"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",
