@@ -33,7 +33,7 @@ public class FreightEstimateSelectInfo {
     /// </summary>
     [JsonProperty("country")]
     [ModelBinder(typeof(CountryModelBinder))]
-    public virtual Country? Country { get; set; } = Country.None;
+    public virtual Country Country { get; set; } = Country.None;
 
     /// <summary>
     /// 头程方式，非空
