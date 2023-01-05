@@ -213,7 +213,7 @@ public class ExpressReturnController : Controller {
             AddTime = express.AddTime,
             AddUser = express.AddUser,
             Warehouse = express.Warehouse,
-            Customer = express.Customer,
+            Customer = express.Customer!,
             Status = express.Status,
             ReturnTrackingNo = string.Empty,
             ReturnExpressCompany = string.Empty,

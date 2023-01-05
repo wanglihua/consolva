@@ -188,7 +188,7 @@ public class ExpressReturnController : Controller {
         expressReturn.ReturnTrackingNo = model.ReturnTrackingNo;
         expressReturn.ReturnExpressCompany = model.ReturnExpressCompany;
         expressReturn.ReturnApplyTime = model.ReturnApplyTime;
-        expressReturn.ReturnPickupCode = model.ReturnPickupCode;
+        expressReturn.ReturnPickupCode = model.ReturnPickupCode?? string.Empty;
         expressReturn.ReturnUser = returnUser;
         expressReturn.ReturnTime = model.ReturnTime;
 
