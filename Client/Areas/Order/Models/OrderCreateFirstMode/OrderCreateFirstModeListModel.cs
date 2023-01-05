@@ -1,9 +1,11 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Order.Models.OrderCreateFirstMode; 
+namespace shunda.Client.Areas.Order.Models.OrderCreateFirstMode;
 
 public class OrderCreateFirstModeListModel {
-
     [JsonProperty("firstModeList")]
     public IList<OrderCreateFirstModeListItem> FirstModeList = new List<OrderCreateFirstModeListItem>();
+
+    [JsonProperty("selectFirstModeId")]
+    public int SelectFirstModeId { get; set; }
 }

@@ -37,6 +37,7 @@ public class OrderCreateFirstModeController : Controller {
             throw new ValidationException("订单创建选择数据不存在或者国家未选择！");
         }
 
+        int selectFirstModeId = createSelect.FirstModeId;
         Country country = createSelect.Country ?? Country.None;
 
         var firstModeList = session.Query<LogisticsModeInfo>()
@@ -58,6 +59,7 @@ public class OrderCreateFirstModeController : Controller {
             Message = "操作成功！",
             Data = new OrderCreateFirstModeListModel {
                 FirstModeList = firstModeItemList,
+                SelectFirstModeId = selectFirstModeId,
             },
         });
     }
