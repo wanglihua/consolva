@@ -63,8 +63,22 @@ page {
     color: white !important;
 }
 
+.item-header-title-selected {
+    color: rgb(231, 174, 0) !important;
+}
+
 .item-header-value {
     color: white !important;
+}
+
+.item-button {
+    width: 180rpx !important;
+    color: #646566 !important;
+}
+
+.item-button-selected {
+    width: 180rpx !important;
+    color: rgb(231, 174, 0) !important;
 }
 
 .cell-left-icon {
