@@ -90,7 +90,7 @@ public class OrderCreateFirstModeController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "物流保存成功！",
         });
     }
 }

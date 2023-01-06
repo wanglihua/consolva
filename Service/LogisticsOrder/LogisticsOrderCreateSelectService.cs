@@ -88,6 +88,10 @@ public class LogisticsOrderCreateSelectService {
             throw new ValidationException($"指定的收货地址#{receiveAddressId}不存在！");
         }
 
+        if (receiveAddress.Customer.Id != customerId) {
+            throw new ValidationException($"指定的收货地址#{receiveAddressId}不属于当前客户#{customerId}！");
+        }
+
         // 判断是否有非英文字符
         if (StringUtil.AllEnglish(receiveAddress.FirstName) == false) {
             throw new ValidationException("[first name] 有非英文字符，请更正！");
@@ -138,6 +142,10 @@ public class LogisticsOrderCreateSelectService {
         CustomerSendAddressInfo sendAddress = session.Get<CustomerSendAddressInfo>(sendAddressId);
         if (sendAddress == null) {
             throw new ValidationException($"指定的发货地址#{sendAddressId}不存在！");
+        }
+
+        if (sendAddress.Customer.Id != customerId) {
+            throw new ValidationException($"指定的发货地址#{sendAddressId}不属于当前客户#{customerId}！");
         }
 
         if (StringUtil.AllChinese(sendAddress.Name) == false) {
