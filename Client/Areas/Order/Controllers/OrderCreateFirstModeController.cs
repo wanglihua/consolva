@@ -38,7 +38,7 @@ public class OrderCreateFirstModeController : Controller {
         }
 
         int selectFirstModeId = createSelect.FirstModeId;
-        Country country = createSelect.Country ?? Country.None;
+        Country country = createSelect.Country;
 
         var firstModeList = session.Query<LogisticsModeInfo>()
             .Where(e => e.Country == country // todo 物品类型的问题怎么解决
