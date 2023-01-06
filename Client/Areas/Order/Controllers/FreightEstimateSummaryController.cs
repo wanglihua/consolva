@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Services;
 using shunda.Service.LogisticsOrder;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;
 
