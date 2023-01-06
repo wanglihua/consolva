@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderCreateInsurance;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Logistics;
@@ -59,6 +60,7 @@ public class OrderCreateInsuranceController : Controller {
 
     [HttpPost]
     [Route("/client/order/create/insurance/save")]
+    [Transactional]
     public IActionResult Save([FromBody] OrderCreateInsuranceSaveParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));

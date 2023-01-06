@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderCreateAddressSend;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -61,6 +62,7 @@ public class OrderCreateAddressSendController : Controller {
 
     [HttpPost]
     [Route("/client/order/create/address/send/save")]
+    [Transactional]
     public IActionResult Save([FromBody] OrderCreateAddressSendSaveParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));

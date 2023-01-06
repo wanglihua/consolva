@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.FreightEstimateCountry;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
@@ -57,6 +58,7 @@ public class FreightEstimateCountryController : Controller {
 
     [HttpPost]
     [Route("/client/freight/estimate/country/save")]
+    [Transactional]
     public IActionResult Save([FromBody] FreightEstimateCountrySaveParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
