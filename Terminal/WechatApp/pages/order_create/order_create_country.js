@@ -22,6 +22,18 @@ Page({
     },
 
     onCountryButtonClick(e) {
-        
+        const country = e.currentTarget.dataset.item;
+        const countryId = country.countryId;
+
+        app.post("/client/order/create/country/save", {
+            countryId: countryId
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            // 导航到下一步
+
+        });
     }
 })
