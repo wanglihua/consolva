@@ -1,7 +1,7 @@
 <!--pages/freight_estimate/freight_estimate_receive_address.wxml-->
 <header/>
 <view class="container">
-    <van-cell-group title="收货地址"/>
+    <van-cell-group title="收货地址-运费预估"/>
 
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">

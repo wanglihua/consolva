@@ -1,7 +1,7 @@
 <!--pages/freight_estimate/freight_estimate_first_mode.wxml-->
 <header/>
 <view class="container">
-    <van-cell-group title="头程物流"/>
+    <van-cell-group title="头程物流-运费预估"/>
 
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">

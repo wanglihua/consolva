@@ -35,11 +35,6 @@ public class LogisticsOrderCreateSelectService {
         session.Flush();
     }
 
-    /// <summary>
-    /// 这个就在汇总的时候调用了
-    /// </summary>
-    /// <param name="customerId"></param>
-    /// <param name="goodsType"></param>
     public void SaveGoodsType(int customerId, LogisticsGoodsType goodsType) {
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
@@ -76,6 +71,10 @@ public class LogisticsOrderCreateSelectService {
             };
             session.Save(createSelect);
         } else {
+            if (createSelect.Country != firstMode.Country) {
+                throw new ValidationException("物流方式对应国家和订单创建记录国家不一致！");
+            }
+
             createSelect.FirstType = firstType;
             createSelect.FirstModeId = firstModeId;
             createSelect.Valid = false;
@@ -123,6 +122,10 @@ public class LogisticsOrderCreateSelectService {
             };
             session.Save(createSelect);
         } else {
+            if (createSelect.Country != receiveAddress.Country) {
+                throw new ValidationException("收货地址对应国家和订单创建记录国家不一致！");
+            }
+
             createSelect.AddressReceiveId = receiveAddressId;
             createSelect.Valid = false;
             session.Update(createSelect);

@@ -1,7 +1,7 @@
 <!--pages/order_create/order_create_receive_address.wxml-->
 <header />
 <view class="container">
-    <van-cell-group title="收货地址"/>
+    <van-cell-group title="收货地址-订单创建"/>
 
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
