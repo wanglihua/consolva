@@ -25,11 +25,16 @@ Page({
         const country = e.currentTarget.dataset.item;
         const countryId = country.countryId;
 
+        const that = this;
         app.post("/client/order/create/country/save", {
             countryId: countryId
         }, function (res) {
             wx.showToast({
                 title: res.message,
+            });
+
+            that.setData({
+                selectCountryId: countryId,
             });
 
             // 导航到下一步

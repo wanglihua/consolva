@@ -1,7 +1,7 @@
 <!--pages/order_create/order_create_country.wxml-->
-<header />
+<header/>
 <view class="container">
-    <van-cell-group title="目的国家" />
+    <van-cell-group title="目的国家"/>
 
     <block wx:for="{{ countryList }}" wx:key="id" wx:for-item="country" wx:for-index="index">
         <block wx:if="{{ country.countryId !== selectCountryId }}">
@@ -14,9 +14,24 @@
         <block wx:else>
             <van-cell-group custom-class="items">
                 <van-cell title="{{ index + 1 }}、{{ country.countryName }}" value="{{ country.status }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected" value-class="item-header-value">
-                    <van-button slot="right-icon" type="default" size="small" plain block custom-class="country-button-selected">已选择</van-button>
+                    <van-button slot="right-icon" type="default" size="small" plain block custom-class="country-button-selected" bind:click="onCountryButtonClick" data-item="{{ country }}">已选择</van-button>
                 </van-cell>
             </van-cell-group>
         </block>
     </block>
+
+    <view style="width: 100%; padding-bottom: 30rpx; border-top: 1px solid #ebedf0; background-color: white; position: fixed; left: 0; bottom: 0; z-index: 88;">
+        <view style="padding: 10rpx 40rpx;">
+            <van-row gutter="20">
+                <van-col span="24">
+                    <van-button type="default" size="small" plain block bind:click="">
+                        下一步
+                        <van-icon class-prefix="iconfont" name="next-step"/>
+                    </van-button>
+                </van-col>
+            </van-row>
+
+
+        </view>
+    </view>
 </view>
