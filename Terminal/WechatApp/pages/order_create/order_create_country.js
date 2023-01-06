@@ -37,8 +37,27 @@ Page({
                 selectCountryId: countryId,
             });
 
-            // 导航到下一步
+            that.gotoNext();
+        });
+    },
 
+    onNextButtonClick(e) {
+        const selectCountryId = this.data.selectCountryId;
+        if (selectCountryId === 0) {
+            wx.showModal({
+                title: '错误',
+                content: "请选择目的国家！",
+                showCancel: false
+            });
+            return;
+        }
+        
+        this.gotoNext();
+    },
+    
+    gotoNext() {
+        wx.navigateTo({
+            url: "./order_create_first_mode",
         });
     }
 })
