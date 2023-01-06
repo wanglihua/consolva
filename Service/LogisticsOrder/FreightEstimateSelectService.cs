@@ -10,10 +10,10 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.LogisticsOrder;
 
 [Service(ServiceType.Scoped)]
-public class FreightEstimateService {
+public class FreightEstimateSelectService {
     private readonly ISession session;
 
-    public FreightEstimateService(ISession session) {
+    public FreightEstimateSelectService(ISession session) {
         this.session = session;
     }
 
