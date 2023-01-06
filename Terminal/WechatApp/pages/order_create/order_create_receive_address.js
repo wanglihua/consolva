@@ -8,5 +8,13 @@ Page({
 
     onLoad(options) {
 
+    },
+
+    onPreButtonClick(e) {
+
+    },
+
+    onNextButtonClick(e) {
+
     }
 })

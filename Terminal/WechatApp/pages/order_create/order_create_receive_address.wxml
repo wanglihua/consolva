@@ -1,2 +1,24 @@
 <!--pages/order_create/order_create_receive_address.wxml-->
-<text>pages/order_create/order_create_receive_address.wxml</text>
+<header />
+<view class="container">
+    <van-cell-group title="收货地址"/>
+
+    <view class="bottom-btn-panel">
+        <view class="bottom-btn-panel-inner">
+            <van-row gutter="20">
+                <van-col span="12">
+                    <van-button type="default" size="small" plain block bind:click="onPreButtonClick">
+                        <van-icon class-prefix="iconfont" name="pre-step" />
+                        上一步
+                    </van-button>
+                </van-col>
+                <van-col span="12">
+                    <van-button type="default" size="small" plain block bind:click="onNextButtonClick">
+                        下一步
+                        <van-icon class-prefix="iconfont" name="next-step" />
+                    </van-button>
+                </van-col>
+            </van-row>
+        </view>
+    </view>
+</view>

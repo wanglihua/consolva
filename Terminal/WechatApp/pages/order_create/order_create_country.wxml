@@ -20,8 +20,8 @@
         </block>
     </block>
 
-    <view style="width: 100%; padding-bottom: 30rpx; border-top: 1px solid #ebedf0; background-color: white; position: fixed; left: 0; bottom: 0; z-index: 88;">
-        <view style="padding: 10rpx 40rpx;">
+    <view class="bottom-btn-panel">
+        <view class="bottom-btn-panel-inner">
             <van-row gutter="20">
                 <van-col span="24">
                     <van-button type="default" size="small" plain block bind:click="onNextButtonClick">

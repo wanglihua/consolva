@@ -88,3 +88,18 @@ page {
 .bottom-divider {
     margin-top: 40rpx;
 }
+
+.bottom-btn-panel {
+    width: 100%;
+    padding-bottom: 30rpx;
+    border-top: 1px solid #ebedf0;
+    background-color: white;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 88;
+}
+
+.bottom-btn-panel-inner {
+    padding: 10rpx 40rpx;
+}
