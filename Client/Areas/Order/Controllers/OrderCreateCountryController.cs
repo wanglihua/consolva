@@ -53,6 +53,11 @@ public class OrderCreateCountryController : Controller {
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(loginCustomerId);
         int selectCountryId = createSelect?.Country?.Id ?? 0;
 
+        // 选择修正，这里实际不做也行的
+        if (Country.GetNoChinaList().Where(e => e.Id == selectCountryId).Count() == 0) {
+            selectCountryId = 0;
+        }
+
         // 显示国家列表
         var countryItemList = Country.GetNoChinaList()
             .Select(e => new OrderCreateCountryListItem {

@@ -13,6 +13,11 @@
                     <van-cell title="{{ index + 1 }}、{{ firstMode.modeName }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
                         <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onFirstModeButtonClick" data-item="{{ firstMode }}">已选择</van-button>
                     </van-cell>
+                    <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="名称" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
+                    <!--<van-cell title="描述" value="{{ firstMode.modeDesc }}" border="{{ false }}" custom-class="item"/>-->
+                    <view class="item-last-vspace"/>
                 </van-cell-group>
             </block>
             <block wx:else>
@@ -20,6 +25,11 @@
                     <van-cell title="{{ index + 1 }}、{{ firstMode.modeName }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
                         <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onFirstModeButtonClick" data-item="{{ firstMode }}">选择</van-button>
                     </van-cell>
+                    <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="名称" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
+                    <!--<van-cell title="描述" value="{{ firstMode.modeDesc }}" border="{{ false }}" custom-class="item"/>-->
+                    <view class="item-last-vspace"/>
                 </van-cell-group>
             </block>
         </block>
