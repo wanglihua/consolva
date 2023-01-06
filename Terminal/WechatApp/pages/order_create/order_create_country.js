@@ -21,5 +21,7 @@ Page({
         });
     },
 
-    onCountryButtonClick(e) {}
+    onCountryButtonClick(e) {
+        
+    }
 })

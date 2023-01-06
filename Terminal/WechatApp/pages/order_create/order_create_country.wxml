@@ -4,10 +4,19 @@
     <van-cell-group title="目的国家" />
 
     <block wx:for="{{ countryList }}" wx:key="id" wx:for-item="country" wx:for-index="index">
-        <van-cell-group custom-class="items">
-            <van-cell title="{{ index + 1 }}、{{ country.countryName }}" value="{{ country.status }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value">
-                <van-button slot="right-icon" type="default" size="small" plain block custom-class="country-button">选择</van-button>
-            </van-cell>
-        </van-cell-group>
+        <block wx:if="{{ country.countryId !== selectCountryId }}">
+            <van-cell-group custom-class="items">
+                <van-cell title="{{ index + 1 }}、{{ country.countryName }}" value="{{ country.status }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value">
+                    <van-button slot="right-icon" type="default" size="small" plain block custom-class="country-button" bind:click="onCountryButtonClick" data-item="{{ country }}">选择</van-button>
+                </van-cell>
+            </van-cell-group>
+        </block>
+        <block wx:else>
+            <van-cell-group custom-class="items">
+                <van-cell title="{{ index + 1 }}、{{ country.countryName }}" value="{{ country.status }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected" value-class="item-header-value">
+                    <van-button slot="right-icon" type="default" size="small" plain block custom-class="country-button-selected">已选择</van-button>
+                </van-cell>
+            </van-cell-group>
+        </block>
     </block>
 </view>
