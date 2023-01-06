@@ -45,7 +45,7 @@ public class OrderCreateAddressReceiveController : Controller {
             .ToList();
 
         // 选择修正
-        if (addressList.Where(e => e.Id == selectAddressId).Count() == 0) {
+        if (selectAddressId != 0 && addressList.Where(e => e.Id == selectAddressId).Count() == 0) {
             selectAddressId = 0;
         }
 

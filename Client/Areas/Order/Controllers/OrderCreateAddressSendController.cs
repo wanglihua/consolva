@@ -4,6 +4,8 @@ using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Customer;
+using shunda.Domain.LogisticsOrder;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -27,9 +29,33 @@ public class OrderCreateAddressSendController : Controller {
     [HttpPost]
     [Route("/client/order/create/address/send/list")]
     public IActionResult List() {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(loginCustomerId);
+
+        int selectAddressId = createSelect?.AddressSendId ?? 0;
+        var addressList = session.Query<CustomerSendAddressInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId)
+            .OrderByDescending(e => e.IsDefault)
+            .ThenByDescending(e => e.Id)
+            .ToList();
+
+        if (selectAddressId != 0 && addressList.Where(e => e.Id == selectAddressId).Count() == 0) {
+            selectAddressId = 0;
+        }
+
+        var addressItemList = addressList
+            .Select(e => new OrderCreateAddressSendListItem {
+                Id = e.Id,
+            })
+            .ToList();
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new OrderCreateAddressSendListModel {
+                AddressList = addressItemList,
+                SelectAddressId = selectAddressId,
+            },
         });
     }
 

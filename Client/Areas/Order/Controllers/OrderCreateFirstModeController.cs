@@ -48,7 +48,7 @@ public class OrderCreateFirstModeController : Controller {
             .ToList();
 
         // 对已选择的做个修正，如果当前列表中，没包含这个已选择的，就修正为0，就是未选择
-        if (firstModeList.Where(e => e.Id == selectFirstModeId).Count() == 0) {
+        if (selectFirstModeId != 0 && firstModeList.Where(e => e.Id == selectFirstModeId).Count() == 0) {
             selectFirstModeId = 0; // 不把这个值当前保存到数据库
         }
 
