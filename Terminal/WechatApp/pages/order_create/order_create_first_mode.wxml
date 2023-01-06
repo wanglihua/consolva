@@ -9,10 +9,18 @@
     <block wx:else>
         <block wx:for="{{ firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
             <block wx:if="{{ firstMode.modeId === selectFirstModeId }}">
-                
+                <van-cell-group custom-class="items">
+                    <van-cell title="{{ index + 1 }}、{{ firstMode.modeName }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onFirstModeButtonClick" data-item="{{ firstMode }}">已选择</van-button>
+                    </van-cell>
+                </van-cell-group>
             </block>
             <block wx:else>
-                
+                <van-cell-group custom-class="items">
+                    <van-cell title="{{ index + 1 }}、{{ firstMode.modeName }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onFirstModeButtonClick" data-item="{{ firstMode }}">选择</van-button>
+                    </van-cell>
+                </van-cell-group>
             </block>
         </block>
     </block>
