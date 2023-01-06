@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Services;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;
@@ -8,9 +9,14 @@ namespace shunda.Client.Areas.Order.Controllers;
 public class FreightEstimateAddressReceiveController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly FreightEstimateSelectService freightEstimateSelectService;
 
-    public FreightEstimateAddressReceiveController(ISession session, LoginCustomerService loginCustomerService) {
+    public FreightEstimateAddressReceiveController(ISession session,
+        LoginCustomerService loginCustomerService,
+        FreightEstimateSelectService freightEstimateSelectService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.freightEstimateSelectService = freightEstimateSelectService;
     }
 }
