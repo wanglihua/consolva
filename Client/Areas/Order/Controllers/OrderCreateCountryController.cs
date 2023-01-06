@@ -61,8 +61,8 @@ public class OrderCreateCountryController : Controller {
         // 显示国家列表
         var countryItemList = Country.GetNoChinaList()
             .Select(e => new OrderCreateCountryListItem {
-                CountryId = e.Id,
-                CountryName = e.Name,
+                Id = e.Id,
+                Name = e.Name,
             })
             .ToList();
 

@@ -23,7 +23,7 @@ Page({
 
     onFirstModeButtonClick(e) {
         const firstMode = e.currentTarget.dataset.item;
-        const firstModeId = firstMode.modeId;
+        const firstModeId = firstMode.id;
 
         const that = this;
         app.post("/client/order/create/first/mode/save", {

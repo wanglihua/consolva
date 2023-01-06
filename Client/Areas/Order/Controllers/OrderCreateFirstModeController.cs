@@ -54,11 +54,11 @@ public class OrderCreateFirstModeController : Controller {
 
         var firstModeItemList = firstModeList
             .Select(e => new OrderCreateFirstModeListItem {
-                ModeId = e.Id,
+                Id = e.Id,
                 Country = e.Country.Name,
                 Type = e.Type.Name,
-                ModeName = e.Name,
-                ModeDesc = e.Description,
+                Name = e.Name,
+                Description = e.Description,
             })
             .ToList();
 
@@ -86,7 +86,6 @@ public class OrderCreateFirstModeController : Controller {
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-
         logisticsOrderCreateSelectService.SaveFirstMode(loginCustomerId, firstModeId);
 
         return Json(new JsonResultData {

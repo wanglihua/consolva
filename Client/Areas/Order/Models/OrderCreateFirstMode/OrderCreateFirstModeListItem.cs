@@ -3,8 +3,8 @@ using Newtonsoft.Json;
 namespace shunda.Client.Areas.Order.Models.OrderCreateFirstMode;
 
 public class OrderCreateFirstModeListItem {
-    [JsonProperty("modeId")]
-    public int ModeId { get; set; }
+    [JsonProperty("id")]
+    public int Id { get; set; }
 
     [JsonProperty("country")]
     public string Country { get; set; } = string.Empty;
@@ -12,9 +12,9 @@ public class OrderCreateFirstModeListItem {
     [JsonProperty("type")]
     public string Type { get; set; } = string.Empty;
 
-    [JsonProperty("modeName")]
-    public string ModeName { get; set; } = string.Empty;
+    [JsonProperty("name")]
+    public string Name { get; set; } = string.Empty;
 
-    [JsonProperty("modeDesc")]
-    public string ModeDesc { get; set; } = string.Empty;
+    [JsonProperty("description")]
+    public string Description { get; set; } = string.Empty;
 }

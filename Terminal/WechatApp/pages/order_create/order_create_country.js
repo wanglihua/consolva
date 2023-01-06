@@ -23,7 +23,7 @@ Page({
 
     onCountryButtonClick(e) {
         const country = e.currentTarget.dataset.item;
-        const countryId = country.countryId;
+        const countryId = country.id;
 
         const that = this;
         app.post("/client/order/create/country/save", {
@@ -51,10 +51,10 @@ Page({
             });
             return;
         }
-        
+
         this.gotoNext();
     },
-    
+
     gotoNext() {
         wx.navigateTo({
             url: "./order_create_first_mode",
