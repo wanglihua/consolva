@@ -2,10 +2,29 @@
 const app = getApp();
 
 Page({
-    data: {},
+    data: {
+        addressList: [],
+        selectAddressId: 0,
+        country: '',
+    },
 
     onLoad(options) {
+        this.loadReceiveAddressList();
+    },
 
+    loadReceiveAddressList() {
+        const that = this;
+        app.post("/client/order/create/address/receive/list", {}, function (res) {
+            that.setData({
+                addressList: res.data.addressList,
+                selectAddressId: res.data.selectAddressId,
+                country: res.data.country,
+            });
+        });
+    },
+
+    onReceiveAddressButtonClick(e) {
+        
     },
 
     onPreButtonClick(e) {
@@ -13,7 +32,17 @@ Page({
     },
 
     onNextButtonClick(e) {
-
+        const selectAddressId = this.data.selectAddressId;
+        if(selectAddressId ===0) {
+            wx.showModal({
+                title: '错误',
+                content: "请选择收货地址！",
+                showCancel: false
+            });
+            return;
+        }
+        
+        this.gotoNext();
     },
 
     gotoPre() {

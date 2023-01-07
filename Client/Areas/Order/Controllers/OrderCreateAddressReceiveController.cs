@@ -79,6 +79,7 @@ public class OrderCreateAddressReceiveController : Controller {
             Data = new OrderCreateAddressReceiveListModel {
                 AddressList = addressItemList,
                 SelectAddressId = selectAddressId,
+                Country = country.Name,
             },
         });
     }

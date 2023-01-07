@@ -105,6 +105,7 @@ page {
 
 .bottom-btn-panel {
     width: 100%;
+    padding-top: 15rpx;
     padding-bottom: 30rpx;
     border-top: 1px solid #ebedf0;
     background-color: white;
