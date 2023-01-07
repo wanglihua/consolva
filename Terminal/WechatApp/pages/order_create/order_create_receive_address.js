@@ -62,13 +62,13 @@ Page({
     },
 
     gotoPre() {
-        wx.navigateTo({
+        wx.redirectTo({
             url: "./order_create_first_mode",
         });
     },
 
     gotoNext() {
-        wx.navigateTo({
+        wx.redirectTo({
             url: "./order_create_send_address",
         });
     }

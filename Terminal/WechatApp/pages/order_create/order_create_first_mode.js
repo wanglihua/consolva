@@ -42,12 +42,10 @@ Page({
     },
 
     onPreButtonClick(e) {
-        // console.log(e);
         this.gotoPre();
     },
 
     onNextButtonClick(e) {
-        // console.log(e);
         const selectFirstModeId = this.data.selectFirstModeId;
         if (selectFirstModeId === 0) {
             wx.showModal({
@@ -62,15 +60,13 @@ Page({
     },
 
     gotoPre() {
-        // console.log("gotoPre() begin")
-        wx.navigateTo({
+        wx.redirectTo({
             url: "./order_create_country",
         });
-        // console.log("gotoPre() end")
     },
 
     gotoNext() {
-        wx.navigateTo({
+        wx.redirectTo({
             url: "./order_create_receive_address",
         });
     }
