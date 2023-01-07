@@ -8,6 +8,7 @@ using shunda.Core.Web;
 using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Customer;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -18,14 +19,17 @@ public class FreightEstimateAddressReceiveController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly FreightEstimateSelectService freightEstimateSelectService;
+    private readonly CustomerReceiveAddressService customerReceiveAddressService;
 
     public FreightEstimateAddressReceiveController(ISession session,
         LoginCustomerService loginCustomerService,
-        FreightEstimateSelectService freightEstimateSelectService
+        FreightEstimateSelectService freightEstimateSelectService,
+        CustomerReceiveAddressService customerReceiveAddressService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.freightEstimateSelectService = freightEstimateSelectService;
+        this.customerReceiveAddressService = customerReceiveAddressService;
     }
 
     [HttpPost]
@@ -53,6 +57,19 @@ public class FreightEstimateAddressReceiveController : Controller {
         var addressItemList = addressList
             .Select(e => new FreightEstimateAddressReceiveListItem {
                 Id = e.Id,
+                Country = e.Country.Name,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                Mobile = e.Mobile,
+                Address = e.Address,
+                City = e.City,
+                State = e.State,
+                Zipcode = e.Zipcode,
+                Tfn = e.Tfn,
+                Company = e.Company,
+                UnitLoc = e.UnitLoc,
+                IsDefault = e.IsDefault,
+                FullAddress = customerReceiveAddressService.GetFullAddress(e),                
             })
             .ToList();
 

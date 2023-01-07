@@ -47,6 +47,16 @@ public class OrderCreateAddressSendController : Controller {
         var addressItemList = addressList
             .Select(e => new OrderCreateAddressSendListItem {
                 Id = e.Id,
+                Country = e.Country.Name,
+                Name = e.Name,
+                Mobile = e.Mobile,
+                Province = e.Province.Name,
+                City = e.City.Name,
+                Area = e.Area.Name,
+                Street = e.Street.Name,
+                Address = e.Address,
+                Zipcode = e.Zipcode,
+                IsDefault = e.IsDefault,
             })
             .ToList();
 
