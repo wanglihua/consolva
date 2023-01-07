@@ -80,4 +80,32 @@ public class OrderCreateInsuranceController : Controller {
             Message = "保险保存成功！",
         });
     }
+
+    [HttpPost]
+    [Route("/client/order/create/insurance/detail")]
+    public IActionResult Detail([FromBody] IdParam param) {
+        if (ModelState.IsValid == false) {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int insuranceId = param.Id;
+        if (insuranceId <= 0) {
+            throw new ValidationException("保险方案Id不能为空！");
+        }
+
+        var insurance = session.Get<LogisticsInsuranceWithContentInfo>(insuranceId);
+        if (insurance == null) {
+            throw new ValidationException($"指定的保险方案#{insuranceId}不存在！");
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new OrderCreateInsuranceDetailModel {
+                Id = insurance.Id,
+                Name = insurance.Name,
+                Content = insurance.Content,
+            },
+        });
+    }
 }

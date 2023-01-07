@@ -11,10 +11,22 @@ Page({
     },
 
     onPreButtonClick(e) {
-
+        this.gotoPre();
     },
 
     onNextButtonClick(e) {
 
-    }
+    },
+
+    gotoPre() {
+        wx.redirectTo({
+            url: "./order_create_insurance",
+        });
+    },
+
+    gotoNext() {
+        wx.redirectTo({
+            url: "",
+        });
+    }    
 })
