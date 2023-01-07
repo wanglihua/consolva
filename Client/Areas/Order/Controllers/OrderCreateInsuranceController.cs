@@ -44,7 +44,8 @@ public class OrderCreateInsuranceController : Controller {
 
         var insuranceItemList = insuranceList
             .Select(e => new OrderCreateInsuranceListItem {
-                Id = e.Id
+                Id = e.Id,
+                Name = e.Name,
             })
             .ToList();
 

@@ -81,6 +81,11 @@ page {
     color: rgb(231, 174, 0) !important;
 }
 
+.item-button-mini {
+    color: #646566 !important;
+    padding: 1rpx 8rpx !important;
+}
+
 .cell-left-icon {
     color: rgb(175, 136, 15);
     margin-right: 10rpx;
