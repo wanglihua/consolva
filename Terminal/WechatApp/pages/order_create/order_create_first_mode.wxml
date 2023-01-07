@@ -8,30 +8,23 @@
     </block>
     <block wx:else>
         <block wx:for="{{ firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
-            <block wx:if="{{ firstMode.id === selectFirstModeId }}">
-                <van-cell-group custom-class="items">
+            <van-cell-group custom-class="items">
+                <block wx:if="{{ firstMode.id === selectFirstModeId }}">
                     <van-cell title="{{ index + 1 }}、{{ firstMode.name }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
                         <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onFirstModeButtonClick" data-item="{{ firstMode }}">已选择</van-button>
                     </van-cell>
-                    <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="名称" value="{{ firstMode.name }}" border="{{ false }}" custom-class="item"/>
-                    <!--<van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>-->
-                    <view class="item-last-vspace"/>
-                </van-cell-group>
-            </block>
-            <block wx:else>
-                <van-cell-group custom-class="items">
+                </block>
+                <block wx:else>
                     <van-cell title="{{ index + 1 }}、{{ firstMode.name }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
                         <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onFirstModeButtonClick" data-item="{{ firstMode }}">选择</van-button>
                     </van-cell>
-                    <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="名称" value="{{ firstMode.name }}" border="{{ false }}" custom-class="item"/>
-                    <!--<van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>-->
-                    <view class="item-last-vspace"/>
-                </van-cell-group>
-            </block>
+                </block>
+                <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="名称" value="{{ firstMode.name }}" border="{{ false }}" custom-class="item"/>
+                <!--<van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>-->
+                <view class="item-last-vspace"/>
+            </van-cell-group>
         </block>
     </block>
 

@@ -4,20 +4,18 @@
     <van-cell-group title="目的国家-订单创建"/>
 
     <block wx:for="{{ countryList }}" wx:key="id" wx:for-item="country" wx:for-index="index">
-        <block wx:if="{{ country.id === selectCountryId }}">
-            <van-cell-group custom-class="items">
+        <van-cell-group custom-class="items">
+            <block wx:if="{{ country.id === selectCountryId }}">
                 <van-cell title="{{ index + 1 }}、{{ country.name }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
                     <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onCountryButtonClick" data-item="{{ country }}">已选择</van-button>
                 </van-cell>
-            </van-cell-group>
-        </block>
-        <block wx:else>
-            <van-cell-group custom-class="items">
+            </block>
+            <block wx:else>
                 <van-cell title="{{ index + 1 }}、{{ country.name }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
                     <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onCountryButtonClick" data-item="{{ country }}">选择</van-button>
                 </van-cell>
-            </van-cell-group>
-        </block>
+            </block>
+        </van-cell-group>
     </block>
 
     <view class="bottom-btn-panel">

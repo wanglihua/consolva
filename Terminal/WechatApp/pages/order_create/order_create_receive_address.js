@@ -24,7 +24,23 @@ Page({
     },
 
     onReceiveAddressButtonClick(e) {
-        
+        const address = e.currentTarget.dataset.item;
+        const addressId = address.id;
+
+        const that = this;
+        app.post("/client/order/create/address/receive/save", {
+            addressId: addressId,
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            that.setData({
+                selectAddressId: addressId,
+            });
+
+            that.gotoNext();
+        })
     },
 
     onPreButtonClick(e) {
@@ -33,7 +49,7 @@ Page({
 
     onNextButtonClick(e) {
         const selectAddressId = this.data.selectAddressId;
-        if(selectAddressId ===0) {
+        if (selectAddressId === 0) {
             wx.showModal({
                 title: '错误',
                 content: "请选择收货地址！",
@@ -41,7 +57,7 @@ Page({
             });
             return;
         }
-        
+
         this.gotoNext();
     },
 

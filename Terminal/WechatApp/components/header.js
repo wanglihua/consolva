@@ -19,11 +19,16 @@ Component({
     methods: {
         onClickLeft() {
             wx.showToast({title: '点击logo', icon: 'none'});
-            wx.navigateTo({
+            // wx.navigateTo({
+            //     url: "/pages/home/home_index",
+            // });
+
+            // app.goback("index");
+
+            wx.redirectTo({
                 url: "/pages/home/home_index",
             });
-            
-            // app.goback("index");
+
         },
         onClickRight() {
             wx.showToast({title: '点击VIP', icon: 'none'});
