@@ -3,11 +3,10 @@ using shunda.Core;
 
 namespace shunda.Domain.Logistics;
 
-public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInfo>
-{
-    public LogisticsInsuranceInfoMapping()
-    {
+public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInfo> {
+    public LogisticsInsuranceInfoMapping() {
         Table("tbl_logistics_insurance");
+        Mutable(false);
 
         Property(
             x => x.Name,
@@ -16,15 +15,6 @@ public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInf
                 map.Column("name");
                 map.Length(50);
                 map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.Content,
-            map => {
-                map.Type(NHibernateUtil.StringClob);
-                map.Column("content");
-                map.NotNullable(false);
             }
         );
 
@@ -60,6 +50,7 @@ public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInf
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("order_num");
+                map.NotNullable(true);
             }
         );
 

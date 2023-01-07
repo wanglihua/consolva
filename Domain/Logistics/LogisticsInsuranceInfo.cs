@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Core;
@@ -8,19 +7,13 @@ namespace shunda.Domain.Logistics;
 /// <summary>
 /// 保险
 /// </summary>
-public class LogisticsInsuranceInfo : Entity
-{
+public class LogisticsInsuranceInfo : Entity {
     /// <summary>
     /// 名称
     /// </summary>
     [Required(ErrorMessage = "名称不能为空！")]
     [MaxLength(50, ErrorMessage = "名称长度不能大于50！")]
     public virtual string Name { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 保险条款
-    /// </summary>
-    public virtual string? Content { get; set; }
 
     /// <summary>
     /// 费用类型
@@ -45,7 +38,7 @@ public class LogisticsInsuranceInfo : Entity
     /// <summary>
     /// 排序
     /// </summary>
-    public virtual int? OrderNum { get; set; }
+    public virtual int OrderNum { get; set; } = 0;
 
     /// <summary>
     /// 状态
