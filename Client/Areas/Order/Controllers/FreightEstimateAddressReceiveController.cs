@@ -69,7 +69,7 @@ public class FreightEstimateAddressReceiveController : Controller {
                 Company = e.Company,
                 UnitLoc = e.UnitLoc,
                 IsDefault = e.IsDefault,
-                FullAddress = customerReceiveAddressService.GetFullAddress(e),                
+                FullAddress = customerReceiveAddressService.GetFullAddress(e),
             })
             .ToList();
 
@@ -79,6 +79,7 @@ public class FreightEstimateAddressReceiveController : Controller {
             Data = new FreightEstimateAddressReceiveListModel {
                 AddressList = addressItemList,
                 SelectAddressId = selectAddressId,
+                Country = country.Name,
             },
         });
     }
