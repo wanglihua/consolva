@@ -38,7 +38,7 @@ public class OrderCreateAddressReceiveController : Controller {
         }
 
         int selectAddressId = createSelect.AddressReceiveId;
-        Country country = createSelect.Country ?? Country.None;
+        Country country = createSelect.Country;
         var addressList = session.Query<CustomerReceiveAddressInfo>()
             .Where(e => e.Customer.Id == loginCustomerId && e.Country == country)
             .OrderByDescending(e => e.IsDefault)
