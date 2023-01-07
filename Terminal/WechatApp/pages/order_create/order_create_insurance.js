@@ -5,6 +5,9 @@ Page({
     data: {
         insuranceList: [],
         selectInsuranceId: 0,
+
+        showDetail: false,
+        detailInsurance: {},
     },
 
     onLoad(options) {
@@ -38,6 +41,20 @@ Page({
             });
 
             that.gotoNext();
+        });
+    },
+
+    onViewDetailClick(e) {
+        const that = this;
+
+        that.setData({
+            showDetail: true,
+        });
+    },
+    
+    onDetailClose(e) {
+        this.setData({
+            showDetail: false,
         });
     },
 

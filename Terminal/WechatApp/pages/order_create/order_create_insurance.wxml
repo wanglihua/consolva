@@ -20,7 +20,7 @@
                     </van-cell>
                 </block>
                 <van-cell title="{{ insurance.name }}" border="{{ false }}" custom-class="item">
-                    <van-button slot="right-icon" type="default" size="mini" plain block custom-class="item-button-mini" bind:click="" data-item="{{ insurance }}">
+                    <van-button slot="right-icon" type="default" size="mini" plain block custom-class="item-button-mini" bind:click="onViewDetailClick" data-item="{{ insurance }}">
                         <van-icon class-prefix="iconfont" name="view-detail"/>
                         查看详细
                     </van-button>
@@ -28,6 +28,11 @@
                 <view class="item-last-vspace"/>
             </van-cell-group>
         </block>
+
+        <van-popup show="{{ showDetail }}" closeable position="bottom" custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;" bind:close="onDetailClose">
+            
+        </van-popup>
+        
     </block>
 
     <view class="bottom-btn-panel">
