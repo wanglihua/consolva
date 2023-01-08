@@ -81,6 +81,11 @@ public class ExpressCheckinController : Controller {
             .ToList();
 
         IDictionary<int, IList<ExpressGoodsInfo>> expressGoodsListMap = new Dictionary<int, IList<ExpressGoodsInfo>>();
+        // 让每个 express id 都有记录
+        foreach (int expressId in expressIdList) {
+            expressGoodsListMap[expressId] = new List<ExpressGoodsInfo>();
+        }
+
         foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
             int expressId = expressGoods.Express.Id;
 
