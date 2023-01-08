@@ -4,8 +4,10 @@ using shunda.Client.Areas.Order.Models.OrderCreateSummary;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Web;
+using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Customer;
 using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
@@ -16,14 +18,17 @@ public class OrderCreateSummaryController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly LogisticsGoodsTypeService logisticsGoodsTypeService;
+    private readonly CustomerReceiveAddressService customerReceiveAddressService;
 
     public OrderCreateSummaryController(ISession session,
         LoginCustomerService loginCustomerService,
-        LogisticsGoodsTypeService logisticsGoodsTypeService
+        LogisticsGoodsTypeService logisticsGoodsTypeService,
+        CustomerReceiveAddressService customerReceiveAddressService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.logisticsGoodsTypeService = logisticsGoodsTypeService;
+        this.customerReceiveAddressService = customerReceiveAddressService;
     }
 
     [HttpPost]
@@ -149,6 +154,44 @@ public class OrderCreateSummaryController : Controller {
 
         #endregion
 
+        // 地址
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(loginCustomerId);
+        if (createSelect == null) {
+            throw new ValidationException("当前客户没有订单创建选择记录信息！");
+        }
+
+        int receiveAddressId = createSelect.AddressReceiveId;
+        var receiveAddress = session.Get<CustomerReceiveAddressInfo>(receiveAddressId);
+        if (receiveAddress == null) {
+            throw new ValidationException($"指定的收货地址#{receiveAddressId}不存在！");
+        }
+
+        var receiveAddressItem = new OrderCreateSummaryReceiveAddressItem {
+            Id = receiveAddress.Id,
+            Country = receiveAddress.Country.Name,
+            FirstName = receiveAddress.FirstName,
+            LastName = receiveAddress.LastName,
+            Mobile = receiveAddress.Mobile,
+            Address = receiveAddress.Address,
+            City = receiveAddress.City,
+            State = receiveAddress.State,
+            Zipcode = receiveAddress.Zipcode,
+            Tfn = receiveAddress.Tfn,
+            Company = receiveAddress.Company,
+            UnitLoc = receiveAddress.UnitLoc,
+            FullAddress = customerReceiveAddressService.GetFullAddress(receiveAddress),
+        };
+
+        int sendAddressId = createSelect.AddressSendId;
+        var sendAddress = session.Get<CustomerSendAddressInfo>(sendAddressId);
+        if (sendAddress == null) {
+            throw new ValidationException($"指定的发货地址#{sendAddressId}不存在！");
+        }
+        
+        
+
+        // todo 订单创建时必须要做必要的数据验证，这里就先不做了
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
@@ -157,6 +200,7 @@ public class OrderCreateSummaryController : Controller {
                 GoodsType = goodsType.Name,
                 TotalPackageCount = totalPackageCount,
                 TotalGoodsValue = totalGoodsValue.ToString("#0.00"),
+                ReceiveAddress = receiveAddressItem,
             },
         });
     }
