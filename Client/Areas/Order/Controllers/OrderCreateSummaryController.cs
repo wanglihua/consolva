@@ -3,9 +3,11 @@ using NHibernate.Linq;
 using shunda.Client.Areas.Order.Models.OrderCreateSummary;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
 using shunda.Service.Logistics;
@@ -33,6 +35,7 @@ public class OrderCreateSummaryController : Controller {
 
     [HttpPost]
     [Route("/client/order/create/summary")]
+    [Transactional] // 设置成 valid
     public IActionResult Summary() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
@@ -154,12 +157,27 @@ public class OrderCreateSummaryController : Controller {
 
         #endregion
 
-        // 地址
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(loginCustomerId);
         if (createSelect == null) {
             throw new ValidationException("当前客户没有订单创建选择记录信息！");
         }
 
+        // 头程物流
+        int firstModeId = createSelect.FirstModeId;
+        var firstMode = session.Get<LogisticsModeInfo>(firstModeId);
+        if (firstMode == null) {
+            throw new ValidationException($"指定的物流方式#{firstModeId}不存在！");
+        }
+
+        var firstModeItem = new OrderCreateSummaryFirstModeItem {
+            Id = firstMode.Id,
+            Country = firstMode.Country.Name,
+            Type = firstMode.Type.Name,
+            Name = firstMode.Name,
+            Description = firstMode.Description,
+        };
+
+        // 地址
         int receiveAddressId = createSelect.AddressReceiveId;
         var receiveAddress = session.Get<CustomerReceiveAddressInfo>(receiveAddressId);
         if (receiveAddress == null) {
@@ -187,8 +205,46 @@ public class OrderCreateSummaryController : Controller {
         if (sendAddress == null) {
             throw new ValidationException($"指定的发货地址#{sendAddressId}不存在！");
         }
-        
-        
+
+        var sendAddressItem = new OrderCreateSummarySendAddressItem {
+            Id = sendAddress.Id,
+            Country = sendAddress.Country.Name,
+            Name = sendAddress.Name,
+            Mobile = sendAddress.Mobile,
+            Province = sendAddress.Province.Name,
+            City = sendAddress.City.Name,
+            Area = sendAddress.Area.Name,
+            Street = sendAddress.Street.Name,
+            Address = sendAddress.Address,
+            Zipcode = sendAddress.Zipcode,
+        };
+
+        // 保险和GST
+        int insuranceId = createSelect.InsuranceId;
+        var insurance = session.Get<LogisticsInsuranceInfo>(insuranceId);
+        if (insurance == null) {
+            throw new ValidationException($"指定的保险方案#{insuranceId}不存在！");
+        }
+
+        var insuranceItem = new OrderCreateSummaryInsuranceItem {
+            Id = insurance.Id,
+            Name = insurance.Name,
+        };
+
+        int gstId = createSelect.GstId;
+        var gst = session.Get<LogisticsGstInfo>(gstId);
+        if (gst == null) {
+            throw new ValidationException($"指定的GST方案#{gstId}不存在！");
+        }
+
+        var gstItem = new OrderCreateSummaryGstItem {
+            Id = gst.Id,
+            Name = gst.Name,
+        };
+
+        createSelect.Valid = true;
+        session.Update(createSelect);
+        session.Flush();
 
         // todo 订单创建时必须要做必要的数据验证，这里就先不做了
 
@@ -201,6 +257,10 @@ public class OrderCreateSummaryController : Controller {
                 TotalPackageCount = totalPackageCount,
                 TotalGoodsValue = totalGoodsValue.ToString("#0.00"),
                 ReceiveAddress = receiveAddressItem,
+                SendAddress = sendAddressItem,
+                FirstMode = firstModeItem,
+                Insurance = insuranceItem,
+                Gst = gstItem,
             },
         });
     }

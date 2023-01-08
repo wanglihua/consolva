@@ -22,7 +22,9 @@
                 <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="名称" value="{{ firstMode.name }}" border="{{ false }}" custom-class="item"/>
-                <!--<van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>-->
+                <block wx:if="{{ firstMode.description && firstMode.description !== '' }}">
+                    <van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>
+                </block>
                 <view class="item-last-vspace"/>
             </van-cell-group>
         </block>

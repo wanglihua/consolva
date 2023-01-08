@@ -1,3 +1,4 @@
+using System.Data.Entity;
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
@@ -170,16 +171,28 @@ public class LogisticsOrderCreateSelectService {
     }
 
     public void SaveInsurance(int customerId, int insuranceId) {
+        // 同时保存 GST
+        var gst = session.Query<LogisticsGstInfo>()
+            .Where(e => e.Status == LogisticsGstStatus.Enabled)
+            .OrderByDescending(e => e.Id)
+            .Take(1)
+            .SingleOrDefault();
+        if (gst == null) {
+            throw new ValidationException("GST方案不存在，请联系管理员！");
+        }
+
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
             createSelect = new LogisticsOrderCreateSelectInfo {
                 CustomerId = customerId,
                 InsuranceId = insuranceId,
+                GstId = gst.Id,
                 Valid = false,
             };
             session.Save(createSelect);
         } else {
             createSelect.InsuranceId = insuranceId;
+            createSelect.GstId = gst.Id;
             createSelect.Valid = false;
             session.Update(createSelect);
         }
@@ -187,6 +200,7 @@ public class LogisticsOrderCreateSelectService {
         session.Flush();
     }
 
+    [Obsolete("保存保险方案时同时保存了GST")]
     public void SaveGst(int customerId, int gstId) {
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
@@ -205,6 +219,9 @@ public class LogisticsOrderCreateSelectService {
         session.Flush();
     }
 
+    // 这个基本上不用了，优惠券在支付时指定好了。
+    // 创建时不计算订单金额的话，创建时指定优惠券就没有任何意义
+    [Obsolete]
     public void SaveCoupon(int customerId, int couponId) {
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {

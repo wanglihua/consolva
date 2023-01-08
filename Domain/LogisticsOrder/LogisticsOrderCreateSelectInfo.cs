@@ -70,6 +70,8 @@ public class LogisticsOrderCreateSelectInfo {
 
     /// <summary>
     /// 优惠券id，非空
+    /// 这个基本上不用了，优惠券在支付时指定好了。
+    /// 创建时不计算订单金额的话，创建时指定优惠券就没有任何意义
     /// </summary>
     [JsonProperty("couponId")]
     public virtual int CouponId { get; set; } = 0;
