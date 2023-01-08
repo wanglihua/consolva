@@ -221,7 +221,7 @@ public class LogisticsOrderCreateSelectService {
 
     // 这个基本上不用了，优惠券在支付时指定好了。
     // 创建时不计算订单金额的话，创建时指定优惠券就没有任何意义
-    [Obsolete]
+    // [Obsolete]
     public void SaveCoupon(int customerId, int couponId) {
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
