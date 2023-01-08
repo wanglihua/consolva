@@ -27,14 +27,13 @@
                 </van-cell>
                 <view class="item-last-vspace" />
             </van-cell-group>
+
+            <van-popup show="{{ insurance.showDetail }}" closeable position="bottom" custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;" bind:close="onDetailClose">
+                <view style="padding: 20rpx 20rpx 80rpx 20rpx;">
+                    <rich-text nodes="{{ detailInsurance.content }}"></rich-text>
+                </view>
+            </van-popup>
         </block>
-
-        <van-popup show="{{ showDetail }}" closeable position="bottom" custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;" bind:close="onDetailClose">
-            <view style="padding: 20rpx 20rpx 80rpx 20rpx;">
-                <rich-text nodes="{{ detailInsurance.content }}"></rich-text>
-            </view>
-        </van-popup>
-
     </block>
 
     <view class="bottom-btn-panel">

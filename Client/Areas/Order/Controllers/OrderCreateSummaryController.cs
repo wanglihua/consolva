@@ -242,6 +242,7 @@ public class OrderCreateSummaryController : Controller {
             Name = gst.Name,
         };
 
+        // 保存 valid
         createSelect.Valid = true;
         session.Update(createSelect);
         session.Flush();

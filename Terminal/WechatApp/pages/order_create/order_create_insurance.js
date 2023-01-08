@@ -6,7 +6,6 @@ Page({
         insuranceList: [],
         selectInsuranceId: 0,
 
-        showDetail: false,
         detailInsurance: {},
     },
 
@@ -47,20 +46,37 @@ Page({
     onViewDetailClick(e) {
         const insurance = e.currentTarget.dataset.item;
         const insuranceId = insurance.id;
+
+        const insuranceList = this.data.insuranceList;
+        for (const insurance of insuranceList) {
+            insurance.showDetail = false;
+        }
+
         const that = this;
         app.post("/client/order/create/insurance/detail", {
             id: insuranceId,
         }, function (res) {
+            for (const insurance of insuranceList) {
+                if (insurance.id === insuranceId) {
+                    insurance.showDetail = true;
+                }
+            }
+
             that.setData({
+                insuranceList: insuranceList,
                 detailInsurance: res.data,
-                showDetail: true,
             });
         });
     },
 
     onDetailClose(e) {
+        const insuranceList = this.data.insuranceList;
+        for (const insurance of insuranceList) {
+            insurance.showDetail = false;
+        }
+
         this.setData({
-            showDetail: false,
+            insuranceList: insuranceList,
         });
     },
 
