@@ -27,17 +27,13 @@ public class ExpressCheckinListItem {
     [JsonProperty("addDate")]
     public string AddDate { get; set; } = string.Empty;
 
-    // 客户端暂时没用起来
-    // [JsonProperty("customerRemark")]
-    [JsonIgnore]
+    [JsonProperty("customerRemark")]
     public string CustomerRemark { get; set; } = string.Empty;
 
     [JsonProperty("warehouseRemark")]
     public string WarehouseRemark { get; set; } = string.Empty;
 
-    // 客户端暂时没用起来
-    // [JsonProperty("serviceRemark")]
-    [JsonIgnore]
+    [JsonProperty("serviceRemark")]
     public string ServiceRemark { get; set; } = string.Empty;
 
     [JsonProperty("status")]
