@@ -6,6 +6,7 @@ using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;
@@ -14,10 +15,15 @@ namespace shunda.Client.Areas.Order.Controllers;
 public class OrderCreateSummaryController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly LogisticsGoodsTypeService logisticsGoodsTypeService;
 
-    public OrderCreateSummaryController(ISession session, LoginCustomerService loginCustomerService) {
+    public OrderCreateSummaryController(ISession session,
+        LoginCustomerService loginCustomerService,
+        LogisticsGoodsTypeService logisticsGoodsTypeService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.logisticsGoodsTypeService = logisticsGoodsTypeService;
     }
 
     [HttpPost]
@@ -25,7 +31,7 @@ public class OrderCreateSummaryController : Controller {
     public IActionResult Summary() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        #region 快递单列表
+        #region 快递单号
 
         IList<int> expressIdList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
             .Where(e => e.CustomerId == loginCustomerId)
@@ -35,6 +41,10 @@ public class OrderCreateSummaryController : Controller {
         var expressList = session.Query<ExpressInfo>()
             .Where(e => expressIdList.Contains(e.Id)).OrderBy(e => e.Id)
             .ToList();
+
+        if (expressList.Count == 0) {
+            throw new ValidationException("快递单列表不能为空，请先选择快递单号转运！");
+        }
 
         foreach (ExpressInfo express in expressList) {
             if (express.Status != ExpressStatus.CheckIn) {
@@ -109,6 +119,10 @@ public class OrderCreateSummaryController : Controller {
 
             // 一般这个判断肯定是成立的
             if (expressGoodsListMap.TryGetValue(expressId, out IList<ExpressGoodsInfo>? thisExpressGoodList)) {
+                if (thisExpressGoodList.Count == 0) {
+                    throw new ValidationException($"快递单号#{express.TrackingNo}物品列表为空，数据有问题！");
+                }
+
                 IList<OrderCreateSummaryExpressGoodsListItem> goodsList = thisExpressGoodList
                     .Select(e => new OrderCreateSummaryExpressGoodsListItem {
                         Id = e.Id,
@@ -126,6 +140,13 @@ public class OrderCreateSummaryController : Controller {
             expressItemList.Add(item);
         }
 
+        var goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(
+            expressList.Select(e => e.GoodsType).Distinct().ToList()
+        );
+
+        var totalPackageCount = expressList.Sum(e => e.PackageCount);
+        decimal totalGoodsValue = expressGoodsList.Sum(e => e.Price * e.Quantity);
+
         #endregion
 
         return Json(new JsonResultData {
@@ -133,6 +154,9 @@ public class OrderCreateSummaryController : Controller {
             Message = "操作成功！",
             Data = new OrderCreateSummaryModel {
                 ExpressList = expressItemList,
+                GoodsType = goodsType.Name,
+                TotalPackageCount = totalPackageCount,
+                TotalGoodsValue = totalGoodsValue.ToString("#0.00"),
             },
         });
     }

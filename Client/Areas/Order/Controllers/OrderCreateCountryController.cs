@@ -44,6 +44,17 @@ public class OrderCreateCountryController : Controller {
             .ToList();
         var expressIdList = selectExpressList.Select(e => e.ExpressId).ToList();
         var expressList = session.Query<ExpressInfo>().Where(e => expressIdList.Contains(e.Id)).ToList();
+
+        if (expressList.Count == 0) {
+            throw new ValidationException("快递单列表不能为空，请先选择快递单号转运！");
+        }
+
+        foreach (ExpressInfo express in expressList) {
+            if (express.Status != ExpressStatus.CheckIn) {
+                throw new ValidationException($"快递单号#{express.TrackingNo}不是已入库状态，快递单选择选择数据有误！");
+            }
+        }
+
         var goodsTypeList = expressList.Select(e => e.GoodsType).Distinct().ToList();
         var goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(goodsTypeList);
 
