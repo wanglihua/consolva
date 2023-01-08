@@ -45,13 +45,19 @@ Page({
     },
 
     onViewDetailClick(e) {
+        const insurance = e.currentTarget.dataset.item;
+        const insuranceId = insurance.id;
         const that = this;
-
-        that.setData({
-            showDetail: true,
+        app.post("/client/order/create/insurance/detail", {
+            id: insuranceId,
+        }, function (res) {
+            that.setData({
+                detailInsurance: res.data,
+                showDetail: true,
+            });
         });
     },
-    
+
     onDetailClose(e) {
         this.setData({
             showDetail: false,
