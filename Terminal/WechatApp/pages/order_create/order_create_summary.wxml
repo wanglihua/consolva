@@ -14,6 +14,25 @@
         <view class="item-last-vspace"/>
     </van-cell-group>
 
+    <van-cell-group custom-class="items">
+        <van-cell title="收货地址" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="国家" value="{{ receiveAddress.country }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="收货人" value="{{ receiveAddress.firstName }} {{ receiveAddress.lastName }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="手机号码" value="{{ receiveAddress.mobile }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="地址" value="{{ receiveAddress.fullAddress }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="发货地址" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="收货人" value="{{ sendAddress.name }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="手机号码" value="{{ sendAddress.mobile }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="地区" value="{{ sendAddress.province }}{{ sendAddress.city }}{{ sendAddress.area }}{{ sendAddress.street }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="地址" value="{{ sendAddress.address }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="邮编" value="{{ sendAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
             <van-row gutter="20">

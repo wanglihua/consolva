@@ -19,12 +19,12 @@
                         <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onSendAddressButtonClick" data-item="{{ address }}">选择</van-button>
                     </van-cell>
                 </block>
-                <van-cell title="国家: {{ address.country }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="收货人: {{ address.name }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="手机号码: {{ address.mobile }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="地区: {{ address.province }}{{ address.city }}{{ address.area }}{{ address.street }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="地址: {{ address.address }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="邮编: {{ address.zipcode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="国家" value="{{ address.country }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="收货人" value="{{ address.name }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="手机号码" value="{{ address.mobile }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="地区" value="{{ address.province }}{{ address.city }}{{ address.area }}{{ address.street }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="地址" value="{{ address.address }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="邮编" value="{{ address.zipcode }}" border="{{ false }}" custom-class="item"/>
                 <view class="item-last-vspace"/>
             </van-cell-group>
         </block>
