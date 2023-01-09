@@ -7,7 +7,7 @@ page {
 }
 
 .container {
-    padding: 20rpx 20rpx 100rpx 20rpx;
+    padding: 20rpx 20rpx 150rpx 20rpx;
 }
 
 .container-top {
@@ -19,7 +19,7 @@ page {
 }
 
 .container-bottom {
-    padding: 0 20rpx 100rpx 20rpx;
+    padding: 0 20rpx 150rpx 20rpx;
 }
 
 .home-grid-icon {
@@ -29,6 +29,14 @@ page {
 .search-bar {
     margin: 0 0 15rpx 0 !important;
     padding: 0 !important;
+}
+
+.van-cell__title {
+    flex: 1 !important;
+}
+
+.van-cell__value {
+    flex: 3 !important;
 }
 
 .items {

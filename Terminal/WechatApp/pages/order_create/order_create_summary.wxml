@@ -33,6 +33,13 @@
         <view class="item-last-vspace"/>
     </van-cell-group>
 
+    <van-cell-group custom-class="items">
+        <van-cell title="保险和GST" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="保险方案" value="{{ insurance.name }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="GST方案" value="{{ gst.name }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
             <van-row gutter="20">
