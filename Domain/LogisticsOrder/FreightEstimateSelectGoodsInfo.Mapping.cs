@@ -53,10 +53,10 @@ public class FreightEstimateSelectGoodsInfoMapping : EntityNoCreateNoUpdateMappi
         );
 
         Property(
-            x => x.Quantity,
+            x => x.PackageCount,
             map => {
                 map.Type(NHibernateUtil.Int32);
-                map.Column("quantity");
+                map.Column("package_count");
                 map.NotNullable(true);
             }
         );

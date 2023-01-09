@@ -29,7 +29,7 @@ public class FreightEstimateSelectGoodsInfo : EntityNoCreateNoUpdate {
     public virtual decimal Weight { get; set; }
 
     /// <summary>
-    /// 数量，非空
+    /// 箱数，非空
     /// </summary>
-    public virtual int Quantity { get; set; }
+    public virtual int PackageCount { get; set; }
 }

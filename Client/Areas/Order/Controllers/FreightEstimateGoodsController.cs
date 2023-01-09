@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Client.Areas.Order.Models.FreightEstimateGoods;
 using shunda.Client.Services;
+using shunda.Core.Web;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -18,5 +20,25 @@ public class FreightEstimateGoodsController : Controller {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.freightEstimateSelectService = freightEstimateSelectService;
+    }
+
+    [HttpPost]
+    [Route("/client/freight/estimate/goods/detail")]
+    public IActionResult Detail() {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/freight/estimate/goods/save")]
+    public IActionResult Save([FromBody] FreightEstimateGoodsSaveModel model) {
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
     }
 }
