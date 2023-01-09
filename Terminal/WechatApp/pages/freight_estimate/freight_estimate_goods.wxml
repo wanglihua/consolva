@@ -4,6 +4,17 @@
     <van-cell-group title="录入物品信息"/>
 
     <van-cell-group custom-class="items">
+        <van-field model:value="{{ goodsTypeFieldValue }}" label="物品类型" placeholder="请选择物品类型" border="{{ false }}" custom-style="padding-bottom: 0;" is-link readonly bind:tap="onGoodsTypeFieldTap"/>
+        <van-popup show="{{ showGoodsTypeSelect }}" round position="bottom">
+            <van-cascader
+                    value="{{ goodsTypeCascaderValue }}"
+                    title="选择物品类型"
+                    options="{{ goodsTypeOptions }}"
+                    bind:close="onGoodsTypeSelectClose"
+                    bind:finish="onGoodsTypeSelectFinish"
+            />
+        </van-popup>
+
         <van-field label="总货值" placeholder="输入物品总货值" value="{{ goodsValue }}" border="{{ false }}" type="number" input-align="right" error-message-align="right" use-right-icon-slot bind:input="onGoodsValueInput" custom-style="padding-bottom: 0;">
             <view slot="right-icon">RMB</view>
         </van-field>

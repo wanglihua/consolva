@@ -43,7 +43,7 @@ Page({
 
                 if (country.id === countryId) {
                     countryFieldValue = country.name;
-                    countryCascaderValue = country.id;
+                    countryCascaderValue = country.id.toString();
                 }
             }
 
@@ -89,7 +89,7 @@ Page({
             countryFieldValue: fieldValue,
             countryCascaderValue: value,
             showCountrySelect: false,
-        })
+        });
     },
 
     onSaveClick(e) {

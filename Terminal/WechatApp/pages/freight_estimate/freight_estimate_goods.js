@@ -3,9 +3,11 @@ const app = getApp();
 
 Page({
     data: {
+        goodsTypeOptions: [],
         showGoodsTypeSelect: false,
-        
-        goodsTypeList: [],
+        goodsTypeFieldValue: '',
+        goodsTypeCascaderValue: '',
+
         goodsTypeId: 0,
         goodsValue: '',
         goodsList: [],
@@ -18,12 +20,58 @@ Page({
     loadGoodsDetail() {
         const that = this;
         app.post("/client/freight/estimate/goods/detail", {}, function (res) {
+            const goodsTypeList = res.data.goodsTypeList;
+            const goodsTypeId = res.data.goodsTypeId;
+
+            let goodsTypeOptions = [];
+            let goodsTypeFieldValue = '';
+            let goodsTypeCascaderValue = '';
+            for (const goodsType of goodsTypeList) {
+                goodsTypeOptions.push({
+                    value: goodsType.id.toString(),
+                    text: goodsType.name,
+                });
+
+                if (goodsType.id === goodsTypeId) {
+                    goodsTypeFieldValue = goodsType.name;
+                    goodsTypeCascaderValue = goodsType.id.toString();
+                }
+            }
+
             that.setData({
-                goodsTypeList: res.data.goodsTypeList,
-                goodsTypeId: res.data.goodsTypeId,
+                goodsTypeId: goodsTypeId,
                 goodsValue: res.data.goodsValue,
                 goodsList: res.data.goodsList,
+
+                goodsTypeOptions: goodsTypeOptions,
+                goodsTypeFieldValue: goodsTypeFieldValue,
+                goodsTypeCascaderValue: goodsTypeCascaderValue,
             });
+        });
+    },
+
+    onGoodsTypeFieldTap(e) {
+        this.setData({
+            showGoodsTypeSelect: true,
+        });
+    },
+
+    onGoodsTypeSelectClose(e) {
+        this.setData({
+            showGoodsTypeSelect: false,
+        });
+    },
+
+    onGoodsTypeSelectFinish(e) {
+        const {selectedOptions, value} = e.detail;
+        const fieldValue = selectedOptions
+            .map((option) => option.text)
+            .join('/');
+        this.setData({
+            goodsTypeFieldValue: fieldValue,
+            goodsTypeCascaderValue: value,
+            goodsTypeId: parseInt(value),
+            showGoodsTypeSelect: false,
         });
     },
 
