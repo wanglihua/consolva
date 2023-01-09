@@ -187,8 +187,9 @@ public class FreightEstimateGoodsController : Controller {
         foreach (var goodsItem in model.GoodsList) {
             var goods = goodsList.Skip(index).Take(1).SingleOrDefault();
             if (goods == null) {
-                goods = new FreightEstimateSelectGoodsInfo();
-                goods.CustomerId = loginCustomerId;
+                goods = new FreightEstimateSelectGoodsInfo {
+                    CustomerId = loginCustomerId,
+                };
             }
 
             goods.Length = decimal.Parse(goodsItem.Length);
