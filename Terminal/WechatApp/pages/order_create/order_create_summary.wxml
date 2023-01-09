@@ -4,6 +4,43 @@
     <van-cell-group title="订单汇总"/>
 
     <van-cell-group custom-class="items">
+        <van-cell title="快递单号" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+    </van-cell-group>
+
+    <block wx:for="{{ expressList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
+        <van-cell-group custom-class="items">
+            <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}" border="{{ false }}" custom-class="sub-item-header" title-class="sub-item-header-title"/>
+            <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
+            <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>-->
+            <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="入库日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item"/>
+            <block wx:if="{{ express.customerRemark && express.customerRemark !== '' }}">
+                <van-cell title="客户备注" value="{{express.customerRemark}}" border="{{ false }}" custom-class="item"/>
+            </block>
+            <block wx:if="{{ express.warehouseRemark && express.warehouseRemark !== '' }}">
+                <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
+            </block>
+            <block wx:if="{{ express.serviceRemark && express.serviceRemark !== '' }}">
+                <van-cell title="客服备注" value="{{express.serviceRemark}}" border="{{ false }}" custom-class="item"/>
+            </block>
+            <van-cell title="物品" value="共 {{ express.goodsCount }} 项" border="{{ false }}" custom-class="item"/>
+            <block wx:for="{{ express.goodsList }}" wx:key="id" wx:for-item="goods" wx:for-index="goodsIndex">
+                <van-cell value="{{ goods.goodsName }} {{ goods.quantity }}{{ goods.unit }} × {{ goods.price }}RMB" border="{{ false }}" custom-class="item"/>
+            </block>
+            <view class="item-last-vspace"/>
+        </van-cell-group>
+    </block>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="快递单汇总" border="{{ false }}" custom-class="sub-item-header" title-class="sub-item-header-title"/>
+        <van-cell title="物品类型" value="{{ goodsType }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="包裹数量" value="{{ totalPackageCount }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="总申报货值" value="{{ totalGoodsValue }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="items">
         <van-cell title="头程物流" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
         <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
