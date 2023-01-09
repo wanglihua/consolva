@@ -1,1 +1,10 @@
 /* pages/freight_estimate/freight_estimate_goods.wxss */
+.sub-item-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid #ebedf0 !important;
+}
+
+.sub-item-header-title {
+    color: #646566 !important;
+    font-weight: normal !important;
+}

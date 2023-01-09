@@ -4,7 +4,7 @@
     <van-cell-group title="录入物品信息"/>
 
     <van-cell-group custom-class="items">
-        <van-field model:value="{{ goodsTypeFieldValue }}" label="物品类型" placeholder="请选择物品类型" border="{{ false }}" custom-style="padding-bottom: 0;" is-link readonly bind:tap="onGoodsTypeFieldTap"/>
+        <van-field model:value="{{ goodsTypeFieldValue }}" label="物品类型" placeholder="请选择物品类型" border="{{ false }}" input-align="right" custom-style="padding-bottom: 0;" is-link readonly bind:tap="onGoodsTypeFieldTap"/>
         <van-popup show="{{ showGoodsTypeSelect }}" round position="bottom">
             <van-cascader
                     value="{{ goodsTypeCascaderValue }}"
@@ -15,10 +15,41 @@
             />
         </van-popup>
 
-        <van-field label="总货值" placeholder="输入物品总货值" value="{{ goodsValue }}" border="{{ false }}" type="number" input-align="right" error-message-align="right" use-right-icon-slot bind:input="onGoodsValueInput" custom-style="padding-bottom: 0;">
+        <van-field label="总货值" placeholder="输入物品总货值" value="{{ goodsValue }}" border="{{ false }}" type="number" input-align="right" use-right-icon-slot bind:input="onGoodsValueInput" custom-style="padding-bottom: 0;">
             <view slot="right-icon">RMB</view>
         </van-field>
         <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="items">
+        <block wx:for="{{ goodsList }}" wx:key="id" wx:for-item="goods" wx:for-index="index">
+            <van-cell title="箱型{{ index + 1 }}(单位：CM, KG)" border="{{ false }}" custom-class="sub-item-header" title-class="sub-item-header-title"/>
+            <van-row>
+                <van-col span="12">
+                    <van-field label="长度" placeholder="单件长度" value="{{ goods.length }}" border="{{ false }}" type="number" input-align="right" bind:input="" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                </van-col>
+                <van-col span="12">
+                    <van-field label="宽度" placeholder="单件宽度" value="{{ goods.width }}" border="{{ false }}" type="number" input-align="right" bind:input="" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="12">
+                    <van-field label="高度" placeholder="单件高度" value="{{ goods.height }}" border="{{ false }}" type="number" input-align="right" bind:input="" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                </van-col>
+                <van-col span="12">
+                    <van-field label="重量" placeholder="单件重量" value="{{ goods.weight }}" border="{{ false }}" type="number" input-align="right" bind:input="" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                </van-col>
+            </van-row>
+            <van-row>
+                <van-col span="12">
+                    <van-field label="箱数" placeholder="箱数" value="{{ goods.weight }}" border="{{ false }}" type="digit" input-align="right" bind:input="" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                </van-col>
+                <van-col span="12">
+
+                </van-col>
+            </van-row>
+            <view class="item-last-vspace"/>
+        </block>
     </van-cell-group>
 
     <view class="bottom-btn-panel">

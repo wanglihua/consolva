@@ -44,6 +44,7 @@ public class FreightEstimateGoodsController : Controller {
         if (goodsList.Count == 0) {
             // 保证总是有一个箱型
             goodsItemList.Add(new FreightEstimateGoodsListItem {
+                Id = 0,
                 Width = string.Empty,
                 Length = string.Empty,
                 Height = string.Empty,
@@ -52,6 +53,7 @@ public class FreightEstimateGoodsController : Controller {
             });
         } else {
             goodsItemList = goodsList.Select(e => new FreightEstimateGoodsListItem {
+                    Id = e.Id,
                     Width = e.Width.ToString("#0.#"),
                     Length = e.Length.ToString("#0.#"),
                     Height = e.Height.ToString("#0.#"),

@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 namespace shunda.Client.Areas.Order.Models.FreightEstimateGoods;
 
 public class FreightEstimateGoodsListItem {
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
     [JsonProperty("width")]
     public string Width { get; set; } = string.Empty;
 

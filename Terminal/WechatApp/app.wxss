@@ -31,8 +31,11 @@ page {
     padding: 0 !important;
 }
 
+/* 这个要放在 item-header-title 的前面 */
 .van-cell__title {
     flex: 1 !important;
+    /* color: #969799 !important;*/
+    color: #646566 !important;
 }
 
 .van-cell__value {
@@ -61,14 +64,9 @@ page {
     background-color: rgb(231, 174, 0) !important;
 }
 
-/* 这个要放在 item-header-title 的前面 */
-.van-cell__title {
-    /* color: #969799 !important;*/
-    color: #646566 !important;
-}
-
 .item-header-title {
     color: white !important;
+    flex: 3 !important;
 }
 
 .item-header-title-selected {
@@ -77,6 +75,7 @@ page {
 
 .item-header-value {
     color: white !important;
+    flex: 1 !important;
 }
 
 .item-button {
@@ -114,7 +113,7 @@ page {
 
 .sub-item-header-title {
     color: #646566 !important;
-    font-weight: bold;
+    font-weight: bold !important;
 }
 
 .detail-buttons {
