@@ -26,7 +26,7 @@ public class FreightEstimateSelectInfo {
     /// <summary>
     /// 物品货值，非空
     /// </summary>
-    public virtual decimal GoodsAmount { get; set; }
+    public virtual decimal GoodsValue { get; set; }
 
     /// <summary>
     /// 国家，非空

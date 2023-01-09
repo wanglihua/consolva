@@ -33,10 +33,10 @@ public class FreightEstimateSelectInfoMapping : ClassMapping<FreightEstimateSele
         );
 
         Property(
-            x => x.GoodsAmount,
+            x => x.GoodsValue,
             map => {
                 map.Type(NHibernateUtil.Decimal);
-                map.Column("goods_amount");
+                map.Column("goods_value");
                 map.NotNullable(true);
             }
         );
