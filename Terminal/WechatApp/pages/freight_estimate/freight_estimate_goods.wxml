@@ -50,6 +50,18 @@
             </van-row>
             <view class="item-last-vspace"/>
         </block>
+
+        <van-row>
+            <van-col offset="12" span="12">
+                <view style="padding: 5px;">
+                    <van-button type="default" size="small" plain block bind:click="">
+                        <van-icon class-prefix="iconfont" name="add" color="green"/>
+                        添加箱型
+                    </van-button>
+                </view>
+            </van-col>
+        </van-row>
+        <view class="item-last-vspace"/>
     </van-cell-group>
 
     <view class="bottom-btn-panel">
