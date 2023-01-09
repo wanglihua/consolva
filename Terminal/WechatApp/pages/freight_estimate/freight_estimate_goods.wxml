@@ -1,7 +1,14 @@
 <!--pages/freight_estimate/freight_estimate_goods.wxml-->
 <header/>
 <view class="container">
-    <van-cell-group title="运费预估"/>
+    <van-cell-group title="录入物品信息"/>
+
+    <van-cell-group custom-class="items">
+        <van-field label="总货值" placeholder="输入物品总货值" value="{{ goodsValue }}" border="{{ false }}" type="number" input-align="right" error-message-align="right" use-right-icon-slot bind:input="onGoodsValueInput" custom-style="padding-bottom: 0;">
+            <view slot="right-icon">RMB</view>
+        </van-field>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
 
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">

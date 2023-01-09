@@ -208,7 +208,7 @@ public class FreightEstimateGoodsController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "物品保存成功！",
         });
     }
 }

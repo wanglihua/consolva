@@ -1,5 +1,7 @@
 {
     "pages": [
+        "pages/freight_estimate/freight_estimate_goods",
+        
         "pages/home/home_index",
         "pages/coupon/coupon_mine",
         "pages/coupon/coupon_pick",
@@ -34,7 +36,7 @@
         "pages/order_create/order_create_receive_address",
         "pages/order_create/order_create_insurance",
         "pages/order_create/order_create_summary",
-        "pages/freight_estimate/freight_estimate_goods",
+        
         "pages/freight_estimate/freight_estimate_country",
         "pages/freight_estimate/freight_estimate_first_mode",
         "pages/freight_estimate/freight_estimate_receive_address",
