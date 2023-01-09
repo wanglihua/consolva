@@ -15,6 +15,6 @@ public class FreightEstimateGoodsListItem {
     [JsonProperty("weight")]
     public string Weight { get; set; } = string.Empty;
 
-    [JsonProperty("pacakgeCount")]
-    public string PacakgeCount { get; set; } = string.Empty;
+    [JsonProperty("packageCount")]
+    public string PackageCount { get; set; } = string.Empty;
 }
