@@ -10,10 +10,6 @@ Page({
 
     },
 
-    onPreButtonClick(e) {
-
-    },
-
     onNextButtonClick(e) {
 
     }

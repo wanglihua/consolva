@@ -29,7 +29,7 @@
 
             <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text="推广返利" url="" />
             <van-grid-item icon-prefix="iconfont" icon="profile" icon-class="home-grid-icon" text="个人中心" url="" />
-            <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="" />
+            <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="../freight_estimate/freight_estimate_goods" />
         </van-grid>
     </view>
 </view>
