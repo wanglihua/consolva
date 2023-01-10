@@ -54,7 +54,7 @@
         <van-row>
             <van-col offset="12" span="12">
                 <view style="padding: 5px;">
-                    <van-button type="default" size="small" plain block bind:click="">
+                    <van-button type="default" size="small" plain block bind:click="onAddGoodsButtonClick">
                         <van-icon class-prefix="iconfont" name="add" color="green"/>
                         添加箱型
                     </van-button>

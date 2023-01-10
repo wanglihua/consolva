@@ -152,7 +152,20 @@ Page({
     },
 
     onAddGoodsButtonClick(e) {
+        const goodsList = this.data.goodsList;
+        const goodsCount = goodsList.length;
+        goodsList.push({
+            id: -goodsCount,
+            width: '',
+            length: '',
+            height: '',
+            weight: '',
+            packageCount: '',
+        });
 
+        this.setData({
+            goodsList: goodsList,
+        });
     },
 
     onNextButtonClick(e) {
