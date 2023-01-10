@@ -195,7 +195,7 @@ Page({
 
     onNextButtonClick(e) {
         const that = this;
-        app.post("/client/freight/estimate/goods/save", {
+        app.postWithoutLoading("/client/freight/estimate/goods/save", {
             goodsTypeId: that.data.goodsTypeId,
             goodsValue: that.data.goodsValue,
             goodsList: that.data.goodsList,
