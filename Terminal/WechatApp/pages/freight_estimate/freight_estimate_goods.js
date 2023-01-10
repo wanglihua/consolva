@@ -81,6 +81,76 @@ Page({
         });
     },
 
+    onGoodsLengthInput(e) {
+        const goodsId = e.currentTarget.dataset.item.id;
+        const goodsList = this.data.goodsList;
+        for (const goods of goodsList) {
+            if (goods.id === goodsId) {
+                goods.length = e.detail;
+            }
+        }
+
+        this.setData({
+            goodsList: goodsList,
+        });
+    },
+
+    onGoodsWidthInput(e) {
+        const goodsId = e.currentTarget.dataset.item.id;
+        const goodsList = this.data.goodsList;
+        for (const goods of goodsList) {
+            if (goods.id === goodsId) {
+                goods.width = e.detail;
+            }
+        }
+
+        this.setData({
+            goodsList: goodsList,
+        });
+    },
+
+    onGoodsHeightInput(e) {
+        const goodsId = e.currentTarget.dataset.item.id;
+        const goodsList = this.data.goodsList;
+        for (const goods of goodsList) {
+            if (goods.id === goodsId) {
+                goods.height = e.detail;
+            }
+        }
+
+        this.setData({
+            goodsList: goodsList,
+        });
+    },
+
+    onGoodsWeightInput(e) {
+        const goodsId = e.currentTarget.dataset.item.id;
+        const goodsList = this.data.goodsList;
+        for (const goods of goodsList) {
+            if (goods.id === goodsId) {
+                goods.weight = e.detail;
+            }
+        }
+
+        this.setData({
+            goodsList: goodsList,
+        });
+    },
+
+    onGoodsPackageCountInput(e) {
+        const goodsId = e.currentTarget.dataset.item.id;
+        const goodsList = this.data.goodsList;
+        for (const goods of goodsList) {
+            if (goods.id === goodsId) {
+                goods.packageCount = e.detail;
+            }
+        }
+
+        this.setData({
+            goodsList: goodsList,
+        });
+    },
+
     onAddGoodsButtonClick(e) {
 
     },
