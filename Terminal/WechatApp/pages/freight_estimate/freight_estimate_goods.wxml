@@ -45,7 +45,14 @@
                     <van-field label="箱数" placeholder="箱数" value="{{ goods.packageCount }}" border="{{ false }}" type="digit" input-align="right" bind:input="onGoodsPackageCountInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
                 </van-col>
                 <van-col span="12">
-
+                    <block wx:if="{{ index > 0 }}">
+                        <view style="padding: 30rpx 15rpx;">
+                            <van-button type="default" size="small" plain block bind:click="onRemoveGoodsButtonClick" data-item="{{ goods }}">
+                                <van-icon class-prefix="iconfont" name="remove-from-order" color="red"/>
+                                移除箱型
+                            </van-button>
+                        </view>
+                    </block>
                 </van-col>
             </van-row>
             <view class="item-last-vspace"/>
@@ -53,7 +60,7 @@
 
         <van-row>
             <van-col offset="12" span="12">
-                <view style="padding: 5px;">
+                <view style="padding: 30rpx 15rpx;">
                     <van-button type="default" size="small" plain block bind:click="onAddGoodsButtonClick">
                         <van-icon class-prefix="iconfont" name="add" color="green"/>
                         添加箱型

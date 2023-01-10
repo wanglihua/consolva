@@ -159,7 +159,9 @@ public class FreightEstimateGoodsController : Controller {
         // 保存 物品类型 和 总货值
         var estimateSelect = session.Get<FreightEstimateSelectInfo>(loginCustomerId);
         if (estimateSelect == null) {
-            estimateSelect = new FreightEstimateSelectInfo();
+            estimateSelect = new FreightEstimateSelectInfo {
+                CustomerId = loginCustomerId,
+            };
         }
 
         estimateSelect.GoodsType = goodsType;

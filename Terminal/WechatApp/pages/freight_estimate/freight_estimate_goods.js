@@ -151,11 +151,36 @@ Page({
         });
     },
 
+    onRemoveGoodsButtonClick(e) {
+        const goodsId = e.currentTarget.dataset.item.id;
+        const goodsList = this.data.goodsList;
+
+        const newGoodsList = [];
+        for (const goods of goodsList) {
+            if (goodsId !== goods.id) {
+                newGoodsList.push(goods);
+            }
+        }
+
+        this.setData({
+            goodsList: newGoodsList,
+        });
+    },
+
     onAddGoodsButtonClick(e) {
         const goodsList = this.data.goodsList;
-        const goodsCount = goodsList.length;
+
+        let minGoodsId = -1;
+        for (const goods of goodsList) {
+            if (minGoodsId > goods.id) {
+                minGoodsId = goods.id;
+            }
+        }
+
+        const newGoodsId = minGoodsId - 1;
+
         goodsList.push({
-            id: -goodsCount,
+            id: newGoodsId,
             width: '',
             length: '',
             height: '',
