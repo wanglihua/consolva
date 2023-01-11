@@ -1,11 +1,10 @@
 using Newtonsoft.Json;
-using shunda.Client.Areas.Order.Models.FreightEstimateGoods;
 
 namespace shunda.Client.Areas.Order.Models.FreightEstimateSummary;
 
 public class FreightEstimateSummaryModel {
     [JsonProperty("goodsList")]
-    public IList<FreightEstimateGoodsListItem> GoodsList = new List<FreightEstimateGoodsListItem>();
+    public IList<FreightEstimateSummaryGoodsListItem> GoodsList = new List<FreightEstimateSummaryGoodsListItem>();
 
     [JsonProperty("goodsType")]
     public string GoodsType { get; set; } = string.Empty;
