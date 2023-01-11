@@ -76,6 +76,10 @@ public class FreightEstimateSummaryController : Controller {
             throw new ValidationException($"收货地址#{addressReceiveId}不是当前登录客户的，数据有问题!");
         }
 
+        if (addressReceive.Country != country) {
+            throw new ValidationException($"收货地址#{addressReceiveId}与国家选择记录#{country.Name}不匹配，数据有问题!");
+        }
+
         var addressReceiveItem = new FreightEstimateSummaryAddressReceiveItem {
             Id = addressReceive.Id,
             Country = addressReceive.Country.Name,
@@ -94,7 +98,9 @@ public class FreightEstimateSummaryController : Controller {
         };
 
         // 头程物流
-
+        
+        var firstMode = new FreightEstimateSummaryFirstModeItem {
+        };
 
         return Json(new JsonResultData {
             Success = true,
