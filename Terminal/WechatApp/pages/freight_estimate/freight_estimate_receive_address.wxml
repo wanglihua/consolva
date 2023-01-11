@@ -3,6 +3,31 @@
 <view class="container">
     <van-cell-group title="收货地址-运费预估"/>
 
+    <block wx:if="{{ !addressList || addressList.length === 0 }}">
+        <van-empty description="您暂时还没有{{ country }}的收货地址！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{ addressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">
+            <van-cell-group custom-class="items">
+                <block wx:if="{{ address.id === selectAddressId }}">
+                    <van-cell title="{{ index + 1 }}、{{ address.firstName }} {{ address.lastName }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onReceiveAddressButtonClick" data-item="{{ address }}">已选择</van-button>
+                    </van-cell>
+                </block>
+                <block wx:else>
+                    <van-cell title="{{ index + 1 }}、{{ address.firstName }} {{ address.lastName }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onReceiveAddressButtonClick" data-item="{{ address }}">选择</van-button>
+                    </van-cell>
+                </block>
+                <van-cell title="国家" value="{{ address.country }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="收货人" value="{{ address.firstName }} {{ address.lastName }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="手机号码" value="{{ address.mobile }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="地址" value="{{ address.fullAddress }}" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
+            </van-cell-group>
+        </block>
+    </block>
+
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
             <van-row gutter="20">
