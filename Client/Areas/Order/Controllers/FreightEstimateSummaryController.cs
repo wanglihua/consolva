@@ -4,6 +4,7 @@ using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
 using shunda.Service.LogisticsOrder;
@@ -69,7 +70,7 @@ public class FreightEstimateSummaryController : Controller {
         int addressReceiveId = estimateSelect.AddressReceiveId;
         var addressReceive = session.Get<CustomerReceiveAddressInfo>(addressReceiveId);
         if (addressReceive == null) {
-            throw new ValidationException($"指定的收货地址#{addressReceiveId}不存在！");
+            throw new ValidationException($"指定的收货地址#{addressReceiveId}不存在，数据有问题！");
         }
 
         if (addressReceive.Customer.Id != loginCustomerId) {
@@ -98,9 +99,33 @@ public class FreightEstimateSummaryController : Controller {
         };
 
         // 头程物流
-        
-        var firstMode = new FreightEstimateSummaryFirstModeItem {
+        int firstModeId = estimateSelect.FirstModeId;
+        var firstMode = session.Get<LogisticsModeInfo>(firstModeId);
+        if (firstMode == null) {
+            throw new ValidationException($"指定的物流方式#{firstModeId}不存在，数据有问题！");
+        }
+
+        if (firstMode.Status != LogisticsModeStatus.Enabled) {
+            throw new ValidationException($"指定的物流方式#{firstModeId}已禁用，数据有问题！");
+        }
+
+        if (firstMode.Country != country) {
+            throw new ValidationException($"物流方式#{firstModeId}与国家选择记录#{country.Name}不匹配，数据有问题!");
+        }
+
+        var firstModeItem = new FreightEstimateSummaryFirstModeItem {
+            Id = firstMode.Id,
+            Country = firstMode.Country.Name,
+            Type = firstMode.Type.Name,
+            Name = firstMode.Name,
+            Description = firstMode.Description,
         };
+
+        // 物流费用
+
+        // GST费用
+
+        // 总费用
 
         return Json(new JsonResultData {
             Success = true,
@@ -111,6 +136,7 @@ public class FreightEstimateSummaryController : Controller {
                 GoodsValue = goodsValue,
                 TotalPackageCount = totalPackageCount,
                 AddressReceive = addressReceiveItem,
+                FirstMode = firstModeItem,
             },
         });
     }
