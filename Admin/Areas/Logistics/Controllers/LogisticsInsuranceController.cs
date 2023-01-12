@@ -73,15 +73,15 @@ public class LogisticsInsuranceController : Controller
     [Route("/admin/logistics/insurance/detail/{id:int?}")]
     public IActionResult Detail(int? id)
     {
-        LogisticsInsuranceInfo? logisticsInsurance;
+        LogisticsInsuranceWithContentInfo? logisticsInsurance;
 
         if (id == null || id.Value == 0)
         {
-            logisticsInsurance = new LogisticsInsuranceInfo();
+            logisticsInsurance = new LogisticsInsuranceWithContentInfo();
         }
         else
         {
-            logisticsInsurance = session.Get<LogisticsInsuranceInfo>(id.Value);
+            logisticsInsurance = session.Get<LogisticsInsuranceWithContentInfo>(id.Value);
             if (logisticsInsurance == null) return Content("指定的数据项不存在！");
         }
 
@@ -106,12 +106,12 @@ public class LogisticsInsuranceController : Controller
 
         var isCreate = logisticsInsuranceId == 0;
 
-        LogisticsInsuranceInfo? logisticsInsurance;
+        LogisticsInsuranceWithContentInfo? logisticsInsurance;
 
         if (isCreate)
-            logisticsInsurance = new LogisticsInsuranceInfo();
+            logisticsInsurance = new LogisticsInsuranceWithContentInfo();
         else
-            logisticsInsurance = session.Get<LogisticsInsuranceInfo>(logisticsInsuranceId);
+            logisticsInsurance = session.Get<LogisticsInsuranceWithContentInfo>(logisticsInsuranceId);
 
         logisticsInsurance.Name = logisticsInsuranceFromUi.Name;
         logisticsInsurance.Content = logisticsInsuranceFromUi.Content;
