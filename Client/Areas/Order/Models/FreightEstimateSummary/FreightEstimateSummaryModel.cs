@@ -21,6 +21,9 @@ public class FreightEstimateSummaryModel {
     [JsonProperty("firstMode")]
     public FreightEstimateSummaryFirstModeItem FirstMode { get; set; } = new();
 
+    [JsonProperty("feeList")]
+    public IList<FreightEstimateSummaryFeeListItem> FeeList { get; set; } = new List<FreightEstimateSummaryFeeListItem>();
+
     [JsonProperty("gstFee")]
     public string GstFee { get; set; } = string.Empty;
 }
