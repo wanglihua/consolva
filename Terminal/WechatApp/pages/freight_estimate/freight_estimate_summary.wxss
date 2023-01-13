@@ -1,1 +1,4 @@
 /* pages/freight_estimate/freight_estimate_summary.wxss */
+.bottom-btn-panel {
+    padding-top: 5rpx !important;
+}

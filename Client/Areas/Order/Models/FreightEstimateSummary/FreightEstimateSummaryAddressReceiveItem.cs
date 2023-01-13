@@ -39,9 +39,6 @@ public class FreightEstimateSummaryAddressReceiveItem {
     [JsonProperty("unitLoc")]
     public string UnitLoc { get; set; } = string.Empty;
 
-    [JsonProperty("isDefault")]
-    public bool IsDefault { get; set; }
-
     [JsonProperty("fullAddress")]
     public string FullAddress { get; set; } = string.Empty;
 }

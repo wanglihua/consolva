@@ -3,8 +3,79 @@
 <view class="container">
     <van-cell-group title="预估汇总"/>
 
+    <van-cell-group custom-class="items">
+        <van-cell title="物品信息" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell-group custom-class="items">
+            <block wx:for="{{ goodsList }}" wx:key="id" wx:for-item="goods" wx:for-index="index">
+                <van-cell title="箱型{{ index + 1 }}" border="{{ false }}" custom-class="sub-item-header" title-class="sub-item-header-title"/>
+                <van-row>
+                    <van-col span="12">
+                        <van-cell title="长度" value="{{ goods.length }} CM" border="{{ false }}" custom-class="item"/>
+                    </van-col>
+                    <van-col span="12">
+                        <van-cell title="宽度" value="{{ goods.width }} CM" border="{{ false }}" custom-class="item"/>
+                    </van-col>
+                </van-row>
+                <van-row>
+                    <van-col span="12">
+                        <van-cell title="高度" value="{{ goods.height }} CM" border="{{ false }}" custom-class="item"/>
+                    </van-col>
+                    <van-col span="12">
+                        <van-cell title="重量" value="{{ goods.weight }} KG" border="{{ false }}" custom-class="item"/>
+                    </van-col>
+                </van-row>
+                <van-row>
+                    <van-col span="12">
+                        <van-cell title="箱数" value="{{ goods.packageCount }} 件" border="{{ false }}" custom-class="item"/>
+                    </van-col>
+                    <van-col span="12">
+                    </van-col>
+                </van-row>
+                <view class="item-last-vspace"/>
+            </block>
+            <van-cell title="物品汇总" border="{{ false }}" custom-class="sub-item-header" title-class="sub-item-header-title"/>
+            <van-cell title="类型" value="{{ goodsType }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="总箱数" value="{{ totalPackageCount }}" border="{{ false }} 件" custom-class="item"/>
+            <van-cell title="总货值" value="{{ goodsValue }} RMB" border="{{ false }}" custom-class="item"/>
+            <view class="item-last-vspace"/>
+        </van-cell-group>
+    </van-cell-group>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="收货地址" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="国家" value="{{ receiveAddress.country }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="收货人" value="{{ receiveAddress.firstName }} {{ receiveAddress.lastName }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="手机号码" value="{{ receiveAddress.mobile }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="地址" value="{{ receiveAddress.fullAddress }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="物流方式" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="名称" value="{{ firstMode.name }}" border="{{ false }}" custom-class="item"/>
+        <block wx:if="{{ firstMode.description && firstMode.description !== '' }}">
+            <van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>
+        </block>
+        <van-cell title="费用" value="{{ 0.00 }} RMB" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="费用明细" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
+
+            <view style="text-align: right;font-size: 12px; color: #323233; padding-bottom: 10rpx;">
+                预估总费用: <text style="color: rgb(231, 174, 0);">0.00</text> RMB
+            </view>
+
             <van-row gutter="20">
                 <van-col span="12">
                     <van-button type="default" size="small" plain block bind:click="onPreButtonClick">

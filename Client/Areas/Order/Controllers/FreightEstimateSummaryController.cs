@@ -94,7 +94,6 @@ public class FreightEstimateSummaryController : Controller {
             Tfn = addressReceive.Tfn,
             Company = addressReceive.Company,
             UnitLoc = addressReceive.UnitLoc,
-            IsDefault = addressReceive.IsDefault,
             FullAddress = customerReceiveAddressService.GetFullAddress(addressReceive),
         };
 
@@ -135,7 +134,7 @@ public class FreightEstimateSummaryController : Controller {
                 GoodsType = goodsType,
                 GoodsValue = goodsValue,
                 TotalPackageCount = totalPackageCount,
-                AddressReceive = addressReceiveItem,
+                ReceiveAddress = addressReceiveItem,
                 FirstMode = firstModeItem,
             },
         });

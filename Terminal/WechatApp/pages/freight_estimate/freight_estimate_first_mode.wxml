@@ -1,7 +1,7 @@
 <!--pages/freight_estimate/freight_estimate_first_mode.wxml-->
 <header/>
 <view class="container">
-    <van-cell-group title="头程物流-运费预估"/>
+    <van-cell-group title="物流方式-运费预估"/>
 
     <block wx:if="{{ !firstModeList || firstModeList.length === 0 }}">
         <van-empty description="暂时没有符合的头程物流！"/>

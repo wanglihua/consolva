@@ -41,7 +41,7 @@
     </van-cell-group>
 
     <van-cell-group custom-class="items">
-        <van-cell title="头程物流" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="物流方式" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
         <van-cell title="国家" value="{{ firstMode.country }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="名称" value="{{ firstMode.name }}" border="{{ false }}" custom-class="item"/>

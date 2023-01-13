@@ -15,8 +15,8 @@ public class FreightEstimateSummaryModel {
     [JsonProperty("totalPackageCount")]
     public int TotalPackageCount { get; set; }
 
-    [JsonProperty("addressReceive")]
-    public FreightEstimateSummaryAddressReceiveItem AddressReceive { get; set; } = new();
+    [JsonProperty("receiveAddress")]
+    public FreightEstimateSummaryAddressReceiveItem ReceiveAddress { get; set; } = new();
 
     [JsonProperty("firstMode")]
     public FreightEstimateSummaryFirstModeItem FirstMode { get; set; } = new();
