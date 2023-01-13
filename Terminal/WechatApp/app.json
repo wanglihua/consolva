@@ -1,7 +1,5 @@
 {
     "pages": [
-        "pages/freight_estimate/freight_estimate_summary",
-        
         "pages/home/home_index",
         "pages/coupon/coupon_mine",
         "pages/coupon/coupon_pick",
@@ -39,7 +37,15 @@
         "pages/freight_estimate/freight_estimate_goods",
         "pages/freight_estimate/freight_estimate_country",
         "pages/freight_estimate/freight_estimate_first_mode",
-        "pages/freight_estimate/freight_estimate_receive_address"
+        "pages/freight_estimate/freight_estimate_receive_address",
+        "pages/freight_estimate/freight_estimate_summary",
+        "pages/instruction/instruction_freight_desc",
+        "pages/instruction/instruction_insurance_clause",
+        "pages/instruction/instruction_order_process",
+        "pages/instruction/instruction_promotion",
+        "pages/instruction/instruction_storage",
+        "pages/instruction/instruction_transport_limit",
+        "pages/instruction/instruction_use_agreement"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",
