@@ -1,0 +1,76 @@
+@using shunda.Admin.Areas.Setting.Models.ClientInstruction
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model shunda.Admin.Areas.Setting.Models.ClientInstruction.ClientInstructionIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "客户端文本菜单";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-client-instruction-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div id="clientInstructionList" data-page-index="0" data-sort-field="@(nameof(ClientInstructionInfo.Type))" data-sort-dir="@(SortDirection.Asc)">
+</div>
+
+<script type="text/javascript">
+
+    $(function() {
+        loadClientInstructionList();
+    });
+
+    function sortClientInstructionList(sortField, sortDir) {
+        var list = $('#clientInstructionList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadClientInstructionList();
+    }
+
+    function loadClientInstructionList(pageIndex) {
+        var list = $('#clientInstructionList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ClientInstruction")",
+            type: "POST",
+            data: {
+                '@(nameof(ClientInstructionListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ClientInstructionListQueryParam.SortField))': sortField,
+                '@(nameof(ClientInstructionListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#clientInstructionList').html(data);
+
+                initListTable("#tblClientInstructionList");
+            }
+        });
+    }
+
+    function showClientInstructionDetail(id) {
+        var url = "@Url.Action("Detail", "ClientInstruction", new { id = 88888})";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+</script>
