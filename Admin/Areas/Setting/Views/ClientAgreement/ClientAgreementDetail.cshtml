@@ -1,0 +1,185 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
+@model shunda.Admin.Areas.Setting.Models.ClientAgreement.ClientAgreementDetailModel
+
+@{
+    ViewData[ViewDataKey.Title] = "客户端协议详细";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-client-agreement-index-menu">
+        <a href="@Url.Action("Index", "ClientAgreement")">客户端协议</a>
+    </li>
+    <li>客户端协议详细</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="saveClientAgreement();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "ClientAgreement")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 980px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="clientAgreementDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Title" class="col-xs-2 control-label">标题</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Title" type="text" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="Country" class="col-xs-4 control-label">国家</label>
+                                <div class="col-xs-8">
+                                    <select asp-for="Country" class="input-sm form-control">
+                                        <option value="">不指定</option>
+                                        @foreach (var country in Model.CountryList) {
+                                            <option value="@(country.Id)">@(country.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="Status" class="col-xs-4 control-label">状态</label>
+                                <div class="col-xs-8">
+                                    <select asp-for="Status" class="input-sm form-control">
+                                        @foreach (var status in Model.StatusList) {
+                                            <option value="@(status.Id)">@(status.Name)</option>
+                                        }
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label asp-for="OrderNum" class="col-xs-4 control-label">排序</label>
+                                <div class="col-xs-8">
+                                    <input asp-for="OrderNum" type="number" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="content" class="col-xs-2 control-label">内容</label>
+                                <div class="col-xs-10">
+                                    <textarea id="content" asp-for="Content" class="input-sm form-control"></textarea>
+
+                                    <div class="help-block">{auto_copy_begin_1}, {auto_copy_end_1}, ... , {auto_copy_begin_8}, {auto_copy_end_8} 从这里复制放入地址描述，不要应用任何文本格式。</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveClientAgreement() {
+        
+        var content = CKEDITOR.instances.content.getData();
+        $("#content").val(content);        
+        
+        var form = $("#clientAgreementDetailForm");
+        var valid = validate(form,
+            {
+                'Title': {
+                    required: true,
+                    maxlength: 200
+                },
+                'Content': {
+                    required: false
+                },
+                'Province': {
+                    required: false,
+                    maxlength: 50
+                },
+                'Status': {
+                    required: true,
+                    digits: true 
+                }
+            });
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ClientAgreement")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                    } else {
+                        $.msg.show(data.message);
+
+                        if (data.create) {
+                            setTimeout("showClientAgreementDetail(" + data.id + ")", 1000);
+                        }
+                    }
+
+                    hideMask();
+                }
+            });
+        }
+    }
+
+    function showClientAgreementDetail(id) {
+        var url = "@Url.Action("Detail", "ClientAgreement", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+</script>
+
+<script type="text/javascript">
+    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
+        CKEDITOR.tools.enableHtml5Elements(document);
+    }
+
+    CKEDITOR.config.height = 520;
+    CKEDITOR.config.width = 'auto';
+
+    var initCkEditor = (function () {
+        return function () {
+            CKEDITOR.replace('content');
+        };
+    })();
+
+    initCkEditor();
+</script>

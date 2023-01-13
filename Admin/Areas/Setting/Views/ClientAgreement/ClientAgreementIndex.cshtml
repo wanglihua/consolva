@@ -1,0 +1,130 @@
+@using shunda.Admin.Areas.Setting.Models.ClientAgreement
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model shunda.Admin.Areas.Setting.Models.ClientAgreement.ClientAgreementIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "客户端协议";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-client-agreement-index-menu">客户端协议</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadClientAgreementList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showClientAgreementDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteClientAgreement()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="titleQuery">标题</label>&nbsp;<input id="titleQuery" name="titleQuery" style="width: 120px; height: 30px;" placeholder="标题查询"/>&nbsp;
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadClientAgreementList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="clientAgreementList" data-page-index="0" data-sort-field="@(nameof(ClientAgreementInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<script type="text/javascript">
+
+    $(function() {
+        loadClientAgreementList();
+    });
+
+    function sortClientAgreementList(sortField, sortDir) {
+        var list = $('#clientAgreementList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadClientAgreementList();
+    }
+
+    function loadClientAgreementList(pageIndex) {
+        var list = $('#clientAgreementList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ClientAgreement")",
+            type: "POST",
+            data: {
+                '@(nameof(ClientAgreementListQueryParam.TitleQuery))': $('#titleQuery').val(),
+                '@(nameof(ClientAgreementListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(ClientAgreementListQueryParam.SortField))': sortField,
+                '@(nameof(ClientAgreementListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#clientAgreementList').html(data);
+
+                initListTable("#tblClientAgreementList");
+            }
+        });
+    }
+
+    function showClientAgreementDetail(id) {
+        var url = "@Url.Action("Detail", "ClientAgreement", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+    function deleteClientAgreement() {
+        var idList = getSelectIdList('#tblClientAgreementList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ClientAgreement")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadClientAgreementList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

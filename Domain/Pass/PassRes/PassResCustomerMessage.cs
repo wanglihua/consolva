@@ -15,10 +15,10 @@ public partial class PassRes
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "消息推送" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo() { Id = ManualSend, Name = "手动推送", CateIdForCache = CateId },
-            new PassResInfo() { Id = ManualSendAll, Name = "全员推送", CateIdForCache = CateId },
-            new PassResInfo() { Id = MessageSetting, Name = "消息设置", CateIdForCache = CateId },
-            new PassResInfo() { Id = MessageView, Name = "消息查看", CateIdForCache = CateId },
+            new PassResInfo { Id = ManualSend, Name = "手动推送", CateIdForCache = CateId },
+            new PassResInfo { Id = ManualSendAll, Name = "全员推送", CateIdForCache = CateId },
+            new PassResInfo { Id = MessageSetting, Name = "消息设置", CateIdForCache = CateId },
+            new PassResInfo { Id = MessageView, Name = "消息查看", CateIdForCache = CateId },
         };
 
         /// <summary>

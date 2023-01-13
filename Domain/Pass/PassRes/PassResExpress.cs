@@ -13,14 +13,14 @@ public partial class PassRes {
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "快递管理" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo() { Id = ExpressList, Name = "快递列表", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressServiceRemark, Name = "快递客服备注", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressForceDelete, Name = "快递强制删除", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressExpect, Name = "预报单号", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressPhoto, Name = "快递单图片", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressPhotoDelete, Name = "快递单图片删除", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressReturn, Name = "退运池", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressSizeWeight, Name = "快递单尺寸重量", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressList, Name = "快递列表", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressServiceRemark, Name = "快递客服备注", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressForceDelete, Name = "快递强制删除", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressExpect, Name = "预报单号", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressPhoto, Name = "快递单图片", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressPhotoDelete, Name = "快递单图片删除", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressReturn, Name = "退运池", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressSizeWeight, Name = "快递单尺寸重量", CateIdForCache = CateId },
         };
 
         public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();

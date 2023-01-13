@@ -15,8 +15,8 @@ public partial class PassRes
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "仓储管理" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo() { Id = Warehouse, Name = "仓库", CateIdForCache = CateId },
-            new PassResInfo() { Id = StorageLocSpec, Name = "仓位规格", CateIdForCache = CateId },
+            new PassResInfo { Id = Warehouse, Name = "仓库", CateIdForCache = CateId },
+            new PassResInfo { Id = StorageLocSpec, Name = "仓位规格", CateIdForCache = CateId },
         };
 
         /// <summary>

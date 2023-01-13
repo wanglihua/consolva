@@ -15,11 +15,11 @@ public partial class PassRes
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "物流设置" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo() { Id = LogisticsFeeRate, Name = "通用费率", CateIdForCache = CateId },
-            new PassResInfo() { Id = LogisticsModeList, Name = "物流列表", CateIdForCache = CateId },
-            new PassResInfo() { Id = Insurance, Name = "保险", CateIdForCache = CateId },
-            new PassResInfo() { Id = Gst, Name = "GST", CateIdForCache = CateId },
-            new PassResInfo() { Id = ExpressReturnFeeRate, Name = "退运费率", CateIdForCache = CateId },
+            new PassResInfo { Id = LogisticsFeeRate, Name = "通用费率", CateIdForCache = CateId },
+            new PassResInfo { Id = LogisticsModeList, Name = "物流列表", CateIdForCache = CateId },
+            new PassResInfo { Id = Insurance, Name = "保险", CateIdForCache = CateId },
+            new PassResInfo { Id = Gst, Name = "GST", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressReturnFeeRate, Name = "退运费率", CateIdForCache = CateId },
         };
 
         /// <summary>
