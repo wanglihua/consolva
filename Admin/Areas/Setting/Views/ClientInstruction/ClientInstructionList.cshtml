@@ -4,7 +4,7 @@
 @using shunda.Domain.Client
 @model shunda.Admin.Areas.Setting.Models.ClientInstruction.ClientInstructionListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadClientInstructionList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientInstructionList" })
 
 <table id="tblClientInstructionList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -32,21 +32,19 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.ClientInstructionList != null && Model.ClientInstructionList.Count() != 0)
-        {
+        @if (Model.ClientInstructionList != null && Model.ClientInstructionList.Count != 0) {
             int order = 1;
-            foreach (ClientInstructionInfo clientInstruction in Model.ClientInstructionList)
-            {
+            foreach (ClientInstructionInfo clientInstruction in Model.ClientInstructionList) {
                 <tr ondblclick="showClientInstructionDetail(@(clientInstruction.Id));">
                     <td style="text-align: center;">
                         <label for="clientInstructionCheck_@(clientInstruction.Id)"></label><input id="clientInstructionCheck_@(clientInstruction.Id)" type="checkbox" class="ace" value="@clientInstruction.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td class="break-word">
-                        @(clientInstruction.Type?.Name)
+                        @(clientInstruction.Type.Name)
                     </td>
                     <td style="text-align: center;">
-                        @(clientInstruction.Creator?.LoginName)(@(clientInstruction.Creator?.UserName))
+                        @(clientInstruction.Creator.LoginName)(@(clientInstruction.Creator?.UserName))
                     </td>
                     <td style="text-align: center;">
                         @(clientInstruction.PublishTime?.ToString("yyyy-MM-dd HH:mm"))
@@ -60,9 +58,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="8">
                     暂时没有数据！
@@ -72,4 +68,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadClientInstructionList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientInstructionList" })

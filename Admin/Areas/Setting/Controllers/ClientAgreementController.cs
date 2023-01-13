@@ -170,6 +170,7 @@ public class ClientAgreementController : Controller {
 
     [HttpPost]
     [Route("/admin/client/agreement/delete")]
+    [Transactional]
     public IActionResult Delete(int[] idList) {
         foreach (int id in idList) {
             ClientAgreementInfo clientAgreement = session.Load<ClientAgreementInfo>(id);

@@ -1,10 +1,10 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Pass.PassRes
 @model shunda.Admin.Models.Sidebar.SidebarModel
 @{
     Layout = null;
 }
-@if (Model.IsAdmin)
-{
+@if (Model.HasOneOfPassRes(PassRes.Setting.All)) {
     <li id="settings-menu">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-gears"></i>
@@ -14,21 +14,35 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
-            <li id="settings-exchange-rate-index-menu">
-                <a asp-area="Setting" asp-controller="ExchangeRate" asp-action="Index">
-                    <i class="menu-icon fa fa-caret-right"></i>
-                    汇率
-                </a>
-                <b class="arrow"></b>
-            </li>
+            @if (Model.HasPassRes(PassRes.Setting.ExchangeRate)) {
+                <li id="settings-exchange-rate-index-menu">
+                    <a asp-area="Setting" asp-controller="ExchangeRate" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        汇率
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
 
-            <li id="settings-client-agreement-index-menu">
-                <a asp-area="Setting" asp-controller="ClientAgreement" asp-action="Index">
-                    <i class="menu-icon fa fa-caret-right"></i>
-                    客户端协议
-                </a>
-                <b class="arrow"></b>
-            </li>
+            @if (Model.HasPassRes(PassRes.Setting.ClientAgreement)) {
+                <li id="settings-client-agreement-index-menu">
+                    <a asp-area="Setting" asp-controller="ClientAgreement" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        客户端协议
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Setting.ClientInstruction)) {
+                <li id="settings-client-instruction-index-menu">
+                    <a asp-area="Setting" asp-controller="ClientInstruction" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        客户端文本菜单
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
         </ul>
     </li>
 }
