@@ -40,11 +40,11 @@
                         <label for="clientInstructionCheck_@(clientInstruction.Id)"></label><input id="clientInstructionCheck_@(clientInstruction.Id)" type="checkbox" class="ace" value="@clientInstruction.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td class="break-word">
+                    <td style="text-align: center;">
                         @(clientInstruction.Type.Name)
                     </td>
                     <td style="text-align: center;">
-                        @(clientInstruction.Creator.LoginName)(@(clientInstruction.Creator?.UserName))
+                        @(clientInstruction.Creator.LoginName)(@(clientInstruction.Creator.UserName))
                     </td>
                     <td style="text-align: center;">
                         @(clientInstruction.PublishTime?.ToString("yyyy-MM-dd HH:mm"))
