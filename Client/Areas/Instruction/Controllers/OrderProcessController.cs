@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Core.Web;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Instruction.Controllers;
@@ -9,5 +10,14 @@ public class OrderProcessController : Controller {
 
     public OrderProcessController(ISession session) {
         this.session = session;
+    }
+
+    [HttpPost]
+    [Route("/client/order/process/detail")]
+    public IActionResult Detail() {
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
     }
 }
