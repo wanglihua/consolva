@@ -23,7 +23,7 @@ public class InsuranceClauseController : Controller {
             .SingleOrDefault();
 
         string title = instruction?.Title ?? string.Empty;
-        string content = instruction?.Title ?? string.Empty;
+        string content = instruction?.Content ?? string.Empty;
 
         return Json(new JsonResultData {
             Success = true,
