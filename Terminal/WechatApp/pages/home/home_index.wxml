@@ -12,7 +12,6 @@
             <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon" text="转运中" badge="3" url=""/>
             <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" text="已交付" badge="3" url=""/>
             <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text="退运池" badge="3" url="../express/express_return/express_return_list"/>
-
         </van-grid>
     </view>
 
@@ -41,7 +40,6 @@
             <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text="下单流程" url="../instruction/instruction_order_process"/>
             <van-grid-item icon-prefix="iconfont" icon="transport-limit" icon-class="home-grid-icon" text="运输时效" url="../instruction/instruction_transport_limit"/>
             <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text="仓储说明" url="../instruction/instruction_storage"/>
-            <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" text="运费说明" url="../instruction/instruction_freight_desc"/>
         </van-grid>
     </view>
 </view>
