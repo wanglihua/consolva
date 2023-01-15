@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderCreateAgreement;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
 using shunda.Domain.Client;
@@ -59,9 +60,24 @@ public class OrderCreateAgreementController : Controller {
     [HttpPost]
     [Route("/client/order/create/agreement/detail")]
     public IActionResult Detail([FromBody] IdParam param) {
+        if (ModelState.IsValid == false) {
+            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
+        }
+
+        int id = param.Id;
+        var clientAgreement = session.Get<ClientAgreementInfo>(id);
+        if (clientAgreement == null) {
+            throw new ValidationException($"指定的客户端协议#{id}不存在！");
+        }
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new OrderCreateAgreementDetailModel {
+                Id = clientAgreement.Id,
+                Title = clientAgreement.Title,
+                Content = clientAgreement.Content,
+            }
         });
     }
 }
