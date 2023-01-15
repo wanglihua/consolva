@@ -1,2 +1,10 @@
 <!--pages/instruction/instruction_order_process.wxml-->
 <header/>
+<view class="container">
+    <view class="instruction-title">
+        {{ title }}
+    </view>
+    <view class="instruction-content">
+        <rich-text nodes="{{ content }}"></rich-text>
+    </view>
+</view>

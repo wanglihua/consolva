@@ -140,3 +140,16 @@ page {
 .bottom-btn-panel-inner {
     padding: 10rpx 40rpx;
 }
+
+.instruction-title {
+    padding: 20rpx 20rpx 20rpx 20rpx;
+    margin-bottom: 10rpx;
+    background-color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.instruction-content {
+    padding: 10rpx 20rpx 80rpx 20rpx;
+    background-color: white;
+}

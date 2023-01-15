@@ -18,7 +18,7 @@ public class UseAgreementController : Controller {
     [Route("/client/use/agreement/detail")]
     public IActionResult Detail() {
         var instruction = session.Query<ClientInstructionInfo>()
-            .Where(e => e.Type == ClientInstructionType.TransportLimit)
+            .Where(e => e.Type == ClientInstructionType.UseAgreement)
             .Take(1)
             .SingleOrDefault();
 
