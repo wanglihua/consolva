@@ -3,6 +3,53 @@
 <view class="container">
     <van-cell-group title="转运协议"/>
 
+    <van-cell-group custom-class="items">
+        <block wx:for="{{ agreementList }}" wx:key="id" wx:for-item="agreement" wx:for-index="index">
+            <van-cell border="{{ false }}" custom-class="item">
+                <view slot="title">
+                    <view style="display: inline-block;">
+                        <van-checkbox value="{{ true }}" shape="square" bind:change="onAgreementCheckboxChange"/>
+                    </view>
+                    <view style="font-size: 12px; display: inline" bind:tap="onAgreementReadTap">
+                        我已阅读👉
+                    </view>
+                    <view style="color: #131293; font-size: 12px; display: inline" bind:tap="onAgreementTitleTap">{{ agreement.title }}</view>
+                </view>
+            </van-cell>
+        </block>
+        <van-cell border="{{ false }}" custom-class="item">
+            <view slot="title">
+                <view style="display: inline-block;">
+                    <van-checkbox value="{{ true }}" shape="square" bind:change="onAgreementCheckboxChange"/>
+                </view>
+                <view style="font-size: 12px; display: inline;" bind:tap="onAgreementReadTap">
+                    提交转运单后将无法操作：拆分转运单、合并转运单、出库转运单、退运快递！
+                </view>
+            </view>
+        </van-cell>
+        <van-cell border="{{ false }}" custom-class="item">
+            <view slot="title">
+                <view style="display: inline-block;">
+                    <van-checkbox value="{{ true }}" shape="square" bind:change="onAgreementCheckboxChange"/>
+                </view>
+                <view style="font-size: 12px; display: inline;" bind:tap="onAgreementReadTap">
+                    转运单（订单）将在打包完毕后，支付费用，不欠费后，安排转运！
+                </view>
+            </view>
+        </van-cell>
+        <van-cell border="{{ false }}" custom-class="item">
+            <view slot="title">
+                <view style="display: inline-block;">
+                    <van-checkbox value="{{ true }}" shape="square" bind:change="onAgreementCheckboxChange"/>
+                </view>
+                <view style="font-size: 12px; font-weight: bold; display: inline;" bind:tap="onAgreementReadTap">
+                    全选：【本人理解并接受以上所有条款】
+                </view>
+            </view>
+        </van-cell>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
             <van-row gutter="20">

@@ -1,1 +1,4 @@
 /* pages/order_create/order_create_agreement.wxss */
+.van-cell__value {
+    flex: 0 !important;
+}
