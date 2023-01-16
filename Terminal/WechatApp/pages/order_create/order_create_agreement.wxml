@@ -1,4 +1,18 @@
 <!--pages/order_create/order_create_agreement.wxml-->
 <header/>
 <view class="container">
+    <van-cell-group title="转运协议"/>
+
+    <view class="bottom-btn-panel">
+        <view class="bottom-btn-panel-inner">
+            <van-row gutter="20">
+                <van-col span="24">
+                    <van-button type="info" size="small" block bind:click="onCreateOrderButtonClick">
+                        <van-icon class-prefix="iconfont" name="create-order"/>
+                        确认提交转运单
+                    </van-button>
+                </van-col>
+            </van-row>
+        </view>
+    </view>
 </view>

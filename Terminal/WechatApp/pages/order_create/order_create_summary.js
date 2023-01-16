@@ -40,7 +40,7 @@ Page({
     },
 
     onNextButtonClick(e) {
-
+        this.gotoNext();
     },
 
     gotoPre() {
@@ -51,7 +51,7 @@ Page({
 
     gotoNext() {
         wx.redirectTo({
-            url: "",
+            url: "./order_create_agreement",
         });
     }
 })
