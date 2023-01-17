@@ -4,6 +4,9 @@ const app = getApp();
 Page({
     data: {
         agreementList: [],
+        noMoreOrderActionChecked: false,
+        transferAfterPaidChecked: false,
+        allCheckChecked: false,
     },
 
     onLoad(options) {
@@ -13,23 +16,85 @@ Page({
     loadAgreementList() {
         const that = this;
         app.post("/client/order/create/agreement/list", {}, function (res) {
+            const agreementList = res.data.agreementList;
+            for (const agreement of agreementList) {
+                agreement.checked = false;
+            }
+
             that.setData({
-                agreementList: res.data.agreementList,
+                agreementList: agreementList,
             });
         });
     },
 
     onAgreementCheckboxChange(e) {
-        console.log(e);
+        const agreementId = e.currentTarget.dataset.item.id;
+        const agreementList = this.data.agreementList;
+        for (const agreement of agreementList) {
+            if (agreement.id === agreementId) {
+                agreement.checked = !agreement.checked;
+            }
+        }
+
+        this.setData({
+            agreementList: agreementList,
+        });
     },
 
     onAgreementReadTap(e) {
-        console.log(e);
+        const agreementId = e.currentTarget.dataset.item.id;
+        const agreementList = this.data.agreementList;
+        for (const agreement of agreementList) {
+            if (agreement.id === agreementId) {
+                agreement.checked = !agreement.checked;
+            }
+        }
+
+        this.setData({
+            agreementList: agreementList,
+        });
     },
 
     onAgreementTitleTap(e) {
         console.log(e);
-    },    
+        const agreementId = e.currentTarget.dataset.item.id;
+    },
+
+    onNoMoreOrderActionCheckboxChange(e) {
+        const noMoreOrderActionChecked = this.data.noMoreOrderActionChecked;
+        this.setData({
+            noMoreOrderActionChecked: !noMoreOrderActionChecked,
+        });
+    },
+
+    onNoMoreOrderActionTitleTap(e) {
+        const noMoreOrderActionChecked = this.data.noMoreOrderActionChecked;
+        this.setData({
+            noMoreOrderActionChecked: !noMoreOrderActionChecked,
+        });
+    },
+
+    onTransferAfterPaidCheckboxChange(e) {
+        const transferAfterPaidChecked = this.data.transferAfterPaidChecked;
+        this.setData({
+            transferAfterPaidChecked: !transferAfterPaidChecked,
+        });
+    },
+
+    onTransferAfterPaidTitleTap(e) {
+        const transferAfterPaidChecked = this.data.transferAfterPaidChecked;
+        this.setData({
+            transferAfterPaidChecked: !transferAfterPaidChecked,
+        });
+    },
+
+    onAllCheckCheckboxChange(e) {
+
+    },
+
+    onAllCheckTitleTap(e) {
+
+    },
 
     onCreateOrderButtonClick(e) {
 
