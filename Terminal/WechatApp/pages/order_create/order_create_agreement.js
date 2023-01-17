@@ -89,11 +89,35 @@ Page({
     },
 
     onAllCheckCheckboxChange(e) {
+        const allCheckChecked = !this.data.allCheckChecked;
+        const agreementList = this.data.agreementList;
 
+        for (const agreement of agreementList) {
+            agreement.checked = allCheckChecked;
+        }
+
+        this.setData({
+            agreementList: agreementList,
+            noMoreOrderActionChecked: allCheckChecked,
+            transferAfterPaidChecked: allCheckChecked,
+            allCheckChecked: allCheckChecked,
+        });
     },
 
     onAllCheckTitleTap(e) {
+        const allCheckChecked = !this.data.allCheckChecked;
+        const agreementList = this.data.agreementList;
 
+        for (const agreement of agreementList) {
+            agreement.checked = allCheckChecked;
+        }
+
+        this.setData({
+            agreementList: agreementList,
+            noMoreOrderActionChecked: allCheckChecked,
+            transferAfterPaidChecked: allCheckChecked,
+            allCheckChecked: allCheckChecked,
+        });
     },
 
     onCreateOrderButtonClick(e) {
