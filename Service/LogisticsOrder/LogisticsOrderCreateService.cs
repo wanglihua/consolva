@@ -5,6 +5,8 @@ using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Customer;
+using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
@@ -12,9 +14,22 @@ namespace shunda.Service.LogisticsOrder;
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderCreateService {
     private readonly ISession session;
+    private readonly LogisticsOrderCodeService logisticsOrderCodeService;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly ExpressLogService expressLogService;
+    private readonly LogisticsOrderActionService logisticsOrderActionService;
 
-    public LogisticsOrderCreateService(ISession session) {
+    public LogisticsOrderCreateService(ISession session,
+        LogisticsOrderCodeService logisticsOrderCodeService,
+        CustomerCodeService customerCodeService,
+        ExpressLogService expressLogService,
+        LogisticsOrderActionService logisticsOrderActionService
+    ) {
         this.session = session;
+        this.logisticsOrderCodeService = logisticsOrderCodeService;
+        this.customerCodeService = customerCodeService;
+        this.expressLogService = expressLogService;
+        this.logisticsOrderActionService = logisticsOrderActionService;
     }
 
     public LogisticsOrderInfo CreateOrder(int customerId) {
@@ -114,8 +129,32 @@ public class LogisticsOrderCreateService {
             }
         }
 
+        string orderCode = logisticsOrderCodeService.GenerateNewCode(customerId);
+        string customerCode = customerCodeService.GetCustomerCode(customerId);
+
         var order = new LogisticsOrderInfo {
         };
+
+        session.Save(order);
+        session.Flush();
+
+        // 更新快递单状态
+        foreach (var express in expressList) {
+            express.Order = order;
+            express.Status = ExpressStatus.Order;
+
+            session.Update(express);
+        }
+
+        session.Flush();
+
+        // 订单创建 快递单日志
+        foreach (var express in expressList) {
+            expressLogService.CustomerLog(express.Id, ExpressLogType.Order, customerId);
+        }
+
+        // 订单创建 订单日志
+        logisticsOrderActionService.NewActionCustomer(order.Id, LogisticsOrderActionType.CustomerCreateOrder, order.OrderStatus, order.OrderStatus, order.PayStatus, order.PayStatus, customerId);
 
         return order;
     }
