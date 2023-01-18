@@ -8,6 +8,7 @@ using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
@@ -17,18 +18,21 @@ public class LogisticsOrderCreateService {
     private readonly ISession session;
     private readonly LogisticsOrderCodeService logisticsOrderCodeService;
     private readonly CustomerCodeService customerCodeService;
+    private readonly LogisticsGoodsTypeService logisticsGoodsTypeService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
 
     public LogisticsOrderCreateService(ISession session,
         LogisticsOrderCodeService logisticsOrderCodeService,
         CustomerCodeService customerCodeService,
+        LogisticsGoodsTypeService logisticsGoodsTypeService,
         ExpressLogService expressLogService,
         LogisticsOrderActionService logisticsOrderActionService
     ) {
         this.session = session;
         this.logisticsOrderCodeService = logisticsOrderCodeService;
         this.customerCodeService = customerCodeService;
+        this.logisticsGoodsTypeService = logisticsGoodsTypeService;
         this.expressLogService = expressLogService;
         this.logisticsOrderActionService = logisticsOrderActionService;
     }
@@ -155,6 +159,7 @@ public class LogisticsOrderCreateService {
 
         string orderCode = logisticsOrderCodeService.GenerateNewCode(customerId);
         string customerCode = customerCodeService.GetCustomerCode(customerId);
+        LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(expressList.Select(e => e.GoodsType).Distinct().ToList());
 
         var order = new LogisticsOrderInfo {
             Code = orderCode,
@@ -167,10 +172,16 @@ public class LogisticsOrderCreateService {
             FirstMode = firstMode,
             Insurance = insurance,
             Gst = gst,
+            GoodsType = goodsType,
+            OrderStatus = LogisticsOrderStatus.Create,
+            PayStatus = PayStatus.NotPaid, // 这里改成 None 也是可以的
+            PayType = PayType.None,
         };
 
         session.Save(order);
         session.Flush();
+
+        // todo 订单地址
 
         // 订单快递单关联，当订单作废，或者作废订单恢复的时候，这个关联就是必需的了
         foreach (var express in expressList) {
