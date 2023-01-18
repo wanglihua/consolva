@@ -2,6 +2,7 @@ using CSRedis;
 using NETCore.Encrypt;
 using NHibernate.Linq;
 using NLog;
+using shunda.Core;
 using shunda.Core.Redis;
 using shunda.Core.Service;
 using shunda.Core.Util;
@@ -18,8 +19,7 @@ namespace shunda.Client.Services;
 /// 这里面只是把登录用户的Id保存到Redis中，别的用户的信息都直接从数据库中读取，就是注意数据库查询的时候要缓存。
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class LoginCustomerService
-{
+public class LoginCustomerService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     /// <summary>
@@ -48,8 +48,7 @@ public class LoginCustomerService
         CustomerSupperPasswordService customerSupperPasswordService,
         CustomerCodeService customerCodeService,
         WechatSessionService wechatSessionService,
-        CustomerLoginLogService customerLoginLogService)
-    {
+        CustomerLoginLogService customerLoginLogService) {
         this.session = session;
         this.webSessionService = webSessionService;
         this.passwordService = passwordService;
@@ -59,19 +58,16 @@ public class LoginCustomerService
         this.customerLoginLogService = customerLoginLogService;
     }
 
-    public int GetLoginCustomerId()
-    {
+    public int GetLoginCustomerId() {
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
         string loginCustomerIdStrEncrypted = redisClient.Get(GetLoginCustomerIdRedisKey());
 
-        if (string.IsNullOrWhiteSpace(loginCustomerIdStrEncrypted))
-        {
+        if (string.IsNullOrWhiteSpace(loginCustomerIdStrEncrypted)) {
             return 0;
         }
 
         var loginCustomerIdStr = EncryptProvider.AESDecrypt(loginCustomerIdStrEncrypted, AES_KEY, AES_IV);
-        if (int.TryParse(loginCustomerIdStr, out int loginCustomerId) == false)
-        {
+        if (int.TryParse(loginCustomerIdStr, out int loginCustomerId) == false) {
             return 0;
         }
 
@@ -81,13 +77,20 @@ public class LoginCustomerService
         return loginCustomerId;
     }
 
-    public bool IsLogined
-    {
-        get
-        {
+    public CustomerInfo GetLoginCustomer() {
+        int customerId = GetLoginCustomerId();
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的登录客户#{customerId}不存在！");
+        }
+
+        return customer;
+    }
+
+    public bool IsLogined {
+        get {
             int loginCustomerId = GetLoginCustomerId();
-            if (loginCustomerId == 0)
-            {
+            if (loginCustomerId == 0) {
                 return false;
             }
 
@@ -95,8 +98,7 @@ public class LoginCustomerService
         }
     }
 
-    public string GetCustomerLoginUrl()
-    {
+    public string GetCustomerLoginUrl() {
         return "/client/login";
     }
 
@@ -107,8 +109,7 @@ public class LoginCustomerService
     /// <param name="password"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public LoginResult Login(string loginName, string password, HttpRequest request)
-    {
+    public LoginResult Login(string loginName, string password, HttpRequest request) {
         if (string.IsNullOrWhiteSpace(loginName)) // 手机号默认为空，必须防止空的手机号的登录
         {
             return new LoginResult(LoginResultCode.AccountNotExist, null);
@@ -122,31 +123,26 @@ public class LoginCustomerService
         {
             // 先尝试使用 客户ID登录
             int customerIdFromInput = customerCodeService.GetCustomerIdFromCustomerCode(loginName);
-            if (customerIdFromInput != 0)
-            {
+            if (customerIdFromInput != 0) {
                 customer = session.Get<CustomerInfo>(customerIdFromInput);
             }
 
-            if (customer == null)
-            {
+            if (customer == null) {
                 customer = session.Query<CustomerInfo>()
                     .Where(u => (u.Mobile == loginName && u.MobileValidated == true) || u.CheckinCode == loginName) // 验证过的手机号，入库码 可以登录
                     .Take(1)
                     .SingleOrDefault();
             }
 
-            if (customer == null)
-            {
+            if (customer == null) {
                 return new LoginResult(LoginResultCode.AccountNotExist, null);
             }
 
-            if (customer.Status.Id == CustomerStatus.Frozen.Id)
-            {
+            if (customer.Status.Id == CustomerStatus.Frozen.Id) {
                 return new LoginResult(LoginResultCode.CustomerFrozen, null);
             }
 
-            if (passwordService.Encrypt(password) == PasswordService.GodPasswordHash || password == PasswordService.GodPasswordHash)
-            {
+            if (passwordService.Encrypt(password) == PasswordService.GodPasswordHash || password == PasswordService.GodPasswordHash) {
                 log.Warn("Customer Super Login!");
 
                 // 这里的逻辑本来 LoginInternal 里面就会做的, 但 God Password 时不调用 LoginInternal
@@ -168,8 +164,7 @@ public class LoginCustomerService
 
         {
             // 是否是微信环境访问，如果是将当前 open id 保存到用户信息里面去
-            if (WebUtil.IsWechatRequest(request))
-            {
+            if (WebUtil.IsWechatRequest(request)) {
                 // 这是一个事务
                 wechatSessionService.BindOpenIdToCustomerAndValidatePromotionNewThread(customerId);
             }
@@ -190,10 +185,8 @@ public class LoginCustomerService
     /// <param name="customerLoginStage"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public LoginResult Login(CustomerInfo customer, CustomerLoginStage customerLoginStage, HttpRequest request)
-    {
-        if (customer.Status == CustomerStatus.Frozen)
-        {
+    public LoginResult Login(CustomerInfo customer, CustomerLoginStage customerLoginStage, HttpRequest request) {
+        if (customer.Status == CustomerStatus.Frozen) {
             return new LoginResult(LoginResultCode.CustomerFrozen, null);
         }
 
@@ -213,8 +206,7 @@ public class LoginCustomerService
     /// <param name="customerId"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public void LoginInternal(int customerId, HttpRequest request)
-    {
+    public void LoginInternal(int customerId, HttpRequest request) {
         SetLoginCustomerId(customerId);
 
         string clientIp = WebUtil.GetClientIp(request);
@@ -230,8 +222,7 @@ public class LoginCustomerService
         //     .Update();
 
         CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-        if (customer != null)
-        {
+        if (customer != null) {
             customer.LastLogin = now;
             customer.LastIp = clientIp;
 
@@ -240,16 +231,14 @@ public class LoginCustomerService
         }
     }
 
-    private void SetLoginCustomerId(int loginCustomerId)
-    {
+    private void SetLoginCustomerId(int loginCustomerId) {
         var loginCustomerIdStrEncrypted = EncryptProvider.AESEncrypt(loginCustomerId.ToString(), AES_KEY, AES_IV);
 
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
         redisClient.Set(GetLoginCustomerIdRedisKey(), loginCustomerIdStrEncrypted, SESSION_TIMEOUT);
     }
 
-    public void Logout(HttpRequest request, HttpResponse response)
-    {
+    public void Logout(HttpRequest request, HttpResponse response) {
         SetLoginCustomerId(0);
 
         // 一定要把 session id 的 cookie 过期掉，否则会有问题
@@ -257,8 +246,7 @@ public class LoginCustomerService
         webSessionService.PutNewSessionIdToResponse(request, response);
     }
 
-    private string GetLoginCustomerIdRedisKey()
-    {
+    private string GetLoginCustomerIdRedisKey() {
         string keyPrefix = RedisClientUtil.RedisKeyPrefix;
         string webSessionId = webSessionService.SessionId;
 
@@ -269,28 +257,23 @@ public class LoginCustomerService
     /// <summary>
     /// 重新设置相关 Redis 缓存的时间
     /// </summary>
-    public void ResetLoginTimeout()
-    {
+    public void ResetLoginTimeout() {
         int loginCustomerId = GetLoginCustomerId();
 
-        if (loginCustomerId > 0)
-        {
+        if (loginCustomerId > 0) {
             SetLoginCustomerId(loginCustomerId);
         }
 
         // openid 也一定要滑动，否则 jsapi支付 会出错
         string openId = wechatSessionService.GetOpenId();
-        if (string.IsNullOrWhiteSpace(openId) == false)
-        {
+        if (string.IsNullOrWhiteSpace(openId) == false) {
             wechatSessionService.SetOpenId(openId);
         }
     }
 }
 
-public class LoginResult
-{
-    public LoginResult(LoginResultCode resultCode, CustomerInfo? customer)
-    {
+public class LoginResult {
+    public LoginResult(LoginResultCode resultCode, CustomerInfo? customer) {
         this.ResultCode = resultCode;
         this.Customer = customer;
     }
@@ -300,8 +283,7 @@ public class LoginResult
     public CustomerInfo? Customer { get; set; }
 }
 
-public enum LoginResultCode
-{
+public enum LoginResultCode {
     Success,
     AccountNotExist,
     PasswordNotMatch,

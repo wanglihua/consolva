@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.International.Converters.PinYinConverter;
 
 namespace shunda.Core.Util;
 
@@ -115,4 +116,72 @@ public static class StringUtil {
 
         return false;
     }
+
+    /// <summary>
+    /// 获取字符串的拼音表示，只把中文的转换一下
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static string GetPinyin(string str) {
+        return GetPinyin(str, false);
+    }
+
+    public static string GetPinyinWithSpace(string str) {
+        return GetPinyin(str, true);
+    }
+
+    /// <summary>
+    /// 获取字符串的拼音表示，只把中文的转换一下
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="addSpace">是不是在拼音间添加空格</param>
+    /// <returns></returns>
+    public static string GetPinyin(string str, bool addSpace) {
+        if (string.IsNullOrWhiteSpace(str)) {
+            return str;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < str.Length; i++) {
+            // if (IsChineseChar(str[i]))
+            if (ChineseChar.IsValidChar(str[i])) {
+                // sb.Append(Pinyin.GetPinyin(str[i]));
+
+                ChineseChar chineseChar = new ChineseChar(str[i]);
+                if (chineseChar.PinyinCount > 0) {
+                    string pinyin = chineseChar.Pinyins[0];
+                    if (string.IsNullOrEmpty(pinyin) == false) {
+                        pinyin = pinyin.Substring(0, pinyin.Length - 1);
+                    }
+
+                    if (dictPinyin.ContainsKey(str[i])) {
+                        pinyin = dictPinyin[str[i]];
+                    }
+
+                    if (string.IsNullOrEmpty(pinyin) == false) {
+                        pinyin = pinyin.ToLower();
+
+                        pinyin = pinyin[0].ToString().ToUpper() + pinyin.Substring(1);
+                    }
+
+                    sb.Append(pinyin);
+
+                    if (addSpace) {
+                        sb.Append(" ");
+                    }
+                }
+            } else {
+                sb.Append(str[i]);
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    // 一些多音字或者BUG的这里自定义修正
+    private static IDictionary<char, string> dictPinyin = new Dictionary<char, string>() {
+        { '广', "guang" },
+        { '南', "nan" },
+    };
 }
