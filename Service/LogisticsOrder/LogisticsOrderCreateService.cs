@@ -3,6 +3,7 @@ using shunda.Core.Service;
 using shunda.Core.Util;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
@@ -81,22 +82,45 @@ public class LogisticsOrderCreateService {
             throw new ValidationException("因海关要求，收货人与发货人，姓名不可以相同，请在【我的地址】修改！");
         }
 
+        // 保险和GST
+        var insurance = session.Get<LogisticsInsuranceInfo>(createSelect.InsuranceId);
+        if (insurance == null) {
+            throw new ValidationException($"指定的保险方案#{createSelect.InsuranceId}不存在！");
+        }
+
+        var gst = session.Get<LogisticsGstInfo>(createSelect.GstId);
+        if (gst == null) {
+            throw new ValidationException($"指定的GST方案#{createSelect.GstId}不存在！");
+        }
+
+        // 快递单列表
         var createSelectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
             .Where(e => e.CustomerId == customerId)
             .ToList();
 
         IList<int> expressIdList = createSelectExpressList.Select(e => e.ExpressId).ToList();
 
-        // 快递单列表
         var expressList = session.Query<ExpressInfo>()
             .Where(e => expressIdList.Contains(e.Id))
             .OrderBy(e => e.Id)
             .ToList();
+        if (expressList.Count == 0) {
+            throw new Exception("快递单列表不能为空！");
+        }
 
         // 检查禁止类物品类型
         foreach (var express in expressList) {
             if (express.GoodsType == LogisticsGoodsType.Forbidden) {
                 throw new Exception("禁止类物品不能创建订单！");
+            }
+        }
+
+        // 检查快递单收货仓库是否一致，一般当前都是一样的
+        var warehouse = expressList.First().Warehouse;
+        int warehouseId = warehouse.Id;
+        foreach (var express in expressList) {
+            if (express.Warehouse.Id != warehouseId) {
+                throw new Exception("快递单收货仓库不一致，请选择同一个收货仓库的快递单号创建订单！");
             }
         }
 
@@ -136,6 +160,13 @@ public class LogisticsOrderCreateService {
             Code = orderCode,
             Customer = customer,
             CustomerCode = customerCode,
+            FeeMethod = LogisticsOrderFeeMethod.Pack, // 当前创建的订单都是打包后收费的
+            CreateMethod = LogisticsOrderCreateMethod.CustomerCreate,
+            Warehouse = warehouse,
+            FirstType = createSelect.FirstType,
+            FirstMode = firstMode,
+            Insurance = insurance,
+            Gst = gst,
         };
 
         session.Save(order);
