@@ -4,6 +4,7 @@ const app = getApp();
 Page({
     data: {
         agreementList: [],
+        detailAgreement: {},
         noMoreOrderActionChecked: false,
         transferAfterPaidChecked: false,
         allCheckChecked: false,
@@ -19,6 +20,7 @@ Page({
             const agreementList = res.data.agreementList;
             for (const agreement of agreementList) {
                 agreement.checked = false;
+                agreement.showDetail = false;
             }
 
             that.setData({
@@ -56,8 +58,40 @@ Page({
     },
 
     onAgreementTitleTap(e) {
-        console.log(e);
-        const agreementId = e.currentTarget.dataset.item.id;
+        const agreement = e.currentTarget.dataset.item;
+        const agreementId = agreement.id;
+
+        const agreementList = this.data.agreementList;
+        for (const agreement of agreementList) {
+            agreement.showDetail = false;
+        }
+
+        const that = this;
+        app.postWithoutLoading("/client/order/create/agreement/detail", {
+            id: agreementId,
+        }, function (res) {
+            for (const agreement of agreementList) {
+                if (agreement.id === agreementId) {
+                    agreement.showDetail = true;
+                }
+            }
+            
+            that.setData({
+                agreementList: agreementList,
+                detailAgreement: res.data,
+            });
+        });
+    },
+
+    onDetailClose(e) {
+        const agreementList = this.data.agreementList;
+        for (const agreement of agreementList) {
+            agreement.showDetail = false;
+        }
+
+        this.setData({
+            agreementList: agreementList,
+        });
     },
 
     onNoMoreOrderActionCheckboxChange(e) {
@@ -121,6 +155,30 @@ Page({
     },
 
     onCreateOrderButtonClick(e) {
+        let allAccepted = true;
+        const agreementList = this.data.agreementList;
+        const noMoreOrderActionChecked = this.data.noMoreOrderActionChecked;
+        const transferAfterPaidChecked = this.data.transferAfterPaidChecked;
 
+        for (const agreement of agreementList) {
+            if (agreement.checked !== true) {
+                allAccepted = false;
+            }
+        }
+
+        if (noMoreOrderActionChecked !== true || transferAfterPaidChecked !== true) {
+            allAccepted = false;
+        }
+
+        if (allAccepted !== true) {
+            wx.showModal({
+                title: '转运协议',
+                content: '请先阅读并同意所有转运协议！',
+                showCancel: false
+            });
+            return;
+        }
+
+        // 创建订单
     }
 })
