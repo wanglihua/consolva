@@ -9,7 +9,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// 订单快递单号
 /// 作废订单才需要这个记录
 /// </summary>
-public class LogisticsOrderExpressInfo : Entity
+public class LogisticsOrderExpressInfo : EntityNoUpdate
 {
     /// <summary>
     /// 订单，非空

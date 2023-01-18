@@ -4,7 +4,7 @@ using shunda.Domain.Express;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderExpressInfoMapping : EntityMapping<LogisticsOrderExpressInfo>
+public class LogisticsOrderExpressInfoMapping : EntityNoUpdateMapping<LogisticsOrderExpressInfo>
 {
     public LogisticsOrderExpressInfoMapping()
     {

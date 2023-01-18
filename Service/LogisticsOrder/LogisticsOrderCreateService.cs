@@ -133,9 +133,24 @@ public class LogisticsOrderCreateService {
         string customerCode = customerCodeService.GetCustomerCode(customerId);
 
         var order = new LogisticsOrderInfo {
+            Code = orderCode,
+            Customer = customer,
+            CustomerCode = customerCode,
         };
 
         session.Save(order);
+        session.Flush();
+
+        // 订单快递单关联，当订单作废，或者作废订单恢复的时候，这个关联就是必需的了
+        foreach (var express in expressList) {
+            var orderExpress = new LogisticsOrderExpressInfo {
+                Order = order,
+                Express = express,
+            };
+
+            session.Save(orderExpress);
+        }
+
         session.Flush();
 
         // 更新快递单状态

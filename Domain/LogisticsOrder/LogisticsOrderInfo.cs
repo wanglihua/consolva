@@ -222,10 +222,4 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [JsonProperty("deliveredTime")]
     public virtual DateTime? DeliveredTime { get; set; } = null;
-
-    #region cache
-
-    public virtual string CustomerCodeCache { get; set; } = string.Empty;
-
-    #endregion
 }
