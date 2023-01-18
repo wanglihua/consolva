@@ -42,6 +42,7 @@ public class OrderCreateFirstModeController : Controller {
 
         var firstModeList = session.Query<LogisticsModeInfo>()
             .Where(e => e.Country == country // todo 物品类型的问题怎么解决
+                        && e.Cate == LogisticsModeCate.Customer // 必须是客户端物流方式，不是内部物流方式
                         && e.Status == LogisticsModeStatus.Enabled)
             .OrderBy(e => e.Type)
             .ThenByDescending(e => e.Id)

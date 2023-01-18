@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Client.Areas.Order.Models.OrderCreateNew;
 using shunda.Client.Services;
-using shunda.Core;
-using shunda.Core.Util;
 using shunda.Core.Web;
-using shunda.Domain.Customer;
-using shunda.Domain.LogisticsOrder;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;
@@ -13,22 +11,30 @@ namespace shunda.Client.Areas.Order.Controllers;
 public class OrderCreateNewController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly LogisticsOrderCreateService logisticsOrderCreateService;
 
-    public OrderCreateNewController(ISession session, LoginCustomerService loginCustomerService) {
+    public OrderCreateNewController(ISession session,
+        LoginCustomerService loginCustomerService,
+        LogisticsOrderCreateService logisticsOrderCreateService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.logisticsOrderCreateService = logisticsOrderCreateService;
     }
 
     [HttpPost]
     [Route("/client/order/create/new")]
     public IActionResult New() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-        var loginCustomer = loginCustomerService.GetLoginCustomer();
 
+        var order = logisticsOrderCreateService.CreateOrder(loginCustomerId);
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new OrderCreateNewModel {
+                OrderId = order.Id,
+            },
         });
     }
 }

@@ -2,6 +2,8 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Core.Util;
 using shunda.Domain.Customer;
+using shunda.Domain.Express;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -16,6 +18,11 @@ public class LogisticsOrderCreateService {
     }
 
     public LogisticsOrderInfo CreateOrder(int customerId) {
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
         LogisticsOrderCreateSelectInfo createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
             throw new ValidationException("订单创建数据不存在，请先在前面步骤录入创建数据！");
@@ -23,6 +30,17 @@ public class LogisticsOrderCreateService {
 
         if (createSelect.Valid == false) {
             throw new ValidationException("订单创建数据在确认前，又在别的界面被修改过，数据已失效！");
+        }
+
+        // 检查内部费率问题
+        int firstModeId = createSelect.FirstModeId;
+        var firstMode = session.Get<LogisticsModeInfo>(firstModeId);
+        if (firstMode == null) {
+            throw new ValidationException($"指定的物流方式#{firstModeId}不存在！");
+        }
+
+        if (firstMode.Cate == LogisticsModeCate.Inner) {
+            throw new Exception($"当前选择的物流方式{firstMode.Name}为内部费率，不能用于创建订单。可能是系统问题造成错误选择，请重新选择再创建订单！");
         }
 
         // 检查收件人和发货人是否一样
@@ -46,7 +64,43 @@ public class LogisticsOrderCreateService {
 
         if (receiverNameToCompare == senderNameToCompare) {
             throw new ValidationException("因海关要求，收货人与发货人，姓名不可以相同，请在【我的地址】修改！");
-        }        
-        return null;
+        }
+
+        var createSelectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+            .Where(e => e.CustomerId == customerId)
+            .ToList();
+
+        IList<int> expressIdList = createSelectExpressList.Select(e => e.ExpressId).ToList();
+
+        // 快递单列表
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => expressIdList.Contains(e.Id))
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        // 检查禁止类物品类型
+        foreach (var express in expressList) {
+            if (express.GoodsType == LogisticsGoodsType.Forbidden) {
+                throw new Exception("禁止类物品不能创建订单！");
+            }
+        }
+
+        // 快递单物品列表
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+
+        // 物流物品列表
+        var logisticsGoodsIdList = expressGoodsList.Select(e => e.Goods.Id).ToList();
+        var logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
+            .Where(e => logisticsGoodsIdList.Contains(e.Id))
+            .ToList();
+        
+        
+
+        var order = new LogisticsOrderInfo {
+        };
+
+        return order;
     }
 }
