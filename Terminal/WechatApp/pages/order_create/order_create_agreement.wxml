@@ -17,6 +17,7 @@
                 </view>
             </van-cell>
             <van-popup show="{{ agreement.showDetail }}" closeable position="bottom" custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;" bind:close="onDetailClose">
+                <view style="padding: 20rpx; font-weight: bold;">{{ detailAgreement.title }}</view>
                 <view style="padding: 20rpx 20rpx 80rpx 20rpx;">
                     <rich-text nodes="{{ detailAgreement.content }}"></rich-text>
                 </view>
