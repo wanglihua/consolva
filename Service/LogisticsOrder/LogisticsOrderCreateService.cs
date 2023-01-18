@@ -95,8 +95,24 @@ public class LogisticsOrderCreateService {
         var logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
             .Where(e => logisticsGoodsIdList.Contains(e.Id))
             .ToList();
-        
-        
+
+        // 检查快递单物品单价
+        foreach (var expressGoods in expressGoodsList) {
+            if (expressGoods.Price <= 0) {
+                int expressId = expressGoods.Express.Id;
+                var express = expressList.Where(e => e.Id == expressId).Take(1).SingleOrDefault();
+                string trackingNo = express?.TrackingNo ?? string.Empty;
+
+                int logisticsGoodsId = expressGoods.Goods.Id;
+                var logisticsGoods = logisticsGoodsList
+                    .Where(e => e.Id == logisticsGoodsId)
+                    .Take(1)
+                    .SingleOrDefault();
+                string goodsName = logisticsGoods?.Name ?? string.Empty;
+
+                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价为 0，请修改单价后继续！");
+            }
+        }
 
         var order = new LogisticsOrderInfo {
         };
