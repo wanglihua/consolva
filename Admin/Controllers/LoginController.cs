@@ -12,11 +12,14 @@ namespace shunda.Admin.Controllers;
 public class LoginController : Controller {
     private readonly CaptchaService captchaService;
     private readonly LoginUserService loginUserService;
+    private readonly UserLoginRateLimitService userLoginRateLimitService;
 
     public LoginController(LoginUserService loginUserService,
-        CaptchaService captchaService) {
+        CaptchaService captchaService,
+        UserLoginRateLimitService userLoginRateLimitService) {
         this.loginUserService = loginUserService;
         this.captchaService = captchaService;
+        this.userLoginRateLimitService = userLoginRateLimitService;
     }
 
     [HttpGet]
@@ -46,6 +49,8 @@ public class LoginController : Controller {
 
         var loginName = model.LoginName.Trim();
         var password = model.Password.Trim();
+
+        userLoginRateLimitService.CheckRateLimit(loginName);
 
         var loginSuccess = loginUserService.Login(loginName, password, UserLoginLocation.Web, Request);
         if (loginSuccess == false) {

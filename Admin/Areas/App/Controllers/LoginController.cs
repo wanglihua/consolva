@@ -15,10 +15,15 @@ namespace shunda.Admin.Areas.App.Controllers;
 public class LoginController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
+    private readonly UserLoginRateLimitService userLoginRateLimitService;
 
-    public LoginController(ISession session, LoginUserService loginUserService) {
+    public LoginController(ISession session,
+        LoginUserService loginUserService,
+        UserLoginRateLimitService userLoginRateLimitService
+    ) {
         this.session = session;
         this.loginUserService = loginUserService;
+        this.userLoginRateLimitService = userLoginRateLimitService;
     }
 
     [HttpPost]
@@ -32,6 +37,8 @@ public class LoginController : Controller {
 
         var loginName = model.LoginName.Trim();
         var password = model.Password.Trim();
+
+        userLoginRateLimitService.CheckRateLimit(loginName);
 
         var loginSuccess = loginUserService.Login(loginName, password, UserLoginLocation.App, Request);
         if (loginSuccess == false) {
