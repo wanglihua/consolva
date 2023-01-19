@@ -6,6 +6,10 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
 
+/// <summary>
+/// 订单仓位信息获取
+/// 订单创建和提交打包时调用
+/// </summary>
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderStorageLocService {
     /// <summary>

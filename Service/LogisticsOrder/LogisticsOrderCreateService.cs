@@ -135,6 +135,9 @@ public class LogisticsOrderCreateService {
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
+        if (expressGoodsList.Count == 0) {
+            throw new ValidationException("订单快递单物品列表不能为空！");
+        }
 
         // 物流物品列表
         var logisticsGoodsIdList = expressGoodsList.Select(e => e.Goods.Id).ToList();
@@ -164,6 +167,7 @@ public class LogisticsOrderCreateService {
         string customerCode = customerCodeService.GetCustomerCode(customerId);
         LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(expressList.Select(e => e.GoodsType).Distinct().ToList());
         var orderStorageLoc = logisticsOrderStorageLocService.GetOrderStorageLoc(expressList);
+        var goodsValue = expressGoodsList.Sum(e => e.Price * e.Quantity);
 
         var order = new LogisticsOrderInfo {
             Code = orderCode,
@@ -180,6 +184,9 @@ public class LogisticsOrderCreateService {
             OrderStatus = LogisticsOrderStatus.Create,
             PayStatus = PayStatus.NotPaid, // 这里改成 None 也是可以的
             PayType = PayType.None,
+            GoodsValue = goodsValue,
+            OrderAmount = 0m, // 打包时更新这个值
+            PaidAmount = 0m,
             RepackType = LogisticsRepackType.None, // 当前打包时不关注这个值
             StorageLoc = orderStorageLoc.FirstStorageLoc,
             StorageLocCount = orderStorageLoc.StorageLocCount,
