@@ -5,7 +5,7 @@ using shunda.Domain.Logistics;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderFirstModeInfoMapping : EntityMapping<LogisticsOrderFirstModeInfo>
+public class LogisticsOrderFirstModeInfoMapping : EntityNoUpdateMapping<LogisticsOrderFirstModeInfo>
 {
     public LogisticsOrderFirstModeInfoMapping()
     {

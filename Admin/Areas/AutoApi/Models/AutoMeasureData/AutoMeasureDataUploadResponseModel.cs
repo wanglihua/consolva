@@ -1,9 +1,8 @@
 using Newtonsoft.Json;
 
-namespace shunda.Admin.Areas.Api.Models.AutoMeasureData;
+namespace shunda.Admin.Areas.AutoApi.Models.AutoMeasureData;
 
-public class AutoMeasureDataUploadResponseModel
-{
+public class AutoMeasureDataUploadResponseModel {
     /// <summary>
     /// Success
     /// </summary>
@@ -62,18 +61,15 @@ public class AutoMeasureDataUploadResponseModel
 
     private static readonly Dictionary<string, AutoMeasureDataUploadResponseModel> codeTypeMap = codeTypeList.ToDictionary(e => e.Code);
 
-    public static AutoMeasureDataUploadResponseModel GetByCode(string code)
-    {
-        if (codeTypeMap.TryGetValue(code, out AutoMeasureDataUploadResponseModel? codeType))
-        {
+    public static AutoMeasureDataUploadResponseModel GetByCode(string code) {
+        if (codeTypeMap.TryGetValue(code, out AutoMeasureDataUploadResponseModel? codeType)) {
             return codeType;
         }
 
         return Unknow; // 未知错误
     }
 
-    private AutoMeasureDataUploadResponseModel()
-    {
+    private AutoMeasureDataUploadResponseModel() {
     }
 
     [JsonProperty("flag")]

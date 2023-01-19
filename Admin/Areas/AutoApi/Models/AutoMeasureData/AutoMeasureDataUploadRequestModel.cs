@@ -1,9 +1,8 @@
 using Newtonsoft.Json;
 
-namespace shunda.Admin.Areas.Api.Models.AutoMeasureData;
+namespace shunda.Admin.Areas.AutoApi.Models.AutoMeasureData;
 
-public class AutoMeasureDataUploadRequestModel
-{
+public class AutoMeasureDataUploadRequestModel {
     [JsonProperty("app_key")]
     public string AppKey { get; set; } = string.Empty;
 
@@ -14,10 +13,9 @@ public class AutoMeasureDataUploadRequestModel
     public string Sign { get; set; } = string.Empty;
 
     [JsonProperty("data")]
-    public ModelData Data { get; set; } = new ();
+    public ModelData Data { get; set; } = new();
 
-    public class ModelData
-    {
+    public class ModelData {
         [JsonProperty("boxType")]
         public string BoxType { get; set; } = string.Empty;
 

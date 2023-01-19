@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NHibernate;
 using NLog;
-using shunda.Admin.Areas.Api.Models.AutoMeasureData;
+using shunda.Admin.Areas.AutoApi.Models.AutoMeasureData;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -12,32 +12,28 @@ using shunda.Service.AutoMeasure;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.Api.Controllers;
+namespace shunda.Admin.Areas.AutoApi.Controllers;
 
 [NoLoginRequired]
-[ApiArea]
-public class AutoMeasureDataController : Controller
-{
+[AutoApiArea]
+public class AutoMeasureDataController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
     private ExpressTrackingNoService expressTrackingNoService;
     private ExpressLogService expressLogService;
 
-    public AutoMeasureDataController(ISession session, ExpressTrackingNoService expressTrackingNoService, ExpressLogService expressLogService)
-    {
+    public AutoMeasureDataController(ISession session, ExpressTrackingNoService expressTrackingNoService, ExpressLogService expressLogService) {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
         this.expressLogService = expressLogService;
     }
 
     [HttpPost]
-    [Route("/admin/api/auto/measure/upload")]
-    public IActionResult Upload()
-    {
+    [Route("/admin/auto/api/auto/measure/upload")]
+    public IActionResult Upload() {
         ITransaction? transaction = null;
-        try
-        {
+        try {
             transaction = session.BeginTransaction();
 
             // Request.EnableRewind(); // 3.0 中方法名称有改变 using Microsoft.AspNetCore.Http.Internal; 
@@ -52,8 +48,7 @@ public class AutoMeasureDataController : Controller
             AutoMeasureDataUploadRequestModel? requestModel = JsonConvert.DeserializeObject<AutoMeasureDataUploadRequestModel>(requestBodyText);
 
             // 检查数据完整
-            if (requestModel?.Data == null)
-            {
+            if (requestModel?.Data == null) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS001.Code);
             }
 
@@ -94,8 +89,7 @@ public class AutoMeasureDataController : Controller
             string clearText = sb.ToString();
             string signCalculate = Md5Util.Encrypt(clearText).ToUpper();
 
-            if (signCalculate.ToUpper() != requestModel.Sign.ToUpper())
-            {
+            if (signCalculate.ToUpper() != requestModel.Sign.ToUpper()) {
                 log.Error("签名加密数据错误，requestBodyText：" + requestBodyText);
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS100.Code); // 参数签名错误，非法调用！
             }
@@ -106,64 +100,53 @@ public class AutoMeasureDataController : Controller
 
             string trackingNumber = requestModel.Data?.TrackingNumber ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(trackingNumber))
-            {
+            if (string.IsNullOrWhiteSpace(trackingNumber)) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS002.Code); // 快递单号格式不合法！
             }
 
             trackingNumber = trackingNumber.ToUpper();
 
             // 这一类的子单号，还是当做母单号看待
-            if (trackingNumber.StartsWith("JD") && trackingNumber.EndsWith("-1-1-"))
-            {
+            if (trackingNumber.StartsWith("JD") && trackingNumber.EndsWith("-1-1-")) {
                 trackingNumber = trackingNumber.Replace("-1-1-", "");
             }
 
             // 检查快递单号
-            if (expressTrackingNoService.IsValidateTrackingNo(requestModel.Data?.TrackingNumber ?? string.Empty) == false)
-            {
+            if (expressTrackingNoService.IsValidateTrackingNo(requestModel.Data?.TrackingNumber ?? string.Empty) == false) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS002.Code); // 快递单号格式不合法！
             }
 
             // 检查 长宽高，重量 数据
 
-            if (decimal.TryParse(requestModel.Data?.Length, out decimal length) == false)
-            {
+            if (decimal.TryParse(requestModel.Data?.Length, out decimal length) == false) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS004.Code); // 长宽高数据错误！
             }
 
-            if (length <= 0)
-            {
+            if (length <= 0) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS004.Code); // 长宽高数据错误！
             }
 
-            if (decimal.TryParse(requestModel.Data?.Width, out decimal width) == false)
-            {
+            if (decimal.TryParse(requestModel.Data?.Width, out decimal width) == false) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS004.Code); // 长宽高数据错误！
             }
 
-            if (width <= 0)
-            {
+            if (width <= 0) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS004.Code); // 长宽高数据错误！
             }
 
-            if (decimal.TryParse(requestModel.Data?.Height, out decimal height) == false)
-            {
+            if (decimal.TryParse(requestModel.Data?.Height, out decimal height) == false) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS004.Code); // 长宽高数据错误！
             }
 
-            if (height <= 0)
-            {
+            if (height <= 0) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS004.Code); // 长宽高数据错误！
             }
 
-            if (decimal.TryParse(requestModel.Data?.Weight, out decimal weight) == false)
-            {
+            if (decimal.TryParse(requestModel.Data?.Weight, out decimal weight) == false) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS005.Code); // 重量数据错误！
             }
 
-            if (weight <= 0)
-            {
+            if (weight <= 0) {
                 throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS005.Code); // 重量数据错误！
             }
 
@@ -171,8 +154,7 @@ public class AutoMeasureDataController : Controller
             string trackingNoMain = trackingNumber.Trim();
 
             int indexOfMinus = trackingNumber.IndexOf("-");
-            if (indexOfMinus != -1)
-            {
+            if (indexOfMinus != -1) {
                 trackingNoMain = trackingNumber.Substring(0, indexOfMinus);
             }
 
@@ -185,8 +167,7 @@ public class AutoMeasureDataController : Controller
             string orderCode = order?.Code ?? string.Empty;
 
             // 是简单的母单号
-            if (indexOfMinus == -1)
-            {
+            if (indexOfMinus == -1) {
                 ExpressSizeWeightInfo? expressSizeWeight = session.Query<ExpressSizeWeightInfo>()
                     .Where(e => e.TrackingNo == trackingNoMain
                                 && e.TrackingNoSub == string.Empty) // 取主单号
@@ -194,8 +175,7 @@ public class AutoMeasureDataController : Controller
                     .SingleOrDefault();
 
                 bool create = false;
-                if (expressSizeWeight == null)
-                {
+                if (expressSizeWeight == null) {
                     create = true;
 
                     expressSizeWeight = new ExpressSizeWeightInfo();
@@ -214,32 +194,28 @@ public class AutoMeasureDataController : Controller
                 StringBuilder editLogDescBuilder = new StringBuilder();
 
                 // length
-                if (create == false && expressSizeWeight.Length != length)
-                {
+                if (create == false && expressSizeWeight.Length != length) {
                     editLogDescBuilder.Append($"长:{expressSizeWeight.Length}=>{length}");
                 }
 
                 expressSizeWeight.Length = length;
 
                 // width
-                if (create == false && expressSizeWeight.Width != width)
-                {
+                if (create == false && expressSizeWeight.Width != width) {
                     editLogDescBuilder.Append($"宽:{expressSizeWeight.Width}=>{width}");
                 }
 
                 expressSizeWeight.Width = width;
 
                 // height
-                if (create == false && expressSizeWeight.Height != height)
-                {
+                if (create == false && expressSizeWeight.Height != height) {
                     editLogDescBuilder.Append($"高:{expressSizeWeight.Height}=>{height}");
                 }
 
                 expressSizeWeight.Height = height;
 
                 // weight
-                if (create == false && expressSizeWeight.Weight != weight)
-                {
+                if (create == false && expressSizeWeight.Weight != weight) {
                     editLogDescBuilder.Append($"重量:{expressSizeWeight.Weight}=>{weight}");
                 }
 
@@ -255,23 +231,18 @@ public class AutoMeasureDataController : Controller
                 session.SaveOrUpdate(expressSizeWeight);
                 session.Flush();
 
-                if (create == true)
-                {
+                if (create == true) {
                     string addLogDesc = $"长:{expressSizeWeight.Length}, 宽:{expressSizeWeight.Width}, 高:{expressSizeWeight.Height}, 重量:{expressSizeWeight.Weight}, 箱数:{expressSizeWeight.PackageCount}";
                     expressLogService.Log(trackingNoMain, ExpressLogType.SizeWeightAdd, addLogDesc);
-                }
-                else
-                {
+                } else {
                     expressLogService.Log(trackingNoMain, ExpressLogType.SizeWeightEdit, editLogDescBuilder.ToString());
                 }
-            }
-            else // 是子单号
+            } else // 是子单号
             {
                 string trackingNoSub = trackingNumber.Trim();
 
                 // 检查母单号的合法性
-                if (expressTrackingNoService.IsValidateTrackingNo(trackingNoMain) == false)
-                {
+                if (expressTrackingNoService.IsValidateTrackingNo(trackingNoMain) == false) {
                     throw new AutoMeasureErrorException(AutoMeasureDataUploadResponseModel.ErrorS002.Code); // 快递单号格式不合法！
                 }
 
@@ -283,8 +254,7 @@ public class AutoMeasureDataController : Controller
                     .SingleOrDefault();
 
                 // 如果这时母单号还不存在，就新增一个
-                if (expressSizeWeight == null)
-                {
+                if (expressSizeWeight == null) {
                     expressSizeWeight = new ExpressSizeWeightInfo();
 
                     expressSizeWeight.TrackingNo = trackingNoMain; // trackingNoMain 母单号
@@ -313,8 +283,7 @@ public class AutoMeasureDataController : Controller
                     .SingleOrDefault();
 
                 bool create = false;
-                if (expressSizeWeightChild == null)
-                {
+                if (expressSizeWeightChild == null) {
                     create = true;
 
                     expressSizeWeightChild = new ExpressSizeWeightInfo();
@@ -327,32 +296,28 @@ public class AutoMeasureDataController : Controller
                 editLogDescBuilder.Append($"子单号:{trackingNoSub}");
 
                 // length
-                if (expressSizeWeightChild.Length != length)
-                {
+                if (expressSizeWeightChild.Length != length) {
                     editLogDescBuilder.Append($"长:{expressSizeWeightChild.Length}=>{length}");
                 }
 
                 expressSizeWeightChild.Length = length;
 
                 // width
-                if (expressSizeWeightChild.Width != width)
-                {
+                if (expressSizeWeightChild.Width != width) {
                     editLogDescBuilder.Append($"宽:{expressSizeWeightChild.Width}=>{width}");
                 }
 
                 expressSizeWeightChild.Width = width;
 
                 // height
-                if (expressSizeWeightChild.Height != height)
-                {
+                if (expressSizeWeightChild.Height != height) {
                     editLogDescBuilder.Append($"高:{expressSizeWeightChild.Height}=>{height}");
                 }
 
                 expressSizeWeightChild.Height = height;
 
                 // weight
-                if (expressSizeWeightChild.Weight != weight)
-                {
+                if (expressSizeWeightChild.Weight != weight) {
                     editLogDescBuilder.Append($"重量:{expressSizeWeightChild.Weight}=>{weight}");
                 }
 
@@ -363,18 +328,15 @@ public class AutoMeasureDataController : Controller
 
                 expressSizeWeightChild.Express = express;
                 expressSizeWeightChild.Order = order;
-                expressSizeWeightChild.OrderCode = orderCode;                
+                expressSizeWeightChild.OrderCode = orderCode;
 
                 session.SaveOrUpdate(expressSizeWeightChild);
                 session.Flush();
 
-                if (create == true)
-                {
+                if (create == true) {
                     string addLogDesc = $"子单号:{trackingNumber}, 长:{expressSizeWeightChild.Length}, 宽:{expressSizeWeightChild.Width}, 高:{expressSizeWeightChild.Height}, 重量:{expressSizeWeightChild.Weight}, 箱数:{expressSizeWeightChild.PackageCount}";
                     expressLogService.Log(trackingNoMain, ExpressLogType.SizeWeightAdd, addLogDesc); // 记录日志用主单号
-                }
-                else
-                {
+                } else {
                     expressLogService.Log(trackingNoMain, ExpressLogType.SizeWeightAdd, editLogDescBuilder.ToString()); // 记录日志用主单号
                 }
             }
@@ -383,12 +345,10 @@ public class AutoMeasureDataController : Controller
 
             return Json(AutoMeasureDataUploadResponseModel.Success);
         }
-        catch (AutoMeasureErrorException exp)
-        {
+        catch (AutoMeasureErrorException exp) {
             return Json(AutoMeasureDataUploadResponseModel.GetByCode(exp.Message));
         }
-        catch (Exception exp)
-        {
+        catch (Exception exp) {
             transaction?.Rollback();
 
             log.Error(exp);

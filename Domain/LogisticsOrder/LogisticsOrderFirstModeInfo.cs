@@ -9,7 +9,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 物流订单头程
 /// </summary>
-public class LogisticsOrderFirstModeInfo : Entity
+public class LogisticsOrderFirstModeInfo : EntityNoUpdate
 {
     /// <summary>
     /// 物流订单，非空

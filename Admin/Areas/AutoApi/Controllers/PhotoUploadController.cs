@@ -10,12 +10,11 @@ using shunda.Domain.Pass;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.Api.Controllers;
+namespace shunda.Admin.Areas.AutoApi.Controllers;
 
 [NoLoginRequired]
-[ApiArea]
-public class AutoPhotoUploadController : Controller
-{
+[AutoApiArea]
+public class PhotoUploadController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
@@ -23,11 +22,10 @@ public class AutoPhotoUploadController : Controller
     private ExpressPhotoService expressPhotoService;
     private ExpressLogService expressLogService;
 
-    public AutoPhotoUploadController(ISession session,
+    public PhotoUploadController(ISession session,
         ExpressTrackingNoService expressTrackingNoService,
         ExpressPhotoService expressPhotoService,
-        ExpressLogService expressLogService)
-    {
+        ExpressLogService expressLogService) {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
         this.expressPhotoService = expressPhotoService;
@@ -45,26 +43,21 @@ public class AutoPhotoUploadController : Controller
     /// <exception cref="ValidationException"></exception>
     [HttpPost]
     [Route("/admin/api/auto/photo/upload/create")]
-    public IActionResult Create(string fileName, string photoUrl, string uploaderLoginName, string type)
-    {
+    public IActionResult Create(string fileName, string photoUrl, string uploaderLoginName, string type) {
         // 现在golang客户端也还没加上这个校验的
         // todo 参数使用 md5 校验，在这里做检查
 
-        if (string.IsNullOrWhiteSpace(photoUrl))
-        {
+        if (string.IsNullOrWhiteSpace(photoUrl)) {
             throw new ValidationException("图片URL不能为空！");
         }
 
-        if (string.IsNullOrWhiteSpace(uploaderLoginName))
-        {
+        if (string.IsNullOrWhiteSpace(uploaderLoginName)) {
             throw new ValidationException("上传人登录名不能为空！");
         }
 
         ExpressPhotoType expressPhotoType = ExpressPhotoType.SignIn;
-        if (string.IsNullOrWhiteSpace(type) == false)
-        {
-            if (type == "sign")
-            {
+        if (string.IsNullOrWhiteSpace(type) == false) {
+            if (type == "sign") {
                 expressPhotoType = ExpressPhotoType.SignIn;
             }
 
@@ -79,30 +72,25 @@ public class AutoPhotoUploadController : Controller
 
 
         string trackingNo = fileName;
-        if (string.IsNullOrWhiteSpace(trackingNo))
-        {
+        if (string.IsNullOrWhiteSpace(trackingNo)) {
             throw new ValidationException("快递单号不能都为空！");
         }
 
-        if (string.IsNullOrWhiteSpace(trackingNo) == false)
-        {
+        if (string.IsNullOrWhiteSpace(trackingNo) == false) {
             trackingNo = trackingNo.Trim('\"');
         }
 
         // 子母单号，子单号图片放在母单号下面
         int indexOfMinus = trackingNo.IndexOf("-");
-        if (indexOfMinus >= ExpressTrackingNoConfig.MinTrackingNoLength)
-        {
+        if (indexOfMinus >= ExpressTrackingNoConfig.MinTrackingNoLength) {
             trackingNo = trackingNo.Substring(0, indexOfMinus);
         }
 
-        if (string.IsNullOrWhiteSpace(trackingNo) == false && trackingNo.Length > 30)
-        {
+        if (string.IsNullOrWhiteSpace(trackingNo) == false && trackingNo.Length > 30) {
             throw new ValidationException("快递单号长度太长！");
         }
 
-        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false)
-        {
+        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false) {
             throw new ValidationException("快递单号格式不符合规范！");
         }
 
@@ -110,8 +98,7 @@ public class AutoPhotoUploadController : Controller
 
         // 虚拟上传人
         UserInfo? user = null;
-        if (string.IsNullOrWhiteSpace(uploaderLoginName) == false)
-        {
+        if (string.IsNullOrWhiteSpace(uploaderLoginName) == false) {
             uploaderLoginName = uploaderLoginName.Trim();
             user = session.Query<UserInfo>()
                 .Where(e => e.LoginName == uploaderLoginName)
@@ -149,12 +136,9 @@ public class AutoPhotoUploadController : Controller
         session.Save(expressPhoto);
         session.Flush();
 
-        if (expressPhoto.User == null)
-        {
+        if (expressPhoto.User == null) {
             expressLogService.Log(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}");
-        }
-        else
-        {
+        } else {
             expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}", expressPhoto.User?.Id ?? 0);
         }
 
@@ -176,8 +160,7 @@ public class AutoPhotoUploadController : Controller
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .ToList();
-        foreach (ExpressPhotoInfo ep in expressPhotoList)
-        {
+        foreach (ExpressPhotoInfo ep in expressPhotoList) {
             ep.Express = express;
             ep.Customer = customer;
             ep.Order = order;
@@ -191,8 +174,7 @@ public class AutoPhotoUploadController : Controller
         IList<ExpressVideoInfo> expressVideoList = session.Query<ExpressVideoInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .ToList();
-        foreach (ExpressVideoInfo ev in expressVideoList)
-        {
+        foreach (ExpressVideoInfo ev in expressVideoList) {
             ev.Express = express;
             ev.Customer = customer;
             ev.Order = order;
@@ -208,40 +190,33 @@ public class AutoPhotoUploadController : Controller
 
     [HttpPost]
     [Route("/admin/api/auto/photo/upload/camera")]
-    public IActionResult uploadCamera(string storePath, string storeFileName, string trackingNo, string uploaderLoginName)
-    {
+    public IActionResult uploadCamera(string storePath, string storeFileName, string trackingNo, string uploaderLoginName) {
         // 现在 C++ 客户端也还没加上这个校验的
         // todo 参数使用 md5 校验，在这里做检查
 
-        if (string.IsNullOrWhiteSpace(storePath))
-        {
+        if (string.IsNullOrWhiteSpace(storePath)) {
             throw new ValidationException("图片存储路径不能为空！");
         }
 
-        if (string.IsNullOrWhiteSpace(storeFileName))
-        {
+        if (string.IsNullOrWhiteSpace(storeFileName)) {
             throw new ValidationException("图片文件名不能为空！");
         }
 
-        if (string.IsNullOrWhiteSpace(trackingNo))
-        {
+        if (string.IsNullOrWhiteSpace(trackingNo)) {
             throw new ValidationException("快递单号不能为空！");
         }
 
-        if (string.IsNullOrWhiteSpace(trackingNo) == false && trackingNo.Length > 30)
-        {
+        if (string.IsNullOrWhiteSpace(trackingNo) == false && trackingNo.Length > 30) {
             throw new ValidationException("快递单号长度太长！");
         }
 
-        if (string.IsNullOrEmpty(trackingNo) == false && expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false)
-        {
+        if (string.IsNullOrEmpty(trackingNo) == false && expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false) {
             throw new ValidationException("快递单号格式不符合规范！");
         }
 
         trackingNo = trackingNo.Trim().ToUpper();
 
-        if (string.IsNullOrWhiteSpace(uploaderLoginName))
-        {
+        if (string.IsNullOrWhiteSpace(uploaderLoginName)) {
             throw new ValidationException("入库操作人登录名不能为空！");
         }
 
@@ -252,8 +227,7 @@ public class AutoPhotoUploadController : Controller
             .Where(e => e.LoginName == uploaderLoginName)
             .Take(1)
             .SingleOrDefault();
-        if (uploadUser == null)
-        {
+        if (uploadUser == null) {
             throw new ValidationException($"指定的入库操作人登录名#{uploaderLoginName}不存在！");
         }
 
@@ -293,8 +267,7 @@ public class AutoPhotoUploadController : Controller
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .ToList();
-        foreach (ExpressPhotoInfo ep in expressPhotoList)
-        {
+        foreach (ExpressPhotoInfo ep in expressPhotoList) {
             ep.Express = express;
             ep.Customer = customer;
             ep.Order = order;
@@ -308,8 +281,7 @@ public class AutoPhotoUploadController : Controller
         IList<ExpressVideoInfo> expressVideoList = session.Query<ExpressVideoInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .ToList();
-        foreach (ExpressVideoInfo ev in expressVideoList)
-        {
+        foreach (ExpressVideoInfo ev in expressVideoList) {
             ev.Express = express;
             ev.Customer = customer;
             ev.Order = order;
