@@ -24,7 +24,7 @@ public class LoginUserService {
 #if DEBUG
     public static TimeSpan SessionTimeout = TimeSpan.FromDays(10);
 #else
-        public static TimeSpan SessionTimeout = TimeSpan.FromMinutes(30);
+        public static TimeSpan SessionTimeout = TimeSpan.FromMinutes(60);
 #endif
 
     private static string aesKey = "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";
@@ -144,7 +144,15 @@ public class LoginUserService {
         return passResIdMap.ContainsKey(passResId);
     }
 
-    public bool Login(string loginName, string password, HttpRequest request) {
+    /// <summary>
+    /// 后台用户登录
+    /// </summary>
+    /// <param name="loginName"></param>
+    /// <param name="password"></param>
+    /// <param name="loginLoc">用于区分从哪里登录的，当前分成 web 和 app，以方便区分不同处理，当前暂时没区分处理</param>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public bool Login(string loginName, string password, UserLoginLocation loginLoc, HttpRequest request) {
         var checkResult = CheckLoginNamePassword(loginName, password);
         bool match = checkResult.Item1;
         UserInfo userInfo = checkResult.Item2;

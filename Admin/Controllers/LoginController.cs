@@ -9,14 +9,12 @@ using shunda.Core.Web;
 namespace shunda.Admin.Controllers;
 
 [NoLoginRequired]
-public class LoginController : Controller
-{
+public class LoginController : Controller {
     private readonly CaptchaService captchaService;
     private readonly LoginUserService loginUserService;
 
     public LoginController(LoginUserService loginUserService,
-        CaptchaService captchaService)
-    {
+        CaptchaService captchaService) {
         this.loginUserService = loginUserService;
         this.captchaService = captchaService;
     }
@@ -24,8 +22,7 @@ public class LoginController : Controller
     [HttpGet]
     [Route("/admin/login")]
     [NoLoginRequired]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new LoginModel();
         return View("LoginIndex", model);
     }
@@ -35,12 +32,12 @@ public class LoginController : Controller
     [ValidateAntiForgeryToken]
     [NoLoginRequired]
     [Transactional]
-    public IActionResult Login(LoginModel model)
-    {
-        if (ModelState.IsValid == false) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+    public IActionResult Login(LoginModel model) {
+        if (ModelState.IsValid == false) {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
 
-        if (captchaService.CheckInputCode(model.Captcha) == false)
-        {
+        if (captchaService.CheckInputCode(model.Captcha) == false) {
             // 如果发现验证码不对,应该马上把原来的验证码设为无效
             captchaService.MakeCurrentExpire();
 
@@ -50,9 +47,8 @@ public class LoginController : Controller
         var loginName = model.LoginName.Trim();
         var password = model.Password.Trim();
 
-        var loginSuccess = loginUserService.Login(loginName, password, Request);
-        if (loginSuccess == false)
-        {
+        var loginSuccess = loginUserService.Login(loginName, password, UserLoginLocation.Web, Request);
+        if (loginSuccess == false) {
             // 如果发现用户名或者密码不对,应该马上把原来的验证码设为无效
             captchaService.MakeCurrentExpire();
 
@@ -68,8 +64,7 @@ public class LoginController : Controller
     [HttpPost]
     [Route("/admin/logout")]
     [NoLoginRequired]
-    public IActionResult Logout()
-    {
+    public IActionResult Logout() {
         loginUserService.Logout(Request, Response);
 
         return Json(new JsonResultData {
