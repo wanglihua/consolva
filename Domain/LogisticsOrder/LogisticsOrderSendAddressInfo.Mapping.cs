@@ -5,7 +5,7 @@ using shunda.Domain.Customer;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderSendAddressInfoMapping : EntityMapping<LogisticsOrderSendAddressInfo> {
+public class LogisticsOrderSendAddressInfoMapping : EntityNoUpdateMapping<LogisticsOrderSendAddressInfo> {
     public LogisticsOrderSendAddressInfoMapping() {
         Table("tbl_logistics_order_send_address");
 

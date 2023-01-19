@@ -4,7 +4,7 @@ using NHibernate.Mapping.ByCode;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderReceiveAddressInfoMapping : EntityMapping<LogisticsOrderReceiveAddressInfo>
+public class LogisticsOrderReceiveAddressInfoMapping : EntityNoUpdateMapping<LogisticsOrderReceiveAddressInfo>
 {
     public LogisticsOrderReceiveAddressInfoMapping()
     {

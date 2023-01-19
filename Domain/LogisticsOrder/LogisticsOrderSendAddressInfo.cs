@@ -9,7 +9,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 订单发货地址
 /// </summary>
-public class LogisticsOrderSendAddressInfo : Entity {
+public class LogisticsOrderSendAddressInfo : EntityNoUpdate {
     /// <summary>
     /// 订单id，非空
     /// </summary>
