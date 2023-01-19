@@ -42,7 +42,7 @@ public class PhotoUploadController : Controller {
     /// <returns></returns>
     /// <exception cref="ValidationException"></exception>
     [HttpPost]
-    [Route("/admin/api/auto/photo/upload/create")]
+    [Route("/admin/auto/api/photo/upload/create")]
     public IActionResult Create(string fileName, string photoUrl, string uploaderLoginName, string type) {
         // 现在golang客户端也还没加上这个校验的
         // todo 参数使用 md5 校验，在这里做检查
@@ -189,7 +189,7 @@ public class PhotoUploadController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/api/auto/photo/upload/camera")]
+    [Route("/admin/auto/api/photo/upload/camera")]
     public IActionResult uploadCamera(string storePath, string storeFileName, string trackingNo, string uploaderLoginName) {
         // 现在 C++ 客户端也还没加上这个校验的
         // todo 参数使用 md5 校验，在这里做检查

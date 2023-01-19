@@ -16,21 +16,21 @@ namespace shunda.Admin.Areas.AutoApi.Controllers;
 
 [NoLoginRequired]
 [AutoApiArea]
-public class AutoMeasureDataController : Controller {
+public class MeasureDataController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
     private ExpressTrackingNoService expressTrackingNoService;
     private ExpressLogService expressLogService;
 
-    public AutoMeasureDataController(ISession session, ExpressTrackingNoService expressTrackingNoService, ExpressLogService expressLogService) {
+    public MeasureDataController(ISession session, ExpressTrackingNoService expressTrackingNoService, ExpressLogService expressLogService) {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
         this.expressLogService = expressLogService;
     }
 
     [HttpPost]
-    [Route("/admin/auto/api/auto/measure/upload")]
+    [Route("/admin/auto/api/measure/upload")]
     public IActionResult Upload() {
         ITransaction? transaction = null;
         try {
@@ -45,7 +45,7 @@ public class AutoMeasureDataController : Controller {
             // log.Warn("requestBodyText");
             // log.Warn(requestBodyText);
 
-            AutoMeasureDataUploadRequestModel? requestModel = JsonConvert.DeserializeObject<AutoMeasureDataUploadRequestModel>(requestBodyText);
+            MeasureDataUploadRequestModel? requestModel = JsonConvert.DeserializeObject<MeasureDataUploadRequestModel>(requestBodyText);
 
             // 检查数据完整
             if (requestModel?.Data == null) {

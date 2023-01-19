@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Admin.Areas.AutoApi.Models.AutoMeasureData;
 
-public class AutoMeasureDataUploadRequestModel {
+public class MeasureDataUploadRequestModel {
     [JsonProperty("app_key")]
     public string AppKey { get; set; } = string.Empty;
 
