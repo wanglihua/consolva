@@ -78,6 +78,8 @@
         "van-loading": "@vant/weapp/loading/index",
         "van-row": "@vant/weapp/row/index",
         "van-col": "@vant/weapp/col/index",
+        "van-checkbox": "@vant/weapp/checkbox/index",
+        "van-checkbox-group": "@vant/weapp/checkbox-group/index",
         "header": "components/header"
     },
     "networkTimeout": {

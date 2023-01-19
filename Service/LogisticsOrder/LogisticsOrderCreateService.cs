@@ -122,6 +122,13 @@ public class LogisticsOrderCreateService {
             }
         }
 
+        // 检查快递单号状态
+        foreach (var express in expressList) {
+            if (ExpressStatus.IsOrderCreate(express.Status)) {
+                throw new ValidationException($"快递单号 {express.TrackingNo} 已创建订单，不能再次创建订单！");
+            }
+        }
+
         // 检查快递单收货仓库是否一致，一般当前都是一样的
         var warehouse = expressList.First().Warehouse;
         int warehouseId = warehouse.Id;
@@ -263,6 +270,13 @@ public class LogisticsOrderCreateService {
 
         // 订单创建 订单日志
         logisticsOrderActionService.NewActionCustomer(order.Id, LogisticsOrderActionType.CustomerCreateOrder, order.OrderStatus, order.OrderStatus, order.PayStatus, order.PayStatus, customerId);
+
+        // 清除快递单选择列表
+        foreach (var createSelectExpress in createSelectExpressList) {
+            session.Delete(createSelectExpress);
+        }
+
+        session.Flush();
 
         return order;
     }

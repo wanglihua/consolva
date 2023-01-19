@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderCreateNew;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
@@ -24,6 +25,7 @@ public class OrderCreateNewController : Controller {
 
     [HttpPost]
     [Route("/client/order/create/new")]
+    [Transactional]
     public IActionResult New() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
