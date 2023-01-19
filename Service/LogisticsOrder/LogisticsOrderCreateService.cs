@@ -19,6 +19,7 @@ public class LogisticsOrderCreateService {
     private readonly LogisticsOrderCodeService logisticsOrderCodeService;
     private readonly CustomerCodeService customerCodeService;
     private readonly LogisticsGoodsTypeService logisticsGoodsTypeService;
+    private readonly LogisticsOrderStorageLocService logisticsOrderStorageLocService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
 
@@ -26,6 +27,7 @@ public class LogisticsOrderCreateService {
         LogisticsOrderCodeService logisticsOrderCodeService,
         CustomerCodeService customerCodeService,
         LogisticsGoodsTypeService logisticsGoodsTypeService,
+        LogisticsOrderStorageLocService logisticsOrderStorageLocService,
         ExpressLogService expressLogService,
         LogisticsOrderActionService logisticsOrderActionService
     ) {
@@ -33,6 +35,7 @@ public class LogisticsOrderCreateService {
         this.logisticsOrderCodeService = logisticsOrderCodeService;
         this.customerCodeService = customerCodeService;
         this.logisticsGoodsTypeService = logisticsGoodsTypeService;
+        this.logisticsOrderStorageLocService = logisticsOrderStorageLocService;
         this.expressLogService = expressLogService;
         this.logisticsOrderActionService = logisticsOrderActionService;
     }
@@ -160,6 +163,7 @@ public class LogisticsOrderCreateService {
         string orderCode = logisticsOrderCodeService.GenerateNewCode(customerId);
         string customerCode = customerCodeService.GetCustomerCode(customerId);
         LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(expressList.Select(e => e.GoodsType).Distinct().ToList());
+        var orderStorageLoc = logisticsOrderStorageLocService.GetOrderStorageLoc(expressList);
 
         var order = new LogisticsOrderInfo {
             Code = orderCode,
@@ -176,12 +180,52 @@ public class LogisticsOrderCreateService {
             OrderStatus = LogisticsOrderStatus.Create,
             PayStatus = PayStatus.NotPaid, // 这里改成 None 也是可以的
             PayType = PayType.None,
+            RepackType = LogisticsRepackType.None, // 当前打包时不关注这个值
+            StorageLoc = orderStorageLoc.FirstStorageLoc,
+            StorageLocCount = orderStorageLoc.StorageLocCount,
+            PickupCode = string.Empty, // 这个应该没用起来
+
+            // 其他的都是可空字段
         };
 
         session.Save(order);
         session.Flush();
 
-        // todo 订单地址
+        // 订单地址
+        var orderReceiveAddress = new LogisticsOrderReceiveAddressInfo {
+            Order = order,
+            FirstName = addressReceive.FirstName,
+            LastName = addressReceive.LastName,
+            Mobile = addressReceive.Mobile,
+            State = addressReceive.State,
+            City = addressReceive.City,
+            Address = addressReceive.Address,
+            UnitLoc = addressReceive.UnitLoc,
+            Zipcode = addressReceive.Zipcode,
+            Tfn = addressReceive.Tfn,
+            Company = addressReceive.Company,
+        };
+
+        session.Save(orderReceiveAddress);
+
+        var orderSendAddress = new LogisticsOrderSendAddressInfo {
+            Order = order,
+            Country = addressSend.Country,
+            Name = addressSend.Name,
+            Mobile = addressSend.Mobile,
+            Province = addressSend.Province,
+            City = addressSend.City,
+            Area = addressSend.Area,
+            Street = addressSend.Street,
+            Address = addressSend.Address,
+            Zipcode = addressSend.Zipcode,
+            Tfn = addressSend.Tfn,
+            Company = addressSend.Company,
+        };
+
+        session.Save(orderSendAddress);
+
+        session.Flush();
 
         // 订单快递单关联，当订单作废，或者作废订单恢复的时候，这个关联就是必需的了
         foreach (var express in expressList) {

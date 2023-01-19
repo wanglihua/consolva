@@ -12,8 +12,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 物流订单
 /// </summary>
-public class LogisticsOrderInfo : Entity
-{
+public class LogisticsOrderInfo : Entity {
     /// <summary>
     /// 订单编号，非空
     /// </summary>
@@ -27,7 +26,7 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new ();
+    public virtual CustomerInfo Customer { get; set; } = new();
 
     /// <summary>
     /// 客户ID，非空
@@ -58,7 +57,7 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "收货仓库不能为空！")]
     [JsonProperty("warehouse")]
-    public virtual WarehouseInfo Warehouse { get; set; } = new ();
+    public virtual WarehouseInfo Warehouse { get; set; } = new();
 
     /// <summary>
     /// 物流方式类型，非空
@@ -74,21 +73,21 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("logisticsMode")]
-    public virtual LogisticsModeInfo FirstMode { get; set; } = new ();
+    public virtual LogisticsModeInfo FirstMode { get; set; } = new();
 
     /// <summary>
     /// 保险id，非空
     /// </summary>
     [Required(ErrorMessage = "保险id不能为空！")]
     [JsonProperty("insurance")]
-    public virtual LogisticsInsuranceInfo Insurance { get; set; } = new ();
+    public virtual LogisticsInsuranceInfo Insurance { get; set; } = new();
 
     /// <summary>
     /// 纳税申报，非空
     /// </summary>
     [Required(ErrorMessage = "纳税申报不能为空！")]
     [JsonProperty("gst")]
-    public virtual LogisticsGstInfo Gst { get; set; } = new ();
+    public virtual LogisticsGstInfo Gst { get; set; } = new();
 
     /// <summary>
     /// 物品类型，非空
@@ -126,7 +125,7 @@ public class LogisticsOrderInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "商品总价不能为空！")]
     [JsonProperty("goodsPrice")]
-    public virtual decimal GoodsPrice { get; set; } = 0m;
+    public virtual decimal GoodsValue { get; set; } = 0m;
 
     /// <summary>
     /// 应付款金额，非空
@@ -153,13 +152,13 @@ public class LogisticsOrderInfo : Entity
     /// 仓位，可空
     /// </summary>
     [JsonProperty("storageLoc")]
-    public virtual StorageLocInfo? StorageLoc { get; set; } = null;
+    public virtual StorageLocInfo StorageLoc { get; set; } = new();
 
     /// <summary>
     /// 占用仓位数，可空
     /// </summary>
     [JsonProperty("storageLocCount")]
-    public virtual int? StorageLocCount { get; set; } = null;
+    public virtual int StorageLocCount { get; set; }
 
     /// <summary>
     /// 取件码，非空

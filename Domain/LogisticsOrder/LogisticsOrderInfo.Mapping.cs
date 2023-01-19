@@ -8,10 +8,8 @@ using shunda.Domain.Storage;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
-{
-    public LogisticsOrderInfoMapping()
-    {
+public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
+    public LogisticsOrderInfoMapping() {
         Table("tbl_logistics_order");
 
         Property(
@@ -146,15 +144,15 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
             map => {
                 map.Type<PayTypeHibernateType>();
                 map.Column("pay_type_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
         Property(
-            x => x.GoodsPrice,
+            x => x.GoodsValue,
             map => {
                 map.Type(NHibernateUtil.Decimal);
-                map.Column("goods_price");
+                map.Column("goods_value");
                 map.NotNullable(true);
             }
         );
@@ -182,7 +180,7 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
             map => {
                 map.Type<LogisticsRepackTypeHibernateType>();
                 map.Column("repack_type_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -191,7 +189,7 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
             map => {
                 map.Class(typeof(StorageLocInfo));
                 map.Column("storage_loc_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
             }
@@ -202,7 +200,7 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("storage_loc_count");
-                map.NotNullable(false);
+                map.NotNullable(true);
             }
         );
 
@@ -295,6 +293,5 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo>
                 map.NotNullable(false);
             }
         );
-
     }
 }

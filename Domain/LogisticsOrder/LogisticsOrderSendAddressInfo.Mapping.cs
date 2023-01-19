@@ -5,10 +5,8 @@ using shunda.Domain.Customer;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderSendAddressInfoMapping : EntityMapping<LogisticsOrderSendAddressInfo>
-{
-    public LogisticsOrderSendAddressInfoMapping()
-    {
+public class LogisticsOrderSendAddressInfoMapping : EntityMapping<LogisticsOrderSendAddressInfo> {
+    public LogisticsOrderSendAddressInfoMapping() {
         Table("tbl_logistics_order_send_address");
 
         ManyToOne(
@@ -32,19 +30,10 @@ public class LogisticsOrderSendAddressInfoMapping : EntityMapping<LogisticsOrder
         );
 
         Property(
-            x => x.FirstName,
+            x => x.Name,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("first_name");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
-            x => x.LastName,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("last_name");
+                map.Column("name");
                 map.NotNullable(true);
             }
         );
@@ -137,6 +126,5 @@ public class LogisticsOrderSendAddressInfoMapping : EntityMapping<LogisticsOrder
                 map.NotNullable(false);
             }
         );
-
     }
 }
