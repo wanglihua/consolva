@@ -71,7 +71,7 @@ public class LogisticsOrderInfo : Entity {
     /// 物流方式类型，非空
     /// </summary>
     [Required(ErrorMessage = "物流方式类型不能为空！")]
-    [JsonProperty("logisticsModeType")]
+    [JsonProperty("firstType")]
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
     public virtual LogisticsModeType FirstType { get; set; } = LogisticsModeType.None;
 
@@ -80,7 +80,7 @@ public class LogisticsOrderInfo : Entity {
     /// 这是一个主的，客户选择的物流方式。实际可能一个订单会多个物流方式。
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
-    [JsonProperty("logisticsMode")]
+    [JsonProperty("firstMode")]
     public virtual LogisticsModeInfo FirstMode { get; set; } = new();
 
     /// <summary>
@@ -132,7 +132,7 @@ public class LogisticsOrderInfo : Entity {
     /// 商品总价，非空
     /// </summary>
     [Required(ErrorMessage = "商品总价不能为空！")]
-    [JsonProperty("goodsPrice")]
+    [JsonProperty("goodsValue")]
     public virtual decimal GoodsValue { get; set; } = 0m;
 
     /// <summary>

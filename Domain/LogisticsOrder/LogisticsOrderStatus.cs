@@ -5,8 +5,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 物流订单状态
 /// </summary>
-public class LogisticsOrderStatus : CodeTypeBase
-{
+public class LogisticsOrderStatus : CodeTypeBase {
     /// <summary>
     /// 已创建
     /// </summary>
@@ -43,14 +42,9 @@ public class LogisticsOrderStatus : CodeTypeBase
     public static readonly LogisticsOrderStatus Completed = new LogisticsOrderStatus(88_0000, "正常结束", "正常结束");
 
     /// <summary>
-    /// 异常结束
-    /// </summary>
-    public static readonly LogisticsOrderStatus Abend = new LogisticsOrderStatus(89_000, "异常结束", "异常结束");
-
-    /// <summary>
     /// 已作废
     /// </summary>
-    public static readonly LogisticsOrderStatus Canceled = new LogisticsOrderStatus(90_000, "已作废", "已作废");
+    public static readonly LogisticsOrderStatus Canceled = new LogisticsOrderStatus(90_0000, "已作废", "已作废");
 
     /// <summary>
     /// None
@@ -65,29 +59,33 @@ public class LogisticsOrderStatus : CodeTypeBase
         Transferred,
         Delivered,
         Completed,
-        Abend,
         Canceled,
     };
 
     private static readonly Dictionary<int, LogisticsOrderStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static LogisticsOrderStatus GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out LogisticsOrderStatus? codeType))
-        {
+    public static LogisticsOrderStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out LogisticsOrderStatus? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<LogisticsOrderStatus> GetList()
-    {
+    public static IList<LogisticsOrderStatus> GetList() {
         return codeTypeList.ToList();
     }
 
-    public static IList<LogisticsOrderStatus> GetBeforeSubmitPackStatusList()
-    {
+    /// <summary>
+    /// 活动订单 状态列表
+    /// 不是已完成，不是已作废
+    /// </summary>
+    /// <returns></returns>
+    public static IList<LogisticsOrderStatus> GetActiveList() {
+        return codeTypeList.Where(e => e != Completed && e != Canceled).ToList();
+    }
+
+    public static IList<LogisticsOrderStatus> GetBeforeSubmitPackStatusList() {
         return new List<LogisticsOrderStatus>() {
             Create,
         };
@@ -99,23 +97,18 @@ public class LogisticsOrderStatus : CodeTypeBase
     /// <param name="id"></param>
     /// <param name="name"></param>
     /// <param name="description"></param>
-    private LogisticsOrderStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private LogisticsOrderStatus(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class LogisticsOrderStatusHibernateType : CodeHibernateTypeBase<LogisticsOrderStatus>
-{
-    protected override LogisticsOrderStatus GetCodeTypeById(int id)
-    {
+public class LogisticsOrderStatusHibernateType : CodeHibernateTypeBase<LogisticsOrderStatus> {
+    protected override LogisticsOrderStatus GetCodeTypeById(int id) {
         return LogisticsOrderStatus.GetById(id);
     }
 }
 
-public class LogisticsOrderStatusModelBinder : CodeTypeModelBinderBase<LogisticsOrderStatus>
-{
-    protected override LogisticsOrderStatus GetCodeTypeById(int id)
-    {
+public class LogisticsOrderStatusModelBinder : CodeTypeModelBinderBase<LogisticsOrderStatus> {
+    protected override LogisticsOrderStatus GetCodeTypeById(int id) {
         return LogisticsOrderStatus.GetById(id);
     }
 }
