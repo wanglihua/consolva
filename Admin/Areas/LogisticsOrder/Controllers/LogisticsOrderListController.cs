@@ -146,9 +146,8 @@ public class LogisticsOrderListController : Controller {
 
         if (queryParam.MenuType == OrderListMenuType.Active) {
             var activeStatusList = LogisticsOrderStatus.GetActiveList();
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => activeStatusList.Contains(e.OrderStatus)));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.OrderStatus).IsInG(activeStatusList));
         }
-
 
         if (queryParam.CountryQuery != null && queryParam.CountryQuery != Country.None) {
             var country = queryParam.CountryQuery;
@@ -174,7 +173,7 @@ public class LogisticsOrderListController : Controller {
                 .Where(e => e.TrackingNo.StartsWith(trackingNoQuery) && e.Order != null)
                 .Select(e => e.Order!.Id)
                 .ToList();
-            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG<int>(orderIdList));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG(orderIdList));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.MobileQuery) == false) {
@@ -183,14 +182,14 @@ public class LogisticsOrderListController : Controller {
                 .Where(e => e.Mobile.Contains(mobileQuery))
                 .Select(e => e.Order.Id)
                 .ToList();
-            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG<int>(orderIdList));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG(orderIdList));
         }
 
         */
 
         if (queryParam.OrderIdList.Count != 0) {
             IList<int> orderIdList = queryParam.OrderIdList;
-            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG<int>(orderIdList));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG(orderIdList));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
