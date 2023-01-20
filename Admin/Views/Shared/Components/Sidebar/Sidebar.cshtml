@@ -6,14 +6,13 @@
 
 @{
     var sidebarMinClassStr = "";
-    if (Model.IsSidebarMin)
-    {
+    if (Model.IsSidebarMin) {
         sidebarMinClassStr = " menu-min ";
     }
 }
 <div id="sidebar" class="sidebar responsive @(sidebarMinClassStr)">
     <ul class="nav nav-list">
-
+        <partial name="Components/Sidebar/SidebarLogisticsOrder" model="Model"/>
         <partial name="Components/Sidebar/SidebarExpress" model="Model"/>
         <partial name="Components/Sidebar/SidebarReceivePack" model="Model"/>
         <partial name="Components/Sidebar/SidebarFee" model="Model"/>
@@ -27,12 +26,9 @@
     </ul>
 
     <div id="sidebar-collapse" class="sidebar-toggle sidebar-collapse" onclick="toggleSidebar()">
-        @if (Model.IsSidebarMin)
-        {
+        @if (Model.IsSidebarMin) {
             <i class="ace-icon fa fa-angle-double-right" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
-        }
-        else
-        {
+        } else {
             <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
         }
     </div>

@@ -1,0 +1,18 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Pass.PassRes
+@model shunda.Admin.Models.Sidebar.SidebarModel
+@{
+    Layout = null;
+}
+@if (Model.HasOneOfPassRes(PassRes.LogisticsOrder.All)) {
+    <li id="logistics-order-menu">
+        <a href="#" class="dropdown-toggle">
+            <i class="menu-icon fa fa-copy"></i>
+            <span class="menu-text">物流订单</span>
+            <b class="arrow fa fa-angle-down"></b>
+        </a>
+        <b class="arrow"></b>
+        <ul class="submenu">
+        </ul>
+    </li>
+}
