@@ -9,7 +9,7 @@ using shunda.Domain.LogisticsOrder;
 namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 
 public class LogisticsOrderListQueryParam : ListQueryParam {
-    [ModelBinder(typeof(CountryHibernateType))]
+    [ModelBinder(typeof(CountryModelBinder))]
     public Country? CountryQuery { get; set; }
 
     public int OrderIdQuery { get; set; }
@@ -23,7 +23,7 @@ public class LogisticsOrderListQueryParam : ListQueryParam {
     [ModelBinder(typeof(LogisticsOrderStatusModelBinder))]
     public LogisticsOrderStatus? OrderStatusQuery { get; set; }
 
-    [ModelBinder(typeof(PayStatusHibernateType))]
+    [ModelBinder(typeof(PayStatusModelBinder))]
     public PayStatus? PayStatusQuery { get; set; }
 
     public string? TrackingNoQuery { get; set; }

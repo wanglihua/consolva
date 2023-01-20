@@ -86,8 +86,8 @@
         }
     </select>&nbsp;
 
-    <label for="firstLogisticsModeTypeQuery">头程物流</label>&nbsp;
-    <select id="firstLogisticsModeTypeQuery" style="width: 100px; height: 30px;">
+    <label for="firstModeTypeQuery">头程物流</label>&nbsp;
+    <select id="firstModeTypeQuery" style="width: 100px; height: 30px;">
         <option value="0">头程物流</option>
         @foreach (LogisticsModeType modeType in Model.FirstModeTypeList)
         {
@@ -128,17 +128,16 @@
                         '@(nameof(LogisticsOrderListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
                         '@(nameof(LogisticsOrderListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
                         '@(nameof(LogisticsOrderListQueryParam.MobileQuery))': $('#mobileQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.OrderStatusIdQuery))': $('#orderStatusQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.PayStatusIdQuery))': $('#payStatusQuery').val(),
+                        '@(nameof(LogisticsOrderListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
+                        '@(nameof(LogisticsOrderListQueryParam.PayStatusQuery))': $('#payStatusQuery').val(),
                         '@(nameof(LogisticsOrderListQueryParam.ReceivingWarehouseIdQuery))': $('#receivingWarehouseIdQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.TargetWarehouseIdQuery))': $('#targetWarehouseIdQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.FirstLogisticsModeTypeIdQuery))': $('#firstLogisticsModeTypeQuery').val(),
+                        '@(nameof(LogisticsOrderListQueryParam.FirstModeTypeQuery))': $('#firstModeTypeQuery').val(),
                         '@(nameof(LogisticsOrderListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
                         '@(nameof(LogisticsOrderListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
                         '@(nameof(LogisticsOrderListQueryParam.TimeRangeTypeQuery))': $('#timeRangeTypeQuery').val()
                     });
             
-                    var url = '@Url.Action("Export", "LogisticsOrder")?' + params;
+                    var url = '@Url.Action("Export", "LogisticsOrderExcel")?' + params;
                     $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();                       
                 });
             }
@@ -161,7 +160,7 @@
         
             function initUploader() {
         
-                var url = '@Url.Action("Import", "LogisticsOrder")';
+                var url = '@Url.Action("Import", "LogisticsOrderExcel")';
         
                 var uploader = new plupload.Uploader({
                     runtimes: 'html5,flash,html4',
@@ -257,7 +256,7 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "LogisticsOrder")",
+            url: "@Url.Action("List", "LogisticsOrderList")",
             type: "POST",
             data: {
                 '@(nameof(LogisticsOrderListQueryParam.MenuType))': '@(Model.MenuType)',
@@ -267,11 +266,10 @@
                 '@(nameof(LogisticsOrderListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.MobileQuery))': $('#mobileQuery').val(),
-                '@(nameof(LogisticsOrderListQueryParam.OrderStatusIdQuery))': $('#orderStatusQuery').val(),
-                '@(nameof(LogisticsOrderListQueryParam.PayStatusIdQuery))': $('#payStatusQuery').val(),
+                '@(nameof(LogisticsOrderListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
+                '@(nameof(LogisticsOrderListQueryParam.PayStatusQuery))': $('#payStatusQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.ReceivingWarehouseIdQuery))': $('#receivingWarehouseIdQuery').val(),
-                '@(nameof(LogisticsOrderListQueryParam.TargetWarehouseIdQuery))': $('#targetWarehouseIdQuery').val(),
-                '@(nameof(LogisticsOrderListQueryParam.FirstLogisticsModeTypeIdQuery))': $('#firstLogisticsModeTypeQuery').val(),
+                '@(nameof(LogisticsOrderListQueryParam.FirstModeTypeQuery))': $('#firstModeTypeQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.TimeRangeTypeQuery))': $('#timeRangeTypeQuery').val(),
