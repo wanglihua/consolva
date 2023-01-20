@@ -150,8 +150,8 @@ public class LogisticsOrderListController : Controller {
         }
 
 
-        if (queryParam.Country != null && queryParam.Country != Country.None) {
-            var country = queryParam.Country;
+        if (queryParam.CountryQuery != null && queryParam.CountryQuery != Country.None) {
+            var country = queryParam.CountryQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Country == country));
         }
 

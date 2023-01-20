@@ -10,7 +10,7 @@ namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 
 public class LogisticsOrderListQueryParam : ListQueryParam {
     [ModelBinder(typeof(CountryHibernateType))]
-    public Country? Country { get; set; }
+    public Country? CountryQuery { get; set; }
 
     public int OrderIdQuery { get; set; }
 
