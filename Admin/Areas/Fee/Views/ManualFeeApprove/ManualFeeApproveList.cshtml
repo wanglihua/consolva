@@ -71,7 +71,7 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = manualFeeApply.Customer?.Id })">
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = manualFeeApply.Customer.Id })">
                             @manualFeeApply.CustomerCodeCache
                         </a>
                     </td>
@@ -82,13 +82,13 @@
                             </a>
                         </div>
                         <div>
-                            <a href="javascript:loadListByOrderCode('@(manualFeeApply.Order?.Code)')">
+                            <a href="javascript:loadListByOrderCode('@(manualFeeApply.Order.Code)')">
                                 订单共<span style="@(applyCountStyleColor)">@(manualFeeApply.OrderApplyCountCache)</span>条申请
                             </a>
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @manualFeeApply.Type?.Name
+                        @manualFeeApply.Type.Name
                     </td>
                     <td style="text-align: right;">
                         @manualFeeApply.Fee
@@ -103,18 +103,18 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            @(manualFeeApply.ApplyUser?.UserName)
+                            @(manualFeeApply.ApplyUser.UserName)
                         </div>
                         <div style="color: #08008c;">
                             @if (manualFeeApply.ApproveUser != null) {
-                                @(manualFeeApply.ApproveUser?.UserName)
+                                @(manualFeeApply.ApproveUser.UserName)
                             } else {
                                 <span>-</span>
                             }
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @manualFeeApply.Status?.Name
+                        @manualFeeApply.Status.Name
                     </td>
                     <td style="text-align: center;">
                         <div>

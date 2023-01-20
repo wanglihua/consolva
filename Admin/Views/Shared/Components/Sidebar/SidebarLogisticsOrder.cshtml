@@ -16,7 +16,7 @@
 
             @if (Model.HasPassRes(PassRes.LogisticsOrder.OrderListActive)) {
                 <li id="logistics-order-order-list-active-menu">
-                    <a href="#">
+                    <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderList" asp-action="IndexActive">
                         <i class="menu-icon fa fa-caret-right"></i>
                         活动订单
                     </a>
@@ -26,7 +26,7 @@
 
             @if (Model.HasPassRes(PassRes.LogisticsOrder.OrderListComplete)) {
                 <li id="logistics-order-order-list-complete-menu">
-                    <a href="#">
+                    <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderList" asp-action="IndexComplete">
                         <i class="menu-icon fa fa-caret-right"></i>
                         正常结束订单
                     </a>
@@ -36,7 +36,7 @@
 
             @if (Model.HasPassRes(PassRes.LogisticsOrder.OrderListCancel)) {
                 <li id="logistics-order-order-list-cancel-menu">
-                    <a href="#">
+                    <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderList" asp-action="IndexCancel">
                         <i class="menu-icon fa fa-caret-right"></i>
                         作废订单
                     </a>

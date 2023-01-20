@@ -3,6 +3,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
+using shunda.Core;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
@@ -105,7 +106,23 @@ public class LogisticsOrderListController : Controller {
             queryParam.OrderIdList = queryParam.OrderIdList.Concat(orderIdList).Distinct().ToList();
         }
 
-        var model = new LogisticsOrderListModel(null);
+        int totalCount = GetListCriteria(queryParam)
+            .SetProjection(Projections.RowCount())
+            .UniqueResult<int>();
+
+        ListPager listPager = new ListPager(queryParam, totalCount);
+
+        IList<LogisticsOrderInfo> logisticsOrderList = GetListCriteria(queryParam)
+            .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
+            .AddOrder(Order.Desc(nameof(Entity.Id)))
+            .SetFirstResult(listPager.PageIndex * listPager.PageSize)
+            .SetMaxResults(listPager.PageSize)
+            .List<LogisticsOrderInfo>();
+
+
+        var model = new LogisticsOrderListModel(listPager) {
+            LogisticsOrderList = logisticsOrderList,
+        };
 
         return View("LogisticsOrderList", model);
     }
