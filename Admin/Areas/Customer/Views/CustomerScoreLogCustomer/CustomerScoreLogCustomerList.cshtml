@@ -65,7 +65,7 @@
 
                     <td style="text-align: center;">
                         @if (customerScoreLog.LogisticsOrder != null) {
-                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(customerScoreLog.LogisticsOrder?.Id)" target="_blank">
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(customerScoreLog.LogisticsOrder?.Id)" target="_blank">
                                 @customerScoreLog.LogisticsOrderCode
                             </a>
                         }

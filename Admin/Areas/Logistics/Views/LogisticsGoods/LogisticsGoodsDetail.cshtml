@@ -230,7 +230,7 @@
                                 @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0) {
                                     int orderId = Model.LogisticsGoods.FirstOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(orderId)" target="_blank">订单1</a>
+                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(orderId)" target="_blank">订单1</a>
                                         <span>图片</span>
                                     </span>
                                 } else {
@@ -262,7 +262,7 @@
                                 @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0) {
                                     int orderId = Model.LogisticsGoods.SecondOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(orderId)" target="_blank">订单2</a>
+                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(orderId)" target="_blank">订单2</a>
                                         <span>图片</span>
                                     </span>
                                 } else {
@@ -294,7 +294,7 @@
                                 @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0) {
                                     int orderId = Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(orderId)" target="_blank">订单3</a>
+                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(orderId)" target="_blank">订单3</a>
                                         <span>图片</span>
                                     </span>
                                 } else {

@@ -16,7 +16,7 @@ public class LogisticsOrderDetailController : Controller {
 
     [HttpGet]
     [Route("/admin/logistics/order/detail/{id:int}")]
-    public IActionResult Detail(int id) {
+    public IActionResult Index(int id) {
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",

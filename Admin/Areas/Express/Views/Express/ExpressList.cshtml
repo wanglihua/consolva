@@ -155,7 +155,7 @@
                         </div>
                         <div style="color: blue;">
                             @if (express.Order != null) {
-                                <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(express.Order?.Id ?? 0)" target="_blank">
+                                <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(express.Order?.Id ?? 0)" target="_blank">
                                     <span>@express.OrderCode</span>
                                 </a>
                             } else {

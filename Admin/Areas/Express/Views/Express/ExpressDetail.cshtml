@@ -347,7 +347,7 @@
                                         <div class="col-xs-8">
                                             @if (Model.Express.Order != null) {
                                                 <label class="control-label">
-                                                    <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(Model.Express.Order?.Id ?? 0)" target="_blank">
+                                                    <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(Model.Express.Order?.Id ?? 0)" target="_blank">
                                                         @(Model.Express.Order?.Code)
                                                     </a>
                                                 </label>
