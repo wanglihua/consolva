@@ -1,12 +1,10 @@
 namespace shunda.Domain.Pass.PassRes;
 
-public partial class PassRes
-{
+public partial class PassRes {
     /// <summary>
     /// 物流设置
     /// </summary>
-    public class Logistics
-    {
+    public class Logistics {
         /// <summary>
         /// 物流设置类别
         /// </summary>
