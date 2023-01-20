@@ -9,32 +9,33 @@ public class TimeRangeType : CodeTypeBase {
     /// <summary>
     /// 订单创建时间
     /// </summary>
-    public static readonly TimeRangeType OrderCreate = new TimeRangeType(100, "订单创建时间", "订单创建时间");
+    public static readonly TimeRangeType OrderCreate = new TimeRangeType(1000, "订单创建时间", "订单创建时间");
 
     /// <summary>
     /// 提交打包时间
     /// </summary>
-    public static readonly TimeRangeType SubmitPack = new TimeRangeType(200, "提交打包时间", "提交打包时间");
+    public static readonly TimeRangeType SubmitPack = new TimeRangeType(2000, "提交打包时间", "提交打包时间");
 
     /// <summary>
     /// 完成打包时间
     /// </summary>
-    public static readonly TimeRangeType CompletePack = new TimeRangeType(300, "完成打包时间", "完成打包时间");
+    public static readonly TimeRangeType CompletePack = new TimeRangeType(3000, "完成打包时间", "完成打包时间");
 
     /// <summary>
     /// 付款时间
     /// </summary>
-    public static readonly TimeRangeType Pay = new TimeRangeType(400, "付款时间", "付款时间");
+    public static readonly TimeRangeType Pay = new TimeRangeType(4000, "付款时间", "付款时间");
 
     /// <summary>
     /// 出库时间
+    /// 转运时间
     /// </summary>
-    public static readonly TimeRangeType Checkout = new TimeRangeType(430, "出库时间", "出库时间");
+    public static readonly TimeRangeType Transfer = new TimeRangeType(5000, "出库时间", "出库时间");
 
     /// <summary>
     /// 签收时间
     /// </summary>
-    public static readonly TimeRangeType Deliver = new TimeRangeType(500, "签收时间", "签收时间");
+    public static readonly TimeRangeType Deliver = new TimeRangeType(6000, "签收时间", "签收时间");
 
     /// <summary>
     /// None
@@ -46,7 +47,7 @@ public class TimeRangeType : CodeTypeBase {
         SubmitPack,
         CompletePack,
         Pay,
-        Checkout,
+        Transfer,
         Deliver,
     };
 

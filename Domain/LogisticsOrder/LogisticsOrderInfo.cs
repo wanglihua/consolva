@@ -233,6 +233,6 @@ public class LogisticsOrderInfo : Entity {
     /// <summary>
     /// 签收时间，可空
     /// </summary>
-    [JsonProperty("deliveredTime")]
-    public virtual DateTime? DeliveredTime { get; set; } = null;
+    [JsonProperty("deliverTime")]
+    public virtual DateTime? DeliverTime { get; set; } = null;
 }

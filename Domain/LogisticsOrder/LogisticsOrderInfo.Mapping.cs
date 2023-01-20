@@ -304,10 +304,10 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
         );
 
         Property(
-            x => x.DeliveredTime,
+            x => x.DeliverTime,
             map => {
                 map.Type(NHibernateUtil.DateTime);
-                map.Column("delivered_time");
+                map.Column("deliver_time");
                 map.NotNullable(false);
             }
         );

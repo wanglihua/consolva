@@ -185,6 +185,12 @@ public class LogisticsOrderListController : Controller {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.SubmitPackTime >= beginDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.CompletePack) {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CompletePackTime >= beginDateQueryValue));
+            } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Pay) {
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.PayTime >= beginDateQueryValue));
+            } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Transfer) {
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.TransferTime >= beginDateQueryValue));
+            } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Deliver) {
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.DeliverTime >= beginDateQueryValue));
             } else {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateTime >= beginDateQueryValue));
             }
@@ -199,6 +205,12 @@ public class LogisticsOrderListController : Controller {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.SubmitPackTime < endDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.CompletePack) {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CompletePackTime < endDateQueryValue));
+            } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Pay) {
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.PayTime < endDateQueryValue));
+            } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Transfer) {
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.TransferTime < endDateQueryValue));
+            } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Deliver) {
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.DeliverTime < endDateQueryValue));
             } else {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateTime < endDateQueryValue));
             }
