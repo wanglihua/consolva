@@ -847,7 +847,7 @@
                                                 <td style="text-align: center;">@log.Type.Name</td>
                                                 <td class="break-word">
                                                     @if (log.Order != null) {
-                                                        <a asp-area="LogisticsOrderDetail" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(log.Order.Id)" target="_blank">@(log.Order.Code)</a>
+                                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(log.Order.Id)" target="_blank">@(log.Order.Code)</a>
                                                     }
                                                     <span>&nbsp;</span>
                                                     <span>
