@@ -21,6 +21,15 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
             }
         );
 
+        Property(
+            x => x.Country,
+            map => {
+                map.Type<CountryHibernateType>();
+                map.Column("country_id");
+                map.NotNullable(true);
+            }
+        );
+
         ManyToOne(
             x => x.Customer,
             map => {
@@ -272,6 +281,15 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
             map => {
                 map.Type(NHibernateUtil.DateTime);
                 map.Column("submit_pack_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.CompletePackTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("complete_pack_time");
                 map.NotNullable(false);
             }
         );

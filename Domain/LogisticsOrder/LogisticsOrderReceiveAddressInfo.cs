@@ -8,14 +8,21 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 订单收货地址
 /// </summary>
-public class LogisticsOrderReceiveAddressInfo : EntityNoUpdate
-{
+public class LogisticsOrderReceiveAddressInfo : EntityNoUpdate {
     /// <summary>
     /// 客户id，非空
     /// </summary>
     [Required(ErrorMessage = "客户id不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new ();
+    public virtual LogisticsOrderInfo Order { get; set; } = new();
+
+    /// <summary>
+    /// 国家，非空
+    /// </summary>
+    [Required(ErrorMessage = "国家不能为空！")]
+    [JsonProperty("country")]
+    [ModelBinder(typeof(CountryModelBinder))]
+    public virtual Country Country { get; set; } = Country.None;
 
     /// <summary>
     /// 收货人名，非空
@@ -96,5 +103,4 @@ public class LogisticsOrderReceiveAddressInfo : EntityNoUpdate
     [MaxLength(100, ErrorMessage = "公司长度不能大于100！")]
     [JsonProperty("company")]
     public virtual string Company { get; set; } = string.Empty;
-
 }

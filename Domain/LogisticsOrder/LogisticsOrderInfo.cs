@@ -22,6 +22,14 @@ public class LogisticsOrderInfo : Entity {
     public virtual string Code { get; set; } = string.Empty;
 
     /// <summary>
+    /// 国家，非空
+    /// </summary>
+    [Required(ErrorMessage = "国家不能为空！")]
+    [JsonProperty("country")]
+    [ModelBinder(typeof(CountryModelBinder))]
+    public virtual Country Country { get; set; } = Country.None;
+
+    /// <summary>
     /// 客户，非空
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
@@ -209,6 +217,12 @@ public class LogisticsOrderInfo : Entity {
     /// </summary>
     [JsonProperty("submitPackTime")]
     public virtual DateTime? SubmitPackTime { get; set; } = null;
+
+    /// <summary>
+    /// 完成打包时间，可空
+    /// </summary>
+    [JsonProperty("completePackTime")]
+    public virtual DateTime? CompletePackTime { get; set; } = null;
 
     /// <summary>
     /// 转运时间，可空

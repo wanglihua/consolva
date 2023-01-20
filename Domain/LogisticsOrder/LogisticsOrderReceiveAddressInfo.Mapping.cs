@@ -4,10 +4,8 @@ using NHibernate.Mapping.ByCode;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderReceiveAddressInfoMapping : EntityNoUpdateMapping<LogisticsOrderReceiveAddressInfo>
-{
-    public LogisticsOrderReceiveAddressInfoMapping()
-    {
+public class LogisticsOrderReceiveAddressInfoMapping : EntityNoUpdateMapping<LogisticsOrderReceiveAddressInfo> {
+    public LogisticsOrderReceiveAddressInfoMapping() {
         Table("tbl_logistics_order_receive_address");
 
         ManyToOne(
@@ -18,6 +16,15 @@ public class LogisticsOrderReceiveAddressInfoMapping : EntityNoUpdateMapping<Log
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
+            x => x.Country,
+            map => {
+                map.Type<CountryHibernateType>();
+                map.Column("country_id");
+                map.NotNullable(true);
             }
         );
 
@@ -110,6 +117,5 @@ public class LogisticsOrderReceiveAddressInfoMapping : EntityNoUpdateMapping<Log
                 map.NotNullable(true);
             }
         );
-
     }
 }

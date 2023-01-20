@@ -73,6 +73,10 @@ public class LogisticsOrderCreateService {
             throw new Exception("订单创建收货地址未选择！");
         }
 
+        if (createSelect.Country != firstMode.Country || createSelect.Country != addressReceive.Country) {
+            throw new ValidationException("订单创建选择物流方式收货地址国家不一致，数据有问题，请重新选择！");
+        }
+
         int addressSendId = createSelect.AddressSendId;
         CustomerSendAddressInfo addressSend = session.Get<CustomerSendAddressInfo>(addressSendId);
         if (addressSend == null) {
@@ -178,6 +182,7 @@ public class LogisticsOrderCreateService {
 
         var order = new LogisticsOrderInfo {
             Code = orderCode,
+            Country = createSelect.Country,
             Customer = customer,
             CustomerCode = customerCode,
             FeeMethod = LogisticsOrderFeeMethod.Pack, // 当前创建的订单都是打包后收费的
@@ -208,6 +213,7 @@ public class LogisticsOrderCreateService {
         // 订单地址
         var orderReceiveAddress = new LogisticsOrderReceiveAddressInfo {
             Order = order,
+            Country = createSelect.Country,
             FirstName = addressReceive.FirstName,
             LastName = addressReceive.LastName,
             Mobile = addressReceive.Mobile,
