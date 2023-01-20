@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain;
 using shunda.Domain.Fee;
@@ -40,4 +41,7 @@ public class LogisticsOrderListQueryParam : ListQueryParam {
 
     [ModelBinder(typeof(TimeRangeTypeModelBinder))]
     public TimeRangeType? TimeRangeTypeQuery { get; set; }
+
+    [BindNever]
+    public IList<int> OrderIdList { get; set; } = new List<int>();
 }

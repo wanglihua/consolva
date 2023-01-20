@@ -86,10 +86,28 @@ public class LogisticsOrderListController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/list")]
     public IActionResult List(LogisticsOrderListQueryParam queryParam) {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
+            string trackingNoQuery = queryParam.TrackingNoQuery.Trim().ToUpper();
+            IList<int> orderIdList = session
+                .Query<ExpressInfo>()
+                .Where(e => e.TrackingNo.StartsWith(trackingNoQuery) && e.Order != null)
+                .Select(e => e.Order!.Id)
+                .ToList();
+            queryParam.OrderIdList = queryParam.OrderIdList.Concat(orderIdList).Distinct().ToList();
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.MobileQuery) == false) {
+            var mobileQuery = queryParam.MobileQuery.Trim();
+            var orderIdList = session.Query<LogisticsOrderReceiveAddressInfo>()
+                .Where(e => e.Mobile.Contains(mobileQuery))
+                .Select(e => e.Order.Id)
+                .ToList();
+            queryParam.OrderIdList = queryParam.OrderIdList.Concat(orderIdList).Distinct().ToList();
+        }
+
+        var model = new LogisticsOrderListModel(null);
+
+        return View("LogisticsOrderList", model);
     }
 
     [NonAction]
@@ -130,6 +148,8 @@ public class LogisticsOrderListController : Controller {
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Code == codeQuery));
         }
 
+        /*
+
         if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim().ToUpper();
             IList<int> orderIdList = session
@@ -138,12 +158,6 @@ public class LogisticsOrderListController : Controller {
                 .Select(e => e.Order!.Id)
                 .ToList();
             criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG<int>(orderIdList));
-        }
-
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
-            string customerCodeQuery = queryParam.CustomerCodeQuery;
-            int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Customer.Id == customerId));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.MobileQuery) == false) {
@@ -155,12 +169,24 @@ public class LogisticsOrderListController : Controller {
             criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG<int>(orderIdList));
         }
 
+        */
+
+        if (queryParam.OrderIdList.Count != 0) {
+            IList<int> orderIdList = queryParam.OrderIdList;
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG<int>(orderIdList));
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
+            string customerCodeQuery = queryParam.CustomerCodeQuery;
+            int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Customer.Id == customerId));
+        }
+
         if (queryParam.OrderStatusQuery != null && queryParam.OrderStatusQuery != LogisticsOrderStatus.None) {
             var orderStatusQuery = queryParam.OrderStatusQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.OrderStatus == orderStatusQuery));
         }
 
-        
         if (queryParam.PayStatusQuery != null && queryParam.PayStatusQuery != PayStatus.None) {
             var payStatusQuery = queryParam.PayStatusQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.PayStatus == payStatusQuery));
