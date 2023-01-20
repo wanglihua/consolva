@@ -38,11 +38,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.LogisticsOrderPayList != null && Model.LogisticsOrderPayList.Count() != 0)
-        {
+        @if (Model.LogisticsOrderPayList != null && Model.LogisticsOrderPayList.Count() != 0) {
             int order = 1;
-            foreach (LogisticsOrderPayInfo logisticsOrderPay in Model.LogisticsOrderPayList)
-            {
+            foreach (LogisticsOrderPayInfo logisticsOrderPay in Model.LogisticsOrderPayList) {
                 <tr ondblclick="showLogisticsOrderPayDetail(@(logisticsOrderPay.Id));">
                     <td style="text-align: center;">
                         <label for="logisticsOrderPayCheck_@(logisticsOrderPay.Id)"></label><input id="logisticsOrderPayCheck_@(logisticsOrderPay.Id)" type="checkbox" class="ace" value="@logisticsOrderPay.Id"/><span class="lbl"></span>
@@ -50,7 +48,7 @@
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">@logisticsOrderPay.CustomerCodeCache</td>
                     <td style="text-align: center;" class="break-word">
-                        <a href="@Url.Action("Detail", "LogisticsOrder", new { id = logisticsOrderPay.Order?.Id })" target="_blank">
+                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Order.Id)" target="_blank">
                             @logisticsOrderPay.Order?.Code
                         </a>
                     </td>
@@ -62,9 +60,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="12">
                     暂时没有数据！

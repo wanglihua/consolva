@@ -58,7 +58,7 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
-                        <a target="_blank" asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Order?.Id)">
+                        <a target="_blank" asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(logisticsOrderPay.Order?.Id)">
                             @logisticsOrderPay.OrderCode
                         </a>
                     </td>

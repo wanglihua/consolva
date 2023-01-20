@@ -5,7 +5,7 @@
 @using shunda.Domain.Fee
 @model shunda.Admin.Areas.Fee.Models.ManualFeeApprove.ManualFeeApproveListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualFeeApplyList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadManualFeeApplyList" })
 
 <table id="tblManualFeeApplyList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -57,14 +57,11 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.ManualFeeApplyList != null && Model.ManualFeeApplyList.Count() != 0)
-        {
+        @if (Model.ManualFeeApplyList != null && Model.ManualFeeApplyList.Count() != 0) {
             int order = 1;
-            foreach (ManualFeeApplyInfo manualFeeApply in Model.ManualFeeApplyList)
-            {
+            foreach (ManualFeeApplyInfo manualFeeApply in Model.ManualFeeApplyList) {
                 string applyCountStyleColor = "";
-                if (manualFeeApply.OrderApplyCountCache > 1)
-                {
+                if (manualFeeApply.OrderApplyCountCache > 1) {
                     applyCountStyleColor = "color: red;";
                 }
 
@@ -74,13 +71,13 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = manualFeeApply.Customer?.Id})">
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = manualFeeApply.Customer?.Id })">
                             @manualFeeApply.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = manualFeeApply.Order?.Id})">
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(manualFeeApply.Order.Id)" target="_blank">
                                 @manualFeeApply.OrderCode
                             </a>
                         </div>
@@ -109,12 +106,9 @@
                             @(manualFeeApply.ApplyUser?.UserName)
                         </div>
                         <div style="color: #08008c;">
-                            @if (manualFeeApply.ApproveUser != null)
-                            {
+                            @if (manualFeeApply.ApproveUser != null) {
                                 @(manualFeeApply.ApproveUser?.UserName)
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
@@ -133,9 +127,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="15">
                     暂时没有数据！
@@ -145,4 +137,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadManualFeeApplyList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadManualFeeApplyList" })

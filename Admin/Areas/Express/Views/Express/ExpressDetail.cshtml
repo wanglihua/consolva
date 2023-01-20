@@ -347,7 +347,9 @@
                                         <div class="col-xs-8">
                                             @if (Model.Express.Order != null) {
                                                 <label class="control-label">
-                                                    <a href="@Url.Action("Detail", "LogisticsOrder", new { id = Model.Express.Order?.Id ?? 0 })" target="_blank">@(Model.Express.Order?.Code)</a>
+                                                    <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(Model.Express.Order?.Id ?? 0)" target="_blank">
+                                                        @(Model.Express.Order?.Code)
+                                                    </a>
                                                 </label>
                                             } else {
                                                 <input asp-for="Express.Order!.Code" type="text" disabled="disabled" class="input-sm form-control"/>
@@ -845,7 +847,7 @@
                                                 <td style="text-align: center;">@log.Type.Name</td>
                                                 <td class="break-word">
                                                     @if (log.Order != null) {
-                                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(log.Order.Id)" target="_blank">@(log.Order.Code)</a>
+                                                        <a asp-area="LogisticsOrderDetail" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(log.Order.Id)" target="_blank">@(log.Order.Code)</a>
                                                     }
                                                     <span>&nbsp;</span>
                                                     <span>

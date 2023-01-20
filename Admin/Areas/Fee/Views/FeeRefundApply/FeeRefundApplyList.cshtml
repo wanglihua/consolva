@@ -6,7 +6,7 @@
 @using shunda.Domain.Fee
 @model shunda.Admin.Areas.Fee.Models.FeeRefundApply.FeeRefundApplyListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeRefundApplyList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadFeeRefundApplyList" })
 
 <table id="tblFeeRefundApplyList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -80,17 +80,14 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.FeeRefundApplyList != null && Model.FeeRefundApplyList.Count() != 0)
-        {
+        @if (Model.FeeRefundApplyList != null && Model.FeeRefundApplyList.Count() != 0) {
             int order = 1;
-            foreach (FeeRefundApplyInfo feeRefundApply in Model.FeeRefundApplyList)
-            {
+            foreach (FeeRefundApplyInfo feeRefundApply in Model.FeeRefundApplyList) {
                 string applyCountStyleColor = "";
-                if (feeRefundApply.OrderApplyCountCache > 1)
-                {
+                if (feeRefundApply.OrderApplyCountCache > 1) {
                     applyCountStyleColor = "color: red;";
                 }
-                
+
                 <tr ondblclick="showFeeRefundApplyDetail(@(feeRefundApply.Id));">
                     <td style="text-align: center;">
                         <label for="logisticsOrderRefundApplyCheck_@(feeRefundApply.Id)"></label><input id="logisticsOrderRefundApplyCheck_@(feeRefundApply.Id)" type="checkbox" class="ace" value="@feeRefundApply.Id"/><span class="lbl"></span>
@@ -98,12 +95,12 @@
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeRefundApply.Customer.Id})">
+                            <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeRefundApply.Customer.Id })">
                                 @(feeRefundApply.CustomerCodeCache)
                             </a>
                         </div>
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = feeRefundApply.Order.Id})">
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(feeRefundApply.Order.Id)" target="_blank">
                                 @feeRefundApply.OrderCode
                             </a>
                         </div>
@@ -163,9 +160,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="11">
                     暂时没有数据！
@@ -175,4 +170,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeRefundApplyList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadFeeRefundApplyList" })

@@ -15,15 +15,12 @@
 @section Breadcrumb {
     <li class="parent" data-menu="goods-menu">物品管理</li>
 
-    @if (Model.IsViewOnly)
-    {
+    @if (Model.IsViewOnly) {
         <li class="active" data-menu="goods-logistics-goods@(Model.LogisticsGoods.Type.Id)-index-menu">
             <a href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })">@(Model.LogisticsGoods.Type.Name)清单</a>
         </li>
         <li>物品详细</li>
-    }
-    else
-    {
+    } else {
         <li class="active" data-menu="goods-logistics-goods-trade-search-menu">
             <a href="@Url.Action("Index", "LogisticsGoodsTrade", new { statusId = Model.StatusId ?? 0 })">扩展名确认</a>
         </li>
@@ -51,39 +48,32 @@
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    @if (Model.IsViewOnly == false)
-    {
+    @if (Model.IsViewOnly == false) {
         <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsGoods();">
             <i class="ace-icon fa fa-floppy-o"></i>
             保存
         </button>
 
 
-        @if (Model.LogisticsGoods.Status != LogisticsGoodsStatus.Confirmed)
-        {
+        @if (Model.LogisticsGoods.Status != LogisticsGoodsStatus.Confirmed) {
             <button type="button" class="btn btn-pink btn-sm" onclick="saveAndConfirmLogisticsGoods();">
                 <i class="ace-icon fa fa-hand-paper-o"></i>
                 保存并确认
             </button>
         }
-    }
-    else
-    {
+    } else {
         <a class="btn btn-pink btn-sm" target="_blank" href="@Url.Action("Detail", "LogisticsGoods", new { id = Model.LogisticsGoods.Id, statusId = (Model.LogisticsGoods.Status?.Id ?? 0) })">
             <i class="ace-icon fa fa-pencil"></i>
             编辑
         </a>
     }
 
-    @if (Model.IsViewOnly)
-    {
+    @if (Model.IsViewOnly) {
         <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
         </a>
-    }
-    else
-    {
+    } else {
         <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoodsTrade", new { statusId = Model.StatusId ?? 0 })">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
@@ -108,8 +98,7 @@
                                     <div class="col-xs-8">
                                         <input id="goodsTypeValue" type="hidden" asp-for="LogisticsGoods.Type"/>
                                         <select id="goodsType" asp-for="LogisticsGoods.Type" class="input-sm form-control" disabled="disabled">
-                                            @foreach (LogisticsGoodsType goodsType in Model.TypeList)
-                                            {
+                                            @foreach (LogisticsGoodsType goodsType in Model.TypeList) {
                                                 <option value="@(goodsType.Id)">@(goodsType.Name)</option>
                                             }
                                         </select>
@@ -123,12 +112,9 @@
                                 <div class="form-group">
                                     <label asp-for="LogisticsGoods.Name" class="col-xs-4 control-label">扩展名</label>
                                     <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
+                                        @if (Model.IsViewOnly) {
                                             <input asp-for="LogisticsGoods.Name" type="text" class="input-sm form-control" disabled="disabled"/>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <input asp-for="LogisticsGoods.Name" type="text" class="input-sm form-control"/>
                                         }
 
@@ -144,12 +130,9 @@
                                 <div class="form-group">
                                     <label asp-for="LogisticsGoods.BrandName" class="col-xs-4 control-label">品牌名</label>
                                     <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
+                                        @if (Model.IsViewOnly) {
                                             <input asp-for="LogisticsGoods.BrandName" type="text" class="input-sm form-control" disabled="disabled"/>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <input asp-for="LogisticsGoods.BrandName" type="text" class="input-sm form-control"/>
                                         }
                                     </div>
@@ -186,8 +169,7 @@
                                     <div class="col-xs-8">
 
                                         <select asp-for="LogisticsGoods.Status" class="input-sm form-control" disabled="disabled">
-                                            @foreach (LogisticsGoodsStatus goodsStatus in Model.StatusList)
-                                            {
+                                            @foreach (LogisticsGoodsStatus goodsStatus in Model.StatusList) {
                                                 <option value="@(goodsStatus.Id)">@(goodsStatus.Name)</option>
                                             }
                                         </select>
@@ -231,17 +213,13 @@
                         <div class="row">
                             <label class="col-xs-2 control-label">创建单号图片</label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.CreateExpressPhotoListCache != null && Model.LogisticsGoods.CreateExpressPhotoListCache.Count != 0)
-                                {
-                                    foreach (ExpressPhotoInfo expressPhoto in Model.LogisticsGoods.CreateExpressPhotoListCache)
-                                    {
+                                @if (Model.LogisticsGoods.CreateExpressPhotoListCache != null && Model.LogisticsGoods.CreateExpressPhotoListCache.Count != 0) {
+                                    foreach (ExpressPhotoInfo expressPhoto in Model.LogisticsGoods.CreateExpressPhotoListCache) {
                                         <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
                                             <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                         </a>
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     <label class="control-label">暂无</label>
                                 }
                             </div>
@@ -249,24 +227,19 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0)
-                                {
+                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0) {
                                     int orderId = Model.LogisticsGoods.FirstOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderId })" target="_blank">订单1</a>
+                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(orderId)" target="_blank">订单1</a>
                                         <span>图片</span>
                                     </span>
-                                }
-                                else
-                                {
+                                } else {
                                     <span>订单1图片</span>
                                 }
                             </label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0)
-                                {
-                                    foreach (var expressPhoto in Model.LogisticsGoods.FirstOrderExpressPhotoListCache)
-                                    {
+                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0) {
+                                    foreach (var expressPhoto in Model.LogisticsGoods.FirstOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
                                                 <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
@@ -278,9 +251,7 @@
                                             </div>
                                         </div>
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     <label class="control-label">暂无</label>
                                 }
                             </div>
@@ -288,24 +259,19 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0)
-                                {
+                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0) {
                                     int orderId = Model.LogisticsGoods.SecondOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderId })" target="_blank">订单2</a>
+                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(orderId)" target="_blank">订单2</a>
                                         <span>图片</span>
                                     </span>
-                                }
-                                else
-                                {
+                                } else {
                                     <span>订单2图片</span>
                                 }
                             </label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0)
-                                {
-                                    foreach (var expressPhoto in Model.LogisticsGoods.SecondOrderExpressPhotoListCache)
-                                    {
+                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0) {
+                                    foreach (var expressPhoto in Model.LogisticsGoods.SecondOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
                                                 <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
@@ -317,9 +283,7 @@
                                             </div>
                                         </div>
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     <label class="control-label">暂无</label>
                                 }
                             </div>
@@ -327,24 +291,19 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0)
-                                {
+                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0) {
                                     int orderId = Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
-                                        <a href="@Url.Action("Detail", "LogisticsOrder", new { id = orderId })" target="_blank">订单3</a>
+                                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(orderId)" target="_blank">订单3</a>
                                         <span>图片</span>
                                     </span>
-                                }
-                                else
-                                {
+                                } else {
                                     <span>订单3图片</span>
                                 }
                             </label>
                             <div class="col-xs-10">
-                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0)
-                                {
-                                    foreach (var expressPhoto in Model.LogisticsGoods.ThirdOrderExpressPhotoListCache)
-                                    {
+                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0) {
+                                    foreach (var expressPhoto in Model.LogisticsGoods.ThirdOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
                                                 <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
@@ -356,9 +315,7 @@
                                             </div>
                                         </div>
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     <label class="control-label">暂无</label>
                                 }
                             </div>
@@ -377,15 +334,12 @@
                                 <div class="form-group">
                                     <label asp-for="HsGoodsAutoSelect" class="col-xs-4 control-label">手工录入</label>
                                     <div class="col-xs-8">
-                                        @if (Model.IsViewOnly)
-                                        {
+                                        @if (Model.IsViewOnly) {
                                             <select id="HsGoodsAutoSelect" asp-for="HsGoodsAutoSelect" class="input-sm form-control" disabled="disabled" onchange="hsGoodsAutoSelectChange();">
                                                 <option value="@(false.ToString())">是</option>
                                                 <option value="@(true.ToString())">否</option>
                                             </select>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <select id="HsGoodsAutoSelect" asp-for="HsGoodsAutoSelect" class="input-sm form-control" onchange="hsGoodsAutoSelectChange();">
                                                 <option value="@(false.ToString())">是</option>
                                                 <option value="@(true.ToString())">否</option>
@@ -399,12 +353,9 @@
                                 <div class="form-group">
                                     <label class="col-xs-4 control-label">自动选择</label>
                                     <div class="col-xs-8">
-                                        @if (autoSelectHsGoods && Model.IsViewOnly == false)
-                                        {
+                                        @if (autoSelectHsGoods && Model.IsViewOnly == false) {
                                             <button id="btnSelectHsGoods" type="button" class="btn btn-purple btn-sm" onclick="showSelectHsCodeDialog()">选择关联海关物品名</button>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <button id="btnSelectHsGoods" type="button" class="btn btn-purple btn-sm" onclick="showSelectHsCodeDialog()" disabled="disabled">选择关联海关物品名</button>
                                         }
                                     </div>
@@ -415,12 +366,9 @@
                                 <div class="form-group">
                                     <label asp-for="CnHsCode" class="col-xs-4 control-label">中国海关编码</label>
                                     <div class="col-xs-8">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="CnHsCode" type="text" class="input-sm form-control" disabled="disabled"/>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <input asp-for="CnHsCode" type="text" class="input-sm form-control"/>
                                         }
 
@@ -432,12 +380,9 @@
                                 <div class="form-group">
                                     <label asp-for="CnHsName" class="col-xs-4 control-label">中国海关申报名</label>
                                     <div class="col-xs-8">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="CnHsName" type="text" class="input-sm form-control" disabled="disabled"/>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <input asp-for="CnHsName" type="text" class="input-sm form-control"/>
                                         }
 
@@ -449,12 +394,9 @@
                                 <div class="form-group">
                                     <label asp-for="EnHsCode" class="col-xs-4 control-label">英文海关编码</label>
                                     <div class="col-xs-8">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="EnHsCode" type="text" class="input-sm form-control" disabled="disabled"/>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <input asp-for="EnHsCode" type="text" class="input-sm form-control"/>
                                         }
 
@@ -466,12 +408,9 @@
                                 <div class="form-group">
                                     <label asp-for="EnHsName" class="col-xs-4 control-label">英文海关申报名</label>
                                     <div class="col-xs-8">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="EnHsName" type="text" class="input-sm form-control" disabled="disabled"/>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <input asp-for="EnHsName" type="text" class="input-sm form-control"/>
                                         }
 
@@ -483,12 +422,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem01" class="col-xs-2 control-label">中国申报要素1</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem01" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem01" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -500,12 +436,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem02" class="col-xs-2 control-label">中国申报要素2</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem02" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem02" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -517,12 +450,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem03" class="col-xs-2 control-label">中国申报要素3</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem03" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem03" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -534,12 +464,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem04" class="col-xs-2 control-label">中国申报要素4</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem04" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem04" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -551,12 +478,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem05" class="col-xs-2 control-label">中国申报要素5</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem05" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem05" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -568,12 +492,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem06" class="col-xs-2 control-label">中国申报要素6</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem06" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem06" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -585,12 +506,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem07" class="col-xs-2 control-label">中国申报要素7</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem07" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem07" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -602,12 +520,9 @@
                                 <div class="form-group">
                                     <label asp-for="Elem08" class="col-xs-2 control-label">中国申报要素8</label>
                                     <div class="col-xs-10">
-                                        @if (Model.IsViewOnly || autoSelectHsGoods)
-                                        {
+                                        @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem08" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <textarea asp-for="Elem08" rows="2" class="input-sm form-control"></textarea>
                                         }
 
@@ -643,11 +558,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (Model.LogList != null && Model.LogList.Count() != 0)
-                                            {
+                                            @if (Model.LogList != null && Model.LogList.Count() != 0) {
                                                 int order = 1;
-                                                foreach (LogisticsGoodsLogInfo log in Model.LogList)
-                                                {
+                                                foreach (LogisticsGoodsLogInfo log in Model.LogList) {
                                                     <tr>
                                                         <td style="text-align: center;">@(order++)</td>
                                                         <td style="text-align: center;">@log.User?.UserName</td>
@@ -660,9 +573,7 @@
                                                         </td>
                                                     </tr>
                                                 }
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <tr>
                                                     <td colspan="5">
                                                         暂时没有数据！

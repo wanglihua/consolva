@@ -109,7 +109,7 @@
                             </a>
                         </div>
                         <div>
-                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrder" asp-action="Detail" asp-route-id="@(coupon.Order?.Id ?? 0)" target="_blank">
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(coupon.Order?.Id ?? 0)" target="_blank">
                                 @ListDataUtil.Render(coupon.Order?.Code)
                             </a>
                         </div>

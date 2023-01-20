@@ -49,11 +49,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.FeeRefundList != null && Model.FeeRefundList.Count() != 0)
-        {
+        @if (Model.FeeRefundList != null && Model.FeeRefundList.Count() != 0) {
             int order = 1;
-            foreach (FeeRefundInfo feeRefund in Model.FeeRefundList)
-            {
+            foreach (FeeRefundInfo feeRefund in Model.FeeRefundList) {
                 <tr>
                     <td style="text-align: center;">
                         <label for="logisticsOrderRefundCheck_@(feeRefund.Id)"></label><input id="logisticsOrderRefundCheck_@(feeRefund.Id)" type="checkbox" class="ace" value="@feeRefund.Id"/><span class="lbl"></span>
@@ -65,7 +63,7 @@
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
-                        <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new { id = feeRefund.Order?.Id })">
+                        <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(feeRefund.Order.Id)" target="_blank">
                             @feeRefund.OrderCode
                         </a>
                     </td>
@@ -86,9 +84,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="11">
                     暂时没有数据！

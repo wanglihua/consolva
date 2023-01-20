@@ -21,7 +21,7 @@ public partial class PassRes {
             new PassResInfo { Id = OrderPackBox, Name = "箱号跟踪", CateIdForCache = CateId },
             new PassResInfo { Id = OrderAirExpress, Name = "国际单号", CateIdForCache = CateId },
             new PassResInfo { Id = OrderModifyReceiverAddress, Name = "修改订单收货地址", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderCancel, Name = "设置订单作废", CateIdForCache = CateId },
+            new PassResInfo { Id = OrderSetCancel, Name = "设置订单作废", CateIdForCache = CateId },
             new PassResInfo { Id = OrderLogisticsModeChange, Name = "修改订单物流方式", CateIdForCache = CateId },
             new PassResInfo { Id = OrderRollbackSubmitPack, Name = "订单取消打包提交", CateIdForCache = CateId },
             new PassResInfo { Id = OrderExpressAddModifyDelete, Name = "订单快递单号添加修改删除", CateIdForCache = CateId },
@@ -78,7 +78,7 @@ public partial class PassRes {
         /// <summary>
         /// 设置订单作废
         /// </summary>
-        public const int OrderCancel = CateId + 18000;
+        public const int OrderSetCancel = CateId + 18000;
 
         /// <summary>
         /// 修改订单物流方式

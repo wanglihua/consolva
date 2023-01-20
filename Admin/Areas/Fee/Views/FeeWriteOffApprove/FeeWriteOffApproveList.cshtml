@@ -5,7 +5,7 @@
 @using shunda.Domain.Fee
 @model shunda.Admin.Areas.Fee.Models.FeeWriteOffApprove.FeeWriteOffApproveListModel
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeWriteOffApplyList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadFeeWriteOffApplyList" })
 
 <table id="tblFeeWriteOffApplyList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -54,14 +54,11 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.FeeWriteOffApplyList != null && Model.FeeWriteOffApplyList.Count() != 0)
-        {
+        @if (Model.FeeWriteOffApplyList != null && Model.FeeWriteOffApplyList.Count() != 0) {
             int order = 1;
-            foreach (FeeWriteOffApplyInfo feeWriteOffApply in Model.FeeWriteOffApplyList)
-            {
+            foreach (FeeWriteOffApplyInfo feeWriteOffApply in Model.FeeWriteOffApplyList) {
                 string applyCountStyleColor = "";
-                if (feeWriteOffApply.OrderApplyCountCache > 1)
-                {
+                if (feeWriteOffApply.OrderApplyCountCache > 1) {
                     applyCountStyleColor = "color: red;";
                 }
 
@@ -71,13 +68,13 @@
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = feeWriteOffApply.Customer?.Id})">
+                        <a target="_blank" href="@Url.Action("Detail", "Customer", new { id = feeWriteOffApply.Customer?.Id })">
                             @feeWriteOffApply.CustomerCodeCache
                         </a>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = feeWriteOffApply.Order?.Id})">
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Detail" asp-route-id="@(feeWriteOffApply.Order.Id)" target="_blank">
                                 @feeWriteOffApply.OrderCode
                             </a>
                         </div>
@@ -95,12 +92,9 @@
                             @(feeWriteOffApply.ApplyUser?.UserName)
                         </div>
                         <div style="color: #08008c;">
-                            @if (feeWriteOffApply.ApproveUser != null)
-                            {
+                            @if (feeWriteOffApply.ApproveUser != null) {
                                 @(feeWriteOffApply.ApproveUser?.UserName)
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
@@ -125,9 +119,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="10">
                     暂时没有数据！
@@ -137,4 +129,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadFeeWriteOffApplyList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadFeeWriteOffApplyList" })
