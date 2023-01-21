@@ -1,4 +1,400 @@
+@using shunda.Core.Web
+@using shunda.Domain.LogisticsOrder
 @model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList.LogisticsOrderListModel
 @{
     Layout = null;
 }
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderList"})
+
+<table id="tblLogisticsOrderList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="logisticsOrderCheckAll"></label><input id="logisticsOrderCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 160px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单编号</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.Customer)).@(nameof(LogisticsOrderInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">客户ID</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.Mobile))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">客户电话</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    TCN/POST
+                </div>                
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.Cate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单类别</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单状态</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">产品类型</a>
+                </div>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.TotalVolumeWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">体积重</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.TotalActualWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">实际重</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.MaxSideLength))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">最长边</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.TotalPackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">总箱数</a>
+                </div>
+            </th>
+            <th style="width: 90px; text-align: right;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.GoodsPrice))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">物品货值</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.OrderAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">费用总额</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.PayStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">支付状态</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.PayType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">支付方式</a>
+                </div>
+            </th>
+            <th style="width: 100px; text-align: right;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.ArrearsAmountFormula))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">欠费金额</a>
+                </div>
+                <div>
+                    代支付码
+                </div>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.ReceivingWarehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        出发仓库
+                    </a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.TargetWarehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        目的仓库
+                    </a>
+                </div>
+                <div>
+                    中转仓库
+                </div>
+            </th>
+            <th style="width: 160px;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.FirstLogisticsMode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        头程方式
+                    </a>
+                </div>
+                <div>
+                    头程信息
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.SecondLogisticsMode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        二程方式
+                    </a>
+                </div>
+            </th>
+            <th style="width: 135px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        订单创建时间
+                    </a>
+                </div>            
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.CnTransferTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        头程转运时间
+                    </a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.AuArriveTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        到达目的港时间
+                    </a>
+                </div>
+                @*
+                后来移除了订单澳洲已到仓的状态
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.AuCheckinTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        到达目的仓时间
+                    </a>
+                </div>
+                *@
+            </th>
+            <th style="width: 135px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.AuDeliverReadyTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        预计可交付时间
+                    </a>
+                </div>
+                <div>
+                    二程转运时间
+                </div>
+                <div>
+                    二程交付时间
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsOrderList != null && Model.LogisticsOrderList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsOrderInfo logisticsOrder in Model.LogisticsOrderList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="logisticsOrderCheck_@(logisticsOrder.Id)"></label><input id="logisticsOrderCheck_@(logisticsOrder.Id)" type="checkbox" class="ace" value="@logisticsOrder.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center; background-color: @(logisticsOrder.ListColor);">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;" class="break-word">
+                        <div class="break-word">
+                            <a href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrder.Id})" target="_blank">
+                                @logisticsOrder.Code
+                            </a>
+                        </div>
+                        <div>
+                            <a href="@Url.Action("Detail", "Customer", new {id = logisticsOrder.Customer.Id})" target="_blank">
+                                <span>@(logisticsOrder.Customer?.CustomerCodeOld)</span>
+                            </a>
+                            @if (string.IsNullOrWhiteSpace(logisticsOrder.Customer.CustomerCharacter) == false)
+                            {
+                                <span>(@(logisticsOrder.Customer.CustomerCharacter))</span>
+                            }
+                            @{
+                                string customerNote = "";
+                                string serviceNote = "";
+                                string warehouseNote = "";
+
+                                if (string.IsNullOrWhiteSpace(logisticsOrder.CustomerNote) == false)
+                                {
+                                    customerNote = logisticsOrder.CustomerNote.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                                }
+
+                                if (string.IsNullOrWhiteSpace(logisticsOrder.ServiceNote) == false)
+                                {
+                                    serviceNote = logisticsOrder.ServiceNote.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                                }
+
+                                if (string.IsNullOrWhiteSpace(logisticsOrder.WarehouseNote) == false)
+                                {
+                                    warehouseNote = logisticsOrder.WarehouseNote.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                                }
+
+                                string orderNote = "客户留言：" + customerNote + "<br/>" + "客服留言：" + serviceNote + "<br/>" + "仓库留言：" + warehouseNote;
+                                if (string.IsNullOrWhiteSpace(customerNote) == false
+                                    || string.IsNullOrWhiteSpace(serviceNote) == false
+                                    || string.IsNullOrWhiteSpace(warehouseNote) == false
+                                    || string.IsNullOrWhiteSpace(logisticsOrder.ExtraAdminNoteCache) == false)
+                                {
+                                    if (string.IsNullOrWhiteSpace(logisticsOrder.ExtraAdminNoteCache) == false)
+                                    {
+                                        orderNote += "<br/>" + "后台留言：" + logisticsOrder.ExtraAdminNoteCache;
+                                    }
+                                    
+                                    <span>&nbsp;<i class="fa fa-file-text order_customer_note_title" title="@(orderNote)" style="color:burlywood;"></i></span>
+                                }
+
+                                if (logisticsOrder.OrderStatus == LogisticsOrderStatus.OrderIssue)
+                                {
+                                    <span>&nbsp;<i class="fa fa-bell" style="color:red;"></i></span>
+                                }
+                            }
+                        </div>
+                        <div>@logisticsOrder.Mobile</div>
+                        <div>
+                            <a href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrder.Id})" target="_blank">查看详细</a>
+                        </div>
+                        @if (logisticsOrder.ExpressTrackingNoAbsent)
+                        {
+                            <div style="margin: 3px;">
+                                <span style="display: inline-block;padding: 3px 8px; background-color: #D9524E; color: white;">缺中国快递单号</span>
+                            </div>
+                        }
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @(logisticsOrder.CustomsConnoteNumberCache)
+                        </div>
+                        <div>
+                            @logisticsOrder.Cate?.Name
+                        </div>
+                        <div>
+                            @(logisticsOrder.OrderStatusWithHeldCache?.Name ?? string.Empty)
+                        </div>
+                        <div>
+                            @if (logisticsOrder.GoodsType != null)
+                            {
+                                <span>@logisticsOrder.GoodsType.Name</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        <div>
+                            @if (logisticsOrder.TotalVolumeWeight.HasValue)
+                            {
+                                <span>
+                                    @logisticsOrder.TotalVolumeWeight.Value.ToString("#0.000")Kg
+                                </span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div>
+                            @if (logisticsOrder.TotalActualWeight.HasValue)
+                            {
+                                <span>
+                                    @logisticsOrder.TotalActualWeight.Value.ToString("#0.000")Kg
+                                </span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div>
+                            @if (logisticsOrder.MaxSideLength.HasValue)
+                            {
+                                <span>
+                                    @logisticsOrder.MaxSideLength.Value.ToString("#0.00")cm
+                                </span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div>
+                            @if (logisticsOrder.TotalPackageCount.HasValue)
+                            {
+                                <span>
+                                    @logisticsOrder.TotalPackageCount.Value.ToString("#0")件
+                                </span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        <div>
+                            ￥@logisticsOrder.GoodsPrice
+                        </div>
+                        <div>
+                            ￥@logisticsOrder.OrderAmount
+                        </div>
+                        <div>
+                            @logisticsOrder.PayStatus?.Name
+                        </div>
+                        <div>
+                            @if (logisticsOrder.PayType != null)
+                            {
+                                <span>@logisticsOrder.PayType?.Name</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        <div>
+                            ￥@logisticsOrder.ArrearsAmountFormula
+                        </div>
+                        <div>
+                            @if (logisticsOrder.ArrearsAmountFormula > 0)
+                            {
+                                <div>
+                                    <a href="@Url.Action("Another", "Pay", new {id = logisticsOrder.Id})" target="pay_another_qrcode">代支付</a>
+                                </div>
+                                <div>
+                                    <a href="@Url.Action("PayAnother", "QrCode", new {id = logisticsOrder.Id})" target="pay_another_qrcode">获取代支付码</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            <span>@(logisticsOrder.ReceivingWarehouse?.Name)</span>
+                        </div>
+                        <div>
+                            <span>@(logisticsOrder.TargetWarehouse?.Name)</span>
+                        </div>
+                        <div>
+                            <span>-</span>
+                        </div>
+                    </td>
+                    <td class="break-word">
+                        <div>
+                            @(logisticsOrder.FirstLogisticsMode.Name)
+                        </div>
+                        <div style="color: #4c467a ;">
+                            @ListDataUtil.RenderStringWithDiv(logisticsOrder.ShipContainerCode)
+                        </div>
+                        <div>
+                            @if (logisticsOrder.SecondLogisticsMode != null)
+                            {
+                                <span>@(logisticsOrder.SecondLogisticsMode?.Name)</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.CreateTime)
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.CnTransferTime)
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.AuArriveTime)
+                        @*
+                        后来移除了订单澳洲已到仓的状态
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.AuCheckinTime)
+                        *@
+                    </td>
+                    <td style="text-align: center;">
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.AuDeliverReadyTime)
+                        <div>
+                            <span>-</span>
+                        </div>
+                        <div>
+                            <span>-</span>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="12">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderList"})
