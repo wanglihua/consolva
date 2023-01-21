@@ -122,7 +122,7 @@
                     <td style="text-align: center; background-color: @(logisticsOrder.ListColorCache);">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
                         <div class="break-word">
-                            <a href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrder.Id})" target="_blank">
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(logisticsOrder.Id)" target="_blank">
                                 @logisticsOrder.Code
                             </a>
                         </div>
@@ -170,7 +170,7 @@
                             }
                         </div>
                         <div>
-                            <a href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrder.Id})" target="_blank">查看详细</a>
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(logisticsOrder.Id)" target="_blank">查看详细</a>
                         </div>
                     </td>
                     <td style="text-align: center;">
