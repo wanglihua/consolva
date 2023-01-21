@@ -177,36 +177,6 @@ public class LogisticsOrderInfo : Entity {
     public virtual string PickupCode { get; set; } = string.Empty;
 
     /// <summary>
-    /// 实际重量，可空
-    /// </summary>
-    [JsonProperty("totalActualWeight")]
-    public virtual decimal? TotalActualWeight { get; set; } = null;
-
-    /// <summary>
-    /// 体积重，可空
-    /// </summary>
-    [JsonProperty("totalVolumeWeight")]
-    public virtual decimal? TotalVolumeWeight { get; set; } = null;
-
-    /// <summary>
-    /// 总重量，可空
-    /// </summary>
-    [JsonProperty("totalWeight")]
-    public virtual decimal? TotalWeight { get; set; } = null;
-
-    /// <summary>
-    /// 总箱数，可空
-    /// </summary>
-    [JsonProperty("totalPackageCount")]
-    public virtual int? TotalPackageCount { get; set; } = null;
-
-    /// <summary>
-    /// 总体积，可空
-    /// </summary>
-    [JsonProperty("totalVolume")]
-    public virtual decimal? TotalVolume { get; set; } = null;
-
-    /// <summary>
     /// 支付时间，可空
     /// </summary>
     [JsonProperty("payTime")]

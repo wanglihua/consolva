@@ -223,51 +223,6 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
         );
 
         Property(
-            x => x.TotalActualWeight,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("total_actual_weight");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.TotalVolumeWeight,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("total_volume_weight");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.TotalWeight,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("total_weight");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.TotalPackageCount,
-            map => {
-                map.Type(NHibernateUtil.Int32);
-                map.Column("total_package_count");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
-            x => x.TotalVolume,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("total_volume");
-                map.NotNullable(false);
-            }
-        );
-
-        Property(
             x => x.PayTime,
             map => {
                 map.Type(NHibernateUtil.DateTime);
