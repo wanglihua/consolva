@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using shunda.Domain.LogisticsOrder;
+using shunda.Core;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
@@ -10,19 +9,12 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 快递单备注
 /// </summary>
-public class ExpressRemarkInfo : Entity
-{
+public class ExpressRemarkInfo : Entity {
     /// <summary>
-    /// 快递单号，可空
+    /// 快递单号，非空
     /// </summary>
     [JsonProperty("express")]
-    public virtual ExpressInfo? Express { get; set; } = null;
-
-    /// <summary>
-    /// 订单，可空
-    /// </summary>
-    [JsonProperty("order")]
-    public virtual LogisticsOrderInfo? Order { get; set; } = null;
+    public virtual ExpressInfo Express { get; set; } = new();
 
     /// <summary>
     /// 备注类型，非空
@@ -45,5 +37,4 @@ public class ExpressRemarkInfo : Entity
     /// </summary>
     [JsonProperty("addUser")]
     public virtual UserInfo? AddUser { get; set; } = null;
-
 }

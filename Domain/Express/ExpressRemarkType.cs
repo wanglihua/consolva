@@ -3,10 +3,9 @@ using shunda.Core.CodeType;
 namespace shunda.Domain.Express;
 
 /// <summary>
-/// 快递单备类型
+/// 快递单备注类型
 /// </summary>
-public class ExpressRemarkType : CodeTypeBase
-{
+public class ExpressRemarkType : CodeTypeBase {
     /// <summary>
     /// 客户备注, 1000
     /// </summary>
@@ -35,38 +34,30 @@ public class ExpressRemarkType : CodeTypeBase
 
     private static readonly Dictionary<int, ExpressRemarkType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static ExpressRemarkType GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out ExpressRemarkType? codeType))
-        {
+    public static ExpressRemarkType GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out ExpressRemarkType? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static List<ExpressRemarkType> GetList()
-    {
+    public static List<ExpressRemarkType> GetList() {
         return codeTypeList.ToList();
     }
 
-    private ExpressRemarkType(int id, string name, string description) : base(id, name, description)
-    {
+    private ExpressRemarkType(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class ExpressRemarkTypeHibernateType : CodeHibernateTypeBase<ExpressRemarkType>
-{
-    protected override ExpressRemarkType GetCodeTypeById(int id)
-    {
+public class ExpressRemarkTypeHibernateType : CodeHibernateTypeBase<ExpressRemarkType> {
+    protected override ExpressRemarkType GetCodeTypeById(int id) {
         return ExpressRemarkType.GetById(id);
     }
 }
 
-public class ExpressRemarkTypeModelBinder : CodeTypeModelBinderBase<ExpressRemarkType>
-{
-    protected override ExpressRemarkType GetCodeTypeById(int id)
-    {
+public class ExpressRemarkTypeModelBinder : CodeTypeModelBinderBase<ExpressRemarkType> {
+    protected override ExpressRemarkType GetCodeTypeById(int id) {
         return ExpressRemarkType.GetById(id);
     }
 }

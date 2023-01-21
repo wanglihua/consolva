@@ -1,15 +1,12 @@
-using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using shunda.Domain.LogisticsOrder;
+using shunda.Core;
 using shunda.Domain.Pass;
 
 namespace shunda.Domain.Express;
 
-public class ExpressRemarkInfoMapping : EntityMapping<ExpressRemarkInfo>
-{
-    public ExpressRemarkInfoMapping()
-    {
+public class ExpressRemarkInfoMapping : EntityMapping<ExpressRemarkInfo> {
+    public ExpressRemarkInfoMapping() {
         Table("tbl_express_remark");
 
         ManyToOne(
@@ -17,18 +14,7 @@ public class ExpressRemarkInfoMapping : EntityMapping<ExpressRemarkInfo>
             map => {
                 map.Class(typeof(ExpressInfo));
                 map.Column("express_id");
-                map.NotNullable(false);
-                map.Cascade(Cascade.None);
-                map.Fetch(FetchKind.Select);
-            }
-        );
-
-        ManyToOne(
-            x => x.Order,
-            map => {
-                map.Class(typeof(LogisticsOrderInfo));
-                map.Column("order_id");
-                map.NotNullable(false);
+                map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
             }
@@ -62,6 +48,5 @@ public class ExpressRemarkInfoMapping : EntityMapping<ExpressRemarkInfo>
                 map.Fetch(FetchKind.Select);
             }
         );
-
     }
 }
