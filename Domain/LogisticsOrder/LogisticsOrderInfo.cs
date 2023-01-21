@@ -150,6 +150,11 @@ public class LogisticsOrderInfo : Entity {
     public virtual decimal PaidAmount { get; set; } = 0m;
 
     /// <summary>
+    /// 欠费金额，通过 NHibernate 公式映射实现
+    /// </summary>
+    public virtual decimal ArrearsAmountFormula { get; protected set; } = 0;
+
+    /// <summary>
     /// 打包类型，可空
     /// </summary>
     [JsonProperty("repackType")]
@@ -205,4 +210,10 @@ public class LogisticsOrderInfo : Entity {
     /// </summary>
     [JsonProperty("deliverTime")]
     public virtual DateTime? DeliverTime { get; set; } = null;
+
+    #region Cache
+
+    public virtual string ListColorCache { get; set; } = string.Empty;
+
+    #endregion
 }

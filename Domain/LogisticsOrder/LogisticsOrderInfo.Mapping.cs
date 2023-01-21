@@ -184,6 +184,15 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
             }
         );
 
+        // 作废订单欠费金额是零
+        Property(
+            x => x.ArrearsAmountFormula,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Formula($"if(order_status_id = {LogisticsOrderStatus.Canceled.Id}, 0, if(order_amount - paid_amount > 0, order_amount - paid_amount, 0))");
+            }
+        );
+
         Property(
             x => x.RepackType,
             map => {

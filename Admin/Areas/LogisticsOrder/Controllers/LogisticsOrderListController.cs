@@ -14,6 +14,7 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Customer;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -24,11 +25,17 @@ public class LogisticsOrderListController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
+    private readonly LogisticsOrderStatusService logisticsOrderStatusService;
 
-    public LogisticsOrderListController(ISession session, LoginUserService loginUserService, CustomerCodeService customerCodeService) {
+    public LogisticsOrderListController(ISession session,
+        LoginUserService loginUserService,
+        CustomerCodeService customerCodeService,
+        LogisticsOrderStatusService logisticsOrderStatusService
+    ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
+        this.logisticsOrderStatusService = logisticsOrderStatusService;
     }
 
     [HttpGet]
@@ -112,16 +119,19 @@ public class LogisticsOrderListController : Controller {
 
         ListPager listPager = new ListPager(queryParam, totalCount);
 
-        IList<LogisticsOrderInfo> logisticsOrderList = GetListCriteria(queryParam)
+        IList<LogisticsOrderInfo> orderList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsOrderInfo>();
 
+        foreach (var order in orderList) {
+            order.ListColorCache = logisticsOrderStatusService.GetOrderListColor(order.OrderStatus);
+        }
 
         var model = new LogisticsOrderListModel(listPager) {
-            LogisticsOrderList = logisticsOrderList,
+            OrderList = orderList,
         };
 
         return View("LogisticsOrderList", model);

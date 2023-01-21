@@ -21,17 +21,11 @@
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.Customer)).@(nameof(LogisticsOrderInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">客户ID</a>
                 </div>
-                <div>
-                    <a field="@(nameof(LogisticsOrderInfo.Mobile))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">客户电话</a>
-                </div>
             </th>
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    TCN/POST
-                </div>                
-                <div>
-                    <a field="@(nameof(LogisticsOrderInfo.Cate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单类别</a>
+                    <a field="@(nameof(LogisticsOrderInfo.Country))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">国家</a>
                 </div>
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单状态</a>
@@ -42,21 +36,21 @@
             </th>
             <th style="width: 90px; text-align: right;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.TotalVolumeWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">体积重</a>
+                    <span>体积重</span>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.TotalActualWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">实际重</a>
+                    <span>实际重</span>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.MaxSideLength))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">最长边</a>
+                    <span>最长边</span>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.TotalPackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">总箱数</a>
+                    <span>总箱数</span>
                 </div>
             </th>
             <th style="width: 90px; text-align: right;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.GoodsPrice))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">物品货值</a>
+                    <a field="@(nameof(LogisticsOrderInfo.GoodsValue))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">物品货值</a>
                 </div>
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.OrderAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">费用总额</a>
@@ -78,86 +72,54 @@
             </th>
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.ReceivingWarehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        出发仓库
+                    <a field="@(nameof(LogisticsOrderInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        收货仓库
                     </a>
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsOrderInfo.TargetWarehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        目的仓库
-                    </a>
-                </div>
-                <div>
-                    中转仓库
                 </div>
             </th>
             <th style="width: 160px;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.FirstLogisticsMode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        头程方式
+                    <a field="@(nameof(LogisticsOrderInfo.FirstType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        头程类型
                     </a>
                 </div>
                 <div>
-                    头程信息
-                </div>
-                <div>
-                    <a field="@(nameof(LogisticsOrderInfo.SecondLogisticsMode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        二程方式
+                    <a field="@(nameof(LogisticsOrderInfo.FirstMode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        头程方式
                     </a>
                 </div>
             </th>
             <th style="width: 135px; text-align: center;">
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        订单创建时间
+                        创建时间
                     </a>
                 </div>            
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.CnTransferTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        头程转运时间
+                    <a field="@(nameof(LogisticsOrderInfo.TransferTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        转运时间
                     </a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.AuArriveTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        到达目的港时间
+                    <a field="@(nameof(LogisticsOrderInfo.DeliverTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                        签收时间
                     </a>
-                </div>
-                @*
-                后来移除了订单澳洲已到仓的状态
-                <div>
-                    <a field="@(nameof(LogisticsOrderInfo.AuCheckinTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        到达目的仓时间
-                    </a>
-                </div>
-                *@
-            </th>
-            <th style="width: 135px; text-align: center;">
-                <div>
-                    <a field="@(nameof(LogisticsOrderInfo.AuDeliverReadyTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
-                        预计可交付时间
-                    </a>
-                </div>
-                <div>
-                    二程转运时间
-                </div>
-                <div>
-                    二程交付时间
                 </div>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (Model.LogisticsOrderList != null && Model.LogisticsOrderList.Count() != 0)
+        @if (Model.OrderList != null && Model.OrderList.Count() != 0)
         {
             int order = 1;
-            foreach (LogisticsOrderInfo logisticsOrder in Model.LogisticsOrderList)
+            foreach (LogisticsOrderInfo logisticsOrder in Model.OrderList)
             {
                 <tr>
                     <td style="text-align: center;">
                         <label for="logisticsOrderCheck_@(logisticsOrder.Id)"></label><input id="logisticsOrderCheck_@(logisticsOrder.Id)" type="checkbox" class="ace" value="@logisticsOrder.Id"/><span class="lbl"></span>
                     </td>
-                    <td style="text-align: center; background-color: @(logisticsOrder.ListColor);">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center; background-color: @(logisticsOrder.ListColorCache);">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;" class="break-word">
                         <div class="break-word">
                             <a href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrder.Id})" target="_blank">
@@ -166,7 +128,7 @@
                         </div>
                         <div>
                             <a href="@Url.Action("Detail", "Customer", new {id = logisticsOrder.Customer.Id})" target="_blank">
-                                <span>@(logisticsOrder.Customer?.CustomerCodeOld)</span>
+                                <span>@(logisticsOrder.Customer.CustomerCodeOld)</span>
                             </a>
                             @if (string.IsNullOrWhiteSpace(logisticsOrder.Customer.CustomerCharacter) == false)
                             {
@@ -205,30 +167,15 @@
                                     
                                     <span>&nbsp;<i class="fa fa-file-text order_customer_note_title" title="@(orderNote)" style="color:burlywood;"></i></span>
                                 }
-
-                                if (logisticsOrder.OrderStatus == LogisticsOrderStatus.OrderIssue)
-                                {
-                                    <span>&nbsp;<i class="fa fa-bell" style="color:red;"></i></span>
-                                }
                             }
                         </div>
-                        <div>@logisticsOrder.Mobile</div>
                         <div>
                             <a href="@Url.Action("Detail", "LogisticsOrder", new {id = logisticsOrder.Id})" target="_blank">查看详细</a>
                         </div>
-                        @if (logisticsOrder.ExpressTrackingNoAbsent)
-                        {
-                            <div style="margin: 3px;">
-                                <span style="display: inline-block;padding: 3px 8px; background-color: #D9524E; color: white;">缺中国快递单号</span>
-                            </div>
-                        }
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @(logisticsOrder.CustomsConnoteNumberCache)
-                        </div>
-                        <div>
-                            @logisticsOrder.Cate?.Name
+                            @logisticsOrder.Country.Name
                         </div>
                         <div>
                             @(logisticsOrder.OrderStatusWithHeldCache?.Name ?? string.Empty)
@@ -296,18 +243,18 @@
                     </td>
                     <td style="text-align: right;">
                         <div>
-                            ￥@logisticsOrder.GoodsPrice
+                            ￥@logisticsOrder.GoodsValue
                         </div>
                         <div>
                             ￥@logisticsOrder.OrderAmount
                         </div>
                         <div>
-                            @logisticsOrder.PayStatus?.Name
+                            @logisticsOrder.PayStatus.Name
                         </div>
                         <div>
                             @if (logisticsOrder.PayType != null)
                             {
-                                <span>@logisticsOrder.PayType?.Name</span>
+                                <span>@logisticsOrder.PayType.Name</span>
                             }
                             else
                             {
@@ -337,50 +284,21 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            <span>@(logisticsOrder.ReceivingWarehouse?.Name)</span>
-                        </div>
-                        <div>
-                            <span>@(logisticsOrder.TargetWarehouse?.Name)</span>
-                        </div>
-                        <div>
-                            <span>-</span>
+                            <span>@(logisticsOrder.Warehouse.Name)</span>
                         </div>
                     </td>
                     <td class="break-word">
                         <div>
-                            @(logisticsOrder.FirstLogisticsMode.Name)
-                        </div>
-                        <div style="color: #4c467a ;">
-                            @ListDataUtil.RenderStringWithDiv(logisticsOrder.ShipContainerCode)
+                            @(logisticsOrder.FirstType.Name)
                         </div>
                         <div>
-                            @if (logisticsOrder.SecondLogisticsMode != null)
-                            {
-                                <span>@(logisticsOrder.SecondLogisticsMode?.Name)</span>
-                            }
-                            else
-                            {
-                                <span>-</span>
-                            }
+                            @(logisticsOrder.FirstMode.Name)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.CreateTime)
-                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.CnTransferTime)
-                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.AuArriveTime)
-                        @*
-                        后来移除了订单澳洲已到仓的状态
-                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.AuCheckinTime)
-                        *@
-                    </td>
-                    <td style="text-align: center;">
-                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.AuDeliverReadyTime)
-                        <div>
-                            <span>-</span>
-                        </div>
-                        <div>
-                            <span>-</span>
-                        </div>
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.TransferTime)
+                        @ListDataUtil.RenderDateTimeWithDiv(logisticsOrder.DeliverTime)
                     </td>
                     <td></td>
                 </tr>
@@ -389,7 +307,7 @@
         else
         {
             <tr>
-                <td colspan="12">
+                <td colspan="11">
                     暂时没有数据！
                 </td>
             </tr>
