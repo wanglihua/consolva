@@ -5,7 +5,7 @@
     Layout = null;
 }
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderList" })
 
 <table id="tblLogisticsOrderList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
@@ -94,7 +94,7 @@
                     <a field="@(nameof(LogisticsOrderInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
                         创建时间
                     </a>
-                </div>            
+                </div>
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.TransferTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
                         转运时间
@@ -110,11 +110,11 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.OrderList != null && Model.OrderList.Count() != 0)
-        {
+        @if (Model.OrderList.Count != 0) {
             int order = 1;
-            foreach (LogisticsOrderInfo logisticsOrder in Model.OrderList)
-            {
+            foreach (LogisticsOrderInfo logisticsOrder in Model.OrderList) {
+                var packData = logisticsOrder.PackDataCache;
+
                 <tr>
                     <td style="text-align: center;">
                         <label for="logisticsOrderCheck_@(logisticsOrder.Id)"></label><input id="logisticsOrderCheck_@(logisticsOrder.Id)" type="checkbox" class="ace" value="@logisticsOrder.Id"/><span class="lbl"></span>
@@ -127,45 +127,16 @@
                             </a>
                         </div>
                         <div>
-                            <a href="@Url.Action("Detail", "Customer", new {id = logisticsOrder.Customer.Id})" target="_blank">
-                                <span>@(logisticsOrder.Customer.CustomerCodeOld)</span>
+                            <a href="@Url.Action("Detail", "Customer", new { id = logisticsOrder.Customer.Id })" target="_blank">
+                                <span>@(logisticsOrder.CustomerCode)</span>
                             </a>
-                            @if (string.IsNullOrWhiteSpace(logisticsOrder.Customer.CustomerCharacter) == false)
-                            {
+                            @if (string.IsNullOrWhiteSpace(logisticsOrder.Customer.CustomerCharacter) == false) {
                                 <span>(@(logisticsOrder.Customer.CustomerCharacter))</span>
                             }
                             @{
-                                string customerNote = "";
-                                string serviceNote = "";
-                                string warehouseNote = "";
-
-                                if (string.IsNullOrWhiteSpace(logisticsOrder.CustomerNote) == false)
-                                {
-                                    customerNote = logisticsOrder.CustomerNote.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
-                                }
-
-                                if (string.IsNullOrWhiteSpace(logisticsOrder.ServiceNote) == false)
-                                {
-                                    serviceNote = logisticsOrder.ServiceNote.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
-                                }
-
-                                if (string.IsNullOrWhiteSpace(logisticsOrder.WarehouseNote) == false)
-                                {
-                                    warehouseNote = logisticsOrder.WarehouseNote.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
-                                }
-
-                                string orderNote = "客户留言：" + customerNote + "<br/>" + "客服留言：" + serviceNote + "<br/>" + "仓库留言：" + warehouseNote;
-                                if (string.IsNullOrWhiteSpace(customerNote) == false
-                                    || string.IsNullOrWhiteSpace(serviceNote) == false
-                                    || string.IsNullOrWhiteSpace(warehouseNote) == false
-                                    || string.IsNullOrWhiteSpace(logisticsOrder.ExtraAdminNoteCache) == false)
-                                {
-                                    if (string.IsNullOrWhiteSpace(logisticsOrder.ExtraAdminNoteCache) == false)
-                                    {
-                                        orderNote += "<br/>" + "后台留言：" + logisticsOrder.ExtraAdminNoteCache;
-                                    }
-                                    
-                                    <span>&nbsp;<i class="fa fa-file-text order_customer_note_title" title="@(orderNote)" style="color:burlywood;"></i></span>
+                                string orderRemark = logisticsOrder.OrderRemarkCache;
+                                if (string.IsNullOrWhiteSpace(orderRemark) == false) {
+                                    <span>&nbsp;<i class="fa fa-file-text order_customer_note_title" title="@(orderRemark)" style="color:burlywood;"></i></span>
                                 }
                             }
                         </div>
@@ -178,65 +149,50 @@
                             @logisticsOrder.Country.Name
                         </div>
                         <div>
-                            @(logisticsOrder.OrderStatusWithHeldCache?.Name ?? string.Empty)
+                            @(logisticsOrder.OrderStatus.Name)
                         </div>
                         <div>
-                            @if (logisticsOrder.GoodsType != null)
-                            {
+                            @if (string.IsNullOrWhiteSpace(logisticsOrder.GoodsType.Name) == false) {
                                 <span>@logisticsOrder.GoodsType.Name</span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
                     </td>
                     <td style="text-align: right;">
                         <div>
-                            @if (logisticsOrder.TotalVolumeWeight.HasValue)
-                            {
+                            @if (packData != null) {
                                 <span>
-                                    @logisticsOrder.TotalVolumeWeight.Value.ToString("#0.000")Kg
+                                    @packData.TotalVolumeWeight.ToString("#0.000")Kg
                                 </span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
                         <div>
-                            @if (logisticsOrder.TotalActualWeight.HasValue)
-                            {
+                            @if (packData != null) {
                                 <span>
-                                    @logisticsOrder.TotalActualWeight.Value.ToString("#0.000")Kg
+                                    @packData.TotalActualWeight.ToString("#0.000")Kg
                                 </span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
                         <div>
-                            @if (logisticsOrder.MaxSideLength.HasValue)
-                            {
+                            @if (packData != null) {
                                 <span>
-                                    @logisticsOrder.MaxSideLength.Value.ToString("#0.00")cm
+                                    @packData.MaxSideLength.ToString("#0.00")cm
                                 </span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
                         <div>
-                            @if (logisticsOrder.TotalPackageCount.HasValue)
-                            {
+                            @if (packData != null) {
                                 <span>
-                                    @logisticsOrder.TotalPackageCount.Value.ToString("#0")件
+                                    @(packData.TotalPackageCount)件
                                 </span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
@@ -252,12 +208,9 @@
                             @logisticsOrder.PayStatus.Name
                         </div>
                         <div>
-                            @if (logisticsOrder.PayType != null)
-                            {
+                            @if (string.IsNullOrWhiteSpace(logisticsOrder.PayType.Name) == false) {
                                 <span>@logisticsOrder.PayType.Name</span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
@@ -267,17 +220,15 @@
                             ￥@logisticsOrder.ArrearsAmountFormula
                         </div>
                         <div>
-                            @if (logisticsOrder.ArrearsAmountFormula > 0)
-                            {
+                            @if (logisticsOrder.ArrearsAmountFormula > 0) {
+                                @* todo a 后面补上 *@
                                 <div>
-                                    <a href="@Url.Action("Another", "Pay", new {id = logisticsOrder.Id})" target="pay_another_qrcode">代支付</a>
+                                    <a href="@Url.Action("Another", "Pay", new { id = logisticsOrder.Id })" target="pay_another_qrcode">代支付</a>
                                 </div>
                                 <div>
-                                    <a href="@Url.Action("PayAnother", "QrCode", new {id = logisticsOrder.Id})" target="pay_another_qrcode">获取代支付码</a>
+                                    <a href="@Url.Action("PayAnother", "QrCode", new { id = logisticsOrder.Id })" target="pay_another_qrcode">获取代支付码</a>
                                 </div>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>-</span>
                             }
                         </div>
@@ -303,9 +254,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="11">
                     暂时没有数据！
@@ -315,4 +264,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadLogisticsOrderList"})
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsOrderList" })

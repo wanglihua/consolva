@@ -213,7 +213,20 @@ public class LogisticsOrderInfo : Entity {
 
     #region Cache
 
+    /// <summary>
+    /// 列表颜色
+    /// </summary>
     public virtual string ListColorCache { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 打包汇总数据
+    /// </summary>
+    public virtual LogisticsOrderPackDataInfo? PackDataCache { get; set; }
+
+    /// <summary>
+    /// 订单备注
+    /// </summary>
+    public virtual string OrderRemarkCache { get; set; } = string.Empty;
 
     #endregion
 }

@@ -26,16 +26,19 @@ public class LogisticsOrderListController : Controller {
     private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
     private readonly LogisticsOrderStatusService logisticsOrderStatusService;
+    private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
 
     public LogisticsOrderListController(ISession session,
         LoginUserService loginUserService,
         CustomerCodeService customerCodeService,
-        LogisticsOrderStatusService logisticsOrderStatusService
+        LogisticsOrderStatusService logisticsOrderStatusService,
+        LogisticsOrderRemarkService logisticsOrderRemarkService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
         this.logisticsOrderStatusService = logisticsOrderStatusService;
+        this.logisticsOrderRemarkService = logisticsOrderRemarkService;
     }
 
     [HttpGet]
@@ -96,21 +99,21 @@ public class LogisticsOrderListController : Controller {
     public IActionResult List(LogisticsOrderListQueryParam queryParam) {
         if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim().ToUpper();
-            IList<int> orderIdList = session
+            IList<int> addressOrderIdList = session
                 .Query<ExpressInfo>()
                 .Where(e => e.TrackingNo.StartsWith(trackingNoQuery) && e.Order != null)
                 .Select(e => e.Order!.Id)
                 .ToList();
-            queryParam.OrderIdList = queryParam.OrderIdList.Concat(orderIdList).Distinct().ToList();
+            queryParam.OrderIdList = queryParam.OrderIdList.Concat(addressOrderIdList).Distinct().ToList();
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.MobileQuery) == false) {
             var mobileQuery = queryParam.MobileQuery.Trim();
-            var orderIdList = session.Query<LogisticsOrderReceiveAddressInfo>()
+            var addressOrderIdList = session.Query<LogisticsOrderReceiveAddressInfo>()
                 .Where(e => e.Mobile.Contains(mobileQuery))
                 .Select(e => e.Order.Id)
                 .ToList();
-            queryParam.OrderIdList = queryParam.OrderIdList.Concat(orderIdList).Distinct().ToList();
+            queryParam.OrderIdList = queryParam.OrderIdList.Concat(addressOrderIdList).Distinct().ToList();
         }
 
         int totalCount = GetListCriteria(queryParam)
@@ -126,8 +129,26 @@ public class LogisticsOrderListController : Controller {
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsOrderInfo>();
 
+        IList<int> orderIdList = orderList.Select(e => e.Id).ToList();
+
+        var packDataList = session.Query<LogisticsOrderPackDataInfo>()
+            .Where(e => orderIdList.Contains(e.Order.Id))
+            .ToList();
+
+        var orderRemarkListForAll = session.Query<LogisticsOrderRemarkInfo>()
+            .Where(e => orderIdList.Contains(e.Order.Id))
+            .ToList();
+
         foreach (var order in orderList) {
+            int orderId = order.Id;
+
             order.ListColorCache = logisticsOrderStatusService.GetOrderListColor(order.OrderStatus);
+
+            var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
+            order.PackDataCache = packData;
+
+            var orderRemarkList = orderRemarkListForAll.Where(e => e.Order.Id == orderId).ToList();
+            order.OrderRemarkCache = logisticsOrderRemarkService.GetOrderRemarkForList(orderRemarkList);
         }
 
         var model = new LogisticsOrderListModel(listPager) {
