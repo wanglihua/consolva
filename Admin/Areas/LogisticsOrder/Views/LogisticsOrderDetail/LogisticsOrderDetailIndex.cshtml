@@ -1,0 +1,25 @@
+@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList
+@using shunda.Core.Web
+@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail.LogisticsOrderDetailIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = "订单详细";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-order-menu">物流订单</li>
+
+    @if (Model.MenuType == OrderListMenuType.Active) {
+        <li class="active" data-menu="logistics-order-order-list-active-menu">@(ViewData[ViewDataKey.Title])</li>
+    }
+
+    @if (Model.MenuType == OrderListMenuType.Complete) {
+        <li class="active" data-menu="logistics-order-order-list-complete-menu">@(ViewData[ViewDataKey.Title])</li>
+    }
+
+    @if (Model.MenuType == OrderListMenuType.Cancel) {
+        <li class="active" data-menu="logistics-order-order-list-cancel-menu">@(ViewData[ViewDataKey.Title])</li>
+    }
+    <li>@(ViewData[ViewDataKey.Title])</li>
+}

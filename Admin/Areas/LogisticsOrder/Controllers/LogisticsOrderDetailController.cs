@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
+using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
+using shunda.Core;
 using shunda.Core.Web;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
@@ -17,9 +21,25 @@ public class LogisticsOrderDetailController : Controller {
     [HttpGet]
     [Route("/admin/logistics/order/detail/{id:int}")]
     public IActionResult Index(int id) {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        var order = session.Get<LogisticsOrderInfo>(id);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{id}不存在！");
+        }
+
+        // 订单列表菜单类型
+        OrderListMenuType menuType = OrderListMenuType.Active;
+        if (order.OrderStatus == LogisticsOrderStatus.Completed) {
+            menuType = OrderListMenuType.Complete;
+        }
+
+        if (order.OrderStatus == LogisticsOrderStatus.Canceled) {
+            menuType = OrderListMenuType.Cancel;
+        }
+
+        var model = new LogisticsOrderDetailIndexModel {
+            MenuType = menuType,
+        };
+
+        return View("LogisticsOrderDetailIndex", model);
     }
 }
