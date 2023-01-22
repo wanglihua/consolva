@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NHibernate;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Core;
@@ -26,6 +27,10 @@ public class LogisticsOrderDetailController : Controller {
             throw new ValidationException($"指定的订单#{id}不存在！");
         }
 
+        NHibernateUtil.Initialize(order.Customer);
+        NHibernateUtil.Initialize(order.Insurance);
+        NHibernateUtil.Initialize(order.Gst);
+
         // 订单列表菜单类型
         OrderListMenuType menuType = OrderListMenuType.Active;
         if (order.OrderStatus == LogisticsOrderStatus.Completed) {
@@ -38,7 +43,7 @@ public class LogisticsOrderDetailController : Controller {
 
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
-            Order = order,
+            LogisticsOrder = order,
         };
 
         return View("LogisticsOrderDetailIndex", model);

@@ -21,6 +21,219 @@
     @if (Model.MenuType == OrderListMenuType.Cancel) {
         <li class="active" data-menu="logistics-order-order-list-cancel-menu">作废订单</li>
     }
-    <li>@(Model.Order.Code)</li>
+    <li>@(Model.LogisticsOrder.Code)</li>
     <li>@(ViewData[ViewDataKey.Title])</li>
 }
+
+@section Style
+{
+    <style type="text/css">
+        div.detailSubTitle {
+            margin: 10px 0;
+            padding: 5px 0;
+            font-weight: bold;
+            border-bottom: lightgray 1px solid;
+            color: #2a62bc;
+        }
+
+        div.goodsDetail {
+
+        }
+
+        div.goodsDetail div.goodsDetailEntry {
+            border: #F8F8F8 1px solid;
+            padding: 5px 0;
+        }
+
+        div.goodsDetailTitle {
+            height: 28px;
+            line-height: 28px;
+            /*background-color: #F8F8F8;*/
+            border: white 1px solid;
+            color: #2a62bc;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        div.goodsDetailText {
+            height: 28px;
+            line-height: 28px;
+            border: #F8F8F8 1px solid;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        div.more {
+            margin: 10px 0;
+            padding: 5px 0;        
+            font-weight: bold;
+            float: right;
+        }
+                
+    </style>
+}
+
+<div class="widget-box" style="border-style: none; width: 1150px;">
+    <div class="widget-body">
+        <div class="widget-main">
+            <form id="logisticsOrderDetailForm" class="form-horizontal" role="form">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelBaseInfo').toggle();">
+                            <div style="float: left;">
+                                基本信息
+                            </div>
+                            <div style="float: right;">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelBaseInfo" style="display: none;">
+                            <input asp-for="LogisticsOrder.Id" type="hidden"/>
+                            <div class="row">
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.Code" class="col-xs-4 control-label">订单编号</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.Code" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.GoodsType" class="col-xs-4 control-label">物品类型</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.GoodsType.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.CustomerCode" class="col-xs-4 control-label">客户</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.CustomerCode" type="hidden"/>
+                                            <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(Model.LogisticsOrder.Customer.Id)" target="_blank" style="line-height: 28px;">@(Model.LogisticsOrder.CustomerCode)</a>
+                                            @if (string.IsNullOrWhiteSpace(Model.LogisticsOrder.Customer.CustomerCharacter) == false) {
+                                                <span>(@(Model.LogisticsOrder.Customer.CustomerCharacter))</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.OrderStatus" class="col-xs-4 control-label">订单状态</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.OrderStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.PayStatus" class="col-xs-4 control-label">支付状态</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.PayStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label for="logisticsOrderPayType" class="col-xs-4 control-label">支付方式</label>
+                                        <div class="col-xs-8">
+                                            <input id="logisticsOrderPayType" name="LogisticsOrder.PayType" type="text" value="@(Model.LogisticsOrder.PayType?.Name)" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.GoodsValue" class="col-xs-4 control-label">商品总价</label>
+                                        <div class="col-xs-8">
+                                            <div class="input-group">
+                                                <input asp-for="LogisticsOrder.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <span class="input-group-addon">RMB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.OrderAmount" class="col-xs-4 control-label">订单总额</label>
+                                        <div class="col-xs-8">
+                                            <div class="input-group">
+                                                <input asp-for="LogisticsOrder.OrderAmount" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <span class="input-group-addon">RMB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.CreateTime" class="col-xs-4 control-label">创建时间</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.CreateTime" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.PayTime" class="col-xs-4 control-label">支付时间</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.PayTime" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.SubmitPackTime" class="col-xs-4 control-label">提交打包时间</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.SubmitPackTime" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.RepackType" class="col-xs-4 control-label">打包方式</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.RepackType" type="text" disabled="disabled" class="input-sm form-control" value="@Model.LogisticsOrder.RepackType.Name"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.Insurance" class="col-xs-2 control-label">保险</label>
+                                        <div class="col-xs-10">
+                                            <input asp-for="LogisticsOrder.Insurance.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.Gst" class="col-xs-1 control-label">纳税申报</label>
+                                        <div class="col-xs-11">
+                                            <input asp-for="LogisticsOrder.Gst.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -9,5 +9,5 @@ public class LogisticsOrderDetailIndexModel {
     public OrderListMenuType MenuType { get; set; }
 
     [BindNever]
-    public LogisticsOrderInfo Order { get; set; } = new();
+    public LogisticsOrderInfo LogisticsOrder { get; set; } = new();
 }
