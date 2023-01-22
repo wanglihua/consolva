@@ -31,6 +31,7 @@ public class ExpressController : Controller {
     private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
     private readonly ExpressExcelService expressExcelService;
+    private readonly ExpressService expressService;
 
     public ExpressController(ISession session,
         ExpressListService expressListService,
@@ -38,7 +39,9 @@ public class ExpressController : Controller {
         ExpressPhotoFileService expressPhotoFileService,
         LoginUserService loginUserService,
         CustomerCodeService customerCodeService,
-        ExpressExcelService expressExcelService) {
+        ExpressExcelService expressExcelService,
+        ExpressService expressService
+    ) {
         this.session = session;
         this.expressListService = expressListService;
         this.expressSizeWeightService = expressSizeWeightService;
@@ -46,6 +49,7 @@ public class ExpressController : Controller {
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
         this.expressExcelService = expressExcelService;
+        this.expressService = expressService;
     }
 
     [HttpGet]
@@ -269,4 +273,93 @@ public class ExpressController : Controller {
 
         return File(excel, ContentType.Xlsx, fileName);
     }
+
+    [HttpPost]
+    [Route("/admin/express/delete")]
+    [Transactional]
+    public IActionResult Delete(int[] idList) {
+        if (idList == null || idList.Length == 0) {
+            throw new ValidationException("请选择要删除的快递单！");
+        }
+
+        int loginUserId = loginUserService.GetLoginUserId();
+
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => idList.Contains(e.Id))
+            .ToList();
+
+        foreach (int id in idList) {
+            var express = expressList.Where(e => e.Id == id).Take(1).SingleOrDefault();
+            if (express == null) {
+                throw new ValidationException($"指定的快递单#{id}不存在！");
+            }
+
+            expressService.Delete(id, loginUserId);
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "删除成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/express/force/delete")]
+    [AdminAuth(PassRes.Express.ExpressForceDelete)]
+    [Transactional]
+    public IActionResult ForceDelete(int[] idList) {
+        if (idList == null || idList.Length == 0) {
+            throw new ValidationException("请选择要删除的快递单！");
+        }
+
+        int loginUserId = loginUserService.GetLoginUserId();
+
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => idList.Contains(e.Id))
+            .ToList();
+
+        foreach (int id in idList) {
+            var express = expressList.Where(e => e.Id == id).Take(1).SingleOrDefault();
+            if (express == null) {
+                throw new ValidationException($"指定的快递单#{id}不存在！");
+            }
+
+            expressService.ForceDelete(id, loginUserId);
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "删除成功！",
+        });
+    }
+    
+    [HttpPost]
+    [Route("/admin/express/throw/away")]
+    [AdminAuth(PassRes.Express.ExpressThrowAway)]
+    [Transactional]
+    public IActionResult ThrowAway(int[] idList) {
+        if (idList == null || idList.Length == 0) {
+            throw new ValidationException("请选择要设置已丢弃的快递单！");
+        }
+
+        int loginUserId = loginUserService.GetLoginUserId();
+
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => idList.Contains(e.Id))
+            .ToList();
+
+        foreach (int id in idList) {
+            var express = expressList.Where(e => e.Id == id).Take(1).SingleOrDefault();
+            if (express == null) {
+                throw new ValidationException($"指定的快递单#{id}不存在！");
+            }
+
+            expressService.ThrowAway(id, loginUserId);
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "设置已丢弃成功！",
+        });
+    }    
 }
