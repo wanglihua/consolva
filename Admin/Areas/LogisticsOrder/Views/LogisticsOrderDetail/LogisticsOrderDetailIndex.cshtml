@@ -11,15 +11,15 @@
     <li class="parent" data-menu="logistics-order-menu">物流订单</li>
 
     @if (Model.MenuType == OrderListMenuType.Active) {
-        <li class="active" data-menu="logistics-order-order-list-active-menu">@(ViewData[ViewDataKey.Title])</li>
+        <li class="active" data-menu="logistics-order-order-list-active-menu">活动订单</li>
     }
 
     @if (Model.MenuType == OrderListMenuType.Complete) {
-        <li class="active" data-menu="logistics-order-order-list-complete-menu">@(ViewData[ViewDataKey.Title])</li>
+        <li class="active" data-menu="logistics-order-order-list-complete-menu">正常结束订单</li>
     }
 
     @if (Model.MenuType == OrderListMenuType.Cancel) {
-        <li class="active" data-menu="logistics-order-order-list-cancel-menu">@(ViewData[ViewDataKey.Title])</li>
+        <li class="active" data-menu="logistics-order-order-list-cancel-menu">作废订单</li>
     }
     <li>@(ViewData[ViewDataKey.Title])</li>
 }
