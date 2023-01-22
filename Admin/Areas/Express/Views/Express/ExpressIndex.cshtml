@@ -18,23 +18,23 @@
 }
 
 <div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadExpressClaimList(0)">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadExpressList(0)">
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    <button type="button" class="btn btn-danger btn-sm" onclick="deleteExpressClaim()">
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteExpress()">
         <i class="ace-icon fa fa-trash-o"></i>
         删除
     </button>
     @if (Model.CanForceDelete)
     {
-        <button type="button" class="btn btn-danger btn-sm" onclick="forceDeleteExpressClaim()">
+        <button type="button" class="btn btn-danger btn-sm" onclick="forceDeleteExpress()">
             <i class="ace-icon fa fa-trash-o"></i>
             强制删除
         </button>
         <script type="text/javascript">
-            function forceDeleteExpressClaim() {
-                var idList = getSelectIdList('#tblExpressClaimList');
+            function forceDeleteExpress() {
+                var idList = getSelectIdList('#tblExpressList');
         
                 if (idList.length === 0) {
                     $.msg.alert("请选择数据！");
@@ -57,7 +57,7 @@
                                     $.msg.show(data.message);
                                 }
         
-                                loadExpressClaimList();
+                                loadExpressList();
                             }
                         });
                     }
@@ -65,13 +65,13 @@
             }
         </script>
 
-        <button type="button" class="btn btn-pink btn-sm" onclick="throwAwayExpressClaim()">
+        <button type="button" class="btn btn-pink btn-sm" onclick="throwAwayExpress()">
             <i class="ace-icon fa fa-trash-o"></i>
             设置已丢弃
         </button>
         <script type="text/javascript">
-            function throwAwayExpressClaim() {
-                var idList = getSelectIdList('#tblExpressClaimList');
+            function throwAwayExpress() {
+                var idList = getSelectIdList('#tblExpressList');
         
                 if (idList.length === 0) {
                     $.msg.alert("请选择数据！");
@@ -94,7 +94,7 @@
                                     $.msg.show(data.message);
                                 }
         
-                                loadExpressClaimList();
+                                loadExpressList();
                             }
                         });
                     }
@@ -110,7 +110,7 @@
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <select id="warehouseIdQuery" name="warehouseIdQuery" style="width: 130px; height: 30px;" onchange="loadExpressClaimList(0);">
+    <select id="warehouseIdQuery" name="warehouseIdQuery" style="width: 130px; height: 30px;" onchange="loadExpressList(0);">
         <option value="">入库仓库</option>
         @foreach (WarehouseInfo warehouse in Model.WarehouseList)
         {
@@ -125,14 +125,14 @@
         <option value="@(true.ToString())">面单客户ID解析成功</option>
         <option value="@(false.ToString())">面单客户ID解析失败</option>
     </select> &nbsp;
-    <select id="expectedQuery" name="expectedQuery" style="width: 110px; height: 30px;" onchange="loadExpressClaimList(0);">
+    <select id="expectedQuery" name="expectedQuery" style="width: 110px; height: 30px;" onchange="loadExpressList(0);">
         <option value="">是否已预报</option>
         <option value="@(true.ToString())">是，已预报</option>
         <option value="@(false.ToString())">否，未预报</option>
     </select>
     <label for="customerCodeQuery">认领客户</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="认领客户查询"/>&nbsp;
     <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
-    <select id="statusQuery" name="statusQuery" style="width: 110px; height: 30px;" onchange="loadExpressClaimList(0);">
+    <select id="statusQuery" name="statusQuery" style="width: 110px; height: 30px;" onchange="loadExpressList(0);">
         <option value="">快递状态</option>
         @foreach (ExpressStatus status in ExpressStatus.GetList())
         {
@@ -140,7 +140,7 @@
         }
     </select>
 
-    <select id="shelfStatusQuery" name="shelfStatusQuery" style="width: 110px; height: 30px;" onchange="loadExpressClaimList(0);">
+    <select id="shelfStatusQuery" name="shelfStatusQuery" style="width: 110px; height: 30px;" onchange="loadExpressList(0);">
         <option value="">上架状态</option>
         @foreach (ExpressShelfStatus status in ExpressShelfStatus.GetList())
         {
@@ -187,7 +187,7 @@
     <label for="pickTimeBeginQuery">认领开始日期</label>&nbsp;<input id="pickTimeBeginQuery" name="pickTimeBeginQuery" style="width: 90px; height: 30px;" placeholder="认领开始日期" autocomplete="off"/>&nbsp;
     <label for="pickTimeEndQuery">认领截止日期</label>&nbsp;<input id="pickTimeEndQuery" name="pickTimeEndQuery" style="width: 90px; height: 30px;" placeholder="认领截止日期" autocomplete="off"/>&nbsp;
     
-    <select id="checkUserIdQuery" name="checkUserIdQuery" style="width: 150px; height: 30px; display: none;@*隐藏起来，这个查询条件暂时取消*@" onchange="loadExpressClaimList(0);">
+    <select id="checkUserIdQuery" name="checkUserIdQuery" style="width: 150px; height: 30px; display: none;@*隐藏起来，这个查询条件暂时取消*@" onchange="loadExpressList(0);">
         <option value="">入库人员查询</option>
         @foreach (UserInfo user in Model.CheckinUserList)
         {
@@ -195,12 +195,12 @@
         }
     </select>
 
-    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressClaimList(0)">
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadExpressList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
 </div>
 
-<div id="expressClaimList" data-page-index="0" data-sort-field="@(nameof(ExpressInfo.Id))" data-sort-dir="@(SortDirection.Desc)"></div>
+<div id="expressList" data-page-index="0" data-sort-field="@(nameof(ExpressInfo.Id))" data-sort-dir="@(SortDirection.Desc)"></div>
 
 <script type="text/javascript">
 
@@ -255,19 +255,19 @@
             $('#pickTimeBeginQuery').data("DateTimePicker").maxDate(e.date);
         });
         
-        loadExpressClaimList();
+        loadExpressList();
     });
     
-    function sortExpressClaimList(sortField, sortDir) {
-        var list = $('#expressClaimList');
+    function sortExpressList(sortField, sortDir) {
+        var list = $('#expressList');
         list.data('sort-field', sortField);
         list.data('sort-dir', sortDir);
 
-        loadExpressClaimList();
+        loadExpressList();
     }
     
-    function loadExpressClaimList(pageIndex) {
-        var list = $('#expressClaimList');
+    function loadExpressList(pageIndex) {
+        var list = $('#expressList');
 
         if (pageIndex === null || pageIndex === undefined) {
             pageIndex = list.data("page-index");
@@ -314,15 +314,15 @@
                     return;
                 }
 
-                $('#expressClaimList').html(data);
+                $('#expressList').html(data);
 
-                initListTable("#tblExpressClaimList");
+                initListTable("#tblExpressList");
             }
         });
     }  
     
     function exportData() {
-        var idList = getSelectIdList('#tblExpressClaimList');
+        var idList = getSelectIdList('#tblExpressList');
 
         @*
         var params = $.param({
@@ -346,7 +346,7 @@
             '@(nameof(ExpressListQueryParam.CheckinUserIdQuery))': $('#checkUserIdQuery').val()
         });
 
-        var url = '@Url.Action("Export", "ExpressClaim")?' + params;
+        var url = '@Url.Action("Export", "Express")?' + params;
         $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
         *@
         
@@ -375,8 +375,8 @@
         });        
     }
     
-    function deleteExpressClaim() {
-        var idList = getSelectIdList('#tblExpressClaimList');
+    function deleteExpress() {
+        var idList = getSelectIdList('#tblExpressList');
 
         if (idList.length === 0) {
             $.msg.alert("请选择数据！");
@@ -399,7 +399,7 @@
                             $.msg.show(data.message);
                         }
 
-                        loadExpressClaimList();
+                        loadExpressList();
                     }
                 });
             }

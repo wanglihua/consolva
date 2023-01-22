@@ -7,9 +7,9 @@
     Layout = null;
 }
 
-@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressClaimList" })
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressList" })
 
-<table id="tblExpressClaimList" class="data-list-table table table-striped table-bordered table-hover">
+<table id="tblExpressList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
@@ -18,27 +18,27 @@
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 130px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.CheckinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库跟踪号</a>
+                    <a field="@(nameof(ExpressInfo.CheckinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库跟踪号</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递单号</a>
+                    <a field="@(nameof(ExpressInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">快递单号</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.ExpressCompany))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递公司</a>
+                    <a field="@(nameof(ExpressInfo.ExpressCompany))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">快递公司</a>
                 </div>
             </th>
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">物品类型</a>
+                    <a field="@(nameof(ExpressInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">物品类型</a>
                 </div>
                 <div>
                     扩展名
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">所在订单</a>
+                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">所在订单</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">订单状态</a>
+                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">订单状态</a>
                 </div>
             </th>
             <th style="width: 110px; text-align: center;">
@@ -49,12 +49,12 @@
                     体积重,实际重kg
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.PackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">包裹数量</a>
+                    <a field="@(nameof(ExpressInfo.PackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">包裹数量</a>
                 </div>
             </th>
             <th style="width: 130px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.BillCustomerCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">面单客户</a>
+                    <a field="@(nameof(ExpressInfo.BillCustomerCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">面单客户</a>
                 </div>
                 <div>
                     是否预报
@@ -62,24 +62,24 @@
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.Customer)).@(nameof(ExpressInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领客户</a>
+                    <a field="@(nameof(ExpressInfo.Customer)).@(nameof(ExpressInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">认领客户</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.ClaimTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">认领时间</a>
+                    <a field="@(nameof(ExpressInfo.ClaimTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">认领时间</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">快递状态</a>
+                    <a field="@(nameof(ExpressInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">快递状态</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.ShelfStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">上架状态</a>
+                    <a field="@(nameof(ExpressInfo.ShelfStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架状态</a>
                 </div>
             </th>
             <th style="width: 90px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">当前仓库</a>
+                    <a field="@(nameof(ExpressInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">当前仓库</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.StorageLoc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">当前仓位号</a>
+                    <a field="@(nameof(ExpressInfo.StorageLoc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">当前仓位号</a>
                 </div>
                 <div>
                     <span>入库仓库</span>
@@ -90,26 +90,26 @@
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.AddUser)).@(nameof(ExpressInfo.AddUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库人员</a>
+                    <a field="@(nameof(ExpressInfo.AddUser)).@(nameof(ExpressInfo.AddUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库人员</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">入库时间</a>
+                    <a field="@(nameof(ExpressInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库时间</a>
                 </div>
                 <div>是否打木架</div>
                 <div>是否清理树皮</div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(ExpressInfo.OnShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">上架人员</a>
+                    <a field="@(nameof(ExpressInfo.OnShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架人员</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.OnShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">上架时间</a>
+                    <a field="@(nameof(ExpressInfo.OnShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架时间</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.OffShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">下架人员</a>
+                    <a field="@(nameof(ExpressInfo.OffShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">下架人员</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.OffShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressClaimList">下架时间</a>
+                    <a field="@(nameof(ExpressInfo.OffShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">下架时间</a>
                 </div>
             </th>
             <th style="width: 150px;">
@@ -261,4 +261,4 @@
     </tbody>
 </table>
 
-@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressClaimList" })
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressList" })
