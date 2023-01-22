@@ -130,13 +130,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#refundReasonDetailDialog').modal('hide');
-                        loadRefundReasonList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#refundReasonDetailDialog').modal('hide');
+                    loadRefundReasonList();
                 }
             });
         }
@@ -160,10 +159,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadRefundReasonList();
                     }
                 });

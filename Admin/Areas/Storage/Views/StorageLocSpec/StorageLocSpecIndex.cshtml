@@ -165,13 +165,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#storageLocSpecDetailDialog').modal('hide');
-                        loadStorageLocSpecList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#storageLocSpecDetailDialog').modal('hide');
+                    loadStorageLocSpecList();
                 }
             });
         }
@@ -197,10 +196,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadStorageLocSpecList();
                     }
                 });

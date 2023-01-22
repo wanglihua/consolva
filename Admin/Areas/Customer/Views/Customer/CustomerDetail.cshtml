@@ -1300,10 +1300,11 @@
                     success: function(data) {
                         if (data.success === false) {
                             $.msg.error(data.message);
-                        } else {
-                            $.msg.show(data.message);
-                            setTimeout("window.location.reload()", 1000);
+                            return;
                         }
+
+                        $.msg.show(data.message);
+                        setTimeout("window.location.reload()", 1000);
                     }
                 });
             }
@@ -1320,10 +1321,11 @@
                     success: function(data) {
                         if (data.success === false) {
                             $.msg.error(data.message);
-                        } else {
-                            $.msg.show(data.message);
-                            setTimeout("window.location.reload()", 1000);
+                            return;
                         }
+
+                        $.msg.show(data.message);
+                        setTimeout("window.location.reload()", 1000);
                     }
                 });
             }
@@ -1340,9 +1342,10 @@
                     success: function(data) {
                         if (data.success === false) {
                             $.msg.error(data.message);
-                        } else {
-                            $.msg.show(data.message);
+                            return;
                         }
+
+                        $.msg.show(data.message);
                     }
                 });
             }

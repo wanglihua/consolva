@@ -157,13 +157,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#manualFeeReasonDetailDialog').modal('hide');
-                        loadManualFeeReasonList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#manualFeeReasonDetailDialog').modal('hide');
+                    loadManualFeeReasonList();
                 }
             });
         }
@@ -189,10 +188,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadManualFeeReasonList();
                     }
                 });

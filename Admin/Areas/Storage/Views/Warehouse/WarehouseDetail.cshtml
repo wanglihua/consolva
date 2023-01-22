@@ -157,15 +157,13 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
+                        return;
+                    }
 
-                        if (data.create) {
-                            setTimeout("showWarehouseDetail(" + data.id + ")", 1000);
-                        }
+                    $.msg.show(data.message);
 
-                        //return;
+                    if (data.create) {
+                        setTimeout("showWarehouseDetail(" + data.id + ")", 1000);
                     }
                 }
             });

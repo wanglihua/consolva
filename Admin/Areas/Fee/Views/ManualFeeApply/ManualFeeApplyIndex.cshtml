@@ -218,13 +218,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#logisticsOrderManualFeeApplyDetailDialog').modal('hide');
-                        loadManualFeeApplyList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#logisticsOrderManualFeeApplyDetailDialog').modal('hide');
+                    loadManualFeeApplyList();
                 }
             });
         }
@@ -248,10 +247,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadManualFeeApplyList();
                     }
                 });
@@ -277,10 +275,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadManualFeeApplyList();
                     }
                 });

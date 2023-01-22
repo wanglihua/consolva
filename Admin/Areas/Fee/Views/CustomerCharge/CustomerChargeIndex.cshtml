@@ -138,11 +138,11 @@
                 success: function(data) {
                     if (data.success === false) {
                         $.msg.error(data.message);
-                    } else {
-                        $.msg.show(data.message);
-                        $('#customerChargeDetailDialog').modal('hide');
-                        loadCustomerChargeList();
                     }
+
+                    $.msg.show(data.message);
+                    $('#customerChargeDetailDialog').modal('hide');
+                    loadCustomerChargeList();
 
                     hideMask();
                 }
@@ -192,10 +192,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadCustomerChargeList();
                     }
                 });

@@ -156,13 +156,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#customerSuperVipDiscountDetailDialog').modal('hide');
-                        loadCustomerSuperVipDiscountList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#customerSuperVipDiscountDetailDialog').modal('hide');
+                    loadCustomerSuperVipDiscountList();
                 }
             });
         }
@@ -188,10 +187,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadCustomerSuperVipDiscountList();
                     }
                 });

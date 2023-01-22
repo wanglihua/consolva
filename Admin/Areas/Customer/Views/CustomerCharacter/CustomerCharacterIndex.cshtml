@@ -126,13 +126,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#customerCharacterDetailDialog').modal('hide');
-                        loadCustomerCharacterList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#customerCharacterDetailDialog').modal('hide');
+                    loadCustomerCharacterList();
                 }
             });
         }
@@ -156,10 +155,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadCustomerCharacterList();
                     }
                 });

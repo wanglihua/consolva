@@ -157,13 +157,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#userDetailDialog').modal('hide');
-                        loadUserList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#userDetailDialog').modal('hide');
+                    loadUserList();
                 }
             });
         }
@@ -189,10 +188,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadUserList();
                     }
                 });
@@ -221,11 +219,11 @@
                         hideMask();
                         if (data.success === false) {
                             $.msg.error(data.message);
-                        } else {
-                            $.msg.show(data.message);
-                            
-                            loadUserList();
+                            return;
                         }
+
+                        $.msg.show(data.message);
+                        loadUserList();
                     }
                 });
             }
@@ -253,11 +251,11 @@
                         hideMask();
                         if (data.success === false) {
                             $.msg.error(data.message);
-                        } else {
-                            $.msg.show(data.message);
-                            
-                            loadUserList();
+                            return;
                         }
+
+                        $.msg.show(data.message);
+                        loadUserList();
                     }
                 });
             }

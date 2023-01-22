@@ -133,13 +133,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#customerVipDiscountDetailDialog').modal('hide');
-                        loadCustomerVipDiscountList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#customerVipDiscountDetailDialog').modal('hide');
+                    loadCustomerVipDiscountList();
                 }
             });
         }
@@ -165,10 +164,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadCustomerVipDiscountList();
                     }
                 });

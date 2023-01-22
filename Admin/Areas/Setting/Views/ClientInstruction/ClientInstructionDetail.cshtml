@@ -102,12 +102,13 @@
                 success: function(data) {
                     if (data.success === false) {
                         $.msg.error(data.message);
-                    } else {
-                        $.msg.show(data.message);
+                        return;
+                    }
 
-                        if (data.create) {
-                            setTimeout("showClientInstructionDetail(" + data.id + ")", 1000);
-                        }
+                    $.msg.show(data.message);
+
+                    if (data.create) {
+                        setTimeout("showClientInstructionDetail(" + data.id + ")", 1000);
                     }
 
                     hideMask();

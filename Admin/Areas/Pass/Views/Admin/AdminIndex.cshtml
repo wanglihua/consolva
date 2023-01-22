@@ -134,13 +134,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#adminAddDialog').modal('hide');
-                        loadAdminList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#adminAddDialog').modal('hide');
+                    loadAdminList();
                 }
             });
         }
@@ -166,10 +165,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadAdminList();
                     }
                 });

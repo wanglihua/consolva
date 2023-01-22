@@ -99,29 +99,27 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
+                        return;
+                    }
 
-                        $("#sendResult").show();
+                    $.msg.show(data.message);
 
-                        if(data.sendByWeiXin) {
-                            $("#weiXinSuccessCustomers").show();
-                            $("#weiXinFailCustomers").show();
+                    $("#sendResult").show();
 
-                            $("#weiXinSuccessCustomers").html("微信发送成功：<span style='color:green;'>" + data.weiXinSuccessCustomers + "</span>");
-                            $("#weiXinFailCustomers").html("微信发送失败：<span style='color:red;'>" + data.weiXinFailCustomers) + "</span>";
-                        }
+                    if(data.sendByWeiXin) {
+                        $("#weiXinSuccessCustomers").show();
+                        $("#weiXinFailCustomers").show();
 
-                        if(data.sendBySms) {
-                            $("#smsSuccessCustomers").show();
-                            $("#smsFailCustomers").show();
+                        $("#weiXinSuccessCustomers").html("微信发送成功：<span style='color:green;'>" + data.weiXinSuccessCustomers + "</span>");
+                        $("#weiXinFailCustomers").html("微信发送失败：<span style='color:red;'>" + data.weiXinFailCustomers) + "</span>";
+                    }
 
-                            $("#smsSuccessCustomers").html("短信发送成功：<span style='color:green;'>" + data.smsSuccessCustomers + "</span>");
-                            $("#smsFailCustomers").html("短信发送失败：<span style='color: red;'>" + data.smsFailCustomers + "</span>");
-                        }
+                    if(data.sendBySms) {
+                        $("#smsSuccessCustomers").show();
+                        $("#smsFailCustomers").show();
 
-                        //return;
+                        $("#smsSuccessCustomers").html("短信发送成功：<span style='color:green;'>" + data.smsSuccessCustomers + "</span>");
+                        $("#smsFailCustomers").html("短信发送失败：<span style='color: red;'>" + data.smsFailCustomers + "</span>");
                     }
                 }
             });

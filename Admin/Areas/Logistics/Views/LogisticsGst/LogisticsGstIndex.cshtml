@@ -128,13 +128,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#logisticsGstDetailDialog').modal('hide');
-                        loadLogisticsGstList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#logisticsGstDetailDialog').modal('hide');
+                    loadLogisticsGstList();
                 }
             });
         }
@@ -160,10 +159,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadLogisticsGstList();
                     }
                 });

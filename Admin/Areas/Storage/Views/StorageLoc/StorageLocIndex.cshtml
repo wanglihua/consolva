@@ -240,13 +240,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#storageLocDetailDialog').modal('hide');
-                        loadStorageLocList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#storageLocDetailDialog').modal('hide');
+                    loadStorageLocList();
                 }
             });
         }
@@ -272,10 +271,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadStorageLocList();
                     }
                 });
@@ -303,10 +301,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadStorageLocList();
                     }
                 });
@@ -334,10 +331,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadStorageLocList();
                     }
                 });
@@ -358,10 +354,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadStorageLocList();
                     }
                 });
@@ -382,10 +377,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadStorageLocList();
                     }
                 });

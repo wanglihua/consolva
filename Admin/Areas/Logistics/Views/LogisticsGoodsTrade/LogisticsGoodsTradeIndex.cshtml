@@ -197,10 +197,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadLogisticsGoodsList();
                     }
                 });
@@ -291,11 +290,11 @@
                         hideMask();
                         if (data.success === false) {
                             $.msg.error(data.message);
-                        } else {
-                            $.msg.show(data.message);
-                            
-                            loadLogisticsGoodsList();
+                            return;
                         }
+
+                        $.msg.show(data.message);
+                        loadLogisticsGoodsList();
                     }
                 });
             }

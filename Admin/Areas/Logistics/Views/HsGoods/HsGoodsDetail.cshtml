@@ -234,22 +234,20 @@
 
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
+                        return;
+                    }
 
-                        if(data.isCreate === true) {
-                            setTimeout(
-                                function() {
-                                    var url = "@Url.Action("Detail", "HsGoods", new {id = 88888})";
-                                    url = url.replace(/88888/, data.id);
-                                    window.location.href = url;
-                                },
-                                1000
-                            );
-                        }
+                    $.msg.show(data.message);
 
-                        //return;
+                    if(data.isCreate === true) {
+                        setTimeout(
+                            function() {
+                                var url = "@Url.Action("Detail", "HsGoods", new {id = 88888})";
+                                url = url.replace(/88888/, data.id);
+                                window.location.href = url;
+                            },
+                            1000
+                        );
                     }
 
                     hideMask();
@@ -273,11 +271,10 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
-                            window.location.href = "@Url.Action("Index", "HsGoods")";
-                            return;
                         }
+
+                        $.msg.show(data.message);
+                        window.location.href = "@Url.Action("Index", "HsGoods")";
                     }
                 });
             }

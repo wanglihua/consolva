@@ -172,12 +172,11 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $("#LogisticsFeeRateExpress_Id").val(data.id);
-                        $.msg.show(data.message);
-                        //return;
+                        return;
                     }
+
+                    $("#LogisticsFeeRateExpress_Id").val(data.id);
+                    $.msg.show(data.message);
                 }
             });
         }

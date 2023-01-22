@@ -147,13 +147,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#logisticsOrderFeeDetailDialog').modal('hide');
-                        loadLogisticsOrderFeeList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#logisticsOrderFeeDetailDialog').modal('hide');
+                    loadLogisticsOrderFeeList();
                 }
             });
         }

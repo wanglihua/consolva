@@ -66,12 +66,11 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#storageLocDesignDialog').modal('hide');
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#storageLocDesignDialog').modal('hide');
                 }
             });
         }

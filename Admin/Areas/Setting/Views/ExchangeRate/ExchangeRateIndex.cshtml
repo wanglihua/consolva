@@ -117,13 +117,12 @@
                     hideMask();
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-                        $('#exchangeRateDetailDialog').modal('hide');
-                        loadExchangeRateList();
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+                    $('#exchangeRateDetailDialog').modal('hide');
+                    loadExchangeRateList();
                 }
             });
         }
@@ -142,10 +141,9 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
                         }
 
+                        $.msg.show(data.message);
                         loadExchangeRateList();
                     }
                 });

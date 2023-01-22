@@ -687,11 +687,10 @@
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            $.msg.show(data.message);
-                            window.location.href = "@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })";
-                            return;
                         }
+
+                        $.msg.show(data.message);
+                        window.location.href = "@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })";
                     }
                 });
             }
@@ -902,20 +901,19 @@
                 success: function(data) {
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
-
-                        setTimeout(
-                            function() {
-                                var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId })";
-                                url = url.replace(/88888/, data.id);
-                                window.location.href = url;
-                            },
-                            2000
-                        );
-                        //return;
+                        return;
                     }
+
+                    $.msg.show(data.message);
+
+                    setTimeout(
+                        function() {
+                            var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId })";
+                            url = url.replace(/88888/, data.id);
+                            window.location.href = url;
+                        },
+                        2000
+                    );
 
                     hideMask();
                 }
@@ -1021,21 +1019,20 @@
                 success: function(data) {
                     if (data.success === false) {
                         $.msg.error(data.message);
-                        //return;
-                    } else {
-                        $.msg.show(data.message);
+                        return;
+                    }
 
-                        if(data.isCreate === true) {
-                            setTimeout(
-                                function() {
-                                    var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId })";
-                                    url = url.replace(/88888/, data.id);
-                                    window.location.href = url;
-                                },
-                                1000
-                            );
-                        }
-                        //return;
+                    $.msg.show(data.message);
+
+                    if(data.isCreate === true) {
+                        setTimeout(
+                            function() {
+                                var url = "@Url.Action("Detail", "LogisticsGoods", new { id = 88888, statusId = Model.StatusId })";
+                                url = url.replace(/88888/, data.id);
+                                window.location.href = url;
+                            },
+                            1000
+                        );
                     }
 
                     hideMask();

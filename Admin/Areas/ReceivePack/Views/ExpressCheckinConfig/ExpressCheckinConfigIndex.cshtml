@@ -236,10 +236,10 @@
                 success: function(data) {
                     if (data.success === false) {
                         $.msg.error(data.message);
-                    } else {
-                        $.msg.show(data.message);
+                        return;
                     }
 
+                    $.msg.show(data.message);
                     hideMask();
                 }
             });
