@@ -44,12 +44,11 @@
     <label for="countryQuery">国家</label>&nbsp;
     <select id="countryQuery" style="width: 100px; height: 30px;">
         <option value="0">国家查询</option>
-        @foreach (var country in Model.CountryList)
-        {
+        @foreach (var country in Model.CountryList) {
             <option value="@country.Id">@country.Name</option>
         }
     </select>&nbsp;
-    <label for="orderIdQuery">订单ID</label>&nbsp;<input id="orderIdQuery" autocomplete="off" style="width: 120px; height: 30px;" placeholder="订单ID查询"/>&nbsp;
+    <label for="orderIdQuery">订单ID</label>&nbsp;<input id="orderIdQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="订单ID查询"/>&nbsp;
 
     <label for="codeQuery">订单编号</label>&nbsp;<input id="codeQuery" autocomplete="off" style="width: 120px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
 
@@ -62,8 +61,7 @@
     <label for="orderStatusQuery">订单状态</label>&nbsp;
     <select id="orderStatusQuery" style="width: 100px; height: 30px;">
         <option value="0">订单状态</option>
-        @foreach (LogisticsOrderStatus logisticsOrderStatus in Model.OrderStatusList)
-        {
+        @foreach (LogisticsOrderStatus logisticsOrderStatus in Model.OrderStatusList) {
             <option value="@logisticsOrderStatus.Id">@logisticsOrderStatus.Name</option>
         }
     </select>&nbsp;
@@ -71,17 +69,15 @@
     <label for="payStatusQuery">支付状态</label>&nbsp;
     <select id="payStatusQuery" style="width: 80px; height: 30px;">
         <option value="0">支付状态</option>
-        @foreach (PayStatus payStatus in Model.PayStatusList)
-        {
+        @foreach (PayStatus payStatus in Model.PayStatusList) {
             <option value="@payStatus.Id">@payStatus.Name</option>
         }
     </select>&nbsp;
 
     <label for="receivingWarehouseIdQuery">收货仓</label>&nbsp;
-    <select id="receivingWarehouseIdQuery" style="width: 120px; height: 30px;">
+    <select id="receivingWarehouseIdQuery" style="width: 100px; height: 30px;">
         <option value="0">收货仓</option>
-        @foreach (WarehouseInfo warehouse in Model.ReceivingWarehouseList)
-        {
+        @foreach (WarehouseInfo warehouse in Model.ReceivingWarehouseList) {
             <option value="@warehouse.Id">@warehouse.Name</option>
         }
     </select>&nbsp;
@@ -89,8 +85,7 @@
     <label for="firstModeTypeQuery">头程物流</label>&nbsp;
     <select id="firstModeTypeQuery" style="width: 100px; height: 30px;">
         <option value="0">头程物流</option>
-        @foreach (LogisticsModeType modeType in Model.FirstModeTypeList)
-        {
+        @foreach (LogisticsModeType modeType in Model.FirstModeTypeList) {
             <option value="@modeType.Id">@modeType.Name</option>
         }
     </select>&nbsp;
@@ -101,8 +96,7 @@
 
     <label for="timeRangeTypeQuery">时间段类型</label>&nbsp;
     <select id="timeRangeTypeQuery" style="width: 110px; height: 30px;">
-        @foreach (var rangeType in Model.TimeRangeTypeList)
-        {
+        @foreach (var rangeType in Model.TimeRangeTypeList) {
             <option value="@rangeType.Id">@rangeType.Name</option>
         }
     </select>&nbsp;
@@ -110,8 +104,7 @@
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
-    @if (Model.MenuType != OrderListMenuType.Cancel)
-    {
+    @if (Model.MenuType != OrderListMenuType.Cancel) {
         <button class="btn btn-purple btn-sm" style="margin-bottom: 3px; height: 30px;" onclick="exportOrder()">
             <i class="ace-icon fa fa-file-excel-o"></i>
             订单导出
@@ -143,14 +136,15 @@
             }
         </script>
 
-        @if (Model.CanImportOrder)
-        {
+        @if (Model.CanImportOrder) {
             <button id="btnImport" class="btn btn-pink btn-sm" style="margin-bottom: 3px; height: 30px;">
                 <i class="ace-icon fa fa-file-excel-o"></i>
                 订单导入
             </button>
 
-            <a style="margin-left: 20px; display: inline-block;" href="/static/excel-template/logistic-order/order_create_template.xlsx">下载订单导入模板</a>
+            <div style="line-height: 22px;">
+                <a href="/static/excel-template/logistic-order/order_create_template.xlsx">下载订单导入模板</a>
+            </div>
         }
 
         <script type="text/javascript">
