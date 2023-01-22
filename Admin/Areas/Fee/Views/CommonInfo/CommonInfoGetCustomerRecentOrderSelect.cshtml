@@ -1,0 +1,12 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Fee.Models.CommonInfo.CommonInfoGetCustomerRecentOrderSelectModel
+@{
+    Layout = null;
+}
+@* select 的 id="orderSelect", onchange="orderSelectChange();" 需要调用界面配合一致 *@
+<select id="orderSelect" class="input-sm form-control" onchange="orderSelectChange();">
+    <option value="">选择订单编号</option>
+    @foreach (string orderCode in Model.OrderCodeList) {
+        <option value="@(orderCode)">@(orderCode)</option>
+    }
+</select>
