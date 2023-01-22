@@ -131,12 +131,12 @@
                     });
             
                     var url = '@Url.Action("Export", "LogisticsOrderExcel")?' + params;
-                    $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();                       
+                    $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
                 });
             }
         </script>
 
-        @if (Model.CanImportOrder) {
+        @if (Model.MenuType == OrderListMenuType.Active && Model.CanImportOrder) {
             <button id="btnImport" class="btn btn-pink btn-sm" style="margin-bottom: 3px; height: 30px;">
                 <i class="ace-icon fa fa-file-excel-o"></i>
                 订单导入
