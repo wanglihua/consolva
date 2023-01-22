@@ -21,5 +21,6 @@
     @if (Model.MenuType == OrderListMenuType.Cancel) {
         <li class="active" data-menu="logistics-order-order-list-cancel-menu">作废订单</li>
     }
+    <li>@(Model.Order.Code)</li>
     <li>@(ViewData[ViewDataKey.Title])</li>
 }

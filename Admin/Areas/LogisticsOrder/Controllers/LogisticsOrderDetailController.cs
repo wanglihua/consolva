@@ -38,6 +38,7 @@ public class LogisticsOrderDetailController : Controller {
 
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
+            Order = order,
         };
 
         return View("LogisticsOrderDetailIndex", model);

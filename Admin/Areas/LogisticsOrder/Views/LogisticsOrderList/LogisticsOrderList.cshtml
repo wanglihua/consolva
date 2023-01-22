@@ -115,7 +115,7 @@
             foreach (LogisticsOrderInfo logisticsOrder in Model.OrderList) {
                 var packData = logisticsOrder.PackDataCache;
 
-                <tr>
+                <tr ondblclick="showOrderDetail(@(logisticsOrder.Id))">
                     <td style="text-align: center;">
                         <label for="logisticsOrderCheck_@(logisticsOrder.Id)"></label><input id="logisticsOrderCheck_@(logisticsOrder.Id)" type="checkbox" class="ace" value="@logisticsOrder.Id"/><span class="lbl"></span>
                     </td>

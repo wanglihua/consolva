@@ -157,7 +157,7 @@
     function showCustomerDetail(id) {
         var url = "@Url.Action("Detail", "Customer", new { id = 88888 })";
         url = url.replace(/88888/, id);
-        window.open(url, "customer_detail");
+        window.open(url, "_blank");
     }
 
     function updateCustomerVip() {
