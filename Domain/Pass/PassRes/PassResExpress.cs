@@ -16,6 +16,7 @@ public partial class PassRes {
             new PassResInfo { Id = ExpressList, Name = "快递列表", CateIdForCache = CateId },
             new PassResInfo { Id = ExpressServiceRemark, Name = "快递客服备注", CateIdForCache = CateId },
             new PassResInfo { Id = ExpressForceDelete, Name = "快递强制删除", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressThrowAway, Name = "快递单丢弃", CateIdForCache = CateId },
             new PassResInfo { Id = ExpressExpect, Name = "预报单号", CateIdForCache = CateId },
             new PassResInfo { Id = ExpressPhoto, Name = "快递单图片", CateIdForCache = CateId },
             new PassResInfo { Id = ExpressPhotoDelete, Name = "快递单图片删除", CateIdForCache = CateId },
@@ -33,36 +34,41 @@ public partial class PassRes {
         /// <summary>
         /// 快递客服备注
         /// </summary>
-        public const int ExpressServiceRemark = CateId + 11000;
+        public const int ExpressServiceRemark = CateId + 20000;
 
         /// <summary>
         /// 快递强制删除
         /// </summary>
-        public const int ExpressForceDelete = CateId + 20000;
+        public const int ExpressForceDelete = CateId + 30000;
+
+        /// <summary>
+        /// 快递单丢弃
+        /// </summary>
+        public const int ExpressThrowAway = CateId + 40000;
 
         /// <summary>
         /// 预报单号
         /// </summary>
-        public const int ExpressExpect = CateId + 30000;
+        public const int ExpressExpect = CateId + 50000;
 
         /// <summary>
         /// 快递单图片
         /// </summary>
-        public const int ExpressPhoto = CateId + 40000;
+        public const int ExpressPhoto = CateId + 60000;
 
         /// <summary>
         /// 快递单图片删除
         /// </summary>
-        public const int ExpressPhotoDelete = CateId + 50000;
+        public const int ExpressPhotoDelete = CateId + 70000;
 
         /// <summary>
         /// 退运池
         /// </summary>
-        public const int ExpressReturn = CateId + 60000;
+        public const int ExpressReturn = CateId + 80000;
 
         /// <summary>
         /// 快递单尺寸重量
         /// </summary>
-        public const int ExpressSizeWeight = CateId + 70000;
+        public const int ExpressSizeWeight = CateId + 90000;
     }
 }

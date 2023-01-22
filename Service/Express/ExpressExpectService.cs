@@ -38,7 +38,7 @@ public class ExpressExpectService
             throw new ValidationException("快递单号不能为空！");
         }
 
-        if (description == null)
+        if (string.IsNullOrWhiteSpace(description))
         {
             description = string.Empty;
         }

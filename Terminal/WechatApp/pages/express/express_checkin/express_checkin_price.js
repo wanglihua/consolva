@@ -101,6 +101,10 @@ Page({
                             if (prevPage.loadExpressCheckinList) {
                                 prevPage.loadExpressCheckinList();
                             }
+
+                            if (prevPage.loadExpressExpectList) {
+                                prevPage.loadExpressExpectList();
+                            }
                         }
                     }
                 });

@@ -179,6 +179,20 @@ public class ExpressStatus : CodeTypeBase {
     }
 
     /// <summary>
+    /// 是不是已认领，只有WaitPick状态才是 未认领 状态
+    /// Expect状态属于 已认领 状态
+    /// </summary>
+    /// <param name="status"></param>
+    /// <returns></returns>
+    public static bool IsPicked(ExpressStatus status) {
+        if (status == WaitPick) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// 已入库前的状态
     /// </summary>
     private static readonly IReadOnlyList<ExpressStatus> codeTypeListNotCheckedIn = new List<ExpressStatus>() {
@@ -188,8 +202,6 @@ public class ExpressStatus : CodeTypeBase {
 
     /// <summary>
     /// 是不是已入库及后续状态
-    ///
-    /// 这个也可以用来判断是不是已经被认领
     /// </summary>
     /// <param name="status"></param>
     /// <returns></returns>

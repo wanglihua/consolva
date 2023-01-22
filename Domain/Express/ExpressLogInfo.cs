@@ -11,8 +11,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 快递单日志
 /// </summary>
-public class ExpressLogInfo : EntityNoUpdate
-{
+public class ExpressLogInfo : EntityNoUpdate {
     /// <summary>
     /// 类型，非空
     /// </summary>
@@ -23,6 +22,7 @@ public class ExpressLogInfo : EntityNoUpdate
 
     /// <summary>
     /// 快递单，可空
+    /// 这个字段实际也没啥大用，因为最后快递单详细界面查询快递单日志时是用快递单号查询的
     /// </summary>
     [JsonProperty("express")]
     public virtual ExpressInfo? Express { get; set; } = null;
@@ -60,5 +60,4 @@ public class ExpressLogInfo : EntityNoUpdate
     /// </summary>
     [JsonProperty("user")]
     public virtual UserInfo? User { get; set; } = null;
-
 }

@@ -109,6 +109,7 @@ Page({
     },
     onActionSheetSelect(e) {
         const expressExpectId = this.data.currentExpressExpect.id;
+        const expressId = this.data.currentExpressExpect.expressId;
         const trackingNo = this.data.currentExpressExpect.trackingNo;
         const trackingNoQuery = this.data.trackingNoQuery;
         const action = e.detail.action;
@@ -152,7 +153,9 @@ Page({
         }
 
         if (action === "enterPrice") {
-            // todo a 待快递单号那里完成后，这里补上
+            wx.navigateTo({
+                url: '../express_checkin/express_checkin_price?id=' + expressId,
+            });            
         }
 
         this.setData({
