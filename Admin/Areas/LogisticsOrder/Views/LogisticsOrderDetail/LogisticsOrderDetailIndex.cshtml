@@ -313,7 +313,7 @@
                                 </div>
 
                                 <div id="orderRemarkListWrapper">
-                                    @Html.Partial("~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkOrderRemarkList.cshtml", new LogisticsOrderRemarkOrderRemarkListModel() { LogisticsOrderRemarkList = Model.LogisticsOrderRemarkList, OrderId = Model.LogisticsOrder.Id })
+                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkOrderRemarkList.cshtml" model="new LogisticsOrderRemarkOrderRemarkListModel() { LogisticsOrderRemarkList = Model.LogisticsOrderRemarkList, OrderId = Model.LogisticsOrder.Id }" />
                                 </div>
                             </div>
                         </div>
@@ -325,3 +325,5 @@
         </div>
     </div>
 </div>
+
+<div id="logisticsOrderRemarkDetailDialogWrapper"></div>
