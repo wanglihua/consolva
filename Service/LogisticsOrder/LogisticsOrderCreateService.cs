@@ -213,7 +213,7 @@ public class LogisticsOrderCreateService {
         // 订单地址
         var orderReceiveAddress = new LogisticsOrderReceiveAddressInfo {
             Order = order,
-            Country = createSelect.Country,
+            Country = addressReceive.Country,
             FirstName = addressReceive.FirstName,
             LastName = addressReceive.LastName,
             Mobile = addressReceive.Mobile,

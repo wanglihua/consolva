@@ -423,16 +423,16 @@
                                     <div class="form-group">
                                         <label asp-for="ReceiveAddress.Country" class="col-xs-4 control-label">国家</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ReceiveAddress.Country" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ReceiveAddress.Country" value="@(Model.ReceiveAddress.Country.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="ReceiveAddress.Province" class="col-xs-4 control-label">州</label>
+                                        <label asp-for="ReceiveAddress.State" class="col-xs-4 control-label">州</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="ReceiveAddress.Province" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="ReceiveAddress.State" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -529,6 +529,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="col-xs-3" style="visibility: hidden;">
+                                    <div class="form-group">
+                                        <label class="col-xs-4 control-label">&nbsp;</label>
+                                        <div class="col-xs-8">
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
@@ -544,6 +552,15 @@
                                         <label asp-for="SendAddress.City" class="col-xs-4 control-label">城市</label>
                                         <div class="col-xs-8">
                                             <input asp-for="SendAddress.City" value="@(Model.SendAddress.City.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.Area" class="col-xs-4 control-label">区县</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="SendAddress.Area" value="@(Model.SendAddress.Area.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
