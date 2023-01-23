@@ -12,11 +12,14 @@ public class LogisticsOrderDetailIndexModel {
     public LogisticsOrderInfo LogisticsOrder { get; set; } = new();
 
     [BindNever]
-    public IList<LogisticsOrderRemarkInfo> LogisticsOrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
+    public IList<LogisticsOrderRemarkInfo> OrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
 
     [BindNever]
     public LogisticsOrderReceiveAddressInfo ReceiveAddress { get; set; } = new();
 
     [BindNever]
     public LogisticsOrderSendAddressInfo SendAddress { get; set; } = new();
+
+    [BindNever]
+    public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
 }

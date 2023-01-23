@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
+using NHibernate.Linq;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Core;
@@ -62,6 +63,10 @@ public class LogisticsOrderDetailController : Controller {
 
         // 发货地址
         var sendAddress = session.Query<LogisticsOrderSendAddressInfo>()
+            .Fetch(e => e.Province)
+            .Fetch(e => e.City)
+            .Fetch(e => e.Area)
+            .Fetch(e => e.Street)
             .Where(e => e.Order.Id == orderId)
             .Take(1)
             .SingleOrDefault();
@@ -69,12 +74,20 @@ public class LogisticsOrderDetailController : Controller {
             throw new ValidationException("订单发货地址缺失！");
         }
 
+        // 订单操作日志
+        var orderActionList = session.Query<LogisticsOrderActionInfo>()
+            .Fetch(e => e.User)
+            .Where(e => e.Order.Id == orderId)
+            .OrderByDescending(e => e.Id)
+            .ToList();
+
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             LogisticsOrder = order,
-            LogisticsOrderRemarkList = logisticsOrderRemarkList,
+            OrderRemarkList = logisticsOrderRemarkList,
             ReceiveAddress = receiveAddress,
             SendAddress = sendAddress,
+            LogisticsOrderActionList = orderActionList,
         };
 
         return View("LogisticsOrderDetailIndex", model);
