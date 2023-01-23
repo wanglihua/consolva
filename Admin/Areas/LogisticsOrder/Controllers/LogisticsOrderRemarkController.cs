@@ -8,6 +8,7 @@ using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -15,12 +16,17 @@ namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
 [LogisticsOrderArea]
 [AdminAuth(PassRes.LogisticsOrder.OrderListActive, PassRes.LogisticsOrder.OrderListComplete, PassRes.LogisticsOrder.OrderListCancel)]
 public class LogisticsOrderRemarkController : Controller {
-    private ISession session;
-    private LoginUserService loginUserService;
+    private readonly ISession session;
+    private readonly LoginUserService loginUserService;
+    private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
 
-    public LogisticsOrderRemarkController(ISession session, LoginUserService loginUserService) {
+    public LogisticsOrderRemarkController(ISession session,
+        LoginUserService loginUserService,
+        LogisticsOrderRemarkService logisticsOrderRemarkService
+    ) {
         this.session = session;
         this.loginUserService = loginUserService;
+        this.logisticsOrderRemarkService = logisticsOrderRemarkService;
     }
 
     [HttpPost]
@@ -94,10 +100,7 @@ public class LogisticsOrderRemarkController : Controller {
     [Route("/admin/logistics/order/remark/order/remark/list")]
     public IActionResult OrderRemarkList(int orderId) {
         LogisticsOrderRemarkOrderRemarkListModel model = new LogisticsOrderRemarkOrderRemarkListModel();
-        model.LogisticsOrderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .OrderBy(e => e.Id)
-            .ToList();
+        model.LogisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
 
         model.OrderId = orderId;
 

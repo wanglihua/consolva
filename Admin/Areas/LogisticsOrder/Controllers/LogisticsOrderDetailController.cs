@@ -6,6 +6,7 @@ using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -14,9 +15,13 @@ namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
 [AdminAuth(PassRes.LogisticsOrder.OrderListActive, PassRes.LogisticsOrder.OrderListComplete, PassRes.LogisticsOrder.OrderListCancel)]
 public class LogisticsOrderDetailController : Controller {
     private readonly ISession session;
+    private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
 
-    public LogisticsOrderDetailController(ISession session) {
+    public LogisticsOrderDetailController(ISession session,
+        LogisticsOrderRemarkService logisticsOrderRemarkService
+    ) {
         this.session = session;
+        this.logisticsOrderRemarkService = logisticsOrderRemarkService;
     }
 
     [HttpGet]
@@ -42,10 +47,7 @@ public class LogisticsOrderDetailController : Controller {
         }
 
         // 订单备注
-        var logisticsOrderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .OrderBy(e => e.Id)
-            .ToList();
+        var logisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
 
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,

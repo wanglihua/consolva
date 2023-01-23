@@ -14,6 +14,20 @@ public class LogisticsOrderRemarkService {
     }
 
     /// <summary>
+    /// 获取订单备注列表
+    /// 主要是统一了排序等等的
+    /// </summary>
+    /// <param name="orderId"></param>
+    /// <returns></returns>
+    public IList<LogisticsOrderRemarkInfo> GetOrderRemarkList(int orderId) {
+        var orderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.Id)
+            .ToList();
+        return orderRemarkList;
+    }
+
+    /// <summary>
     /// 获取订单备注用于订单列表显示
     /// </summary>
     public string GetOrderRemarkForList(IList<LogisticsOrderRemarkInfo> orderRemarkList) {
