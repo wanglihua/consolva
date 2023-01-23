@@ -14,7 +14,7 @@
                 <label for="logisticsOrderCheckAll"></label><input id="logisticsOrderCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
-            <th style="width: 160px; text-align: center;">
+            <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单编号</a>
                 </div>
@@ -59,7 +59,7 @@
                     </a>
                 </div>
             </th>
-            <th style="width: 160px;">
+            <th style="width: 180px;">
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.FirstType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
                         头程类型

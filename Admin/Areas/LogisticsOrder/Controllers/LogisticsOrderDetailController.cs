@@ -33,6 +33,8 @@ public class LogisticsOrderDetailController : Controller {
         }
 
         NHibernateUtil.Initialize(order.Customer);
+        NHibernateUtil.Initialize(order.Warehouse);
+        NHibernateUtil.Initialize(order.FirstMode);
         NHibernateUtil.Initialize(order.Insurance);
         NHibernateUtil.Initialize(order.Gst);
 
@@ -49,10 +51,30 @@ public class LogisticsOrderDetailController : Controller {
         // 订单备注
         var logisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
 
+        // 收货地址
+        var receiveAddress = session.Query<LogisticsOrderReceiveAddressInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+        if (receiveAddress == null) {
+            throw new ValidationException("订单收货地址缺失！");
+        }
+
+        // 发货地址
+        var sendAddress = session.Query<LogisticsOrderSendAddressInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+        if (sendAddress == null) {
+            throw new ValidationException("订单发货地址缺失！");
+        }
+
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             LogisticsOrder = order,
             LogisticsOrderRemarkList = logisticsOrderRemarkList,
+            ReceiveAddress = receiveAddress,
+            SendAddress = sendAddress,
         };
 
         return View("LogisticsOrderDetailIndex", model);

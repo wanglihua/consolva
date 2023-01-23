@@ -289,6 +289,8 @@
                                     </div>
                                 </div>
 
+                                @* todo 代支付链接和二维码 补上 *@
+
                             </div>
                         </div>
                     </div>
@@ -309,17 +311,264 @@
                         <div id="panelRemark" style="display: none;">
                             <div class="row">
                                 <div style="margin-bottom: 10px; text-align: right;">
-                                    <a class="btn btn-sm btn-primary" href="javascript:showLogisticsOrderRemarkDetail();">添加备注</a>
+                                    <a class="btn btn-mini btn-primary" href="javascript:showLogisticsOrderRemarkDetail();">添加备注</a>
                                 </div>
 
                                 <div id="orderRemarkListWrapper">
-                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkOrderRemarkList.cshtml" model="new LogisticsOrderRemarkOrderRemarkListModel() { LogisticsOrderRemarkList = Model.LogisticsOrderRemarkList, OrderId = Model.LogisticsOrder.Id }" />
+                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkOrderRemarkList.cshtml" model="new LogisticsOrderRemarkOrderRemarkListModel() { LogisticsOrderRemarkList = Model.LogisticsOrderRemarkList, OrderId = Model.LogisticsOrder.Id }"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelLogisticsInfo').toggle();">
+                            <div style="float: left;">
+                                物流信息
+                            </div>
+                            <div style="float: right;">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelLogisticsInfo" style="display: none;">
+                            <div class="row">
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.Country" class="col-xs-4 control-label">目的国家</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.Country" type="text" value="@(Model.LogisticsOrder.Country.Name)" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.Warehouse" class="col-xs-4 control-label">收货仓库</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.Warehouse" type="text" value="@(Model.LogisticsOrder.Warehouse.Name)" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.FirstType" class="col-xs-4 control-label">头程物流类型</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.FirstType" type="text" value="@(Model.LogisticsOrder.FirstType.Name)" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label for="LogisticsOrder.FirstMode.Code" class="col-xs-4 control-label">头程物流编号</label>
+                                        <div class="col-xs-8">
+                                            <input id="LogisticsOrder.FirstMode.Code" type="text" value="@(Model.LogisticsOrder.FirstMode.Code)" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.FirstMode" class="col-xs-2 control-label">头程物流方式</label>
+                                        <div class="col-xs-10">
+                                            <input asp-for="LogisticsOrder.FirstMode" type="text" value="@(Model.LogisticsOrder.FirstMode.Name)" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelAddress').toggle();">
+                            <div style="float: left;">
+                                收货地址
+                            </div>
+                            <div style="float:right; cursor: pointer;">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelAddress" style="display: none;">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.FirstName" class="col-xs-4 control-label">收货人</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.FirstName" type="text" disabled="disabled" class="input-sm form-control" style="width: 48%; display: inline-block;"/>
+                                            <input asp-for="ReceiveAddress.LastName" type="text" disabled="disabled" class="input-sm form-control" style="width: 48%; display: inline-block;"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.Mobile" class="col-xs-4 control-label">手机</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.Mobile" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.Country" class="col-xs-4 control-label">国家</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.Country" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.Province" class="col-xs-4 control-label">州</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.Province" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.City" class="col-xs-4 control-label">城市</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.City" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.Zipcode" class="col-xs-4 control-label">邮政编码</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.Zipcode" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.Tfn" class="col-xs-4 control-label">ABN/ACN</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.Tfn" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.Company" class="col-xs-4 control-label">公司</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="ReceiveAddress.Company" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label asp-for="ReceiveAddress.Address" class="col-xs-2 control-label">地址</label>
+                                        <div class="col-xs-10">
+                                            @if (string.IsNullOrWhiteSpace(Model.ReceiveAddress.UnitLoc)) {
+                                                <input asp-for="ReceiveAddress.Address" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            } else {
+                                                <input asp-for="ReceiveAddress.Address" type="text" disabled="disabled" value="@(Model.ReceiveAddress.UnitLoc), @(Model.ReceiveAddress.Address)" class="input-sm form-control"/>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelSenderAddress').toggle();">
+                            <div style="float: left;">
+                                发货地址
+                            </div>
+                            <div style="float:right; cursor: pointer;">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelSenderAddress" style="display: none;">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.Name" class="col-xs-4 control-label">发货人</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="SendAddress.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.Mobile" class="col-xs-4 control-label">手机</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="SendAddress.Mobile" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.Zipcode" class="col-xs-4 control-label">邮政编码</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="SendAddress.Zipcode" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.Province" class="col-xs-4 control-label">省份</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="SendAddress.Province" value="@(Model.SendAddress.Province.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.City" class="col-xs-4 control-label">城市</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="SendAddress.City" value="@(Model.SendAddress.City.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.Street" class="col-xs-4 control-label">街道</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="SendAddress.Street" value="@(Model.SendAddress.Street.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label asp-for="SendAddress.Address" class="col-xs-2 control-label">地址</label>
+                                        <div class="col-xs-10">
+                                            <input asp-for="SendAddress.Address" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </form>
         </div>
