@@ -13,8 +13,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 商品快递
 /// </summary>
-public class ExpressInfo : Entity
-{
+public class ExpressInfo : Entity {
     /// <summary>
     /// 快递单号，非空
     /// </summary>
@@ -59,7 +58,7 @@ public class ExpressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "添加用户不能为空！")]
     [JsonProperty("addUser")]
-    public virtual UserInfo AddUser { get; set; } = new ();
+    public virtual UserInfo AddUser { get; set; } = new();
 
     /// <summary>
     /// 面单客户，非空
@@ -81,21 +80,21 @@ public class ExpressInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "仓库不能为空！")]
     [JsonProperty("warehouse")]
-    public virtual WarehouseInfo Warehouse { get; set; } = new ();
+    public virtual WarehouseInfo Warehouse { get; set; } = new();
 
     /// <summary>
     /// 货架，非空
     /// </summary>
     [Required(ErrorMessage = "货架不能为空！")]
     [JsonProperty("shelf")]
-    public virtual ShelfInfo Shelf { get; set; } = new ();
+    public virtual ShelfInfo Shelf { get; set; } = new();
 
     /// <summary>
     /// 库位，非空
     /// </summary>
     [Required(ErrorMessage = "库位不能为空！")]
     [JsonProperty("storageLoc")]
-    public virtual StorageLocInfo StorageLoc { get; set; } = new ();
+    public virtual StorageLocInfo StorageLoc { get; set; } = new();
 
     /// <summary>
     /// 包裹数量，非空
@@ -268,6 +267,8 @@ public class ExpressInfo : Entity
     public virtual string GoodsNamesCache { get; set; } = string.Empty;
 
     public virtual string StorageLocNameCache { get; set; } = string.Empty;
+
+    public virtual IList<ExpressGoodsInfo> ExpressGoodsListCache { get; set; } = new List<ExpressGoodsInfo>();
 
     #endregion
 }

@@ -5,6 +5,7 @@ using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Core;
 using shunda.Core.Web;
+using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.LogisticsOrder;
@@ -74,6 +75,24 @@ public class LogisticsOrderDetailController : Controller {
             throw new ValidationException("订单发货地址缺失！");
         }
 
+        // 订单商品
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .ToList();
+
+        IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+
+        foreach (var express in expressList) {
+            int expressId = express.Id;
+            express.ExpressGoodsListCache = expressGoodsList
+                .Where(e => e.Express.Id == expressId)
+                .OrderBy(e => e.Id)
+                .ToList();
+        }
+
         // 订单操作日志
         var orderActionList = session.Query<LogisticsOrderActionInfo>()
             .Fetch(e => e.User)
@@ -87,6 +106,7 @@ public class LogisticsOrderDetailController : Controller {
             OrderRemarkList = logisticsOrderRemarkList,
             ReceiveAddress = receiveAddress,
             SendAddress = sendAddress,
+            ExpressList = expressList,
             LogisticsOrderActionList = orderActionList,
         };
 

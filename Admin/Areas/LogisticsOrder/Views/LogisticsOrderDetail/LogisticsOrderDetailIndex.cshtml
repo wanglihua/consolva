@@ -30,41 +30,14 @@
 
 @section Style
 {
-    <style type="text/css">
+    <style>
+
         div.detailSubTitle {
             margin: 10px 0;
             padding: 5px 0;
             font-weight: bold;
             border-bottom: lightgray 1px solid;
             color: #2a62bc;
-        }
-
-        div.goodsDetail {
-
-        }
-
-        div.goodsDetail div.goodsDetailEntry {
-            border: #F8F8F8 1px solid;
-            padding: 5px 0;
-        }
-
-        div.goodsDetailTitle {
-            height: 28px;
-            line-height: 28px;
-            /*background-color: #F8F8F8;*/
-            border: white 1px solid;
-            color: #2a62bc;
-            font-weight: bold;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        div.goodsDetailText {
-            height: 28px;
-            line-height: 28px;
-            border: #F8F8F8 1px solid;
-            text-align: center;
-            vertical-align: middle;
         }
         
         div.more {
@@ -590,7 +563,42 @@
 
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelAction').toggle();">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelOrderExpress').toggle();">
+                            <div style="float: left;">
+                                订单商品
+                            </div>
+                            <div style="float: right;">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelOrderExpress" style="display: none;">
+
+                            @{
+                                int expressNum = 0;
+                                foreach (var express in Model.ExpressList) {
+                                    expressNum++;
+
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="express_num_@(express.Id)" class="col-xs-4 control-label">快递单序号</label>
+                                                <div class="col-xs-8">
+                                                    <input id="express_num_@(express.Id)" value="#@(expressNum)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelOrderAction').toggle();">
                             <div style="float: left;">
                                 操作记录
                             </div>
@@ -599,7 +607,7 @@
                             </div>
                             <div style="clear: both;"></div>
                         </div>
-                        <div id="panelAction" style="display: none;">
+                        <div id="panelOrderAction" style="display: none;">
                             <table id="tblLogisticsOrderActionList" class="data-list-table table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
