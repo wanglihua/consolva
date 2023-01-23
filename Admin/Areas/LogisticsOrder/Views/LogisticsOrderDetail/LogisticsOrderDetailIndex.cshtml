@@ -607,6 +607,33 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="express_@(express.Id)_goods_type" class="col-xs-4 control-label">物品类型</label>
+                                                <div class="col-xs-8">
+                                                    <input id="express_@(express.Id)_goods_type" value="@(express.GoodsType.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="express_@(express.Id)_status" class="col-xs-4 control-label">快递状态</label>
+                                                <div class="col-xs-8">
+                                                    <input id="express_@(express.Id)_status" value="@(express.Status.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="express_@(express.Id)_add_time" class="col-xs-4 control-label">入库时间</label>
+                                                <div class="col-xs-8">
+                                                    <input id="express_@(express.Id)_add_time" value="@(express.AddTime.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     int expressGoodsNum = 0;
