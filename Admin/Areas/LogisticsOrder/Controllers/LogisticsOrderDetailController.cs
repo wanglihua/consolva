@@ -20,11 +20,11 @@ public class LogisticsOrderDetailController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/order/detail/{id:int}")]
-    public IActionResult Index(int id) {
-        var order = session.Get<LogisticsOrderInfo>(id);
+    [Route("/admin/logistics/order/detail/{orderId:int}")]
+    public IActionResult Index(int orderId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
-            throw new ValidationException($"指定的订单#{id}不存在！");
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
         NHibernateUtil.Initialize(order.Customer);
@@ -41,9 +41,16 @@ public class LogisticsOrderDetailController : Controller {
             menuType = OrderListMenuType.Cancel;
         }
 
+        // 订单备注
+        var logisticsOrderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.Id)
+            .ToList();
+
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             LogisticsOrder = order,
+            LogisticsOrderRemarkList = logisticsOrderRemarkList,
         };
 
         return View("LogisticsOrderDetailIndex", model);

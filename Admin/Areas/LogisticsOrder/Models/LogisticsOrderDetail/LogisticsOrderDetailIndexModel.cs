@@ -10,4 +10,7 @@ public class LogisticsOrderDetailIndexModel {
 
     [BindNever]
     public LogisticsOrderInfo LogisticsOrder { get; set; } = new();
+
+    [BindNever]
+    public IList<LogisticsOrderRemarkInfo> LogisticsOrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
 }
