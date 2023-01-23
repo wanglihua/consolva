@@ -27,13 +27,8 @@ public class LogisticsOrderRemarkService {
         StringBuilder sb = new StringBuilder();
         int index = 0;
         foreach (var orderRemark in orderRemarkList) {
-            string reason = orderRemark.Reason.Replace("\n", "").Replace("\r", "").Replace("\t", "");
-            if (string.IsNullOrWhiteSpace(reason) == false) {
-                reason = $"[{reason}]";
-            }
-
             string remark = orderRemark.Content.Replace("\n", "").Replace("\r", "").Replace("\t", "");
-            sb.Append($"{orderRemark.Type.Name}:{reason}{remark}");
+            sb.Append($"{orderRemark.Type.Name}:{remark}");
             if (index < remarkCount - 1) {
                 sb.Append("<br/>");
             }

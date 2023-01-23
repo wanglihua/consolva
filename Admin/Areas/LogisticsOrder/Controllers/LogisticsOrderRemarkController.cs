@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
@@ -36,19 +37,17 @@ public class LogisticsOrderRemarkController : Controller {
 
         LogisticsOrderRemarkDetailModel model = new LogisticsOrderRemarkDetailModel();
         model.Id = logisticsOrderRemark.Id;
-        model.Reason = logisticsOrderRemark.Reason;
         model.Content = logisticsOrderRemark.Content;
 
         model.OrderId = orderId;
         model.OrderCode = order.Code;
-
-        model.RemarkReasonList = session.Query<LogisticsOrderRemarkReasonInfo>().OrderBy(e => e.Reason).ToList();
 
         return View("LogisticsOrderRemarkDetail", model);
     }
 
     [HttpPost]
     [Route("/admin/logistics/order/remark/save")]
+    [Transactional]
     public IActionResult Save(LogisticsOrderRemarkSaveModel model) {
         int orderId = model.OrderId;
         LogisticsOrderInfo logisticsOrder = session.Get<LogisticsOrderInfo>(orderId);
@@ -74,7 +73,6 @@ public class LogisticsOrderRemarkController : Controller {
 
         logisticsOrderRemark.Type = LogisticsOrderRemarkType.Service;
         logisticsOrderRemark.Order = logisticsOrder;
-        logisticsOrderRemark.Reason = model.Reason;
         logisticsOrderRemark.Content = model.Content;
         logisticsOrderRemark.AddUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
 
@@ -108,6 +106,7 @@ public class LogisticsOrderRemarkController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/remark/single/delete")]
+    [Transactional]
     public IActionResult SingleDelete(int id) {
         LogisticsOrderRemarkInfo logisticsOrderRemark = session.Get<LogisticsOrderRemarkInfo>(id);
         if (logisticsOrderRemark == null) {

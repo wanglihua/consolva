@@ -24,14 +24,6 @@ public class LogisticsOrderRemarkInfo : Entity {
     [JsonProperty("type")]
     [ModelBinder(typeof(LogisticsOrderRemarkTypeModelBinder))]
     public virtual LogisticsOrderRemarkType Type { get; set; } = LogisticsOrderRemarkType.None;
-    
-    /// <summary>
-    /// 原因，非空
-    /// </summary>
-    [Required(ErrorMessage = "原因不能为空！")]
-    [MaxLength(100, ErrorMessage = "原因长度不能大于100！")]
-    [JsonProperty("reason")]
-    public virtual string Reason { get; set; } = string.Empty;    
 
     /// <summary>
     /// 备注，非空

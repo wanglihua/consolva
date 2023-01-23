@@ -30,15 +30,6 @@ public class LogisticsOrderRemarkInfoMapping : EntityMapping<LogisticsOrderRemar
         );
 
         Property(
-            x => x.Reason,
-            map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("reason");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
             x => x.Content,
             map => {
                 map.Type(NHibernateUtil.String);
