@@ -579,16 +579,50 @@
                                 foreach (var express in Model.ExpressList) {
                                     expressNum++;
 
-                                    <div class="row">
+                                    <div class="row" style="padding-top: 10px; background-color: #E1E0F1;">
                                         <div class="col-xs-3">
                                             <div class="form-group">
-                                                <label for="express_num_@(express.Id)" class="col-xs-4 control-label">快递单序号</label>
+                                                <label for="express_@(express.Id)_num" class="col-xs-4 control-label">快递单序号</label>
                                                 <div class="col-xs-8">
-                                                    <input id="express_num_@(express.Id)" value="#@(expressNum)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                    <input id="express_@(express.Id)_num" value="#@(expressNum)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="express_@(express.Id)_tracking_no" class="col-xs-4 control-label">快递单号</label>
+                                                <div class="col-xs-8">
+                                                    <input id="express_@(express.Id)_tracking_no" value="@(express.TrackingNo)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="express_@(express.Id)_checkin_tracking_no" class="col-xs-4 control-label">入库跟踪号</label>
+                                                <div class="col-xs-8">
+                                                    <input id="express_@(express.Id)_checkin_tracking_no" value="@(express.CheckinTrackingNo)" type="text" disabled="disabled" class="input-sm form-control"/>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    int expressGoodsNum = 0;
+                                    foreach (var expressGoods in express.ExpressGoodsListCache) {
+                                        expressGoodsNum++;
+                                        <div class="row" style="padding-top: 10px; background-color: #FFEFC1;">
+                                            <div class="col-xs-3">
+                                                <div class="form-group">
+                                                    <label for="express_goods_@(expressGoods.Id)_num" class="col-xs-4 control-label">物品序号</label>
+                                                    <div class="col-xs-8">
+                                                        <input id="express_goods_@(expressGoods.Id)_num" value="#@(expressGoodsNum)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    }
                                 }
                             }
 
