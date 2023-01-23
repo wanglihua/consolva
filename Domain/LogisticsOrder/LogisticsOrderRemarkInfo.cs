@@ -24,6 +24,14 @@ public class LogisticsOrderRemarkInfo : Entity {
     [JsonProperty("type")]
     [ModelBinder(typeof(LogisticsOrderRemarkTypeModelBinder))]
     public virtual LogisticsOrderRemarkType Type { get; set; } = LogisticsOrderRemarkType.None;
+    
+    /// <summary>
+    /// 原因，非空
+    /// </summary>
+    [Required(ErrorMessage = "原因不能为空！")]
+    [MaxLength(100, ErrorMessage = "原因长度不能大于100！")]
+    [JsonProperty("reason")]
+    public virtual string Reason { get; set; } = string.Empty;    
 
     /// <summary>
     /// 备注，非空
@@ -31,7 +39,7 @@ public class LogisticsOrderRemarkInfo : Entity {
     [Required(ErrorMessage = "备注不能为空！")]
     [MaxLength(300, ErrorMessage = "备注长度不能大于300！")]
     [JsonProperty("remark")]
-    public virtual string Remark { get; set; } = string.Empty;
+    public virtual string Content { get; set; } = string.Empty;
 
     /// <summary>
     /// 添加用户，可空

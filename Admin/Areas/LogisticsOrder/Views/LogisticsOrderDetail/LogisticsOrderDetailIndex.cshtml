@@ -101,12 +101,30 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.Country.Name" class="col-xs-4 control-label">国家</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.Country.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.GoodsType" class="col-xs-4 control-label">物品类型</label>
+                                        <label asp-for="LogisticsOrder.GoodsType.Name" class="col-xs-4 control-label">物品类型</label>
                                         <div class="col-xs-8">
                                             <input asp-for="LogisticsOrder.GoodsType.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                               <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.CreateMethod.Name" class="col-xs-4 control-label">创建方式</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.CreateMethod.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -174,12 +192,24 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.PaidAmount" class="col-xs-4 control-label">支付金额</label>
+                                        <div class="col-xs-8">
+                                            <div class="input-group">
+                                                <input asp-for="LogisticsOrder.PaidAmount" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <span class="input-group-addon">RMB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
                                         <label asp-for="LogisticsOrder.CreateTime" class="col-xs-4 control-label">创建时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.CreateTime" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="LogisticsOrder.CreateTime" value="@(Model.LogisticsOrder.CreateTime.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -188,7 +218,7 @@
                                     <div class="form-group">
                                         <label asp-for="LogisticsOrder.PayTime" class="col-xs-4 control-label">支付时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.PayTime" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="LogisticsOrder.PayTime" value="@(Model.LogisticsOrder.PayTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -197,7 +227,34 @@
                                     <div class="form-group">
                                         <label asp-for="LogisticsOrder.SubmitPackTime" class="col-xs-4 control-label">提交打包时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.SubmitPackTime" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="LogisticsOrder.SubmitPackTime" value="@(Model.LogisticsOrder.SubmitPackTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.CompletePackTime" class="col-xs-4 control-label">完成打包时间</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.CompletePackTime" value="@(Model.LogisticsOrder.CompletePackTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.TransferTime" class="col-xs-4 control-label">转运时间</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.TransferTime" value="@(Model.LogisticsOrder.TransferTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-xs-3">
+                                    <div class="form-group">
+                                        <label asp-for="LogisticsOrder.DeliverTime" class="col-xs-4 control-label">签收时间</label>
+                                        <div class="col-xs-8">
+                                            <input asp-for="LogisticsOrder.DeliverTime" value="@(Model.LogisticsOrder.DeliverTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
