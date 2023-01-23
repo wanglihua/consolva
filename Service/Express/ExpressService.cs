@@ -1,3 +1,4 @@
+using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Express;
@@ -13,6 +14,33 @@ public class ExpressService {
     public ExpressService(ISession session, ExpressLogService expressLogService) {
         this.session = session;
         this.expressLogService = expressLogService;
+    }
+
+    /// <summary>
+    /// 获取订单快递单列表，用于订单详细界面显示
+    /// </summary>
+    /// <param name="orderId"></param>
+    /// <returns></returns>
+    public IList<ExpressInfo> GetExpressListForOrderDetail(int orderId) {
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .ToList();
+
+        IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+
+        foreach (var express in expressList) {
+            int expressId = express.Id;
+            express.ExpressGoodsListCache = expressGoodsList
+                .Where(e => e.Express.Id == expressId)
+                .OrderBy(e => e.Id)
+                .ToList();
+        }
+
+        return expressList;
     }
 
     public void Delete(int expressId, int userId) {

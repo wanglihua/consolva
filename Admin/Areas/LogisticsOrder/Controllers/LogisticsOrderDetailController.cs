@@ -8,6 +8,7 @@ using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Express;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -18,12 +19,15 @@ namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
 public class LogisticsOrderDetailController : Controller {
     private readonly ISession session;
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
+    private readonly ExpressService expressService;
 
     public LogisticsOrderDetailController(ISession session,
-        LogisticsOrderRemarkService logisticsOrderRemarkService
+        LogisticsOrderRemarkService logisticsOrderRemarkService,
+        ExpressService expressService
     ) {
         this.session = session;
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
+        this.expressService = expressService;
     }
 
     [HttpGet]
@@ -76,22 +80,7 @@ public class LogisticsOrderDetailController : Controller {
         }
 
         // 订单商品
-        var expressList = session.Query<ExpressInfo>()
-            .Where(e => e.Order!.Id == orderId)
-            .ToList();
-
-        IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
-        var expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Where(e => expressIdList.Contains(e.Express.Id))
-            .ToList();
-
-        foreach (var express in expressList) {
-            int expressId = express.Id;
-            express.ExpressGoodsListCache = expressGoodsList
-                .Where(e => e.Express.Id == expressId)
-                .OrderBy(e => e.Id)
-                .ToList();
-        }
+        var expressList = expressService.GetExpressListForOrderDetail(orderId);
 
         // 订单操作日志
         var orderActionList = session.Query<LogisticsOrderActionInfo>()
