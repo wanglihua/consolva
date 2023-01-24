@@ -11,6 +11,7 @@ using shunda.Domain;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
+using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Logistics.Controllers;
@@ -19,10 +20,13 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [AdminAuth(PassRes.Logistics.LogisticsModeList)]
 public class LogisticsModeController : Controller {
     private readonly ISession session;
+    private readonly WarehouseService warehouseService;
+
     // private LogisticsModeService logisticsModeService = null; todo 后面补上
 
-    public LogisticsModeController(ISession session /*, LogisticsModeService logisticsModeService*/) {
+    public LogisticsModeController(ISession session, WarehouseService warehouseService /*, LogisticsModeService logisticsModeService*/) {
         this.session = session;
+        this.warehouseService = warehouseService;
         // this.logisticsModeService = logisticsModeService;
     }
 
@@ -193,7 +197,7 @@ public class LogisticsModeController : Controller {
 
         var feeRateEnabledStatus = LogisticsFeeRateStatus.Enabled;
         model.LogisticsFeeRateList = session.Query<LogisticsFeeRateInfo>().Where(e => e.Status == feeRateEnabledStatus).OrderBy(e => e.Id).ToList();
-        model.WarehouseList = session.Query<WarehouseInfo>().OrderBy(e => e.OrderNum).ToList();
+        model.WarehouseList = warehouseService.GetWarehouseList();
         model.StatusList = LogisticsModeStatus.GetList();
         model.RepackTypeList = LogisticsRepackType.GetList();
         model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();

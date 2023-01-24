@@ -16,6 +16,7 @@ public class WarehouseService {
         return session.Query<WarehouseInfo>()
             .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
             .OrderBy(e => e.OrderNum)
+            .ThenBy(e => e.Id)
             .ToList();
     }
 }

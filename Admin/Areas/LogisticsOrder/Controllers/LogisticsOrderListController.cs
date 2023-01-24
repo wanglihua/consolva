@@ -15,6 +15,7 @@ using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Customer;
 using shunda.Service.LogisticsOrder;
+using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -27,18 +28,21 @@ public class LogisticsOrderListController : Controller {
     private readonly CustomerCodeService customerCodeService;
     private readonly LogisticsOrderStatusService logisticsOrderStatusService;
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
+    private readonly WarehouseService warehouseService;
 
     public LogisticsOrderListController(ISession session,
         LoginUserService loginUserService,
         CustomerCodeService customerCodeService,
         LogisticsOrderStatusService logisticsOrderStatusService,
-        LogisticsOrderRemarkService logisticsOrderRemarkService
+        LogisticsOrderRemarkService logisticsOrderRemarkService,
+        WarehouseService warehouseService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
         this.logisticsOrderStatusService = logisticsOrderStatusService;
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
+        this.warehouseService = warehouseService;
     }
 
     [HttpGet]
@@ -78,12 +82,7 @@ public class LogisticsOrderListController : Controller {
         model.OrderStatusList = LogisticsOrderStatus.GetList();
         model.PayStatusList = PayStatus.GetList();
 
-        model.ReceivingWarehouseList = session
-            .Query<WarehouseInfo>()
-            .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
-            .OrderBy(e => e.OrderNum)
-            .ThenBy(e => e.Id)
-            .ToList();
+        model.ReceivingWarehouseList = warehouseService.GetWarehouseList();
 
         model.TimeRangeTypeList = TimeRangeType.GetList();
 

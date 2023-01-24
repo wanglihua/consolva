@@ -363,11 +363,7 @@ public class ExpressCheckinController : Controller {
         }
 
         int warehouseId = model.WarehouseId;
-        WarehouseInfo? warehouse = session.Query<WarehouseInfo>()
-            .Where(e => e.Id == warehouseId)
-            .Take(1)
-            .SingleOrDefault();
-
+        var warehouse = session.Get<WarehouseInfo>(warehouseId);
         if (warehouse == null) {
             throw new ValidationException("指定的仓库不存在！");
         }

@@ -10,25 +10,25 @@ using shunda.Domain.Express;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
+using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.ReceivePack.Controllers;
 
 [ReceivePackArea]
 [AdminAuth(PassRes.ReceivePack.ExpressCheckinConfig)]
-public class ShelfUserController : Controller
-{
-    private ISession session;
+public class ShelfUserController : Controller {
+    private readonly ISession session;
+    private readonly WarehouseService warehouseService;
 
-    public ShelfUserController(ISession session)
-    {
+    public ShelfUserController(ISession session, WarehouseService warehouseService) {
         this.session = session;
+        this.warehouseService = warehouseService;
     }
 
     [HttpGet]
     [Route("/admin/shelf/user")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         ShelfUserIndexModel model = new ShelfUserIndexModel();
 
         model.TypeList = ShelfUserType.GetList();
@@ -38,8 +38,7 @@ public class ShelfUserController : Controller
 
     [HttpPost]
     [Route("/admin/shelf/user/list")]
-    public IActionResult List(ShelfUserListQueryParam queryParam)
-    {
+    public IActionResult List(ShelfUserListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -53,8 +52,7 @@ public class ShelfUserController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<ShelfUserInfo>();
 
-        foreach (ShelfUserInfo su in shelfUserList)
-        {
+        foreach (ShelfUserInfo su in shelfUserList) {
             // su.Shelf.TypeName = ShelfType.GetById(su.Shelf.TypeId)?.Name;
         }
 
@@ -65,8 +63,7 @@ public class ShelfUserController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(ShelfUserListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(ShelfUserListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<ShelfUserInfo>();
         criteria = criteria.SetReadOnly(true);
 
@@ -74,14 +71,12 @@ public class ShelfUserController : Controller
         criteria = criteria.CreateAlias(nameof(ShelfUserInfo.Warehouse), nameof(ShelfUserInfo.Warehouse));
         criteria = criteria.CreateAlias(nameof(ShelfUserInfo.Shelf), nameof(ShelfUserInfo.Shelf));
 
-        if (string.IsNullOrWhiteSpace(queryParam.ShelfNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.ShelfNameQuery) == false) {
             string shelfNameQuery = queryParam.ShelfNameQuery.Trim();
             criteria = criteria.Add(Restrictions.Like($"{nameof(ShelfUserInfo.Shelf)}.{nameof(ShelfUserInfo.Shelf.Name)}", shelfNameQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.UserQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.UserQuery) == false) {
             string userQuery = queryParam.UserQuery.Trim();
             criteria = criteria.Add(
                 Restrictions.Or(
@@ -96,23 +91,18 @@ public class ShelfUserController : Controller
 
     [HttpPost]
     [Route("/admin/shelf/user/detail")]
-    public IActionResult Detail(int id)
-    {
+    public IActionResult Detail(int id) {
         session.DefaultReadOnly = true;
 
         ShelfUserInfo shelfUser;
 
         ShelfUserDetailModel model = new ShelfUserDetailModel();
-        if (id == 0)
-        {
+        if (id == 0) {
             shelfUser = new ShelfUserInfo();
             model.ShelfList = new List<ShelfInfo>();
-        }
-        else
-        {
+        } else {
             shelfUser = session.Get<ShelfUserInfo>(id);
-            if (shelfUser == null)
-            {
+            if (shelfUser == null) {
                 throw new ValidationException($"指定的 货架用户关联#{id} 不存在！");
             }
 
@@ -124,8 +114,7 @@ public class ShelfUserController : Controller
                 .OrderBy(e => e.OrderNum).ThenBy(e => e.Name)
                 .ToList();
 
-            foreach (ShelfInfo shelf in shelfList)
-            {
+            foreach (ShelfInfo shelf in shelfList) {
                 // shelf.TypeName = ShelfType.GetById(shelf.TypeId)?.Name;
             }
 
@@ -139,7 +128,7 @@ public class ShelfUserController : Controller
         model.ShelfId = shelfUser.Shelf?.Id ?? 0;
         model.Type = shelfUser.Type;
 
-        model.WarehouseList = session.Query<WarehouseInfo>().Where(e => e.InnerStatus == WarehouseStatus.Enabled).ToList();
+        model.WarehouseList = warehouseService.GetWarehouseList();
 
         model.TypeList = ShelfUserType.GetList();
 
@@ -148,15 +137,13 @@ public class ShelfUserController : Controller
 
     [HttpPost]
     [Route("/admin/shelf/user/shelf/list")]
-    public IActionResult ShelfList(int warehouseId)
-    {
+    public IActionResult ShelfList(int warehouseId) {
         IList<ShelfInfo> shelfList = session.Query<ShelfInfo>()
             .Where(e => e.Warehouse.Id == warehouseId && e.Status == ShelfStatus.Enabled)
             .OrderBy(e => e.OrderNum).ThenBy(e => e.Name)
             .ToList();
 
-        foreach (ShelfInfo shelf in shelfList)
-        {
+        foreach (ShelfInfo shelf in shelfList) {
             // shelf.TypeName = ShelfType.GetById(shelf.TypeId)?.Name;
         }
 
@@ -169,10 +156,8 @@ public class ShelfUserController : Controller
     [HttpPost]
     [Route("/admin/shelf/user/save")]
     [Transactional]
-    public IActionResult Save(ShelfUserDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(ShelfUserDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -182,15 +167,11 @@ public class ShelfUserController : Controller
 
         ShelfUserInfo shelfUser;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             shelfUser = new ShelfUserInfo();
-        }
-        else
-        {
+        } else {
             shelfUser = session.Get<ShelfUserInfo>(shelfUserId);
-            if (shelfUser == null)
-            {
+            if (shelfUser == null) {
                 throw new ValidationException($"指定的 货架用户关联#{shelfUserId} 不存在！");
             }
         }
@@ -198,8 +179,7 @@ public class ShelfUserController : Controller
         string loginName = model.LoginName?.Trim() ?? string.Empty;
 
         UserInfo? user = session.Query<UserInfo>().Where(e => e.LoginName == loginName).Take(1).SingleOrDefault();
-        if (user == null)
-        {
+        if (user == null) {
             throw new ValidationException("指定的用户不存在！");
         }
 
@@ -211,12 +191,9 @@ public class ShelfUserController : Controller
         shelfUser.Shelf = shelf;
         shelfUser.Type = model.Type;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(shelfUser);
-        }
-        else
-        {
+        } else {
             session.Update(shelfUser);
         }
 
@@ -231,15 +208,12 @@ public class ShelfUserController : Controller
     [HttpPost]
     [Route("/admin/shelf/user/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Delete(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("请选择要删除的数据项！");
         }
 
-        foreach (int id in idList)
-        {
+        foreach (int id in idList) {
             ShelfUserInfo shelfUser = session.Load<ShelfUserInfo>(id);
             session.Delete(shelfUser);
         }

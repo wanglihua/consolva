@@ -14,6 +14,7 @@ using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Customer;
 using shunda.Service.Express;
+using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
@@ -32,6 +33,7 @@ public class ExpressController : Controller {
     private readonly CustomerCodeService customerCodeService;
     private readonly ExpressExcelService expressExcelService;
     private readonly ExpressService expressService;
+    private readonly WarehouseService warehouseService;
 
     public ExpressController(ISession session,
         ExpressListService expressListService,
@@ -40,7 +42,8 @@ public class ExpressController : Controller {
         LoginUserService loginUserService,
         CustomerCodeService customerCodeService,
         ExpressExcelService expressExcelService,
-        ExpressService expressService
+        ExpressService expressService,
+        WarehouseService warehouseService
     ) {
         this.session = session;
         this.expressListService = expressListService;
@@ -50,6 +53,7 @@ public class ExpressController : Controller {
         this.customerCodeService = customerCodeService;
         this.expressExcelService = expressExcelService;
         this.expressService = expressService;
+        this.warehouseService = warehouseService;
     }
 
     [HttpGet]
@@ -57,10 +61,7 @@ public class ExpressController : Controller {
     public IActionResult Index() {
         ExpressIndexModel model = new ExpressIndexModel();
 
-        model.WarehouseList = session.Query<WarehouseInfo>()
-            .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
-            .OrderBy(e => e.OrderNum)
-            .ToList();
+        model.WarehouseList = warehouseService.GetWarehouseList();
 
         model.CheckinUserList = session.Query<WarehouseWorkerInfo>()
             .Fetch(e => e.User)
