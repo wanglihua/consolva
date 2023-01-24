@@ -7,8 +7,7 @@ using shunda.Domain.Pass;
 namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
-public class PassResService
-{
+public class PassResService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly string PassResCachekey = "user_pass_res_dict_for_all";
@@ -17,8 +16,7 @@ public class PassResService
     private ISession session;
     public IMemoryCache memoryCache;
 
-    public PassResService(ISession session, IMemoryCache memoryCache)
-    {
+    public PassResService(ISession session, IMemoryCache memoryCache) {
         this.session = session;
         this.memoryCache = memoryCache;
     }
@@ -28,43 +26,34 @@ public class PassResService
     /// </summary>
     /// <param name="userId"></param>
     /// <returns>返回的 Dictionary&lt;int, bool&gt; 不会是 null，只可能是没有一个元素的空的 Dictionary&lt;int, bool&gt;</returns>
-    public Dictionary<int, bool> GetPassResIdMap(int userId)
-    {
+    public Dictionary<int, bool> GetPassResIdMap(int userId) {
         Dictionary<int, Dictionary<int, bool>> userPassResDict = RetriveOrGetCachedPassResIdMapForAllUser();
-        if (userPassResDict.TryGetValue(userId, out Dictionary<int, bool>? passResDict) == false)
-        {
+        if (userPassResDict.TryGetValue(userId, out Dictionary<int, bool>? passResDict) == false) {
             passResDict = new Dictionary<int, bool>();
         }
 
         return passResDict;
     }
 
-    public Dictionary<int, Dictionary<int, bool>> RetriveOrGetCachedPassResIdMapForAllUser()
-    {
-        if (memoryCache.TryGetValue(PassResCachekey, out Dictionary<int, Dictionary<int, bool>> userPassResDict) == false)
-        {
+    public Dictionary<int, Dictionary<int, bool>> RetriveOrGetCachedPassResIdMapForAllUser() {
+        if (memoryCache.TryGetValue(PassResCachekey, out Dictionary<int, Dictionary<int, bool>> userPassResDict) == false) {
             log.Trace("user_pass_res_dict load from cache failed");
 
             userPassResDict = RetrivePassResIdMapForAllUser();
             memoryCache.Set(PassResCachekey, userPassResDict, PassResCacheTimeSpan);
-        }
-        else
-        {
+        } else {
             log.Trace("user_pass_res_dict load from cache success");
         }
 
         return userPassResDict;
     }
 
-    public void CachePassResIdMapForAllUser()
-    {
+    public void CachePassResIdMapForAllUser() {
         Dictionary<int, Dictionary<int, bool>> userPassResDict = RetrivePassResIdMapForAllUser();
         memoryCache.Set(PassResCachekey, userPassResDict, PassResCacheTimeSpan);
     }
 
-    public Dictionary<int, Dictionary<int, bool>> RetrivePassResIdMapForAllUser()
-    {
-
+    public Dictionary<int, Dictionary<int, bool>> RetrivePassResIdMapForAllUser() {
         var userPassResList = session.Query<UserPassResInfo>()
             .Select(e => new {
                 UserId = e.User.Id,
@@ -90,17 +79,8 @@ public class PassResService
         Dictionary<int, Dictionary<int, bool>> userPassResDict = new Dictionary<int, Dictionary<int, bool>>();
 
         // 直接设置到用户的权限
-        foreach (var upr in userPassResList)
-        {
-            if (userPassResDict.TryGetValue(upr.UserId, out Dictionary<int, bool>? passResDict))
-            {
-                if (passResDict == null)
-                {
-                    passResDict = new Dictionary<int, bool>();
-                }
-            }
-            else
-            {
+        foreach (var upr in userPassResList) {
+            if (userPassResDict.TryGetValue(upr.UserId, out Dictionary<int, bool>? passResDict) == false) {
                 passResDict = new Dictionary<int, bool>();
             }
 
@@ -110,17 +90,8 @@ public class PassResService
         }
 
         // 通过群组设置的权限
-        foreach (var upr in groupUserPassResList)
-        {
-            if (userPassResDict.TryGetValue(upr.UserId, out Dictionary<int, bool>? passResDict))
-            {
-                if (passResDict == null)
-                {
-                    passResDict = new Dictionary<int, bool>();
-                }
-            }
-            else
-            {
+        foreach (var upr in groupUserPassResList) {
+            if (userPassResDict.TryGetValue(upr.UserId, out Dictionary<int, bool>? passResDict) == false) {
                 passResDict = new Dictionary<int, bool>();
             }
 
