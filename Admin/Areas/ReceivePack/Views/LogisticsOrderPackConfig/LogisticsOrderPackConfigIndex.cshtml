@@ -1,0 +1,211 @@
+
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderPackConfig.LogisticsOrderPackConfigIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = "物流订单打包配置";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="goods-receive-pack-menu">收货打包</li>
+    <li class="active" data-menu="goods-receive-pack-order-pack-config-index-menu">
+        物流订单打包配置
+    </li>
+}
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="saveLogisticsOrderPackConfig();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 980px;">
+        <div class="widget-body">
+            <div class="widget-main">
+                <form id="logisticsOrderPackConfigDetailForm" class="form-horizontal" role="form">
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="SortType" class="col-xs-6 control-label">打包订单排序</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="SortType" class="input-sm form-control" required="required">
+                                        @foreach (var sortType in Model.SortTypeList)
+                                        {
+                                            <option value="@sortType.Id">@sortType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="DisplayType" class="col-xs-6 control-label">打包订单显示</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="DisplayType" class="input-sm form-control" required="required">
+                                        @foreach (var displayType in Model.DisplayTypeList)
+                                        {
+                                            <option value="@displayType.Id">@displayType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="Label1015Enabled" class="col-xs-6 control-label">标签10*15是否启用</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="Label1015Enabled" class="input-sm form-control" required="required">
+                                        <option value="@(true.ToString())">是，启用</option>
+                                        <option value="@(false.ToString())">否，不启用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="Label1015PrintCount" class="col-xs-6 control-label">标签10*15打印数量</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="Label1015PrintCount" class="input-sm form-control" required="required">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="Label1005Enabled" class="col-xs-6 control-label">标签10*5是否启用</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="Label1005Enabled" class="input-sm form-control" required="required">
+                                        <option value="@(true.ToString())">是，启用</option>
+                                        <option value="@(false.ToString())">否，不启用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="Label1005PrintCount" class="col-xs-6 control-label">标签10*5打印数量</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="Label1005PrintCount" class="input-sm form-control" required="required">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>                                        
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="Label0505Enabled" class="col-xs-6 control-label">标签5*5是否启用</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="Label0505Enabled" class="input-sm form-control" required="required">
+                                        <option value="@(true.ToString())">是，启用</option>
+                                        <option value="@(false.ToString())">否，不启用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="Label0505PrintCount" class="col-xs-6 control-label">标签5*5打印数量</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="Label0505PrintCount" class="input-sm form-control" required="required">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="TrackingNoManualInputEnabled" class="col-xs-6 control-label">是否允许快递单号手工输入</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="TrackingNoManualInputEnabled" class="input-sm form-control" required="required">
+                                        <option value="@(true.ToString())">是，允许</option>
+                                        <option value="@(false.ToString())">否，不允许</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>                    
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function saveLogisticsOrderPackConfig() {
+        var form = $("#logisticsOrderPackConfigDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsOrderPackConfig")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                    } else {
+                        $.msg.show(data.message);
+                    }
+
+                    hideMask();
+                }
+            });
+        }
+    }
+
+</script>
