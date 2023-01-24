@@ -1,3 +1,4 @@
+using System.Data;
 using System.Data.Common;
 using MySql.Data.MySqlClient;
 using NLog;
@@ -41,5 +42,53 @@ public class MiniProfilerMySqlDbCommand : ProfiledDbCommand {
         }
 
         return base.ExecuteNonQueryAsync(cancellationToken);
+    }
+
+    protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior) {
+        if (this.Transaction == null) {
+            string commandText = this.CommandText.Trim();
+            commandText = commandText.ToLower();
+            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
+                throw new ValidationException("操作未启用数据库事务！");
+            }
+        }
+
+        return base.ExecuteDbDataReader(behavior)!;
+    }
+
+    protected override Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) {
+        if (this.Transaction == null) {
+            string commandText = this.CommandText.Trim();
+            commandText = commandText.ToLower();
+            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
+                throw new ValidationException("操作未启用数据库事务！");
+            }
+        }
+
+        return base.ExecuteDbDataReaderAsync(behavior, cancellationToken);
+    }
+
+    public override object ExecuteScalar() {
+        if (this.Transaction == null) {
+            string commandText = this.CommandText.Trim();
+            commandText = commandText.ToLower();
+            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
+                throw new ValidationException("操作未启用数据库事务！");
+            }
+        }
+
+        return base.ExecuteScalar();
+    }
+
+    public override Task<object> ExecuteScalarAsync(CancellationToken cancellationToken) {
+        if (this.Transaction == null) {
+            string commandText = this.CommandText.Trim();
+            commandText = commandText.ToLower();
+            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
+                throw new ValidationException("操作未启用数据库事务！");
+            }
+        }
+
+        return base.ExecuteScalarAsync(cancellationToken);
     }
 }

@@ -57,7 +57,7 @@ public class LogisticsOrderPackConfigController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/pack/config/save")]
-    [Transactional]
+    // [Transactional]
     public IActionResult Save(LogisticsOrderPackConfigIndexModel model) {
         if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
