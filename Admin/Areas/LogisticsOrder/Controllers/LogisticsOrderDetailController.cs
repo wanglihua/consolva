@@ -31,8 +31,9 @@ public class LogisticsOrderDetailController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/order/detail/{orderId:int}")]
-    public IActionResult Index(int orderId) {
+    [Route("/admin/logistics/order/detail/{id:int}")]
+    public IActionResult Index(int id) {
+        int orderId = id;
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
