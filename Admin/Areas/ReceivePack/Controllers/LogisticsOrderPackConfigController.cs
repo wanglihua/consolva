@@ -3,6 +3,7 @@ using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderPackConfig;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
@@ -56,6 +57,7 @@ public class LogisticsOrderPackConfigController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/pack/config/save")]
+    [Transactional]
     public IActionResult Save(LogisticsOrderPackConfigIndexModel model) {
         if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
