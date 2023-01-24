@@ -36,17 +36,17 @@ public class LogisticsOrderRemarkController : Controller {
 
         LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
-            throw new ValidationException("指定的订单不存在！");
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
         LogisticsOrderRemarkInfo logisticsOrderRemark = new LogisticsOrderRemarkInfo();
 
-        LogisticsOrderRemarkDetailModel model = new LogisticsOrderRemarkDetailModel();
-        model.Id = logisticsOrderRemark.Id;
-        model.Content = logisticsOrderRemark.Content;
-
-        model.OrderId = orderId;
-        model.OrderCode = order.Code;
+        LogisticsOrderRemarkDetailModel model = new LogisticsOrderRemarkDetailModel {
+            Id = logisticsOrderRemark.Id,
+            Content = logisticsOrderRemark.Content,
+            OrderId = orderId,
+            OrderCode = order.Code,
+        };
 
         return View("LogisticsOrderRemarkDetail", model);
     }
@@ -58,7 +58,7 @@ public class LogisticsOrderRemarkController : Controller {
         int orderId = model.OrderId;
         LogisticsOrderInfo logisticsOrder = session.Get<LogisticsOrderInfo>(orderId);
         if (logisticsOrder == null) {
-            throw new ValidationException("指定的订单不存在！");
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
         if (!ModelState.IsValid) {
@@ -75,12 +75,15 @@ public class LogisticsOrderRemarkController : Controller {
             logisticsOrderRemark = new LogisticsOrderRemarkInfo();
         } else {
             logisticsOrderRemark = session.Get<LogisticsOrderRemarkInfo>(logisticsOrderRemarkId);
+            if (logisticsOrderRemark == null) {
+                throw new ValidationException($"指定的订单备注#{logisticsOrderRemarkId}不存在！");
+            }
         }
 
         logisticsOrderRemark.Type = LogisticsOrderRemarkType.Service;
         logisticsOrderRemark.Order = logisticsOrder;
         logisticsOrderRemark.Content = model.Content;
-        logisticsOrderRemark.AddUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
+        logisticsOrderRemark.AddUser = loginUserService.GetLoginUser();
 
         if (isCreate) {
             session.Save(logisticsOrderRemark);
