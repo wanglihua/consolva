@@ -97,6 +97,7 @@
                 </li>
             }
 
+            @*
             @if (Model.HasPassRes(PassRes.ReceivePack.OrderStorageLoc))
             {
                 <li id="goods-receive-pack-order-storage-loc-index-menu">
@@ -107,6 +108,7 @@
                     <b class="arrow"></b>
                 </li>
             }
+            *@
 
             @if (Model.HasPassRes(PassRes.ReceivePack.PackReport))
             {
@@ -119,6 +121,8 @@
                 </li>
             }
 
+            @*
+
             @if (Model.HasPassRes(PassRes.ReceivePack.OrderShouldSubmitPack))
             {
                 <li id="goods-receive-pack-order-should-submit-pack-index-menu">
@@ -129,6 +133,8 @@
                     <b class="arrow"></b>
                 </li>
             }
+
+            *@
 
             @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackSchedule))
             {
