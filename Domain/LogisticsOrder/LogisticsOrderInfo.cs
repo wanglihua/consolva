@@ -71,9 +71,9 @@ public class LogisticsOrderInfo : Entity {
     /// 物流方式类型，非空
     /// </summary>
     [Required(ErrorMessage = "物流方式类型不能为空！")]
-    [JsonProperty("firstType")]
+    [JsonProperty("firstModeType")]
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
-    public virtual LogisticsModeType FirstType { get; set; } = LogisticsModeType.None;
+    public virtual LogisticsModeType FirstModeType { get; set; } = LogisticsModeType.None;
 
     /// <summary>
     /// 物流方式，非空

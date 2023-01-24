@@ -246,7 +246,7 @@ public class LogisticsOrderListController : Controller {
 
         if (queryParam.FirstModeTypeQuery != null && queryParam.FirstModeTypeQuery != LogisticsModeType.None) {
             var firstModeTypeQuery = queryParam.FirstModeTypeQuery;
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.FirstType == firstModeTypeQuery));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.FirstModeType == firstModeTypeQuery));
         }
 
         if (queryParam.BeginDateQuery != null) {

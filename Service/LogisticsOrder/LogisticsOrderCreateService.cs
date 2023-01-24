@@ -188,7 +188,7 @@ public class LogisticsOrderCreateService {
             FeeMethod = LogisticsOrderFeeMethod.Pack, // 当前创建的订单都是打包后收费的
             CreateMethod = LogisticsOrderCreateMethod.CustomerCreate,
             Warehouse = warehouse,
-            FirstType = createSelect.FirstType,
+            FirstModeType = createSelect.FirstType,
             FirstMode = firstMode,
             Insurance = insurance,
             Gst = gst,

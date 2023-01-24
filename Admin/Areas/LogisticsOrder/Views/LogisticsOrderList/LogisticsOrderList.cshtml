@@ -61,7 +61,7 @@
             </th>
             <th style="width: 180px;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.FirstType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                    <a field="@(nameof(LogisticsOrderInfo.FirstModeType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
                         头程类型
                     </a>
                 </div>
@@ -189,7 +189,7 @@
                     </td>
                     <td class="break-word">
                         <div>
-                            @(logisticsOrder.FirstType.Name)
+                            @(logisticsOrder.FirstModeType.Name)
                         </div>
                         <div>
                             @(logisticsOrder.FirstMode.Name)

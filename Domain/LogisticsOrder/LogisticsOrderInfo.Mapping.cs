@@ -80,10 +80,10 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
         );
 
         Property(
-            x => x.FirstType,
+            x => x.FirstModeType,
             map => {
                 map.Type<LogisticsModeTypeHibernateType>();
-                map.Column("first_type_id");
+                map.Column("first_mode_type_id");
                 map.NotNullable(true);
             }
         );
