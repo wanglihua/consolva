@@ -8,6 +8,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.ReceivePack.Controllers;
@@ -16,24 +17,21 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 /// 快递单备注预设 控制器
 /// </summary>
 [ReceivePackArea]
-// [ExpressAuth(PassRes.XXX.ExpressRemarkPresetSelect)]
-public class ExpressRemarkPresetSelectController : Controller
-{
+[AdminAuth(PassRes.Express.ExpressRemarkPresetSelect)]
+public class ExpressRemarkPresetSelectController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ExpressRemarkPresetSelectInfo? expressRemarkPresetSelectAlias = null;
 
     private readonly ISession session;
 
-    public ExpressRemarkPresetSelectController(ISession session)
-    {
+    public ExpressRemarkPresetSelectController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/express/remark/preset/select")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new ExpressRemarkPresetSelectIndexModel();
 
         model.TypeList = new List<ExpressRemarkType>() {
@@ -46,8 +44,7 @@ public class ExpressRemarkPresetSelectController : Controller
 
     [HttpPost]
     [Route("/admin/express/remark/preset/select/list")]
-    public IActionResult List(ExpressRemarkPresetSelectListQueryParam queryParam)
-    {
+    public IActionResult List(ExpressRemarkPresetSelectListQueryParam queryParam) {
         var totalCount = GetQueryOver(queryParam)
             .Select(Projections.RowCount())
             .SingleOrDefault<int>();
@@ -82,8 +79,7 @@ public class ExpressRemarkPresetSelectController : Controller
     }
 
     [NonAction]
-    private IQueryOver<ExpressRemarkPresetSelectInfo, ExpressRemarkPresetSelectInfo> GetQueryOver(ExpressRemarkPresetSelectListQueryParam queryParam)
-    {
+    private IQueryOver<ExpressRemarkPresetSelectInfo, ExpressRemarkPresetSelectInfo> GetQueryOver(ExpressRemarkPresetSelectListQueryParam queryParam) {
         var query = session.QueryOver(() => expressRemarkPresetSelectAlias!);
 
         return query;
@@ -91,20 +87,16 @@ public class ExpressRemarkPresetSelectController : Controller
 
     [HttpPost]
     [Route("/admin/express/remark/preset/select/detail")]
-    public IActionResult Detail(IdParam param)
-    {
+    public IActionResult Detail(IdParam param) {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var id = param.Id;
 
         ExpressRemarkPresetSelectInfo? expressRemarkPresetSelect;
 
-        if (id <= 0)
-        {
+        if (id <= 0) {
             expressRemarkPresetSelect = new ExpressRemarkPresetSelectInfo();
-        }
-        else
-        {
+        } else {
             expressRemarkPresetSelect = session.Get<ExpressRemarkPresetSelectInfo>(id);
             if (expressRemarkPresetSelect == null) throw new ValidationException($"指定的 快递单备注预设#{id} 不存在！");
         }
@@ -127,8 +119,7 @@ public class ExpressRemarkPresetSelectController : Controller
     [HttpPost]
     [Route("/admin/express/remark/preset/select/save")]
     [Transactional]
-    public IActionResult Save(ExpressRemarkPresetSelectSaveModel model)
-    {
+    public IActionResult Save(ExpressRemarkPresetSelectSaveModel model) {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var expressRemarkPresetSelectId = model.ExpressRemarkPresetSelectId;
@@ -137,12 +128,9 @@ public class ExpressRemarkPresetSelectController : Controller
 
         ExpressRemarkPresetSelectInfo? expressRemarkPresetSelect;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             expressRemarkPresetSelect = new ExpressRemarkPresetSelectInfo();
-        }
-        else
-        {
+        } else {
             expressRemarkPresetSelect = session.Get<ExpressRemarkPresetSelectInfo>(expressRemarkPresetSelectId);
             if (expressRemarkPresetSelect == null) throw new ValidationException($"指定的 快递单备注预设#{expressRemarkPresetSelectId} 不存在！");
         }
@@ -167,14 +155,12 @@ public class ExpressRemarkPresetSelectController : Controller
     [HttpPost]
     [Route("/admin/express/remark/preset/select/delete")]
     [Transactional]
-    public IActionResult Delete(IdListParam param)
-    {
+    public IActionResult Delete(IdListParam param) {
         param.Validate("请选择要删除的快递单备注预设！");
 
         var idList = param.IdList;
 
-        foreach (var id in idList)
-        {
+        foreach (var id in idList) {
             var expressRemarkPresetSelect = session.Load<ExpressRemarkPresetSelectInfo>(id);
             session.Delete(expressRemarkPresetSelect);
         }

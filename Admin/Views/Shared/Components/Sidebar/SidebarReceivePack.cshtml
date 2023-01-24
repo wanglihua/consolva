@@ -84,18 +84,7 @@
                     </a>
                     <b class="arrow"></b>
                 </li>
-            }
-            
-            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
-            {
-                <li id="receive-pack-express-remark-preset-select-menu">
-                    <a asp-area="ReceivePack" asp-controller="ExpressRemarkPresetSelect" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>快递单备注预设
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-            }
-            
+            }        
 
             @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackConfig))
             {
