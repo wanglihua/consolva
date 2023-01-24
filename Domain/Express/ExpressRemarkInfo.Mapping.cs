@@ -30,10 +30,10 @@ public class ExpressRemarkInfoMapping : EntityMapping<ExpressRemarkInfo> {
         );
 
         Property(
-            x => x.Remark,
+            x => x.Content,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("remark");
+                map.Column("content");
                 map.NotNullable(true);
             }
         );

@@ -97,21 +97,21 @@ public class OrderCreateSummaryController : Controller {
                             && e.Express.Id == expressId
                             && e.Type == ExpressRemarkType.Customer)
                 .Take(1)
-                .SingleOrDefault()?.Remark ?? string.Empty;
+                .SingleOrDefault()?.Content ?? string.Empty;
 
             string warehouseRemark = expressRemarkList
                 .Where(e => e.Express != null
                             && e.Express.Id == expressId
                             && e.Type == ExpressRemarkType.Warehouse)
                 .Take(1)
-                .SingleOrDefault()?.Remark ?? string.Empty;
+                .SingleOrDefault()?.Content ?? string.Empty;
 
             string serviceRemark = expressRemarkList
                 .Where(e => e.Express != null
                             && e.Express.Id == expressId
                             && e.Type == ExpressRemarkType.Service)
                 .Take(1)
-                .SingleOrDefault()?.Remark ?? string.Empty;
+                .SingleOrDefault()?.Content ?? string.Empty;
 
             var item = new OrderCreateSummaryExpressListItem {
                 Id = express.Id,

@@ -152,7 +152,7 @@ public class ExpressCheckinController : Controller {
                 .Take(1)
                 .SingleOrDefault();
 
-            model.WarehouseRemark = expressRemark?.Remark ?? string.Empty;
+            model.WarehouseRemark = expressRemark?.Content ?? string.Empty;
 
             int storageLocIdExist = expressExist.StorageLoc?.Id ?? 0;
             storageLocExist = session.Query<StorageLocInfo>()
@@ -623,7 +623,7 @@ public class ExpressCheckinController : Controller {
                         .Where(e => e.Express!.Id == expressIdFromUi && e.Type == ExpressRemarkType.Warehouse)
                         .Take(1)
                         .SingleOrDefault();
-                    oldWarehouseRemark = warehouseRemarkInDb?.Remark ?? string.Empty;
+                    oldWarehouseRemark = warehouseRemarkInDb?.Content ?? string.Empty;
                     if (warehouseRemark != oldWarehouseRemark) {
                         editDescList.Add($"入库备注:{oldWarehouseRemark}=>{warehouseRemark}");
                     }
@@ -693,7 +693,7 @@ public class ExpressCheckinController : Controller {
                     };
                 }
 
-                warehouseRemarkInDb.Remark = warehouseRemark;
+                warehouseRemarkInDb.Content = warehouseRemark;
 
                 if (isCreate == false && warehouseRemark != oldWarehouseRemark) {
                     // 编辑时如果入库备注跟原来的不同，就更新添加用户
@@ -926,8 +926,8 @@ public class ExpressCheckinController : Controller {
             { "expressTrackingNo", express.TrackingNo },
             { "checkinTrackingNo", express.CheckinTrackingNo },
             { "customerCode", customerCode },
-            { "warehouseNote", expressRemarkWarehouse?.Remark ?? string.Empty },
-            { "description", expressRemarkCustomer?.Remark ?? string.Empty }, // todo a 这里的 description 改成 customerNote 或 remark
+            { "warehouseNote", expressRemarkWarehouse?.Content ?? string.Empty },
+            { "description", expressRemarkCustomer?.Content ?? string.Empty }, // todo a 这里的 description 改成 customerNote 或 remark
             { "checkinPackageCount", checkinPackageCount },
             { "orderCode", orderCode },
             { "storageLoc", storageLocName },

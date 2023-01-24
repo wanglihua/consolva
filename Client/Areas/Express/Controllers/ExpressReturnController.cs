@@ -77,21 +77,21 @@ public class ExpressReturnController : Controller {
                             && e.Express.Id == expressId
                             && e.Type == ExpressRemarkType.Customer)
                 .Take(1)
-                .SingleOrDefault()?.Remark ?? string.Empty;
+                .SingleOrDefault()?.Content ?? string.Empty;
 
             string warehouseRemark = expressRemarkList
                 .Where(e => e.Express != null
                             && e.Express.Id == expressId
                             && e.Type == ExpressRemarkType.Warehouse)
                 .Take(1)
-                .SingleOrDefault()?.Remark ?? string.Empty;
+                .SingleOrDefault()?.Content ?? string.Empty;
 
             string serviceRemark = expressRemarkList
                 .Where(e => e.Express != null
                             && e.Express.Id == expressId
                             && e.Type == ExpressRemarkType.Service)
                 .Take(1)
-                .SingleOrDefault()?.Remark ?? string.Empty;
+                .SingleOrDefault()?.Content ?? string.Empty;
 
             ExpressReturnListItem item = new ExpressReturnListItem {
                 Id = expressReturn.Id,

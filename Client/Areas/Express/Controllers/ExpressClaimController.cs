@@ -61,7 +61,7 @@ public class ExpressClaimController : Controller {
                 .Where(e => e.Express!.Id == expressId && e.Type == ExpressRemarkType.Warehouse)
                 .Take(1)
                 .SingleOrDefault();
-            string warehouseRemark = expressRemark?.Remark ?? string.Empty;
+            string warehouseRemark = expressRemark?.Content ?? string.Empty;
 
             expressClaimItemList.Add(new ExpressClaimListItem() {
                 Id = expressId,
@@ -163,7 +163,7 @@ public class ExpressClaimController : Controller {
                         && e.Type == ExpressRemarkType.Warehouse)
             .Take(1)
             .SingleOrDefault();
-        model.WarehouseRemark = expressWarehouseRemark?.Remark ?? string.Empty;
+        model.WarehouseRemark = expressWarehouseRemark?.Content ?? string.Empty;
 
         // 物品列表
         var expressGoodsList = session.Query<ExpressGoodsInfo>()

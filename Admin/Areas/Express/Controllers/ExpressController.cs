@@ -247,7 +247,7 @@ public class ExpressController : Controller {
             expressServiceRemark.Type = ExpressRemarkType.Service;
         }
 
-        expressServiceRemark.Remark = serviceRemark;
+        expressServiceRemark.Content = serviceRemark;
 
         session.SaveOrUpdate(expressServiceRemark);
         session.Flush();

@@ -54,7 +54,7 @@ public class ExpressCheckinDetailController : Controller {
                         && e.Type == ExpressRemarkType.Warehouse)
             .Take(1)
             .SingleOrDefault();
-        var warehouseRemark = expressWarehouseRemark?.Remark ?? string.Empty;
+        var warehouseRemark = expressWarehouseRemark?.Content ?? string.Empty;
 
         // goods
         var goodsList = session.Query<ExpressGoodsInfo>()

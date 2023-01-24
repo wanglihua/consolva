@@ -29,8 +29,8 @@ public class ExpressRemarkInfo : Entity {
     /// </summary>
     [Required(ErrorMessage = "备注不能为空！")]
     [MaxLength(300, ErrorMessage = "备注长度不能大于300！")]
-    [JsonProperty("remark")]
-    public virtual string Remark { get; set; } = string.Empty;
+    [JsonProperty("content")]
+    public virtual string Content { get; set; } = string.Empty;
 
     /// <summary>
     /// 添加用户，可空

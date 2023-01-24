@@ -390,7 +390,7 @@ public class ExpressExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(customerRemark?.Remark ?? string.Empty);
+            cell.SetCellValue(customerRemark?.Content ?? string.Empty);
 
             // 客服备注
             ExpressRemarkInfo? serviceRemark = express.ExpressRemarkListCache
@@ -401,7 +401,7 @@ public class ExpressExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(serviceRemark?.Remark ?? string.Empty);
+            cell.SetCellValue(serviceRemark?.Content ?? string.Empty);
 
             // 仓库备注
             ExpressRemarkInfo? warehouseRemark = express.ExpressRemarkListCache
@@ -412,7 +412,7 @@ public class ExpressExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(warehouseRemark?.Remark ?? string.Empty);
+            cell.SetCellValue(warehouseRemark?.Content ?? string.Empty);
         }
 
         MemoryStream memoryStream = new MemoryStream();

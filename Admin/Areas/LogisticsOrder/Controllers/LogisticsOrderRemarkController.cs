@@ -99,7 +99,7 @@ public class LogisticsOrderRemarkController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/remark/order/remark/list")]
     public IActionResult OrderRemarkList(int orderId) {
-        LogisticsOrderRemarkOrderRemarkListModel model = new LogisticsOrderRemarkOrderRemarkListModel();
+        LogisticsOrderRemarkListModel model = new LogisticsOrderRemarkListModel();
         model.LogisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
 
         model.OrderId = orderId;
