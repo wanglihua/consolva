@@ -8,25 +8,25 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
+using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Storage.Controllers;
 
 [StorageArea]
 [AdminAuth(PassRes.Storage.Warehouse)]
-public class WarehouseController : Controller
-{
+public class WarehouseController : Controller {
     private readonly ISession session;
+    private readonly WarehouseService warehouseService;
 
-    public WarehouseController(ISession session)
-    {
+    public WarehouseController(ISession session, WarehouseService warehouseService) {
         this.session = session;
+        this.warehouseService = warehouseService;
     }
 
     [HttpGet]
     [Route("/admin/warehouse")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new WarehouseIndexModel();
 
         /*
@@ -47,8 +47,7 @@ public class WarehouseController : Controller
 
     [HttpPost]
     [Route("/admin/warehouse/list")]
-    public IActionResult List(WarehouseListQueryParam queryParam)
-    {
+    public IActionResult List(WarehouseListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -69,8 +68,7 @@ public class WarehouseController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(WarehouseListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(WarehouseListQueryParam queryParam) {
         var codeQuery = queryParam.CodeQuery ?? string.Empty;
         var nameQuery = queryParam.NameQuery ?? string.Empty;
 
@@ -78,14 +76,12 @@ public class WarehouseController : Controller
 
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(codeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(codeQuery) == false) {
             codeQuery = codeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<WarehouseInfo>(e => e.Code).IsInsensitiveLike(codeQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(nameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(nameQuery) == false) {
             nameQuery = nameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<WarehouseInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
@@ -95,16 +91,12 @@ public class WarehouseController : Controller
 
     [HttpGet]
     [Route("/admin/warehouse/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         WarehouseWithAddressDescriptionInfo? warehouse;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             warehouse = new WarehouseWithAddressDescriptionInfo();
-        }
-        else
-        {
+        } else {
             warehouse = session.Get<WarehouseWithAddressDescriptionInfo>(id.Value);
             if (warehouse == null) throw new ValidationException("指定的数据项不存在！");
         }
@@ -121,8 +113,7 @@ public class WarehouseController : Controller
     [HttpPost]
     [Route("/admin/warehouse/save")]
     [Transactional]
-    public IActionResult Save(WarehouseDetailModel model)
-    {
+    public IActionResult Save(WarehouseDetailModel model) {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var warehouseFromUi = model.Warehouse;
@@ -154,6 +145,8 @@ public class WarehouseController : Controller
 
         session.Flush();
 
+        warehouseService.InvalidWarehouseListCache();
+
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
@@ -165,15 +158,15 @@ public class WarehouseController : Controller
     [HttpPost]
     [Route("/admin/warehouse/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (var id in idList)
-        {
+    public IActionResult Delete(int[] idList) {
+        foreach (var id in idList) {
             var warehouse = session.Load<WarehouseInfo>(id);
             session.Delete(warehouse);
         }
 
         session.Flush();
+
+        warehouseService.InvalidWarehouseListCache();
 
         return Json(new Dictionary<string, object> {
             { "success", true },
