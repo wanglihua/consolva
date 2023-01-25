@@ -104,7 +104,7 @@ public class ExpressController : Controller {
             throw new ValidationException($"指定的快递单号#{trackingNo}不存在！");
         }
 
-        return Detail(ExpressListMenuCate.All.Id, (express?.Id ?? 0));
+        return Detail(ExpressListMenuCate.All.Id, (express.Id));
     }
 
     [HttpGet]

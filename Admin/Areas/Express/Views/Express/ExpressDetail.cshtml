@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.Express.Models.Express
+@using shunda.Admin.Areas.Express.Models.ExpressRemark
 @using shunda.Core.Web
 @using shunda.Domain.Express
 @using shunda.Service.Express
@@ -34,10 +35,6 @@
         <li class="active" data-menu="express-to-on-shelf-menu">待上架</li>
     } else if (Model.Cate == ExpressListMenuCate.Return) {
         <li class="active" data-menu="express-return-index-menu">退运池</li>
-    } else if (Model.Cate == ExpressListMenuCate.WoodFrame) {
-        <li class="active" data-menu="express-wood-frame-menu">打木架</li>
-    } else if (Model.Cate == ExpressListMenuCate.BarkClean) {
-        <li class="active" data-menu="express-bark-clean-menu">清理树皮杂物</li>
     } else {
         <li class="active" data-menu="express-detail-menu">@(ViewData[ViewDataKey.Title])</li>
     }
@@ -55,8 +52,8 @@
 }
 
 @section Style {
-    <style type="text/css">
-    
+    <style>
+
         div.detailSubTitle {
             margin: 10px 0;
             padding: 5px 0;
@@ -64,8 +61,7 @@
             border-bottom: lightgray 1px solid;
             color: #2a62bc;
         }
-        
-        
+
     </style>
 }
 
@@ -73,6 +69,8 @@
     <div class="widget-body">
         <div class="widget-main">
             <form id="expressDetailForm" class="form-horizontal" role="form">
+
+                @* 基本信息 *@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelBaseInfo').toggle();">
@@ -527,8 +525,37 @@
 
                         </div>
                     </div>
+                </div>
 
-                    @if (Model.ExpressReturn.Id > 0) {
+                @* 快递单备注 *@
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelRemark').toggle();">
+                            <div style="float: left;">
+                                快递单备注
+                            </div>
+                            <div style="float: right;">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelRemark" style="display: none;">
+                            <div class="row">
+                                <div style="margin-bottom: 10px; text-align: right;">
+                                    <a class="btn btn-mini btn-primary" href="javascript:showExpressRemarkDetail();">添加备注</a>
+                                </div>
+
+                                <div id="orderRemarkListWrapper">
+                                    <partial name="~/Areas/Express/Views/ExpressRemark/ExpressRemarkList.cshtml" model="new ExpressRemarkListModel() { ExpressRemarkList = Model.ExpressRemarkList, ExpressId = Model.Express.Id }"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* 快递退运 *@
+                @if (Model.ExpressReturn.Id > 0) {
+                    <div class="row">
                         <div class="col-xs-12">
                             <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelExpressReturn').toggle();">
                                 <div style="float: left;">
@@ -592,8 +619,11 @@
 
                             </div>
                         </div>
-                    }
+                    </div>
+                }
 
+                @* 物品列表 *@
+                <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelEntryList').toggle();">
                             <div style="float: left;">
@@ -659,7 +689,10 @@
                             </table>
                         </div>
                     </div>
+                </div>
 
+                @* 尺寸重量 *@
+                <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelSizeWeight').toggle();">
                             <div style="float: left;">
@@ -731,11 +764,14 @@
                             </table>
                         </div>
                     </div>
+                </div>
 
+                @* 快递单照片 *@
+                <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelPhoto').toggle();">
                             <div style="float: left;">
-                                订单照片
+                                快递单照片
                             </div>
                             <div style="float: right;">
                                 显示/隐藏
@@ -805,7 +841,10 @@
                             }
                         </div>
                     </div>
+                </div>
 
+                @* 操作日志 *@
+                <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelExpressLog').toggle();">
                             <div style="float: left;">
@@ -872,3 +911,5 @@
         </div>
     </div>
 </div>
+
+<div id="expressRemarkDetailDialogWrapper"></div>

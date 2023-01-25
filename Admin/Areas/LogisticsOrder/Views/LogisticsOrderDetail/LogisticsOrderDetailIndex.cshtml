@@ -289,13 +289,14 @@
                                 </div>
 
                                 <div id="orderRemarkListWrapper">
-                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { LogisticsOrderRemarkList = Model.OrderRemarkList, OrderId = Model.LogisticsOrder.Id }"/>
+                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { LogisticsOrderRemarkList = Model.OrderRemarkList, OrderId = Model.LogisticsOrder.Id }"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                @* 物流信息 *@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelLogisticsInfo').toggle();">
@@ -361,7 +362,8 @@
                     </div>
                 </div>
 
-                <div class="row">
+                @* 收货地址 *@
+                <divs class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelAddress').toggle();">
                             <div style="float: left;">
@@ -462,8 +464,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </divs>
 
+                @* 发货地址 *@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelSenderAddress').toggle();">
@@ -561,6 +564,7 @@
                     </div>
                 </div>
 
+                @* 订单商品 *@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelOrderExpress').toggle();">
@@ -692,6 +696,7 @@
                     </div>
                 </div>
 
+                @* 操作记录 *@
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelOrderAction').toggle();">

@@ -34,10 +34,6 @@ public class ExpressListMenuCate : CodeTypeBase
 
     public static readonly ExpressListMenuCate Return = new ExpressListMenuCate(18000, "退运池", "");
 
-    public static readonly ExpressListMenuCate WoodFrame = new ExpressListMenuCate(19000, "打木架", "");
-
-    public static readonly ExpressListMenuCate BarkClean = new ExpressListMenuCate(20000, "清理树皮杂物", "");
-
     public static readonly ExpressListMenuCate None = new ExpressListMenuCate(0, "", "");
 
     private static readonly IReadOnlyList<ExpressListMenuCate> codeTypeList = new List<ExpressListMenuCate>() {
@@ -66,9 +62,6 @@ public class ExpressListMenuCate : CodeTypeBase
         OffShelf,
         Packing,
         Return,
-
-        WoodFrame,
-        BarkClean,
     };
 
     private static readonly Dictionary<int, ExpressListMenuCate> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
