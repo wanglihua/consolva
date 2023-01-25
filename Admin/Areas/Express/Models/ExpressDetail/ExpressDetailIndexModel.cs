@@ -4,9 +4,9 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Service.Express;
 
-namespace shunda.Admin.Areas.Express.Models.Express;
+namespace shunda.Admin.Areas.Express.Models.ExpressDetail;
 
-public class ExpressDetailModel {
+public class ExpressDetailIndexModel {
     public ExpressListMenuCate Cate { get; set; } = ExpressListMenuCate.None;
 
     public ExpressInfo Express { get; set; } = new();

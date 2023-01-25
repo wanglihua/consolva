@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Linq;
 using shunda.Admin.Areas.Express.Models.Express;
+using shunda.Admin.Areas.Express.Models.ExpressDetail;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Util;
@@ -11,7 +12,6 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using shunda.Service.Express;
-using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
@@ -20,34 +20,19 @@ namespace shunda.Admin.Areas.Express.Controllers;
 [AdminAuth(PassRes.Express.ExpressList)]
 public class ExpressDetailController : Controller {
     private readonly ISession session;
-    private readonly ExpressListService expressListService;
-    private readonly ExpressSizeWeightService expressSizeWeightService;
     private readonly ExpressPhotoFileService expressPhotoFileService;
     private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
-    private readonly ExpressExcelService expressExcelService;
-    private readonly ExpressService expressService;
-    private readonly WarehouseService warehouseService;
 
     public ExpressDetailController(ISession session,
-        ExpressListService expressListService,
-        ExpressSizeWeightService expressSizeWeightService,
         ExpressPhotoFileService expressPhotoFileService,
         LoginUserService loginUserService,
-        CustomerCodeService customerCodeService,
-        ExpressExcelService expressExcelService,
-        ExpressService expressService,
-        WarehouseService warehouseService
+        CustomerCodeService customerCodeService
     ) {
         this.session = session;
-        this.expressListService = expressListService;
-        this.expressSizeWeightService = expressSizeWeightService;
         this.expressPhotoFileService = expressPhotoFileService;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
-        this.expressExcelService = expressExcelService;
-        this.expressService = expressService;
-        this.warehouseService = warehouseService;
     }
     
     [HttpGet]
@@ -75,7 +60,7 @@ public class ExpressDetailController : Controller {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
-        ExpressDetailModel model = new ExpressDetailModel();
+        var model = new ExpressDetailIndexModel();
         model.Express = express;
         model.AddUser = express.AddUser;
 
@@ -171,6 +156,6 @@ public class ExpressDetailController : Controller {
             .SingleOrDefault();
         model.ExpressReturn = expressReturn ?? new ExpressReturnInfo();
 
-        return View("ExpressDetail", model);
+        return View("ExpressDetailIndex", model);
     }    
 }
