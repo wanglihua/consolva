@@ -9,5 +9,5 @@ public class ExpressPhotoIndexModel
     public IList<ExpressPhotoType> PhotoTypeList { get; set; } = ExpressPhotoType.GetList();
 
     [BindNever]
-    public bool CanDelete { get; set; }
+    public bool CanExpressPhotoDelete { get; set; }
 }

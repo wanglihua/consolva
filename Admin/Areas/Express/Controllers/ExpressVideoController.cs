@@ -17,52 +17,51 @@ using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using shunda.Service.Express;
+using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
 
 [ExpressArea]
 [AdminAuth(PassRes.Express.ExpressPhoto)]
-public class ExpressVideoController : Controller
-{
+public class ExpressVideoController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private ExpressVideoService expressVideoService;
-    private LoginUserService loginUserService;
-    private CustomerCodeService customerCodeService;
+    private readonly ISession session;
+    private readonly ExpressVideoService expressVideoService;
+    private readonly LoginUserService loginUserService;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly PassResService passResService;
 
     public ExpressVideoController(ISession session,
         ExpressVideoService expressVideoService,
         LoginUserService loginUserService,
-        CustomerCodeService customerCodeService)
-    {
+        CustomerCodeService customerCodeService,
+        PassResService passResService
+    ) {
         this.session = session;
         this.expressVideoService = expressVideoService;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
+        this.passResService = passResService;
     }
 
     [HttpGet]
     [Route("/admin/express/video")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         ExpressVideoIndexModel model = new ExpressVideoIndexModel();
         model.VideoTypeList = ExpressVideoType.GetList();
 
-        bool isAdmin = loginUserService.IsAdmin;
-        Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
-        model.CanDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressPhotoDelete);
+        int loginUserId = loginUserService.GetLoginUserId();
+        model.CanExpressPhotoDelete = passResService.UserHasPassRes(loginUserId, PassRes.Express.ExpressPhotoDelete);
 
         return View("ExpressVideoIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/express/video/list")]
-    public IActionResult List(ExpressVideoListQueryParam queryParam)
-    {
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
+    public IActionResult List(ExpressVideoListQueryParam queryParam) {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             queryParam.OrderId = session.Query<LogisticsOrderInfo>()
                 .Where(e => e.Code == orderCodeQuery)
@@ -71,8 +70,7 @@ public class ExpressVideoController : Controller
                 .SingleOrDefault();
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.UserNameQuery) == false) {
             string userNameQuery = queryParam.UserNameQuery.Trim();
             queryParam.UserId = session.Query<UserInfo>()
                 .Where(e => e.LoginName == userNameQuery || e.UserName == userNameQuery)
@@ -107,8 +105,7 @@ public class ExpressVideoController : Controller
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .List<ExpressVideoInfo>();
 
-        foreach (ExpressVideoInfo orderVideo in expressVideoList)
-        {
+        foreach (ExpressVideoInfo orderVideo in expressVideoList) {
             orderVideo.CustomerCodeCache = customerCodeService.GetCustomerCode(orderVideo.Customer?.Id ?? 0);
             orderVideo.VideoFullUrlCache = expressVideoService.GetVideoFullUrl(orderVideo, OssSiteLocType.China);
         }
@@ -120,51 +117,43 @@ public class ExpressVideoController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(ExpressVideoListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(ExpressVideoListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<ExpressVideoInfo>();
 
         criteria.SetReadOnly(true);
 
-        if (queryParam.TypeQuery != null && queryParam.TypeQuery != ExpressVideoType.None)
-        {
+        if (queryParam.TypeQuery != null && queryParam.TypeQuery != ExpressVideoType.None) {
             ExpressVideoType typeQuery = queryParam.TypeQuery;
             criteria = criteria.Add(Restrictions.Where<ExpressVideoInfo>(e => e.Type == typeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
             string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
             criteria = criteria.Add(Restrictions.Where<ExpressVideoInfo>(e => e.Customer!.Id == customerIdQuery));
         }
 
-        if (queryParam.OrderId != null)
-        {
+        if (queryParam.OrderId != null) {
             int orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressVideoInfo.Order)}.{nameof(ExpressVideoInfo.Order.Id)}", orderId));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.Eq(nameof(ExpressVideoInfo.TrackingNo), trackingNoQuery));
         }
 
-        if (queryParam.BeginDateQuery != null)
-        {
+        if (queryParam.BeginDateQuery != null) {
             DateTime beginDateQueryValue = queryParam.BeginDateQuery.Value;
             criteria = criteria.Add(Restrictions.Where<ExpressVideoInfo>(e => e.CreateTime >= beginDateQueryValue));
         }
 
-        if (queryParam.EndDateQuery != null)
-        {
+        if (queryParam.EndDateQuery != null) {
             DateTime endDateQueryValue = queryParam.EndDateQuery.Value.AddDays(1);
             criteria = criteria.Add(Restrictions.Where<ExpressVideoInfo>(e => e.CreateTime < endDateQueryValue));
         }
 
-        if (queryParam.UserId != 0)
-        {
+        if (queryParam.UserId != 0) {
             int userId = queryParam.UserId;
             criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressVideoInfo.User)}.{nameof(ExpressVideoInfo.User.Id)}", userId));
         }
@@ -176,12 +165,10 @@ public class ExpressVideoController : Controller
     [Route("/admin/express/video/delete")]
     [AdminAuth(PassRes.Express.ExpressPhotoDelete)]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
+    public IActionResult Delete(int[] idList) {
         IList<ExpressVideoInfo> videoList = new List<ExpressVideoInfo>();
 
-        foreach (int id in idList)
-        {
+        foreach (int id in idList) {
             ExpressVideoInfo expressVideo = session.Load<ExpressVideoInfo>(id);
             session.Delete(expressVideo);
 
@@ -192,18 +179,14 @@ public class ExpressVideoController : Controller
 
         OssClient client = new OssClient(AliYunOssConfig.EndpointChina, AliYunOssConfig.AccessKeyId, AliYunOssConfig.AccessKeySecret);
 
-        foreach (ExpressVideoInfo ev in videoList)
-        {
-            if (ev.StoreLoc == ExpressPhotoStoreLoc.Oss)
-            {
+        foreach (ExpressVideoInfo ev in videoList) {
+            if (ev.StoreLoc == ExpressPhotoStoreLoc.Oss) {
                 // 如果是OSS图片删除，就要做OSS图片删除
-                try
-                {
+                try {
                     string objectName = Path.Combine(ev.StorePath, ev.StoreName).Replace("\\", "/");
                     client.DeleteObject(AliYunOssConfig.BucketNameChina, objectName);
                 }
-                catch (Exception exp)
-                {
+                catch (Exception exp) {
                     log.Error(exp);
                 }
             }

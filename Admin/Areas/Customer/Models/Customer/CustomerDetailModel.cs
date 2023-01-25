@@ -37,13 +37,13 @@ public class CustomerDetailModel
     public IList<CustomerReceiveAddressInfo> CustomerReceiveAddressList { get; set; } = new List<CustomerReceiveAddressInfo>();
 
     [BindNever]
-    public bool CanFreezeCustomer { get; set; }
+    public bool CanCustomerFreeze { get; set; }
 
     [BindNever]
-    public bool CanResetPassword { get; set; }
+    public bool CanCustomerResetPassword { get; set; }
 
     [BindNever]
-    public bool CanEditCharacter { get; set; }
+    public bool CanCustomerCharacter { get; set; }
 
     [BindNever]
     public IList<CustomerCharacterInfo> CustomerCharacterList { get; set; } = new List<CustomerCharacterInfo>();

@@ -13,5 +13,5 @@ public class ExpressIndexModel
     public IList<UserInfo> CheckinUserList { get; set; } = new List<UserInfo>();
 
     [BindNever]
-    public bool CanForceDelete { get; set; }
+    public bool CanExpressForceDelete { get; set; }
 }

@@ -4,7 +4,6 @@ using NHibernate.Criterion;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
-using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
 using shunda.Domain.Express;
@@ -12,9 +11,9 @@ using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
-using shunda.Domain.Storage;
 using shunda.Service.Customer;
 using shunda.Service.LogisticsOrder;
+using shunda.Service.Pass;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
@@ -29,13 +28,15 @@ public class LogisticsOrderListController : Controller {
     private readonly LogisticsOrderStatusService logisticsOrderStatusService;
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
     private readonly WarehouseService warehouseService;
+    private readonly PassResService passResService;
 
     public LogisticsOrderListController(ISession session,
         LoginUserService loginUserService,
         CustomerCodeService customerCodeService,
         LogisticsOrderStatusService logisticsOrderStatusService,
         LogisticsOrderRemarkService logisticsOrderRemarkService,
-        WarehouseService warehouseService
+        WarehouseService warehouseService,
+        PassResService passResService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -43,6 +44,7 @@ public class LogisticsOrderListController : Controller {
         this.logisticsOrderStatusService = logisticsOrderStatusService;
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
         this.warehouseService = warehouseService;
+        this.passResService = passResService;
     }
 
     [HttpGet]
@@ -81,14 +83,11 @@ public class LogisticsOrderListController : Controller {
         model.FirstModeTypeList = LogisticsModeType.GetList();
         model.OrderStatusList = LogisticsOrderStatus.GetList();
         model.PayStatusList = PayStatus.GetList();
-
         model.ReceivingWarehouseList = warehouseService.GetWarehouseList();
-
         model.TimeRangeTypeList = TimeRangeType.GetList();
 
-        bool isAdmin = loginUserService.IsAdmin;
-        Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
-        model.CanImportOrder = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.LogisticsOrder.ImportOrder);
+        int loginUserId = loginUserService.GetLoginUserId();
+        model.CanImportOrder = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.ImportOrder);
 
         return View("LogisticsOrderListIndex", model);
     }
@@ -314,5 +313,5 @@ public class LogisticsOrderListController : Controller {
             Success = true,
             Message = "操作成功！",
         });
-    }    
+    }
 }

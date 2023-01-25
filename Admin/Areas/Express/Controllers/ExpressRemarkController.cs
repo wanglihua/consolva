@@ -8,6 +8,7 @@ using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
+using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
@@ -18,14 +19,17 @@ public class ExpressRemarkController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly ExpressRemarkService expressRemarkService;
+    private readonly PassResService passResService;
 
     public ExpressRemarkController(ISession session,
         LoginUserService loginUserService,
-        ExpressRemarkService expressRemarkService
+        ExpressRemarkService expressRemarkService,
+        PassResService passResService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.expressRemarkService = expressRemarkService;
+        this.passResService = passResService;
     }
 
     [HttpPost]
@@ -101,9 +105,11 @@ public class ExpressRemarkController : Controller {
     [HttpPost]
     [Route("/admin/express/remark/list")]
     public IActionResult ExpressRemarkList(int expressId) {
+        int loginUserId = loginUserService.GetLoginUserId();
         ExpressRemarkListModel model = new ExpressRemarkListModel {
             ExpressId = expressId,
             ExpressRemarkList = expressRemarkService.GetExpressRemarkList(expressId),
+            CanExpressRemarkEdit = passResService.UserHasPassRes(loginUserId, PassRes.Express.ExpressRemarkEdit),
         };
 
         return View("ExpressRemarkList", model);

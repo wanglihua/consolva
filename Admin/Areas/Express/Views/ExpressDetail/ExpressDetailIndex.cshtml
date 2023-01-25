@@ -482,13 +482,11 @@
                         </div>
                         <div id="panelRemark" style="display: none;">
                             <div class="row">
-                                <div style="margin-bottom: 10px; text-align: right;">
-                                    <a class="btn btn-mini btn-primary" href="javascript:showExpressRemarkDetail();">添加备注</a>
-                                </div>
 
                                 <div id="orderRemarkListWrapper">
-                                    <partial name="~/Areas/Express/Views/ExpressRemark/ExpressRemarkList.cshtml" model="new ExpressRemarkListModel() { ExpressRemarkList = Model.ExpressRemarkList, ExpressId = Model.Express.Id }"/>
+                                    <partial name="~/Areas/Express/Views/ExpressRemark/ExpressRemarkList.cshtml" model="new ExpressRemarkListModel() { ExpressRemarkList = Model.ExpressRemarkList, ExpressId = Model.Express.Id, CanExpressRemarkEdit = Model.CanExpressRemarkEdit }"/>
                                 </div>
+
                             </div>
                         </div>
                     </div>

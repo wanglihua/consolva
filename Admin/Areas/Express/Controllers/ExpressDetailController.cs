@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Linq;
-using shunda.Admin.Areas.Express.Models.Express;
 using shunda.Admin.Areas.Express.Models.ExpressDetail;
 using shunda.Admin.Services;
 using shunda.Core;
@@ -12,6 +11,7 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using shunda.Service.Express;
+using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
@@ -23,18 +23,21 @@ public class ExpressDetailController : Controller {
     private readonly ExpressPhotoFileService expressPhotoFileService;
     private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
+    private readonly PassResService passResService;
 
     public ExpressDetailController(ISession session,
         ExpressPhotoFileService expressPhotoFileService,
         LoginUserService loginUserService,
-        CustomerCodeService customerCodeService
+        CustomerCodeService customerCodeService,
+        PassResService passResService
     ) {
         this.session = session;
         this.expressPhotoFileService = expressPhotoFileService;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
+        this.passResService = passResService;
     }
-    
+
     [HttpGet]
     [Route("/admin/express/tracking/no/detail/{trackingNo}")]
     public IActionResult TrackingNo(string trackingNo) {
@@ -114,9 +117,8 @@ public class ExpressDetailController : Controller {
             .OrderByDescending(e => e.Id)
             .ToList();
 
-        bool isAdmin = loginUserService.IsAdmin;
-        Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
-        model.CanCustomerServiceRemark = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressRemarkEdit);
+        int loginUserId = loginUserService.GetLoginUserId();
+        model.CanExpressRemarkEdit = passResService.UserHasPassRes(loginUserId, PassRes.Express.ExpressRemarkEdit);
 
         model.ExpressRemarkList = session.Query<ExpressRemarkInfo>().Where(e => e.Express.Id == expressId).ToList();
 
@@ -157,5 +159,5 @@ public class ExpressDetailController : Controller {
         model.ExpressReturn = expressReturn ?? new ExpressReturnInfo();
 
         return View("ExpressDetailIndex", model);
-    }    
+    }
 }

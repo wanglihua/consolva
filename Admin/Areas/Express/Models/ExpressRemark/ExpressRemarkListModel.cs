@@ -9,4 +9,7 @@ public class ExpressRemarkListModel {
 
     [BindNever]
     public IList<ExpressRemarkInfo> ExpressRemarkList { get; set; } = new List<ExpressRemarkInfo>();
+
+    [BindNever]
+    public bool CanExpressRemarkEdit { get; set; }
 }

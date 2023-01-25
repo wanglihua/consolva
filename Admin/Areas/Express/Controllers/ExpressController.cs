@@ -14,6 +14,7 @@ using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Customer;
 using shunda.Service.Express;
+using shunda.Service.Pass;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
@@ -34,6 +35,7 @@ public class ExpressController : Controller {
     private readonly ExpressExcelService expressExcelService;
     private readonly ExpressService expressService;
     private readonly WarehouseService warehouseService;
+    private readonly PassResService passResService;
 
     public ExpressController(ISession session,
         ExpressListService expressListService,
@@ -43,7 +45,8 @@ public class ExpressController : Controller {
         CustomerCodeService customerCodeService,
         ExpressExcelService expressExcelService,
         ExpressService expressService,
-        WarehouseService warehouseService
+        WarehouseService warehouseService,
+        PassResService passResService
     ) {
         this.session = session;
         this.expressListService = expressListService;
@@ -54,6 +57,7 @@ public class ExpressController : Controller {
         this.expressExcelService = expressExcelService;
         this.expressService = expressService;
         this.warehouseService = warehouseService;
+        this.passResService = passResService;
     }
 
     [HttpGet]
@@ -70,10 +74,8 @@ public class ExpressController : Controller {
             .Select(e => e.User)
             .ToList();
 
-        bool isAdmin = loginUserService.IsAdmin;
-        Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
-
-        model.CanForceDelete = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressForceDelete);
+        int loginUserId = loginUserService.GetLoginUserId();
+        model.CanExpressForceDelete = passResService.UserHasPassRes(loginUserId, PassRes.Express.ExpressForceDelete);
 
         return View("ExpressIndex", model);
     }

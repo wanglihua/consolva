@@ -9,5 +9,5 @@ public class ExpressVideoIndexModel
     public IList<ExpressVideoType> VideoTypeList { get; set; } = ExpressVideoType.GetList();
 
     [BindNever]
-    public bool CanDelete { get; set; }
+    public bool CanExpressPhotoDelete { get; set; }
 }
