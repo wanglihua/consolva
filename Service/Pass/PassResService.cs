@@ -2,6 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 using NHibernate;
 using NLog;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Pass;
 
 namespace shunda.Service.Pass;
@@ -13,12 +14,35 @@ public class PassResService {
     private static readonly string PassResCachekey = "user_pass_res_dict_for_all";
     private static readonly TimeSpan PassResCacheTimeSpan = TimeSpan.FromHours(1); // 这个缓存时间是否合理
 
-    private ISession session;
-    public IMemoryCache memoryCache;
+    private readonly ISession session;
+    private readonly IMemoryCache memoryCache;
+    private readonly UserService userService;
 
-    public PassResService(ISession session, IMemoryCache memoryCache) {
+    public PassResService(ISession session, IMemoryCache memoryCache, UserService userService) {
         this.session = session;
         this.memoryCache = memoryCache;
+        this.userService = userService;
+    }
+
+    /// <summary>
+    /// 用户是否有对应的权限
+    /// 这个方法的判断是使用缓存数据的
+    /// </summary>
+    public bool UserHasPassRes(int userId, int passResId) {
+        bool isAdmin = userService.IsUserAdmin(userId);
+        Dictionary<int, bool> passResIdMap = GetPassResIdMap(userId);
+
+        return PassUtil.HasPassRes(passResIdMap, isAdmin, passResId);
+    }
+
+    /// <summary>
+    /// 用户是否有对应的权限
+    /// 这个方法的判断是使用缓存数据的
+    /// </summary>
+    public bool UserHasOneOfPassRes(int userId, params int[] passResIds) {
+        bool isAdmin = userService.IsUserAdmin(userId);
+        Dictionary<int, bool> passResIdMap = GetPassResIdMap(userId);
+        return PassUtil.HasOneOfPassRes(passResIdMap, isAdmin, passResIds);
     }
 
     /// <summary>
