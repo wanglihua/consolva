@@ -1,0 +1,155 @@
+@{
+    Layout = null;
+}
+@using shunda.Domain.LogisticsOrder
+@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark.LogisticsOrderRemarkListModel
+<table id="tblLogisticsOrderRemarkList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 90px; text-align: center;">
+                类型
+            </th>
+            <th>
+                备注
+            </th>
+            <th style="width: 100px; text-align: center;">
+                备注人
+            </th>
+            <th style="width: 120px; text-align: center;">
+                备注时间
+            </th>
+            <th style="width: 90px; text-align: center;">
+                操作
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsOrderRemarkList.Count != 0) {
+            int order = 1;
+            foreach (LogisticsOrderRemarkInfo logisticsOrderRemark in Model.LogisticsOrderRemarkList) {
+                <tr>
+                    <td style="text-align: center;">@(order++)</td>
+                    <td style="text-align: center;">
+                        @(logisticsOrderRemark.Type.Name)
+                    </td>
+                    <td class="break-word">
+                        @(logisticsOrderRemark.Content)
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @if (logisticsOrderRemark.AddUser != null) {
+                                <span>@(logisticsOrderRemark.AddUser.UserName)</span>
+                            } else {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @(logisticsOrderRemark.CreateTime.ToString("yyyy-MM-dd HH:mm"))
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="javascript:deleteLogisticsOrderRemark('@(logisticsOrderRemark.Id)');">删除</a>
+                    </td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="6">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    function showLogisticsOrderRemarkDetail() {
+        $("#logisticsOrderRemarkDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        $.ajax({
+            url: '@Url.Action("Detail", "LogisticsOrderRemark")',
+            type: "POST",
+            data: { "orderId": "@(Model.OrderId)" },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsOrderRemarkDetailDialogWrapper").html(data);
+                $("#logisticsOrderRemarkDetailDialog").modal(modalOptions);
+            }
+        });
+    }   
+
+    function saveLogisticsOrderRemark() {
+        var form = $("#logisticsOrderRemarkDetailForm");
+        var valid = validate(form);                                
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsOrderRemark")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        //return;
+                    } else {
+                        $.msg.show(data.message);
+                        $('#logisticsOrderRemarkDetailDialog').modal('hide');
+                        loadLogisticsOrderRemarkList();
+                        //return;
+                    }
+                }
+            });
+        }
+    }
+    
+    function loadLogisticsOrderRemarkList() {
+        showMask("加载中...");
+        $.ajax({
+            url: '@Url.Action("OrderRemarkList", "LogisticsOrderRemark")',
+            type: "POST",
+            data: { "orderId": "@(Model.OrderId)" },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#orderRemarkListWrapper").html(data);
+            }
+        });
+    }       
+    
+    function deleteLogisticsOrderRemark(id) {
+        $.msg.confirm("确认要删除订单备注吗？", function() {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("SingleDelete", "LogisticsOrderRemark")',
+                type: "POST",
+                data: { "id": id },
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+                    
+                    $.msg.show(data.message);
+    
+                    loadLogisticsOrderRemarkList();
+                }
+            });
+        });
+    }
+
+</script>

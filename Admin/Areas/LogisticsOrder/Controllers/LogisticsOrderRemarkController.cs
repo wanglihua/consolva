@@ -100,23 +100,23 @@ public class LogisticsOrderRemarkController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/logistics/order/remark/order/remark/list")]
+    [Route("/admin/logistics/order/remark/list")]
     public IActionResult OrderRemarkList(int orderId) {
-        LogisticsOrderRemarkListModel model = new LogisticsOrderRemarkListModel();
-        model.LogisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
+        LogisticsOrderRemarkListModel model = new LogisticsOrderRemarkListModel {
+            OrderId = orderId,
+            LogisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId),
+        };
 
-        model.OrderId = orderId;
-
-        return View("LogisticsOrderRemarkOrderRemarkList", model);
+        return View("LogisticsOrderRemarkList", model);
     }
 
     [HttpPost]
     [Route("/admin/logistics/order/remark/single/delete")]
     [Transactional]
     public IActionResult SingleDelete(int id) {
-        LogisticsOrderRemarkInfo logisticsOrderRemark = session.Get<LogisticsOrderRemarkInfo>(id);
+        var logisticsOrderRemark = session.Get<LogisticsOrderRemarkInfo>(id);
         if (logisticsOrderRemark == null) {
-            throw new ValidationException("指定的订单备注不存在！");
+            throw new ValidationException($"指定的订单备注#{id}不存在！");
         }
 
         if (logisticsOrderRemark.CreateTime < DateTime.Now.AddHours(-12)) {

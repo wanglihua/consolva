@@ -1,9 +1,9 @@
 @{
     Layout = null;
 }
-@using shunda.Domain.LogisticsOrder
-@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark.LogisticsOrderRemarkListModel
-<table id="tblLogisticsOrderRemarkList" class="data-list-table table table-striped table-bordered table-hover">
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Express.Models.ExpressRemark.ExpressRemarkListModel
+<table id="tblExpressRemarkList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
             <th style="width: 50px; text-align: center;">序号</th>
@@ -25,21 +25,21 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.LogisticsOrderRemarkList != null && Model.LogisticsOrderRemarkList.Count != 0) {
+        @if (Model.ExpressRemarkList.Count != 0) {
             int order = 1;
-            foreach (LogisticsOrderRemarkInfo logisticsOrderRemark in Model.LogisticsOrderRemarkList) {
+            foreach (ExpressRemarkInfo expressRemark in Model.ExpressRemarkList) {
                 <tr>
                     <td style="text-align: center;">@(order++)</td>
                     <td style="text-align: center;">
-                        @(logisticsOrderRemark.Type.Name)
+                        @(expressRemark.Type.Name)
                     </td>
                     <td class="break-word">
-                        @(logisticsOrderRemark.Content)
+                        @(expressRemark.Content)
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            @if (logisticsOrderRemark.AddUser != null) {
-                                <span>@(logisticsOrderRemark.AddUser.UserName)</span>
+                            @if (expressRemark.AddUser != null) {
+                                <span>@(expressRemark.AddUser.UserName)</span>
                             } else {
                                 <span>-</span>
                             }
@@ -47,11 +47,11 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            @(logisticsOrderRemark.CreateTime.ToString("yyyy-MM-dd HH:mm"))
+                            @(expressRemark.CreateTime.ToString("yyyy-MM-dd HH:mm"))
                         </div>
-                    </td>                    
+                    </td>
                     <td style="text-align: center;">
-                        <a href="javascript:deleteLogisticsOrderRemark('@(logisticsOrderRemark.Id)');">删除</a>
+                        <a href="javascript:deleteExpressRemark('@(expressRemark.Id)');">删除</a>
                     </td>
                 </tr>
             }
@@ -66,14 +66,14 @@
 </table>
 
 <script type="text/javascript">
-    function showLogisticsOrderRemarkDetail() {
-        $("#logisticsOrderRemarkDetailDialogWrapper").html("");
+    function showExpressRemarkDetail() {
+        $("#expressRemarkDetailDialogWrapper").html("");
 
         showMask("加载中...");
         $.ajax({
-            url: '@Url.Action("Detail", "LogisticsOrderRemark")',
+            url: '@Url.Action("Detail", "ExpressRemark")',
             type: "POST",
-            data: { "orderId": "@(Model.OrderId)" },
+            data: { "expressId": "@(Model.ExpressId)" },
             success: function(data) {
                 hideMask();
                 if (data.success === false) {
@@ -81,19 +81,19 @@
                     return;
                 }
 
-                $("#logisticsOrderRemarkDetailDialogWrapper").html(data);
-                $("#logisticsOrderRemarkDetailDialog").modal(modalOptions);
+                $("#expressRemarkDetailDialogWrapper").html(data);
+                $("#expressRemarkDetailDialog").modal(modalOptions);
             }
         });
     }   
 
-    function saveLogisticsOrderRemark() {
-        var form = $("#logisticsOrderRemarkDetailForm");
+    function saveExpressRemark() {
+        var form = $("#expressRemarkDetailForm");
         var valid = validate(form);                                
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Save", "LogisticsOrderRemark")',
+                url: '@Url.Action("Save", "ExpressRemark")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -103,8 +103,8 @@
                         //return;
                     } else {
                         $.msg.show(data.message);
-                        $('#logisticsOrderRemarkDetailDialog').modal('hide');
-                        loadLogisticsOrderRemarkList();
+                        $('#expressRemarkDetailDialog').modal('hide');
+                        loadExpressRemarkList();
                         //return;
                     }
                 }
@@ -112,12 +112,12 @@
         }
     }
     
-    function loadLogisticsOrderRemarkList() {
+    function loadExpressRemarkList() {
         showMask("加载中...");
         $.ajax({
-            url: '@Url.Action("OrderRemarkList", "LogisticsOrderRemark")',
+            url: '@Url.Action("ExpressRemarkList", "ExpressRemark")',
             type: "POST",
-            data: { "orderId": "@(Model.OrderId)" },
+            data: { "expressId": "@(Model.ExpressId)" },
             success: function(data) {
                 hideMask();
                 if (data.success === false) {
@@ -130,11 +130,11 @@
         });
     }       
     
-    function deleteLogisticsOrderRemark(id) {
+    function deleteExpressRemark(id) {
         $.msg.confirm("确认要删除订单备注吗？", function() {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("SingleDelete", "LogisticsOrderRemark")',
+                url: '@Url.Action("SingleDelete", "ExpressRemark")',
                 type: "POST",
                 data: { "id": id },
                 success: function(data) {
@@ -146,7 +146,7 @@
                     
                     $.msg.show(data.message);
     
-                    loadLogisticsOrderRemarkList();
+                    loadExpressRemarkList();
                 }
             });
         });
