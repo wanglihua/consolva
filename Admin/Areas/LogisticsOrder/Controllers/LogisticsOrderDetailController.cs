@@ -3,13 +3,14 @@ using NHibernate;
 using NHibernate.Linq;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Web;
-using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
 using shunda.Service.LogisticsOrder;
+using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -18,16 +19,22 @@ namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
 [AdminAuth(PassRes.LogisticsOrder.OrderListActive, PassRes.LogisticsOrder.OrderListComplete, PassRes.LogisticsOrder.OrderListCancel)]
 public class LogisticsOrderDetailController : Controller {
     private readonly ISession session;
+    private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
     private readonly ExpressService expressService;
+    private readonly PassResService passResService;
 
     public LogisticsOrderDetailController(ISession session,
+        LoginUserService loginUserService,
         LogisticsOrderRemarkService logisticsOrderRemarkService,
-        ExpressService expressService
+        ExpressService expressService,
+        PassResService passResService
     ) {
         this.session = session;
+        this.loginUserService = loginUserService;
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
         this.expressService = expressService;
+        this.passResService = passResService;
     }
 
     [HttpGet]
@@ -38,6 +45,8 @@ public class LogisticsOrderDetailController : Controller {
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
+
+        int loginUserId = loginUserService.GetLoginUserId();
 
         NHibernateUtil.Initialize(order.Customer);
         NHibernateUtil.Initialize(order.Warehouse);
@@ -98,6 +107,8 @@ public class LogisticsOrderDetailController : Controller {
             SendAddress = sendAddress,
             ExpressList = expressList,
             LogisticsOrderActionList = orderActionList,
+
+            CanOrderRemarkEdit = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit),
         };
 
         return View("LogisticsOrderDetailIndex", model);

@@ -18,7 +18,7 @@ public class PassUtil {
             return true;
         }
 
-        return passResIdMap.ContainsKey(passResId);
+        return passResIdMap.TryGetValue(passResId, out bool grant) && grant;
     }
 
     /// <summary>

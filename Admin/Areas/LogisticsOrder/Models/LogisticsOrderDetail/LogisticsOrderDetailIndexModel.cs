@@ -26,4 +26,7 @@ public class LogisticsOrderDetailIndexModel {
 
     [BindNever]
     public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
+
+    [BindNever]
+    public bool CanOrderRemarkEdit { get; set; }    
 }

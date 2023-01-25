@@ -6,7 +6,6 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
-using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.LogisticsOrder;
 using shunda.Service.Pass;

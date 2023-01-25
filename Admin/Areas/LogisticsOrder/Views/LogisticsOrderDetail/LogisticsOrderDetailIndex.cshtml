@@ -285,7 +285,7 @@
                         <div id="panelRemark" style="display: none;">
                             <div class="row">
                                 <div id="orderRemarkListWrapper">
-                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { OrderRemarkList = Model.OrderRemarkList, OrderId = Model.LogisticsOrder.Id }"/>
+                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { OrderRemarkList = Model.OrderRemarkList, OrderId = Model.LogisticsOrder.Id, CanOrderRemarkEdit = Model.CanOrderRemarkEdit }"/>
                                 </div>
                             </div>
                         </div>
@@ -359,7 +359,7 @@
                 </div>
 
                 @* 收货地址 *@
-                <divs class="row">
+                <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelAddress').toggle();">
                             <div style="float: left;">
@@ -460,7 +460,7 @@
                             </div>
                         </div>
                     </div>
-                </divs>
+                </div>
 
                 @* 发货地址 *@
                 <div class="row">
@@ -616,7 +616,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-xs-3">
                                             <div class="form-group">
                                                 <label for="express_@(express.Id)_status" class="col-xs-4 control-label">快递状态</label>
