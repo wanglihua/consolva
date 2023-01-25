@@ -57,6 +57,7 @@ public class ExpressRemarkController : Controller {
     [AdminAuth(PassRes.Express.ExpressRemarkEdit)]
     [HttpPost]
     [Route("/admin/express/remark/save")]
+    [Transactional]
     public IActionResult Save(ExpressRemarkSaveModel model) {
         int expressId = model.ExpressId;
         ExpressInfo express = session.Get<ExpressInfo>(expressId);
