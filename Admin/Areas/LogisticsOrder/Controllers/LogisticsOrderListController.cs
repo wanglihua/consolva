@@ -297,4 +297,22 @@ public class LogisticsOrderListController : Controller {
 
         return criteria;
     }
+
+    [HttpPost]
+    [Route("/admin/logistics/order/excel/export")]
+    public IActionResult Export() {
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/order/excel/import")]
+    public IActionResult Import() {
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }    
 }

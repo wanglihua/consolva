@@ -130,7 +130,7 @@
                         '@(nameof(LogisticsOrderListQueryParam.TimeRangeTypeQuery))': $('#timeRangeTypeQuery').val()
                     });
             
-                    var url = '@Url.Action("Export", "LogisticsOrderExcel")?' + params;
+                    var url = '@Url.Action("Export", "LogisticsOrderList")?' + params;
                     $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
                 });
             }
@@ -154,7 +154,7 @@
         
             function initUploader() {
         
-                var url = '@Url.Action("Import", "LogisticsOrderExcel")';
+                var url = '@Url.Action("Import", "LogisticsOrderList")';
         
                 var uploader = new plupload.Uploader({
                     runtimes: 'html5,flash,html4',

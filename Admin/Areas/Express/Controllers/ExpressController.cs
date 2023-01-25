@@ -92,65 +92,6 @@ public class ExpressController : Controller {
         return View("ExpressList", model);
     }
 
-    [AdminAuth(PassRes.Express.ExpressRemarkEdit)]
-    [HttpPost]
-    [Route("/admin/express/detail/save/customer/service/remark")]
-    [Transactional]
-    public IActionResult SaveExpressCustomerServiceRemark(int expressId, string serviceRemark) {
-        ExpressInfo express = session.Get<ExpressInfo>(expressId);
-        if (express == null) {
-            throw new ValidationException("指定的快递单不存在！");
-        }
-
-        // todo 是不是要判断状态，某些状态下不能保存这个客服备注
-
-        if (string.IsNullOrWhiteSpace(serviceRemark)) {
-            // throw new ValidationException("客服备注不能为空！");
-            serviceRemark = string.Empty;
-        }
-
-        if (serviceRemark.Length > 300) {
-            throw new ValidationException("客服备注不能超过500个字符！");
-        }
-
-        var expressServiceRemark = session.Query<ExpressRemarkInfo>()
-            .Where(e => e.Express!.Id == expressId && e.Type == ExpressRemarkType.Service)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (expressServiceRemark == null) {
-            expressServiceRemark = new ExpressRemarkInfo();
-            expressServiceRemark.Type = ExpressRemarkType.Service;
-        }
-
-        expressServiceRemark.Content = serviceRemark;
-
-        session.SaveOrUpdate(expressServiceRemark);
-        session.Flush();
-
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "保存客服备注成功！" }
-        });
-    }
-
-    [HttpPost]
-    [Route("/admin/express/export")]
-    public IActionResult Export(ExpressListQueryParam queryParam) {
-        int totalCount = expressListService.Count(ExpressListMenuCate.All, queryParam);
-        if (totalCount > 10000) // 暂时不能导出超1万个吧
-        {
-            throw new ValidationException("导出的快递单号太多了，请缩小查询条件！");
-        }
-
-        IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam);
-
-        string fileName = $"快递单导出.xlsx";
-        var excel = expressExcelService.Export(expressList);
-
-        return File(excel, ContentType.Xlsx, fileName);
-    }
-
     [HttpPost]
     [Route("/admin/express/delete")]
     [Transactional]
@@ -209,7 +150,7 @@ public class ExpressController : Controller {
             Message = "删除成功！",
         });
     }
-    
+
     [HttpPost]
     [Route("/admin/express/throw/away")]
     [AdminAuth(PassRes.Express.ExpressThrowAway)]
@@ -238,5 +179,22 @@ public class ExpressController : Controller {
             Success = true,
             Message = "设置已丢弃成功！",
         });
-    }    
+    }
+
+    [HttpPost]
+    [Route("/admin/express/export")]
+    public IActionResult Export(ExpressListQueryParam queryParam) {
+        int totalCount = expressListService.Count(ExpressListMenuCate.All, queryParam);
+        if (totalCount > 10000) // 暂时不能导出超1万个吧
+        {
+            throw new ValidationException("导出的快递单号太多了，请缩小查询条件！");
+        }
+
+        IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.All, queryParam);
+
+        string fileName = $"快递单导出.xlsx";
+        var excel = expressExcelService.Export(expressList);
+
+        return File(excel, ContentType.Xlsx, fileName);
+    }
 }
