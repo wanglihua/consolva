@@ -39,4 +39,8 @@
         <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\Express\Views\ExpressDetail" />
+    </ItemGroup>
+
 </Project>

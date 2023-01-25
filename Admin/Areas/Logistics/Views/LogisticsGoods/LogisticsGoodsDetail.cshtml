@@ -3,6 +3,7 @@
 @using shunda.Core.Web
 @using shunda.Domain.Express
 @using shunda.Domain.Logistics
+@using shunda.Service.Express
 @model shunda.Admin.Areas.Logistics.Models.LogisticsGoods.LogisticsGoodsDetailModel
 @{
     ViewData[ViewDataKey.Title] = "物品品名详细";
@@ -242,7 +243,7 @@
                                     foreach (var expressPhoto in Model.LogisticsGoods.FirstOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
-                                                <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
+                                                <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index"  asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
                                             </div>
                                             <div>
                                                 <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
@@ -274,7 +275,7 @@
                                     foreach (var expressPhoto in Model.LogisticsGoods.SecondOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
-                                                <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
+                                                <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
                                             </div>
                                             <div>
                                                 <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
@@ -306,7 +307,7 @@
                                     foreach (var expressPhoto in Model.LogisticsGoods.ThirdOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
-                                                <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
+                                                <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
                                             </div>
                                             <div>
                                                 <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">

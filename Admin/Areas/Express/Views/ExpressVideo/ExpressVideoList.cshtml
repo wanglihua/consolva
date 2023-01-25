@@ -2,6 +2,7 @@
     Layout = null;
 }
 @using shunda.Domain.Express
+@using shunda.Service.Express
 @model shunda.Admin.Areas.Express.Models.ExpressVideo.ExpressVideoListModel
 
 @await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressVideoList" })
@@ -60,7 +61,7 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                         @if (expressVideo.Express != null) {
-                            <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressVideo.Express.Id)" target="_blank">
+                            <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressVideo.Express.Id)" target="_blank">
                                 @expressVideo.TrackingNo
                             </a>
                         } else {

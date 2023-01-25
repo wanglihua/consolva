@@ -1,8 +1,10 @@
 @{
     Layout = null;
 }
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Core.Web
 @using shunda.Domain.Fee
+@using shunda.Service.Express
 @model shunda.Admin.Areas.Fee.Models.ExpressReturnPay.ExpressReturnPayListModel
 
 @await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressReturnPayList" })
@@ -77,7 +79,7 @@
 
                     <td style="text-align: center;">
                         <div>
-                        <a target="_blank" asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(expressReturnPay.Express.Id)">
+                        <a target="_blank" asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)"  asp-route-id="@(expressReturnPay.Express.Id)">
                             @ListDataUtil.Render(expressReturnPay.Express.TrackingNo)
                             </a>
                         </div>

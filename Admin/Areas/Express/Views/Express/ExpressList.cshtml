@@ -133,12 +133,12 @@
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
                         <div>
-                            <a href="@Url.Action("Detail", "Express", new { cateId = ExpressListMenuCate.All.Id, id = express.Id })" target="_blank">
+                            <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(express.Id)" target="_blank">
                                 @ListDataUtil.Render(express.CheckinTrackingNo)
                             </a>
                         </div>
                         <div style="color: blue;">
-                            <a href="@Url.Action("Detail", "Express", new { cateId = ExpressListMenuCate.All.Id, id = express.Id })" target="_blank">
+                            <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(express.Id)" target="_blank">
                                 @express.TrackingNo
                             </a>
                         </div>

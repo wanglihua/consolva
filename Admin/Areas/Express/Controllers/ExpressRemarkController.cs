@@ -50,6 +50,7 @@ public class ExpressRemarkController : Controller {
         return View("ExpressRemarkDetail", model);
     }
 
+    [AdminAuth(PassRes.Express.ExpressRemarkEdit)]
     [HttpPost]
     [Route("/admin/express/remark/save")]
     public IActionResult Save(ExpressRemarkSaveModel model) {
@@ -108,6 +109,7 @@ public class ExpressRemarkController : Controller {
         return View("ExpressRemarkList", model);
     }
 
+    [AdminAuth(PassRes.Express.ExpressRemarkEdit)]
     [HttpPost]
     [Route("/admin/express/remark/single/delete")]
     [Transactional]
@@ -127,7 +129,7 @@ public class ExpressRemarkController : Controller {
 
         session.Delete(expressRemark);
 
-        session.Flush();        
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,

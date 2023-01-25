@@ -598,7 +598,7 @@
                                                 <label for="express_@(express.Id)_tracking_no" class="col-xs-4 control-label">快递单号</label>
                                                 <div class="col-xs-8">
                                                     @*<input id="express_@(express.Id)_tracking_no" value="@(express.TrackingNo)" type="text" disabled="disabled" class="input-sm form-control"/>*@
-                                                    <a asp-area="Express" asp-controller="Express" asp-action="Detail" asp-route-id="@(express.Id)" asp-route-cateId="@(ExpressListMenuCate.All.Id)" target="_blank" style="line-height: 28px;">@(express.TrackingNo)</a>
+                                                    <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-id="@(express.Id)" asp-route-cateId="@(ExpressListMenuCate.All.Id)" target="_blank" style="line-height: 28px;">@(express.TrackingNo)</a>
                                                 </div>
                                             </div>
                                         </div>
