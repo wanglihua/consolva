@@ -9,6 +9,7 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.LogisticsOrder;
+using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -19,14 +20,17 @@ public class LogisticsOrderRemarkController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
+    private readonly PassResService passResService;
 
     public LogisticsOrderRemarkController(ISession session,
         LoginUserService loginUserService,
-        LogisticsOrderRemarkService logisticsOrderRemarkService
+        LogisticsOrderRemarkService logisticsOrderRemarkService,
+        PassResService passResService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
+        this.passResService = passResService;
     }
 
     [HttpPost]
@@ -51,6 +55,7 @@ public class LogisticsOrderRemarkController : Controller {
         return View("LogisticsOrderRemarkDetail", model);
     }
 
+    [AdminAuth(PassRes.LogisticsOrder.OrderRemarkEdit)]
     [HttpPost]
     [Route("/admin/logistics/order/remark/save")]
     [Transactional]
@@ -102,14 +107,19 @@ public class LogisticsOrderRemarkController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/remark/list")]
     public IActionResult OrderRemarkList(int orderId) {
+        int loginUserId = loginUserService.GetLoginUserId();
+
         LogisticsOrderRemarkListModel model = new LogisticsOrderRemarkListModel {
             OrderId = orderId,
-            LogisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId),
+            OrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId),
+
+            CanOrderRemarkEdit = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit),
         };
 
         return View("LogisticsOrderRemarkList", model);
     }
 
+    [AdminAuth(PassRes.LogisticsOrder.OrderRemarkEdit)]
     [HttpPost]
     [Route("/admin/logistics/order/remark/single/delete")]
     [Transactional]

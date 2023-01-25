@@ -15,7 +15,7 @@ public partial class PassRes {
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
             new PassResInfo { Id = OrderListActive, Name = "活动订单", CateIdForCache = CateId },
             new PassResInfo { Id = OrderListComplete, Name = "正常结束订单", CateIdForCache = CateId },
-            new PassResInfo { Id = ImportOrder, Name = "导入订单", CateIdForCache = CateId }, 
+            new PassResInfo { Id = ImportOrder, Name = "导入订单", CateIdForCache = CateId },
             new PassResInfo { Id = ImportOrderCheckinExpress, Name = "导入订单时登记快递单", CateIdForCache = CateId },
             new PassResInfo { Id = OrderListCancel, Name = "作废订单", CateIdForCache = CateId },
             new PassResInfo { Id = OrderPackBox, Name = "箱号跟踪", CateIdForCache = CateId },
@@ -24,9 +24,10 @@ public partial class PassRes {
             new PassResInfo { Id = OrderSetCancel, Name = "设置订单作废", CateIdForCache = CateId },
             new PassResInfo { Id = OrderLogisticsModeChange, Name = "修改订单物流方式", CateIdForCache = CateId },
             new PassResInfo { Id = OrderRollbackSubmitPack, Name = "订单取消打包提交", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderExpressAddModifyDelete, Name = "订单快递单号添加修改删除", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderGoodsAddModifyDelete, Name = "订单物品添加修改删除", CateIdForCache = CateId },
+            new PassResInfo { Id = OrderExpressEdit, Name = "订单快递单号维护", CateIdForCache = CateId },
+            new PassResInfo { Id = OrderGoodsEdit, Name = "订单物品维护", CateIdForCache = CateId },
             new PassResInfo { Id = OrderPackDataModify, Name = "订单打包信息修改", CateIdForCache = CateId },
+            new PassResInfo { Id = OrderRemarkEdit, Name = "订单备注维护", CateIdForCache = CateId },
             new PassResInfo { Id = CustomerOrderCount, Name = "会员订单统计", CateIdForCache = CateId },
         };
 
@@ -91,14 +92,16 @@ public partial class PassRes {
         public const int OrderRollbackSubmitPack = CateId + 22000;
 
         /// <summary>
+        /// 订单快递单号维护
         /// 订单快递单号添加修改删除
         /// </summary>
-        public const int OrderExpressAddModifyDelete = CateId + 24000;
+        public const int OrderExpressEdit = CateId + 24000;
 
         /// <summary>
+        /// 订单物品维护
         /// 订单物品添加修改删除
         /// </summary>
-        public const int OrderGoodsAddModifyDelete = CateId + 26000;
+        public const int OrderGoodsEdit = CateId + 26000;
 
         /// <summary>
         /// 订单打包信息修改
@@ -106,8 +109,13 @@ public partial class PassRes {
         public const int OrderPackDataModify = CateId + 28000;
 
         /// <summary>
+        /// 订单备注维护
+        /// </summary>
+        public const int OrderRemarkEdit = CateId + 30000;
+
+        /// <summary>
         /// 会员订单统计
         /// </summary>
-        public const int CustomerOrderCount = CateId + 30000;
+        public const int CustomerOrderCount = CateId + 32000;
     }
 }

@@ -8,5 +8,8 @@ public class LogisticsOrderRemarkListModel {
     public int OrderId { get; set; }
 
     [BindNever]
-    public IList<LogisticsOrderRemarkInfo> LogisticsOrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
+    public IList<LogisticsOrderRemarkInfo> OrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
+
+    [BindNever]
+    public bool CanOrderRemarkEdit { get; set; }
 }

@@ -3,6 +3,11 @@
 }
 @using shunda.Domain.LogisticsOrder
 @model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark.LogisticsOrderRemarkListModel
+@if (Model.CanOrderRemarkEdit) {
+    <div style="margin-bottom: 10px; text-align: right;">
+        <a class="btn btn-mini btn-primary" href="javascript:showLogisticsOrderRemarkDetail();">添加备注</a>
+    </div>
+}
 <table id="tblLogisticsOrderRemarkList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
@@ -25,9 +30,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.LogisticsOrderRemarkList.Count != 0) {
+        @if (Model.OrderRemarkList.Count != 0) {
             int order = 1;
-            foreach (LogisticsOrderRemarkInfo logisticsOrderRemark in Model.LogisticsOrderRemarkList) {
+            foreach (LogisticsOrderRemarkInfo logisticsOrderRemark in Model.OrderRemarkList) {
                 <tr>
                     <td style="text-align: center;">@(order++)</td>
                     <td style="text-align: center;">
@@ -51,7 +56,9 @@
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        <a href="javascript:deleteLogisticsOrderRemark('@(logisticsOrderRemark.Id)');">删除</a>
+                        @if (Model.CanOrderRemarkEdit) {
+                            <a href="javascript:deleteLogisticsOrderRemark('@(logisticsOrderRemark.Id)');">删除</a>
+                        }
                     </td>
                 </tr>
             }
@@ -64,6 +71,8 @@
         }
     </tbody>
 </table>
+
+<div id="logisticsOrderRemarkDetailDialogWrapper"></div>
 
 <script type="text/javascript">
     function showLogisticsOrderRemarkDetail() {

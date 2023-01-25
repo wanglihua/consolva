@@ -118,7 +118,7 @@ public class ExpressDetailController : Controller {
         Dictionary<int, bool> passResIdMap = loginUserService.GetPassResIdMap();
         model.CanCustomerServiceRemark = PassUtil.HasPassRes(passResIdMap, isAdmin, PassRes.Express.ExpressRemarkEdit);
 
-        model.ExpressRemarkList = session.Query<ExpressRemarkInfo>().Where(e => e.Express!.Id == expressId).ToList();
+        model.ExpressRemarkList = session.Query<ExpressRemarkInfo>().Where(e => e.Express.Id == expressId).ToList();
 
         // 打包用户和时间
         var packExpressList = session.Query<LogisticsOrderPackExpressInfo>()
