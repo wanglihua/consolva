@@ -1043,7 +1043,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         // 检查当前物品类型中的快递单号是不是都已经打包了
         var goodsTypeExpressNoQuery = session
             .Query<ExpressInfo>()
-            .Where(e => e.Order.Id == orderId);
+            .Where(e => e.Order!.Id == orderId);
 
         IList<string> goodsTypeExpressNoList = goodsTypeExpressNoQuery
             .Select(e => e.TrackingNo)
@@ -1051,10 +1051,11 @@ public class LogisticsOrderGoodsPackController : Controller {
             .ToList();
 
         var packedGoodsTypeExpressNoQuery = session.Query<LogisticsOrderPackExpressInfo>()
+            .Fetch(e => e.Express)
             .Where(e => e.Order.Id == orderId);
 
         IList<string> packedGoodsTypeExpressNoList = packedGoodsTypeExpressNoQuery
-            .Select(e => e.ExpressNo)
+            .Select(e => e.Express.TrackingNo)
             .ToList();
 
         IList<string> notPackedGoodsTypeExpressNoList = goodsTypeExpressNoList.Where(e => packedGoodsTypeExpressNoList.Contains(e) == false).ToList();
@@ -1072,12 +1073,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         // 更新快递号状态
         var orderGoodsExpressQuery = session
             .Query<ExpressInfo>()
-            .Where(e => e.Order.Id == orderId);
-
-        // 空运和快递订单打包时，各个物品类型的合并打包
-        if (logisticsOrder.FirstModeType != LogisticsModeType.CnAuAir && logisticsOrder.FirstModeType != LogisticsModeType.CnAuExpress) {
-            orderGoodsExpressQuery = orderGoodsExpressQuery.Where(e => e.GoodsType == goodsType);
-        }
+            .Where(e => e.Order!.Id == orderId);
 
         IList<ExpressInfo> orderGoodsExpressList = orderGoodsExpressQuery.ToList();
 
@@ -1088,42 +1084,9 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         session.Flush();
 
-        // 更新物品状态 这里是按物品类型来取物品列表的
-        var expressGoodsTypeOrderGoodsQuery = session.Query<LogisticsOrderGoodsInfo>()
-            .Fetch(e => e.Express)
-            .Where(e => e.Express.Order.Id == orderId);
-
-        // 空运和快递订单打包时，各个物品类型的合并打包
-        if (logisticsOrder.FirstModeType != LogisticsModeType.CnAuAir && logisticsOrder.FirstModeType != LogisticsModeType.CnAuExpress) {
-            expressGoodsTypeOrderGoodsQuery = expressGoodsTypeOrderGoodsQuery.Where(e => e.Express.GoodsType == goodsType); // 物品类型要按快递单号来，不是按下面的物品来
-        }
-
-        IList<LogisticsOrderGoodsInfo> expressGoodsTypeOrderGoodsList = expressGoodsTypeOrderGoodsQuery.ToList();
-
-        // 更新物品状态 这里是按快递单号来取物品列表的, 也许这个方式更合理, 但上面的方式已经运行了多时没有出现过错误, 就先用上面的方式好了
-
-        /*
-        IList<int> expressIdList = orderGoodsExpressList.Select(e => e.Id).ToList();
-
-        IList<LogisticsOrderGoodsInfo> expressGoodsTypeOrderGoodsList = session.Query<LogisticsOrderGoodsInfo>()
-            .Fetch(e => e.Express)
-            .Where(e => e.Express.Order.Id == orderId && expressIdList.Contains(e.Express.Id))
-            .ToList();
-        */
-
-        // 更新物品状态
-        foreach (LogisticsOrderGoodsInfo orderGoods in expressGoodsTypeOrderGoodsList) {
-            // 同时把占用的仓位释放
-            // 改成不清除仓位，让界面上还继续显示 orderGoods.StorageLoc = null;
-            orderGoods.Status = LogisticsOrderGoodsStatus.Packed;
-            session.Update(orderGoods);
-        }
-
-        session.Flush();
-
         // 更新订单状态
         int notPackedExpressCount = session.Query<ExpressInfo>()
-            .Where(e => e.Order.Id == orderId && e.Status != ExpressStatus.Pack)
+            .Where(e => e.Order!.Id == orderId && e.Status != ExpressStatus.Pack)
             .Count();
 
         // 是否订单完成打包
@@ -1190,44 +1153,24 @@ public class LogisticsOrderGoodsPackController : Controller {
         string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
-        IList<string> packSplitCodeList = new List<string>();
         IList<string> orderIdList = new List<string>();
         IList<string> orderCodeList = new List<string>();
         IList<string> orderPackBoxCodeList = new List<string>();
         IList<string> orderPackBoxShortCodeList = new List<string>();
         IList<int> orderPackBoxNumList = new List<int>();
         foreach (LogisticsOrderPackBoxInfo orderPackBox in orderPackBoxList) {
-            string splitSubCode = orderPackBox.OrderPackSplit?.SubCode ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(splitSubCode)) {
-                if (orderPackBox.Order.PackSplitStatus == LogisticsOrderPackSplitStatus.NotSplitWithSuffix) {
-                    splitSubCode = LogisticsOrderPackSplitService.FirstSubCode;
-                }
-            }
-
-            // customerCodeList.Add(customerCode + splitSubCode);
             customerCodeList.Add(customerCode);
-            packSplitCodeList.Add(splitSubCode);
-            orderCodeList.Add(orderCode + splitSubCode);
-
-            if (orderPackBox.OrderPackSplit != null) {
-                orderIdList.Add(orderPackBox.OrderPackSplit.Id.ToString());
-            } else {
-                orderIdList.Add(orderPackBox.Order.Id.ToString());
-            }
+            orderCodeList.Add(orderCode);
+            orderIdList.Add(orderPackBox.Order.Id.ToString());
 
             orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox));
             orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox));
-            orderPackBoxNumList.Add(orderPackBox.OrderPackBoxNum);
+            orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
-        int orderId = orderPack.Order.Id ?? 0;
+        int orderId = orderPack.Order.Id;
         // string firstLogisticsTypeName = orderPack.Order.FirstModeType?.Name;
-        string firstLogisticsTypeName = orderPack.Order.FirstMode?.Name;
-        string targetWarehouseName = orderPack.Order.TargetWarehouse?.Name;
-        string secondLogisticsTypeName = orderPack.Order.SecondLogisticsModeType?.Name;
-        if (orderPack.Order.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
-            secondLogisticsTypeName = orderPack.Order.SecondLogisticsMode?.PickupStation?.Name;
-        }
+        string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
 
         // string weight = orderPack.Weight.ToString("#0.000") + "Kg";
         // string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.000") + "Kg";
@@ -1237,10 +1180,10 @@ public class LogisticsOrderGoodsPackController : Controller {
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "立方";
         string lwh = $"{orderPack.Length:#} x {orderPack.Width:#} x {orderPack.Height:#}CM";
         // string userName = session.Get<UserInfo>(loginUserService.GetLoginUserId())?.UserName;
-        string userName = orderPack.PackUser?.UserName ?? "";
+        string userName = orderPack.PackUser.UserName;
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
-        string expressGoodsTypeName = orderPack.GoodsType?.Name;
-        string orderGoodsTypeName = orderPack.Order.GoodsType?.Name;
+        string expressGoodsTypeName = orderPack.GoodsType.Name;
+        string orderGoodsTypeName = orderPack.Order.GoodsType.Name;
 
         return Json(new Dictionary<string, object> {
             { "success", true },
@@ -1248,14 +1191,11 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "orderCode", orderCode }, // 这是原来的主订单编号
             { "orderId", orderId },
             { "firstLogisticsTypeName", firstLogisticsTypeName },
-            { "targetWarehouseName", targetWarehouseName },
-            { "secondLogisticsTypeName", secondLogisticsTypeName },
             { "weight", weight },
             { "volumeWeight", volumeWeight },
             { "volume", volume },
             { "lwh", lwh },
             { "customerCodeList", customerCodeList },
-            { "packSplitCodeList", packSplitCodeList },
             { "orderIdList", orderIdList },
             { "orderCodeList", orderCodeList },
             { "orderPackBoxCodeList", orderPackBoxCodeList },
