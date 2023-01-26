@@ -23,7 +23,7 @@ public class LogisticsOrderPackBoxHistoryService {
             throw new ValidationException("箱号历史操作用户不能为空！");
         }
 
-        LogisticsOrderPackBoxHistoryInfo logisticsOrderPackBoxHistory = new LogisticsOrderPackBoxHistoryInfo {
+        LogisticsOrderPackBoxHistoryInfo packBoxHistory = new LogisticsOrderPackBoxHistoryInfo {
             Type = type,
             Order = orderPackBox.Order,
             PackBox = orderPackBox,
@@ -34,7 +34,7 @@ public class LogisticsOrderPackBoxHistoryService {
             Description = description
         };
 
-        session.Save(logisticsOrderPackBoxHistory);
+        session.Save(packBoxHistory);
         session.Flush();
     }
 
