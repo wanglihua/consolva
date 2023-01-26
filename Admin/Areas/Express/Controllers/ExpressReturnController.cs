@@ -33,7 +33,7 @@ public class ExpressReturnController : Controller {
     [Route("/admin/express/return")]
     public IActionResult Index() {
         ExpressReturnIndexModel model = new ExpressReturnIndexModel {
-            WarehouseList = warehouseService.GetWarehouseList(),
+            WarehouseList = warehouseService.GetWarehouseListForAdmin(),
             ReturnStatusList = ExpressStatus.GetReturnList(),
         };
 

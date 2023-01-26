@@ -83,7 +83,7 @@ public class LogisticsOrderListController : Controller {
         model.FirstModeTypeList = LogisticsModeType.GetList();
         model.OrderStatusList = LogisticsOrderStatus.GetList();
         model.PayStatusList = PayStatus.GetList();
-        model.ReceivingWarehouseList = warehouseService.GetWarehouseList();
+        model.ReceivingWarehouseList = warehouseService.GetWarehouseListForAdmin();
         model.TimeRangeTypeList = TimeRangeType.GetList();
 
         int loginUserId = loginUserService.GetLoginUserId();

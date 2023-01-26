@@ -15,7 +15,7 @@ public class WarehouseService {
         this.memoryCache = memoryCache;
     }
 
-    public IList<WarehouseInfo> GetWarehouseList() {
+    public IList<WarehouseInfo> GetWarehouseListForAdmin() {
         return session.Query<WarehouseInfo>()
             .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
             .OrderBy(e => e.OrderNum)
@@ -29,9 +29,9 @@ public class WarehouseService {
     /// 获取仓库列表，优先从缓存中获取
     /// </summary>
     /// <returns></returns>
-    public IList<WarehouseInfo> GetWarehouseListWithCache() {
+    public IList<WarehouseInfo> GetWarehouseListWithCacheForAdmin() {
         if (memoryCache.TryGetValue(WAREHOUSE_LIST_CACHE_KEY, out IList<WarehouseInfo>? warehouseList) == false) {
-            warehouseList = GetWarehouseList();
+            warehouseList = GetWarehouseListForAdmin();
 
             memoryCache.Set(WAREHOUSE_LIST_CACHE_KEY, warehouseList, TimeSpan.FromHours(8));
         }

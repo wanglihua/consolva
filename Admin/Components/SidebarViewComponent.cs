@@ -32,7 +32,7 @@ public class SidebarViewComponent : ViewComponent {
         model.IsAdmin = isAdmin;
         model.PassResIdMap = loginUserService.GetPassResIdMap();
         model.IsSidebarMin = sidebarStateService.GetMinState(loginUserId);
-        model.WarehouseList = warehouseService.GetWarehouseListWithCache();
+        model.WarehouseList = warehouseService.GetWarehouseListWithCacheForAdmin();
 
         return View("Sidebar", model);
     }

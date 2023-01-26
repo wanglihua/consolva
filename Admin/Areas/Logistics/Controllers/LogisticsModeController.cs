@@ -197,7 +197,7 @@ public class LogisticsModeController : Controller {
 
         var feeRateEnabledStatus = LogisticsFeeRateStatus.Enabled;
         model.LogisticsFeeRateList = session.Query<LogisticsFeeRateInfo>().Where(e => e.Status == feeRateEnabledStatus).OrderBy(e => e.Id).ToList();
-        model.WarehouseList = warehouseService.GetWarehouseList();
+        model.WarehouseList = warehouseService.GetWarehouseListForAdmin();
         model.StatusList = LogisticsModeStatus.GetList();
         model.RepackTypeList = LogisticsRepackType.GetList();
         model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();

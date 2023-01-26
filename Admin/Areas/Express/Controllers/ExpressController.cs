@@ -65,7 +65,7 @@ public class ExpressController : Controller {
     public IActionResult Index() {
         ExpressIndexModel model = new ExpressIndexModel();
 
-        model.WarehouseList = warehouseService.GetWarehouseList();
+        model.WarehouseList = warehouseService.GetWarehouseListForAdmin();
 
         model.CheckinUserList = session.Query<WarehouseWorkerInfo>()
             .Fetch(e => e.User)

@@ -128,7 +128,7 @@ public class ShelfUserController : Controller {
         model.ShelfId = shelfUser.Shelf?.Id ?? 0;
         model.Type = shelfUser.Type;
 
-        model.WarehouseList = warehouseService.GetWarehouseList();
+        model.WarehouseList = warehouseService.GetWarehouseListForAdmin();
 
         model.TypeList = ShelfUserType.GetList();
 

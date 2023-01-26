@@ -27,7 +27,7 @@ public class WarehouseWorkerController : Controller {
     [HttpGet]
     [Route("/admin/warehouse/worker")]
     public IActionResult Index() {
-        IList<WarehouseInfo> warehouseList = warehouseService.GetWarehouseList();
+        IList<WarehouseInfo> warehouseList = warehouseService.GetWarehouseListForAdmin();
 
         WarehouseWorkerIndexModel model = new WarehouseWorkerIndexModel();
         model.WarehouseList = warehouseList;
@@ -116,7 +116,7 @@ public class WarehouseWorkerController : Controller {
             }
         }
 
-        model.WarehouseList = warehouseService.GetWarehouseList();
+        model.WarehouseList = warehouseService.GetWarehouseListForAdmin();
         model.TypeList = WarehouseWorkerType.GetList();
 
         model.WarehouseWorker = warehouseWorker;
