@@ -30,7 +30,7 @@ public class LogisticsOrderPackBoxHistoryInfoMapping : EntityNoUpdateMapping<Log
         );
 
         ManyToOne(
-            x => x.OrderPackBox,
+            x => x.PackBox,
             map => {
                 map.Class(typeof(LogisticsOrderPackBoxInfo));
                 map.Column("box_id");
@@ -41,10 +41,10 @@ public class LogisticsOrderPackBoxHistoryInfoMapping : EntityNoUpdateMapping<Log
         );
 
         Property(
-            x => x.OrderPackBoxNum,
+            x => x.BoxNum,
             map => {
                 map.Type(NHibernateUtil.Int32);
-                map.Column("order_pack_box_num");
+                map.Column("box_num");
                 map.NotNullable(true);
             }
         );

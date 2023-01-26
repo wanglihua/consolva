@@ -19,12 +19,12 @@ public class LogisticsOrderPackBoxHistoryInfo : EntityNoUpdate {
     /// <summary>
     /// 箱子
     /// </summary>
-    public virtual LogisticsOrderPackBoxInfo OrderPackBox { get; set; } = new();
+    public virtual LogisticsOrderPackBoxInfo PackBox { get; set; } = new();
 
     /// <summary>
     /// 箱序
     /// </summary>
-    public virtual int OrderPackBoxNum { get; set; }
+    public virtual int BoxNum { get; set; }
 
     /// <summary>
     /// 状态
