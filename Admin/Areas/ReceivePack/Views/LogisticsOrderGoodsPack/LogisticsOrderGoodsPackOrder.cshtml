@@ -10,7 +10,7 @@
 
 <input id="orderId" type="hidden" value="@Model.Order.Id"/>
 
-@if (Model.Order == null) {
+@if (Model.Order == null || Model.Order.Id <= 0) {
     <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
         <i class="fa fa-warning" style="color:red;"></i>
         没有待打包的后续订单，或指定的订单不存在！请刷新页面，重新尝试获取打包订单。
@@ -318,7 +318,7 @@
             </div>
 
             <div id="orderRemarkListWrapper">
-                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { OrderRemarkList = Model.LogisticsOrderRemarkList!, OrderId = Model.Order.Id }" />
+                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { OrderRemarkList = Model.LogisticsOrderRemarkList!, OrderId = Model.Order.Id }"/>
             </div>
 
         </div>
