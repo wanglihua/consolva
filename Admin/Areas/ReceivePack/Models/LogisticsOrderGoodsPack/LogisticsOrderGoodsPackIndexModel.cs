@@ -9,9 +9,11 @@ public class LogisticsOrderGoodsPackIndexModel {
     public WarehouseInfo Warehouse { get; set; } = new();
 
     [BindNever]
+    [Obsolete]
     public IList<LogisticsOrderPackPrintType> PrintTypeList { get; set; } = LogisticsOrderPackPrintType.GetList();
 
     [BindNever]
+    [Obsolete]
     public LogisticsOrderPackPrintType PrintTypeSelected { get; set; } = LogisticsOrderPackPrintType.None;
 
 

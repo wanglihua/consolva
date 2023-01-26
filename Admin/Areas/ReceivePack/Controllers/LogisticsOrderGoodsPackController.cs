@@ -28,8 +28,6 @@ public class LogisticsOrderGoodsPackController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
-    private readonly ExpressTrackingNoCorrectService expressTrackingNoCorrectService;
-    private readonly LogisticsOrderPackConfigService logisticsOrderPackConfigService;
     private readonly LogisticsOrderPackLabelTypeService logisticsOrderPackLabelTypeService;
     private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
     private readonly LogisticsModeService logisticsModeService;
@@ -40,8 +38,6 @@ public class LogisticsOrderGoodsPackController : Controller {
     public LogisticsOrderGoodsPackController(ISession session,
         LoginUserService loginUserService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
-        ExpressTrackingNoCorrectService expressTrackingNoCorrectService,
-        LogisticsOrderPackConfigService logisticsOrderPackConfigService,
         LogisticsOrderPackLabelTypeService logisticsOrderPackLabelTypeService,
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
         LogisticsModeService logisticsModeService,
@@ -52,8 +48,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
-        this.expressTrackingNoCorrectService = expressTrackingNoCorrectService;
-        this.logisticsOrderPackConfigService = logisticsOrderPackConfigService;
         this.logisticsOrderPackLabelTypeService = logisticsOrderPackLabelTypeService;
         this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
         this.logisticsModeService = logisticsModeService;
@@ -70,32 +64,18 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException("指定的仓库不存在！");
         }
 
-        int loginUserId = loginUserService.GetLoginUserId();
-
         LogisticsOrderGoodsPackIndexModel model = new LogisticsOrderGoodsPackIndexModel();
         model.Warehouse = warehouse;
-
-        var printTypeList = logisticsOrderPackConfigService.GetPrintTypeList();
-        model.PrintTypeList = printTypeList;
-
-        LogisticsOrderPackPrintType printType = logisticsOrderPackConfigService.GetUserPackPrintType(loginUserId, warehouseId);
-
-        model.PrintTypeSelected = LogisticsOrderPackPrintType.None;
-        if (printType != null && printType != LogisticsOrderPackPrintType.None) {
-            model.PrintTypeSelected = printType;
-        }
-
-        // 把这个页面最后使用的打印方式保存一下，后来感觉这个保存也不需要了
-        // logisticsOrderPackConfigService.SaveUserProfile(loginUserId, warehouseId, printType);     
 
         return View("LogisticsOrderGoodsPackIndex", model);
     }
 
+    // todo a 移除
+    [Obsolete]
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/save/print/type")]
     public IActionResult SavePrintType(int warehouseId, int printTypeId) {
         int loginUserId = loginUserService.GetLoginUserId();
-        logisticsOrderPackConfigService.SaveUserProfile(loginUserId, warehouseId, LogisticsOrderPackPrintType.GetById(printTypeId));
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
@@ -216,16 +196,16 @@ public class LogisticsOrderGoodsPackController : Controller {
     [NonAction]
     private ICriteria GetListCriteria(LogisticsOrderGoodsPackListQueryParam queryParam) {
         LogisticsOrderPackDisplayType displayType = LogisticsOrderPackDisplayType.NotOthers;
-        LogisticsOrderPackConfigInfo logisticsOrderPackConfig = session
+        var orderPackConfig = session
             .Query<LogisticsOrderPackConfigInfo>()
             .Take(1)
             .SingleOrDefault();
 
-        if (logisticsOrderPackConfig != null) {
-            if (logisticsOrderPackConfig.DisplayType == LogisticsOrderPackDisplayType.None) {
+        if (orderPackConfig != null) {
+            if (orderPackConfig.DisplayType == LogisticsOrderPackDisplayType.None) {
                 displayType = LogisticsOrderPackDisplayType.NotOthers;
             } else {
-                displayType = logisticsOrderPackConfig.DisplayType;
+                displayType = orderPackConfig.DisplayType;
             }
         }
 
@@ -292,18 +272,18 @@ public class LogisticsOrderGoodsPackController : Controller {
         #region 页面其他手工查询条件
 
         // 订单编号查询
-        string orderCodeQuery = queryParam.OrderCodeQuery;
-        if (string.IsNullOrWhiteSpace(orderCodeQuery) == false) {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Code).IsInsensitiveLike(orderCodeQuery, MatchMode.Anywhere));
         }
 
-        int firstLogisticsModeIdQuery = queryParam.FirstLogisticsModeIdQuery;
-        if (firstLogisticsModeIdQuery != 0) {
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.FirstMode.Id == firstLogisticsModeIdQuery));
+        if (queryParam.FirstLogisticsModeIdQuery != 0) {
+            int firstModeIdQuery = queryParam.FirstLogisticsModeIdQuery;
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.FirstMode.Id == firstModeIdQuery));
         }
 
-        LogisticsGoodsType goodsTypeQuery = queryParam.GoodsTypeQuery;
-        if (goodsTypeQuery != null && goodsTypeQuery != LogisticsGoodsType.None) {
+        if (queryParam.GoodsTypeQuery != null && queryParam.GoodsTypeQuery != LogisticsGoodsType.None) {
+            LogisticsGoodsType goodsTypeQuery = queryParam.GoodsTypeQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.GoodsType == goodsTypeQuery));
         }
 
@@ -345,21 +325,21 @@ public class LogisticsOrderGoodsPackController : Controller {
             LogisticsOrderPackSortType sortType = LogisticsOrderPackSortType.StorageLoc;
             LogisticsOrderPackDisplayType displayType = LogisticsOrderPackDisplayType.NotOthers;
 
-            LogisticsOrderPackConfigInfo logisticsOrderPackConfig = session
+            var orderPackConfig = session
                 .Query<LogisticsOrderPackConfigInfo>()
                 .Take(1)
                 .SingleOrDefault();
 
-            if (logisticsOrderPackConfig != null) {
-                sortType = logisticsOrderPackConfig.SortType;
+            if (orderPackConfig != null) {
+                sortType = orderPackConfig.SortType;
 
-                if (logisticsOrderPackConfig.DisplayType == LogisticsOrderPackDisplayType.None) {
+                if (orderPackConfig.DisplayType == LogisticsOrderPackDisplayType.None) {
                     displayType = LogisticsOrderPackDisplayType.NotOthers;
                 } else {
-                    displayType = logisticsOrderPackConfig.DisplayType;
+                    displayType = orderPackConfig.DisplayType;
                 }
 
-                model.TrackingNoManualInputEnabled = logisticsOrderPackConfig.TrackingNoManualInputEnabled;
+                model.TrackingNoManualInputEnabled = orderPackConfig.TrackingNoManualInputEnabled;
             }
 
             string shelfAlias = "shelf";
@@ -881,51 +861,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             param.GoodsType = order.GoodsType; // 这个语句感觉不写也可以的，界面上传递的时候已经是订单的物品类型了
         }
 
-        if (logisticsModeService.IsOrderExpressWeightFitMode(orderId, (order.FirstMode?.Id ?? 0), FeeMessageType.User) == false) {
-            throw new ValidationException($"当前订单#{orderId}快递单号实际重或体积重跟订单选定的头程物流方式#{(order.FirstMode?.Id ?? 0)}重量限制不匹配，请重新更改为正确头程物流方式后再打包！");
-        }
-
-        bool multiExpressOnePack = false; // 这个值现在计算好，后面会设置到打包属性中
-
-        // 现在这个值已经不传了，所有总是 null
-        if (param.MultiExpressOnePack == null) // 自动判断的话，就看快递单号数量是不是大于1
-        {
-            if (expressTrackingNoList.Count > 1) {
-                multiExpressOnePack = true;
-            } else {
-                multiExpressOnePack = false;
-            }
-        } else {
-            multiExpressOnePack = param.MultiExpressOnePack.Value;
-        }
-
-        /* 去掉这个检查，现在自动判断是否合箱的，不一定每个打包记录都是一致的
-        {
-            IList<LogisticsOrderPackInfo> orderPackList = session.Query<LogisticsOrderPackInfo>().Where(e => e.Order.Id == orderId).ToList();
-            IList<bool> multiExpressOnePackValueList = orderPackList
-                .Where(e => e.MultiExpressOnePack != null)
-                .Select(e => e.MultiExpressOnePack.Value)
-                .Distinct()
-                .ToList();
-            if (multiExpressOnePackValueList.Count > 1)
-            {
-                throw new ValidationException("已打包包裹是否合箱设定不一致！");
-            }
-
-            if (multiExpressOnePackValueList.Count > 0 && multiExpressOnePack != multiExpressOnePackValueList[0])
-            {
-                if (multiExpressOnePack == false)
-                {
-                    throw new ValidationException("之前已打包包裹为【合箱】，当前为【不合箱】，两者不一致！");
-                }
-                else
-                {
-                    throw new ValidationException("之前已打包包裹为【不合箱】，当前为【合箱】，两者不一致！");
-                }
-            }
-        }
-        */
-
         // 获取物品类型快递单号列表
         IList<LogisticsOrderGoodsExpressInfo> goodsTypeGoodsExpressList = orderGoodsExpressList; // 默认取所有，一般空运时就是所有
 
@@ -1339,7 +1274,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         int goodsExpressOrderId = goodsExpress.Order?.Id ?? 0;
 
         if (loginUserService.IsAdmin == false) {
-            LogisticsOrderPackScheduleInfo orderPackSchedule = session.Query<LogisticsOrderPackScheduleInfo>()
+            var orderPackSchedule = session.Query<LogisticsOrderPackScheduleInfo>()
                 .Fetch(e => e.User)
                 .Where(e => e.Order.Id == goodsExpressOrderId)
                 .Take(1)
@@ -1528,18 +1463,10 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         int orderId = param.OrderId;
-
-        Tuple<DeliverSupplierType, int> result = logisticsOrderService.CompleteOrderPackManual(orderId);
-
-        bool tlaShip = result.Item1 == DeliverSupplierType.Tla || result.Item1 == DeliverSupplierType.TransDirect; // TransDirect 匹配的时候也出tla的自提标签
-        bool transDirectShip = result.Item1 == DeliverSupplierType.TransDirect;
-        int tlaPrintCount = result.Item2;
+        logisticsOrderService.CompleteOrderPackManual(orderId);
 
         return Json(new Dictionary<string, object> {
             { "success", true },
-            { "tlaShip", tlaShip },
-            { "transDirectShip", transDirectShip },
-            { "tlaPrintCount", tlaPrintCount },
             { "message", "完成订单打包成功！" }
         });
     }
@@ -1552,16 +1479,16 @@ public class LogisticsOrderGoodsPackController : Controller {
     [Route("/admin/logistics/order/goods/pack/get/print/pack/data/10/15")]
     [NoLoginRequired]
     public IActionResult GetPrintPackDataW10H15(int orderPackId) {
-        LogisticsOrderPackConfigInfo logisticsOrderPackConfig = session
+        var orderPackConfig = session
             .Query<LogisticsOrderPackConfigInfo>()
             .Take(1)
             .SingleOrDefault();
 
-        if (logisticsOrderPackConfig == null) {
+        if (orderPackConfig == null) {
             throw new Exception("打包配置还没配置，请先配置订单打包！");
         }
 
-        int printCount = logisticsOrderPackConfig.Label1015PrintCount;
+        int printCount = orderPackConfig.Label1015PrintCount;
 
         LogisticsOrderPackInfo orderPack = session.Get<LogisticsOrderPackInfo>(orderPackId);
         if (orderPack == null) {
@@ -1664,16 +1591,16 @@ public class LogisticsOrderGoodsPackController : Controller {
     [Route("/admin/logistics/order/goods/pack/get/print/pack/data/10/5")]
     [NoLoginRequired]
     public IActionResult GetPrintPackDataW10H5(int orderPackId) {
-        LogisticsOrderPackConfigInfo logisticsOrderPackConfig = session
+        LogisticsOrderPackConfigInfo orderPackConfig = session
             .Query<LogisticsOrderPackConfigInfo>()
             .Take(1)
             .SingleOrDefault();
 
-        if (logisticsOrderPackConfig == null) {
+        if (orderPackConfig == null) {
             throw new Exception("打包配置还没配置，请先配置订单打包！");
         }
 
-        int printCount = logisticsOrderPackConfig.Label1005PrintCount;
+        int printCount = orderPackConfig.Label1005PrintCount;
 
         LogisticsOrderPackInfo orderPack = session.Get<LogisticsOrderPackInfo>(orderPackId);
         if (orderPack == null) {
@@ -1766,16 +1693,16 @@ public class LogisticsOrderGoodsPackController : Controller {
     [Route("/admin/logistics/order/goods/pack/get/print/pack/data/5/5")]
     [NoLoginRequired]
     public IActionResult GetPrintPackDataW5H5(int orderPackId) {
-        LogisticsOrderPackConfigInfo logisticsOrderPackConfig = session
+        LogisticsOrderPackConfigInfo orderPackConfig = session
             .Query<LogisticsOrderPackConfigInfo>()
             .Take(1)
             .SingleOrDefault();
 
-        if (logisticsOrderPackConfig == null) {
+        if (orderPackConfig == null) {
             throw new Exception("打包配置还没配置，请先配置订单打包！");
         }
 
-        int printCount = logisticsOrderPackConfig.Label0505PrintCount;
+        int printCount = orderPackConfig.Label0505PrintCount;
 
         LogisticsOrderPackInfo orderPack = session.Get<LogisticsOrderPackInfo>(orderPackId);
         if (orderPack == null) {

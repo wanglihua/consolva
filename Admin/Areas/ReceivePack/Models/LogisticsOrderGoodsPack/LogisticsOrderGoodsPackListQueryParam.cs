@@ -34,6 +34,7 @@ public class LogisticsOrderGoodsPackListQueryParam : ListQueryParam {
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
     public LogisticsModeType? FirstLogisticsModeTypeQuery { get; set; }
 
+    // todo a 改名
     public int FirstLogisticsModeIdQuery { get; set; }
 
     [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
