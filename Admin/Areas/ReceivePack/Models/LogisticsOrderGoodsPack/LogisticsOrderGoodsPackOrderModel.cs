@@ -16,15 +16,19 @@ public class LogisticsOrderGoodsPackOrderModel {
     public int GoodsTypeCommonPackageCount { get; set; }
 
     [BindNever]
+    [Obsolete]
     public int GoodsTypeRestrictPackageCount { get; set; }
 
     [BindNever]
+    [Obsolete]
     public int GoodsTypeBambooPackageCount { get; set; }
 
     [BindNever]
+    [Obsolete]
     public int GoodsTypeRestrictBambooPackageCount { get; set; }
 
     [BindNever]
+    [Obsolete]
     public int GoodsTypeSpecialPackageCount { get; set; }
 
     [BindNever]
@@ -46,6 +50,7 @@ public class LogisticsOrderGoodsPackOrderModel {
     public string PackScheduleUserName { get; set; } = string.Empty;
 
     [BindNever]
+    [Obsolete]
     public bool IsOrderExpressWeightFitMode { get; set; } = true;
 
     /// <summary>
@@ -56,16 +61,19 @@ public class LogisticsOrderGoodsPackOrderModel {
     /// <summary>
     /// 能不能手工打印PCA标签
     /// </summary>
+    [Obsolete]
     public bool CanPrintPcaLabel { get; set; }
 
     /// <summary>
     /// 能不能手工打印 TransDirect 标签
     /// </summary>
+    [Obsolete]
     public bool CanPrintTransDirectLabel { get; set; }
 
     /// <summary>
     /// 是不是中澳海运订单
     /// </summary>
+    [Obsolete]
     public bool IsCnAuSeaOrder { get; set; } = true;
 
     /// <summary>
@@ -76,24 +84,28 @@ public class LogisticsOrderGoodsPackOrderModel {
     /// <summary>
     /// 打木架
     /// </summary>
+    [Obsolete]
     public bool WoodFrame { get; set; } = false;
 
     /// <summary>
     /// 清理树皮杂物
     /// </summary>        
+    [Obsolete]
     public bool BarkClean { get; set; } = false;
 
     /// <summary>
     /// 是否有未完成的打木架
     /// </summary>
+    [Obsolete]
     public bool WoodFrameNotDone { get; set; } = false;
 
     /// <summary>
     /// 是否有未完成的清理树皮杂物
     /// </summary>        
+    [Obsolete]
     public bool BarkCleanNotDone { get; set; } = false;
 
-
+    [Obsolete]
     public LogisticsOrderPackPrintType PrintTypeInLogisticsMode { get; set; } = LogisticsOrderPackPrintType.None;
 
 #if DEBUG
