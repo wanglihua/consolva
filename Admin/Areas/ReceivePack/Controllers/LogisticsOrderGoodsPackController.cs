@@ -16,7 +16,6 @@ using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Express;
-using shunda.Service.Logistics;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
@@ -28,9 +27,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
-    private readonly LogisticsOrderPackLabelTypeService logisticsOrderPackLabelTypeService;
     private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
-    private readonly LogisticsModeService logisticsModeService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderService logisticsOrderService;
     private readonly WarehouseService warehouseService;
@@ -38,9 +35,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     public LogisticsOrderGoodsPackController(ISession session,
         LoginUserService loginUserService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
-        LogisticsOrderPackLabelTypeService logisticsOrderPackLabelTypeService,
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
-        LogisticsModeService logisticsModeService,
         ExpressLogService expressLogService,
         LogisticsOrderService logisticsOrderService,
         WarehouseService warehouseService
@@ -48,9 +43,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
-        this.logisticsOrderPackLabelTypeService = logisticsOrderPackLabelTypeService;
         this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
-        this.logisticsModeService = logisticsModeService;
         this.expressLogService = expressLogService;
         this.logisticsOrderService = logisticsOrderService;
         this.warehouseService = warehouseService;
@@ -435,48 +428,41 @@ public class LogisticsOrderGoodsPackController : Controller {
             }
         }
 
-        LogisticsOrderInfo logisticsOrder = session.Get<LogisticsOrderInfo>(nextOrderIdValue);
+        var logisticsOrder = session.Get<LogisticsOrderInfo>(nextOrderIdValue);
+        if (logisticsOrder == null) {
+            logisticsOrder = new LogisticsOrderInfo(); // 对应 model 中成员的不为空！
+        }
 
         model.IsAdmin = loginUserService.IsAdmin;
 
         model.Order = logisticsOrder;
 
-        if (logisticsOrder != null) {
-            IList<LogisticsOrderGoodsExpressInfo> orderGoodsExpressList = session.Query<LogisticsOrderGoodsExpressInfo>().Where(e => e.Order.Id == nextOrderIdValue).ToList();
-            IList<LogisticsOrderGoodsInfo> orderGoodsList = session.Query<LogisticsOrderGoodsInfo>()
-                .Fetch(e => e.Express)
+        if (logisticsOrder.Id > 0) {
+            IList<ExpressInfo> expressList = session.Query<ExpressInfo>()
                 .Fetch(e => e.StorageLoc)
-                .Where(e => e.Express.Order.Id == nextOrderIdValue)
+                .ThenFetch(e => e.Shelf)
+                .Where(e => e.Order!.Id == nextOrderIdValue)
                 .ToList();
-            foreach (LogisticsOrderGoodsExpressInfo orderGoodsExpress in orderGoodsExpressList) {
-                IList<LogisticsOrderGoodsInfo> expressGoodsList = orderGoodsList.Where(e => e.Express.Id == orderGoodsExpress.Id).ToList();
-
-                IList<string> storageLocNameList = expressGoodsList
-                    .OrderBy(e => e.StorageLoc?.Shelf?.OrderNum)
-                    .ThenBy(e => e.StorageLoc?.RowNum)
-                    .ThenBy(e => e.StorageLoc?.ColNum)
-                    .Select(e => e.StorageLoc?.GetFullName())
-                    .Distinct()
-                    .ToList();
-                orderGoodsExpress.StorageLocNames = string.Join("， ", storageLocNameList);
-
-                IList<int> goodsAdminIdList = expressGoodsList.Where(e => e.GoodsAdminId != null).Select(e => e.GoodsAdminId.Value).Distinct().ToList();
-
-                IList<string> goodsAdminNameList = session.Query<LogisticsGoodsInfo>()
-                    .Where(e => goodsAdminIdList.Contains(e.Id))
-                    .ToList()
-                    .Select(e => e.GetGoodsAdminName())
-                    .ToList();
-                orderGoodsExpress.GoodsAdminNames = string.Join(", ", goodsAdminNameList);
+            if (expressList.Count <= 0) {
+                throw new ValidationException($"订单{logisticsOrder.Code}快递单列表为空，数据有问题！");
             }
 
+            IList<ExpressGoodsInfo> orderGoodsList = session.Query<ExpressGoodsInfo>()
+                .Fetch(e => e.Express)
+                .Fetch(e => e.Goods)
+                .Where(e => e.Express.Order!.Id == nextOrderIdValue)
+                .ToList();
+            foreach (ExpressInfo orderGoodsExpress in expressList) {
+                IList<ExpressGoodsInfo> expressGoodsList = orderGoodsList.Where(e => e.Express.Id == orderGoodsExpress.Id).ToList();
+                IList<string> goodsNameList = expressGoodsList.Select(e => e.Goods.Name).Distinct().ToList();
+                orderGoodsExpress.GoodsNamesCache = string.Join(", ", goodsNameList);
+            }
 
             model.GoodsTypeList = LogisticsGoodsType.GetInnerList(); // 这是使用 GetCustomerList() 也可以，但用 Inner 也无妨，万一订单中有不符合要求的物品
 
-
             model.GoodsTypePackCompleteDict = new Dictionary<LogisticsGoodsType, bool>();
             foreach (LogisticsGoodsType goodsType in model.GoodsTypeList) {
-                int goodsTypeNotPackedCount = orderGoodsExpressList.Where(e => e.GoodsType == goodsType && e.Status != LogisticsOrderGoodsExpressStatus.Packed).Count();
+                int goodsTypeNotPackedCount = expressList.Where(e => e.GoodsType == goodsType && e.Status != ExpressStatus.Pack).Count();
                 if (goodsTypeNotPackedCount == 0) {
                     model.GoodsTypePackCompleteDict[goodsType] = true;
                 } else {
@@ -485,70 +471,36 @@ public class LogisticsOrderGoodsPackController : Controller {
             }
 
             // 按仓位号排序，使用的是内存中排序的方式
-            orderGoodsExpressList = orderGoodsExpressList.OrderBy(e => e.StorageLocNames).ToList();
-
-            // 获取自动测量的数据，现在是老的建单方式，还不能通过订单ID的方式进行引用
-            IList<string> trackingNoList = orderGoodsExpressList.Select(e => e.ExpressTrackingNo).Distinct().ToList();
-            IList<LogisticsExpressInfo> logisticsExpressList = session.Query<LogisticsExpressInfo>().Where(e => trackingNoList.Contains(e.TrackingNo)).ToList();
-            IList<int> logisticsExpressIdList = logisticsExpressList.Select(e => e.Id).ToList();
-            IList<LogisticsExpressChildInfo> logisticsExpressChildList = session.Query<LogisticsExpressChildInfo>()
-                .Where(e => logisticsExpressIdList.Contains(e.Parent.Id))
-                .OrderBy(e => e.Id)
+            expressList = expressList
+                .OrderBy(e => e.StorageLoc.Shelf.OrderNum)
+                .ThenBy(e => e.StorageLoc.RowNum)
+                .ThenBy(e => e.StorageLoc.ColNum)
                 .ToList();
 
-            IList<LogisticsClaimGoodsInfo> claimGoodsList = session.Query<LogisticsClaimGoodsInfo>().Where(e => trackingNoList.Contains(e.TrackingNo)).ToList();
+            model.ExpressList = expressList;
+            model.OrderTotalPackageCount = expressList.Sum(e => e.PackageCount);
 
-            foreach (LogisticsOrderGoodsExpressInfo goodsExpress in orderGoodsExpressList) {
-                LogisticsExpressInfo logisticsExpress = logisticsExpressList.Where(e => e.TrackingNo == goodsExpress.ExpressTrackingNo).Take(1).SingleOrDefault();
-                if (logisticsExpress != null) {
-                    goodsExpress.LengthCache = logisticsExpress.Length ?? 0;
-                    goodsExpress.WidthCache = logisticsExpress.Width ?? 0;
-                    goodsExpress.HeightCache = logisticsExpress.Height ?? 0;
-                    goodsExpress.WeightCache = logisticsExpress.Weight ?? 0;
-
-                    goodsExpress.HasSizeWeightDataCache = true;
-
-                    int logisticsExpressId = logisticsExpress.Id;
-                    goodsExpress.ExpressChildListCache = logisticsExpressChildList
-                        .Where(e => e.Parent.Id == logisticsExpressId)
-                        .OrderBy(e => e.Id)
-                        .ToList();
-                }
-
-                goodsExpress.ClaimGoodsCache = claimGoodsList.Where(e => e.TrackingNo == goodsExpress.ExpressTrackingNo).Take(1).SingleOrDefault();
+            // Common count
+            var expressCommonTypeList = expressList
+                .Where(e => e.GoodsType == LogisticsGoodsType.Common)
+                .ToList();
+            int commonPackageCount = 0;
+            if (expressCommonTypeList.Count != 0) {
+                commonPackageCount = expressCommonTypeList.Sum(e => e.PackageCount);
             }
 
-            model.ExpressList = orderGoodsExpressList;
+            model.GoodsTypeCommonPackageCount = commonPackageCount;
 
-            IList<string> expressTrackingNoList = orderGoodsExpressList.Select(e => e.ExpressTrackingNo).ToList();
-
-            model.OrderTotalPackageCount =
-                orderGoodsExpressList
-                    .Where(e => e.CheckinPackageCount.HasValue).Count() == 0
-                    ? 0
-                    : orderGoodsExpressList
-                        .Where(e => e.CheckinPackageCount.HasValue)
-                        .Sum(e => e.CheckinPackageCount.Value);
-
-            // Common
-            model.GoodsTypeCommonPackageCount =
-                orderGoodsExpressList
-                    .Where(e => e.GoodsType == LogisticsGoodsType.Common && e.CheckinPackageCount.HasValue).Count() == 0
-                    ? 0
-                    : orderGoodsExpressList
-                        .Where(e => e.GoodsType == LogisticsGoodsType.Common && e.CheckinPackageCount.HasValue)
-                        .Sum(e => e.CheckinPackageCount.Value);
-
+            // todo 这里要改进包含快递单备注
             model.LogisticsOrderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
                 .Where(e => e.Order.Id == nextOrderIdValue)
-                .OrderBy(e => e.Express.Id)
-                .ThenBy(e => e.Id)
+                .OrderBy(e => e.Id)
                 .ToList();
 
             model.IsOrderPackComplete = logisticsOrder.OrderStatus == LogisticsOrderStatus.Packed;
 
             {
-                LogisticsOrderPackScheduleInfo orderPackSchedule = session.Query<LogisticsOrderPackScheduleInfo>()
+                var orderPackSchedule = session.Query<LogisticsOrderPackScheduleInfo>()
                     .Fetch(e => e.User)
                     .Where(e => e.Order.Id == nextOrderIdValue)
                     .Take(1)
@@ -573,10 +525,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         expressTrackingNo = expressTrackingNo.ToUpper();
-
-        string oldExpressTrackingNo = expressTrackingNo;
-        expressTrackingNo = expressTrackingNoCorrectService.Correct(expressTrackingNo);
-
         LogisticsGoodsType goodsType = LogisticsGoodsType.GetById(goodsTypeId);
 
         /*
@@ -584,37 +532,24 @@ public class LogisticsOrderGoodsPackController : Controller {
             未能找到录入的快递单号，请核对
          */
 
-        LogisticsOrderGoodsExpressInfo orderGoodsExpress = session
-            .Query<LogisticsOrderGoodsExpressInfo>()
+        var orderGoodsExpress = session
+            .Query<ExpressInfo>()
             .Fetch(e => e.Order)
-            .Where(e => e.Order.Id == orderId && e.ExpressTrackingNo == expressTrackingNo)
+            .Where(e => e.Order!.Id == orderId && e.TrackingNo == expressTrackingNo)
             .OrderBy(e => e.Status)
             .Take(1)
             .SingleOrDefault();
 
-        // 如果订单快递信息中没找到快递单号，就尝试用澳拼入库号来匹配快递单号
-        bool isAoPinTrackingNo = false;
+        // 如果订单快递信息中没找到快递单号，就尝试用入库跟踪号来匹配快递单号
         if (orderGoodsExpress == null) {
-            string aoPinTrackingNo = expressTrackingNo;
-            AoPinTrackingNoExpressInfo aoPinTrackingNoExpress = session.Query<AoPinTrackingNoExpressInfo>()
-                .Where(e => e.AoPinTrackingNo == aoPinTrackingNo)
+            string checkinTrackingNo = expressTrackingNo;
+            orderGoodsExpress = session
+                .Query<ExpressInfo>()
+                .Fetch(e => e.Order)
+                .Where(e => e.Order!.Id == orderId && e.CheckinTrackingNo == checkinTrackingNo)
+                .OrderBy(e => e.Status)
                 .Take(1)
                 .SingleOrDefault();
-
-            if (aoPinTrackingNoExpress != null) {
-                expressTrackingNo = aoPinTrackingNoExpress.TrackingNo;
-                orderGoodsExpress = session
-                    .Query<LogisticsOrderGoodsExpressInfo>()
-                    .Fetch(e => e.Order)
-                    .Where(e => e.Order.Id == orderId && e.ExpressTrackingNo == expressTrackingNo)
-                    .OrderBy(e => e.Status)
-                    .Take(1)
-                    .SingleOrDefault();
-
-                if (orderGoodsExpress != null) {
-                    isAoPinTrackingNo = true;
-                }
-            }
         }
 
         if (orderGoodsExpress == null) {
@@ -625,33 +560,13 @@ public class LogisticsOrderGoodsPackController : Controller {
             });
         }
 
-        // 如果是空运和快递订单的，合并快递单号的物品类型，取用订单的物品类型
-        LogisticsOrderInfo order = orderGoodsExpress.Order;
-        if (order.FirstModeType != LogisticsModeType.CnAuAir && order.FirstModeType != LogisticsModeType.CnAuExpress) {
-            if (orderGoodsExpress.GoodsType != goodsType) {
-                return Json(new Dictionary<string, object> {
-                    { "success", false },
-                    { "expressInOrder", true },
-                    { "message", "在当前订单中找到录入的快递单号，但快递单号物品类型跟当前不符合，请核对！" }
-                });
-            }
-        }
-
-        string message = $"{expressTrackingNo} 已成功查找到快递号并选择！本快递单号入库包裹数量为 {orderGoodsExpress.CheckinPackageCount}，请确保下架包裹数量正确！";
-
-        if (oldExpressTrackingNo != expressTrackingNo) {
-            if (isAoPinTrackingNo == false) {
-                message = $"{expressTrackingNo} 已成功查找到快递号并选择！本快递单号入库包裹数量为 {orderGoodsExpress.CheckinPackageCount}，请确保下架包裹数量正确！本快递单号已经过更正，现为{expressTrackingNo}，原为{oldExpressTrackingNo}";
-            } else {
-                message = $"{expressTrackingNo} 已成功查找到快递号并选择！本快递单号入库包裹数量为 {orderGoodsExpress.CheckinPackageCount}，请确保下架包裹数量正确！扫描单号为澳拼入库号，澳拼入库号为{oldExpressTrackingNo}，对应快递单号为{expressTrackingNo}";
-            }
-        }
+        string message = $"{expressTrackingNo} 已成功查找到快递号并选择！本快递单号入库包裹数量为 {orderGoodsExpress.PackageCount}，请确保下架包裹数量正确！";
 
         return Json(new Dictionary<string, object> {
             { "success", true },
-            { "packageCount", orderGoodsExpress.CheckinPackageCount },
+            { "packageCount", orderGoodsExpress.PackageCount },
             { "expressId", orderGoodsExpress.Id },
-            { "expressTrackingNo", orderGoodsExpress.ExpressTrackingNo },
+            { "expressTrackingNo", orderGoodsExpress.TrackingNo },
             { "message", message }
         });
     }
@@ -667,21 +582,13 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Query<LogisticsOrderPackInfo>()
             .Where(e => e.Order.Id == orderId);
 
-        if (order.FirstModeType != LogisticsModeType.CnAuAir && order.FirstModeType != LogisticsModeType.CnAuExpress) {
-            orderPackQuery = orderPackQuery.Where(e => e.GoodsType == goodsType);
-        }
-
         IList<LogisticsOrderPackInfo> orderPackList = orderPackQuery.ToList();
 
         LogisticsOrderGoodsPackOrderPackListModel model = new LogisticsOrderGoodsPackOrderPackListModel();
 
         // 判断该类型是不是都是打包状态
-        var goodsTypeNotPackedCountQuery = session.Query<LogisticsOrderGoodsExpressInfo>()
-            .Where(e => e.Order.Id == orderId && e.Status != LogisticsOrderGoodsExpressStatus.Packed);
-
-        if (order.FirstModeType != LogisticsModeType.CnAuAir && order.FirstModeType != LogisticsModeType.CnAuExpress) {
-            goodsTypeNotPackedCountQuery = goodsTypeNotPackedCountQuery.Where(e => e.GoodsType == goodsType);
-        }
+        var goodsTypeNotPackedCountQuery = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId && e.Status != ExpressStatus.Pack);
 
         int goodsTypeNotPackedCount = goodsTypeNotPackedCountQuery.Count();
 
@@ -695,107 +602,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         model.OrderPackList = orderPackList;
         model.Repack = repack;
 
-        LogisticsOrderPackInfo orderPackLast = orderPackList
-            .OrderByDescending(e => e.CreateTime)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (orderPackLast != null) {
-            model.MultiExpressOnePackLastPack = orderPackLast.MultiExpressOnePack;
-        } else {
-            model.MultiExpressOnePackLastPack = null;
-        }
-
         return View("LogisticsOrderGoodsPackOrderPackList", model);
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/order/goods/pack/use/size/weight")]
-    public IActionResult UseSizeWeight(LogisticsOrderGoodsPackUseSizeWeightParam param) {
-        if (param.ExpressTrackingNoList == null || param.ExpressTrackingNoList.Count == 0) {
-            throw new ValidationException("请先扫描要打包的快递单号！");
-        }
-
-        IList<string> expressTrackingNoList = param.ExpressTrackingNoList;
-
-        IList<LogisticsExpressInfo> expressList = session.Query<LogisticsExpressInfo>()
-            .Where(e => expressTrackingNoList.Contains(e.TrackingNo))
-            .ToList();
-
-        // if (expressList.Count == 0)
-        // {
-        //     throw new ValidationException("扫描的快递单号，没有找到对应的尺寸重量数据！");
-        // }
-
-        foreach (string expressTrackingNo in expressTrackingNoList) {
-            LogisticsExpressInfo logisticsExpress = expressList.Where(e => e.TrackingNo == expressTrackingNo).Take(1).SingleOrDefault();
-            if (logisticsExpress == null) {
-                throw new ValidationException($"快递单号 {expressTrackingNo}，没能找到对应的尺寸重量数据！");
-            }
-        }
-
-        decimal length = expressList[0].Length ?? 0;
-        decimal width = expressList[0].Width ?? 0;
-        decimal height = expressList[0].Height ?? 0;
-        decimal weight = expressList[0].Weight ?? 0;
-
-        if (expressList.Count() > 1) {
-            decimal totalVolume = 0m; // 立方厘米
-            decimal totalWeight = 0m; // kg
-
-            foreach (LogisticsExpressInfo express in expressList) {
-                totalVolume += (express.Length ?? 0) * (express.Width ?? 0) * (express.Height ?? 0) * (express.PackageCount ?? 1);
-                totalWeight += express.Weight ?? 0;
-            }
-
-            IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
-            IList<LogisticsExpressChildInfo> expressChildList = session.Query<LogisticsExpressChildInfo>()
-                .Where(e => expressIdList.Contains(e.Parent.Id))
-                .ToList();
-
-            foreach (LogisticsExpressChildInfo expressChild in expressChildList) {
-                totalVolume += (expressChild.Length ?? 0) * (expressChild.Width ?? 0) * (expressChild.Height ?? 0) * (expressChild.PackageCount ?? 1);
-                totalWeight += (expressChild.Weight ?? 0) * (expressChild.PackageCount ?? 1);
-            }
-
-            decimal sideLength = (decimal)Math.Pow((double)totalVolume, 0.333333333d);
-            length = sideLength;
-            width = sideLength;
-            height = sideLength;
-
-            weight = totalWeight;
-        } else {
-            int expressId = expressList[0].Id;
-            IList<LogisticsExpressChildInfo> expressChildList = session.Query<LogisticsExpressChildInfo>()
-                .Where(e => e.Parent.Id == expressId)
-                .ToList();
-
-            if (expressChildList.Count > 0) {
-                decimal totalVolume = length * width * height; // 立方厘米
-                decimal totalWeight = weight; // kg
-
-                foreach (LogisticsExpressChildInfo expressChild in expressChildList) {
-                    totalVolume += (expressChild.Length ?? 0) * (expressChild.Width ?? 0) * (expressChild.Height ?? 0) * (expressChild.PackageCount ?? 1);
-                    totalWeight += (expressChild.Weight ?? 0) * (expressChild.PackageCount ?? 1);
-                }
-
-                decimal sideLength = (decimal)Math.Pow((double)totalVolume, 0.333333333d);
-                length = sideLength;
-                width = sideLength;
-                height = sideLength;
-
-                weight = totalWeight;
-            }
-        }
-
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "操作成功！" },
-            { "length", decimal.Round(length, 2, MidpointRounding.AwayFromZero) },
-            { "width", decimal.Round(width, 2, MidpointRounding.AwayFromZero) },
-            { "height", decimal.Round(height, 2, MidpointRounding.AwayFromZero) },
-            { "weight", decimal.Round(weight, 3, MidpointRounding.AwayFromZero) },
-        });
     }
 
     [HttpPost]
@@ -820,58 +627,21 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException("请扫描或输入快递单号，再保存打包信息！");
         }
 
-        IList<LogisticsClaimGoodsInfo> claimGoodsList = session.Query<LogisticsClaimGoodsInfo>().Where(e => expressTrackingNoList.Contains(e.TrackingNo)).ToList();
-
-        bool woodFrameNotDone = claimGoodsList.Where(e => e.WoodFrameFinal == true && (e.WoodFrameDone == null || e.WoodFrameDone == false)).Count() != 0;
-        if (woodFrameNotDone) {
-            throw new ValidationException("当前快递单号有未完成的打木架服务，请先完成打木架再保存打包！");
-        }
-
-        bool barkCleanNotDone = claimGoodsList.Where(e => e.BarkCleanFinal == true && (e.BarkCleanDone == null || e.BarkCleanDone == false)).Count() != 0;
-        if (barkCleanNotDone) {
-            throw new ValidationException("当前快递单号有未完成的清理树皮杂物服务，请先完成清理树皮杂物再保存打包！");
-        }
-
         LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException("指定的订单不存在！");
         }
 
         // 一次性获取订单的所有快递单备用
-        var orderGoodsExpressList = session.Query<LogisticsOrderGoodsExpressInfo>()
-            .Where(e => e.Order.Id == orderId)
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId)
             .ToList();
 
-        IList<string> orderTrackingNoList = orderGoodsExpressList.Select(e => e.ExpressTrackingNo).ToList();
-
-        // 回写申领件状态，这个操作也跟3.0的操作可以兼容
-        session.Query<LogisticsClaimGoodsInfo>()
-            .Where(e => expressTrackingNoList.Contains(e.TrackingNo))
-            .UpdateBuilder()
-            .Set(e => e.Picked, true)
-            .Set(e => e.WarehouseProcessed, true)
-            .Set(e => e.ShelfStatus, ExpressShelfStatus.OffShelf) // 设置为下架状态，不管前面有没有做过下架操作
-            .Set(e => e.Dumped, false) // 设置为取消堆存，不管之前有没有过堆存
-            .Set(e => e.Status, LogisticsClaimGoodsStatus.Pack)
-            .Set(e => e.UpdateTime, DateTime.Now)
-            .Update();
-
-        // 如果是空运和快递订单的，合并快递单号的物品类型，取用订单的物品类型
-        if (order.FirstModeType == LogisticsModeType.CnAuAir || order.FirstModeType == LogisticsModeType.CnAuExpress) {
-            param.GoodsType = order.GoodsType; // 这个语句感觉不写也可以的，界面上传递的时候已经是订单的物品类型了
-        }
-
         // 获取物品类型快递单号列表
-        IList<LogisticsOrderGoodsExpressInfo> goodsTypeGoodsExpressList = orderGoodsExpressList; // 默认取所有，一般空运时就是所有
-
-        // 如果是空运和快递订单的，合并快递单号的物品类型，取用订单的物品类型，所以这里就不用区分了
-        if (order.FirstModeType != LogisticsModeType.CnAuAir && order.FirstModeType != LogisticsModeType.CnAuExpress) // 非空运的时候过滤
-        {
-            goodsTypeGoodsExpressList = orderGoodsExpressList.Where(e => e.GoodsType == param.GoodsType).ToList();
-        }
+        IList<ExpressInfo> goodsTypeGoodsExpressList = expressList; // 默认取所有，一般空运时就是所有
 
         IList<string> goodsTypeExpressTrackingNoList = goodsTypeGoodsExpressList
-            .Select(e => e.ExpressTrackingNo)
+            .Select(e => e.TrackingNo)
             .ToList();
 
         int expressCountNotInGoodsType = param.ExpressTrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
@@ -880,13 +650,13 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         // 检查是不是有已经打包状态的
-        IList<LogisticsOrderGoodsExpressInfo> orderExpressToPackList = orderGoodsExpressList
-            .Where(e => expressTrackingNoList.Contains(e.ExpressTrackingNo))
+        IList<ExpressInfo> orderExpressToPackList = expressList
+            .Where(e => expressTrackingNoList.Contains(e.TrackingNo))
             .ToList();
 
         IList<string> packedExpressTrackingNoList = orderExpressToPackList
-            .Where(e => e.Status == LogisticsOrderGoodsExpressStatus.Packed)
-            .Select(e => e.ExpressTrackingNo)
+            .Where(e => e.Status == ExpressStatus.Pack)
+            .Select(e => e.TrackingNo)
             .ToList();
 
         if (packedExpressTrackingNoList.Count != 0) {
@@ -926,10 +696,10 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 保存打包快递单号
 
-        foreach (LogisticsOrderGoodsExpressInfo express in orderExpressToPackList) {
-            LogisticsOrderPackExpressInfo orderPackExpress = session
+        foreach (ExpressInfo express in orderExpressToPackList) {
+            var orderPackExpress = session
                 .Query<LogisticsOrderPackExpressInfo>()
-                .Where(e => e.Order.Id == orderId && e.OrderPack.Id == orderPack.Id && e.OrderExpress.Id == express.Id)
+                .Where(e => e.Order.Id == orderId && e.OrderPack.Id == orderPack.Id && e.Express.Id == express.Id)
                 .Take(1)
                 .SingleOrDefault();
 
@@ -937,14 +707,15 @@ public class LogisticsOrderGoodsPackController : Controller {
                 orderPackExpress = new LogisticsOrderPackExpressInfo();
 
                 orderPackExpress.Order = session.Load<LogisticsOrderInfo>(orderId);
-                orderPackExpress.GoodsType = express.GoodsType;
                 orderPackExpress.OrderPack = orderPack;
-                orderPackExpress.OrderExpress = express;
-                orderPackExpress.ExpressNo = express.ExpressTrackingNo;
+                orderPackExpress.Express = express;
 
                 session.Save(orderPackExpress);
             }
 
+            express.ShelfStatus = ExpressShelfStatus.OffShelf;
+            express.DumpStatus = ExpressDumpStatus.NotDump;
+            express.Status = ExpressStatus.Pack;
             express.PackTime = now;
             express.PackUser = loginUser;
 
@@ -960,17 +731,10 @@ public class LogisticsOrderGoodsPackController : Controller {
         int packageCount = orderPack.PackageCount;
         for (int index = 0; index < packageCount; index++) {
             LogisticsOrderPackBoxInfo orderPackBox = new LogisticsOrderPackBoxInfo();
-            orderPackBox.Customer = order.Customer;
             orderPackBox.Order = order;
             orderPackBox.OrderPack = orderPack;
-            orderPackBox.OrderPackBoxNum = logisticsOrderPackBoxService.GetNextBoxNum(orderId);
-            orderPackBox.ShipContainerCustomer = null;
-            orderPackBox.ShipContainerCustomerEntry = null;
-            orderPackBox.ShipContainerInner = null;
-            orderPackBox.ShipContainerInnerEntry = null;
+            orderPackBox.BoxNum = logisticsOrderPackBoxService.GetNextBoxNum(orderId);
             orderPackBox.Status = LogisticsOrderPackBoxStatus.Pack;
-            // 只要是人工打包的，都生成这个别名。放在 原来自动打包时可能用到的快递单号别名里面就行了，也不加别的字段了
-            orderPackBox.AliasTrackingNo = logisticsOrderPackBoxService.GetBoxCodeOrderIdAlias(order.Id, orderPackBox.OrderPackBoxNum);
 
             session.Save(orderPackBox);
             session.Flush();
@@ -984,38 +748,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         session.Flush();
-
-        // 是否是继续打包这些快递单号，如果不是继续打包这些快递单号的，那么就释放这些快递单号占用的仓位
-        if (param.ContinueThoseExpress == false) {
-            // 更新快递单号状态为已打包
-            foreach (LogisticsOrderGoodsExpressInfo express in orderExpressToPackList) {
-                express.Status = LogisticsOrderGoodsExpressStatus.Packed;
-                session.Update(express);
-            }
-
-            session.Flush();
-
-            // 更新快递单号下面物品状态为已打包
-            IList<int> expressIdList = orderExpressToPackList.Select(e => e.Id).ToList();
-            IList<LogisticsOrderGoodsInfo> orderGoodsList = session.Query<LogisticsOrderGoodsInfo>()
-                .Fetch(e => e.Express)
-                .Where(e => expressIdList.Contains(e.Express.Id))
-                .ToList();
-
-            foreach (LogisticsOrderGoodsInfo orderGoods in orderGoodsList) {
-                // 同时把占用的仓位释放
-                // 改成不清除仓位，让界面上还继续显示 orderGoods.StorageLoc = null; // 这个时候订单的起始仓位会可能无效
-                orderGoods.Status = LogisticsOrderGoodsStatus.Packed;
-                session.Update(orderGoods);
-            }
-
-            session.Flush();
-        }
-
-        // 如果当前状态是已打包 标记 物品，快递单号为 等待打包状态，同时订单也是
-        // 这里调用这个有问题吧 2020-09-22
-        // UpdateRepackStatus(expressTrackingNoList);
-
 
         // 打包警告信息
 
@@ -1074,8 +806,8 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         // 快递单号日志
-        foreach (LogisticsOrderGoodsExpressInfo express in orderExpressToPackList) {
-            expressLogService.UserExpressLog(express.Id, ExpressLogType.Pack, loginUserId);
+        foreach (ExpressInfo express in orderExpressToPackList) {
+            expressLogService.UserLog(express.Id, ExpressLogType.Pack, loginUserId);
         }
 
         session.Flush();
@@ -1084,7 +816,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "success", true },
             { "message", "当前打包数据保存成功！" },
             { "orderPackId", orderPack.Id },
-            { "hasPackWarning", hasDuplicatePackData || hasLengthUnusual || hasWeightUnusual || hasAirOrderWeightUnusual },
+            { "hasPackWarning", hasDuplicatePackData || hasLengthUnusual || hasWeightUnusual },
             { "packWarningMessage", warningMessageBuilder.ToString() },
         });
     }
@@ -1109,35 +841,22 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         LogisticsGoodsType goodsType = param.GoodsType;
 
-        // 如果是空运和快递订单的，合并快递单号的物品类型，取用订单的物品类型
-        if (order.FirstModeType == LogisticsModeType.CnAuAir || order.FirstModeType == LogisticsModeType.CnAuExpress) {
-            goodsType = order.GoodsType; // 这个语句感觉不写也可以的，界面上传递的时候已经是订单的物品类型了
-        }
-
         int orderPackId = param.PackId;
 
         // 获取订单快递单号列表
-        IList<LogisticsOrderGoodsExpressInfo> goodsTypeExpressList = session
-            .Query<LogisticsOrderGoodsExpressInfo>()
-            .Where(e => e.Order.Id == orderId && e.GoodsType == goodsType)
+        IList<ExpressInfo> goodsTypeExpressList = session
+            .Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId && e.GoodsType == goodsType)
             .ToList();
 
         IList<string> goodsTypeExpressTrackingNoList = goodsTypeExpressList
-            .Select(e => e.ExpressTrackingNo)
+            .Select(e => e.TrackingNo)
             .ToList();
 
         int expressCountNotInGoodsType = param.ExpressTrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
         if (expressCountNotInGoodsType != 0) {
             throw new ValidationException("快递单号不全属于当前物品类型！");
         }
-
-        /*
-        int expressCountNotChecked = goodsTypeExpressTrackingNoList.Where(e => param.ExpressTrackingNoList.Contains(e) == false).Count();
-        if (expressCountNotChecked != 0)
-        {
-            throw new ValidationException("当前物品类型快递单号未全部扫描！");
-        }
-        */
 
         LogisticsOrderPackInfo orderPack = session.Get<LogisticsOrderPackInfo>(orderPackId);
         if (orderPack == null) {
@@ -1180,8 +899,8 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 快递单号日志
         int loginUserId = loginUserService.GetLoginUserId();
-        foreach (LogisticsOrderGoodsExpressInfo orderExpress in goodsTypeExpressList) {
-            expressLogService.UserExpressLog(orderExpress.Id, ExpressLogType.RemovePack, loginUserId);
+        foreach (ExpressInfo orderExpress in goodsTypeExpressList) {
+            expressLogService.UserLog(orderExpress.Id, ExpressLogType.RemovePack, loginUserId);
         }
 
         return Json(new Dictionary<string, object> {
@@ -1207,42 +926,18 @@ public class LogisticsOrderGoodsPackController : Controller {
             session.Flush();
         }
 
-        IList<LogisticsOrderGoodsExpressInfo> expressList = session.Query<LogisticsOrderGoodsExpressInfo>()
-            .Where(e => e.Order.Id == orderId && expressTrackingNoList.Contains(e.ExpressTrackingNo))
+        IList<ExpressInfo> expressList = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId && expressTrackingNoList.Contains(e.TrackingNo))
             .ToList();
 
         foreach (var express in expressList) {
-            if (express.Status == LogisticsOrderGoodsExpressStatus.Packed) {
-                express.Status = LogisticsOrderGoodsExpressStatus.WaitPack;
+            if (express.Status == ExpressStatus.Pack) {
+                express.Status = ExpressStatus.WaitPack;
                 session.Update(express);
             }
         }
 
         session.Flush();
-
-        IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
-        IList<LogisticsOrderGoodsInfo> orderGoodsList = session.Query<LogisticsOrderGoodsInfo>()
-            .Where(e => expressIdList.Contains(e.Express.Id))
-            .ToList();
-
-        foreach (var orderGoods in orderGoodsList) {
-            if (orderGoods.Status == LogisticsOrderGoodsStatus.Packed) {
-                orderGoods.Status = LogisticsOrderGoodsStatus.WaitPack;
-                session.Update(orderGoods);
-            }
-        }
-
-        session.Flush();
-
-        // 回写申领件状态，这个操作也跟3.0的操作可以兼容
-        session.Query<LogisticsClaimGoodsInfo>()
-            .Where(e => expressTrackingNoList.Contains(e.TrackingNo))
-            .UpdateBuilder()
-            .Set(e => e.Picked, true)
-            .Set(e => e.WarehouseProcessed, true)
-            .Set(e => e.Status, LogisticsClaimGoodsStatus.WaitPack)
-            .Set(e => e.UpdateTime, DateTime.Now)
-            .Update();
     }
 
     [HttpPost]
@@ -1262,7 +957,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException("本快递对应的订单不是等待打包状态！");
         }
 
-        if ((goodsExpress.Order.Warehouse?.Id ?? 0) != warehouseId) {
+        if ((goodsExpress.Order.Warehouse.Id) != warehouseId) {
             WarehouseInfo warehouse = session.Get<WarehouseInfo>(warehouseId);
             if (warehouse == null) {
                 throw new ValidationException($"指定的收货仓库 #{warehouseId} 不存在！");
@@ -1325,9 +1020,9 @@ public class LogisticsOrderGoodsPackController : Controller {
         /*
         // 获取订单快递单号列表
         IList<string> goodsTypeExpressTrackingNoList = session
-            .Query<LogisticsOrderGoodsExpressInfo>()
+            .Query<ExpressInfo>()
             .Where(e => e.Order.Id == orderId && e.GoodsType == goodsType)
-            .Select(e => e.ExpressTrackingNo)
+            .Select(e => e.TrackingNo)
             .ToList();
 
         int expressCountNotInGoodsType = param.ExpressTrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
@@ -1347,11 +1042,11 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 检查当前物品类型中的快递单号是不是都已经打包了
         var goodsTypeExpressNoQuery = session
-            .Query<LogisticsOrderGoodsExpressInfo>()
+            .Query<ExpressInfo>()
             .Where(e => e.Order.Id == orderId);
 
         IList<string> goodsTypeExpressNoList = goodsTypeExpressNoQuery
-            .Select(e => e.ExpressTrackingNo)
+            .Select(e => e.TrackingNo)
             .Distinct()
             .ToList();
 
@@ -1376,7 +1071,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 更新快递号状态
         var orderGoodsExpressQuery = session
-            .Query<LogisticsOrderGoodsExpressInfo>()
+            .Query<ExpressInfo>()
             .Where(e => e.Order.Id == orderId);
 
         // 空运和快递订单打包时，各个物品类型的合并打包
@@ -1384,10 +1079,10 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderGoodsExpressQuery = orderGoodsExpressQuery.Where(e => e.GoodsType == goodsType);
         }
 
-        IList<LogisticsOrderGoodsExpressInfo> orderGoodsExpressList = orderGoodsExpressQuery.ToList();
+        IList<ExpressInfo> orderGoodsExpressList = orderGoodsExpressQuery.ToList();
 
-        foreach (LogisticsOrderGoodsExpressInfo orderGoodsExpress in orderGoodsExpressList) {
-            orderGoodsExpress.Status = LogisticsOrderGoodsExpressStatus.Packed;
+        foreach (ExpressInfo orderGoodsExpress in orderGoodsExpressList) {
+            orderGoodsExpress.Status = ExpressStatus.Pack;
             session.Update(orderGoodsExpress);
         }
 
@@ -1427,30 +1122,20 @@ public class LogisticsOrderGoodsPackController : Controller {
         session.Flush();
 
         // 更新订单状态
-        int notPackedExpressCount = session.Query<LogisticsOrderGoodsExpressInfo>()
-            .Where(e => e.Order.Id == orderId && e.Status != LogisticsOrderGoodsExpressStatus.Packed)
+        int notPackedExpressCount = session.Query<ExpressInfo>()
+            .Where(e => e.Order.Id == orderId && e.Status != ExpressStatus.Pack)
             .Count();
 
         // 是否订单完成打包
         bool orderPackComplete = notPackedExpressCount == 0;
 
-        bool tlaShip = false;
-        bool transDirectShip = false;
-        int tlaPrintCount = 0;
         if (orderPackComplete) {
-            Tuple<DeliverSupplierType, int> result = logisticsOrderService.CompleteOrderPackManual(orderId);
-
-            tlaShip = result.Item1 == DeliverSupplierType.Tla || result.Item1 == DeliverSupplierType.TransDirect; // TransDirect 匹配的时候也出tla的自提标签
-            transDirectShip = result.Item1 == DeliverSupplierType.TransDirect;
-            tlaPrintCount = result.Item2;
+            logisticsOrderService.CompleteOrderPackManual(orderId);
         }
 
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "orderPackComplete", orderPackComplete },
-            { "tlaShip", tlaShip },
-            { "transDirectShip", transDirectShip },
-            { "tlaPrintCount", tlaPrintCount },
             { "message", "完成订单当前物品类型打包成功！" }
         });
     }
@@ -1557,9 +1242,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         string expressGoodsTypeName = orderPack.GoodsType?.Name;
         string orderGoodsTypeName = orderPack.Order.GoodsType?.Name;
 
-        // 放在这个Action操作的最后， 保存别的不出错时，才记录
-        logisticsOrderPackLabelTypeService.AddOrderPackLabelType(orderPack, LogisticsOrderPackPrintType.SizeW10H15);
-
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "customerCode", customerCode }, // 这是原来的主订单客户ID
@@ -1663,9 +1345,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         string expressGoodsTypeName = orderPack.GoodsType?.Code;
         string orderGoodsTypeName = orderPack.Order.GoodsType?.Code;
 
-        // 放在这个Action操作的最后， 保存别的不出错时，才记录
-        logisticsOrderPackLabelTypeService.AddOrderPackLabelType(orderPack, LogisticsOrderPackPrintType.SizeW10H5);
-
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "customerCode", customerCode },
@@ -1765,9 +1444,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType?.Code;
         string orderGoodsTypeName = orderPack.Order.GoodsType?.Code;
-
-        // 放在这个Action操作的最后， 保存别的不出错时，才记录
-        logisticsOrderPackLabelTypeService.AddOrderPackLabelType(orderPack, LogisticsOrderPackPrintType.SizeW5H5);
 
         return Json(new Dictionary<string, object> {
             { "success", true },

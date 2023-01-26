@@ -10,8 +10,10 @@ public class LogisticsOrderGoodsPackOrderModel {
     public LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     [BindNever]
+    // todo OrderTotalExpressPackageCount
     public int OrderTotalPackageCount { get; set; }
 
+    // todo GoodsTypeCommonExpressPackageCount
     [BindNever]
     public int GoodsTypeCommonPackageCount { get; set; }
 

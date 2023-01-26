@@ -36,5 +36,6 @@ public class LogisticsOrderGoodsPackSavePackParam {
 
     public IList<string> ExpressTrackingNoList { get; set; } = new List<string>();
 
+    [Obsolete]
     public bool ContinueThoseExpress { get; set; }
 }

@@ -21,5 +21,6 @@ public class LogisticsOrderGoodsPackOrderPackListModel {
     /// <summary>
     /// 已打包的最后一项是否是合箱的
     /// </summary>
+    [Obsolete]
     public virtual bool? MultiExpressOnePackLastPack { get; set; }
 }
