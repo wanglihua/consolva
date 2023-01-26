@@ -1,3 +1,4 @@
+using System.Data.Entity;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
@@ -1009,37 +1010,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException("指定的订单不存在！");
         }
 
-        /* 不检查这个了，后面有对打包时记录的快递单号检查
-        IList<string> expressTrackingNoList = param.ExpressTrackingNoList;
-        if (expressTrackingNoList == null || expressTrackingNoList.Count == 0)
-        {
-            throw new ValidationException("请扫描或输入快递单号，再完成打包！");
-        }
-        */
-
-        /*
-        // 获取订单快递单号列表
-        IList<string> goodsTypeExpressTrackingNoList = session
-            .Query<ExpressInfo>()
-            .Where(e => e.Order.Id == orderId && e.GoodsType == goodsType)
-            .Select(e => e.TrackingNo)
-            .ToList();
-
-        int expressCountNotInGoodsType = param.ExpressTrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
-        if (expressCountNotInGoodsType != 0)
-        {
-            throw new ValidationException("快递单号不全属于当前物品类型！");
-        }
-        */
-
-        /* 这个为什么不用了
-        int expressCountNotChecked = goodsTypeExpressTrackingNoList.Where(e => param.ExpressTrackingNoList.Contains(e) == false).Count();
-        if (expressCountNotChecked != 0)
-        {
-            throw new ValidationException("当前物品类型快递单号未全部扫描！");
-        }
-        */
-
         // 检查当前物品类型中的快递单号是不是都已经打包了
         var goodsTypeExpressNoQuery = session
             .Query<ExpressInfo>()
@@ -1148,7 +1118,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
 
-        // string customerCode = orderPack.Order.CustomerCode;
         string customerCode = (orderPack.Order.Customer?.Id ?? 0).ToString();
         string orderCode = orderPack.Order.Code;
 
@@ -1169,17 +1138,12 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         int orderId = orderPack.Order.Id;
-        // string firstLogisticsTypeName = orderPack.Order.FirstModeType?.Name;
         string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
 
-        // string weight = orderPack.Weight.ToString("#0.000") + "Kg";
-        // string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.000") + "Kg";
-        // string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.000000") + "立方";
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "立方";
         string lwh = $"{orderPack.Length:#} x {orderPack.Width:#} x {orderPack.Height:#}CM";
-        // string userName = session.Get<UserInfo>(loginUserService.GetLoginUserId())?.UserName;
         string userName = orderPack.PackUser.UserName;
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType.Name;
@@ -1187,7 +1151,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         return Json(new Dictionary<string, object> {
             { "success", true },
-            { "customerCode", customerCode }, // 这是原来的主订单客户ID
+            { "customerCode", customerCode },
             { "orderCode", orderCode }, // 这是原来的主订单编号
             { "orderId", orderId },
             { "firstLogisticsTypeName", firstLogisticsTypeName },
@@ -1213,7 +1177,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     [Route("/admin/logistics/order/goods/pack/get/print/pack/data/10/5")]
     [NoLoginRequired]
     public IActionResult GetPrintPackDataW10H5(int orderPackId) {
-        LogisticsOrderPackConfigInfo orderPackConfig = session
+        var orderPackConfig = session
             .Query<LogisticsOrderPackConfigInfo>()
             .Take(1)
             .SingleOrDefault();
@@ -1245,52 +1209,30 @@ public class LogisticsOrderGoodsPackController : Controller {
         IList<string> orderPackBoxShortCodeList = new List<string>();
         IList<int> orderPackBoxNumList = new List<int>();
         foreach (LogisticsOrderPackBoxInfo orderPackBox in orderPackBoxList) {
-            string splitSubCode = orderPackBox.OrderPackSplit?.SubCode ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(splitSubCode)) {
-                if (orderPackBox.Order.PackSplitStatus == LogisticsOrderPackSplitStatus.NotSplitWithSuffix) {
-                    splitSubCode = LogisticsOrderPackSplitService.FirstSubCode;
-                }
-            }
-
-            customerCodeList.Add(customerCode + splitSubCode);
-            orderCodeList.Add(orderCode + splitSubCode);
-
-            if (orderPackBox.OrderPackSplit != null) {
-                orderIdList.Add(orderPackBox.OrderPackSplit.Id.ToString());
-            } else {
-                orderIdList.Add(orderPackBox.Order.Id.ToString());
-            }
+            customerCodeList.Add(customerCode);
+            orderCodeList.Add(orderCode);
+            orderIdList.Add(orderPackBox.Order.Id.ToString());
 
             orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox));
             orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox));
-            orderPackBoxNumList.Add(orderPackBox.OrderPackBoxNum);
+            orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
-        // string firstLogisticsTypeName = orderPack.Order.FirstModeType?.Name;
         string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
-        string targetWarehouseName = orderPack.Order.Warehouse?.Name;
-        if (orderPack.Order.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
-            secondLogisticsTypeName = orderPack.Order.SecondLogisticsMode?.PickupStation?.Name;
-        }
 
-        // string weight = orderPack.Weight.ToString("#0.000") + "Kg";
-        // string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.000") + "Kg";
-        // string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.000000") + "立方";
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "方";
-        // string userName = session.Get<UserInfo>(loginUserService.GetLoginUserId())?.UserName;
-        string userName = orderPack.PackUser?.UserName ?? "";
+        string userName = orderPack.PackUser.UserName;
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
-        string expressGoodsTypeName = orderPack.GoodsType?.Code;
-        string orderGoodsTypeName = orderPack.Order.GoodsType?.Code;
+        string expressGoodsTypeName = orderPack.GoodsType.Code;
+        string orderGoodsTypeName = orderPack.Order.GoodsType.Code;
 
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "customerCode", customerCode },
             { "orderCode", orderCode },
-            { "firstLogistics", firstLogisticsTypeName?.Trim().FirstOrDefault() },
-            { "targetWarehouseName", targetWarehouseName?.Trim().FirstOrDefault() },
+            { "firstLogistics", firstLogisticsTypeName.Trim().FirstOrDefault() },
             { "weight", weight },
             { "volumeWeight", volumeWeight },
             { "volume", volume },
@@ -1312,7 +1254,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     [Route("/admin/logistics/order/goods/pack/get/print/pack/data/5/5")]
     [NoLoginRequired]
     public IActionResult GetPrintPackDataW5H5(int orderPackId) {
-        LogisticsOrderPackConfigInfo orderPackConfig = session
+        var orderPackConfig = session
             .Query<LogisticsOrderPackConfigInfo>()
             .Take(1)
             .SingleOrDefault();
@@ -1333,8 +1275,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
 
-        // string customerCode = orderPack.Order.CustomerCode;
-        string customerCode = (orderPack.Order.Customer?.Id ?? 0).ToString();
+        string customerCode = orderPack.Order.Customer.Id.ToString();
         string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
@@ -1344,56 +1285,29 @@ public class LogisticsOrderGoodsPackController : Controller {
         IList<string> orderPackBoxShortCodeList = new List<string>();
         IList<int> orderPackBoxNumList = new List<int>();
         foreach (LogisticsOrderPackBoxInfo orderPackBox in orderPackBoxList) {
-            string splitSubCode = orderPackBox.OrderPackSplit?.SubCode ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(splitSubCode)) {
-                if (orderPackBox.Order.PackSplitStatus == LogisticsOrderPackSplitStatus.NotSplitWithSuffix) {
-                    splitSubCode = LogisticsOrderPackSplitService.FirstSubCode;
-                }
-            }
-
-            customerCodeList.Add(customerCode + splitSubCode);
-            orderCodeList.Add(orderCode + splitSubCode);
-
-            if (orderPackBox.OrderPackSplit != null) {
-                orderIdList.Add(orderPackBox.OrderPackSplit.Id.ToString());
-            } else {
-                orderIdList.Add(orderPackBox.Order.Id.ToString());
-            }
+            customerCodeList.Add(customerCode);
+            orderCodeList.Add(orderCode);
+            orderIdList.Add(orderPackBox.Order.Id.ToString());
 
             orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox));
             orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox));
-            orderPackBoxNumList.Add(orderPackBox.OrderPackBoxNum);
+            orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
-        // string firstLogisticsTypeName = orderPack.Order.FirstModeType?.Name;
-        string firstLogisticsTypeName = orderPack.Order.FirstMode?.Name;
-        string targetWarehouseName = orderPack.Order.TargetWarehouse?.Name;
-        string secondLogisticsTypeName = orderPack.Order.SecondLogisticsModeType?.Name;
-        if (orderPack.Order.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
-            secondLogisticsTypeName = orderPack.Order.SecondLogisticsMode?.PickupStation?.Name;
-        }
-
-        // string weight = orderPack.Weight.ToString("#0.000") + "Kg";
-        // string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.000") + "Kg";
-        // string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.000000") + "立方";
+        string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "方";
-        // string userName = session.Get<UserInfo>(loginUserService.GetLoginUserId())?.UserName;
         string userName = orderPack.PackUser?.UserName ?? "";
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
-        string expressGoodsTypeName = orderPack.GoodsType?.Code;
-        string orderGoodsTypeName = orderPack.Order.GoodsType?.Code;
+        string expressGoodsTypeName = orderPack.GoodsType.Code;
+        string orderGoodsTypeName = orderPack.Order.GoodsType.Code;
 
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "customerCode", customerCode },
             { "orderCode", orderCode },
-            { "firstLogistics", firstLogisticsTypeName?.Trim()?.FirstOrDefault() },
-            { "targetWarehouseName", targetWarehouseName?.Trim()?.FirstOrDefault() },
-            { "secondLogistics", secondLogisticsTypeName },
-            { "secondLogisticsShortName", orderPack.Order.SecondLogisticsModeType?.GetCnAuSecondTypeShortName() },
-            { "terminalShortName", orderPack.Order.SecondLogisticsMode?.PickupStation?.Name?.FirstOrDefault() },
+            { "firstLogistics", firstLogisticsTypeName.Trim().FirstOrDefault() },
             { "weight", weight },
             { "volumeWeight", volumeWeight },
             { "volume", volume },
@@ -1423,21 +1337,30 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         LogisticsOrderInfo order = orderPack.Order;
-        // string customerCode = order?.CustomerCode;
-        string customerCode = (order?.Customer?.Id ?? 0).ToString();
-        string orderCode = order?.Code;
-        int orderId = order?.Id ?? 0;
-        string firstLogisticsModeName = order?.FirstMode?.Name;
+        int orderId = order.Id;
+
+        var receiveAddress = session.Query<LogisticsOrderReceiveAddressInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+        if (receiveAddress == null) {
+            throw new ValidationException($"订单#{orderId}收货地址不存在，数据存在问题！");
+        }
+
+        string customerCode = order.Customer.Id.ToString();
+        string orderCode = order.Code;
+
+        string firstLogisticsModeName = order.FirstMode.Name;
         string actualWeight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "立方";
         string userName = orderPack.PackUser?.UserName ?? "";
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
-        string consignee = order?.Consignee + " " + order?.LastName;
-        string mobile = order?.Mobile;
-        string address = $"{order?.Address}, {order?.City} {order?.Province} {order?.Zipcode}";
-        if (string.IsNullOrWhiteSpace(order?.UnitLoc) == false) {
-            address = $"{order?.UnitLoc}, " + address;
+        string consignee = receiveAddress.FirstName + " " + receiveAddress.LastName;
+        string mobile = receiveAddress.Mobile;
+        string address = $"{receiveAddress.Address}, {receiveAddress.City} {receiveAddress.State} {receiveAddress.Zipcode}";
+        if (string.IsNullOrWhiteSpace(receiveAddress.UnitLoc) == false) {
+            address = $"{receiveAddress.UnitLoc}, " + address;
         }
 
         return Json(new Dictionary<string, object> {

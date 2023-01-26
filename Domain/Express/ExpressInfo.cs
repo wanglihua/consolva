@@ -207,6 +207,18 @@ public class ExpressInfo : Entity {
     public virtual UserInfo? PackingUser { get; set; } = null;
 
     /// <summary>
+    /// 打包时间，可空
+    /// </summary>
+    [JsonProperty("packTime")]
+    public virtual DateTime? PackTime { get; set; } = null;
+
+    /// <summary>
+    /// 打包用户，可空
+    /// </summary>
+    [JsonProperty("packUser")]
+    public virtual UserInfo? PackUser { get; set; } = null;
+
+    /// <summary>
     /// 快递单货架状态，非空
     /// </summary>
     [Required(ErrorMessage = "快递单货架状态不能为空！")]

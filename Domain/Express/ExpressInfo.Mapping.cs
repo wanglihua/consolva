@@ -286,6 +286,26 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo> {
         );
 
         Property(
+            x => x.PackTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("pack_time");
+                map.NotNullable(false);
+            }
+        );
+
+        ManyToOne(
+            x => x.PackUser,
+            map => {
+                map.Class(typeof(UserInfo));
+                map.Column("pack_user_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
+            }
+        );
+
+        Property(
             x => x.ShelfStatus,
             map => {
                 map.Type<ExpressShelfStatusHibernateType>();
