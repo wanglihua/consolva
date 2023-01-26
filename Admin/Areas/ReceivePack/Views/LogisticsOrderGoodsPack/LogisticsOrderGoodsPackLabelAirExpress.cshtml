@@ -1,0 +1,101 @@
+@model bool
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    function printPackLabelCommonAirExpress(data) {
+        var LODOP = getLodopWithLicenses();
+        LODOP.PRINT_INIT("打包标签打印AIR");
+        LODOP.SET_PRINT_PAGESIZE(1, "100mm", "153mm", "打包标签打印AIR");
+
+        LODOP.SET_PRINT_STYLE("FontName", "微软雅黑");
+        LODOP.SET_PRINT_STYLE("Bold", 0);
+        LODOP.SET_PRINT_STYLE("FontSize",12);        
+        
+        for(var j = 0; j < data.printCount; j++) {
+            LODOP.NEWPAGE();
+    
+            LODOP.ADD_PRINT_RECT("7mm", "2mm", "96.0mm", "136mm", 0, 2);
+            LODOP.ADD_PRINT_LINE("38mm", "2mm", "38mm", "98mm", 0, 2);
+            LODOP.ADD_PRINT_LINE("77mm", "2mm", "77mm", "98mm", 0, 2);
+            LODOP.ADD_PRINT_LINE("130mm", "2mm", "130mm", "98mm", 0, 2);
+    
+            LODOP.ADD_PRINT_TEXT("9.90mm","4.6mm","50.8mm","7.30mm", data.customerCode);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",18);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);
+    
+            LODOP.ADD_PRINT_TEXT("10.50mm","33mm","58.47mm","7.30mm", data.orderCode);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",16);
+            
+            LODOP.ADD_PRINT_TEXT("18.00mm","38mm","58.47mm","7.30mm", "( " + data.orderId + " )");
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",10);
+    
+            LODOP.ADD_PRINT_TEXT("25.00mm","4.6mm","100.00mm","7.30mm", data.firstLogisticsModeName);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",18);
+            LODOP.SET_PRINT_STYLEA(0,"Bold", 1);
+    
+    
+            LODOP.ADD_PRINT_TEXT("43.00mm","4.60mm","80.00mm","5.29mm", "实重：" + data.actualWeight);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
+    
+            LODOP.ADD_PRINT_TEXT("55.00mm","4.60mm","80.00mm","5.29mm", "体积重：" + data.volumeWeight);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
+    
+            LODOP.ADD_PRINT_TEXT("67.00mm","4.60mm","80.00mm","5.29mm", "体积：" + data.volume);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
+            
+            LODOP.ADD_PRINT_BARCODE("43mm","60mm","32mm","32mm","QRCode", data.orderCode);
+            LODOP.SET_PRINT_STYLEA(0,"DataCharset","UTF-8");
+            LODOP.SET_PRINT_STYLEA(0,"QRCodeErrorLevel","M");
+            LODOP.SET_PRINT_STYLEA(0,"Horient",3);
+            LODOP.SET_PRINT_STYLEA(0,"Vorient",3);
+            
+            LODOP.ADD_PRINT_TEXT("85.00mm","4.60mm","80.00mm","7.01mm", "收件人： " + data.consignee);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",14);   
+            
+            LODOP.ADD_PRINT_TEXT("95.00mm","4.60mm","80.00mm","7.01mm", "电话： " + data.mobile);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
+            
+            LODOP.ADD_PRINT_TEXT("105.00mm","4.60mm","100.00mm","50.00mm", "地址： " + data.address);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",14);               
+   
+            LODOP.ADD_PRINT_TEXT("133.00mm","4.60mm","53.00mm","7.01mm", "打包工： " + data.userName);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    
+            LODOP.ADD_PRINT_TEXT("133.00mm","55.26mm","50.00mm","7.01mm", "时间： " + data.packTime);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+            
+           
+        }
+        
+        @if (Model)
+        {
+            <text>
+            // LODOP.PRINT_DESIGN();
+            // LODOP.PREVIEW();
+            LODOP.PRINT();
+            </text>
+        }
+        else
+        {
+            <text>
+            LODOP.PRINT();
+            </text>
+        }        
+    }
+
+</script>

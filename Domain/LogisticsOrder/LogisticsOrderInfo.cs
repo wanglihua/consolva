@@ -162,7 +162,7 @@ public class LogisticsOrderInfo : Entity {
     public virtual LogisticsRepackType RepackType { get; set; } = LogisticsRepackType.None;
 
     /// <summary>
-    /// 仓位，可空
+    /// 仓位，非空
     /// </summary>
     [JsonProperty("storageLoc")]
     public virtual StorageLocInfo StorageLoc { get; set; } = new();
@@ -227,6 +227,11 @@ public class LogisticsOrderInfo : Entity {
     /// 订单备注
     /// </summary>
     public virtual string OrderRemarkCache { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 打包排班 打包工用户名
+    /// </summary>
+    public virtual string PackScheduleUserNameCache { get; set; } = string.Empty;
 
     #endregion
 }

@@ -1,0 +1,262 @@
+
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack
+@using shunda.Core.Web
+@using shunda.Domain.LogisticsOrder
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = Model.Warehouse.Name + "-打包";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="goods-receive-pack-menu">收货打包</li>
+    <li class="parent" data-menu="goods-receive-pack-goods-repack">打包</li>
+    <li class="active" data-menu="goods-receive-pack-goods-repack-warehouse@(Model.Warehouse.Id)-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix" style="line-height: 12px;">
+    <button type="button" class="btn btn-primary btn-sm" onclick="getPackOrder()">
+        <i class="ace-icon fa fa-arrow-right"></i>
+        打包下一个订单
+    </button>
+    <button type="button" class="btn btn-pink btn-sm" onclick="showOrderListDialog()">
+        <i class="ace-icon fa fa-bars"></i>
+        待打包订单列表
+    </button>
+    <span>&nbsp;&nbsp;</span>
+    <div style="display: inline-block; width: 300px; position: relative; top: 13px;">
+        <div class="input-group">
+            <input id="expressTrackingNoToSearchOrder" type="text"
+                   class="form-control search-input"
+                   style="font-weight: bold; color:black;background-color:#faffbd;height: 32px;"
+                   onfocus="this.value='';"
+                   onkeydown="if(event.keyCode === 13){searchOrder();return false;}"
+                   autocomplete="off"
+                   placeholder="请输入或扫描包裹快递单号"/>
+            <span class="input-group-btn">
+                <button type="button"
+                        class="btn btn-pink search-btn"
+                        style="width: 120px; height:32px; border-width:1px;border-bottom-right-radius: 4px;border-top-right-radius: 4px;"
+                        onclick="searchOrder();return false;">
+                    <i class="fa fa-search"></i>&nbsp;检索订单
+                </button>
+            </span>
+        </div>
+        <script type="text/javascript">
+            function searchOrder() {
+                showMask("加载中...");
+        
+                $.ajax({
+                    url: '@Url.Action("GetOrderIdByExpressTrackingNo", "LogisticsOrderGoodsPack")',
+                    type: "POST",
+                    data: {
+                        "expressTrackingNo": $("#expressTrackingNoToSearchOrder").val(),
+                        "warehouseId": '@Model.Warehouse?.Id'
+                    },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+        
+                        getPackOrder(data.orderId);
+                    }
+                }); 
+            }
+        </script>
+    </div>
+    <span>&nbsp;&nbsp;</span>
+    <label for="printType">打印标签类型</label>
+    <select id="printType" style="height: 32px; width: 165px;" class="input-sm" onchange="savePrintType()">
+
+        <option value="">请选择打印标签类型</option> @* 这个选项就不取 0 了，而是空值，0 留给物流方式里面设置的不打印了 *@
+        @foreach (LogisticsOrderPackPrintType printType in Model.PrintTypeList)
+        {
+            if (Model.PrintTypeSelected == printType)
+            {
+                <option value="@(printType.Id)" selected="selected">@(printType.Name)</option>
+            }
+            else
+            {
+                <option value="@(printType.Id)">@(printType.Name)</option>
+            }
+        }
+
+    </select>
+</div>
+
+<div id="packOrderWrapper"></div>
+
+<div id="orderListDialogWrapper"></div>
+
+<script type="text/javascript" src="/static/lodop/LodopFuncs.js?v=20191002"></script>
+<script type="text/javascript" src="@Url.Action("Index", "LodopScript")"></script>
+
+@if (Model.Debug == false)
+{
+    <script type="text/javascript">
+
+        $(function() {
+            
+            @* 可以复制, 但不能粘贴 *@
+            @*
+            document.oncontextmenu = function (ev) { return false; };
+            document.ondragstart = function (ev) { return false; };
+            document.onselectstart = function (ev) { return false; };
+            document.onselect = function (ev) { document.selection.empty(); };
+            document.oncopy = function (ev) { document.selection.empty(); };
+            document.onbeforecopy = function(ev) { return false;};
+            document.oncut = function(ev) { return false;};
+            document.onmouseup = function (ev) { document.selection.empty(); };
+            *@
+            
+            @* IE 的时候在 输入框的 onpaste 事件中 return false; *@            
+            document.onpaste = function(ev) { 
+                if($(ev.target).hasClass('expressTrackingNo')) {
+                    return false;
+                } else {
+                    return true;
+                }
+            };
+        });
+
+    </script>
+}
+
+<script type="text/javascript">
+
+    $(function() {
+        getPackOrder();
+    });
+    
+    function savePrintType() {
+        
+        var printTypeId = $("#printType").val();
+        
+        $.ajax({
+            url: '@Url.Action("SavePrintType", "LogisticsOrderGoodsPack")',
+            type: "POST",
+            data: { 
+                "warehouseId": '@Model.Warehouse?.Id',
+                "printTypeId": printTypeId
+            },
+            success: function(data) {
+                // 静静地保存
+            }
+        });        
+    }
+
+    function showOrderListDialog() {
+        $("#orderListDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("ListDialog", "LogisticsOrderGoodsPack")',
+            type: "POST",
+            data: { "warehouseId": '@Model.Warehouse?.Id' },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#orderListDialogWrapper").html(data);
+                $("#orderListDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function onSortTypeChange() {
+        $('#orderId').val(0);
+
+        getPackOrder();
+    }
+
+    function getPackOrder(nextOrderId) {
+        var orderId = $('#orderId').val();
+
+        $("#packOrderWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("Order", "LogisticsOrderGoodsPack")',
+            type: "POST",
+            data: {
+                "@(nameof(LogisticsOrderGoodsPackOrderQueryParam.NextOrderId))": nextOrderId,
+                "@(nameof(LogisticsOrderGoodsPackOrderQueryParam.OrderId))": orderId,
+                "@(nameof(LogisticsOrderGoodsPackOrderQueryParam.WarehouseId))": '@Model.Warehouse?.Id'
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#packOrderWrapper").html(data);
+                
+                $("#expressTrackingNoToSearchOrder").val("");
+            }
+        });
+    }
+
+    function listDialogSortOrderList(sortField, sortDir) {
+        var list = $('#orderList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        listDialogLoadOrderList();
+    }
+
+    function listDialogLoadOrderList(pageIndex) {
+        var list = $('#orderList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsOrderGoodsPack")",
+            type: "POST",
+            data: {
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.WarehouseId))': '@Model.Warehouse?.Id',
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.TargetWarehouseIdQuery))': $('#targetWarehouseIdQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.FirstLogisticsModeIdQuery))': $('#firstLogisticsModeQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.GoodsTypeQuery))': $('#goodsTypeQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.EndDateQuery))': $('#endDateQuery').val(),                
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#orderList').html(data);
+
+                initSingleSelectListTable("#tblOrderList");
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,106 @@
+@using shunda.Domain.LogisticsOrder
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderPackListModel
+
+@{
+    Layout = null;
+}
+
+<table id="orderPackList@(Model.GoodsType.Id)" class="data-list-table table table-bordered">
+    <thead>
+        <tr>
+            <td style="width: 70px; text-align: center;">打包序号</td>
+            <td style="width: 125px; text-align: center;">长/cm</td>
+            <td style="width: 125px; text-align: center;">宽/cm</td>
+            <td style="width: 125px; text-align: center;">高/cm</td>
+            <td style="width: 125px; text-align: center;">重量/kg</td>
+            <td style="width: 125px; text-align: center;">箱数</td>
+            <td style="text-align: center;">操作</td>
+        </tr>
+    </thead>
+    <tbody>
+
+        @{
+            int index = 1;
+            foreach (LogisticsOrderPackInfo orderPack in Model.OrderPackList)
+            {
+                <tr id="packBox@(Model.GoodsType)@(orderPack.Id)">
+                    <td style="text-align: center;">
+                        <span>@(index++)</span>
+                        <input class="pack-id" type="hidden" value="@(orderPack.Id)"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" style="width: 80px; text-align: center;" value="@(orderPack.Length.ToString("#0.00"))" disabled="disabled"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" style="width: 80px; text-align: center;" value="@(orderPack.Width.ToString("#0.00"))" disabled="disabled"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" style="width: 80px; text-align: center;" value="@(orderPack.Height.ToString("#0.00"))" disabled="disabled"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" style="width: 80px; text-align: center;" value="@(orderPack.Weight.ToString("#0.00"))" disabled="disabled"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" style="width: 80px; text-align: center;" value="@(orderPack.PackageCount)" disabled="disabled"/>
+                    </td>
+                    <td style="text-align: center;">
+                        @*
+                        <button class="btn btn-xs btn-primary" onclick="savePack('packBox@(Model.GoodsType)@(orderPack.Id)', @(Model.GoodsType.Id));return false;">
+                            <i class="ace-icon fa fa-floppy-o"></i>&nbsp;保存并打印标签
+                        </button>
+                        *@
+                        <button type="button" class="btn btn-xs btn-info" onclick="printPackLabel(@(orderPack.Id))">
+                            <i class="ace-icon fa fa-print"></i>&nbsp;补打标签
+                        </button>
+                        @if (Model.Repack == true)
+                        {
+                            <button type="button" class="btn btn-xs btn-danger" onclick="removePack('packBox@(Model.GoodsType)@(orderPack.Id)', @(Model.GoodsType.Id));return false;">
+                                <i class="ace-icon fa fa-remove"></i>&nbsp;移除打包
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+
+            @if (Model.GoodsTypePackComplete == false || Model.Repack == true)
+            {
+                <tr id="packBox@(Model.GoodsType)New">
+                    <td style="text-align: center;">
+                        <span>@(index)</span>
+                        <input class="pack-id" type="hidden" value="0"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input class="pack-length" type="text" style="width: 80px; text-align: center;"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input class="pack-width" type="text" style="width: 80px; text-align: center;"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input class="pack-height" type="text" style="width: 80px; text-align: center;"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input class="pack-weight" type="text" style="width: 80px; text-align: center;"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <input class="pack-package-count" type="text" style="width: 80px; text-align: center;"/>
+                    </td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-xs btn-primary" onclick="showSavePack('packBox@(Model.GoodsType)New', @(Model.GoodsType.Id));return false;">
+                            <i class="ace-icon fa fa-floppy-o"></i>&nbsp;保存并打印标签
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@if (Model.GoodsTypePackComplete == false || Model.Repack == true)
+{
+    <div style="margin-top: 5px; text-align: right;">
+        @* 这个操作要有个确认 *@
+        <button class="btn btn-xs btn-pink" onclick="completeGoodsTypePack(@(Model.GoodsType.Id));return false;" style="width: 130px;">
+            <i class="ace-icon fa fa fa-check-square-o"></i>&nbsp;完成该类型打包
+        </button>
+    </div>
+}

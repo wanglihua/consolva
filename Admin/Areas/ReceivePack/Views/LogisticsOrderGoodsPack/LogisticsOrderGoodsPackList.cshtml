@@ -1,0 +1,133 @@
+@using shunda.Core.Web
+@using shunda.Domain.LogisticsOrder
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackListModel
+
+@{
+    Layout = null;
+}
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "listDialogLoadOrderList" })
+
+<table id="tblOrderList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                @*<label for="logisticsOrderCheckAll"></label><input id="logisticsOrderCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>*@
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 110px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">订单编号</a>
+                </div>
+
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">目的港</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">客户ID</a>
+                </div>
+            </th>
+            <th style="width: 110px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">订单状态</a>
+                </div>
+                <div>
+                    打包人员
+                </div>
+            </th>
+            <th style="width: 200px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">产品类型</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.FirstMode)).@(nameof(LogisticsOrderInfo.FirstMode.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">头程物流</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">创建时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.SubmitPackTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">提交打包时间</a>
+                </div>
+            </th>
+            <th style="width: 128px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsOrderInfo.StorageLoc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">起始仓位</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.OrderList != null && Model.OrderList.Count() != 0) {
+            int order = 1;
+            foreach (LogisticsOrderInfo logisticsOrder in Model.OrderList) {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="logisticsOrderCheck_@(logisticsOrder.Id)"></label><input id="logisticsOrderCheck_@(logisticsOrder.Id)" type="checkbox" class="ace" value="@logisticsOrder.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;" class="break-word">
+                        <div class="break-word">
+                            <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(logisticsOrder.Id)" target="_blank">
+                                <span>@logisticsOrder.Code</span>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="javascript: selectOrderDirect('@(logisticsOrder.Id)')" class="btn btn-primary btn-mini">选中打包</a>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            <span>@logisticsOrder.Warehouse.Name</span>
+                        </div>
+                        <div>
+                            <span>@logisticsOrder.CustomerCode</span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsOrder.OrderStatus.Name
+                        </div>
+                        <div>
+                            <span style="color: red;">@ListDataUtil.RenderStringWithDiv(logisticsOrder.PackScheduleUserNameCache)</span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div style="color: blue;">
+                            @logisticsOrder.GoodsType?.Name
+                        </div>
+                        <div>
+                            @(logisticsOrder.FirstMode?.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsOrder.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                        <div>
+                            @logisticsOrder.SubmitPackTime?.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @Html.Raw(logisticsOrder.StorageLoc.GetFullName())
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="9">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "listDialogLoadOrderList" })

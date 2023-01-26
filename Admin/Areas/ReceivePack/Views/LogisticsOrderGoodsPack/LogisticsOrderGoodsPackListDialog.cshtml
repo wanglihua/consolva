@@ -1,0 +1,160 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core
+@using shunda.Domain.Logistics
+@using shunda.Domain.LogisticsOrder
+@using shunda.Domain.Storage
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackListDialogModel
+
+@{
+    Layout = null;
+}
+<div class="modal fade" id="orderListDialog">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">待打包订单列表-@(Model.Warehouse.Name)</h4>
+            </div>
+            <div class="modal-body clearfix">
+
+                <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+                    <div>
+                        <label for="orderCodeQuery">订单编号</label>&nbsp;
+                        <input id="orderCodeQuery" name="orderCodeQuery" style="width: 120px; height: 30px;" placeholder="订单编号查询" autocomplete="off"/>&nbsp;
+                        <label for="orderStatusQuery">订单状态</label>&nbsp;
+                        <select id="orderStatusQuery" name="orderStatusQuery" style="width: 120px; height: 30px;" onchange="listDialogLoadOrderList()">
+                            @foreach (LogisticsOrderStatus status in Model.OrderStatusList) {
+                                <option value="@status.Id">@status.Name</option>
+                            }
+                        </select> &nbsp;
+
+                        @*
+                        <label for="receivingWarehouseIdQuery">收货仓</label>&nbsp;
+                        <select id="receivingWarehouseIdQuery" name="receivingWarehouseIdQuery" style="width: 120px; height: 30px;">
+                            <option value="0">收货仓</option>
+                            @foreach (WarehouseInfo warehouse in Model.ReceivingWarehouseList)
+                            {
+                                <option value="@warehouse.Id">@warehouse.Name</option>
+                            }
+                        </select>&nbsp;
+                        *@
+
+                        <label for="targetWarehouseIdQuery">目的仓</label>&nbsp;
+                        <select id="targetWarehouseIdQuery" name="targetWarehouseIdQuery" style="width: 120px; height: 30px;" onchange="onTargetWarehouseSelectChange()">
+                            <option value="0">目的仓</option>
+                            @foreach (WarehouseInfo warehouse in Model.TargetWarehouseList) {
+                                <option value="@warehouse.Id">@warehouse.Name</option>
+                            }
+                        </select>&nbsp;
+
+                        @*
+                        <label for="firstLogisticsModeTypeQuery">头程方式</label>&nbsp;
+                        <select id="firstLogisticsModeTypeQuery" name="firstLogisticsModeTypeQuery" style="width: 150px; height: 30px;">
+                            <option value="0">头程方式</option>
+                            @foreach (LogisticsModeType modeType in Model.FirstLogisticsModeTypeList)
+                            {
+                                <option value="@modeType.Id">@modeType.Name</option>
+                            }
+                        </select>&nbsp;
+                        *@
+                        <span id="firstLogisticsModeSelectWrapper">
+                            <partial name="LogisticsOrderGoodsPackListQueryFirstLogisticsModeSelect" model="Model"/>
+                        </span>
+                    </div>
+                    <div>
+                        <label for="goodsTypeQuery">物品类型</label>&nbsp;
+                        <select id="goodsTypeQuery" name="goodsTypeQuery" style="width: 120px; height: 30px;">
+                            <option value="0">物品类型</option>
+                            @foreach (LogisticsGoodsType goodsType in Model.GoodsTypeList) {
+                                <option value="@goodsType.Id">@goodsType.Name</option>
+                            }
+                        </select>&nbsp;
+
+                        <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="提交打包开始" autocomplete="off"/>&nbsp;
+                        <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="提交打包截止" autocomplete="off"/>&nbsp;
+
+                        <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="listDialogLoadOrderList(0)">
+                            &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+                        </button>
+                    </div>
+
+                </div>
+
+                <div id="orderList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderInfo.SubmitPackTime))" data-sort-dir="@(SortDirection.Asc)"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" onclick="selectOrder();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    打包选中
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#beginDateQuery").on("dp.change", function (e) {
+            $('#endDateQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#endDateQuery").on("dp.change", function (e) {
+            $('#beginDateQuery').data("DateTimePicker").maxDate(e.date);
+        });        
+        
+        listDialogLoadOrderList();
+    });
+
+
+    function selectOrder() {
+        var idList = getSelectIdList('#tblOrderList');
+
+        if (idList.length !== 1) {
+            $.msg.alert("请选择一项数据！");
+            return;
+        }
+
+        $('#orderListDialog').modal('hide');
+        getPackOrder(idList[0]);
+    }
+
+    function selectOrderDirect(orderId) {
+        $('#orderListDialog').modal('hide');
+        getPackOrder(orderId);
+    }
+    
+    function onTargetWarehouseSelectChange() {
+        $.ajax({
+            url: '@Url.Action("ListQueryFirstLogisticsModeSelect", "LogisticsOrderGoodsPack")',
+            type: "POST",
+            data: {
+                "targetWarehouseId": $("#targetWarehouseIdQuery").val()
+            },
+            success: function(data) {
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                } 
+                
+                $("#firstLogisticsModeSelectWrapper").html(data);
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,172 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain.Express
+@using shunda.Domain.Logistics
+@using shunda.Service.Express
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderExpressListModel
+
+@{
+    Layout = null;
+
+    LogisticsGoodsType goodsType = Model.GoodsType;
+    IList<ExpressInfo> expressList = Model.GoodsTypeExpressList;
+}
+
+<div id="goodsType@(goodsType.Id)" style="margin-top: 30px;">
+    <form class="form-horizontal" role="form">
+        <div class="row" style="margin: 10px 0;">
+            <label class="col-xs-1 control-label label-primary" style="text-align: center !important;font-weight: bold;color: white; height: 32px;">
+                @goodsType.Name
+            </label>
+            <div class="col-xs-5">
+                <div class="input-group">
+                    @if (Model.Debug)
+                    {
+                        <input type="text"
+                               class="form-control search-input expressTrackingNo" @* 这个 expressTrackingNo 必须要有，用来限制粘贴的，控制代码里面用到这个。 *@
+                               style="font-weight: bold; color:black;background-color:#faffbd;height: 32px;"
+                               onfocus="this.value=''; emptyFirstKeyDownTime();"
+                               onkeydown="if(event.keyCode === 13) {searchExpress(@(goodsType.Id));return false;} else { setFirstKeyDownTime(event); }"
+                               autocomplete="off"
+                               placeholder="请输入或扫描包裹快递单号"/>
+                    }
+                    else
+                    {
+                        <input type="text"
+                               class="form-control search-input expressTrackingNo" @* 这个 expressTrackingNo 必须要有，用来限制粘贴的，控制代码里面用到这个。 *@
+                               style="font-weight: bold; color:black;background-color:#faffbd;height: 32px;"
+                               onfocus="this.value=''; emptyFirstKeyDownTime();"
+                               onkeydown="if(event.keyCode === 13) {searchExpress(@(goodsType.Id));return false;} else { setFirstKeyDownTime(event); }"
+                               autocomplete="off"
+                               onpaste="return false;" @* IE 中禁止粘贴, 非IE 用 document.onpaste 事件 return false; *@
+                               placeholder="请输入或扫描包裹快递单号"/>
+                    }
+                    <span class="input-group-btn">
+                        <button type="button"
+                                class="btn btn-danger search-btn"
+                                style="width: 120px; height:32px; border-width:1px;border-bottom-right-radius: 4px;border-top-right-radius: 4px;"
+                                onclick="searchExpress(@(goodsType.Id));return false;">
+                            <i class="fa fa-search"></i>&nbsp;搜索并选择
+                        </button>
+
+                    </span>
+                </div>
+
+
+            </div>
+            <div class="col-xs-2">
+                <button type="button"
+                        class="btn btn-info search-btn"
+                        style="width: 150px; height:32px; border-width:1px;border-radius: 4px;"
+                        onclick="useSizeWeight(@(goodsType.Id))">
+                    <i class="fa fa-cube"></i>&nbsp;引用快递单尺寸重量
+                </button>
+            </div>
+            <div class="col-xs-1">
+                @if (Model.GoodsTypePackCompleteDict[goodsType])
+                {
+                    <button type="button"
+                            class="btn btn-success search-btn"
+                            style="width: 120px; height:32px; border-width:1px; border-radius: 4px;"
+                            onclick="repack(@(goodsType.Id));return false;">
+                        <i class="fa fa-refresh"></i>&nbsp;重新打包
+                    </button>
+
+                    <input id="repack@(goodsType.Id)" type="hidden" value="@(false.ToString())"/>
+                }
+            </div>
+        </div>
+        <div class="search-success" style="display: none;">
+            <i class="fa fa-check" style="color:green;"></i>
+            <span class="message-text"></span>
+        </div>
+
+        <div class="search-failed-but-in-order" style="display: none;">
+            <i class="fa fa-warning" style="color:red;"></i>
+            <span class="message-text"></span>
+        </div>
+
+        <div class="search-failed" style="display: none;">
+            <i class="fa fa-warning" style="color:red;"></i>
+            <span class="message-text"></span>
+        </div>
+
+        <table class="data-list-table table table-bordered express">
+            <thead>
+                <tr>
+                    <td style="width: 60px; text-align: center;">序号</td>
+                    <td style="width: 180px; text-align: center;">快递单号</td>
+                    <td class="break-word" style="text-align: center;">
+                        <span>物品</span>
+                        <span>&nbsp;</span>
+                        <span style="color: red;">
+                            <span>体积重:@(Model.TotalVolumeWeight.ToString("0.000"))Kg</span>
+                            <span>&nbsp;</span>
+                            <span>实际重:@(Model.TotalActualWeight.ToString("0.000"))Kg</span>
+                        </span>
+                    </td>
+                    <td class="break-word" style="width: 180px; text-align: center;">仓位/入库时间</td>
+                    <td style="width: 100px;text-align: center;">
+                        <span style="color: red; font-weight: bold;">
+                            快递包裹数量
+                        </span>
+                    </td>
+
+                    <td style="width: 100px;text-align: center;">状态</td>
+                    <td style="width: 100px; text-align: center;">选择</td>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 1;
+                    foreach (var express in expressList)
+                    {
+                        <tr id="express@(express.Id)">
+                            <td style="text-align: center;">@(index++)</td>
+                            <td style="text-align: center;">
+                                <div>
+                                    <span style="font-weight: bold;">
+                                        <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(express.Id)" target="_blank">
+                                            @express.TrackingNo
+                                        </a>
+                                    </span>
+                                </div>
+
+                            </td>
+                            <td style="text-align: center;" class="break-word">
+                                <div>
+                                    @express.GoodsNamesCache
+                                </div>
+                            </td>
+                            <td class="break-word" style="text-align: center;">
+                                <div style="color: blue;">
+                                    @(express.StorageLoc.GetFullName())
+                                </div>
+                                <div>
+                                    @(express.AddTime.ToString("yyyy-MM-dd HH:mm"))
+                                </div>
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="color: red; font-weight: bold;">
+                                    @(express.PackageCount)
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                @(express.Status.Name)
+                            </td>
+                            <td style="text-align: center;">
+                                <input id="express@(express.Id)checkbox" class="scanCheckbox" type="checkbox" disabled="disabled" onclick="expressCheckboxClick($('#express@(express.Id)'), this, '@(goodsType.Id)', '@(express.TrackingNo)');" style="width: 20px;height: 20px; margin: 0; cursor: default;"/>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div id="OrderPackListWrapper@(goodsType.Id)">
+        </div>
+        <script type="text/javascript">
+            $(function() {
+                loadOrderPackList(@(goodsType.Id));
+            });
+        </script>
+    </form>
+</div>

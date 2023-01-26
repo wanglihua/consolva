@@ -1,0 +1,15 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackListDialogModel
+
+@{
+    Layout = null;
+}
+
+<label for="firstLogisticsModeQuery">头程物流</label>&nbsp;
+<select id="firstLogisticsModeQuery" name="firstLogisticsModeQuery" style="width: 250px; height: 30px;">
+    <option value="0">头程物流</option>
+    @foreach (var mode in Model.FirstLogisticsModeList)
+    {
+        <option value="@mode.Id">@mode.Name</option>
+    }
+</select>&nbsp;
