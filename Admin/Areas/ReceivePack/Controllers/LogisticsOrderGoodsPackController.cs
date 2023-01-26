@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.SqlCommand;
 using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 using shunda.Admin.Services;
@@ -198,8 +199,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         foreach (var order in orderList) {
             int orderId = order.Id;
             var orderPackSchedule = orderPackScheduleList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
-
-            order.PackScheduleUserName = orderPackSchedule?.User?.LoginName;
+            order.PackScheduleUserNameCache = orderPackSchedule?.User.UserName ?? string.Empty;
         }
 
         LogisticsOrderGoodsPackListModel model = new LogisticsOrderGoodsPackListModel(listPager);
@@ -863,40 +863,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             .ToList();
 
         IList<string> orderTrackingNoList = orderGoodsExpressList.Select(e => e.ExpressTrackingNo).ToList();
-        IList<LogisticsExpressItem> expressSizeWeightList = logisticsExpressService.GetLogisticsExpressItemList(orderTrackingNoList);
-
-        decimal orderExpressWeightTotal = 0m;
-        if (expressSizeWeightList.Count > 0) {
-            orderExpressWeightTotal = expressSizeWeightList.Sum(e => e.SingleWeight * e.Quantity);
-        }
-
-        // 获取分拆配置
-        LogisticsOrderPackSplitSettingInfo splitSetting = logisticsOrderPackSplitSettingService.GetSetting();
-
-        // 一次性获取订单所有打包分拆备用
-        var orderPackSplitList = new List<LogisticsOrderPackSplitInfo>();
-        if (splitSetting.Status == LogisticsOrderPackSplitSettingStatus.Enabled) {
-            if (expressTrackingNoList.Count >= 2 && param.Weight >= splitSetting.SinglePackLimitWeight) {
-                throw new ValidationException($"订单打包分拆已启用，多个快递单号打包时重量不能超过当前配置的起始单箱重量 {splitSetting.SinglePackLimitWeight} KG！");
-            }
-
-            orderPackSplitList = session.Query<LogisticsOrderPackSplitInfo>()
-                .Where(e => e.OrderId == orderId)
-                .ToList();
-
-            // 添加 起始单箱重量 分拆
-            // 这个方法调用后，如果有新增的 split，这个新增的 split 也会被添加的 给的参数 orderPackSplitList 里面的
-            logisticsOrderPackSplitService.AddSinglePackWeightLimitSplitIfNeed(order, expressSizeWeightList, orderPackSplitList, splitSetting);
-        }
-
-        /*
-         有些自己寄的物品，有好多物品，但也只有一个快递单号，这时这个也应该算是合箱的，所以这个判断是不对的。
-        expressTrackingNoList = expressTrackingNoList.Distinct().ToList();
-        if (expressTrackingNoList.Count == 1 && param.MultiExpressOnePack == true)
-        {
-            throw new ValidationException("只扫描了一个快递单号，却人工选择了合箱，两者有冲突！");
-        }
-        */
 
         // 回写申领件状态，这个操作也跟3.0的操作可以兼容
         session.Query<LogisticsClaimGoodsInfo>()
@@ -992,29 +958,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException($"快递单号{string.Join(",", packedExpressTrackingNoList)}，已经是打包状态，不能继续打包！");
         }
 
-
-        // 体积重快递单号HOLD检查
-        VolumeWeightHoldExpressInfo volumeWeightHoldExpress = session.Query<VolumeWeightHoldExpressInfo>()
-            .Where(e => e.Order.Id == orderId && e.Status == VolumeWeightHoldExpressStatus.Hold)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (volumeWeightHoldExpress != null) {
-            throw new ValidationException("订单有快递单号被体积重量HOLD，不能打包！");
-        }
-
-        if (logisticsOrderGoodsExpressCustomerHoldService.CheckOrderHold(orderId)) {
-            throw new ValidationException("订单有快递单号【面单客户ID】与实际【订单客户ID】不匹配，不能打包！");
-        }
-
-        /*
-        int expressCountNotChecked = goodsTypeExpressTrackingNoList.Where(e => param.ExpressTrackingNoList.Contains(e) == false).Count();
-        if (expressCountNotChecked != 0)
-        {
-            throw new ValidationException("当前物品类型快递单号未全部扫描！");
-        }
-        */
-
         LogisticsOrderPackInfo orderPack = new LogisticsOrderPackInfo();
 
         bool isCreate = true;
@@ -1033,8 +976,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         orderPack.Height = param.Height ?? 0;
         orderPack.Weight = param.Weight ?? 0;
         orderPack.PackageCount = param.PackageCount ?? 1;
-        orderPack.MultiExpressOnePack = multiExpressOnePack; // 这个是前面判断好的结果
-
         orderPack.PackUser = loginUser;
 
         DateTime now = DateTime.Now;
@@ -1108,12 +1049,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         session.Flush();
-
-        // 添加箱号至订单打包分拆
-        bool packSplit = false;
-        if (splitSetting.Status == LogisticsOrderPackSplitSettingStatus.Enabled) {
-            packSplit = logisticsOrderPackSplitService.SplitAddPackBox(orderPackBoxList, orderExpressWeightTotal, orderPackSplitList, splitSetting);
-        }
 
         // 是否是继续打包这些快递单号，如果不是继续打包这些快递单号的，那么就释放这些快递单号占用的仓位
         if (param.ContinueThoseExpress == false) {
@@ -1201,28 +1136,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             }
 
             warningMessageBuilder.Append("重量数据有异常，请核查！");
-        }
-
-        // 空运订单判断 打包后重量是不是跟打包前重量比要大，大了就警告
-        bool hasAirOrderWeightUnusual = false;
-        if (order.Cate == LogisticsOrderCate.Air) {
-            IList<LogisticsOrderPackInfo> orderPackList = session.Query<LogisticsOrderPackInfo>()
-                .Where(e => e.Order.Id == orderId)
-                .ToList();
-            decimal orderPackWeightTotal = 0m;
-            if (orderPackList.Count > 0) {
-                orderPackWeightTotal = orderPackList.Sum(e => e.Weight * e.PackageCount);
-            }
-
-            if (orderPackWeightTotal > orderExpressWeightTotal) {
-                hasAirOrderWeightUnusual = true;
-
-                if (warningMessageBuilder.Length > 0) {
-                    warningMessageBuilder.Append("<br /><br />");
-                }
-
-                warningMessageBuilder.Append("空运订单打包后总重量大于打包前总重量，请核查！");
-            }
         }
 
         // 快递单号日志
@@ -1395,40 +1308,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Set(e => e.Status, LogisticsClaimGoodsStatus.WaitPack)
             .Set(e => e.UpdateTime, DateTime.Now)
             .Update();
-
-        /*
-         感觉这里的逻辑有些不对 20200924
-         
-        int packedCount = expressList.Where(e => e.Status == LogisticsOrderGoodsExpressStatus.Packed).Count();
-        if (logisticsOrder.OrderStatus == LogisticsOrderStatus.Packed
-            && packedCount == expressList.Count) // 都是已打包状态，一般状态都是一致的
-        {
-            logisticsOrder.OrderStatus = LogisticsOrderStatus.WaitPack;
-            session.Update(logisticsOrder);
-            session.Flush();
-
-            foreach (var express in expressList)
-            {
-                express.Status = LogisticsOrderGoodsExpressStatus.WaitPack;
-                session.Update(express);
-            }
-
-            session.Flush();
-
-            IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
-            IList<LogisticsOrderGoodsInfo> orderGoodsList = session.Query<LogisticsOrderGoodsInfo>()
-                .Where(e => expressIdList.Contains(e.Express.Id))
-                .ToList();
-
-            foreach (var orderGoods in orderGoodsList)
-            {
-                orderGoods.Status = LogisticsOrderGoodsStatus.WaitPack;
-                session.Update(orderGoods);
-            }
-
-            session.Flush();
-        }
-        */
     }
 
     [HttpPost]
@@ -1536,11 +1415,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Query<LogisticsOrderGoodsExpressInfo>()
             .Where(e => e.Order.Id == orderId);
 
-        // 空运和快递订单打包时，各个物品类型的合并打包
-        if (logisticsOrder.FirstModeType != LogisticsModeType.CnAuAir && logisticsOrder.FirstModeType != LogisticsModeType.CnAuExpress) {
-            goodsTypeExpressNoQuery = goodsTypeExpressNoQuery.Where(e => e.GoodsType == goodsType);
-        }
-
         IList<string> goodsTypeExpressNoList = goodsTypeExpressNoQuery
             .Select(e => e.ExpressTrackingNo)
             .Distinct()
@@ -1548,11 +1422,6 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         var packedGoodsTypeExpressNoQuery = session.Query<LogisticsOrderPackExpressInfo>()
             .Where(e => e.Order.Id == orderId);
-
-        // 空运和快递订单打包时，各个物品类型的合并打包
-        if (logisticsOrder.FirstModeType != LogisticsModeType.CnAuAir && logisticsOrder.FirstModeType != LogisticsModeType.CnAuExpress) {
-            packedGoodsTypeExpressNoQuery = packedGoodsTypeExpressNoQuery.Where(e => e.GoodsType == goodsType);
-        }
 
         IList<string> packedGoodsTypeExpressNoList = packedGoodsTypeExpressNoQuery
             .Select(e => e.ExpressNo)
@@ -1704,9 +1573,9 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
 
-        // string customerCode = orderPack.Order?.CustomerCode;
-        string customerCode = (orderPack.Order?.Customer?.Id ?? 0).ToString();
-        string orderCode = orderPack.Order?.Code;
+        // string customerCode = orderPack.Order.CustomerCode;
+        string customerCode = (orderPack.Order.Customer?.Id ?? 0).ToString();
+        string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
         IList<string> packSplitCodeList = new List<string>();
@@ -1739,13 +1608,13 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderPackBoxNumList.Add(orderPackBox.OrderPackBoxNum);
         }
 
-        int orderId = orderPack.Order?.Id ?? 0;
-        // string firstLogisticsTypeName = orderPack.Order?.FirstModeType?.Name;
-        string firstLogisticsTypeName = orderPack.Order?.FirstMode?.Name;
-        string targetWarehouseName = orderPack.Order?.TargetWarehouse?.Name;
-        string secondLogisticsTypeName = orderPack.Order?.SecondLogisticsModeType?.Name;
-        if (orderPack.Order?.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
-            secondLogisticsTypeName = orderPack.Order?.SecondLogisticsMode?.PickupStation?.Name;
+        int orderId = orderPack.Order.Id ?? 0;
+        // string firstLogisticsTypeName = orderPack.Order.FirstModeType?.Name;
+        string firstLogisticsTypeName = orderPack.Order.FirstMode?.Name;
+        string targetWarehouseName = orderPack.Order.TargetWarehouse?.Name;
+        string secondLogisticsTypeName = orderPack.Order.SecondLogisticsModeType?.Name;
+        if (orderPack.Order.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
+            secondLogisticsTypeName = orderPack.Order.SecondLogisticsMode?.PickupStation?.Name;
         }
 
         // string weight = orderPack.Weight.ToString("#0.000") + "Kg";
@@ -1759,7 +1628,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         string userName = orderPack.PackUser?.UserName ?? "";
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType?.Name;
-        string orderGoodsTypeName = orderPack.Order?.GoodsType?.Name;
+        string orderGoodsTypeName = orderPack.Order.GoodsType?.Name;
 
         // 放在这个Action操作的最后， 保存别的不出错时，才记录
         logisticsOrderPackLabelTypeService.AddOrderPackLabelType(orderPack, LogisticsOrderPackPrintType.SizeW10H15);
@@ -1816,9 +1685,9 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
 
-        // string customerCode = orderPack.Order?.CustomerCode;
-        string customerCode = (orderPack.Order?.Customer?.Id ?? 0).ToString();
-        string orderCode = orderPack.Order?.Code;
+        // string customerCode = orderPack.Order.CustomerCode;
+        string customerCode = (orderPack.Order.Customer?.Id ?? 0).ToString();
+        string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
         IList<string> orderIdList = new List<string>();
@@ -1848,12 +1717,11 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderPackBoxNumList.Add(orderPackBox.OrderPackBoxNum);
         }
 
-        // string firstLogisticsTypeName = orderPack.Order?.FirstModeType?.Name;
-        string firstLogisticsTypeName = orderPack.Order?.FirstMode?.Name;
-        string targetWarehouseName = orderPack.Order?.TargetWarehouse?.Name;
-        string secondLogisticsTypeName = orderPack.Order?.SecondLogisticsModeType?.Name;
-        if (orderPack.Order?.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
-            secondLogisticsTypeName = orderPack.Order?.SecondLogisticsMode?.PickupStation?.Name;
+        // string firstLogisticsTypeName = orderPack.Order.FirstModeType?.Name;
+        string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
+        string targetWarehouseName = orderPack.Order.Warehouse?.Name;
+        if (orderPack.Order.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
+            secondLogisticsTypeName = orderPack.Order.SecondLogisticsMode?.PickupStation?.Name;
         }
 
         // string weight = orderPack.Weight.ToString("#0.000") + "Kg";
@@ -1866,7 +1734,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         string userName = orderPack.PackUser?.UserName ?? "";
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType?.Code;
-        string orderGoodsTypeName = orderPack.Order?.GoodsType?.Code;
+        string orderGoodsTypeName = orderPack.Order.GoodsType?.Code;
 
         // 放在这个Action操作的最后， 保存别的不出错时，才记录
         logisticsOrderPackLabelTypeService.AddOrderPackLabelType(orderPack, LogisticsOrderPackPrintType.SizeW10H5);
@@ -1875,11 +1743,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "success", true },
             { "customerCode", customerCode },
             { "orderCode", orderCode },
-            { "firstLogistics", firstLogisticsTypeName?.Trim()?.FirstOrDefault() },
-            { "targetWarehouseName", targetWarehouseName?.Trim()?.FirstOrDefault() },
-            { "secondLogistics", secondLogisticsTypeName },
-            { "secondLogisticsShortName", orderPack.Order?.SecondLogisticsModeType?.GetCnAuSecondTypeShortName() },
-            { "terminalShortName", orderPack.Order?.SecondLogisticsMode?.PickupStation?.Name?.FirstOrDefault() },
+            { "firstLogistics", firstLogisticsTypeName?.Trim().FirstOrDefault() },
+            { "targetWarehouseName", targetWarehouseName?.Trim().FirstOrDefault() },
             { "weight", weight },
             { "volumeWeight", volumeWeight },
             { "volume", volume },
@@ -1922,9 +1787,9 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
 
-        // string customerCode = orderPack.Order?.CustomerCode;
-        string customerCode = (orderPack.Order?.Customer?.Id ?? 0).ToString();
-        string orderCode = orderPack.Order?.Code;
+        // string customerCode = orderPack.Order.CustomerCode;
+        string customerCode = (orderPack.Order.Customer?.Id ?? 0).ToString();
+        string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
         IList<string> orderIdList = new List<string>();
@@ -1954,12 +1819,12 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderPackBoxNumList.Add(orderPackBox.OrderPackBoxNum);
         }
 
-        // string firstLogisticsTypeName = orderPack.Order?.FirstModeType?.Name;
-        string firstLogisticsTypeName = orderPack.Order?.FirstMode?.Name;
-        string targetWarehouseName = orderPack.Order?.TargetWarehouse?.Name;
-        string secondLogisticsTypeName = orderPack.Order?.SecondLogisticsModeType?.Name;
-        if (orderPack.Order?.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
-            secondLogisticsTypeName = orderPack.Order?.SecondLogisticsMode?.PickupStation?.Name;
+        // string firstLogisticsTypeName = orderPack.Order.FirstModeType?.Name;
+        string firstLogisticsTypeName = orderPack.Order.FirstMode?.Name;
+        string targetWarehouseName = orderPack.Order.TargetWarehouse?.Name;
+        string secondLogisticsTypeName = orderPack.Order.SecondLogisticsModeType?.Name;
+        if (orderPack.Order.SecondLogisticsModeType == LogisticsModeType.TerminalPickup) {
+            secondLogisticsTypeName = orderPack.Order.SecondLogisticsMode?.PickupStation?.Name;
         }
 
         // string weight = orderPack.Weight.ToString("#0.000") + "Kg";
@@ -1972,7 +1837,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         string userName = orderPack.PackUser?.UserName ?? "";
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType?.Code;
-        string orderGoodsTypeName = orderPack.Order?.GoodsType?.Code;
+        string orderGoodsTypeName = orderPack.Order.GoodsType?.Code;
 
         // 放在这个Action操作的最后， 保存别的不出错时，才记录
         logisticsOrderPackLabelTypeService.AddOrderPackLabelType(orderPack, LogisticsOrderPackPrintType.SizeW5H5);
@@ -1984,8 +1849,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "firstLogistics", firstLogisticsTypeName?.Trim()?.FirstOrDefault() },
             { "targetWarehouseName", targetWarehouseName?.Trim()?.FirstOrDefault() },
             { "secondLogistics", secondLogisticsTypeName },
-            { "secondLogisticsShortName", orderPack.Order?.SecondLogisticsModeType?.GetCnAuSecondTypeShortName() },
-            { "terminalShortName", orderPack.Order?.SecondLogisticsMode?.PickupStation?.Name?.FirstOrDefault() },
+            { "secondLogisticsShortName", orderPack.Order.SecondLogisticsModeType?.GetCnAuSecondTypeShortName() },
+            { "terminalShortName", orderPack.Order.SecondLogisticsMode?.PickupStation?.Name?.FirstOrDefault() },
             { "weight", weight },
             { "volumeWeight", volumeWeight },
             { "volume", volume },

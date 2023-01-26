@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
@@ -210,6 +211,12 @@ public class LogisticsOrderInfo : Entity {
     /// </summary>
     [JsonProperty("deliverTime")]
     public virtual DateTime? DeliverTime { get; set; } = null;
+
+    /// <summary>
+    /// 用于 NHibernate 查询生成 SQL
+    /// </summary>
+    [BindNever]
+    public virtual IList<LogisticsOrderPackScheduleInfo> PackSchedules { get; set; } = new List<LogisticsOrderPackScheduleInfo>();
 
     #region Cache
 
