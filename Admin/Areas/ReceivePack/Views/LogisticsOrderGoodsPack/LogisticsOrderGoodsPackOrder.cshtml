@@ -1,6 +1,6 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark
 @using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack
-@using shunda.Core.Config
-@using shunda.Domain.Logistics
 @using shunda.Domain.LogisticsOrder
 @model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderModel
 
@@ -8,17 +8,14 @@
     Layout = null;
 }
 
-<input id="orderId" type="hidden" value="@Model.Order?.Id"/>
+<input id="orderId" type="hidden" value="@Model.Order.Id"/>
 
-@if (Model.Order == null)
-{
+@if (Model.Order == null) {
     <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
         <i class="fa fa-warning" style="color:red;"></i>
         没有待打包的后续订单，或指定的订单不存在！请刷新页面，重新尝试获取打包订单。
     </div>
-}
-else
-{
+} else {
     <style type="text/css">
         table#orderDetail {
             background-color: white;
@@ -71,8 +68,7 @@ else
     </style>
     <div style="width: 980px;">
         <div style="margin-top: 20px;">
-            @if (Model.IsOrderExpressWeightFitMode == false)
-            {
+            @if (Model.IsOrderExpressWeightFitMode == false) {
                 <div>
                     <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
                         <i class="fa fa-warning" style="color:red;"></i>
@@ -81,8 +77,7 @@ else
                 </div>
             }
 
-            @if (Model.WoodFrameNotDone)
-            {
+            @if (Model.WoodFrameNotDone) {
                 <div>
                     <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
                         <i class="fa fa-warning" style="color:red;"></i>
@@ -91,8 +86,7 @@ else
                 </div>
             }
 
-            @if (Model.BarkCleanNotDone)
-            {
+            @if (Model.BarkCleanNotDone) {
                 <div>
                     <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
                         <i class="fa fa-warning" style="color:red;"></i>
@@ -109,46 +103,42 @@ else
                                 订单编号
                             </td>
                             <td style="width: 150px;" class="break-word">
-                                <a href="@Url.Action("Detail", "LogisticsOrder", new { id = Model.Order?.Id })" target="order_detail">@(Model.Order?.Code)</a>
+                                <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(Model.Order.Id)" target="_blank">@(Model.Order.Code)</a>
                             </td>
                             <td style="width: 75px;" class="lbl">
                                 客户ID
                             </td>
                             <td style="width: 140px;">
-                                <a href="@Url.Action("Detail", "Customer", new { id = Model.Order?.Customer?.Id })" target="customer_detail">@(Model.Order?.Customer?.CustomerCode)</a>
-                                @if (string.IsNullOrWhiteSpace(Model.Order?.Customer?.CustomerCharacter) == false)
-                                {
-                                    <span>(@(Model.Order?.Customer?.CustomerCharacter))</span>
+                                <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(Model.Order.Customer.Id)" target="_blank">@(Model.Order.CustomerCode)</a>
+                                @if (string.IsNullOrWhiteSpace(Model.Order.Customer.CustomerCharacter) == false) {
+                                    <span>(@(Model.Order.Customer.CustomerCharacter))</span>
                                 }
                             </td>
                             <td class="lbl" style="width: 70px;">
                                 头程类型
                             </td>
                             <td style="width: 145px;">
-                                @(Model.Order?.FirstLogisticsModeType?.Name)
+                                @(Model.Order.FirstModeType.Name)
                             </td>
                             @*
                             <td style="width: 70px;" class="lbl">
                                 打包方式
                             </td>
                             <td style="width: 259px; font-size: 10px;" class="break-word">
-                                @(Model.Order?.RepackType?.Name)
+                                @(Model.Order.RepackType?.Name)
                             </td>
                             *@
                             <td style="width: 70px;" class="lbl">
                                 增值服务
                             </td>
                             <td style="width: 259px; font-size: 10px;" class="break-word">
-                                @if (Model.WoodFrame)
-                                {
+                                @if (Model.WoodFrame) {
                                     <span>打木架</span>
                                 }
-                                @if (Model.WoodFrame && Model.BarkClean)
-                                {
+                                @if (Model.WoodFrame && Model.BarkClean) {
                                     <sapn>, </sapn>
                                 }
-                                @if (Model.BarkClean)
-                                {
+                                @if (Model.BarkClean) {
                                     <span>清理树皮杂物</span>
                                 }
                             </td>
@@ -195,14 +185,7 @@ else
                                 头程物流
                             </td>
                             <td class="break-word">
-                                @if (Model.Order?.Cate == LogisticsOrderCate.Sea)
-                                {
-                                    <span style="font-size: 10px;">@(Model.Order?.FirstLogisticsMode?.Code)</span>
-                                }
-                                else
-                                {
-                                    <span style="font-size: 10px;">@(Model.Order?.FirstLogisticsMode?.Name)</span>
-                                }
+                                <span style="font-size: 10px;">@(Model.Order.FirstMode.Name)</span>
                             </td>
                         </tr>
                         <tr>
@@ -247,12 +230,9 @@ else
                             </td>
                             <td>
                                 <a href="javascript:document.getElementById('orderRemark').scrollIntoView(false);">
-                                    @if (Model.LogisticsOrderRemarkList != null && Model.LogisticsOrderRemarkList.Count != 0)
-                                    {
+                                    @if (Model.LogisticsOrderRemarkList != null && Model.LogisticsOrderRemarkList.Count != 0) {
                                         <span>@(Model.LogisticsOrderRemarkList.Count)&nbsp;个</span>
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <span>暂无</span>
                                     }
                                 </a>
@@ -260,25 +240,15 @@ else
                         </tr>
                         <tr>
                             <td class="lbl">
-                                客户备注
-                            </td>
-                            @Html.Raw("<td colspan=\"5\" class=\"break-word\"><span style=\"color:red;\">" + Model.Order?.CustomerNote + "</span></td>") @* 这个一定要写成一行*@
-                            <td class="lbl">
                                 打包排班
                             </td>
                             <td>
                                 <span>@(Model.PackScheduleUserName)</span>
                             </td>
-                        </tr>
-                        <tr>
                             <td class="lbl">
-                                客服备注
                             </td>
-                            @Html.Raw("<td colspan=\"3\" class=\"break-word\"><span style=\"color:red;\">" + Model.Order?.ServiceNote + "</span></td>") @* 这个一定要写成一行*@
-                            <td class="lbl">
-                                入库备注
+                            <td>
                             </td>
-                            @Html.Raw("<td colspan=\"3\" class=\"break-word\"><span style=\"color:red;\">" + Model.Order?.WarehouseNote + "</span></td>") @* 这个一定要写成一行*@
                         </tr>
                     </tbody>
                 </table>
@@ -315,110 +285,26 @@ else
 
             </script>
             @{
-                if (Model.Order.FirstLogisticsModeType != LogisticsModeType.CnAuAir && Model.Order.FirstLogisticsModeType != LogisticsModeType.CnAuExpress)
-                {
-                    foreach (LogisticsGoodsType goodsType in Model.GoodsTypeList)
-                    {
-                        IList<LogisticsOrderGoodsExpressInfo> goodsTypeExpressList = Model.ExpressList
-                            .Where(e => e.GoodsType == goodsType)
-                            .ToList();
-
-                        if (goodsTypeExpressList.Count > 0)
-                        {
-                            IList<string> goodsTypeExpressTrackingNoList = goodsTypeExpressList.Select(e => e.ExpressTrackingNo).ToList();
-                            IList<LogisticsExpressItem> goodsTypeExpressItemList = Model.ExpressItemList?
-                                .Where(e => goodsTypeExpressTrackingNoList.Contains(e.ExpressTrackingNo))
-                                .ToList() ?? new List<LogisticsExpressItem>();
-
-                            decimal totalVolumeWeight = 0;
-                            decimal totalWeight = 0;
-                            if (goodsTypeExpressItemList.Count != 0)
-                            {
-                                totalVolumeWeight = goodsTypeExpressItemList.Sum(e => e.SingleVolumeWeight * e.Quantity);
-                                totalWeight = goodsTypeExpressItemList.Sum(e => e.SingleWeight * e.Quantity);
-                            }
-
-                            @Html.Partial("LogisticsOrderGoodsPackOrderExpressList", new LogisticsOrderGoodsPackOrderExpressListModel() {
-                                Debug = Model.Debug,
-                                GoodsType = goodsType,
-                                GoodsTypeExpressList = goodsTypeExpressList,
-                                GoodsTypePackCompleteDict = Model.GoodsTypePackCompleteDict,
-                                TotalVolumeWeight = totalVolumeWeight,
-                                TotalActualWeight = totalWeight
-                            })
-                        }
-                    }
-                }
-                else
-                {
                     @* 空运和快递订单时，物品类型合并 *@
+                decimal totalVolumeWeight = 0;
+                decimal totalWeight = 0;
+                var orderExpressListModel = new LogisticsOrderGoodsPackOrderExpressListModel() {
+                    Debug = Model.Debug,
+                    GoodsType = Model.Order.GoodsType,
+                    GoodsTypeExpressList = Model.ExpressList,
+                    GoodsTypePackCompleteDict = Model.GoodsTypePackCompleteDict,
+                    TotalVolumeWeight = totalVolumeWeight,
+                    TotalActualWeight = totalWeight
+                };
 
-                    IList<string> expressTrackingNoList = Model.ExpressList.Select(e => e.ExpressTrackingNo).ToList();
-                    IList<LogisticsExpressItem> expressItemList = Model.ExpressItemList?
-                        .Where(e => expressTrackingNoList.Contains(e.ExpressTrackingNo))
-                        .ToList() ?? new List<LogisticsExpressItem>();
+                <partial name="LogisticsOrderGoodsPackOrderExpressList" model="orderExpressListModel"/>
 
-                    decimal totalVolumeWeight = 0;
-                    decimal totalWeight = 0;
-                    if (expressItemList.Count != 0)
-                    {
-                        totalVolumeWeight = expressItemList.Sum(e => e.SingleVolumeWeight * e.Quantity);
-                        totalWeight = expressItemList.Sum(e => e.SingleWeight * e.Quantity);
-                    }
-
-                    @Html.Partial("LogisticsOrderGoodsPackOrderExpressList", new LogisticsOrderGoodsPackOrderExpressListModel() {
-                        Debug = Model.Debug,
-                        GoodsType = Model.Order.GoodsType,
-                        GoodsTypeExpressList = Model.ExpressList,
-                        GoodsTypePackCompleteDict = Model.GoodsTypePackCompleteDict,
-                        TotalVolumeWeight = totalVolumeWeight,
-                        TotalActualWeight = totalWeight
-                    })
-                }
             }
         </div>
 
         <div style="text-align: right; padding: 5px 0;">
 
-            @{
-                string styleDispalyTlaLabelPrint = "none";
-                if (Model.CanPrintPcaLabel)
-                {
-                    styleDispalyTlaLabelPrint = "inline-block";
-                }
-            }
-
-            <span>
-                <button id="btnPrintPcaLabel" class="btn btn-xs btn-primary" onclick="printPcaLabel();return false;" style="width: 130px; display: @(styleDispalyTlaLabelPrint);">
-                    <i class="ace-icon fa fa fa-print"></i>&nbsp;补打TLA标签
-                </button>
-            </span>
-
-            @if (Model.IsAdmin)
-            {
-                <span>
-                    <button id="btnPrintPcaLabelPreview" class="btn btn-xs btn-primary" onclick="printPcaLabelPreview();return false;" style="width: 130px; display: @(styleDispalyTlaLabelPrint); margin-left:20px;">
-                        <i class="ace-icon fa fa fa-print"></i>&nbsp;补打TLA标签预览
-                    </button>
-                </span>
-            }
-
-            @{
-                string styleDispalyTransDirectLabelPrint = "none";
-                if (Model.CanPrintTransDirectLabel)
-                {
-                    styleDispalyTransDirectLabelPrint = "inline-block";
-                }
-            }
-
-            <span>
-                <button id="btnPrintTransDirectLabel" class="btn btn-xs btn-primary" onclick="printPackLabelTransDirect(1);return false;" style="width: 150px; display: @(styleDispalyTransDirectLabelPrint);">
-                    <i class="ace-icon fa fa fa-print"></i>&nbsp;补打TransDirect标签
-                </button>
-            </span>
-
-            @if (Model.IsOrderPackComplete == false)
-            {
+            @if (Model.IsOrderPackComplete == false) {
                 <button class="btn btn-xs btn-purple" onclick="completeOrderPack();return false;" style="width: 130px;">
                     <i class="ace-icon fa fa fa-check-square-o"></i>&nbsp;完成当前订单打包
                 </button>
@@ -432,7 +318,7 @@ else
             </div>
 
             <div id="orderRemarkListWrapper">
-                @Html.Partial("~/Areas/Admin/Views/LogisticsOrderRemark/LogisticsOrderRemarkOrderRemarkList.cshtml", new LogisticsOrderRemarkOrderRemarkListModel() { LogisticsOrderRemarkList = Model.LogisticsOrderRemarkList, OrderId = (Model.Order?.Id ?? 0) })
+                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { OrderRemarkList = Model.LogisticsOrderRemarkList!, OrderId = Model.Order.Id }" />
             </div>
 
         </div>
@@ -441,14 +327,11 @@ else
     <div id="logisticsOrderRemarkDetailDialogWrapper"></div>
 
     <div style="height: 2800px; width: 100px;">@*保证不跳闪*@</div>
-    @if (Model.IsAdmin || Model.TrackingNoManualInputEnabled)
-    {
+    @if (Model.IsAdmin || Model.TrackingNoManualInputEnabled) {
         <script type="text/javascript">
             var shouldCheckFirstKeyDownTime = false;
         </script>
-    }
-    else
-    {
+    } else {
         <script type="text/javascript">
             var shouldCheckFirstKeyDownTime = true;
         </script>
@@ -750,12 +633,6 @@ else
                 });
             });
         }
-                
-        function printPcaLabel() {
-            var labelPdfUrl = "@($"http://{SiteConfig.SiteIP}")" + "@Url.Action("GetPcaCourierLabel", "LogisticsOrderGoodsPack", new { orderId = (Model.Order?.Id ?? 0) })";  
-            
-            printPdfContent(labelPdfUrl, 1);            
-        }
         
         function printPdfContent(pdfUrl, printCount)
         {
@@ -770,35 +647,15 @@ else
             LODOP.NEWPAGE();
             LODOP.ADD_PRINT_PDF(0, 0, "100%", "100%", pdfUrl);
 
-            @if (Model.Debug)
-            {
+            @if (Model.Debug) {
                 <text>
                     LODOP.PREVIEW();
                 </text>
-            }
-            else
-            {
+            } else {
                 <text>
                     LODOP.PRINT();
                 </text>
             }
-        }
-        
-        function printPcaLabelPreview() {
-            var labelPdfUrl = "@($"http://{SiteConfig.SiteIP}")" + "@Url.Action("GetPcaCourierLabel", "LogisticsOrderGoodsPack", new { orderId = (Model.Order?.Id ?? 0) })";  
-
-            var LODOP = getLodopWithLicenses();
-            LODOP.PRINT_INIT("TLA打印标签");
-    
-            LODOP.SET_PRINT_PAGESIZE(1, "100mm", "150mm", "TLA标签打印");
-
-            LODOP.SET_PRINT_MODE("PRINT_NOCOLLATE",1)            
-            LODOP.SET_PRINT_COPIES(1);            
-
-            LODOP.NEWPAGE();
-            LODOP.ADD_PRINT_PDF(0, 0, "100%", "100%", labelPdfUrl);
-
-            LODOP.PREVIEW();
         }
 
         function completeGoodsTypePack(goodsTypeId)
@@ -819,44 +676,16 @@ else
                         if (data.success === false) {
                             $.msg.error(data.message);
                             return;
-                        } else {
-                            if(data.orderPackComplete){
-                                var labelPdfUrl = "@($"http://{SiteConfig.SiteIP}")" + "@Url.Action("GetPcaCourierLabel", "LogisticsOrderGoodsPack", new { orderId = (Model.Order?.Id ?? 0) })";
-                                if (data.transDirectShip) {                                 
-                                    printPackLabelTransDirect(data.tlaPrintCount);
-                                    $("#btnPrintTransDirectLabel").show();
-                                    
-                                    $.messager.model = {
-                                        ok: {text: '<i class="ace-icon fa fa-check"></i>确认', classed: 'btn-success btn-sm'},
-                                        cancel: {text: '取消', classed: 'nodisplay'}
-                                    };
-                                    var message = '<div class="huaduConfirm"><i class="fa fa-exclamation-circle fa-5x blue"></i></br></br>完成订单打包成功，且订单符合TransDirect对接条件，正在打印TLA和TransDirect标签，请在打印完成后点确认！</div>';
-                                    $.messager.confirm("确认", message, function(){
-                                        getPackOrder();
-                                    });                                      
-                                } else if(data.tlaShip) {
-                                    printPdfContent(labelPdfUrl, data.tlaPrintCount);
-                                    $("#btnPrintPcaLabel").show(); 
-                                    
-                                    $.messager.model = {
-                                        ok: {text: '<i class="ace-icon fa fa-check"></i>确认', classed: 'btn-success btn-sm'},
-                                        cancel: {text: '取消', classed: 'nodisplay'}
-                                    };
-                                    var message = '<div class="huaduConfirm"><i class="fa fa-exclamation-circle fa-5x blue"></i></br></br>完成订单打包成功，且订单符合TLA对接条件，正在打印TLA标签，请在打印完成后点确认！</div>';
-                                    $.messager.confirm("确认", message, function(){
-                                        getPackOrder();
-                                    });
-                                }
-                                else {
-                                    $.msg.show(data.message);
-                                    getPackOrder();
-                                }                                
-                                return;
-                            }
-                            scannedExpressTrackingNoList[goodsTypeId] = [];
-                            loadOrderPackList(goodsTypeId);
+                        }
+
+                        if(data.orderPackComplete){
+                            $.msg.show(data.message);
+                            getPackOrder();
                             return;
                         }
+
+                        scannedExpressTrackingNoList[goodsTypeId] = [];
+                        loadOrderPackList(goodsTypeId);
                     }
                 });
             });
@@ -879,36 +708,9 @@ else
                             $.msg.error(data.message);
                             return;
                         } 
-                        
-                        var labelPdfUrl = "@($"http://{SiteConfig.SiteIP}")" + "@Url.Action("GetPcaCourierLabel", "LogisticsOrderGoodsPack", new { orderId = (Model.Order?.Id ?? 0) })";                        
-                        if (data.transDirectShip) {
-                             printPackLabelTransDirect(data.tlaPrintCount);
-                             $("#btnPrintTransDirectLabel").show();
-                             
-                             $.messager.model = {
-                                 ok: {text: '<i class="ace-icon fa fa-check"></i>确认', classed: 'btn-success btn-sm'},
-                                 cancel: {text: '取消', classed: 'nodisplay'}
-                             };
-                             var message = '<div class="huaduConfirm"><i class="fa fa-exclamation-circle fa-5x blue"></i></br></br>完成订单打包成功，且订单符合TransDirect对接条件，正在打印TLA和TransDirect标签，请在打印完成后点确认！</div>';
-                             $.messager.confirm("确认", message, function(){
-                                 getPackOrder();
-                             });                                      
-                        } else if(data.tlaShip) {
-                            printPdfContent(labelPdfUrl, data.tlaPrintCount);
-                            $("#btnPrintPcaLabel").show();
-                            
-                            $.messager.model = {
-                                ok: {text: '<i class="ace-icon fa fa-check"></i>确认', classed: 'btn-success btn-sm'},
-                                cancel: {text: '取消', classed: 'nodisplay'}
-                            };
-                            var message = '<div class="huaduConfirm"><i class="fa fa-exclamation-circle fa-5x blue"></i></br></br>完成订单打包成功，且订单符合TLA对接条件，正在打印TLA标签，请在打印完成后点确认！</div>';
-                            $.messager.confirm("确认", message, function(){
-                                getPackOrder();
-                            });
-                        } else {
-                            $.msg.show(data.message);
-                            getPackOrder();                            
-                        }
+
+                        $.msg.show(data.message);
+                        getPackOrder();
                     }
                 });
             });
@@ -959,13 +761,11 @@ else
 </div>
 
 
-@if (Model.IsCnAuSeaOrder)
-{
+@if (Model.IsCnAuSeaOrder) {
     <script type="text/javascript">
     
         var printTypeInLogisticsMode = null;
-        @if (Model.PrintTypeInLogisticsMode != null)
-        {
+        @if (Model.PrintTypeInLogisticsMode != null) {
             <text>printTypeInLogisticsMode = '@(Model.PrintTypeInLogisticsMode.Id)';</text>
         }
    
@@ -995,9 +795,7 @@ else
         }    
         
     </script>
-}
-else
-{
+} else {
     <script type="text/javascript">
 
         function printPackLabel(orderPackId) {
@@ -1033,36 +831,7 @@ else
         });
     }
 </script>
-@Html.Partial("LogisticsOrderGoodsPackLabelW10H15", Model.Debug)
-
-
-<script type="text/javascript">
-    function printPackEnglishLabelW10H15(orderPackId) {
-        showMask("加载中...");
-        $.ajax({
-            url: '@Url.Action("GetEnglishPrintDataW10H15", "LogisticsOrderGoodsPack")',
-            type: "POST",
-            data: {
-                "orderPackId": orderPackId
-            },
-            success: function(data) {
-                hideMask();
-
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                } else {
-                    if(data.enabled) {
-                        printPackEnglishLabelCommonW10H15(data);
-                    }
-                    return;
-                }
-            }
-        });
-    }
-</script>
-
-@Html.Partial("LogisticsOrderGoodsPackEnglishLabelW10H15", Model.Debug)
+<partial name="LogisticsOrderGoodsPackLabelW10H15" model="Model.Debug"/>
 
 <script type="text/javascript">
 
@@ -1089,7 +858,7 @@ else
     }
     
 </script>
-@Html.Partial("LogisticsOrderGoodsPackLabelW10H5", Model.Debug)
+<partial name="LogisticsOrderGoodsPackLabelW10H5" model="Model.Debug"/>
 
 <script type="text/javascript">
 
@@ -1116,7 +885,7 @@ else
     }
     
 </script>
-@Html.Partial("LogisticsOrderGoodsPackLabelW5H5", Model.Debug)
+<partial name="LogisticsOrderGoodsPackLabelW5H5" model="Model.Debug"/>
 
 <script type="text/javascript">
     function printPackLabelAirExpress(orderPackId) {
@@ -1142,4 +911,4 @@ else
         });
     }
 </script>
-@Html.Partial("LogisticsOrderGoodsPackLabelAirExpress", Model.Debug)
+<partial name="LogisticsOrderGoodsPackLabelAirExpress" model="Model.Debug"/>

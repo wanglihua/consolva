@@ -19,6 +19,7 @@ public class LogisticsOrderGoodsPackOrderExpressListModel {
     /// 空运订单时是整个订单的总体积重
     /// </summary>
     [BindNever]
+    [Obsolete]
     public decimal TotalVolumeWeight { get; set; }
 
     /// <summary>
@@ -26,6 +27,7 @@ public class LogisticsOrderGoodsPackOrderExpressListModel {
     /// 空运订单时是整个订单的实际积重
     /// </summary>
     [BindNever]
+    [Obsolete]
     public decimal TotalActualWeight { get; set; }
 
     [BindNever]
