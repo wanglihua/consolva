@@ -17,6 +17,7 @@ using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Express;
+using shunda.Service.LogisticsOrder;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
@@ -745,7 +746,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 箱号历史
         foreach (LogisticsOrderPackBoxInfo packBox in orderPackBoxList) {
-            logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Pack, loginUserId);
+            logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Pack, LogisticsOrderPackBoxStatus.Pack, LogisticsOrderPackBoxStatus.Pack, loginUserId);
         }
 
         session.Flush();
