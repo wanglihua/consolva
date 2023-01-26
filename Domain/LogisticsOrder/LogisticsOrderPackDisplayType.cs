@@ -6,12 +6,12 @@ public class LogisticsOrderPackDisplayType : CodeTypeBase {
     /// <summary>
     /// 显示分配的和未排班的
     /// </summary>
-    public static readonly LogisticsOrderPackDisplayType NotOthers = new LogisticsOrderPackDisplayType(100, "显示分配的和未排班的", "显示分配的和未排班的");
+    public static readonly LogisticsOrderPackDisplayType NotOthers = new LogisticsOrderPackDisplayType(1000, "显示分配的和未排班的", "显示分配的和未排班的");
 
     /// <summary>
     /// 只显示分配的
     /// </summary>
-    public static readonly LogisticsOrderPackDisplayType OnlyMine = new LogisticsOrderPackDisplayType(200, "只显示分配的", "只显示分配的");
+    public static readonly LogisticsOrderPackDisplayType OnlyMine = new LogisticsOrderPackDisplayType(2000, "只显示分配的", "只显示分配的");
 
     /// <summary>
     /// None

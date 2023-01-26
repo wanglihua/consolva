@@ -6,17 +6,17 @@ public class LogisticsOrderPackSortType : CodeTypeBase {
     /// <summary>
     /// 按照下单时间排序
     /// </summary>
-    public static readonly LogisticsOrderPackSortType CreateTime = new LogisticsOrderPackSortType(100, "按下单时间", "按下单时间");
+    public static readonly LogisticsOrderPackSortType CreateTime = new LogisticsOrderPackSortType(1000, "按下单时间", "按下单时间");
 
     /// <summary>
     /// 按照提交打包时间排序
     /// </summary>
-    public static readonly LogisticsOrderPackSortType SubmitPackTime = new LogisticsOrderPackSortType(200, "按提交打包时间", "按提交打包时间");
+    public static readonly LogisticsOrderPackSortType SubmitPackTime = new LogisticsOrderPackSortType(2000, "按提交打包时间", "按提交打包时间");
 
     /// <summary>
     /// 按照仓位号排序
     /// </summary>
-    public static readonly LogisticsOrderPackSortType StorageLoc = new LogisticsOrderPackSortType(300, "按仓位号", "按仓位号");
+    public static readonly LogisticsOrderPackSortType StorageLoc = new LogisticsOrderPackSortType(3000, "按仓位号", "按仓位号");
     
     /// <summary>
     /// None
