@@ -1,3 +1,4 @@
+using NHibernate.Linq;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using ISession = NHibernate.ISession;
@@ -23,6 +24,25 @@ public class ExpressRemarkService {
             .Where(e => e.Express.Id == expressId)
             .OrderBy(e => e.Id)
             .ToList();
+        return expressRemarkList;
+    }
+
+    /// <summary>
+    /// 获取订单下面的快递单列表的快递单备注
+    /// </summary>
+    public IList<ExpressRemarkInfo> GetOrderExpressRemarkList(int orderId) {
+        IList<int> expressIdList = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .Select(e => e.Id)
+            .ToList();
+
+        var expressRemarkList = session.Query<ExpressRemarkInfo>()
+            .Fetch(e => e.Express)
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .OrderBy(e => e.Express.Id)
+            .ThenBy(e => e.Id)
+            .ToList();
+
         return expressRemarkList;
     }
 }

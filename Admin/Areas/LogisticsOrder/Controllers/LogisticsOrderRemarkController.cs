@@ -7,6 +7,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Express;
 using shunda.Service.LogisticsOrder;
 using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
@@ -20,16 +21,19 @@ public class LogisticsOrderRemarkController : Controller {
     private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
     private readonly PassResService passResService;
+    private readonly ExpressRemarkService expressRemarkService;
 
     public LogisticsOrderRemarkController(ISession session,
         LoginUserService loginUserService,
         LogisticsOrderRemarkService logisticsOrderRemarkService,
-        PassResService passResService
+        PassResService passResService,
+        ExpressRemarkService expressRemarkService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
         this.passResService = passResService;
+        this.expressRemarkService = expressRemarkService;
     }
 
     [HttpPost]
@@ -111,6 +115,7 @@ public class LogisticsOrderRemarkController : Controller {
         LogisticsOrderRemarkListModel model = new LogisticsOrderRemarkListModel {
             OrderId = orderId,
             OrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId),
+            ExpressRemarkList = expressRemarkService.GetOrderExpressRemarkList(orderId),
 
             CanOrderRemarkEdit = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit),
         };

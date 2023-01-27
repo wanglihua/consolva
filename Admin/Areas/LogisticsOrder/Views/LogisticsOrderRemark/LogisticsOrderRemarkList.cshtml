@@ -1,7 +1,9 @@
 @{
     Layout = null;
 }
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Domain.LogisticsOrder
+@using shunda.Service.Express
 @model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark.LogisticsOrderRemarkListModel
 @if (Model.CanOrderRemarkEdit) {
     <div style="margin-bottom: 10px; text-align: right;">
@@ -14,6 +16,9 @@
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 90px; text-align: center;">
                 类型
+            </th>
+            <th style="width: 120px; text-align: center;">
+                快递单号
             </th>
             <th>
                 备注
@@ -30,21 +35,24 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.OrderRemarkList.Count != 0) {
+        @if (Model.OrderRemarkList.Count != 0 || Model.ExpressRemarkList.Count != 0) {
             int order = 1;
-            foreach (LogisticsOrderRemarkInfo logisticsOrderRemark in Model.OrderRemarkList) {
+            foreach (var remark in Model.OrderRemarkList) {
                 <tr>
                     <td style="text-align: center;">@(order++)</td>
                     <td style="text-align: center;">
-                        @(logisticsOrderRemark.Type.Name)
+                        @(remark.Type.Name)
+                    </td>
+                    <td style="text-align: center;">
+                        <span>订单备注</span>
                     </td>
                     <td class="break-word">
-                        @(logisticsOrderRemark.Content)
+                        @(remark.Content)
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            @if (logisticsOrderRemark.AddUser != null) {
-                                <span>@(logisticsOrderRemark.AddUser.UserName)</span>
+                            @if (remark.AddUser != null) {
+                                <span>@(remark.AddUser.UserName)</span>
                             } else {
                                 <span>-</span>
                             }
@@ -52,19 +60,51 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
-                            @(logisticsOrderRemark.CreateTime.ToString("yyyy-MM-dd HH:mm"))
+                            @(remark.CreateTime.ToString("yyyy-MM-dd HH:mm"))
                         </div>
                     </td>
                     <td style="text-align: center;">
                         @if (Model.CanOrderRemarkEdit) {
-                            <a href="javascript:deleteLogisticsOrderRemark('@(logisticsOrderRemark.Id)');">删除</a>
+                            <a href="javascript:deleteLogisticsOrderRemark('@(remark.Id)');">删除</a>
                         }
+                    </td>
+                </tr>
+            }
+
+            foreach (var remark in Model.ExpressRemarkList) {
+                <tr>
+                    <td style="text-align: center;">@(order++)</td>
+                    <td style="text-align: center;">
+                        @(remark.Type.Name)
+                    </td>
+                    <td style="text-align: center;">
+                        <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-id="@(remark.Express.Id)" asp-route-cateId="@(ExpressListMenuCate.All.Id)" target="_blank">@(remark.Express.TrackingNo)</a>
+                    </td>
+                    <td class="break-word">
+                        @(remark.Content)
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @if (remark.AddUser != null) {
+                                <span>@(remark.AddUser.UserName)</span>
+                            } else {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @(remark.CreateTime.ToString("yyyy-MM-dd HH:mm"))
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-id="@(remark.Express.Id)" asp-route-cateId="@(ExpressListMenuCate.All.Id)" target="_blank">快递单详细</a>
                     </td>
                 </tr>
             }
         } else {
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                     暂时没有数据！
                 </td>
             </tr>
