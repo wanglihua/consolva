@@ -1,11 +1,17 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark
 @using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack
-@using shunda.Domain.LogisticsOrder
 @model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderModel
 
 @{
     Layout = null;
+
+    var orderRemarkListModel = new LogisticsOrderRemarkListModel {
+        OrderId = Model.Order.Id,
+        OrderRemarkList = Model.OrderRemarkList,
+        ExpressRemarkList = Model.ExpressRemarkList,
+        CanOrderRemarkEdit = Model.CanOrderRemarkEdit
+    };    
 }
 
 <input id="orderId" type="hidden" value="@Model.Order.Id"/>
@@ -190,8 +196,8 @@
                             </td>
                             <td>
                                 <a href="javascript:document.getElementById('orderRemark').scrollIntoView(false);">
-                                    @if (Model.LogisticsOrderRemarkList != null && Model.LogisticsOrderRemarkList.Count != 0) {
-                                        <span>@(Model.LogisticsOrderRemarkList.Count)&nbsp;个</span>
+                                    @if (Model.OrderRemarkList != null && Model.OrderRemarkList.Count != 0) {
+                                        <span>@(Model.OrderRemarkList.Count)&nbsp;个</span>
                                     } else {
                                         <span>暂无</span>
                                     }
@@ -272,7 +278,7 @@
             </div>
 
             <div id="orderRemarkListWrapper">
-                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { OrderRemarkList = Model.LogisticsOrderRemarkList!, OrderId = Model.Order.Id }"/>
+                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="orderRemarkListModel"/>
             </div>
 
         </div>

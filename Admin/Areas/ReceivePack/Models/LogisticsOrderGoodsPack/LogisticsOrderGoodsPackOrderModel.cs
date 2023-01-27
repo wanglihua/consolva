@@ -28,7 +28,13 @@ public class LogisticsOrderGoodsPackOrderModel {
     public bool IsOrderPackComplete { get; set; }
 
     [BindNever]
-    public IList<LogisticsOrderRemarkInfo> LogisticsOrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
+    public IList<LogisticsOrderRemarkInfo> OrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
+
+    [BindNever]
+    public IList<ExpressRemarkInfo> ExpressRemarkList { get; set; } = new List<ExpressRemarkInfo>();
+
+    [BindNever]
+    public bool CanOrderRemarkEdit { get; set; }     
 
     /// <summary>
     /// 打包排班打包工

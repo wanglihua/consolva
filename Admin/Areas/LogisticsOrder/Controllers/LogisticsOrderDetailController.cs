@@ -115,7 +115,7 @@ public class LogisticsOrderDetailController : Controller {
             ExpressList = expressList,
             LogisticsOrderActionList = orderActionList,
 
-            CanOrderRemarkEdit = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit),
+            CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),
         };
 
         return View("LogisticsOrderDetailIndex", model);

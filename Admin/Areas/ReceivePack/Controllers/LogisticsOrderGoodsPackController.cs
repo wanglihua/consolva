@@ -18,7 +18,7 @@ using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Express;
 using shunda.Service.LogisticsOrder;
-using shunda.Service.Storage;
+using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.ReceivePack.Controllers;
@@ -28,27 +28,33 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 public class LogisticsOrderGoodsPackController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
+    private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
+    private readonly ExpressRemarkService expressRemarkService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
     private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderService logisticsOrderService;
-    private readonly WarehouseService warehouseService;
+    private readonly PassResService passResService;
 
     public LogisticsOrderGoodsPackController(ISession session,
         LoginUserService loginUserService,
+        LogisticsOrderRemarkService logisticsOrderRemarkService,
+        ExpressRemarkService expressRemarkService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
         ExpressLogService expressLogService,
         LogisticsOrderService logisticsOrderService,
-        WarehouseService warehouseService
+        PassResService passResService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
+        this.logisticsOrderRemarkService = logisticsOrderRemarkService;
+        this.expressRemarkService = expressRemarkService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
         this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
         this.expressLogService = expressLogService;
         this.logisticsOrderService = logisticsOrderService;
-        this.warehouseService = warehouseService;
+        this.passResService = passResService;
     }
 
     [HttpGet]
@@ -295,6 +301,8 @@ public class LogisticsOrderGoodsPackController : Controller {
         int? preOrderId = queryParam.OrderId;
         int warehouseId = queryParam.WarehouseId;
 
+        int loginUserId = loginUserService.GetLoginUserId();
+
         LogisticsOrderGoodsPackOrderModel model = new LogisticsOrderGoodsPackOrderModel();
         model.TrackingNoManualInputEnabled = true;
 
@@ -341,7 +349,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.OrderStatus == LogisticsOrderStatus.WaitPack));
 
             // 取当前分配给当前用户的和未分配，或者只取分配给当前用户的
-            int loginUserId = loginUserService.GetLoginUserId();
             bool isAdmin = loginUserService.IsAdmin;
 
             if (isAdmin == false) // admin 显示所有
@@ -479,11 +486,13 @@ public class LogisticsOrderGoodsPackController : Controller {
 
             model.GoodsTypeCommonPackageCount = commonPackageCount;
 
-            // todo 这里要改进包含快递单备注
-            model.LogisticsOrderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
-                .Where(e => e.Order.Id == nextOrderIdValue)
-                .OrderBy(e => e.Id)
-                .ToList();
+            // 订单备注
+            model.OrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(nextOrderIdValue);
+
+            // 快递单备注
+            model.ExpressRemarkList = expressRemarkService.GetOrderExpressRemarkList(nextOrderIdValue);
+
+            model.CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack);
 
             model.IsOrderPackComplete = logisticsOrder.OrderStatus == LogisticsOrderStatus.Packed;
 

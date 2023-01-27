@@ -58,7 +58,7 @@ public class LogisticsOrderRemarkController : Controller {
         return View("LogisticsOrderRemarkDetail", model);
     }
 
-    [AdminAuth(PassRes.LogisticsOrder.OrderRemarkEdit)]
+    [AdminAuth(PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack)]
     [HttpPost]
     [Route("/admin/logistics/order/remark/save")]
     [Transactional]
@@ -117,13 +117,13 @@ public class LogisticsOrderRemarkController : Controller {
             OrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId),
             ExpressRemarkList = expressRemarkService.GetOrderExpressRemarkList(orderId),
 
-            CanOrderRemarkEdit = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit),
+            CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),
         };
 
         return View("LogisticsOrderRemarkList", model);
     }
 
-    [AdminAuth(PassRes.LogisticsOrder.OrderRemarkEdit)]
+    [AdminAuth(PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack)]
     [HttpPost]
     [Route("/admin/logistics/order/remark/single/delete")]
     [Transactional]

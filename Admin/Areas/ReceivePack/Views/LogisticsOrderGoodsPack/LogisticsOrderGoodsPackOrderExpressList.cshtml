@@ -114,7 +114,13 @@
                                         </a>
                                     </span>
                                 </div>
-
+                                <div>
+                                    <span style="font-weight: bold;">
+                                        <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(express.Id)" target="_blank">
+                                            @express.CheckinTrackingNo
+                                        </a>
+                                    </span>
+                                </div>
                             </td>
                             <td style="text-align: center;" class="break-word">
                                 <div>
