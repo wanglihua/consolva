@@ -469,7 +469,7 @@
 
         var preSavePackSumitTime = new Date(); 
 
-        function savePack(packBoxId, goodsTypeId, continueThoseExpress) // todo 最后一个参数去掉，功能提示的也需要改掉
+        function savePack(packBoxId, goodsTypeId)
         {
             if(new Date() - preSavePackSumitTime <= 3000) { @* 3 秒内不能重复提交，一般对话框重新打开才会第二次提交 *@
                 return;
@@ -493,8 +493,7 @@
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.Height))": $("#" + packBoxId +" input.pack-height").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.Weight))": $("#" + packBoxId +" input.pack-weight").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.PackageCount))": $("#" + packBoxId +" input.pack-package-count").val(),
-                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.MultiExpressOnePack))": $("#" + packBoxId +" select.pack-multi-express-one-pack").val(),
-                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.ExpressTrackingNoList))": scannedExpressTrackingNoList[goodsTypeId],
+                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.TrackingNoList))": scannedExpressTrackingNoList[goodsTypeId],
                 },
                 success: function(data) {
                     if (data.success === false) {
@@ -509,14 +508,12 @@
                             $.msg.show(data.message);
                         }
 
-                        if(continueThoseExpress === false) {
-                            scannedExpressTrackingNoList[goodsTypeId] = []; @* 把当前物品类型的已扫描的记录清空 *@
+                        scannedExpressTrackingNoList[goodsTypeId] = []; @* 把当前物品类型的已扫描的记录清空 *@
 
-                            $("#goodsType" + goodsTypeId + " input.scanCheckbox").each(function(index, element){
-                                // console.log(element);
-                                element.checked = false;
-                            });
-                        }
+                        $("#goodsType" + goodsTypeId + " input.scanCheckbox").each(function(index, element){
+                            // console.log(element);
+                            element.checked = false;
+                        });
 
                         loadOrderPackList(goodsTypeId);
 
@@ -539,7 +536,7 @@
                         "@(nameof(LogisticsOrderGoodsPackRemovePackParam.PackId))": $("#" + packBoxId +" input.pack-id").val(),
                         "@(nameof(LogisticsOrderGoodsPackRemovePackParam.OrderId))": @(Model.Order.Id),
                         "@(nameof(LogisticsOrderGoodsPackRemovePackParam.GoodsType))": goodsTypeId,
-                        "@(nameof(LogisticsOrderGoodsPackRemovePackParam.ExpressTrackingNoList))": scannedExpressTrackingNoList[goodsTypeId]
+                        "@(nameof(LogisticsOrderGoodsPackRemovePackParam.TrackingNoList))": scannedExpressTrackingNoList[goodsTypeId]
                     },
                     success: function(data) {
                         hideMask();
@@ -591,7 +588,7 @@
                     data: {
                         "@(nameof(LogisticsOrderGoodsPackCompleteGoodsTypePackParam.OrderId))": @(Model.Order.Id),
                         "@(nameof(LogisticsOrderGoodsPackCompleteGoodsTypePackParam.GoodsType))": goodsTypeId,
-                        "@(nameof(LogisticsOrderGoodsPackCompleteGoodsTypePackParam.ExpressTrackingNoList))": scannedExpressTrackingNoList[goodsTypeId]
+                        "@(nameof(LogisticsOrderGoodsPackCompleteGoodsTypePackParam.TrackingNoList))": scannedExpressTrackingNoList[goodsTypeId]
                     },
                     success: function(data) {
                         hideMask();
@@ -663,7 +660,7 @@
                 <div>
                     <div class="huaduConfirm">
                         <i class="fa fa-question-circle fa-5x orange2"></i><br><br>
-                        是否还继续打包目前已经扫描的快递单号？
+                        是否确认保存当前打包信息？
                     </div>
 
                     <input id="packBoxIdToSavePack" type="hidden"/>
@@ -671,11 +668,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-sm" onclick="savePack($('#packBoxIdToSavePack').val(), $('#goodsTypeIdToSavePack').val(), true)">
-                    <i class="ace-icon fa fa-check"></i>保存已打包箱型，并继续打包已扫描快单号
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="savePack($('#packBoxIdToSavePack').val(), $('#goodsTypeIdToSavePack').val(), false)">
-                    <i class="ace-icon fa fa-check"></i>当前快递单号已打包完毕，扫描下一个快递单号
+                <button type="button" class="btn btn-success btn-sm" onclick="savePack($('#packBoxIdToSavePack').val(), $('#goodsTypeIdToSavePack').val())">
+                    <i class="ace-icon fa fa-check"></i>确认保存
                 </button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
                     <i class="ace-icon fa fa-times"></i>取消

@@ -29,13 +29,5 @@ public class LogisticsOrderGoodsPackSavePackParam {
     [Required(ErrorMessage = "箱数不能为空！")]
     public int? PackageCount { get; set; }
 
-    /// <summary>
-    /// 是否合箱
-    /// </summary>
-    public bool? MultiExpressOnePack { get; set; } // 后来这个值不传了，所有就总是null了
-
-    public IList<string> ExpressTrackingNoList { get; set; } = new List<string>();
-
-    [Obsolete]
-    public bool ContinueThoseExpress { get; set; }
+    public IList<string> TrackingNoList { get; set; } = new List<string>();
 }

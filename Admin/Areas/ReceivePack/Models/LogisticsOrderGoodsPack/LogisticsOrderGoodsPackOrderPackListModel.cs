@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
@@ -17,10 +16,4 @@ public class LogisticsOrderGoodsPackOrderPackListModel {
 
     [BindNever]
     public bool Repack { get; set; }
-
-    /// <summary>
-    /// 已打包的最后一项是否是合箱的
-    /// </summary>
-    [Obsolete]
-    public virtual bool? MultiExpressOnePackLastPack { get; set; }
 }

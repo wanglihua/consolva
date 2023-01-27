@@ -619,7 +619,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         UserInfo loginUser = session.Get<UserInfo>(loginUserId);
 
-        IList<string> expressTrackingNoList = param.ExpressTrackingNoList;
+        IList<string> expressTrackingNoList = param.TrackingNoList;
         if (expressTrackingNoList == null || expressTrackingNoList.Count == 0) {
             throw new ValidationException("请扫描或输入快递单号，再保存打包信息！");
         }
@@ -641,7 +641,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Select(e => e.TrackingNo)
             .ToList();
 
-        int expressCountNotInGoodsType = param.ExpressTrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
+        int expressCountNotInGoodsType = param.TrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
         if (expressCountNotInGoodsType != 0) {
             throw new ValidationException("快递单号不全属于当前订单当前物品类型！");
         }
@@ -825,7 +825,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
-        IList<string> expressTrackingNoList = param.ExpressTrackingNoList;
+        IList<string> expressTrackingNoList = param.TrackingNoList;
         if (expressTrackingNoList == null || expressTrackingNoList.Count == 0) {
             throw new ValidationException("请扫描或输入快递单号，再移除打包信息！");
         }
@@ -850,7 +850,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Select(e => e.TrackingNo)
             .ToList();
 
-        int expressCountNotInGoodsType = param.ExpressTrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
+        int expressCountNotInGoodsType = param.TrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
         if (expressCountNotInGoodsType != 0) {
             throw new ValidationException("快递单号不全属于当前物品类型！");
         }

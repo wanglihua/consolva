@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Storage;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
@@ -7,15 +6,6 @@ namespace shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 public class LogisticsOrderGoodsPackIndexModel {
     [BindNever]
     public WarehouseInfo Warehouse { get; set; } = new();
-
-    [BindNever]
-    [Obsolete]
-    public IList<LogisticsOrderPackPrintType> PrintTypeList { get; set; } = LogisticsOrderPackPrintType.GetList();
-
-    [BindNever]
-    [Obsolete]
-    public LogisticsOrderPackPrintType PrintTypeSelected { get; set; } = LogisticsOrderPackPrintType.None;
-
 
 #if DEBUG
     public bool Debug { get; } = true;

@@ -12,5 +12,5 @@ public class LogisticsOrderGoodsPackCompleteGoodsTypePackParam {
     [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
     public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
-    public IList<string> ExpressTrackingNoList { get; set; } = new List<string>();
+    public IList<string> TrackingNoList { get; set; } = new List<string>();
 }
