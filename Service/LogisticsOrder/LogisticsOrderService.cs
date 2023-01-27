@@ -10,7 +10,7 @@ public class LogisticsOrderService {
     public LogisticsOrderService(ISession session) {
         this.session = session;
     }
-
+    
     public void CompleteOrderPackManual(int orderId) {
         // todo 完成
     }
