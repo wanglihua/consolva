@@ -1,5 +1,6 @@
 using System.Data;
 using System.Reflection;
+using System.Xml.Serialization;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -20,7 +21,7 @@ using NHibernate.Driver;
 namespace shunda.Core.Hibernate;
 
 public class HibernateSessionFactory {
-    private static readonly string mappingClassNameSuffix = "InfoMapping";
+    private static readonly string MAPPING_CLASS_NAME_SUFFIX = "InfoMapping";
 
     private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes) {
         return BuildConfiguration(dataBaseType, mappingTypes, null);
@@ -114,7 +115,7 @@ public class HibernateSessionFactory {
         }
 
         if (mappingAssembly != null) {
-            mapper.AddMappings(mappingAssembly.GetTypes().Where(t => t.Name.EndsWith(mappingClassNameSuffix)));
+            mapper.AddMappings(mappingAssembly.GetTypes().Where(t => t.Name.EndsWith(MAPPING_CLASS_NAME_SUFFIX)));
         }
 
         HbmMapping domainMapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
@@ -126,8 +127,7 @@ public class HibernateSessionFactory {
         return configuration;
     }
 
-    public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, Assembly mappingAssembly)
-    {
+    public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, Assembly mappingAssembly) {
         var configuration = BuildConfiguration(dataBaseType, mappingAssembly);
         return configuration.BuildSessionFactory();
     }
