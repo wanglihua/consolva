@@ -19,28 +19,23 @@ using NHibernate.Driver;
 
 namespace shunda.Core.Hibernate;
 
-public class HibernateSessionFactory
-{
+public class HibernateSessionFactory {
     private static readonly string mappingClassNameSuffix = "InfoMapping";
 
-    private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes)
-    {
+    private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes) {
         return BuildConfiguration(dataBaseType, mappingTypes, null);
     }
 
-    private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, Assembly mappingAssembly)
-    {
+    private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, Assembly mappingAssembly) {
         return BuildConfiguration(dataBaseType, new List<Type>(), mappingAssembly);
     }
 
-    private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes, Assembly? mappingAssembly)
-    {
+    private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes, Assembly? mappingAssembly) {
         Configuration configuration = new Configuration();
 
         configuration.DataBaseIntegration(
             cfg => {
-                if (dataBaseType == DataBaseConfig.DataBaseType.MySQL)
-                {
+                if (dataBaseType == DataBaseConfig.DataBaseType.MySQL) {
                     cfg.ConnectionString = DataBaseConfig.MySQLConnectionString;
                     cfg.Dialect<MySQL55InnoDBDialect>();
 #if DEBUG
@@ -51,8 +46,7 @@ public class HibernateSessionFactory
 #endif
                 }
 
-                if (dataBaseType == DataBaseConfig.DataBaseType.SQLite)
-                {
+                if (dataBaseType == DataBaseConfig.DataBaseType.SQLite) {
                     cfg.ConnectionString = DataBaseConfig.SQLiteConnectionString;
                     cfg.Dialect<SQLiteDialect>();
 #if DEBUG
@@ -115,13 +109,11 @@ public class HibernateSessionFactory
         // use NHibernate.Mapping.ByCode;
         ModelMapper mapper = new ModelMapper();
 
-        if (mappingTypes != null)
-        {
+        if (mappingTypes != null) {
             mapper.AddMappings(mappingTypes);
         }
 
-        if (mappingAssembly != null)
-        {
+        if (mappingAssembly != null) {
             mapper.AddMappings(mappingAssembly.GetTypes().Where(t => t.Name.EndsWith(mappingClassNameSuffix)));
         }
 
@@ -140,14 +132,12 @@ public class HibernateSessionFactory
         return configuration.BuildSessionFactory();
     }
 
-    public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes)
-    {
+    public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes) {
         var configuration = BuildConfiguration(dataBaseType, mappingTypes);
         return configuration.BuildSessionFactory();
     }
 
-    private static ISessionFactory BuildSessionFactoryFromConfigration(Configuration configuration)
-    {
+    private static ISessionFactory BuildSessionFactoryFromConfigration(Configuration configuration) {
         return configuration.BuildSessionFactory();
     }
 
@@ -156,8 +146,7 @@ public class HibernateSessionFactory
     /// </summary>
     /// <param name="mappingTypes"></param>
     /// <returns></returns>
-    public static ISession CreateTablesAndOpenSession(IEnumerable<Type> mappingTypes)
-    {
+    public static ISession CreateTablesAndOpenSession(IEnumerable<Type> mappingTypes) {
         NLogConfiguration.Config();
 
         var cfg = BuildConfiguration(DataBaseConfig.DataBaseType.SQLite, mappingTypes);
@@ -176,8 +165,7 @@ public class HibernateSessionFactory
     /// </summary>
     /// <param name="mappingAssembly"></param>
     /// <returns></returns>
-    public static ISession CreateTablesAndOpenSession(Assembly mappingAssembly)
-    {
+    public static ISession CreateTablesAndOpenSession(Assembly mappingAssembly) {
         NLogConfiguration.Config();
 
         var cfg = BuildConfiguration(DataBaseConfig.DataBaseType.SQLite, mappingAssembly);
@@ -191,8 +179,7 @@ public class HibernateSessionFactory
         return session;
     }
 
-    public static ISession OpenSession(ISessionFactory sessionFactory)
-    {
+    public static ISession OpenSession(ISessionFactory sessionFactory) {
         ISession session = sessionFactory.OpenSession(); // configuration.SetInterceptor(new HibernateInterceptor()); 中配置了 HibernateInterceptor
         // session.DefaultReadOnly = true; 这个不能加上，否则 更新数据 会不成功
 

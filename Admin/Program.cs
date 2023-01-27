@@ -19,10 +19,8 @@ using StackExchange.Profiling;
 
 namespace shunda.Admin;
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
+public class Program {
+    public static void Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
         builder.WebHost
             .UseUrls("http://*:9001")
@@ -101,15 +99,10 @@ public class Program
         ServiceUtil.AddAssemblyService(services, typeof(Program).Assembly);
 
         // 必须 Singleton
-        services.AddSingleton(provider =>
-            HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly)
-        );
+        services.AddSingleton(provider => HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly));
 
         // 必须 Scoped 
-        services.AddScoped(provider => {
-                return HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!);
-            }
-        );
+        services.AddScoped(provider => HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!));
 
 #if DEBUG
         services.AddMiniProfiler(options => {
