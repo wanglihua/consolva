@@ -119,7 +119,7 @@
 
         showMask("加载中...");
         $.ajax({
-            url: '@Url.Action("Detail", "LogisticsOrderRemark")',
+            url: '@Url.Action("Detail", "LogisticsOrderRemark", new { Area = "LogisticsOrder" })',
             type: "POST",
             data: { "orderId": "@(Model.OrderId)" },
             success: function(data) {
@@ -141,7 +141,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Save", "LogisticsOrderRemark")',
+                url: '@Url.Action("Save", "LogisticsOrderRemark", new { Area = "LogisticsOrder" })',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -163,7 +163,7 @@
     function loadLogisticsOrderRemarkList() {
         showMask("加载中...");
         $.ajax({
-            url: '@Url.Action("OrderRemarkList", "LogisticsOrderRemark")',
+            url: '@Url.Action("OrderRemarkList", "LogisticsOrderRemark", new { Area = "LogisticsOrder" })',
             type: "POST",
             data: { "orderId": "@(Model.OrderId)" },
             success: function(data) {
@@ -182,7 +182,7 @@
         $.msg.confirm("确认要删除订单备注吗？", function() {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("SingleDelete", "LogisticsOrderRemark")',
+                url: '@Url.Action("SingleDelete", "LogisticsOrderRemark", new { Area = "LogisticsOrder" })',
                 type: "POST",
                 data: { "id": id },
                 success: function(data) {
