@@ -16,6 +16,9 @@ public class LogisticsOrderDetailIndexModel {
     public IList<LogisticsOrderRemarkInfo> OrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
 
     [BindNever]
+    public IList<ExpressRemarkInfo> ExpressRemarkList { get; set; } = new List<ExpressRemarkInfo>();    
+
+    [BindNever]
     public LogisticsOrderReceiveAddressInfo ReceiveAddress { get; set; } = new();
 
     [BindNever]

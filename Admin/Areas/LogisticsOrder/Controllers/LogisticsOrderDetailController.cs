@@ -21,18 +21,21 @@ public class LogisticsOrderDetailController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
+    private readonly ExpressRemarkService expressRemarkService;
     private readonly ExpressService expressService;
     private readonly PassResService passResService;
 
     public LogisticsOrderDetailController(ISession session,
         LoginUserService loginUserService,
         LogisticsOrderRemarkService logisticsOrderRemarkService,
+        ExpressRemarkService expressRemarkService,
         ExpressService expressService,
         PassResService passResService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
+        this.expressRemarkService = expressRemarkService;
         this.expressService = expressService;
         this.passResService = passResService;
     }
@@ -65,7 +68,10 @@ public class LogisticsOrderDetailController : Controller {
         }
 
         // 订单备注
-        var logisticsOrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
+        var orderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
+
+        // 快递单备注
+        var expressRemarkList = expressRemarkService.GetOrderExpressRemarkList(orderId);
 
         // 收货地址
         var receiveAddress = session.Query<LogisticsOrderReceiveAddressInfo>()
@@ -102,7 +108,8 @@ public class LogisticsOrderDetailController : Controller {
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             LogisticsOrder = order,
-            OrderRemarkList = logisticsOrderRemarkList,
+            OrderRemarkList = orderRemarkList,
+            ExpressRemarkList = expressRemarkList,
             ReceiveAddress = receiveAddress,
             SendAddress = sendAddress,
             ExpressList = expressList,

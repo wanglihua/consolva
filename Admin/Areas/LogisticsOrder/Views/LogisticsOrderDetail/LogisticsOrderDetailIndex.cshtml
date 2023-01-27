@@ -9,6 +9,12 @@
 @{
     ViewData[ViewDataKey.Title] = "订单详细";
     Layout = "_AdminLayout";
+
+    var orderRemarkListModel = new LogisticsOrderRemarkListModel {
+        OrderId = Model.LogisticsOrder.Id,
+        OrderRemarkList = Model.OrderRemarkList,
+        CanOrderRemarkEdit = Model.CanOrderRemarkEdit
+    };
 }
 
 @section Breadcrumb {
@@ -285,7 +291,7 @@
                         <div id="panelRemark" style="display: none;">
                             <div class="row">
                                 <div id="orderRemarkListWrapper">
-                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="new LogisticsOrderRemarkListModel() { OrderRemarkList = Model.OrderRemarkList, OrderId = Model.LogisticsOrder.Id, CanOrderRemarkEdit = Model.CanOrderRemarkEdit }"/>
+                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="orderRemarkListModel"/>
                                 </div>
                             </div>
                         </div>
