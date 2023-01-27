@@ -1,3 +1,4 @@
+using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Core.Util;
@@ -9,7 +10,6 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
 using shunda.Service.Express;
 using shunda.Service.Logistics;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
 
@@ -22,6 +22,7 @@ public class LogisticsOrderCreateService {
     private readonly LogisticsOrderStorageLocService logisticsOrderStorageLocService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
+    private readonly LogisticsOrderPackService logisticsOrderPackService;
 
     public LogisticsOrderCreateService(ISession session,
         LogisticsOrderCodeService logisticsOrderCodeService,
@@ -29,7 +30,8 @@ public class LogisticsOrderCreateService {
         LogisticsGoodsTypeService logisticsGoodsTypeService,
         LogisticsOrderStorageLocService logisticsOrderStorageLocService,
         ExpressLogService expressLogService,
-        LogisticsOrderActionService logisticsOrderActionService
+        LogisticsOrderActionService logisticsOrderActionService,
+        LogisticsOrderPackService logisticsOrderPackService
     ) {
         this.session = session;
         this.logisticsOrderCodeService = logisticsOrderCodeService;
@@ -38,8 +40,12 @@ public class LogisticsOrderCreateService {
         this.logisticsOrderStorageLocService = logisticsOrderStorageLocService;
         this.expressLogService = expressLogService;
         this.logisticsOrderActionService = logisticsOrderActionService;
+        this.logisticsOrderPackService = logisticsOrderPackService;
     }
 
+    /// <summary>
+    /// 创建订单
+    /// </summary>
     public LogisticsOrderInfo CreateOrder(int customerId) {
         var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) {
@@ -283,6 +289,20 @@ public class LogisticsOrderCreateService {
         }
 
         session.Flush();
+
+        return order;
+    }
+
+    /// <summary>
+    /// 创建订单并提交打包
+    /// </summary>
+    public LogisticsOrderInfo CreateOrderAndSubmitPack(int customerId) {
+        // 创建订单
+        var order = CreateOrder(customerId);
+
+        // 提交打包
+        int orderId = order.Id;
+        logisticsOrderPackService.SubmitPack(orderId, customerId);
 
         return order;
     }

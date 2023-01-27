@@ -28,6 +28,7 @@ public class LogisticsOrderPackService {
 
     /// <summary>
     /// 客户提交订单打包
+    /// 现在是订单创建时就提交打包了
     /// <param name="orderId">订单id</param>
     /// <param name="customerId">操作客户</param>
     /// </summary>
