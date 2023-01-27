@@ -138,7 +138,7 @@
 
     function saveLogisticsOrderRemark() {
         var form = $("#logisticsOrderRemarkDetailForm");
-        var valid = validate(form);                                
+        var valid = validate(form);        
         if (valid) {
             showMask("提交中...");
             $.ajax({
@@ -154,7 +154,6 @@
 
                     $.msg.show(data.message);
                     $('#logisticsOrderRemarkDetailDialog').modal('hide');
-                    $("#logisticsOrderRemarkDetailDialogWrapper").html("");
                     loadLogisticsOrderRemarkList();
                 }
             });

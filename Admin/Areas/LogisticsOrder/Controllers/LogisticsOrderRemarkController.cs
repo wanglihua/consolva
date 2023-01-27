@@ -49,7 +49,7 @@ public class LogisticsOrderRemarkController : Controller {
         LogisticsOrderRemarkInfo logisticsOrderRemark = new LogisticsOrderRemarkInfo();
 
         LogisticsOrderRemarkDetailModel model = new LogisticsOrderRemarkDetailModel {
-            Id = logisticsOrderRemark.Id,
+            RemarkId = logisticsOrderRemark.Id,
             Content = logisticsOrderRemark.Content,
             OrderId = orderId,
             OrderCode = order.Code,
@@ -73,7 +73,7 @@ public class LogisticsOrderRemarkController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
-        int logisticsOrderRemarkId = model.Id;
+        int logisticsOrderRemarkId = model.RemarkId;
 
         bool isCreate = logisticsOrderRemarkId == 0;
 

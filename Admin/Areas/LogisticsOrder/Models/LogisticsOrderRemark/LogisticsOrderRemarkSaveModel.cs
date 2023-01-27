@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark;
 
 public class LogisticsOrderRemarkSaveModel {
-    public int Id { get; set; }
+    public int RemarkId { get; set; }
 
     [Required(ErrorMessage = "订单不能为空！")]
     public int OrderId { get; set; }
