@@ -23,7 +23,7 @@
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">目的港</a>
+                    <a field="@(nameof(LogisticsOrderInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">目的国家</a>
                 </div>
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.Customer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">客户ID</a>
@@ -62,7 +62,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.OrderList != null && Model.OrderList.Count() != 0) {
+        @if (Model.OrderList.Count != 0) {
             int order = 1;
             foreach (LogisticsOrderInfo logisticsOrder in Model.OrderList) {
                 <tr>

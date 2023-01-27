@@ -275,5 +275,18 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
                 map.NotNullable(false);
             }
         );
+
+        Bag(
+            e => e.PackSchedules,
+            mapper => {
+                mapper.Key(k => k.Column("order_id"));
+                mapper.Inverse(true);
+                mapper.Cascade(Cascade.None);
+                mapper.Fetch(CollectionFetchMode.Select);
+            },
+            relation => relation.OneToMany(
+                mapping => mapping.Class(typeof(LogisticsOrderPackScheduleInfo))
+            )
+        );
     }
 }
