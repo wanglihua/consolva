@@ -8,7 +8,7 @@
 <label for="firstLogisticsModeQuery">头程物流</label>&nbsp;
 <select id="firstLogisticsModeQuery" name="firstLogisticsModeQuery" style="width: 250px; height: 30px;">
     <option value="0">头程物流</option>
-    @foreach (var mode in Model.FirstLogisticsModeList)
+    @foreach (var mode in Model.FirstModeList)
     {
         <option value="@mode.Id">@mode.Name</option>
     }

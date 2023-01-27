@@ -9,6 +9,7 @@ using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
@@ -64,19 +65,6 @@ public class LogisticsOrderGoodsPackController : Controller {
         return View("LogisticsOrderGoodsPackIndex", model);
     }
 
-    // todo a 移除
-    [Obsolete]
-    [HttpPost]
-    [Route("/admin/logistics/order/goods/pack/save/print/type")]
-    public IActionResult SavePrintType(int warehouseId, int printTypeId) {
-        int loginUserId = loginUserService.GetLoginUserId();
-
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "操作成功！" }
-        });
-    }
-
     /// <summary>
     /// 这个是选择订单的对话框
     /// </summary>
@@ -96,48 +84,47 @@ public class LogisticsOrderGoodsPackController : Controller {
         orderStatusList.Add(LogisticsOrderStatus.Packed);
 
         LogisticsOrderGoodsPackListDialogModel model = new LogisticsOrderGoodsPackListDialogModel();
+        model.CountryList = Country.GetNoChinaList();
         model.Warehouse = warehouse;
         model.OrderStatusList = orderStatusList;
 
-        var firstLogisticsModeTypeList = LogisticsModeType.GetList();
-        model.FirstLogisticsModeTypeList = firstLogisticsModeTypeList;
+        var firstModeTypeList = LogisticsModeType.GetList();
+        model.FirstModeTypeList = firstModeTypeList;
 
-        model.FirstLogisticsModeList = session.Query<LogisticsModeInfo>()
+        model.FirstModeList = session.Query<LogisticsModeInfo>()
             .Where(e => e.Cate == LogisticsModeCate.Customer
-                        && firstLogisticsModeTypeList.Contains(e.Type)
+                        && firstModeTypeList.Contains(e.Type)
                         && e.InnerStatus != LogisticsModeStatus.Disabled)
             .OrderBy(e => e.Name)
             .ToList();
-
-        model.ReceivingWarehouseList = warehouseService.GetWarehouseListForAdmin();
 
         model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();
 
         return View("LogisticsOrderGoodsPackListDialog", model);
     }
 
-    [Obsolete("换成按国家选择物流方式")]
     [HttpPost]
-    [Route("/admin/logistics/order/goods/pack/list/first/logistics/mode/select")]
-    public IActionResult ListQueryFirstLogisticsModeSelect(int targetWarehouseId) {
+    [Route("/admin/logistics/order/goods/pack/list/first/mode/select")]
+    public IActionResult ListQueryFirstModeSelect(int countryId) {
+        Country country = Country.GetById(countryId);
+
         LogisticsOrderGoodsPackListDialogModel model = new LogisticsOrderGoodsPackListDialogModel();
 
-        var firstLogisticsModeTypeList = LogisticsModeType.GetList();
-
+        var firstModeTypeList = LogisticsModeType.GetList();
         var query = session.Query<LogisticsModeInfo>()
             .Where(e => e.Cate == LogisticsModeCate.Customer
-                        && firstLogisticsModeTypeList.Contains(e.Type)
+                        && firstModeTypeList.Contains(e.Type)
                         && e.InnerStatus != LogisticsModeStatus.Disabled);
 
-        if (targetWarehouseId != 0) {
-            query = query.Where(e => e.Warehouse.Id == targetWarehouseId);
+        if (country != Country.None) {
+            query = query.Where(e => e.Country == country);
         }
 
-        model.FirstLogisticsModeList = query
+        model.FirstModeList = query
             .OrderBy(e => e.Name)
             .ToList();
 
-        return View("LogisticsOrderGoodsPackListQueryFirstLogisticsModeSelect", model);
+        return View("LogisticsOrderGoodsPackListQueryFirstModeSelect", model);
     }
 
     /// <summary>
@@ -271,8 +258,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Code).IsInsensitiveLike(orderCodeQuery, MatchMode.Anywhere));
         }
 
-        if (queryParam.FirstLogisticsModeIdQuery != 0) {
-            int firstModeIdQuery = queryParam.FirstLogisticsModeIdQuery;
+        if (queryParam.FirstModeIdQuery != 0) {
+            int firstModeIdQuery = queryParam.FirstModeIdQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.FirstMode.Id == firstModeIdQuery));
         }
 

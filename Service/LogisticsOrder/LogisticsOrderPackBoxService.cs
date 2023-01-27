@@ -93,13 +93,13 @@ public class LogisticsOrderPackBoxService {
     /// <summary>
     /// 解析订单打包箱子唯一编号
     /// </summary>
-    public LogisticsOrderPackBoxInfo ParseBoxCode(string boxCode, bool throwException = true) {
+    public LogisticsOrderPackBoxInfo? ParseBoxCode(string boxCode, bool throwException = true) {
         if (string.IsNullOrWhiteSpace(boxCode)) {
             if (throwException) {
                 throw new ValidationException("箱号不能为空！");
-            } else {
-                return new LogisticsOrderPackBoxInfo();
             }
+
+            return null;
         }
 
         boxCode = boxCode.Trim();
@@ -114,9 +114,9 @@ public class LogisticsOrderPackBoxService {
             {
                 if (throwException) {
                     throw new ValidationException("箱号格式不准确！");
-                } else {
-                    return new LogisticsOrderPackBoxInfo();
                 }
+
+                return null;
             }
 
             if (indexOfHashTag < 0 || indexOfHashTag == 0) // 没有 # 号，或者 # 号在首位
@@ -129,25 +129,25 @@ public class LogisticsOrderPackBoxService {
                 if (split.Length != 2) {
                     if (throwException) {
                         throw new ValidationException("箱号格式不准确！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 if (int.TryParse(split[0]?.Trim(), out int orderId) == false) {
                     if (throwException) {
                         throw new ValidationException("箱号格式不准确！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 if (int.TryParse(split[1]?.Trim(), out int boxNum) == false) {
                     if (throwException) {
                         throw new ValidationException("箱号格式不准确！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 var orderPackBox = session.Query<LogisticsOrderPackBoxInfo>()
@@ -158,47 +158,48 @@ public class LogisticsOrderPackBoxService {
                 if (orderPackBox == null) {
                     if (throwException) {
                         throw new ValidationException("箱号不存在！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 return orderPackBox;
             } else {
+                // 这里的 shunda系统基本已经不用
                 // 原来的 长箱号，短箱号 逻辑
 
                 string[] split1 = boxCode.Split("#");
                 if (split1.Length != 2) {
                     if (throwException) {
                         throw new ValidationException("箱号格式不准确！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 if (int.TryParse(split1[0]?.Trim(), out int orderPackId) == false) {
                     if (throwException) {
                         throw new ValidationException("箱号格式不准确！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 string[] split2 = split1[1].Split("@");
                 if (split2.Length != 2) {
                     if (throwException) {
                         throw new ValidationException("箱号格式不准确！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 if (int.TryParse(split2[1]?.Trim(), out int boxNum) == false) {
                     if (throwException) {
                         throw new ValidationException("箱号格式不准确！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
 
@@ -207,9 +208,9 @@ public class LogisticsOrderPackBoxService {
                 if (orderPack == null) {
                     if (throwException) {
                         throw new ValidationException("箱号不存在！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 string orderInfoInBoxCode = split2[0];
@@ -220,9 +221,9 @@ public class LogisticsOrderPackBoxService {
                 {
                     if (throwException) {
                         throw new ValidationException("箱号不存在！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 // 检查 orderPack Id 和 箱序号配对
@@ -234,9 +235,9 @@ public class LogisticsOrderPackBoxService {
                 if (orderPackBox == null) {
                     if (throwException) {
                         throw new ValidationException("箱号不存在！");
-                    } else {
-                        return null;
                     }
+
+                    return null;
                 }
 
                 return orderPackBox;
@@ -266,9 +267,9 @@ public class LogisticsOrderPackBoxService {
             if (boxCode.Length <= 4) {
                 if (throwException) {
                     throw new ValidationException("箱号格式不准确！");
-                } else {
-                    return null;
                 }
+
+                return null;
             }
 
             /* 这里有个过渡期，过渡期内的箱号格式可能是 2021032710010001
@@ -283,9 +284,9 @@ public class LogisticsOrderPackBoxService {
             {
                 if (throwException) {
                     throw new ValidationException("箱号格式不准确！");
-                } else {
-                    return null;
                 }
+
+                return null;
             }
 
             string orderCode = boxCode.Substring(0, boxCode.Length - 4);
@@ -305,9 +306,9 @@ public class LogisticsOrderPackBoxService {
             if (order == null) {
                 if (throwException) {
                     throw new ValidationException("箱号不存在！");
-                } else {
-                    return null;
                 }
+
+                return null;
             }
 
             int orderId = order.Id;
@@ -319,9 +320,9 @@ public class LogisticsOrderPackBoxService {
             if (packBox == null) {
                 if (throwException) {
                     throw new ValidationException("箱号不存在！");
-                } else {
-                    return null;
                 }
+
+                return null;
             }
 
             return packBox;

@@ -68,24 +68,6 @@
             }
         </script>
     </div>
-    <span>&nbsp;&nbsp;</span>
-    <label for="printType">打印标签类型</label>
-    <select id="printType" style="height: 32px; width: 165px;" class="input-sm" onchange="savePrintType()">
-
-        <option value="">请选择打印标签类型</option> @* 这个选项就不取 0 了，而是空值，0 留给物流方式里面设置的不打印了 *@
-        @foreach (LogisticsOrderPackPrintType printType in Model.PrintTypeList)
-        {
-            if (Model.PrintTypeSelected == printType)
-            {
-                <option value="@(printType.Id)" selected="selected">@(printType.Name)</option>
-            }
-            else
-            {
-                <option value="@(printType.Id)">@(printType.Name)</option>
-            }
-        }
-
-    </select>
 </div>
 
 <div id="packOrderWrapper"></div>
@@ -131,23 +113,6 @@
     $(function() {
         getPackOrder();
     });
-    
-    function savePrintType() {
-        
-        var printTypeId = $("#printType").val();
-        
-        $.ajax({
-            url: '@Url.Action("SavePrintType", "LogisticsOrderGoodsPack")',
-            type: "POST",
-            data: { 
-                "warehouseId": '@Model.Warehouse?.Id',
-                "printTypeId": printTypeId
-            },
-            success: function(data) {
-                // 静静地保存
-            }
-        });        
-    }
 
     function showOrderListDialog() {
         $("#orderListDialogWrapper").html("");
@@ -236,7 +201,7 @@
                 '@(nameof(LogisticsOrderGoodsPackListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
                 '@(nameof(LogisticsOrderGoodsPackListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
                 '@(nameof(LogisticsOrderGoodsPackListQueryParam.TargetWarehouseIdQuery))': $('#targetWarehouseIdQuery').val(),
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.FirstLogisticsModeIdQuery))': $('#firstLogisticsModeQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackListQueryParam.FirstModeIdQuery))': $('#firstLogisticsModeQuery').val(),
                 '@(nameof(LogisticsOrderGoodsPackListQueryParam.GoodsTypeQuery))': $('#goodsTypeQuery').val(),
                 '@(nameof(LogisticsOrderGoodsPackListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
                 '@(nameof(LogisticsOrderGoodsPackListQueryParam.EndDateQuery))': $('#endDateQuery').val(),                

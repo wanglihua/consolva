@@ -2,7 +2,6 @@
 @using shunda.Core
 @using shunda.Domain.Logistics
 @using shunda.Domain.LogisticsOrder
-@using shunda.Domain.Storage
 @model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackListDialogModel
 
 @{
@@ -28,28 +27,17 @@
                             }
                         </select> &nbsp;
 
-                        @*
-                        <label for="receivingWarehouseIdQuery">收货仓</label>&nbsp;
-                        <select id="receivingWarehouseIdQuery" name="receivingWarehouseIdQuery" style="width: 120px; height: 30px;">
-                            <option value="0">收货仓</option>
-                            @foreach (WarehouseInfo warehouse in Model.ReceivingWarehouseList)
-                            {
-                                <option value="@warehouse.Id">@warehouse.Name</option>
-                            }
-                        </select>&nbsp;
-                        *@
-
-                        <label for="targetWarehouseIdQuery">目的仓</label>&nbsp;
-                        <select id="targetWarehouseIdQuery" name="targetWarehouseIdQuery" style="width: 120px; height: 30px;" onchange="onTargetWarehouseSelectChange()">
-                            <option value="0">目的仓</option>
-                            @foreach (WarehouseInfo warehouse in Model.TargetWarehouseList) {
-                                <option value="@warehouse.Id">@warehouse.Name</option>
+                        <label for="countryQuery">目的国家</label>&nbsp;
+                        <select id="countryQuery" style="width: 120px; height: 30px;" onchange="onCountrySelectChange()">
+                            <option value="0">目的国家</option>
+                            @foreach (var country in Model.CountryList) {
+                                <option value="@country.Id">@country.Name</option>
                             }
                         </select>&nbsp;
 
                         @*
-                        <label for="firstLogisticsModeTypeQuery">头程方式</label>&nbsp;
-                        <select id="firstLogisticsModeTypeQuery" name="firstLogisticsModeTypeQuery" style="width: 150px; height: 30px;">
+                        <label for="firstModeTypeQuery">头程方式</label>&nbsp;
+                        <select id="firstModeTypeQuery" name="firstModeTypeQuery" style="width: 150px; height: 30px;">
                             <option value="0">头程方式</option>
                             @foreach (LogisticsModeType modeType in Model.FirstLogisticsModeTypeList)
                             {
@@ -57,8 +45,8 @@
                             }
                         </select>&nbsp;
                         *@
-                        <span id="firstLogisticsModeSelectWrapper">
-                            <partial name="LogisticsOrderGoodsPackListQueryFirstLogisticsModeSelect" model="Model"/>
+                        <span id="firstModeSelectWrapper">
+                            <partial name="LogisticsOrderGoodsPackListQueryFirstModeSelect" model="Model"/>
                         </span>
                     </div>
                     <div>
@@ -140,19 +128,19 @@
         getPackOrder(orderId);
     }
     
-    function onTargetWarehouseSelectChange() {
+    function onCountrySelectChange() {
         $.ajax({
-            url: '@Url.Action("ListQueryFirstLogisticsModeSelect", "LogisticsOrderGoodsPack")',
+            url: '@Url.Action("ListQueryFirstModeSelect", "LogisticsOrderGoodsPack")',
             type: "POST",
             data: {
-                "targetWarehouseId": $("#targetWarehouseIdQuery").val()
+                "CountryQuery": $("#countryQuery").val()
             },
             success: function(data) {
                 if (data.success === false) {
                     $.msg.error(data.message);
                 } 
                 
-                $("#firstLogisticsModeSelectWrapper").html(data);
+                $("#firstModeSelectWrapper").html(data);
             }
         });
     }

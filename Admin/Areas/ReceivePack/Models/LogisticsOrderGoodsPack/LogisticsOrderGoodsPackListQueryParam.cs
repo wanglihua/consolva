@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Core;
+using shunda.Domain;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 
@@ -23,19 +24,14 @@ public class LogisticsOrderGoodsPackListQueryParam : ListQueryParam {
     [ModelBinder(typeof(LogisticsOrderStatusModelBinder))]
     public LogisticsOrderStatus? OrderStatusQuery { get; set; }
 
-    [Obsolete]
-    // 这个不需要查询的，收货仓库已经是确定了的
-    public int ReceivingWarehouseIdQuery { get; set; }
+    [ModelBinder(typeof(CountryModelBinder))]
+    public Country? CountryQuery { get; set; }
 
     [Obsolete]
-    public int TargetWarehouseIdQuery { get; set; }
-
-    // 这个也不需要查询的，头程物流方式也已经是固定了的
     [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
-    public LogisticsModeType? FirstLogisticsModeTypeQuery { get; set; }
+    public LogisticsModeType? FirstModeTypeQuery { get; set; }
 
-    // todo a 改名
-    public int FirstLogisticsModeIdQuery { get; set; }
+    public int FirstModeIdQuery { get; set; }
 
     [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
     public LogisticsGoodsType? GoodsTypeQuery { get; set; }
