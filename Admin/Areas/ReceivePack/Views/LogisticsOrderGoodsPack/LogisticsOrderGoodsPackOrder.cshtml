@@ -68,33 +68,6 @@
     </style>
     <div style="width: 980px;">
         <div style="margin-top: 20px;">
-            @if (Model.IsOrderExpressWeightFitMode == false) {
-                <div>
-                    <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
-                        <i class="fa fa-warning" style="color:red;"></i>
-                        <span>当前订单快递单号实际重或体积重跟订单选定的头程物流方式重量限制不匹配，请重新更改为正确头程物流方式后再打包！</span>
-                    </div>
-                </div>
-            }
-
-            @if (Model.WoodFrameNotDone) {
-                <div>
-                    <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
-                        <i class="fa fa-warning" style="color:red;"></i>
-                        <span>当前快递单号有未完成的打木架服务，请先完成打木架再保存打包！</span>
-                    </div>
-                </div>
-            }
-
-            @if (Model.BarkCleanNotDone) {
-                <div>
-                    <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
-                        <i class="fa fa-warning" style="color:red;"></i>
-                        <span>当前快递单号有未完成的清理树皮杂物服务，请先完成清理树皮杂物再保存打包！</span>
-                    </div>
-                </div>
-            }
-
             <div id="orderDetailWrapper" style="width: 980px; z-index: 1000">
                 <table id="orderDetail" class="data-list-table table table-bordered" style="box-shadow: 0 0 2px rgba(0,0,0,.14), 0 2px 4px rgba(0,0,0,.28);">
                     <tbody>
@@ -132,15 +105,6 @@
                                 增值服务
                             </td>
                             <td style="width: 259px; font-size: 10px;" class="break-word">
-                                @if (Model.WoodFrame) {
-                                    <span>打木架</span>
-                                }
-                                @if (Model.WoodFrame && Model.BarkClean) {
-                                    <sapn>, </sapn>
-                                }
-                                @if (Model.BarkClean) {
-                                    <span>清理树皮杂物</span>
-                                }
                             </td>
                         </tr>
                         <tr>
@@ -176,7 +140,6 @@
                             <td>
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
-                                    @(Model.GoodsTypeRestrictPackageCount)
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>
@@ -197,7 +160,6 @@
                             <td>
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
-                                    @(Model.GoodsTypeBambooPackageCount)
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>
@@ -209,7 +171,6 @@
                             <td class="break-word">
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
-                                    @Model.GoodsTypeRestrictBambooPackageCount
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>
@@ -221,7 +182,6 @@
                             <td class="break-word">
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
-                                    @Model.GoodsTypeSpecialPackageCount
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>
@@ -285,20 +245,14 @@
 
             </script>
             @{
-                    @* 空运和快递订单时，物品类型合并 *@
-                decimal totalVolumeWeight = 0;
-                decimal totalWeight = 0;
                 var orderExpressListModel = new LogisticsOrderGoodsPackOrderExpressListModel() {
                     Debug = Model.Debug,
                     GoodsType = Model.Order.GoodsType,
                     GoodsTypeExpressList = Model.ExpressList,
                     GoodsTypePackCompleteDict = Model.GoodsTypePackCompleteDict,
-                    TotalVolumeWeight = totalVolumeWeight,
-                    TotalActualWeight = totalWeight
                 };
 
                 <partial name="LogisticsOrderGoodsPackOrderExpressList" model="orderExpressListModel"/>
-
             }
         </div>
 
@@ -512,40 +466,10 @@
 
             $("#packConfirmDialog").modal("hide");
         }
-        
-        function useSizeWeightData(goodsType, length, width, height, weight, packageCount) {
-            $("#packBox" + goodsType + "New input.pack-length").val(length);
-            $("#packBox" + goodsType + "New input.pack-width").val(width);
-            $("#packBox" + goodsType + "New input.pack-height").val(height);
-            $("#packBox" + goodsType + "New input.pack-weight").val(weight);
-            $("#packBox" + goodsType + "New input.pack-package-count").val(packageCount);
-        }
-        
-        function useSizeWeight(goodsType) {
-            
-            $.ajax({
-                url: '@Url.Action("UseSizeWeight", "LogisticsOrderGoodsPack")',
-                type: "POST",
-                data: {
-                    "@(nameof(LogisticsOrderGoodsPackUseSizeWeightParam.ExpressTrackingNoList))": scannedExpressTrackingNoList[goodsType]
-                },
-                success: function(data) {
-                    if (data.success === false) {
-                        $.msg.error(data.message);
-                        return;
-                    } 
-                       
-                    $("#packBox" + goodsType + "New input.pack-length").val(data.length);
-                    $("#packBox" + goodsType + "New input.pack-width").val(data.width);
-                    $("#packBox" + goodsType + "New input.pack-height").val(data.height);
-                    $("#packBox" + goodsType + "New input.pack-weight").val(data.weight);
-                }
-            });            
-        }        
-        
+
         var preSavePackSumitTime = new Date(); 
 
-        function savePack(packBoxId, goodsTypeId, continueThoseExpress)
+        function savePack(packBoxId, goodsTypeId, continueThoseExpress) // todo 最后一个参数去掉，功能提示的也需要改掉
         {
             if(new Date() - preSavePackSumitTime <= 3000) { @* 3 秒内不能重复提交，一般对话框重新打开才会第二次提交 *@
                 return;
@@ -571,7 +495,6 @@
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.PackageCount))": $("#" + packBoxId +" input.pack-package-count").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.MultiExpressOnePack))": $("#" + packBoxId +" select.pack-multi-express-one-pack").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.ExpressTrackingNoList))": scannedExpressTrackingNoList[goodsTypeId],
-                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.ContinueThoseExpress))": continueThoseExpress
                 },
                 success: function(data) {
                     if (data.success === false) {
@@ -760,50 +683,35 @@
     </div>
 </div>
 
-
-@if (Model.IsCnAuSeaOrder) {
-    <script type="text/javascript">
-    
-        var printTypeInLogisticsMode = null;
-        @if (Model.PrintTypeInLogisticsMode != null) {
-            <text>printTypeInLogisticsMode = '@(Model.PrintTypeInLogisticsMode.Id)';</text>
+@*
+todo 这里后面需要改造
+<script type="text/javascript">
+    function printPackLabel(orderPackId) {
+        var printType = $("#printType").val();
+       
+        
+        if (printType === '@(LogisticsOrderPackPrintType.SizeW10H15.Id)') {
+            printPackLabelW10H15(orderPackId);
+        } else if (printType === '@(LogisticsOrderPackPrintType.SizeW10H5.Id)') {
+            printPackLabelW10H5(orderPackId);
+        } else if (printType === '@(LogisticsOrderPackPrintType.SizeW5H5.Id)') {
+            printPackLabelW5H5(orderPackId);         
+        } else if (printType === '@(LogisticsOrderPackPrintType.None.Id)') {
+            // 不打印               
+        } else {
+            $.msg.error("未知打印标签类型，或打印标签类型未选择！");
         }
-   
-        function printPackLabel(orderPackId) {
-            var printType = $("#printType").val();
-            
-            @*
-                按物流方式配置判断
-                这个不对：还是如果这里不对接，就肯定不对接了；如果这里对接，原来的对接条件还继续考虑。
-                这个正确：如果这里不考虑，就考虑原来的设置； 如果这里考虑，就不考虑原来的设置。
-            *@
-            if(printTypeInLogisticsMode != null) {
-                printType =  printTypeInLogisticsMode;
-            }
-            
-            if (printType === '@(LogisticsOrderPackPrintType.SizeW10H15.Id)') {
-                printPackLabelW10H15(orderPackId);
-            } else if (printType === '@(LogisticsOrderPackPrintType.SizeW10H5.Id)') {
-                printPackLabelW10H5(orderPackId);
-            } else if (printType === '@(LogisticsOrderPackPrintType.SizeW5H5.Id)') {
-                printPackLabelW5H5(orderPackId);         
-            } else if (printType === '@(LogisticsOrderPackPrintType.None.Id)') {
-                // 不打印               
-            } else {
-                $.msg.error("未知打印标签类型，或打印标签类型未选择！");
-            }
-        }    
-        
-    </script>
-} else {
-    <script type="text/javascript">
+    }
+</script>
+*@
 
-        function printPackLabel(orderPackId) {
-            printPackLabelAirExpress(orderPackId);
-        }    
-        
-    </script>
-}
+<script type="text/javascript">
+
+    function printPackLabel(orderPackId) {
+        printPackLabelAirExpress(orderPackId);
+    }    
+    
+</script>
 
 <script type="text/javascript">
     function printPackLabelW10H15(orderPackId) {

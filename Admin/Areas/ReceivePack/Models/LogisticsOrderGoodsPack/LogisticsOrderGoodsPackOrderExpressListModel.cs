@@ -14,22 +14,6 @@ public class LogisticsOrderGoodsPackOrderExpressListModel {
     [BindNever]
     public IDictionary<LogisticsGoodsType, bool> GoodsTypePackCompleteDict { get; set; } = new Dictionary<LogisticsGoodsType, bool>();
 
-    /// <summary>
-    /// 这个物品类型下面的总体积重
-    /// 空运订单时是整个订单的总体积重
-    /// </summary>
-    [BindNever]
-    [Obsolete]
-    public decimal TotalVolumeWeight { get; set; }
-
-    /// <summary>
-    /// 这个物品类型下面的总实际重
-    /// 空运订单时是整个订单的实际积重
-    /// </summary>
-    [BindNever]
-    [Obsolete]
-    public decimal TotalActualWeight { get; set; }
-
     [BindNever]
     public bool Debug { get; set; }
 }
