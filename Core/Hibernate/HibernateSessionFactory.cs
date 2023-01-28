@@ -1,6 +1,8 @@
 using System.Data;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -128,6 +130,29 @@ public class HibernateSessionFactory {
     }
 
     public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, Assembly mappingAssembly) {
+/*
+
+#if DEBUG
+        
+        // <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+        Configuration configuration;
+
+        string cacheFile = "/Users/wanglihua/projects/shunda/Domain/hibernate_configuration.cache";
+        if (File.Exists(cacheFile)) {
+            using (Stream stream = File.OpenRead(cacheFile)) {
+                configuration = (new BinaryFormatter().Deserialize(stream) as Configuration)!;
+            }
+        } else {
+            configuration = BuildConfiguration(dataBaseType, mappingAssembly);
+            using (Stream stream = File.Create(cacheFile)) {
+                new BinaryFormatter().Serialize(stream, configuration);
+            }
+        }
+#else
+        var configuration = BuildConfiguration(dataBaseType, mappingAssembly);
+#endif
+
+ */
         var configuration = BuildConfiguration(dataBaseType, mappingAssembly);
         return configuration.BuildSessionFactory();
     }
