@@ -6,7 +6,7 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 
-public class LogisticsOrderGoodsPackListQueryParam : ListQueryParam {
+public class LogisticsOrderGoodsPackOrderListQueryParam : ListQueryParam {
     public override int PageSize {
         get { return 10; }
     }

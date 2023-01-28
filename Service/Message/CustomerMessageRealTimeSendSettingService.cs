@@ -64,7 +64,7 @@ public class CustomerMessageRealTimeSendSettingService
                 setting.WechatSend = true;
                 setting.SmsSend = false;
 
-                setting.WechatMessageTemplate1 = "亲，您的{order_code}订单的{tracking_no}快递单号，现已在【{warehouse_name}收货仓库】入库完毕。该快递单号属于【{goods_type}产品类型】。友情提醒：请及时将所有快递单号录入订单，以确保快速入库，及早转运！";
+                setting.WechatMessageTemplate1 = "亲，您的{order_code}订单的{tracking_no}快递单号，现已在【{warehouse_name}收货仓库】入库完毕。该快递单号属于【{goods_type}物品类型】。友情提醒：请及时将所有快递单号录入订单，以确保快速入库，及早转运！";
                 setting.SmsMessageTemplate = "亲，您的{order_code}快递单号，现已入库，该快递是{goods_type}类产品";
                 setting.Placeholders = "订单编码：{order_code}，快递单号：{tracking_no}，仓库名称：{warehouse_name}，物品类型：{goods_type}";
 

@@ -120,7 +120,7 @@
         showMask("加载中...");
 
         $.ajax({
-            url: '@Url.Action("ListDialog", "LogisticsOrderGoodsPack")',
+            url: '@Url.Action("OrderListDialog", "LogisticsOrderGoodsPack")',
             type: "POST",
             data: { "warehouseId": '@Model.Warehouse?.Id' },
             success: function(data) {
@@ -194,20 +194,20 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "LogisticsOrderGoodsPack")",
+            url: "@Url.Action("OrderList", "LogisticsOrderGoodsPack")",
             type: "POST",
             data: {
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.WarehouseId))': '@Model.Warehouse?.Id',
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.CountryQuery))': $('#countryQuery').val(),
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.FirstModeIdQuery))': $('#firstLogisticsModeQuery').val(),
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.GoodsTypeQuery))': $('#goodsTypeQuery').val(),
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.EndDateQuery))': $('#endDateQuery').val(),                
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.PageIndex))': pageIndex,
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.SortField))': sortField,
-                '@(nameof(LogisticsOrderGoodsPackListQueryParam.SortDir))': sortDir
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.WarehouseId))': '@Model.Warehouse?.Id',
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.OrderCodeQuery))': $('#orderCodeQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.CountryQuery))': $('#countryQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.FirstModeIdQuery))': $('#firstLogisticsModeQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.GoodsTypeQuery))': $('#goodsTypeQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.EndDateQuery))': $('#endDateQuery').val(),                
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.SortField))': sortField,
+                '@(nameof(LogisticsOrderGoodsPackOrderListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();

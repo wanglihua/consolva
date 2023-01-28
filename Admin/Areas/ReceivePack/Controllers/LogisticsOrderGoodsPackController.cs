@@ -74,12 +74,9 @@ public class LogisticsOrderGoodsPackController : Controller {
     /// <summary>
     /// 这个是选择订单的对话框
     /// </summary>
-    /// <param name="warehouseId"></param>
-    /// <returns></returns>
-    /// <exception cref="ValidationException"></exception>
     [HttpPost]
-    [Route("/admin/logistics/order/goods/pack/list/dialog")]
-    public IActionResult ListDialog(int warehouseId) {
+    [Route("/admin/logistics/order/goods/pack/order/list/dialog")]
+    public IActionResult OrderListDialog(int warehouseId) {
         WarehouseInfo warehouse = session.Get<WarehouseInfo>(warehouseId);
         if (warehouse == null) {
             throw new ValidationException("指定的仓库不存在！");
@@ -89,7 +86,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         orderStatusList.Add(LogisticsOrderStatus.WaitPack);
         orderStatusList.Add(LogisticsOrderStatus.Packed);
 
-        LogisticsOrderGoodsPackListDialogModel model = new LogisticsOrderGoodsPackListDialogModel();
+        LogisticsOrderGoodsPackOrderListDialogModel model = new LogisticsOrderGoodsPackOrderListDialogModel();
         model.CountryList = Country.GetNoChinaList();
         model.Warehouse = warehouse;
         model.OrderStatusList = orderStatusList;
@@ -106,15 +103,15 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();
 
-        return View("LogisticsOrderGoodsPackListDialog", model);
+        return View("LogisticsOrderGoodsPackOrderListDialog", model);
     }
 
     [HttpPost]
-    [Route("/admin/logistics/order/goods/pack/list/first/mode/select")]
-    public IActionResult ListQueryFirstModeSelect(int countryId) {
+    [Route("/admin/logistics/order/goods/pack/order/list/first/mode/select")]
+    public IActionResult OrderListQueryFirstModeSelect(int countryId) {
         Country country = Country.GetById(countryId);
 
-        LogisticsOrderGoodsPackListDialogModel model = new LogisticsOrderGoodsPackListDialogModel();
+        LogisticsOrderGoodsPackOrderListDialogModel model = new LogisticsOrderGoodsPackOrderListDialogModel();
 
         var firstModeTypeList = LogisticsModeType.GetList();
         var query = session.Query<LogisticsModeInfo>()
@@ -130,17 +127,15 @@ public class LogisticsOrderGoodsPackController : Controller {
             .OrderBy(e => e.Name)
             .ToList();
 
-        return View("LogisticsOrderGoodsPackListQueryFirstModeSelect", model);
+        return View("LogisticsOrderGoodsPackOrderListQueryFirstModeSelect", model);
     }
 
     /// <summary>
     /// 这个是选择订单的对话框里面的列表数据
     /// </summary>
-    /// <param name="queryParam"></param>
-    /// <returns></returns>
     [HttpPost]
-    [Route("/admin/logistics/order/goods/pack/list")]
-    public IActionResult List(LogisticsOrderGoodsPackListQueryParam queryParam) {
+    [Route("/admin/logistics/order/goods/pack/order/list")]
+    public IActionResult OrderList(LogisticsOrderGoodsPackOrderListQueryParam queryParam) {
         // TODO 这里的排序方式, 是不是可以参照 public IActionResult Order(LogisticsOrderGoodsPackOrderQueryParam queryParam) 里面的排序方式
 
         int totalCount = GetListCriteria(queryParam)
@@ -169,10 +164,10 @@ public class LogisticsOrderGoodsPackController : Controller {
             order.PackScheduleUserNameCache = orderPackSchedule?.User.UserName ?? string.Empty;
         }
 
-        LogisticsOrderGoodsPackListModel model = new LogisticsOrderGoodsPackListModel(listPager);
+        LogisticsOrderGoodsPackOrderListModel model = new LogisticsOrderGoodsPackOrderListModel(listPager);
         model.OrderList = orderList;
 
-        return View("LogisticsOrderGoodsPackList", model);
+        return View("LogisticsOrderGoodsPackOrderList", model);
     }
 
     /// <summary>
@@ -181,7 +176,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     /// <param name="queryParam"></param>
     /// <returns></returns>
     [NonAction]
-    private ICriteria GetListCriteria(LogisticsOrderGoodsPackListQueryParam queryParam) {
+    private ICriteria GetListCriteria(LogisticsOrderGoodsPackOrderListQueryParam queryParam) {
         LogisticsOrderPackDisplayType displayType = LogisticsOrderPackDisplayType.NotOthers;
         var orderPackConfig = session
             .Query<LogisticsOrderPackConfigInfo>()
@@ -292,8 +287,6 @@ public class LogisticsOrderGoodsPackController : Controller {
     /// <summary>
     /// 获取显示当前打包的订单
     /// </summary>
-    /// <param name="queryParam"></param>
-    /// <returns></returns>
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/order")]
     public IActionResult Order(LogisticsOrderGoodsPackOrderQueryParam queryParam) {

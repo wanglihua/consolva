@@ -2,7 +2,7 @@
 @using shunda.Core
 @using shunda.Domain.Logistics
 @using shunda.Domain.LogisticsOrder
-@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackListDialogModel
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderListDialogModel
 
 @{
     Layout = null;
@@ -130,7 +130,7 @@
     
     function onCountrySelectChange() {
         $.ajax({
-            url: '@Url.Action("ListQueryFirstModeSelect", "LogisticsOrderGoodsPack")',
+            url: '@Url.Action("OrderListQueryFirstModeSelect", "LogisticsOrderGoodsPack")',
             type: "POST",
             data: {
                 "CountryQuery": $("#countryQuery").val()

@@ -4,8 +4,8 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 
-public class LogisticsOrderGoodsPackListModel : ListModel {
-    public LogisticsOrderGoodsPackListModel(ListPager listPager) : base(listPager) {
+public class LogisticsOrderGoodsPackOrderListModel : ListModel {
+    public LogisticsOrderGoodsPackOrderListModel(ListPager listPager) : base(listPager) {
     }
 
     [BindNever]

@@ -6,7 +6,7 @@ using shunda.Domain.Storage;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 
-public class LogisticsOrderGoodsPackListDialogModel {
+public class LogisticsOrderGoodsPackOrderListDialogModel {
     [BindNever]
     public WarehouseInfo Warehouse { get; set; } = new();
 

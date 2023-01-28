@@ -1,6 +1,6 @@
 @using shunda.Core.Web
 @using shunda.Domain.LogisticsOrder
-@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackListModel
+@model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderListModel
 
 @{
     Layout = null;
@@ -39,7 +39,7 @@
             </th>
             <th style="width: 200px; text-align: center;">
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">产品类型</a>
+                    <a field="@(nameof(LogisticsOrderInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">物品类型</a>
                 </div>
                 <div>
                     <a field="@(nameof(LogisticsOrderInfo.FirstMode)).@(nameof(LogisticsOrderInfo.FirstMode.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="listDialogSortOrderList">头程物流</a>
