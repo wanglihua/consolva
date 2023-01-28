@@ -29,7 +29,7 @@ public class OrderCreateNewController : Controller {
     public IActionResult New() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        var order = logisticsOrderCreateService.CreateOrder(loginCustomerId);
+        var order = logisticsOrderCreateService.CreateOrderAndSubmitPack(loginCustomerId);
 
         return Json(new JsonResultData {
             Success = true,

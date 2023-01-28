@@ -33,7 +33,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
     private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
     private readonly ExpressLogService expressLogService;
-    private readonly LogisticsOrderService logisticsOrderService;
+    private readonly LogisticsOrderPackService logisticsOrderPackService;
     private readonly PassResService passResService;
 
     public LogisticsOrderGoodsPackController(ISession session,
@@ -43,7 +43,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
         ExpressLogService expressLogService,
-        LogisticsOrderService logisticsOrderService,
+        LogisticsOrderPackService logisticsOrderPackService,
         PassResService passResService
     ) {
         this.session = session;
@@ -53,7 +53,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
         this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
         this.expressLogService = expressLogService;
-        this.logisticsOrderService = logisticsOrderService;
+        this.logisticsOrderPackService = logisticsOrderPackService;
         this.passResService = passResService;
     }
 
@@ -998,6 +998,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
+        int loginUserId = loginUserService.GetLoginUserId();
+
         int orderId = param.OrderId;
         LogisticsGoodsType goodsType = param.GoodsType;
 
@@ -1059,7 +1061,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         bool orderPackComplete = notPackedExpressCount == 0;
 
         if (orderPackComplete) {
-            logisticsOrderService.CompleteOrderPackManual(orderId);
+            logisticsOrderPackService.CompletePack(orderId, loginUserId);
         }
 
         return Json(new Dictionary<string, object> {
@@ -1076,8 +1078,10 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
+        int loginUserId = loginUserService.GetLoginUserId();
+
         int orderId = param.OrderId;
-        logisticsOrderService.CompleteOrderPackManual(orderId);
+        logisticsOrderPackService.CompletePack(orderId, loginUserId);
 
         return Json(new Dictionary<string, object> {
             { "success", true },

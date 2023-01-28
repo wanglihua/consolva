@@ -4,6 +4,7 @@ using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
+using shunda.Domain.Pass;
 using shunda.Service.Express;
 
 namespace shunda.Service.LogisticsOrder;
@@ -190,6 +191,11 @@ public class LogisticsOrderPackService {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
+        var user = session.Get<UserInfo>(userId);
+        if (user == null) {
+            throw new ValidationException($"指定的用户#{userId}不存在！");
+        }
+
         if (order.OrderStatus == LogisticsOrderStatus.Packed) {
             throw new ValidationException($"订单{order.Code}已经是已打包状态！");
         }
@@ -244,5 +250,40 @@ public class LogisticsOrderPackService {
                 throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价没有设置，请修改单价后继续！");
             }
         }
+
+        // 订单状态和时间更新，快递单状态这里不用更新
+        var orderStatusBefore = order.OrderStatus;
+
+        order.OrderStatus = LogisticsOrderStatus.Packed;
+        order.CompletePackTime = DateTime.Now;
+        session.Update(order);
+        session.Flush();
+
+        var orderStatusAfter = order.OrderStatus;
+
+        logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Pack, orderStatusBefore, orderStatusAfter, userId);
+
+        // 保存打包汇总数据
+        var orderPackList = session.Query<LogisticsOrderPackInfo>().Where(e => e.Order.Id == orderId).ToList();
+
+        var orderPackData = session.Query<LogisticsOrderPackDataInfo>().Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
+        if (orderPackData == null) {
+            orderPackData = new LogisticsOrderPackDataInfo {
+                Order = order
+            };
+        }
+
+        decimal totalActualWeight = 0;
+        decimal totalVolumeWeight = 0;
+        decimal totalVolume = 0;
+
+        orderPackData.PackUser = user;
+
+        session.SaveOrUpdate(orderPackData);
+        session.Flush();
+
+        // todo 订单计费
+
+        // todo 发送消息
     }
 }
