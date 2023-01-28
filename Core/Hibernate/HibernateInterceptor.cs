@@ -5,36 +5,29 @@ using NLog;
 
 namespace shunda.Core.Hibernate;
 
-public class HibernateInterceptor : EmptyInterceptor
-{
+public class HibernateInterceptor : EmptyInterceptor {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly int indexInitValue = -1;
     private static readonly string createTimePropertyName = nameof(Entity.CreateTime);
     private static readonly string updateTimePropertyName = nameof(Entity.UpdateTime);
 
-    public override bool OnSave(object entity, object id, object[] state, string[] propertyNames, IType[] types)
-    {
-        if (entity is Entity e)
-        {
+    public override bool OnSave(object entity, object id, object[] state, string[] propertyNames, IType[] types) {
+        if (entity is Entity e) {
             // find CreateTime UpdateTime index
             int createTimeIndex = indexInitValue;
             int updateTimeIndex = indexInitValue;
-            for (int index = 0; index < propertyNames.Length; index++)
-            {
+            for (int index = 0; index < propertyNames.Length; index++) {
                 string propertyName = propertyNames[index];
-                if (propertyName == createTimePropertyName)
-                {
+                if (propertyName == createTimePropertyName) {
                     createTimeIndex = index;
                 }
 
-                if (propertyName == updateTimePropertyName)
-                {
+                if (propertyName == updateTimePropertyName) {
                     updateTimeIndex = index;
                 }
 
-                if (createTimeIndex != indexInitValue && updateTimeIndex != indexInitValue)
-                {
+                if (createTimeIndex != indexInitValue && updateTimeIndex != indexInitValue) {
                     break;
                 }
             }
@@ -52,15 +45,12 @@ public class HibernateInterceptor : EmptyInterceptor
             return true;
         }
 
-        if (entity is EntityNoUpdate eNoUpdate)
-        {
+        if (entity is EntityNoUpdate eNoUpdate) {
             // find CreateTime index
             int createTimeIndex = indexInitValue;
-            for (int index = 0; index < propertyNames.Length; index++)
-            {
+            for (int index = 0; index < propertyNames.Length; index++) {
                 string propertyName = propertyNames[index];
-                if (propertyName == createTimePropertyName)
-                {
+                if (propertyName == createTimePropertyName) {
                     createTimeIndex = index;
                     break;
                 }
@@ -79,18 +69,14 @@ public class HibernateInterceptor : EmptyInterceptor
         return false;
     }
 
-    public override bool OnFlushDirty(object entity, object id, object[] currentState, object[] previousState, string[] propertyNames, IType[] types)
-    {
-        if (entity is Entity e)
-        {
+    public override bool OnFlushDirty(object entity, object id, object[] currentState, object[] previousState, string[] propertyNames, IType[] types) {
+        if (entity is Entity e) {
             // find UpdateTime index
             int updateTimeIndex = indexInitValue;
-            for (int index = 0; index < propertyNames.Length; index++)
-            {
+            for (int index = 0; index < propertyNames.Length; index++) {
                 string propertyName = propertyNames[index];
 
-                if (propertyName == updateTimePropertyName)
-                {
+                if (propertyName == updateTimePropertyName) {
                     updateTimeIndex = index;
                     break;
                 }
@@ -108,8 +94,7 @@ public class HibernateInterceptor : EmptyInterceptor
         return false;
     }
 
-    public override SqlString OnPrepareStatement(SqlString sql)
-    {
+    public override SqlString OnPrepareStatement(SqlString sql) {
         return sql;
     }
 }

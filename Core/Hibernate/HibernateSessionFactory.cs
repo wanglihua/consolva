@@ -1,8 +1,5 @@
 using System.Data;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
-using Newtonsoft.Json;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -133,7 +130,7 @@ public class HibernateSessionFactory {
 /*
 
 #if DEBUG
-        
+        // using System.Runtime.Serialization.Formatters.Binary;
         // <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         Configuration configuration;
 
