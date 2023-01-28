@@ -1,5 +1,6 @@
 using NHibernate;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
@@ -274,10 +275,45 @@ public class LogisticsOrderPackService {
         }
 
         decimal totalActualWeight = 0;
-        decimal totalVolumeWeight = 0;
         decimal totalVolume = 0;
+        decimal maxSideLength = 0;
+        decimal maxVolumeSinglePack = 0;
+        decimal maxWeightSinglePack = 0;
+        int totalPackageCount = 0;
+
+        foreach (var orderPack in orderPackList) {
+            totalActualWeight += orderPack.Weight * orderPack.PackageCount;
+            decimal sideLength = Math.Max(Math.Max(orderPack.Length, orderPack.Width), orderPack.Height);
+            if (sideLength > maxSideLength) {
+                maxSideLength = sideLength;
+            }
+
+            decimal singleVolume = orderPack.Length * orderPack.Width * orderPack.Height;
+            if (singleVolume > maxVolumeSinglePack) {
+                maxVolumeSinglePack = singleVolume;
+            }
+
+            totalVolume += singleVolume * orderPack.PackageCount;
+
+            if (orderPack.Weight > maxWeightSinglePack) {
+                maxWeightSinglePack = orderPack.Weight;
+            }
+
+            totalPackageCount += orderPack.PackageCount;
+        }
+
+        decimal totalVolumeWeight = totalVolume / LogisticsConfig.VolumeWeightDenominator;
+        totalVolume = totalVolume / 100_00_00; // 单位转成立方米
+        maxVolumeSinglePack = maxVolumeSinglePack / 100_00_00; // 单位转成立方米
 
         orderPackData.PackUser = user;
+        orderPackData.TotalActualWeight = totalActualWeight;
+        orderPackData.TotalVolumeWeight = totalVolumeWeight;
+        orderPackData.TotalVolume = totalVolume;
+        orderPackData.MaxSideLength = maxSideLength;
+        orderPackData.MaxVolumeSinglePack = maxVolumeSinglePack;
+        orderPackData.MaxWeightSinglePack = maxWeightSinglePack;
+        orderPackData.TotalPackageCount = totalPackageCount;
 
         session.SaveOrUpdate(orderPackData);
         session.Flush();
