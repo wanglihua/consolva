@@ -76,7 +76,7 @@ public class LogisticsOrderPackService {
             if (expressGoods.Price <= 0) {
                 string trackingNo = expressGoods.Express.TrackingNo;
                 string goodsName = expressGoods.Goods.Name;
-                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价为 0，请修改单价后继续！");
+                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价没有设置，请修改单价后继续！");
             }
         }
 
@@ -241,7 +241,7 @@ public class LogisticsOrderPackService {
             if (expressGoods.Price <= 0) {
                 string trackingNo = expressGoods.Express.TrackingNo;
                 string goodsName = expressGoods.Goods.Name;
-                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价为 0，请修改单价后继续！");
+                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价没有设置，请修改单价后继续！");
             }
         }
     }
