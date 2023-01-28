@@ -107,4 +107,64 @@ public class LogisticsOrderPackService {
         // 订单日志
         logisticsOrderActionService.NewActionCustomer(orderId, LogisticsOrderActionType.CustomerSubmitPack, orderStatusBefore, orderStatusAfter, customerId);
     }
+
+    /// <summary>
+    /// 判断订单是不是可以撤回打包提交 
+    /// </summary>
+    public bool CanRollbackSubmitPack(int orderId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        if (order.OrderStatus != LogisticsOrderStatus.WaitPack) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 撤回订单打包提交
+    /// <param name="orderId"></param>
+    /// <param name="userId">操作用户</param>
+    /// </summary>
+    public void RollbackSubmitPack(int orderId, int userId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        if (CanRollbackSubmitPack(orderId) == false) {
+            throw new ValidationException("订单当前状态不能取消打包提交！");
+        }
+
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .ToList();
+
+        foreach (var express in expressList) {
+            express.Status = ExpressStatus.Order;
+            express.SubmitPackTime = null;
+            session.Update(express);
+        }
+
+        var orderStatusBefore = order.OrderStatus;
+
+        order.OrderStatus = LogisticsOrderStatus.Create;
+        order.SubmitPackTime = null;
+        session.Update(order);
+
+        session.Flush();
+
+        var orderStatusAfter = order.OrderStatus;
+
+        // 日志
+        foreach (var express in expressList) {
+            int expressId = express.Id;
+            expressLogService.UserLog(expressId, ExpressLogType.RollbackSubmitPack, userId);
+        }
+
+        logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.RollbackSubmitPack, orderStatusBefore, orderStatusAfter, userId);
+    }
 }
