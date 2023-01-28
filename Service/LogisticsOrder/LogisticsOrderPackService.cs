@@ -58,6 +58,8 @@ public class LogisticsOrderPackService {
         }
 
         IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
+
+        // 快递单物品列表
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
@@ -68,6 +70,30 @@ public class LogisticsOrderPackService {
                 throw new ValidationException($"快递单号{express.TrackingNo}的物品列表为空, 不能提交打包!");
             }
         }
+
+        // 物流物品列表
+        var logisticsGoodsIdList = expressGoodsList.Select(e => e.Goods.Id).ToList();
+        var logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
+            .Where(e => logisticsGoodsIdList.Contains(e.Id))
+            .ToList();
+
+        // 检查快递单物品单价
+        foreach (var expressGoods in expressGoodsList) {
+            if (expressGoods.Price <= 0) {
+                int expressId = expressGoods.Express.Id;
+                var express = expressList.Where(e => e.Id == expressId).Take(1).SingleOrDefault();
+                string trackingNo = express?.TrackingNo ?? string.Empty;
+
+                int logisticsGoodsId = expressGoods.Goods.Id;
+                var logisticsGoods = logisticsGoodsList
+                    .Where(e => e.Id == logisticsGoodsId)
+                    .Take(1)
+                    .SingleOrDefault();
+                string goodsName = logisticsGoods?.Name ?? string.Empty;
+
+                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价为 0，请修改单价后继续！");
+            }
+        }        
 
         DateTime now = DateTime.Now;
 
@@ -166,5 +192,83 @@ public class LogisticsOrderPackService {
         }
 
         logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.RollbackSubmitPack, orderStatusBefore, orderStatusAfter, userId);
+    }
+
+    /// <summary>
+    /// 订单完成打包
+    /// </summary>
+    /// <param name="orderId">订单id</param>
+    /// <param name="userId">操作用户</param>
+    public void CompletePack(int orderId, int userId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        if (order.OrderStatus == LogisticsOrderStatus.Packed) {
+            throw new ValidationException($"订单{order.Code}已经是已打包状态！");
+        }
+
+        if (order.OrderStatus != LogisticsOrderStatus.WaitPack) {
+            throw new ValidationException($"订单{order.Code}不是等待打包状态不能完成打包！");
+        }
+
+        var expressList = session.Query<ExpressInfo>().Where(e => e.Order!.Id == orderId).ToList();
+
+        var expressIdList = expressList.Select(e => e.Id).ToList();
+
+        // 检查快递单号打包信息
+        var packedExpressIdList = session.Query<LogisticsOrderPackExpressInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Select(e => e.Express.Id)
+            .ToList();
+        var notPackedExpressIdList = expressIdList.Where(e => packedExpressIdList.Contains(e) == false).ToList();
+        if (notPackedExpressIdList.Count != 0) {
+            var notPackedTrackingNoList = expressList
+                .Where(e => notPackedExpressIdList.Contains(e.Id))
+                .Select(e => e.TrackingNo)
+                .ToList();
+
+            throw new ValidationException($"订单{order.Code} 快递单号 {string.Join(", ", notPackedTrackingNoList)} 未包含在任何箱号中，订单不能完成打包！");
+        }
+        
+        // 检查快递单号状态
+        var notPackStatusExpressList = expressList.Where(e => e.Status != ExpressStatus.Pack).ToList();
+        if (notPackStatusExpressList.Count != 0) {
+            var notPackedTrackingNoList = notPackStatusExpressList.Select(e => e.TrackingNo).ToList();
+            throw new ValidationException($"订单{order.Code} 快递单号 {string.Join(", ", notPackedTrackingNoList)} 不是已打包状态，订单不能完成打包！");
+        }
+
+        // 快递单物品列表
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+        if (expressGoodsList.Count == 0) {
+            throw new ValidationException("订单快递单物品列表不能为空！");
+        }
+
+        // 物流物品列表
+        var logisticsGoodsIdList = expressGoodsList.Select(e => e.Goods.Id).ToList();
+        var logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
+            .Where(e => logisticsGoodsIdList.Contains(e.Id))
+            .ToList();
+
+        // 检查快递单物品单价
+        foreach (var expressGoods in expressGoodsList) {
+            if (expressGoods.Price <= 0) {
+                int expressId = expressGoods.Express.Id;
+                var express = expressList.Where(e => e.Id == expressId).Take(1).SingleOrDefault();
+                string trackingNo = express?.TrackingNo ?? string.Empty;
+
+                int logisticsGoodsId = expressGoods.Goods.Id;
+                var logisticsGoods = logisticsGoodsList
+                    .Where(e => e.Id == logisticsGoodsId)
+                    .Take(1)
+                    .SingleOrDefault();
+                string goodsName = logisticsGoods?.Name ?? string.Empty;
+
+                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价为 0，请修改单价后继续！");
+            }
+        }        
     }
 }
