@@ -152,30 +152,19 @@ public class LogisticsOrderCreateService {
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
-        if (expressGoodsList.Count == 0) {
-            throw new ValidationException("订单快递单物品列表不能为空！");
+        foreach (var express in expressList) {
+            int expressId = express.Id;
+            var expressGoods = expressGoodsList.Where(e => e.Express.Id == expressId).Take(1).SingleOrDefault();
+            if (expressGoods == null) {
+                throw new ValidationException($"快递单{express.TrackingNo}物品列表不能为空！");
+            }
         }
-
-        // 物流物品列表
-        var logisticsGoodsIdList = expressGoodsList.Select(e => e.Goods.Id).ToList();
-        var logisticsGoodsList = session.Query<LogisticsGoodsInfo>()
-            .Where(e => logisticsGoodsIdList.Contains(e.Id))
-            .ToList();
 
         // 检查快递单物品单价
         foreach (var expressGoods in expressGoodsList) {
             if (expressGoods.Price <= 0) {
-                int expressId = expressGoods.Express.Id;
-                var express = expressList.Where(e => e.Id == expressId).Take(1).SingleOrDefault();
-                string trackingNo = express?.TrackingNo ?? string.Empty;
-
-                int logisticsGoodsId = expressGoods.Goods.Id;
-                var logisticsGoods = logisticsGoodsList
-                    .Where(e => e.Id == logisticsGoodsId)
-                    .Take(1)
-                    .SingleOrDefault();
-                string goodsName = logisticsGoods?.Name ?? string.Empty;
-
+                string trackingNo = expressGoods.Express.TrackingNo;
+                string goodsName = expressGoods.Goods.Name;
                 throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价为 0，请修改单价后继续！");
             }
         }
