@@ -6,10 +6,8 @@ using shunda.Domain.Pass;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderPackInfoMapping : EntityMapping<LogisticsOrderPackInfo>
-{
-    public LogisticsOrderPackInfoMapping()
-    {
+public class LogisticsOrderPackInfoMapping : EntityMapping<LogisticsOrderPackInfo> {
+    public LogisticsOrderPackInfoMapping() {
         Table("tbl_logistics_order_pack");
 
         ManyToOne(
@@ -37,26 +35,6 @@ public class LogisticsOrderPackInfoMapping : EntityMapping<LogisticsOrderPackInf
             map => {
                 map.Class(typeof(LogisticsOrderFirstModeInfo));
                 map.Column("order_first_mode_id");
-                map.NotNullable(true);
-                map.Cascade(Cascade.None);
-                map.Fetch(FetchKind.Select);
-            }
-        );
-
-        Property(
-            x => x.FirstType,
-            map => {
-                map.Type<LogisticsModeTypeHibernateType>();
-                map.Column("first_type_id");
-                map.NotNullable(true);
-            }
-        );
-
-        ManyToOne(
-            x => x.FirstMode,
-            map => {
-                map.Class(typeof(LogisticsModeInfo));
-                map.Column("first_mode_id");
                 map.NotNullable(true);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
@@ -127,6 +105,5 @@ public class LogisticsOrderPackInfoMapping : EntityMapping<LogisticsOrderPackInf
                 map.NotNullable(true);
             }
         );
-
     }
 }

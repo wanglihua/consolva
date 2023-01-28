@@ -10,14 +10,13 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 物流订单打包
 /// </summary>
-public class LogisticsOrderPackInfo : Entity
-{
+public class LogisticsOrderPackInfo : Entity {
     /// <summary>
     /// 订单，非空
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new ();
+    public virtual LogisticsOrderInfo Order { get; set; } = new();
 
     /// <summary>
     /// 物品类型，非空
@@ -32,22 +31,7 @@ public class LogisticsOrderPackInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "物流订单头程不能为空！")]
     [JsonProperty("orderFirstMode")]
-    public virtual LogisticsOrderFirstModeInfo OrderFirstMode { get; set; } = new ();
-
-    /// <summary>
-    /// 物流方式类型，非空
-    /// </summary>
-    [Required(ErrorMessage = "物流方式类型不能为空！")]
-    [JsonProperty("firstType")]
-    [ModelBinder(typeof(LogisticsModeTypeModelBinder))]
-    public virtual LogisticsModeType FirstType { get; set; } = LogisticsModeType.None;
-
-    /// <summary>
-    /// 物流方式，非空
-    /// </summary>
-    [Required(ErrorMessage = "物流方式不能为空！")]
-    [JsonProperty("firstMode")]
-    public virtual LogisticsModeInfo FirstMode { get; set; } = new ();
+    public virtual LogisticsOrderFirstModeInfo OrderFirstMode { get; set; } = new();
 
     /// <summary>
     /// 长/cm，非空
@@ -89,7 +73,7 @@ public class LogisticsOrderPackInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "打包人员不能为空！")]
     [JsonProperty("user")]
-    public virtual UserInfo PackUser { get; set; } = new ();
+    public virtual UserInfo PackUser { get; set; } = new();
 
     /// <summary>
     /// 打包时间，非空
@@ -97,5 +81,4 @@ public class LogisticsOrderPackInfo : Entity
     [Required(ErrorMessage = "打包时间不能为空！")]
     [JsonProperty("packTime")]
     public virtual DateTime PackTime { get; set; } = DateTime.MinValue;
-
 }
