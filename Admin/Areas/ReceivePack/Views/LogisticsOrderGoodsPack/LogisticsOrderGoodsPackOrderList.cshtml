@@ -85,7 +85,9 @@
                             <span>@logisticsOrder.Warehouse.Name</span>
                         </div>
                         <div>
-                            <span>@logisticsOrder.CustomerCode</span>
+                            <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(logisticsOrder.Customer.Id)" target="_blank">
+                                <span>@logisticsOrder.CustomerCode</span>
+                            </a>
                         </div>
                     </td>
                     <td style="text-align: center;">
@@ -98,10 +100,10 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div style="color: blue;">
-                            @logisticsOrder.GoodsType?.Name
+                            @logisticsOrder.GoodsType.Name
                         </div>
                         <div>
-                            @(logisticsOrder.FirstMode?.Name)
+                            @(logisticsOrder.FirstMode.Name)
                         </div>
                     </td>
                     <td style="text-align: center;">

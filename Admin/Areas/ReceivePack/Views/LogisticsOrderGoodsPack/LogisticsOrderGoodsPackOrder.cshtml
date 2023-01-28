@@ -11,7 +11,7 @@
         OrderRemarkList = Model.OrderRemarkList,
         ExpressRemarkList = Model.ExpressRemarkList,
         CanOrderRemarkEdit = Model.CanOrderRemarkEdit
-    };    
+    };
 }
 
 <input id="orderId" type="hidden" value="@Model.Order.Id"/>
@@ -84,7 +84,7 @@
                             <td style="width: 150px;" class="break-word">
                                 <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(Model.Order.Id)" target="_blank">@(Model.Order.Code)</a>
                             </td>
-                            <td style="width: 75px;" class="lbl">
+                            <td style="width: 70px;" class="lbl">
                                 客户ID
                             </td>
                             <td style="width: 140px;">
@@ -108,9 +108,10 @@
                             </td>
                             *@
                             <td style="width: 70px;" class="lbl">
-                                增值服务
+                                头程物流
                             </td>
-                            <td style="width: 259px; font-size: 10px;" class="break-word">
+                            <td style="width: 259px; font-size: 10px;" class="break-word" colspan="3">
+                                <span style="font-size: 10px;">@(Model.Order.FirstMode.Name)</span>
                             </td>
                         </tr>
                         <tr>
@@ -140,82 +141,37 @@
                             </td>
                             <td class="lbl">
                                 <span style="color:red; font-weight: bold; width: 80px;">
-                                    限制类
+                                    其他类型
                                 </span>
                             </td>
                             <td>
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
+                                    @(Model.OrderTotalPackageCount - Model.GoodsTypeCommonPackageCount)
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>
 
                             <td class="lbl">
-                                头程物流
+                                打包排班
                             </td>
-                            <td class="break-word">
-                                <span style="font-size: 10px;">@(Model.Order.FirstMode.Name)</span>
+                            <td style="width: 130px;">
+                                <span>@(Model.PackScheduleUserName)</span>
                             </td>
-                        </tr>
-                        <tr>
-                            <td class="lbl">
-                                <span style="color:red; font-weight: bold;">
-                                    草木竹类
-                                </span>
-                            </td>
-                            <td>
-                                <span>共&nbsp;</span>
-                                <span style="color:red; font-weight: bold;">
-                                </span>
-                                <span>&nbsp;个快递包裹</span>
-                            </td>
-                            <td class="lbl">
-                                <span style="color: red; font-weight: bold;">
-                                    限制+草木
-                                </span>
-                            </td>
-                            <td class="break-word">
-                                <span>共&nbsp;</span>
-                                <span style="color:red; font-weight: bold;">
-                                </span>
-                                <span>&nbsp;个快递包裹</span>
-                            </td>
-                            <td class="lbl">
-                                <span style="color: red; font-weight: bold;">
-                                    特货类
-                                </span>
-                            </td>
-                            <td class="break-word">
-                                <span>共&nbsp;</span>
-                                <span style="color:red; font-weight: bold;">
-                                </span>
-                                <span>&nbsp;个快递包裹</span>
-                            </td>
-                            <td class="lbl">
+                            <td class="lbl" style="width: 70px;">
                                 订单备注
                             </td>
                             <td>
                                 <a href="javascript:document.getElementById('orderRemark').scrollIntoView(false);">
-                                    @if (Model.OrderRemarkList != null && Model.OrderRemarkList.Count != 0) {
-                                        <span>@(Model.OrderRemarkList.Count)&nbsp;个</span>
+                                    @if (Model.OrderRemarkList.Count != 0) {
+                                        <span>@(Model.OrderRemarkList.Count + Model.ExpressRemarkList.Count)&nbsp;个</span>
                                     } else {
                                         <span>暂无</span>
                                     }
                                 </a>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="lbl">
-                                打包排班
-                            </td>
-                            <td>
-                                <span>@(Model.PackScheduleUserName)</span>
-                            </td>
-                            <td class="lbl">
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
+
                     </tbody>
                 </table>
             </div>

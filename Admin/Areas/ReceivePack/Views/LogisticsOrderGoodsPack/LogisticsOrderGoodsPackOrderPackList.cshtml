@@ -8,7 +8,7 @@
 <table id="orderPackList@(Model.GoodsType.Id)" class="data-list-table table table-bordered">
     <thead>
         <tr>
-            <td style="width: 70px; text-align: center;">打包序号</td>
+            <td style="width: 50px; text-align: center;">序号</td>
             <td style="width: 125px; text-align: center;">长/cm</td>
             <td style="width: 125px; text-align: center;">宽/cm</td>
             <td style="width: 125px; text-align: center;">高/cm</td>
@@ -49,13 +49,14 @@
                             <i class="ace-icon fa fa-floppy-o"></i>&nbsp;保存并打印标签
                         </button>
                         *@
-                        <button type="button" class="btn btn-xs btn-info" onclick="printPackLabel(@(orderPack.Id))">
-                            <i class="ace-icon fa fa-print"></i>&nbsp;补打标签
-                        </button>
                         @if (Model.Repack == true)
                         {
                             <button type="button" class="btn btn-xs btn-danger" onclick="removePack('packBox@(Model.GoodsType)@(orderPack.Id)', @(Model.GoodsType.Id));return false;">
                                 <i class="ace-icon fa fa-remove"></i>&nbsp;移除打包
+                            </button>
+                        } else {
+                            <button type="button" class="btn btn-xs btn-info" onclick="printPackLabel(@(orderPack.Id))">
+                                <i class="ace-icon fa fa-print"></i>&nbsp;补打标签
                             </button>
                         }
                     </td>
@@ -70,19 +71,19 @@
                         <input class="pack-id" type="hidden" value="0"/>
                     </td>
                     <td style="text-align: center;">
-                        <input class="pack-length" type="text" style="width: 80px; text-align: center;"/>
+                        <input class="pack-length" type="text" placeholder="长/cm" style="width: 80px; text-align: center;"/>
                     </td>
                     <td style="text-align: center;">
-                        <input class="pack-width" type="text" style="width: 80px; text-align: center;"/>
+                        <input class="pack-width" type="text" placeholder="宽/cm" style="width: 80px; text-align: center;"/>
                     </td>
                     <td style="text-align: center;">
-                        <input class="pack-height" type="text" style="width: 80px; text-align: center;"/>
+                        <input class="pack-height" type="text" placeholder="高/cm" style="width: 80px; text-align: center;"/>
                     </td>
                     <td style="text-align: center;">
-                        <input class="pack-weight" type="text" style="width: 80px; text-align: center;"/>
+                        <input class="pack-weight" type="text" placeholder="重量/kg" style="width: 80px; text-align: center;"/>
                     </td>
                     <td style="text-align: center;">
-                        <input class="pack-package-count" type="text" style="width: 80px; text-align: center;"/>
+                        <input class="pack-package-count" type="text" placeholder="箱数" style="width: 80px; text-align: center;"/>
                     </td>
                     <td style="text-align: center;">
                         <button class="btn btn-xs btn-primary" onclick="showSavePack('packBox@(Model.GoodsType)New', @(Model.GoodsType.Id));return false;">
