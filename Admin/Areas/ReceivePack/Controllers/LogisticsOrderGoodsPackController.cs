@@ -564,7 +564,10 @@ public class LogisticsOrderGoodsPackController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/order/pack/list")]
     public IActionResult OrderPackList(int orderId, int goodsTypeId, bool repack) {
-        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
 
         LogisticsGoodsType goodsType = LogisticsGoodsType.GetById(goodsTypeId);
 
@@ -605,6 +608,20 @@ public class LogisticsOrderGoodsPackController : Controller {
                         && e.Cate == LogisticsModeCate.Customer
                         && e.Status == LogisticsModeStatus.Enabled)
             .ToList();
+
+        // 物品类型，头程物流 下拉默认选择
+        var orderFirstModeRecent = session.Query<LogisticsOrderFirstModeInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderByDescending(e => e.Id)
+            .Take(1)
+            .SingleOrDefault();
+        if (orderFirstModeRecent != null) {
+            model.SelectGoodsType = orderFirstModeRecent.GoodsType;
+            model.SelectFirstModeId = orderFirstModeRecent.FirstMode.Id;
+        } else {
+            model.SelectGoodsType = order.GoodsType;
+            model.SelectFirstModeId = order.FirstMode.Id;
+        }
 
         return View("LogisticsOrderGoodsPackOrderPackList", model);
     }

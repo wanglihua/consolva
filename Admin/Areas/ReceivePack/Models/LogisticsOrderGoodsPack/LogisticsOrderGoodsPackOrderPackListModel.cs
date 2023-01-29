@@ -19,7 +19,13 @@ public class LogisticsOrderGoodsPackOrderPackListModel {
 
     [BindNever]
     public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = LogisticsGoodsType.GetCustomerList();
+    
+    [BindNever]
+    public LogisticsGoodsType SelectGoodsType { get; set; } = LogisticsGoodsType.None;
 
     [BindNever]
     public IList<LogisticsModeInfo> FirstModeList { get; set; } = new List<LogisticsModeInfo>();
+    
+    [BindNever]
+    public int SelectFirstModeId { get; set; } 
 }
