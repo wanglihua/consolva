@@ -14,15 +14,15 @@ public class ManualFeeService
 {
     private readonly ISession session;
 
-    private readonly LogisticsOrderFeeService logisticsOrderFeeService;
+    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
 
     public ManualFeeService(ISession session,
-        LogisticsOrderFeeService logisticsOrderFeeService,
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
         LogisticsOrderActionService logisticsOrderActionService)
     {
         this.session = session;
-        this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.logisticsOrderActionService = logisticsOrderActionService;
     }
 
@@ -73,7 +73,7 @@ public class ManualFeeService
 
         PayStatus payStatusBefore = logisticsOrder.PayStatus;
 
-        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder);
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 
@@ -128,7 +128,7 @@ public class ManualFeeService
 
         PayStatus payStatusBefore = logisticsOrder.PayStatus;
 
-        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder);
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 

@@ -7,7 +7,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
 using shunda.Domain.LogisticsOrder;
-using shunda.Service.LogisticsOrder;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;

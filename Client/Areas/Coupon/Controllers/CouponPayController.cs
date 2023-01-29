@@ -22,18 +22,18 @@ public class CouponPayController : Controller {
     private readonly LoginCustomerService loginCustomerService;
     private readonly CouponService couponService;
     private readonly CouponBatchService couponBatchService;
-    private readonly LogisticsOrderFeeService logisticsOrderFeeService;
+    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
 
     public CouponPayController(ISession session,
         LoginCustomerService loginCustomerService,
         CouponService couponService,
         CouponBatchService couponBatchService,
-        LogisticsOrderFeeService logisticsOrderFeeService) {
+        LogisticsOrderPaySumService logisticsOrderPaySumService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.couponService = couponService;
         this.couponBatchService = couponBatchService;
-        this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
     }
 
     [HttpPost]
@@ -224,7 +224,7 @@ public class CouponPayController : Controller {
         }
 
         // 更新订单总费用和支付状态
-        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(order);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order);
 
         return Json(new JsonResultData {
             Success = true,

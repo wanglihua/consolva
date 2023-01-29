@@ -21,17 +21,17 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 public class FeeWriteOffController : Controller {
     private readonly ISession session;
     private readonly CustomerCodeService customerCodeService;
-    private readonly LogisticsOrderFeeService logisticsOrderFeeService;
+    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly FeeWriteOffExcelService feeWriteOffExcelService;
 
     public FeeWriteOffController(ISession session,
         CustomerCodeService customerCodeService,
-        LogisticsOrderFeeService logisticsOrderFeeService,
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
         FeeWriteOffExcelService feeWriteOffExcelService
     ) {
         this.session = session;
         this.customerCodeService = customerCodeService;
-        this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.feeWriteOffExcelService = feeWriteOffExcelService;
     }
 
@@ -149,7 +149,7 @@ public class FeeWriteOffController : Controller {
             .ToList();
 
         foreach (LogisticsOrderInfo logisticsOrder in writeOffOrderList) {
-            logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrder);
+            logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder);
         }
 
         return Json(new Dictionary<string, object>() {

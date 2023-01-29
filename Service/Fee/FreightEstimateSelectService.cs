@@ -7,7 +7,7 @@ using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service.LogisticsOrder;
+namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
 public class FreightEstimateSelectService {

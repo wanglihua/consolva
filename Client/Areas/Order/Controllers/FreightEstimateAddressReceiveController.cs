@@ -9,7 +9,7 @@ using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
-using shunda.Service.LogisticsOrder;
+using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;

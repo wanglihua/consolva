@@ -14,17 +14,17 @@ namespace shunda.Service.Fee;
 public class WriteOffFeeService
 {
     private ISession session;
-    private LogisticsOrderFeeService logisticsOrderFeeService;
+    private LogisticsOrderPaySumService logisticsOrderPaySumService;
     private LogisticsOrderActionService logisticsOrderActionService;
     private CustomerScoreService customerScoreService;
 
     public WriteOffFeeService(ISession session,
-        LogisticsOrderFeeService logisticsOrderFeeService,
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService)
     {
         this.session = session;
-        this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.customerScoreService = customerScoreService;
     }
@@ -62,7 +62,7 @@ public class WriteOffFeeService
         session.Save(logisticsOrderPay);
         session.Flush();
 
-        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(logisticsOrderPay.Order);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrderPay.Order);
 
         session.Flush();
 

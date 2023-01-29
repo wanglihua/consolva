@@ -28,21 +28,21 @@ public class FeeRefundApproveController : Controller
     private CustomerCodeService customerCodeService;
     private LoginUserService loginUserService;
     private CustomerAccountService customerAccountService;
-    private LogisticsOrderFeeService logisticsOrderFeeService;
+    private LogisticsOrderPaySumService logisticsOrderPaySumService;
     private FeeApplyCountService feeApplyCountService;
 
     public FeeRefundApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         CustomerAccountService customerAccountService,
-        LogisticsOrderFeeService logisticsOrderFeeService,
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
         FeeApplyCountService feeApplyCountService)
     {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
         this.customerAccountService = customerAccountService;
-        this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.feeApplyCountService = feeApplyCountService;
     }
 
@@ -241,7 +241,7 @@ public class FeeRefundApproveController : Controller
         }
 
         // 费用变动后，这个也要调用一下的 
-        logisticsOrderFeeService.SumFeeAndUpdatePayStatus(refundApply.Order);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(refundApply.Order);
 
         // 余额充值
         customerAccountService.Change(CustomerAccountChangeType.Refund, refundApply.Customer.Id, refundApply.Amount, $"订单 {refundApply.Order.Code} 退赔款");
