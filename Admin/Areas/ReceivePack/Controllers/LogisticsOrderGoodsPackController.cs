@@ -629,25 +629,27 @@ public class LogisticsOrderGoodsPackController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/save/pack")]
     public IActionResult SavePack(LogisticsOrderGoodsPackSavePackParam param) {
-        if (!ModelState.IsValid) {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
-        }
+        ValidationUtil.Validate<LogisticsOrderGoodsPackSavePackParamValidator, LogisticsOrderGoodsPackSavePackParam>(param);
 
-        if (param.Width <= 0 || param.Length <= 0 || param.Height <= 0 || param.Weight <= 0) {
-            throw new ValidationException("长宽高重量数据必须大于0！");
-        }
-
-        if (param.PackageCount <= 0) {
-            throw new ValidationException("箱数必须大于0！");
-        }
-
-        if (param.GoodsType == LogisticsGoodsType.None) {
-            throw new ValidationException("物品类型不能为空！");
-        }
-
-        if (param.FirstModeId <= 0) {
-            throw new ValidationException("头程物流方式不能为空！");
-        }
+        // if (!ModelState.IsValid) {
+        //     throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        // }
+        //
+        // if (param.Width <= 0 || param.Length <= 0 || param.Height <= 0 || param.Weight <= 0) {
+        //     throw new ValidationException("长宽高重量数据必须大于0！");
+        // }
+        //
+        // if (param.PackageCount <= 0) {
+        //     throw new ValidationException("箱数必须大于0！");
+        // }
+        //
+        // if (param.GoodsType == LogisticsGoodsType.None) {
+        //     throw new ValidationException("物品类型不能为空！");
+        // }
+        //
+        // if (param.FirstModeId <= 0) {
+        //     throw new ValidationException("头程物流方式不能为空！");
+        // }
 
         int orderId = param.OrderId;
 
@@ -656,9 +658,9 @@ public class LogisticsOrderGoodsPackController : Controller {
         UserInfo loginUser = session.Get<UserInfo>(loginUserId);
 
         IList<string> trackingNoList = param.TrackingNoList;
-        if (trackingNoList == null || trackingNoList.Count == 0) {
-            throw new ValidationException("请扫描或输入快递单号，再保存打包信息！");
-        }
+        // if (trackingNoList == null || trackingNoList.Count == 0) {
+        //     throw new ValidationException("请扫描或输入快递单号，再保存打包信息！");
+        // }
 
         LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
@@ -705,9 +707,9 @@ public class LogisticsOrderGoodsPackController : Controller {
         LogisticsOrderPackInfo orderPack = new LogisticsOrderPackInfo();
 
         bool isCreate = true;
-        if (param.PackId.HasValue && param.PackId.Value != 0) {
+        if (param.PackId > 0) {
             isCreate = false;
-            orderPack = session.Get<LogisticsOrderPackInfo>(param.PackId.Value);
+            orderPack = session.Get<LogisticsOrderPackInfo>(param.PackId);
             if (orderPack == null) {
                 throw new ValidationException("指定的打包数据不存在！");
             }

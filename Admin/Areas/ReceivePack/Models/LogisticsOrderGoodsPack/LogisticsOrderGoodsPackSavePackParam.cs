@@ -6,7 +6,7 @@ using shunda.Domain.Logistics;
 namespace shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 
 public class LogisticsOrderGoodsPackSavePackParam {
-    public int? PackId { get; set; }
+    public int PackId { get; set; }
 
     [Required(ErrorMessage = "订单不能为空！")]
     public int OrderId { get; set; }
