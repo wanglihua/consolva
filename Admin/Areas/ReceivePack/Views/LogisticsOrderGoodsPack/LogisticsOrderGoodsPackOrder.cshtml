@@ -443,7 +443,8 @@
                 data: {
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.PackId))": $("#" + packBoxId +" input.pack-id").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.OrderId))": @(Model.Order.Id),
-                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.GoodsType))": goodsTypeId,
+                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.GoodsType))": $("#" + packBoxId +" input.pack-goods-type").val(),
+                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.FirstModeId))": $("#" + packBoxId +" input.pack-first-mode").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.Length))": $("#" + packBoxId +" input.pack-length").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.Width))": $("#" + packBoxId +" input.pack-width").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.Height))": $("#" + packBoxId +" input.pack-height").val(),
