@@ -1,3 +1,4 @@
+@using shunda.Core.Config
 @using shunda.Core.Web
 @model shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate.LogisticsFeeRateDetailModel
 @{
@@ -79,8 +80,7 @@
                                             <label asp-for="LogisticsFeeRate.Status" class="col-xs-4 control-label">状态</label>
                                             <div class="col-xs-8">
                                                 <select asp-for="LogisticsFeeRate.Status" class="input-sm form-control">
-                                                    @foreach (var status in Model.StatusList)
-                                                    {
+                                                    @foreach (var status in Model.StatusList) {
                                                         <option value="@status.Id">@status.Name</option>
                                                     }
                                                 </select>
@@ -119,7 +119,8 @@
                                         <div class="form-group">
                                             <label asp-for="LogisticsFeeRate.VolumeDenominator" class="col-xs-4 control-label">体积重分母</label>
                                             <div class="col-xs-8">
-                                                <input asp-for="LogisticsFeeRate.VolumeDenominator" type="number" required="required" min="1" step="1" class="input-sm form-control"/>
+                                                <input asp-for="LogisticsFeeRate.VolumeDenominator" type="hidden" value="@(LogisticsConfig.VolumeWeightDenominator)"/>
+                                                <input asp-for="LogisticsFeeRate.VolumeDenominator" type="number" disabled="disabled" required="required" min="1" step="1" class="input-sm form-control"/>
                                             </div>
                                         </div>
                                     </div>
@@ -201,8 +202,7 @@
                                             <label asp-for="LogisticsFeeRate.VolumeWeightResultType" class="col-xs-4 control-label">体积重计算取向</label>
                                             <div class="col-xs-8">
                                                 <select asp-for="LogisticsFeeRate.VolumeWeightResultType" class="input-sm form-control">
-                                                    @foreach (var orientationInfo in Model.VolumeWeightResultTypeList)
-                                                    {
+                                                    @foreach (var orientationInfo in Model.VolumeWeightResultTypeList) {
                                                         <option value="@orientationInfo.Id">@orientationInfo.Name</option>
                                                     }
                                                 </select>
