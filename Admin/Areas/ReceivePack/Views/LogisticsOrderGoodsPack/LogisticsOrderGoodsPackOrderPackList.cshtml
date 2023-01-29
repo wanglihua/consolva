@@ -83,14 +83,22 @@
                     <td style="text-align: center;">
                         <select class="pack-goods-type" style="width: 80px;">
                             @foreach (var goodsType in Model.GoodsTypeList) {
-                                <option value="@(goodsType.Id)">@(goodsType.Name)</option>
+                                if (Model.SelectGoodsType == goodsType) {
+                                    <option value="@(goodsType.Id)" selected="selected">@(goodsType.Name)</option>
+                                } else {
+                                    <option value="@(goodsType.Id)">@(goodsType.Name)</option>
+                                }
                             }
                         </select>
                     </td>
                     <td style="text-align: center;">
                         <select class="pack-first-mode" style="width: 350px;">
                             @foreach (var firstMode in Model.FirstModeList) {
-                                <option value="@(firstMode.Id)">@(firstMode.Name)</option>
+                                if (Model.SelectFirstModeId == firstMode.Id) {
+                                    <option value="@(firstMode.Id)" selected="selected">@(firstMode.Name)</option>
+                                } else {
+                                    <option value="@(firstMode.Id)">@(firstMode.Name)</option>
+                                }
                             }
                         </select>
                     </td>
