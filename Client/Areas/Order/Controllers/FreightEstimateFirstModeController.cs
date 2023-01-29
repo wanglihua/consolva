@@ -42,6 +42,7 @@ public class FreightEstimateFirstModeController : Controller {
 
         var firstModeList = session.Query<LogisticsModeInfo>()
             .Where(e => e.Country == country // todo 物品类型的问题怎么解决
+                        && e.Cate == LogisticsModeCate.Customer
                         && e.Status == LogisticsModeStatus.Enabled)
             .OrderBy(e => e.Type)
             .ThenByDescending(e => e.Id)

@@ -16,4 +16,10 @@ public class LogisticsOrderGoodsPackOrderPackListModel {
 
     [BindNever]
     public bool Repack { get; set; }
+
+    [BindNever]
+    public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = LogisticsGoodsType.GetCustomerList();
+
+    [BindNever]
+    public IList<LogisticsModeInfo> FirstModeList { get; set; } = new List<LogisticsModeInfo>();
 }

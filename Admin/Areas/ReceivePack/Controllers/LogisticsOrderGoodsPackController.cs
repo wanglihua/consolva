@@ -573,6 +573,11 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.Order.Id == orderId);
 
         IList<LogisticsOrderPackInfo> orderPackList = orderPackQuery.ToList();
+        foreach (var orderPack in orderPackList) {
+            // 用这这个方式，不用交叉表，效率反倒会更高
+            NHibernateUtil.Initialize(orderPack.OrderFirstMode);
+            NHibernateUtil.Initialize(orderPack.OrderFirstMode.FirstMode);
+        }
 
         LogisticsOrderGoodsPackOrderPackListModel model = new LogisticsOrderGoodsPackOrderPackListModel();
 
@@ -591,6 +596,15 @@ public class LogisticsOrderGoodsPackController : Controller {
         model.GoodsType = goodsType;
         model.OrderPackList = orderPackList;
         model.Repack = repack;
+
+        model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();
+
+        Country country = order.Country;
+        model.FirstModeList = session.Query<LogisticsModeInfo>()
+            .Where(e => e.Country == country
+                        && e.Cate == LogisticsModeCate.Customer
+                        && e.Status == LogisticsModeStatus.Enabled)
+            .ToList();
 
         return View("LogisticsOrderGoodsPackOrderPackList", model);
     }
