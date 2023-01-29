@@ -19,8 +19,7 @@
             </label>
             <div class="col-xs-5">
                 <div class="input-group">
-                    @if (Model.Debug)
-                    {
+                    @if (Model.Debug) {
                         <input type="text"
                                class="form-control search-input expressTrackingNo" @* 这个 expressTrackingNo 必须要有，用来限制粘贴的，控制代码里面用到这个。 *@
                                style="font-weight: bold; color:black;background-color:#faffbd;height: 32px;"
@@ -28,9 +27,7 @@
                                onkeydown="if(event.keyCode === 13) {searchExpress(@(goodsType.Id));return false;} else { setFirstKeyDownTime(event); }"
                                autocomplete="off"
                                placeholder="请输入或扫描包裹快递单号"/>
-                    }
-                    else
-                    {
+                    } else {
                         <input type="text"
                                class="form-control search-input expressTrackingNo" @* 这个 expressTrackingNo 必须要有，用来限制粘贴的，控制代码里面用到这个。 *@
                                style="font-weight: bold; color:black;background-color:#faffbd;height: 32px;"
@@ -52,8 +49,7 @@
                 </div>
             </div>
             <div class="col-xs-1">
-                @if (Model.GoodsTypePackCompleteDict[goodsType])
-                {
+                @if (Model.GoodsTypePackCompleteDict[goodsType]) {
                     <button type="button"
                             class="btn btn-success search-btn"
                             style="width: 120px; height:32px; border-width:1px; border-radius: 4px;"
@@ -84,26 +80,26 @@
             <thead>
                 <tr>
                     <td style="width: 50px; text-align: center;">序号</td>
-                    <td style="width: 180px; text-align: center;">快递单号</td>
+                    <td style="width: 130px; text-align: center;">快递单号</td>
+                    <td style="width: 80px; text-align: center;">物品类型</td>
                     <td class="break-word" style="text-align: center;">
                         <span>物品</span>
                     </td>
-                    <td class="break-word" style="width: 180px; text-align: center;">仓位/入库时间</td>
-                    <td style="width: 100px;text-align: center;">
+                    <td class="break-word" style="width: 150px; text-align: center;">仓位/入库时间</td>
+                    <td style="width: 80px;text-align: center;">
                         <span style="color: red; font-weight: bold;">
-                            快递包裹数量
+                            包裹数量
                         </span>
                     </td>
 
-                    <td style="width: 100px;text-align: center;">状态</td>
-                    <td style="width: 100px; text-align: center;">选择</td>
+                    <td style="width: 60px;text-align: center;">状态</td>
+                    <td style="width: 60px; text-align: center;">选择</td>
                 </tr>
             </thead>
             <tbody>
                 @{
                     int index = 1;
-                    foreach (var express in expressList)
-                    {
+                    foreach (var express in expressList) {
                         <tr id="express@(express.Id)">
                             <td style="text-align: center;">@(index++)</td>
                             <td style="text-align: center;">
@@ -121,6 +117,9 @@
                                         </a>
                                     </span>
                                 </div>
+                            </td>
+                            <td style="text-align: center;">
+                                <span>@(express.GoodsType.Name)</span>
                             </td>
                             <td style="text-align: center;" class="break-word">
                                 <div>

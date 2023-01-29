@@ -634,7 +634,19 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         if (param.Width <= 0 || param.Length <= 0 || param.Height <= 0 || param.Weight <= 0) {
-            throw new ValidationException($"长宽高重量数据不能小于0！");
+            throw new ValidationException("长宽高重量数据必须大于0！");
+        }
+
+        if (param.PackageCount <= 0) {
+            throw new ValidationException("箱数必须大于0！");
+        }
+
+        if (param.GoodsType == LogisticsGoodsType.None) {
+            throw new ValidationException("物品类型不能为空！");
+        }
+
+        if (param.FirstModeId <= 0) {
+            throw new ValidationException("头程物流方式不能为空！");
         }
 
         int orderId = param.OrderId;
@@ -643,14 +655,20 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         UserInfo loginUser = session.Get<UserInfo>(loginUserId);
 
-        IList<string> expressTrackingNoList = param.TrackingNoList;
-        if (expressTrackingNoList == null || expressTrackingNoList.Count == 0) {
+        IList<string> trackingNoList = param.TrackingNoList;
+        if (trackingNoList == null || trackingNoList.Count == 0) {
             throw new ValidationException("请扫描或输入快递单号，再保存打包信息！");
         }
 
         LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException("指定的订单不存在！");
+        }
+
+        int firstModeId = param.FirstModeId;
+        var firstMode = session.Get<LogisticsModeInfo>(param.FirstModeId);
+        if (firstMode == null) {
+            throw new ValidationException($"指定的物流方式#{param.FirstModeId}不存在！");
         }
 
         // 一次性获取订单的所有快递单备用
@@ -672,7 +690,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 检查是不是有已经打包状态的
         IList<ExpressInfo> orderExpressToPackList = expressList
-            .Where(e => expressTrackingNoList.Contains(e.TrackingNo))
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
 
         IList<string> packedExpressTrackingNoList = orderExpressToPackList
@@ -695,13 +713,20 @@ public class LogisticsOrderGoodsPackController : Controller {
             }
         }
 
+        // 判断物品类型和物流方式的组合
+        var firstModeGoodsTypeList = session.Query<LogisticsModeGoodsTypeInfo>()
+            .Where(e => e.LogisticsMode.Id == firstModeId)
+            .Select(e => e.GoodsType)
+            .ToList();
+
+
         orderPack.Order = order;
         orderPack.GoodsType = param.GoodsType;
-        orderPack.Length = param.Length ?? 0;
-        orderPack.Width = param.Width ?? 0;
-        orderPack.Height = param.Height ?? 0;
-        orderPack.Weight = param.Weight ?? 0;
-        orderPack.PackageCount = param.PackageCount ?? 1;
+        orderPack.Length = param.Length;
+        orderPack.Width = param.Width;
+        orderPack.Height = param.Height;
+        orderPack.Weight = param.Weight;
+        orderPack.PackageCount = param.PackageCount;
         orderPack.PackUser = loginUser;
 
         DateTime now = DateTime.Now;
