@@ -91,6 +91,14 @@ public class LogisticsOrderStatus : CodeTypeBase {
         };
     }
 
+    public static IList<LogisticsOrderStatus> GetAdminCanCancelStatusList() {
+        return new List<LogisticsOrderStatus>() {
+            Create,
+            WaitPack,
+            Packed,
+        };
+    }
+
     /// <summary>
     /// 构造函数
     /// </summary>
