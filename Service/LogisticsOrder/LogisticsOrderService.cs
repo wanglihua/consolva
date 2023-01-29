@@ -1,3 +1,4 @@
+using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Core.Util;
@@ -6,7 +7,6 @@ using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
 using shunda.Service.Express;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
 
@@ -53,9 +53,7 @@ public class LogisticsOrderService {
             if (order.PaidAmount > 0) {
                 throw new ValidationException("订单已有支付金额，不能取消订单！");
             }
-        }
-
-        if (backend == true) {
+        } else {
             var orderStausListAdminCanCancel = LogisticsOrderStatus.GetAdminCanCancelStatusList();
             if (orderStausListAdminCanCancel.Contains(order.OrderStatus) == false) {
                 throw new ValidationException("当前订单状态后台不能取消订单！");
@@ -103,6 +101,12 @@ public class LogisticsOrderService {
         // 快递单日志
         foreach (var express in expressList) {
             int expressId = express.Id;
+
+            if (backend == false) {
+                expressLogService.CustomerLog(expressId, ExpressLogType.CancelOrder, customerId);
+            } else {
+                expressLogService.UserLog(expressId, ExpressLogType.CancelOrder, userId);
+            }
         }
     }
 }
