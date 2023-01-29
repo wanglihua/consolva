@@ -721,8 +721,32 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Select(e => e.GoodsType)
             .ToList();
 
+        if (firstModeGoodsTypeList.Contains(param.GoodsType) == false) {
+            throw new ValidationException($"物流方式{firstMode.Name}不支持物品类型{param.GoodsType.Name}！");
+        }
+
+        var orderFirstMode = session.Query<LogisticsOrderFirstModeInfo>()
+            .Where(e => e.Order.Id == orderId
+                        && e.FirstMode.Id == firstModeId)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (orderFirstMode == null) {
+            orderFirstMode = new LogisticsOrderFirstModeInfo {
+                Order = order,
+                OrderCode = order.Code,
+                GoodsType = param.GoodsType,
+                FirstMode = firstMode,
+                FirstType = firstMode.Type,
+                Channel = firstMode.Channel,
+            };
+
+            session.Save(orderFirstMode);
+            session.Flush();
+        }
 
         orderPack.Order = order;
+        orderPack.OrderFirstMode = orderFirstMode;
         orderPack.GoodsType = param.GoodsType;
         orderPack.Length = param.Length;
         orderPack.Width = param.Width;
@@ -876,8 +900,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
-        IList<string> expressTrackingNoList = param.TrackingNoList;
-        if (expressTrackingNoList == null || expressTrackingNoList.Count == 0) {
+        IList<string> trackingNoList = param.TrackingNoList;
+        if (trackingNoList == null || trackingNoList.Count == 0) {
             throw new ValidationException("请扫描或输入快递单号，再移除打包信息！");
         }
 
@@ -897,11 +921,11 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.Order!.Id == orderId && e.GoodsType == goodsType)
             .ToList();
 
-        IList<string> goodsTypeExpressTrackingNoList = goodsTypeExpressList
+        IList<string> goodsTypeTrackingNoList = goodsTypeExpressList
             .Select(e => e.TrackingNo)
             .ToList();
 
-        int expressCountNotInGoodsType = param.TrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
+        int expressCountNotInGoodsType = param.TrackingNoList.Where(e => goodsTypeTrackingNoList.Contains(e) == false).Count();
         if (expressCountNotInGoodsType != 0) {
             throw new ValidationException("快递单号不全属于当前物品类型！");
         }
@@ -942,8 +966,22 @@ public class LogisticsOrderGoodsPackController : Controller {
         session.Delete(orderPack);
         session.Flush();
 
+        // 可能的删除 订单头程物流记录
+        var orderFirstMode = orderPack.OrderFirstMode;
+        int orderFirstModeId = orderFirstMode.Id;
+        var orderPackHasOrderFirstMode = session.Query<LogisticsOrderPackInfo>()
+            .Where(e => e.OrderFirstMode.Id == orderFirstModeId)
+            .Take(1)
+            .FirstOrDefault();
+
+        // 订单打包关联的 订单头程物流记录 已经不再被引用了
+        if (orderPackHasOrderFirstMode == null) {
+            session.Delete(orderFirstMode);
+            session.Flush();
+        }
+
         // 如果当前状态是已打包 标记 物品，快递单号为 等待打包状态，同时订单也是
-        UpdateRepackStatus(orderId, expressTrackingNoList);
+        UpdateRepackStatus(orderId, trackingNoList);
 
         // 快递单号日志
         int loginUserId = loginUserService.GetLoginUserId();
