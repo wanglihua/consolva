@@ -7,6 +7,7 @@ using NHibernate.SqlCommand;
 using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
@@ -628,6 +629,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/save/pack")]
+    [Transactional]
     public IActionResult SavePack(LogisticsOrderGoodsPackSavePackParam param) {
         ValidationUtil.Validate<LogisticsOrderGoodsPackSavePackParamValidator, LogisticsOrderGoodsPackSavePackParam>(param);
 
@@ -895,6 +897,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/remove/pack")]
+    [Transactional]
     public IActionResult RemovePack(LogisticsOrderGoodsPackRemovePackParam param) {
         if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
@@ -1080,8 +1083,10 @@ public class LogisticsOrderGoodsPackController : Controller {
 
     #region 完成打包
 
+    [Obsolete]
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/complete/goods/type/pack")]
+    [Transactional]
     public IActionResult CompleteGoodsTypePack(LogisticsOrderGoodsPackCompleteGoodsTypePackParam param) {
         if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
@@ -1162,6 +1167,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/complete/order/pack")]
+    [Transactional]
     public IActionResult CompleteOrderPack(LogisticsOrderGoodsPackCompleteOrderPackParam param) {
         if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));

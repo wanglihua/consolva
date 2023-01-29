@@ -46,6 +46,6 @@ public class LogisticsOrderGoodsPackSavePackParamValidator : AbstractValidator<L
         RuleFor(e => e.PackageCount).Must(p => p > 0).WithMessage("箱数必须大于0！");
         RuleFor(e => e.TrackingNoList).Must(p => p != null && p.Count > 0).WithMessage("请扫描或输入快递单号，再保存打包信息！");
         RuleFor(e => e.GoodsType).Must(p => p != LogisticsGoodsType.None).WithMessage("物品类型不能为空！");
-        RuleFor(e => e.FirstModeId).Must(p => p > 0).WithMessage("物品类型不能为空！");
+        RuleFor(e => e.FirstModeId).Must(p => p > 0).WithMessage("头程物流方式不能为空！");
     }
 }
