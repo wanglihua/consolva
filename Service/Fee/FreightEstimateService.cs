@@ -43,7 +43,7 @@ public class FreightEstimateService {
 
         #region 头程
 
-        IList<LogisticsFeeResultEntry> firstLogisticsFeeResultEntryList = logisticsFeeService.GetLogisticsFee(logisticsFeeData, logisticsFeeData.LogisticsMode, LogisticsFeeRateType.Customer);
+        IList<LogisticsFeeResultEntry> firstLogisticsFeeResultEntryList = logisticsFeeService.GetLogisticsFee(logisticsFeeData, LogisticsFeeRateType.Customer);
         foreach (var logisticsFeeResultEntry in firstLogisticsFeeResultEntryList) {
             feeResultEntryList.Add(logisticsFeeResultEntry);
         }

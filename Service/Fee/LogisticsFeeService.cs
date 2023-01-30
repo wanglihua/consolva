@@ -41,10 +41,9 @@ public class LogisticsFeeService {
     /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
     /// </summary>
     /// <param name="logisticsFeeData"></param>
-    /// <param name="logisticsMode"></param>
     /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFeeForCustomer(LogisticsFeeData logisticsFeeData, LogisticsModeInfo logisticsMode) {
-        return GetLogisticsFee(logisticsFeeData, logisticsMode, LogisticsFeeRateType.Customer, FeeMessageType.Customer);
+    public IList<LogisticsFeeResultEntry> GetLogisticsFeeForCustomer(LogisticsFeeData logisticsFeeData) {
+        return GetLogisticsFee(logisticsFeeData, LogisticsFeeRateType.Customer, FeeMessageType.Customer);
     }
 
     /// <summary>
@@ -52,12 +51,11 @@ public class LogisticsFeeService {
     /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
     /// </summary>
     /// <param name="logisticsFeeData"></param>
-    /// <param name="logisticsMode"></param>
     /// <param name="feeRateType"></param>
     /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsModeInfo logisticsMode, LogisticsFeeRateType feeRateType) // 原来的代码都调用了这个版本
+    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType) // 原来的代码都调用了这个版本
     {
-        return GetLogisticsFee(logisticsFeeData, logisticsMode, feeRateType, FeeMessageType.User);
+        return GetLogisticsFee(logisticsFeeData, feeRateType, FeeMessageType.User);
     }
 
     /// <summary>
@@ -65,11 +63,12 @@ public class LogisticsFeeService {
     /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
     /// </summary>
     /// <param name="logisticsFeeData"></param>
-    /// <param name="logisticsMode"></param>
     /// <param name="feeRateType"></param>
     /// <param name="feeMessageType"></param>
     /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsModeInfo logisticsMode, LogisticsFeeRateType feeRateType, FeeMessageType feeMessageType) {
+    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType, FeeMessageType feeMessageType) {
+        var logisticsMode = logisticsFeeData.LogisticsMode;
+
         if (logisticsMode == null) {
             if (feeMessageType == FeeMessageType.Customer) {
                 throw new LogisticsFeeException("物流方式不支持！AP0121");
