@@ -16,12 +16,12 @@ public class LogisticsFeeGstService {
     /// <summary>
     /// 计算GST费用
     /// </summary>
-    /// <param name="amount">物品总价</param>
+    /// <param name="goodsValue">物品总价</param>
     /// <param name="fee">运费</param>
     /// <param name="gstId">GST费用的设置记录的 Id</param>
     /// <returns></returns>
-    private decimal GetGstFee(decimal amount, decimal fee, int gstId) {
-        if (amount < 0) {
+    public decimal GetGstFee(decimal goodsValue, decimal fee, int gstId) {
+        if (goodsValue < 0) {
             throw new ValidationException("GST计算，物品总价不能小于0！");
         }
 
@@ -39,11 +39,11 @@ public class LogisticsFeeGstService {
         decimal totalAmount = 0m;
 
         if (gst.CalcBaseType == FeeCalcBaseType.Amount) {
-            totalAmount = amount;
+            totalAmount = goodsValue;
         } else if (gst.CalcBaseType == FeeCalcBaseType.Fee) {
             totalAmount = fee;
         } else if (gst.CalcBaseType == FeeCalcBaseType.FeeAndAmount) {
-            totalAmount = (amount + fee);
+            totalAmount = (goodsValue + fee);
         } else {
             throw new LogisticsFeeException("指定的GST费用设置中计算基数设置存在问题！");
         }

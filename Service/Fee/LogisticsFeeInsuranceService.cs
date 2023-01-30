@@ -15,11 +15,11 @@ public class LogisticsFeeInsuranceService {
     /// <summary>
     /// 计算保险费用， 一般只用于订单费用的计算
     /// </summary>
-    /// <param name="amount">物品总价</param>
+    /// <param name="goodsValue">物品总价</param>
     /// <param name="fee">运费</param>
     /// <param name="insuranceId">保险费用的设置记录的 Id</param>
     /// <returns></returns>
-    public decimal GetInsuranceFee(decimal amount, decimal fee, int insuranceId) {
+    public decimal GetInsuranceFee(decimal goodsValue, decimal fee, int insuranceId) {
         LogisticsInsuranceInfo insurance = session.Get<LogisticsInsuranceInfo>(insuranceId);
         if (insurance == null) {
             throw new Exception($"指定的保险费用设置#{insuranceId}不存在！");
@@ -31,7 +31,7 @@ public class LogisticsFeeInsuranceService {
 
         if (insurance.Type == LogisticsInsuranceType.PercentFee) {
             if (insurance.CalcBaseType == FeeCalcBaseType.Amount) {
-                return amount * insurance.FeeRate / 100m;
+                return goodsValue * insurance.FeeRate / 100m;
             }
 
             if (insurance.CalcBaseType == FeeCalcBaseType.Fee) {
@@ -39,7 +39,7 @@ public class LogisticsFeeInsuranceService {
             }
 
             if (insurance.CalcBaseType == FeeCalcBaseType.FeeAndAmount) {
-                return (amount + fee) * insurance.FeeRate / 100m;
+                return (goodsValue + fee) * insurance.FeeRate / 100m;
             }
 
             throw new LogisticsFeeException("指定的保险费用设置中计算基数设置存在问题！");

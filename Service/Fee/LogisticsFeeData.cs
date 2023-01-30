@@ -1,26 +1,32 @@
+using shunda.Domain;
 using shunda.Domain.Logistics;
 
 namespace shunda.Service.Fee;
+
+// todo LogisticsMode 已经放入这个类中，用到这个类又用到物流方式那里，就不用多一个参数了
+
+// todo 加上这个数据结构的数据验证器
 
 /// <summary>
 /// 运费计算时需要的数据
 /// </summary>
 public class LogisticsFeeData {
+    public Country Country { get; set; } = Country.None;
+
+    public LogisticsModeInfo LogisticsMode { get; set; } = new();
+
     public string Address { get; set; } = string.Empty;
 
     public string Zipcode { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 货值
+    /// </summary>
     public decimal GoodsValue { get; set; }
 
     public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     public IList<LogisticsFeePack> FeePackList { get; set; } = new List<LogisticsFeePack>();
-
-    /// <summary>
-    /// 快递单体积列表，包括子单号，单位立方
-    /// 现阶段可以只包含打木架和清理树皮杂物的快递单
-    /// </summary>
-    public IList<LogisticsFeeExpress> FeeExpressList { get; set; } = new List<LogisticsFeeExpress>();
 
     /// <summary>
     /// 包裹数量，快递单号数量
@@ -42,32 +48,6 @@ public class LogisticsFeePack {
 
     /// <summary>
     /// 数量，默认为 1
-    /// </summary>
-    public int PackageCount { get; set; } = 1;
-}
-
-public class LogisticsFeeExpress {
-    public string TrackingNo { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 单位立方
-    /// </summary>
-    public decimal Volume { get; set; }
-
-    /// <summary>
-    ///打木架 
-    /// </summary>
-    [Obsolete]
-    public bool WoodFrame { get; set; }
-
-    /// <summary>
-    /// 清理树皮杂物 
-    /// </summary>
-    [Obsolete]
-    public bool BarkClean { get; set; }
-
-    /// <summary>
-    /// 箱数
     /// </summary>
     public int PackageCount { get; set; } = 1;
 }

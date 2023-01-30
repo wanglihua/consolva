@@ -37,26 +37,15 @@ public class FreightEstimateService {
     /// <param name="customerId">预估客户</param>
     /// <returns>估算的各项费用结果列表</returns>
     public LogisticsFeeResult Calculate(int customerId) {
-        IList<LogisticsFeeResultEntry> logisticsFeeResultEntryList = new List<LogisticsFeeResultEntry>();
+        IList<LogisticsFeeResultEntry> feeResultEntryList = new List<LogisticsFeeResultEntry>();
 
         LogisticsFeeData logisticsFeeData = GetLogisticsFeeData(customerId);
 
         #region 头程
 
-        if (freightEstimateData.FirstLogisticsModeId == null) {
-            throw new ValidationException("未指定跨国段物流方式！");
-        }
-
-        var firstLogisticsMode = session.Get<LogisticsModeInfo>(freightEstimateData.FirstLogisticsModeId.Value);
-
-        if (firstLogisticsMode == null) {
-            throw new ValidationException("不存在符合指定的跨国段物流方式！");
-        }
-
-
-        IList<LogisticsFeeResultEntry> firstLogisticsFeeResultEntryList = logisticsFeeService.GetLogisticsFee(logisticsFeeData, firstLogisticsMode, LogisticsFeeRateType.Customer);
+        IList<LogisticsFeeResultEntry> firstLogisticsFeeResultEntryList = logisticsFeeService.GetLogisticsFee(logisticsFeeData, logisticsFeeData.LogisticsMode, LogisticsFeeRateType.Customer);
         foreach (var logisticsFeeResultEntry in firstLogisticsFeeResultEntryList) {
-            logisticsFeeResultEntryList.Add(logisticsFeeResultEntry);
+            feeResultEntryList.Add(logisticsFeeResultEntry);
         }
 
         #endregion
@@ -64,7 +53,7 @@ public class FreightEstimateService {
         #region 计算GST
 
         decimal totalLogisticsFee = 0m;
-        foreach (LogisticsFeeResultEntry logisticsFeeResultEntry in logisticsFeeResultEntryList) {
+        foreach (LogisticsFeeResultEntry logisticsFeeResultEntry in feeResultEntryList) {
             if (logisticsFeeResultEntry.EntryType == LogisticsFeeResultEntryType.Single) {
                 totalLogisticsFee += logisticsFeeResultEntry.Fee;
             }
@@ -72,7 +61,7 @@ public class FreightEstimateService {
 
         // 查找一个默认的GST费用设置
         LogisticsGstStatus logisticsGstEnabledStatus = LogisticsGstStatus.Enabled;
-        LogisticsGstInfo logisticsGst = session
+        var logisticsGst = session
             .Query<LogisticsGstInfo>()
             .Where(e => e.Status == logisticsGstEnabledStatus)
             .Take(1)
@@ -83,25 +72,10 @@ public class FreightEstimateService {
             throw new LogisticsFeeException("未找到已启用的GST收费设置！");
         }
 
-        decimal totalPrice = 0m;
-        if (freightEstimateData.TotalPrice.HasValue) {
-            totalPrice = freightEstimateData.TotalPrice.Value;
-        }
+        int logisticsGstId = logisticsGst.Id;
+        decimal gstFee = logisticsFeeGstService.GetGstFee(logisticsFeeData.GoodsValue, totalLogisticsFee, logisticsGstId);
 
-        int logisticsGstId = logisticsGst?.Id ?? 0;
-        int firstLogisticsModeId = firstLogisticsMode?.Id ?? 0;
-        decimal totalVolume = 0m;
-        decimal totalWeight = 0m;
-        if (logisticsFeeData?.FeePackList != null && logisticsFeeData.FeePackList.Count != 0) {
-            totalVolume = logisticsFeeData.FeePackList.Sum(e => e.Width * e.Length * e.Height / 100_00_00 * e.PackageCount);
-            totalWeight = logisticsFeeData.FeePackList.Sum(e => e.Weight * e.PackageCount);
-        }
-
-        LogisticsGoodsType orderGoodsType = logisticsFeeData?.GoodsType ?? LogisticsGoodsType.Common;
-
-        decimal gstFee = logisticsFeeService.GetGstFeeWhenEstimate(totalPrice, totalLogisticsFee, totalVolume, totalWeight, logisticsGstId, firstLogisticsModeId, orderGoodsType);
-
-        logisticsFeeResultEntryList.Add(new LogisticsFeeResultEntry() {
+        feeResultEntryList.Add(new LogisticsFeeResultEntry() {
             Title = "GST费用",
             Fee = gstFee,
             GoodsType = LogisticsGoodsType.None,
@@ -113,12 +87,10 @@ public class FreightEstimateService {
 
         #region 计算总费用返回结果
 
-        LogisticsFeeResult logisticsFeeResult = new LogisticsFeeResult();
-        logisticsFeeResult.EntryList = logisticsFeeResultEntryList;
-
-        logisticsFeeResult.TotalFee = totalLogisticsFee + gstFee;
-
-        return logisticsFeeResult;
+        return new LogisticsFeeResult {
+            EntryList = feeResultEntryList,
+            TotalFee = totalLogisticsFee + gstFee
+        };
 
         #endregion
     }
@@ -139,6 +111,12 @@ public class FreightEstimateService {
             throw new ValidationException("运费预估物品数据不存在，请填写数据后再预估！");
         }
 
+        int firstModeId = freightEstimateSelect.FirstModeId;
+        var firstMode = session.Get<LogisticsModeInfo>(firstModeId);
+        if (firstMode == null) {
+            throw new ValidationException($"运费预估数据#{customerId}中指定的物流方式#{firstModeId}不存在，或未指定！");
+        }
+
         int addressReceiveId = freightEstimateSelect.AddressReceiveId;
         var addressReceive = session.Get<CustomerReceiveAddressInfo>(addressReceiveId);
         if (addressReceive == null) {
@@ -150,6 +128,7 @@ public class FreightEstimateService {
         }
 
         return new LogisticsFeeData {
+            LogisticsMode = firstMode,
             GoodsValue = freightEstimateSelect.GoodsValue,
             GoodsType = freightEstimateSelect.GoodsType,
             FeePackList = freightEstimateSelectGoodsList
