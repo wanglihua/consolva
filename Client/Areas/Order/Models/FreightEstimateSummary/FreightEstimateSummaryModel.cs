@@ -26,4 +26,7 @@ public class FreightEstimateSummaryModel {
 
     [JsonProperty("gstFee")]
     public string GstFee { get; set; } = string.Empty;
+
+    [JsonProperty("totalFee")]
+    public string TotalFee { get; set; } = string.Empty;
 }

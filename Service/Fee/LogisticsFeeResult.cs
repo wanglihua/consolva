@@ -7,10 +7,10 @@ public class LogisticsFeeResult {
     /// <summary>
     /// 头程(含折扣)明细
     /// </summary>
-    public IList<LogisticsFeeResultEntry> FirstModeEntryList { get; set; } = new List<LogisticsFeeResultEntry>();
+    public IList<LogisticsFeeResultEntry> FirstModeFeeEntryList { get; set; } = new List<LogisticsFeeResultEntry>();
 
     /// <summary>
-    /// 头程(考虑折扣)费用
+    /// 头程(考虑折扣)费用，FirstModeFeeEntryList中费用的总合
     /// </summary>
     public decimal FirstModeFee { get; set; }
 
@@ -18,10 +18,13 @@ public class LogisticsFeeResult {
 
     public decimal GstFee { get; set; }
 
-    public IList<LogisticsFeeResultEntry> EntryList { get; set; } = new List<LogisticsFeeResultEntry>();
+    /// <summary>
+    /// 全部费用明细，包括 头程，保险，GST 
+    /// </summary>
+    public IList<LogisticsFeeResultEntry> FeeEntryList { get; set; } = new List<LogisticsFeeResultEntry>();
 
     /// <summary>
-    /// 合计费用
+    /// 合计费用，FeeEntryList中费用的总合
     /// </summary>
     public decimal TotalFee { get; set; }
 }

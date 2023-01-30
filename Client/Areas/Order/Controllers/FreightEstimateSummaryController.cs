@@ -18,16 +18,19 @@ public class FreightEstimateSummaryController : Controller {
     private readonly LoginCustomerService loginCustomerService;
     private readonly FreightEstimateSelectService freightEstimateSelectService;
     private readonly CustomerReceiveAddressService customerReceiveAddressService;
+    private readonly FreightEstimateService freightEstimateService;
 
     public FreightEstimateSummaryController(ISession session,
         LoginCustomerService loginCustomerService,
         FreightEstimateSelectService freightEstimateSelectService,
-        CustomerReceiveAddressService customerReceiveAddressService
+        CustomerReceiveAddressService customerReceiveAddressService,
+        FreightEstimateService freightEstimateService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.freightEstimateSelectService = freightEstimateSelectService;
         this.customerReceiveAddressService = customerReceiveAddressService;
+        this.freightEstimateService = freightEstimateService;
     }
 
     [HttpPost]
@@ -120,11 +123,17 @@ public class FreightEstimateSummaryController : Controller {
             Description = firstMode.Description,
         };
 
+        var estimateFee = freightEstimateService.Calculate(loginCustomerId);
+
         // 物流费用
-
-        // GST费用
-
-        // 总费用
+        int feeItemNum = 0;
+        var feeItemList = estimateFee.FirstModeFeeEntryList
+            .Select(e => new FreightEstimateSummaryFeeListItem {
+                Id = feeItemNum++,
+                Name = e.Title,
+                Fee = e.Fee.ToString("#0.00"),
+            })
+            .ToList();
 
         return Json(new JsonResultData {
             Success = true,
@@ -136,6 +145,9 @@ public class FreightEstimateSummaryController : Controller {
                 TotalPackageCount = totalPackageCount,
                 ReceiveAddress = addressReceiveItem,
                 FirstMode = firstModeItem,
+                FeeList = feeItemList,
+                GstFee = estimateFee.GstFee.ToString("#0.00"), // GST费用
+                TotalFee = estimateFee.TotalFee.ToString("#0.00"), // 总费用
             },
         });
     }

@@ -19,7 +19,6 @@ public class FreightEstimateService {
     private readonly LogisticsFeeGstService logisticsFeeGstService;
     private readonly CustomerReceiveAddressService customerReceiveAddressService;
 
-
     public FreightEstimateService(ISession session,
         LogisticsFeeService logisticsFeeService,
         LogisticsFeeGstService logisticsFeeGstService,
@@ -37,7 +36,7 @@ public class FreightEstimateService {
     /// <param name="customerId">预估客户</param>
     /// <returns>估算的各项费用结果列表</returns>
     public LogisticsFeeResult Calculate(int customerId) {
-        IList<LogisticsFeeResultEntry> feeResultEntryList = new List<LogisticsFeeResultEntry>();
+        IList<LogisticsFeeResultEntry> firstModeFeeEntryList = new List<LogisticsFeeResultEntry>();
 
         LogisticsFeeData logisticsFeeData = GetLogisticsFeeData(customerId);
 
@@ -45,17 +44,17 @@ public class FreightEstimateService {
 
         IList<LogisticsFeeResultEntry> firstLogisticsFeeResultEntryList = logisticsFeeService.GetLogisticsFee(logisticsFeeData, LogisticsFeeRateType.Customer);
         foreach (var logisticsFeeResultEntry in firstLogisticsFeeResultEntryList) {
-            feeResultEntryList.Add(logisticsFeeResultEntry);
+            firstModeFeeEntryList.Add(logisticsFeeResultEntry);
         }
 
         #endregion
 
         #region 计算GST
 
-        decimal totalLogisticsFee = 0m;
-        foreach (LogisticsFeeResultEntry logisticsFeeResultEntry in feeResultEntryList) {
+        decimal logisticsFee = 0m;
+        foreach (LogisticsFeeResultEntry logisticsFeeResultEntry in firstModeFeeEntryList) {
             if (logisticsFeeResultEntry.EntryType == LogisticsFeeResultEntryType.Single) {
-                totalLogisticsFee += logisticsFeeResultEntry.Fee;
+                logisticsFee += logisticsFeeResultEntry.Fee;
             }
         }
 
@@ -73,9 +72,12 @@ public class FreightEstimateService {
         }
 
         int logisticsGstId = logisticsGst.Id;
-        decimal gstFee = logisticsFeeGstService.GetGstFee(logisticsFeeData.GoodsValue, totalLogisticsFee, logisticsGstId);
+        decimal gstFee = logisticsFeeGstService.GetGstFee(logisticsFeeData.GoodsValue, logisticsFee, logisticsGstId);
 
-        feeResultEntryList.Add(new LogisticsFeeResultEntry() {
+        List<LogisticsFeeResultEntry> feeEntryList = new List<LogisticsFeeResultEntry>();
+        feeEntryList.AddRange(firstModeFeeEntryList);
+
+        feeEntryList.Add(new LogisticsFeeResultEntry() {
             Title = "GST费用",
             Fee = gstFee,
             GoodsType = LogisticsGoodsType.None,
@@ -88,8 +90,12 @@ public class FreightEstimateService {
         #region 计算总费用返回结果
 
         return new LogisticsFeeResult {
-            EntryList = feeResultEntryList,
-            TotalFee = totalLogisticsFee + gstFee
+            FirstModeFeeEntryList = firstModeFeeEntryList,
+            FirstModeFee = logisticsFee,
+            InsuranceFee = 0,
+            GstFee = gstFee,
+            FeeEntryList = feeEntryList,
+            TotalFee = logisticsFee + gstFee
         };
 
         #endregion
@@ -142,6 +148,7 @@ public class FreightEstimateService {
                 ).ToList(),
             Address = customerReceiveAddressService.GetFullAddress(addressReceive),
             Zipcode = addressReceive.Zipcode,
+            PackageCount = freightEstimateSelectGoodsList.Sum(e => e.PackageCount),
         };
     }
 }
