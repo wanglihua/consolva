@@ -6,7 +6,7 @@ namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsFeeInsuranceService {
-    private ISession session;
+    private readonly ISession session;
 
     public LogisticsFeeInsuranceService(ISession session) {
         this.session = session;

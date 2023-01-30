@@ -17,10 +17,10 @@ namespace shunda.Admin.Areas.AutoApi.Controllers;
 public class PhotoUploadController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private ExpressTrackingNoService expressTrackingNoService;
-    private ExpressPhotoService expressPhotoService;
-    private ExpressLogService expressLogService;
+    private readonly ISession session;
+    private readonly ExpressTrackingNoService expressTrackingNoService;
+    private readonly ExpressPhotoService expressPhotoService;
+    private readonly ExpressLogService expressLogService;
 
     public PhotoUploadController(ISession session,
         ExpressTrackingNoService expressTrackingNoService,

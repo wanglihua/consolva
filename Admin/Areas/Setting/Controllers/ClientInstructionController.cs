@@ -17,8 +17,8 @@ namespace shunda.Admin.Areas.Setting.Controllers;
 [SettingArea]
 [AdminAuth(PassRes.Setting.ClientInstruction)]
 public class ClientInstructionController : Controller {
-    private ISession session;
-    private LoginUserService loginUserService;
+    private readonly ISession session;
+    private readonly LoginUserService loginUserService;
 
     public ClientInstructionController(ISession session, LoginUserService loginUserService) {
         this.session = session;

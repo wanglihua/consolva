@@ -7,24 +7,19 @@ using shunda.Domain;
 namespace shunda.Service;
 
 [Service(ServiceType.Scoped)]
-public class SiteErrorService
-{
-    private ISession session;
+public class SiteErrorService {
+    private readonly ISession session;
 
-    public SiteErrorService(ISession session)
-    {
+    public SiteErrorService(ISession session) {
         this.session = session;
     }
 
-    public void AddSiteError(SiteErrorType type, string errorMessage)
-    {
-        if (string.IsNullOrWhiteSpace(errorMessage))
-        {
+    public void AddSiteError(SiteErrorType type, string errorMessage) {
+        if (string.IsNullOrWhiteSpace(errorMessage)) {
             return;
         }
 
-        if (errorMessage.Length > 500)
-        {
+        if (errorMessage.Length > 500) {
             errorMessage = errorMessage.Substring(0, 500);
         }
 
@@ -35,8 +30,7 @@ public class SiteErrorService
             .Where(e => e.Type == type && e.SubType == subType && e.Resolved == false)
             .Take(1)
             .SingleOrDefault();
-        if (siteErrorSameType != null)
-        {
+        if (siteErrorSameType != null) {
             return;
         }
 
@@ -51,8 +45,7 @@ public class SiteErrorService
         session.Flush();
     }
 
-    public IList<SiteErrorInfo> GetNotResolvedErrorList()
-    {
+    public IList<SiteErrorInfo> GetNotResolvedErrorList() {
         var errorList = session.Query<SiteErrorInfo>()
             .Where(e => e.Resolved == false)
             .OrderByDescending(e => e.CreateTime)
@@ -61,16 +54,13 @@ public class SiteErrorService
         return errorList;
     }
 
-    public void SetResolved(int siteErrorId)
-    {
+    public void SetResolved(int siteErrorId) {
         var siteError = session.Get<SiteErrorInfo>(siteErrorId);
-        if (siteError == null)
-        {
+        if (siteError == null) {
             throw new ValidationException("指定的网站错误不存在！");
         }
 
-        if (siteError.Resolved == true)
-        {
+        if (siteError.Resolved == true) {
             throw new ValidationException("指定的网站错误已经是已解决状态！");
         }
 

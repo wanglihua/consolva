@@ -16,7 +16,7 @@ namespace shunda.Service.Wechat.WechatOfficialAccount;
 public class WechatOfficialAccountAccessTokenService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
+    private readonly ISession session;
 
     public WechatOfficialAccountAccessTokenService(ISession session) {
         this.session = session;

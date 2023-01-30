@@ -9,14 +9,12 @@ namespace shunda.Service.Logistics;
 /// 物流方式打包方式 服务类
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class LogisticsModeRepackTypeService
-{
+public class LogisticsModeRepackTypeService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
+    private readonly ISession session;
 
-    public LogisticsModeRepackTypeService(ISession session)
-    {
+    public LogisticsModeRepackTypeService(ISession session) {
         this.session = session;
     }
 }

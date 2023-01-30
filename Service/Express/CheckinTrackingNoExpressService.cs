@@ -4,12 +4,10 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
-public class CheckinTrackingNoExpressService
-{
-    private ISession session;
+public class CheckinTrackingNoExpressService {
+    private readonly ISession session;
 
-    public CheckinTrackingNoExpressService(ISession session)
-    {
+    public CheckinTrackingNoExpressService(ISession session) {
         this.session = session;
     }
 }

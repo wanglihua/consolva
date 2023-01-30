@@ -20,22 +20,20 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.ManualDecreaseFeeApprove)]
-public class ManualFeeApproveController : Controller
-{
+public class ManualFeeApproveController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private CustomerCodeService customerCodeService;
-    private LoginUserService loginUserService;
-    private ManualFeeService manualFeeService;
-    private FeeApplyCountService feeApplyCountService;
+    private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly LoginUserService loginUserService;
+    private readonly ManualFeeService manualFeeService;
+    private readonly FeeApplyCountService feeApplyCountService;
 
     public ManualFeeApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         ManualFeeService manualFeeService,
-        FeeApplyCountService feeApplyCountService)
-    {
+        FeeApplyCountService feeApplyCountService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
@@ -45,8 +43,7 @@ public class ManualFeeApproveController : Controller
 
     [HttpGet]
     [Route("/admin/manual/fee/approve")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         ManualFeeApproveIndexModel model = new ManualFeeApproveIndexModel();
 
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.ManualDecrease).ToList();
@@ -64,8 +61,7 @@ public class ManualFeeApproveController : Controller
 
     [HttpPost]
     [Route("/admin/manual/fee/approve/list")]
-    public IActionResult List(ManualFeeApproveListQueryParam queryParam)
-    {
+    public IActionResult List(ManualFeeApproveListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -95,11 +91,9 @@ public class ManualFeeApproveController : Controller
 
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
-        foreach (ManualFeeApplyInfo apply in logisticsOrderManualFeeApplyList)
-        {
+        foreach (ManualFeeApplyInfo apply in logisticsOrderManualFeeApplyList) {
             int orderId = apply.Order?.Id ?? 0;
-            if (dictApplyCount.TryGetValue(orderId, out int applyCount))
-            {
+            if (dictApplyCount.TryGetValue(orderId, out int applyCount)) {
                 apply.OrderApplyCountCache = applyCount;
             }
 
@@ -113,8 +107,7 @@ public class ManualFeeApproveController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(ManualFeeApproveListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(ManualFeeApproveListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<ManualFeeApplyInfo>();
 
         // criteria = criteria.CreateAlias(nameof(ManualFeeApplyInfo.Order), nameof(ManualFeeApplyInfo.Order));
@@ -127,31 +120,26 @@ public class ManualFeeApproveController : Controller
 
         criteria.SetReadOnly(true);
 
-        if (queryParam.ManualReasonIdQuery != 0)
-        {
+        if (queryParam.ManualReasonIdQuery != 0) {
             criteria = criteria.Add(Restrictions.Where<ManualFeeApplyInfo>(e => e.ManualReason.Id == queryParam.ManualReasonIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.Eq($"{nameof(ManualFeeApplyInfo.Order)}.{nameof(ManualFeeApplyInfo.Order.Code)}", orderCodeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Eq($"{nameof(ManualFeeApplyInfo.Customer)}.{nameof(ManualFeeApplyInfo.Customer.Id)}", customerIdQuery));
         }
 
-        if (queryParam.StatusQuery != null && queryParam.StatusQuery != ManualFeeApplyStatus.None)
-        {
+        if (queryParam.StatusQuery != null && queryParam.StatusQuery != ManualFeeApplyStatus.None) {
             criteria = criteria.Add(Restrictions.Where<ManualFeeApplyInfo>(e => e.Status == queryParam.StatusQuery));
         }
 
         int applyUserIdQuery = queryParam.ApplyUserIdQuery;
-        if (applyUserIdQuery != 0)
-        {
+        if (applyUserIdQuery != 0) {
             criteria = criteria.Add(Restrictions.Where<ManualFeeApplyInfo>(e => e.ApplyUser.Id == applyUserIdQuery));
         }
 
@@ -160,21 +148,16 @@ public class ManualFeeApproveController : Controller
 
     [HttpPost]
     [Route("/admin/manual/fee/approve/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         session.DefaultReadOnly = true;
 
         ManualFeeApplyInfo? manualFeeApply;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             manualFeeApply = new ManualFeeApplyInfo();
-        }
-        else
-        {
+        } else {
             manualFeeApply = session.Get<ManualFeeApplyInfo>(id.Value);
-            if (manualFeeApply == null)
-            {
+            if (manualFeeApply == null) {
                 throw new ValidationException("指定的数据项不存在！");
             }
         }
@@ -188,10 +171,8 @@ public class ManualFeeApproveController : Controller
     [HttpPost]
     [Route("/admin/manual/fee/approve/back")]
     [Transactional]
-    public IActionResult Back(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Back(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("请选择要回退的数据项！");
         }
 
@@ -200,16 +181,13 @@ public class ManualFeeApproveController : Controller
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList)
-        {
-            if (logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Submitted)
-            {
+        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList) {
+            if (logisticsOrderManualFeeApply.Status != ManualFeeApplyStatus.Submitted) {
                 throw new ValidationException("只能回退【已提交】的申请！");
             }
         }
 
-        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList)
-        {
+        foreach (ManualFeeApplyInfo logisticsOrderManualFeeApply in logisticsOrderManualFeeApplyList) {
             logisticsOrderManualFeeApply.Status = ManualFeeApplyStatus.Backed;
             session.Update(logisticsOrderManualFeeApply);
         }
@@ -225,12 +203,10 @@ public class ManualFeeApproveController : Controller
     [HttpPost]
     [Route("/admin/manual/fee/approve/approve")]
     [Transactional]
-    public IActionResult Approve(int[] idList)
-    {
+    public IActionResult Approve(int[] idList) {
         int loginUserId = loginUserService.GetLoginUserId();
 
-        if (idList == null || idList.Length == 0)
-        {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("请选择要审核的数据项！");
         }
 
@@ -240,18 +216,14 @@ public class ManualFeeApproveController : Controller
                 .Fetch(e => e.Customer), e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (ManualFeeApplyInfo apply in applyList)
-        {
-            if (apply.Status != ManualFeeApplyStatus.Submitted)
-            {
+        foreach (ManualFeeApplyInfo apply in applyList) {
+            if (apply.Status != ManualFeeApplyStatus.Submitted) {
                 throw new ValidationException("只能审核【已提交】的申请！");
             }
         }
 
-        foreach (ManualFeeApplyInfo apply in applyList)
-        {
-            if (apply.Type == LogisticsOrderFeeType.ManualIncrease)
-            {
+        foreach (ManualFeeApplyInfo apply in applyList) {
+            if (apply.Type == LogisticsOrderFeeType.ManualIncrease) {
                 manualFeeService.AddManualIncreaseFee(
                     apply.Order,
                     apply.Customer,
@@ -261,8 +233,7 @@ public class ManualFeeApproveController : Controller
                     loginUserId);
             }
 
-            if (apply.Type == LogisticsOrderFeeType.ManualDecrease)
-            {
+            if (apply.Type == LogisticsOrderFeeType.ManualDecrease) {
                 manualFeeService.AddManualDecreaseFee(
                     apply.Order,
                     apply.Customer,
@@ -273,8 +244,7 @@ public class ManualFeeApproveController : Controller
             }
         }
 
-        foreach (ManualFeeApplyInfo apply in applyList)
-        {
+        foreach (ManualFeeApplyInfo apply in applyList) {
             apply.Status = ManualFeeApplyStatus.Approved;
             apply.ApproveUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
             session.Update(apply);

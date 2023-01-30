@@ -11,18 +11,16 @@ using shunda.Domain.Fee;
 namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
-public class ExchangeRateService
-{
+public class ExchangeRateService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private HttpRequestService httpRequestService;
-    private SiteErrorService siteErrorService;
+    private readonly ISession session;
+    private readonly HttpRequestService httpRequestService;
+    private readonly SiteErrorService siteErrorService;
 
     public ExchangeRateService(ISession session,
         HttpRequestService httpRequestService,
-        SiteErrorService siteErrorService)
-    {
+        SiteErrorService siteErrorService) {
         this.session = session;
         this.httpRequestService = httpRequestService;
         this.siteErrorService = siteErrorService;
@@ -33,15 +31,13 @@ public class ExchangeRateService
     /// </summary>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public decimal GetAudRate()
-    {
+    public decimal GetAudRate() {
         ExchangeRateInfo? exchangeRateInfo = session.Query<ExchangeRateInfo>()
             .Where(e => e.FromCurrency == CurrencyType.AUD && e.ToCurrency == CurrencyType.CNY)
             .Take(1)
             .SingleOrDefault();
 
-        if (exchangeRateInfo == null)
-        {
+        if (exchangeRateInfo == null) {
             throw new Exception("指定的汇率换算不存在");
         }
 
@@ -53,22 +49,19 @@ public class ExchangeRateService
     /// 修正过的最终汇率
     /// </summary>
     /// <returns></returns>
-    public decimal GetAudFinalRate()
-    {
+    public decimal GetAudFinalRate() {
         ExchangeRateInfo? exchangeRateInfo = session.Query<ExchangeRateInfo>()
             .Where(e => e.FromCurrency == CurrencyType.AUD && e.ToCurrency == CurrencyType.CNY)
             .Take(1)
             .SingleOrDefault();
 
-        if (exchangeRateInfo == null)
-        {
+        if (exchangeRateInfo == null) {
             throw new Exception("指定的汇率换算不存在");
         }
 
         decimal audRate = exchangeRateInfo.GetFinalRate();
 
-        if (audRate <= 0)
-        {
+        if (audRate <= 0) {
             throw new Exception("汇率不能小于或等于0，汇率值不合法！");
         }
 
@@ -80,15 +73,13 @@ public class ExchangeRateService
     /// </summary>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public decimal GetUsdRate()
-    {
+    public decimal GetUsdRate() {
         ExchangeRateInfo? exchangeRateInfo = session.Query<ExchangeRateInfo>()
             .Where(e => e.FromCurrency == CurrencyType.USD && e.ToCurrency == CurrencyType.CNY)
             .Take(1)
             .SingleOrDefault();
 
-        if (exchangeRateInfo == null)
-        {
+        if (exchangeRateInfo == null) {
             throw new Exception("指定的汇率换算不存在");
         }
 
@@ -100,30 +91,26 @@ public class ExchangeRateService
     /// 修正过的最终汇率
     /// </summary>
     /// <returns></returns>
-    public decimal GetUsdFinalRate()
-    {
+    public decimal GetUsdFinalRate() {
         ExchangeRateInfo? exchangeRate = session.Query<ExchangeRateInfo>()
             .Where(e => e.FromCurrency == CurrencyType.USD && e.ToCurrency == CurrencyType.CNY)
             .Take(1)
             .SingleOrDefault();
 
-        if (exchangeRate == null)
-        {
+        if (exchangeRate == null) {
             throw new Exception("指定的汇率换算不存在");
         }
 
         decimal usdRate = exchangeRate.GetFinalRate();
 
-        if (usdRate <= 0)
-        {
+        if (usdRate <= 0) {
             throw new Exception("汇率不能小于或等于0，汇率值不合法！");
         }
 
         return usdRate;
     }
 
-    public void RefreshRate()
-    {
+    public void RefreshRate() {
         RefreshSingleRate(CurrencyType.AUD, CurrencyType.CNY);
         RefreshSingleRate(CurrencyType.USD, CurrencyType.CNY);
         RefreshSingleRate(CurrencyType.EUR, CurrencyType.CNY);
@@ -142,15 +129,12 @@ public class ExchangeRateService
         RefreshSingleRate(CurrencyType.HKD, CurrencyType.AUD);
     }
 
-    public void RefreshSingleRate(CurrencyType currencyTypeFrom, CurrencyType currencyTypeTo)
-    {
-        if (currencyTypeFrom == null || currencyTypeFrom == CurrencyType.None)
-        {
+    public void RefreshSingleRate(CurrencyType currencyTypeFrom, CurrencyType currencyTypeTo) {
+        if (currencyTypeFrom == null || currencyTypeFrom == CurrencyType.None) {
             throw new ValidationException("汇率货币From不能为空！");
         }
 
-        if (currencyTypeTo == null || currencyTypeTo == CurrencyType.None)
-        {
+        if (currencyTypeTo == null || currencyTypeTo == CurrencyType.None) {
             throw new ValidationException("汇率货币To不能为空！");
         }
 
@@ -163,8 +147,7 @@ public class ExchangeRateService
 
         RefreshRateResponse response = httpRequestService.GetJsonObject<RefreshRateResponse>(headers, url);
 
-        if (response.Status != "0")
-        {
+        if (response.Status != "0") {
             string errorMsg = "更新汇率出现错误:" + response.Msg;
 
             siteErrorService.AddSiteError(SiteErrorType.ExchangeRate, errorMsg);
@@ -181,8 +164,7 @@ public class ExchangeRateService
             .SingleOrDefault();
 
         Transactional.Wrap(session, () => {
-            if (exchangeRate == null)
-            {
+            if (exchangeRate == null) {
                 exchangeRate = new ExchangeRateInfo();
                 exchangeRate.FromCurrency = currencyTypeFrom;
                 exchangeRate.ToCurrency = currencyTypeTo;
@@ -191,9 +173,7 @@ public class ExchangeRateService
                 exchangeRate.RefreshMark = 0;
 
                 session.Save(exchangeRate);
-            }
-            else
-            {
+            } else {
                 exchangeRate.Rate = rate;
                 exchangeRate.RefreshMark = (exchangeRate.RefreshMark + 1) % 1000000;
 
@@ -205,8 +185,7 @@ public class ExchangeRateService
     }
 
     // {"status":"0","msg":"ok","result":{"from":"AUD","to":"CNY","fromname":"澳大利亚元","toname":"人民币","updatetime":"2019-01-04 20:40:00","rate":"4.8348","camount":"4.8348"}}
-    private class RefreshRateResponse
-    {
+    private class RefreshRateResponse {
         [JsonProperty("status")]
         public string Status { get; set; } = string.Empty;
 
@@ -217,8 +196,7 @@ public class ExchangeRateService
         public Result Result { get; set; } = new Result();
     }
 
-    private class Result
-    {
+    private class Result {
         [JsonProperty("from")]
         public string From { get; set; } = string.Empty;
 

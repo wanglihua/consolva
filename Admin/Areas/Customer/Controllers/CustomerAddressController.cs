@@ -19,24 +19,20 @@ namespace shunda.Admin.Areas.Customer.Controllers;
     // PassRes.LogisticsOrder.OrderListComplete,
     // PassRes.LogisticsOrder.CancelledOrder
 )]
-public class CustomerAddressController : Controller
-{
-    private ISession session;
-    private CustomerCodeService customerCodeService;
+public class CustomerAddressController : Controller {
+    private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
 
-    public CustomerAddressController(ISession session, CustomerCodeService customerCodeService)
-    {
+    public CustomerAddressController(ISession session, CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
     [Route("/admin/customer/address/{customerId:int}")]
-    public IActionResult Index(int customerId)
-    {
+    public IActionResult Index(int customerId) {
         CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
+        if (customer == null) {
             return Content("指定的客户Id不存在！");
         }
 
@@ -64,11 +60,9 @@ public class CustomerAddressController : Controller
 
     [HttpPost]
     [Route("/admin/customer/address/receive/detail")]
-    public IActionResult ReceiveDetail(int id)
-    {
+    public IActionResult ReceiveDetail(int id) {
         CustomerReceiveAddressInfo? customerAddress = session.Get<CustomerReceiveAddressInfo>(id);
-        if (customerAddress == null)
-        {
+        if (customerAddress == null) {
             throw new ValidationException($"指定的客户地址#{id}不存在！");
         }
 
@@ -81,19 +75,16 @@ public class CustomerAddressController : Controller
 
     [HttpPost]
     [Route("/admin/customer/address/receive/save")]
-    public IActionResult ReceiveSave(CustomerAddressReceiveDetailModel model)
-    {
+    public IActionResult ReceiveSave(CustomerAddressReceiveDetailModel model) {
         CustomerReceiveAddressInfo addressFromUi = model.CustomerAddress;
 
-        if (!this.ModelState.IsValid)
-        {
+        if (!this.ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
         int addressId = addressFromUi.Id;
         CustomerReceiveAddressInfo? address = session.Get<CustomerReceiveAddressInfo>(addressId);
-        if (address == null)
-        {
+        if (address == null) {
             throw new ValidationException($"指定的客户地址#{addressId}不存在！");
         }
 

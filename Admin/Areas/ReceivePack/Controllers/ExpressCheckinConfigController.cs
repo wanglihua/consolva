@@ -12,19 +12,16 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 
 [ReceivePackArea]
 [AdminAuth(PassRes.ReceivePack.ExpressCheckinConfig)]
-public class ExpressCheckinConfigController : Controller
-{
-    private ISession session;
+public class ExpressCheckinConfigController : Controller {
+    private readonly ISession session;
 
-    public ExpressCheckinConfigController(ISession session)
-    {
+    public ExpressCheckinConfigController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/express/checkin/config")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         session.DefaultReadOnly = true;
 
         ExpressCheckinConfigInfo? expressCheckinConfig = session
@@ -33,8 +30,7 @@ public class ExpressCheckinConfigController : Controller
             .Take(1)
             .SingleOrDefault();
 
-        if (expressCheckinConfig == null)
-        {
+        if (expressCheckinConfig == null) {
             expressCheckinConfig = new ExpressCheckinConfigInfo();
         }
 
@@ -48,10 +44,8 @@ public class ExpressCheckinConfigController : Controller
     [HttpPost]
     [Route("/admin/express/checkin/config/save")]
     [Transactional]
-    public IActionResult Save(ExpressCheckinConfigIndexModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(ExpressCheckinConfigIndexModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
@@ -64,8 +58,7 @@ public class ExpressCheckinConfigController : Controller
             .SingleOrDefault();
 
         bool isCreate = false;
-        if (expressCheckinConfig == null)
-        {
+        if (expressCheckinConfig == null) {
             isCreate = true;
             expressCheckinConfig = new ExpressCheckinConfigInfo();
         }
@@ -83,12 +76,9 @@ public class ExpressCheckinConfigController : Controller
         expressCheckinConfig.LabelW05H05Status = expressCheckinConfigFromUi.LabelW05H05Status;
         expressCheckinConfig.LabelW05H05PrintCount = expressCheckinConfigFromUi.LabelW05H05PrintCount;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(expressCheckinConfig);
-        }
-        else
-        {
+        } else {
             session.Update(expressCheckinConfig);
         }
 
@@ -102,8 +92,7 @@ public class ExpressCheckinConfigController : Controller
 
     [HttpGet]
     [Route("/admin/express/checkin/config/print/preview/{labelTypeId:int}")]
-    public IActionResult PrintPreview(int labelTypeId)
-    {
+    public IActionResult PrintPreview(int labelTypeId) {
         ExpressCheckinConfigPrintPreviewModel model = new ExpressCheckinConfigPrintPreviewModel();
         model.LabelType = ExpressCheckinLabelType.GetById(labelTypeId);
 
@@ -112,10 +101,8 @@ public class ExpressCheckinConfigController : Controller
 
     [HttpPost]
     [Route("/admin/express/checkin/config/get/express")]
-    public IActionResult GetExpress(string expressTrackingNo)
-    {
-        if (string.IsNullOrWhiteSpace(expressTrackingNo))
-        {
+    public IActionResult GetExpress(string expressTrackingNo) {
+        if (string.IsNullOrWhiteSpace(expressTrackingNo)) {
             throw new ValidationException("快递单号不能为空！");
         }
 
@@ -126,8 +113,7 @@ public class ExpressCheckinConfigController : Controller
             .Take(1)
             .SingleOrDefault();
 
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException("指定的快递单号不存在！");
         }
 

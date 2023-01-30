@@ -13,7 +13,7 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 [ReceivePackArea]
 [AdminAuth(PassRes.ReceivePack.OrderPackConfig)]
 public class LogisticsOrderPackConfigController : Controller {
-    private ISession session;
+    private readonly ISession session;
 
     public LogisticsOrderPackConfigController(ISession session) {
         this.session = session;

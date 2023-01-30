@@ -19,9 +19,9 @@ namespace shunda.Admin.Areas.AutoApi.Controllers;
 public class MeasureDataController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private ExpressTrackingNoService expressTrackingNoService;
-    private ExpressLogService expressLogService;
+    private readonly ISession session;
+    private readonly ExpressTrackingNoService expressTrackingNoService;
+    private readonly ExpressLogService expressLogService;
 
     public MeasureDataController(ISession session, ExpressTrackingNoService expressTrackingNoService, ExpressLogService expressLogService) {
         this.session = session;

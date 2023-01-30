@@ -13,21 +13,18 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.ExpressReturnPay)]
-public class ExpressReturnPayController : Controller
-{
-    private ISession session;
-    private CustomerCodeService customerCodeService;
+public class ExpressReturnPayController : Controller {
+    private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
 
-    public ExpressReturnPayController(ISession session, CustomerCodeService customerCodeService)
-    {
+    public ExpressReturnPayController(ISession session, CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
     [Route("/admin/express/return/pay")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         ExpressReturnPayIndexModel model = new ExpressReturnPayIndexModel();
 
         model.PayTypeList = PayType.GetList();
@@ -38,8 +35,7 @@ public class ExpressReturnPayController : Controller
 
     [HttpPost]
     [Route("/admin/express/return/pay/list")]
-    public IActionResult List(ExpressReturnPayListQueryParam queryParam)
-    {
+    public IActionResult List(ExpressReturnPayListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -53,8 +49,7 @@ public class ExpressReturnPayController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<ExpressReturnPayInfo>();
 
-        foreach (ExpressReturnPayInfo expressReturnPay in expressReturnPayList)
-        {
+        foreach (ExpressReturnPayInfo expressReturnPay in expressReturnPayList) {
             expressReturnPay.CustomerCodeCache = customerCodeService.GetCustomerCode(expressReturnPay.Customer.Id);
         }
 
@@ -65,8 +60,7 @@ public class ExpressReturnPayController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(ExpressReturnPayListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(ExpressReturnPayListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<ExpressReturnPayInfo>();
         criteria = criteria.SetReadOnly(true);
 
@@ -75,22 +69,19 @@ public class ExpressReturnPayController : Controller
 
         criteria = criteria.Add(Restrictions.Where<ExpressReturnPayInfo>(e => e.Status == PayStatus.Paid));
 
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
             string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
 
             int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
             criteria = criteria.Add(Restrictions.Where<ExpressReturnPayInfo>(e => e.Customer.Id == customerId));
         }
 
-        if (queryParam.PayTimeBeginQuery != null)
-        {
+        if (queryParam.PayTimeBeginQuery != null) {
             DateTime payTimeBeginQuery = queryParam.PayTimeBeginQuery.Value.Date;
             criteria = criteria.Add(Restrictions.Where<ExpressReturnPayInfo>(e => e.CreateTime >= payTimeBeginQuery));
         }
 
-        if (queryParam.PayTimeEndQuery != null)
-        {
+        if (queryParam.PayTimeEndQuery != null) {
             DateTime payTimeEndQuery = queryParam.PayTimeEndQuery.Value.Date;
             payTimeEndQuery = payTimeEndQuery.AddDays(1);
 

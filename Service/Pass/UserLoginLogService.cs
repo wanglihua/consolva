@@ -8,21 +8,17 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
-public class UserLoginLogService
-{
+public class UserLoginLogService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
+    private readonly ISession session;
 
-    public UserLoginLogService(ISession session)
-    {
+    public UserLoginLogService(ISession session) {
         this.session = session;
     }
 
-    public void AddLog(UserInfo user, HttpRequest request)
-    {
-        try
-        {
+    public void AddLog(UserInfo user, HttpRequest request) {
+        try {
             UserLoginLogInfo userLoginLog = new UserLoginLogInfo();
             userLoginLog.User = user;
             userLoginLog.IpAddress = StringUtil.LimitMaxLength(WebUtil.GetClientIp(request), 180); // not null
@@ -32,8 +28,7 @@ public class UserLoginLogService
             session.Save(userLoginLog);
             session.Flush();
         }
-        catch (Exception exp)
-        {
+        catch (Exception exp) {
             log.Error(exp);
         }
     }

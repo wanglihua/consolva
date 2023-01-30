@@ -19,22 +19,20 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.WriteOffFeeApprove)]
-public class FeeWriteOffApproveController : Controller
-{
+public class FeeWriteOffApproveController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private CustomerCodeService customerCodeService;
-    private LoginUserService loginUserService;
-    private WriteOffFeeService writeOffFeeService;
-    private FeeApplyCountService feeApplyCountService;
+    private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly LoginUserService loginUserService;
+    private readonly WriteOffFeeService writeOffFeeService;
+    private readonly FeeApplyCountService feeApplyCountService;
 
     public FeeWriteOffApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         WriteOffFeeService writeOffFeeService,
-        FeeApplyCountService feeApplyCountService)
-    {
+        FeeApplyCountService feeApplyCountService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
@@ -44,8 +42,7 @@ public class FeeWriteOffApproveController : Controller
 
     [HttpGet]
     [Route("/admin/fee/write/off/approve")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         FeeWriteOffApproveIndexModel model = new FeeWriteOffApproveIndexModel();
 
         model.FeeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => e.FeeType == ManualFeeType.WriteOffFee).ToList();
@@ -63,8 +60,7 @@ public class FeeWriteOffApproveController : Controller
 
     [HttpPost]
     [Route("/admin/fee/write/off/approve/list")]
-    public IActionResult List(FeeWriteOffApproveListQueryParam queryParam)
-    {
+    public IActionResult List(FeeWriteOffApproveListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -82,11 +78,9 @@ public class FeeWriteOffApproveController : Controller
 
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
-        {
+        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList) {
             int orderId = apply.Order?.Id ?? 0;
-            if (dictApplyCount.TryGetValue(orderId, out int applyCount))
-            {
+            if (dictApplyCount.TryGetValue(orderId, out int applyCount)) {
                 apply.OrderApplyCountCache = applyCount;
             }
 
@@ -100,8 +94,7 @@ public class FeeWriteOffApproveController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(FeeWriteOffApproveListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(FeeWriteOffApproveListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<FeeWriteOffApplyInfo>();
 
         criteria.SetReadOnly(true);
@@ -111,31 +104,26 @@ public class FeeWriteOffApproveController : Controller
 
         criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.Status != FeeWriteOffApplyStatus.Saved && e.Status != FeeWriteOffApplyStatus.Backed));
 
-        if (queryParam.ManualReasonIdQuery != 0)
-        {
+        if (queryParam.ManualReasonIdQuery != 0) {
             criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.WriteOffReason.Id == queryParam.ManualReasonIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeWriteOffApplyInfo.Order)}.{nameof(FeeWriteOffApplyInfo.Order.Code)}", orderCodeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeWriteOffApplyInfo.Customer)}.{nameof(FeeWriteOffApplyInfo.Customer.Id)}", customerIdQuery));
         }
 
-        if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeWriteOffApplyStatus.None)
-        {
+        if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeWriteOffApplyStatus.None) {
             criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.Status == queryParam.StatusQuery));
         }
 
         int applyUserIdQuery = queryParam.ApplyUserIdQuery;
-        if (applyUserIdQuery != 0)
-        {
+        if (applyUserIdQuery != 0) {
             criteria = criteria.Add(Restrictions.Where<FeeWriteOffApplyInfo>(e => e.ApplyUser.Id == applyUserIdQuery));
         }
 
@@ -147,21 +135,16 @@ public class FeeWriteOffApproveController : Controller
     /// </summary>
     [HttpPost]
     [Route("/admin/fee/write/off/approve/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         session.DefaultReadOnly = true;
 
         FeeWriteOffApplyInfo? feeWriteOffApply;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             feeWriteOffApply = new FeeWriteOffApplyInfo();
-        }
-        else
-        {
+        } else {
             feeWriteOffApply = session.Get<FeeWriteOffApplyInfo>(id.Value);
-            if (feeWriteOffApply == null)
-            {
+            if (feeWriteOffApply == null) {
                 throw new ValidationException("指定的数据项不存在！");
             }
         }
@@ -175,10 +158,8 @@ public class FeeWriteOffApproveController : Controller
     [HttpPost]
     [Route("/admin/fee/write/off/approve/back")]
     [Transactional]
-    public IActionResult Back(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Back(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("请选择要回退的数据项！");
         }
 
@@ -187,16 +168,13 @@ public class FeeWriteOffApproveController : Controller
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
-        {
-            if (apply.Status != FeeWriteOffApplyStatus.Submitted)
-            {
+        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList) {
+            if (apply.Status != FeeWriteOffApplyStatus.Submitted) {
                 throw new ValidationException("只能回退【已提交】的申请！");
             }
         }
 
-        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList)
-        {
+        foreach (FeeWriteOffApplyInfo apply in logisticsOrderFeeWriteOffApplyList) {
             apply.Status = FeeWriteOffApplyStatus.Backed;
             apply.ApproveUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
             session.Update(apply);
@@ -213,10 +191,8 @@ public class FeeWriteOffApproveController : Controller
     [HttpPost]
     [Route("/admin/fee/write/off/approve/approve")]
     [Transactional]
-    public IActionResult Approve(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Approve(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("请选择要审核的数据项！");
         }
 
@@ -229,21 +205,17 @@ public class FeeWriteOffApproveController : Controller
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (FeeWriteOffApplyInfo apply in applyList)
-        {
-            if (apply.Status != FeeWriteOffApplyStatus.Submitted)
-            {
+        foreach (FeeWriteOffApplyInfo apply in applyList) {
+            if (apply.Status != FeeWriteOffApplyStatus.Submitted) {
                 throw new ValidationException("只能审核【已提交】的申请！");
             }
         }
 
-        foreach (FeeWriteOffApplyInfo apply in applyList)
-        {
+        foreach (FeeWriteOffApplyInfo apply in applyList) {
             writeOffFeeService.AddWriteOffFee(apply.Order, apply.Customer, apply.Amount, apply.WriteOffReason.Id, loginUserId);
         }
 
-        foreach (FeeWriteOffApplyInfo apply in applyList)
-        {
+        foreach (FeeWriteOffApplyInfo apply in applyList) {
             apply.Status = FeeWriteOffApplyStatus.Approved;
             apply.ApproveUser = session.Get<UserInfo>(loginUserService.GetLoginUserId());
             session.Update(apply);

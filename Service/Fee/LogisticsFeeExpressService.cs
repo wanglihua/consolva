@@ -6,8 +6,8 @@ namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsFeeExpressService {
-    private ISession session;
-    private FeeCalculateLogService feeCalculateLogService;
+    private readonly ISession session;
+    private readonly FeeCalculateLogService feeCalculateLogService;
 
     public LogisticsFeeExpressService(
         ISession session,

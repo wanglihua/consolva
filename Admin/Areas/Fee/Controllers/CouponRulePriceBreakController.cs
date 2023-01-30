@@ -13,42 +13,34 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.Coupon)]
-public class CouponRulePriceBreakController : Controller
-{
-    private ISession session;
-    private CouponRulePriceBreakService couponRulePriceBreakService;
+public class CouponRulePriceBreakController : Controller {
+    private readonly ISession session;
+    private readonly CouponRulePriceBreakService couponRulePriceBreakService;
 
     public CouponRulePriceBreakController(
         ISession session,
-        CouponRulePriceBreakService couponRulePriceBreakService)
-    {
+        CouponRulePriceBreakService couponRulePriceBreakService) {
         this.session = session;
         this.couponRulePriceBreakService = couponRulePriceBreakService;
     }
 
     [HttpGet]
     [Route("/admin/coupon/rule/price/break/detail")]
-    public IActionResult Detail(int id, int batchId)
-    {
+    public IActionResult Detail(int id, int batchId) {
         session.DefaultReadOnly = true;
 
         CouponBatchInfo? batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"优惠券批次#{batchId}不存在！");
         }
 
         CouponRulePriceBreakInfo? couponRulePriceBreak;
 
-        if (id == 0)
-        {
+        if (id == 0) {
             couponRulePriceBreak = new CouponRulePriceBreakInfo();
-        }
-        else
-        {
+        } else {
             couponRulePriceBreak = session.Get<CouponRulePriceBreakInfo>(id);
-            if (couponRulePriceBreak == null)
-            {
+            if (couponRulePriceBreak == null) {
                 throw new ValidationException($"指定的 优惠券满减规则#{id} 不存在！");
             }
         }
@@ -67,10 +59,8 @@ public class CouponRulePriceBreakController : Controller
     [HttpPost]
     [Route("/admin/coupon/rule/price/break/save")]
     [Transactional]
-    public IActionResult Save(CouponRulePriceBreakDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(CouponRulePriceBreakDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -80,15 +70,11 @@ public class CouponRulePriceBreakController : Controller
 
         CouponRulePriceBreakInfo? rule;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             rule = new CouponRulePriceBreakInfo();
-        }
-        else
-        {
+        } else {
             rule = session.Get<CouponRulePriceBreakInfo>(couponRulePriceBreakId);
-            if (rule == null)
-            {
+            if (rule == null) {
                 throw new ValidationException($"指定的 优惠券满减规则#{couponRulePriceBreakId} 不存在！");
             }
         }
@@ -101,12 +87,9 @@ public class CouponRulePriceBreakController : Controller
 
         couponRulePriceBreakService.CheckRuleValid(rule);
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(rule);
-        }
-        else
-        {
+        } else {
             session.Update(rule);
         }
 

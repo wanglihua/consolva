@@ -15,19 +15,16 @@ namespace shunda.Admin.Areas.Express.Controllers;
 
 [ExpressArea]
 [AdminAuth(PassRes.Express.ExpressSizeWeight)]
-public class ExpressSizeWeightController : Controller
-{
-    private ISession session;
+public class ExpressSizeWeightController : Controller {
+    private readonly ISession session;
 
-    public ExpressSizeWeightController(ISession session)
-    {
+    public ExpressSizeWeightController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/express/size/weight")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         ExpressSizeWeightIndexModel model = new ExpressSizeWeightIndexModel();
 
         // 这里有个小问题，就是没计算进去子单号
@@ -41,8 +38,7 @@ public class ExpressSizeWeightController : Controller
 
     [HttpPost]
     [Route("/admin/express/size/weight/list")]
-    public IActionResult List(ExpressSizeWeightListQueryParam queryParam)
-    {
+    public IActionResult List(ExpressSizeWeightListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -62,13 +58,11 @@ public class ExpressSizeWeightController : Controller
             .OrderBy(e => e.Id)
             .ToList();
 
-        foreach (ExpressSizeWeightInfo child in expressSizeWeightChildList)
-        {
+        foreach (ExpressSizeWeightInfo child in expressSizeWeightChildList) {
             // child.VolumeWeightCache = child.Length * child.Width * child.Height / LogisticsConfig.VolumeWeightDenominator; 自动计算了
         }
 
-        foreach (ExpressSizeWeightInfo expressSizeWeight in expressSizeWeightList)
-        {
+        foreach (ExpressSizeWeightInfo expressSizeWeight in expressSizeWeightList) {
             // expressSizeWeight.VolumeWeightCache = expressSizeWeight.Length * expressSizeWeight.Width * expressSizeWeight.Height / LogisticsConfig.VolumeWeightDenominator; 自动计算了
 
             expressSizeWeight.ExpressSizeWeightChildListCache = expressSizeWeightChildList.Where(e => e.TrackingNo == expressSizeWeight.TrackingNo).OrderBy(e => e.Id).ToList();
@@ -81,8 +75,7 @@ public class ExpressSizeWeightController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(ExpressSizeWeightListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(ExpressSizeWeightListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<ExpressSizeWeightInfo>();
         criteria = criteria.SetReadOnly(true);
 
@@ -92,20 +85,17 @@ public class ExpressSizeWeightController : Controller
 
         criteria = criteria.Add(Restrictions.Where<ExpressSizeWeightInfo>(e => e.TrackingNoSub == string.Empty)); // 这里只查询主单号
 
-        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<ExpressSizeWeightInfo>(e => e.TrackingNo == trackingNoQuery));
         }
 
-        if (queryParam.CreateDateBeginQuery != null)
-        {
+        if (queryParam.CreateDateBeginQuery != null) {
             DateTime createDateBeginQuery = queryParam.CreateDateBeginQuery.Value;
             criteria = criteria.Add(Restrictions.Where<ExpressSizeWeightInfo>(e => e.CreateTime >= createDateBeginQuery));
         }
 
-        if (queryParam.CreateDateEndQuery != null)
-        {
+        if (queryParam.CreateDateEndQuery != null) {
             DateTime createDateEndQuery = queryParam.CreateDateEndQuery.Value;
             createDateEndQuery = createDateEndQuery.AddDays(1);
             criteria = criteria.Add(Restrictions.Where<ExpressSizeWeightInfo>(e => e.CreateTime < createDateEndQuery));
@@ -117,10 +107,8 @@ public class ExpressSizeWeightController : Controller
     [HttpPost]
     [Route("/admin/express/size/weight/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (int id in idList)
-        {
+    public IActionResult Delete(int[] idList) {
+        foreach (int id in idList) {
             ExpressSizeWeightInfo logisticsExpress = session.Load<ExpressSizeWeightInfo>(id);
             session.Delete(logisticsExpress);
         }

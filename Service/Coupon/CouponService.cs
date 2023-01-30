@@ -10,11 +10,11 @@ namespace shunda.Service.Coupon;
 
 [Service(ServiceType.Scoped)]
 public class CouponService {
-    private ISession session;
-    private CouponBatchService couponBatchService;
-    private CouponRuleDeductService couponRuleDeductService;
-    private CouponRuleDiscountService couponRuleDiscountService;
-    private CouponRulePriceBreakService couponRulePriceBreakService;
+    private readonly ISession session;
+    private readonly CouponBatchService couponBatchService;
+    private readonly CouponRuleDeductService couponRuleDeductService;
+    private readonly CouponRuleDiscountService couponRuleDiscountService;
+    private readonly CouponRulePriceBreakService couponRulePriceBreakService;
 
     public CouponService(
         ISession session,

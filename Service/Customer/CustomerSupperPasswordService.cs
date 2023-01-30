@@ -10,12 +10,10 @@ namespace shunda.Service.Customer;
 /// 超级密码逻辑
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class CustomerSupperPasswordService
-{
-    private ISession session;
+public class CustomerSupperPasswordService {
+    private readonly ISession session;
 
-    public CustomerSupperPasswordService(ISession session)
-    {
+    public CustomerSupperPasswordService(ISession session) {
         this.session = session;
     }
 
@@ -43,11 +41,9 @@ public class CustomerSupperPasswordService
     /// 生成新的超级密码
     /// </summary>
     /// <returns></returns>
-    public string GenerateNewPassword(int customerId)
-    {
+    public string GenerateNewPassword(int customerId) {
         CustomerInfo? customerInfo = session.Get<CustomerInfo>(customerId);
-        if (customerInfo == null)
-        {
+        if (customerInfo == null) {
             throw new ValidationException("指定的客户不存在！");
         }
 
@@ -59,8 +55,7 @@ public class CustomerSupperPasswordService
             .Take(1)
             .SingleOrDefault();
 
-        if (recentSuperPassword != null && recentSuperPassword.CreateTime > maxPasswordTime)
-        {
+        if (recentSuperPassword != null && recentSuperPassword.CreateTime > maxPasswordTime) {
             throw new ValidationException($"超级密码生成过于频繁，{passwordMinInterval.TotalSeconds}秒内只允许生成一个！");
         }
 
@@ -80,15 +75,13 @@ public class CustomerSupperPasswordService
     /// 生成一个随机的新的超级密码
     /// </summary>
     /// <returns></returns>
-    private string GenerateRandomPassword()
-    {
+    private string GenerateRandomPassword() {
         StringBuilder passwordStringBuilder = new StringBuilder();
 
         int passwordCharsTotalCount = passwordChars.Length;
 
         int lastRand = 0;
-        for (int index = 0; index < passwordLength; index++)
-        {
+        for (int index = 0; index < passwordLength; index++) {
             Random random = new Random(DateTime.Now.Millisecond * lastRand + index);
             int rand = random.Next(0, passwordCharsTotalCount - 1);
 
@@ -106,10 +99,8 @@ public class CustomerSupperPasswordService
     /// <param name="customerId"></param>
     /// <param name="password"></param>
     /// <returns></returns>
-    public bool CheckPasswordValid(int customerId, string password)
-    {
-        if (string.IsNullOrWhiteSpace(password))
-        {
+    public bool CheckPasswordValid(int customerId, string password) {
+        if (string.IsNullOrWhiteSpace(password)) {
             return false;
         }
 
@@ -120,19 +111,16 @@ public class CustomerSupperPasswordService
             .Take(1)
             .SingleOrDefault();
 
-        if (superPassword == null)
-        {
+        if (superPassword == null) {
             return false;
         }
 
         DateTime minPasswordTime = DateTime.Now.Add(-passwordExpireTime); // passwordExpireTime 前面有负号
-        if(superPassword.CreateTime <= minPasswordTime)
-        {
+        if (superPassword.CreateTime <= minPasswordTime) {
             return false;
         }
 
-        if (superPassword.Password.Trim() != password.Trim())
-        {
+        if (superPassword.Password.Trim() != password.Trim()) {
             return false;
         }
 
@@ -143,8 +131,7 @@ public class CustomerSupperPasswordService
     /// 获取密码过期分钟数
     /// </summary>
     /// <returns></returns>
-    public int GetPasswordExpireMinutes()
-    {
+    public int GetPasswordExpireMinutes() {
         return (int)Math.Round(passwordExpireTime.TotalMinutes, MidpointRounding.AwayFromZero);
     }
 }

@@ -14,7 +14,7 @@ namespace shunda.Client.Areas.Express.Controllers;
 
 [ExpressArea]
 public class ExpressCheckinPriceController : Controller {
-    private ISession session;
+    private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
 
     public ExpressCheckinPriceController(ISession session,

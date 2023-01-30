@@ -9,14 +9,12 @@ namespace shunda.Service.Express;
 /// 快递单备注预设 服务类
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class ExpressRemarkPresetSelectService
-{
+public class ExpressRemarkPresetSelectService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
+    private readonly ISession session;
 
-    public ExpressRemarkPresetSelectService(ISession session)
-    {
+    public ExpressRemarkPresetSelectService(ISession session) {
         this.session = session;
     }
 }

@@ -22,22 +22,20 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.FeeRefundApprove)]
-public class FeeRefundApproveController : Controller
-{
-    private ISession session;
-    private CustomerCodeService customerCodeService;
-    private LoginUserService loginUserService;
-    private CustomerAccountService customerAccountService;
-    private LogisticsOrderPaySumService logisticsOrderPaySumService;
-    private FeeApplyCountService feeApplyCountService;
+public class FeeRefundApproveController : Controller {
+    private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
+    private readonly LoginUserService loginUserService;
+    private readonly CustomerAccountService customerAccountService;
+    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly FeeApplyCountService feeApplyCountService;
 
     public FeeRefundApproveController(ISession session,
         CustomerCodeService customerCodeService,
         LoginUserService loginUserService,
         CustomerAccountService customerAccountService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
-        FeeApplyCountService feeApplyCountService)
-    {
+        FeeApplyCountService feeApplyCountService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.loginUserService = loginUserService;
@@ -48,8 +46,7 @@ public class FeeRefundApproveController : Controller
 
     [HttpGet]
     [Route("/admin/logistics/order/refund/approve")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         FeeRefundApproveIndexModel model = new FeeRefundApproveIndexModel();
 
         model.TypeList = FeeRefundType.GetList();
@@ -67,8 +64,7 @@ public class FeeRefundApproveController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/order/refund/approve/list")]
-    public IActionResult List(FeeRefundApproveListQueryParam queryParam)
-    {
+    public IActionResult List(FeeRefundApproveListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -86,11 +82,9 @@ public class FeeRefundApproveController : Controller
 
         IDictionary<int, int> dictApplyCount = feeApplyCountService.GetApplyCount(orderIdList);
 
-        foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList)
-        {
+        foreach (FeeRefundApplyInfo apply in logisticsOrderRefundApplyList) {
             int orderId = apply.Order?.Id ?? 0;
-            if (dictApplyCount.TryGetValue(orderId, out int applyCount))
-            {
+            if (dictApplyCount.TryGetValue(orderId, out int applyCount)) {
                 apply.OrderApplyCountCache = applyCount;
             }
 
@@ -104,8 +98,7 @@ public class FeeRefundApproveController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(FeeRefundApproveListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(FeeRefundApproveListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<FeeRefundApplyInfo>();
 
         criteria.SetReadOnly(true);
@@ -117,38 +110,32 @@ public class FeeRefundApproveController : Controller
 
         criteria = criteria.Add(Restrictions.Where<FeeRefundApplyInfo>(e => e.Status != FeeRefundApplyStatus.Saved && e.Status != FeeRefundApplyStatus.Backed));
 
-        if (queryParam.TypeQuery != null && queryParam.TypeQuery != FeeRefundType.None)
-        {
+        if (queryParam.TypeQuery != null && queryParam.TypeQuery != FeeRefundType.None) {
             var typeQuery = queryParam.TypeQuery;
             criteria = criteria.Add(Restrictions.Eq(nameof(FeeRefundApplyInfo.Type), typeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeRefundApplyInfo.Order)}.{nameof(FeeRefundApplyInfo.Order.Code)}", orderCodeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Eq($"{nameof(FeeRefundApplyInfo.Customer)}.{nameof(FeeRefundApplyInfo.Customer.Id)}", customerIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.ReasonQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.ReasonQuery) == false) {
             string reasonQuery = queryParam.ReasonQuery.Trim();
             criteria = criteria.Add(Restrictions.On<FeeRefundApplyInfo>(e => e.ReasonContent).IsInsensitiveLike(reasonQuery, MatchMode.Anywhere));
         }
 
-        if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeRefundApplyStatus.None)
-        {
+        if (queryParam.StatusQuery != null && queryParam.StatusQuery != FeeRefundApplyStatus.None) {
             criteria = criteria.Add(Restrictions.Where<FeeRefundApplyInfo>(e => e.Status == queryParam.StatusQuery));
         }
 
         int applyUserIdQuery = queryParam.ApplyUserIdQuery;
-        if (applyUserIdQuery != 0)
-        {
+        if (applyUserIdQuery != 0) {
             criteria = criteria.Add(Restrictions.Where<FeeRefundApplyInfo>(e => e.ApplyUser.Id == applyUserIdQuery));
         }
 
@@ -157,13 +144,11 @@ public class FeeRefundApproveController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/order/refund/approve/detail")]
-    public IActionResult Detail(int id)
-    {
+    public IActionResult Detail(int id) {
         session.DefaultReadOnly = true;
 
         FeeRefundApplyInfo? feeRefundApply = session.Get<FeeRefundApplyInfo>(id);
-        if (feeRefundApply == null)
-        {
+        if (feeRefundApply == null) {
             throw new ValidationException("指定的数据项不存在！");
         }
 
@@ -179,10 +164,8 @@ public class FeeRefundApproveController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/order/refund/approve/approve")]
-    public IActionResult Approve(FeeRefundApproveDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Approve(FeeRefundApproveDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
@@ -190,13 +173,11 @@ public class FeeRefundApproveController : Controller
         string approveMemo = model.ApproveMemo;
 
         FeeRefundApplyInfo? refundApply = session.Get<FeeRefundApplyInfo>(applyId);
-        if (refundApply == null)
-        {
+        if (refundApply == null) {
             throw new ValidationException("指定的申请单不存在！");
         }
 
-        if (refundApply.Status != FeeRefundApplyStatus.Submitted)
-        {
+        if (refundApply.Status != FeeRefundApplyStatus.Submitted) {
             throw new ValidationException("当前申请单不是 已提交 状态，不能审核！");
         }
 
@@ -255,10 +236,8 @@ public class FeeRefundApproveController : Controller
     [HttpPost]
     [Route("/admin/logistics/order/refund/approve/back")]
     [Transactional]
-    public IActionResult Back(FeeRefundApproveDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Back(FeeRefundApproveDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
@@ -266,13 +245,11 @@ public class FeeRefundApproveController : Controller
         string approveMemo = model.ApproveMemo;
 
         FeeRefundApplyInfo? refundApply = session.Get<FeeRefundApplyInfo>(applyId);
-        if (refundApply == null)
-        {
+        if (refundApply == null) {
             throw new ValidationException("指定的申请单不存在！");
         }
 
-        if (refundApply.Status != FeeRefundApplyStatus.Submitted)
-        {
+        if (refundApply.Status != FeeRefundApplyStatus.Submitted) {
             throw new ValidationException("当前申请单不是 已提交 状态，不能回退 ！");
         }
 

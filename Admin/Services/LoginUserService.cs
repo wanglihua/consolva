@@ -30,12 +30,12 @@ public class LoginUserService {
     private static string aesKey = "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";
     private static string aesIv = "XHK4nB5iWlQhRNzu";
 
-    private ISession session;
-    private WebSessionService webSessionService;
-    private PasswordService passwordService;
-    private UserService userService;
-    private PassResService passResService;
-    private UserLoginLogService userLoginLogService;
+    private readonly ISession session;
+    private readonly WebSessionService webSessionService;
+    private readonly PasswordService passwordService;
+    private readonly UserService userService;
+    private readonly PassResService passResService;
+    private readonly UserLoginLogService userLoginLogService;
 
     public LoginUserService(ISession session,
         WebSessionService webSessionService,

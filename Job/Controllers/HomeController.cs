@@ -3,19 +3,16 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Job.Controllers;
 
-public class HomeController : Controller
-{
-    private ISession session;
+public class HomeController : Controller {
+    private readonly ISession session;
 
-    public HomeController(ISession session)
-    {
-        this.session = session;     
+    public HomeController(ISession session) {
+        this.session = session;
     }
 
     [HttpGet]
     [Route("/")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         return Json(true);
     }
 }

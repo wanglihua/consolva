@@ -14,21 +14,18 @@ namespace shunda.Admin.Areas.Message.Controllers;
 
 [MessageArea]
 [AdminAuth(PassRes.CustomerMessage.MessageView)]
-public class CustomerMessageController : Controller
-{
-    private ISession session;
-    private CustomerCodeService customerCodeService;
+public class CustomerMessageController : Controller {
+    private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
 
-    public CustomerMessageController(ISession session, CustomerCodeService customerCodeService)
-    {
+    public CustomerMessageController(ISession session, CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
     [Route("/admin/customer/message")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         CustomerMessageIndexModel model = new CustomerMessageIndexModel();
         model.MessageTypeList = CustomerMessageType.GetList();
         model.SendTypeList = CustomerMessageSendType.GetList();
@@ -38,10 +35,8 @@ public class CustomerMessageController : Controller
 
     [HttpPost]
     [Route("/admin/customer/message/list")]
-    public IActionResult List(CustomerMessageListQueryParam queryParam)
-    {
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
+    public IActionResult List(CustomerMessageListQueryParam queryParam) {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             queryParam.OrderId = session.Query<LogisticsOrderInfo>()
                 .Where(e => e.Code == orderCodeQuery)
@@ -63,8 +58,7 @@ public class CustomerMessageController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<CustomerMessageInfo>();
 
-        foreach (CustomerMessageInfo message in customerMessageList)
-        {
+        foreach (CustomerMessageInfo message in customerMessageList) {
             message.CustomerCodeCache = customerCodeService.GetCustomerCode(message.Customer.Id);
         }
 
@@ -75,48 +69,40 @@ public class CustomerMessageController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CustomerMessageListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(CustomerMessageListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<CustomerMessageInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
-        if (queryParam.MessageTypeQuery != null && queryParam.MessageTypeQuery != CustomerMessageType.None)
-        {
+        if (queryParam.MessageTypeQuery != null && queryParam.MessageTypeQuery != CustomerMessageType.None) {
             criteria = criteria.Add(Restrictions.Where<CustomerMessageInfo>(e => e.Type == queryParam.MessageTypeQuery));
         }
 
-        if (queryParam.SendTypeQuery != null && queryParam.SendTypeQuery != CustomerMessageSendType.None)
-        {
+        if (queryParam.SendTypeQuery != null && queryParam.SendTypeQuery != CustomerMessageSendType.None) {
             criteria = criteria.Add(Restrictions.Where<CustomerMessageInfo>(e => e.SendType == queryParam.SendTypeQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
             int customerIdQuery = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Where<CustomerMessageInfo>(e => e.Customer.Id == customerIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.ContentQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.ContentQuery) == false) {
             string contentQuery = queryParam.ContentQuery.Trim();
             criteria = criteria.Add(Restrictions.On<CustomerMessageInfo>(e => e.Content).IsInsensitiveLike(contentQuery, MatchMode.Anywhere));
         }
 
-        if (queryParam.SendBySmsQuery != null)
-        {
+        if (queryParam.SendBySmsQuery != null) {
             bool sendBySmsQueryValue = queryParam.SendBySmsQuery.Value;
             criteria = criteria.Add(Restrictions.Where<CustomerMessageInfo>(e => e.SmsSend == sendBySmsQueryValue));
         }
 
-        if (queryParam.SendByWechatQuery != null)
-        {
+        if (queryParam.SendByWechatQuery != null) {
             bool sendByWechatQueryValue = queryParam.SendByWechatQuery.Value;
             criteria = criteria.Add(Restrictions.Where<CustomerMessageInfo>(e => e.WechatSend == sendByWechatQueryValue));
         }
 
-        if (queryParam.OrderId != null)
-        {
+        if (queryParam.OrderId != null) {
             int orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Eq($"{nameof(CustomerMessageInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}", orderId));
         }

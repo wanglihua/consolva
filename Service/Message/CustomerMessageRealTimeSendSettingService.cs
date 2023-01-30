@@ -5,20 +5,17 @@ using shunda.Service.Message.CustomerMessage;
 namespace shunda.Service.Message;
 
 [Service(ServiceType.Scoped)]
-public class CustomerMessageRealTimeSendSettingService
-{
-    private ISession session;
+public class CustomerMessageRealTimeSendSettingService {
+    private readonly ISession session;
 
-    public CustomerMessageRealTimeSendSettingService(ISession session)
-    {
+    public CustomerMessageRealTimeSendSettingService(ISession session) {
         this.session = session;
     }
 
     /// <summary>
     /// 初始化设置
     /// </summary>
-    public void InitSetting()
-    {
+    public void InitSetting() {
         CustomerMessageExpressExpectEnterService.InitSetting(session);
         CustomerMessageExpressCheckinService.InitSetting(session);
         CustomerMessageAccountChangeService.InitSetting(session);

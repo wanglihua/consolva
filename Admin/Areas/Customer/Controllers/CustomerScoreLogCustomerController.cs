@@ -14,24 +14,20 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 
 [CustomerArea]
 [AdminAuth(PassRes.Customer.CustomerList)]
-public class CustomerScoreLogCustomerController : Controller
-{
-    private ISession session;
-    private CustomerCodeService customerCodeService;
+public class CustomerScoreLogCustomerController : Controller {
+    private readonly ISession session;
+    private readonly CustomerCodeService customerCodeService;
 
-    public CustomerScoreLogCustomerController(ISession session, CustomerCodeService customerCodeService)
-    {
+    public CustomerScoreLogCustomerController(ISession session, CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
     }
 
     [HttpGet]
     [Route("/admin/customer/score/log/{customerId:int}")]
-    public IActionResult Index(int customerId)
-    {
+    public IActionResult Index(int customerId) {
         CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
+        if (customer == null) {
             throw new ValidationException("指定的会员不存在！");
         }
 
@@ -47,20 +43,18 @@ public class CustomerScoreLogCustomerController : Controller
 
     [HttpPost]
     [Route("/admin/customer/score/log/customer/list")]
-    public IActionResult List(CustomerScoreLogCustomerListQueryParam queryParam)
-    {
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
+    public IActionResult List(CustomerScoreLogCustomerListQueryParam queryParam) {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
             string orderCode = queryParam.OrderCodeQuery.Trim();
             int orderId = session.Query<LogisticsOrderInfo>()
                 .Where(e => e.Code == orderCode)
-                .Select(e =>e.Id)
+                .Select(e => e.Id)
                 .Take(1)
                 .SingleOrDefault();
 
             queryParam.OrderId = orderId;
         }
-        
+
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -74,8 +68,7 @@ public class CustomerScoreLogCustomerController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<CustomerScoreLogInfo>();
 
-        foreach (CustomerScoreLogInfo scoreLog in customerScoreLogList)
-        {
+        foreach (CustomerScoreLogInfo scoreLog in customerScoreLogList) {
             scoreLog.CustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.Customer.Id);
             scoreLog.LogisticsOrderCustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.LogisticsOrderCustomer?.Id ?? 0);
         }
@@ -87,21 +80,18 @@ public class CustomerScoreLogCustomerController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CustomerScoreLogCustomerListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(CustomerScoreLogCustomerListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<CustomerScoreLogInfo>();
         criteria = criteria.SetReadOnly(true);
 
         int customerId = queryParam.CustomerId;
         criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.Customer.Id == customerId));
 
-        if (queryParam.ScoreTypeQuery != null && queryParam.ScoreTypeQuery != CustomerScoreType.None)
-        {
+        if (queryParam.ScoreTypeQuery != null && queryParam.ScoreTypeQuery != CustomerScoreType.None) {
             criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.ScoreType == queryParam.ScoreTypeQuery));
         }
 
-        if (queryParam.OrderId != null)
-        {
+        if (queryParam.OrderId != null) {
             int orderId = queryParam.OrderId.Value;
             criteria = criteria.Add(Restrictions.Where<CustomerScoreLogInfo>(e => e.LogisticsOrder!.Id == orderId));
         }

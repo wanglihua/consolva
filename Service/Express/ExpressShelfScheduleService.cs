@@ -13,13 +13,11 @@ using shunda.Domain.Storage;
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
-public class ExpressShelfScheduleService
-{
-    private ISession session;
-    private ExpressSizeWeightService expressSizeWeightService;
+public class ExpressShelfScheduleService {
+    private readonly ISession session;
+    private readonly ExpressSizeWeightService expressSizeWeightService;
 
-    public ExpressShelfScheduleService(ISession session, ExpressSizeWeightService expressSizeWeightService)
-    {
+    public ExpressShelfScheduleService(ISession session, ExpressSizeWeightService expressSizeWeightService) {
         this.session = session;
         this.expressSizeWeightService = expressSizeWeightService;
     }
@@ -31,12 +29,10 @@ public class ExpressShelfScheduleService
     /// <param name="queryParam"></param>
     /// <param name="listPager"></param>
     /// <returns></returns>
-    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam, ListPager? listPager)
-    {
+    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam, ListPager? listPager) {
         ICriteria criteria = GetListCriteria(scheduleType, queryParam);
 
-        if (listPager != null)
-        {
+        if (listPager != null) {
             criteria = criteria.AddOrder(new Order(listPager.SortField, listPager.IsAscending))
                 .AddOrder(Order.Desc(nameof(Entity.Id)))
                 .SetFirstResult(listPager.PageIndex * listPager.PageSize)
@@ -59,8 +55,7 @@ public class ExpressShelfScheduleService
         IList<string> trackingNoList = scheduleList.Select(e => e.Express.TrackingNo).ToList();
         IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>().Where(e => trackingNoList.Contains(e.TrackingNo)).ToList();
 
-        foreach (ExpressShelfScheduleInfo schedule in scheduleList)
-        {
+        foreach (ExpressShelfScheduleInfo schedule in scheduleList) {
             // UserInfo user = userList.Where(e => e.Id == schedule.Express.AddUserId).Take(1).SingleOrDefault();
             // schedule.Express.AddUserNameCache = user?.UserName;
             //
@@ -86,8 +81,7 @@ public class ExpressShelfScheduleService
     /// <param name="scheduleType"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam)
-    {
+    public IList<ExpressShelfScheduleInfo> List(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam) {
         return List(scheduleType, queryParam, null);
     }
 
@@ -97,8 +91,7 @@ public class ExpressShelfScheduleService
     /// <param name="scheduleType"></param>
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    public int Count(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam)
-    {
+    public int Count(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam) {
         int totalCount = GetListCriteria(scheduleType, queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -112,8 +105,7 @@ public class ExpressShelfScheduleService
     /// <param name="scheduleType"></param>        
     /// <param name="queryParam"></param>
     /// <returns></returns>
-    private ICriteria GetListCriteria(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(ExpressShelfScheduleType scheduleType, ExpressListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<ExpressShelfScheduleInfo>();
         criteria = criteria.SetReadOnly(true);
 
@@ -139,56 +131,47 @@ public class ExpressShelfScheduleService
 
         // 按查询条件过滤
 
-        if (queryParam.WarehouseIdQuery != 0)
-        {
+        if (queryParam.WarehouseIdQuery != 0) {
             int warehouseIdQuery = queryParam.WarehouseIdQuery;
             criteria = criteria.Add(Restrictions.Eq($"w.{nameof(WarehouseInfo.Id)}", warehouseIdQuery));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CheckinTrackingNoQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CheckinTrackingNoQuery) == false) {
             string checkinTrackingNoQuery = queryParam.CheckinTrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.CheckinTrackingNo)}", checkinTrackingNoQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.TrackingNo)}", trackingNoQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.BillCustomerCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.BillCustomerCodeQuery) == false) {
             string billCustomerCodeQuery = queryParam.BillCustomerCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.BillCustomerCode)}", billCustomerCodeQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.ExpressCompanyQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.ExpressCompanyQuery) == false) {
             string expressCompanyQuery = queryParam.ExpressCompanyQuery.Trim();
             criteria = criteria.Add(Restrictions.InsensitiveLike($"express.{nameof(ExpressInfo.ExpressCompany)}", expressCompanyQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
             string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
             criteria = criteria.Add(Restrictions.Eq($"order.{nameof(LogisticsOrderInfo.Code)}", orderCodeQuery));
         }
 
-        if (scheduleType == ExpressShelfScheduleType.OnShelf)
-        {
+        if (scheduleType == ExpressShelfScheduleType.OnShelf) {
             // criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.Status)}", statusQuery));
             criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.ShelfStatus)}", ExpressShelfStatus.ToOnShelf)); // 只显示待上架的
         }
 
-        if (scheduleType == ExpressShelfScheduleType.OffShelf)
-        {
+        if (scheduleType == ExpressShelfScheduleType.OffShelf) {
             criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.Status)}", ExpressStatus.WaitPack)); // 只显示待下架，就是待打包的
             // criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.ShelfStatus)}", ExpressShelfStatus.));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.GoodsNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.GoodsNameQuery) == false) {
             string goodsNameQuery = queryParam.GoodsNameQuery.Trim();
             IList<int> goodsIdList = session.Query<LogisticsGoodsInfo>()
                 .Where(e => e.Name.Contains(goodsNameQuery))
@@ -204,69 +187,58 @@ public class ExpressShelfScheduleService
             criteria = criteria.Add(Restrictions.In($"express.{nameof(ExpressInfo.Id)}", expressIdList.ToArray()));
         }
 
-        if (queryParam.ScheduleUserIdListQuery != null && queryParam.ScheduleUserIdListQuery.Count != 0)
-        {
+        if (queryParam.ScheduleUserIdListQuery != null && queryParam.ScheduleUserIdListQuery.Count != 0) {
             // criteria = criteria.Add(Restrictions.Eq($"{nameof(ExpressShelfScheduleInfo.ScheduleType)}", queryParam.ScheduleType)); 这个前面已经有限制条件了
             criteria = criteria.Add(Restrictions.In($"user.{nameof(UserInfo.Id)}", queryParam.ScheduleUserIdListQuery.ToArray()));
         }
 
-        if (queryParam.AddDateBeginQuery != null)
-        {
+        if (queryParam.AddDateBeginQuery != null) {
             DateTime addTimeBeginQueryValue = queryParam.AddDateBeginQuery.Value.Date;
             criteria = criteria.Add(Restrictions.Ge($"express.{nameof(ExpressInfo.AddTime)}", addTimeBeginQueryValue));
         }
 
-        if (queryParam.AddDateEndQuery != null)
-        {
+        if (queryParam.AddDateEndQuery != null) {
             DateTime addTimeEndQueryValue = queryParam.AddDateEndQuery.Value.Date.AddDays(1);
             criteria = criteria.Add(Restrictions.Lt($"express.{nameof(ExpressInfo.AddTime)}", addTimeEndQueryValue));
         }
 
-        if (queryParam.OnShelfTimeBeginQuery != null)
-        {
+        if (queryParam.OnShelfTimeBeginQuery != null) {
             DateTime onShelfTimeBeginQueryValue = queryParam.OnShelfTimeBeginQuery.Value.Date;
             criteria = criteria.Add(Restrictions.Ge($"express.{nameof(ExpressInfo.OnShelfTime)}", onShelfTimeBeginQueryValue));
         }
 
-        if (queryParam.OnShelfTimeEndQuery != null)
-        {
+        if (queryParam.OnShelfTimeEndQuery != null) {
             DateTime onShelfTimeEndQueryValue = queryParam.OnShelfTimeEndQuery.Value.Date.AddDays(1);
             criteria = criteria.Add(Restrictions.Lt($"express.{nameof(ExpressInfo.OnShelfTime)}", onShelfTimeEndQueryValue));
         }
 
         // 看上下文，如果是上架的，就是上架排班时间；如果是下架的，就是下架排班时间
-        if (queryParam.ScheduleTimeBeginQuery != null)
-        {
+        if (queryParam.ScheduleTimeBeginQuery != null) {
             DateTime scheduleTimeBeginQueryValue = queryParam.ScheduleTimeBeginQuery.Value.Date;
             criteria = criteria.Add(Restrictions.Ge($"{nameof(ExpressShelfScheduleInfo.CreateTime)}", scheduleTimeBeginQueryValue));
         }
 
-        if (queryParam.ScheduleTimeEndQuery != null)
-        {
+        if (queryParam.ScheduleTimeEndQuery != null) {
             DateTime scheduleTimeEndQueryValue = queryParam.ScheduleTimeEndQuery.Value.Date.AddDays(1);
             criteria = criteria.Add(Restrictions.Lt($"{nameof(ExpressShelfScheduleInfo.CreateTime)}", scheduleTimeEndQueryValue));
         }
 
-        if (queryParam.ClaimTimeBeginQuery != null)
-        {
+        if (queryParam.ClaimTimeBeginQuery != null) {
             DateTime pickTimeBeginQueryValue = queryParam.ClaimTimeBeginQuery.Value.Date;
             criteria = criteria.Add(Restrictions.Ge($"express.{nameof(ExpressInfo.ClaimTime)}", pickTimeBeginQueryValue));
         }
 
-        if (queryParam.ClaimTimeEndQuery != null)
-        {
+        if (queryParam.ClaimTimeEndQuery != null) {
             DateTime pickTimeEndQueryValue = queryParam.ClaimTimeEndQuery.Value.Date.AddDays(1);
             criteria = criteria.Add(Restrictions.Lt($"express.{nameof(ExpressInfo.ClaimTime)}", pickTimeEndQueryValue));
         }
 
-        if (queryParam.ScheduleShelfIdListQuery != null && queryParam.ScheduleShelfIdListQuery.Count != 0)
-        {
+        if (queryParam.ScheduleShelfIdListQuery != null && queryParam.ScheduleShelfIdListQuery.Count != 0) {
             string shelfIdProp = $"shelf.{nameof(ShelfInfo.Id)}";
             criteria = criteria.Add(Restrictions.In(shelfIdProp, queryParam.ScheduleShelfIdListQuery.ToArray()));
         }
 
-        if (queryParam.FirstModeIdQuery != 0)
-        {
+        if (queryParam.FirstModeIdQuery != 0) {
             int firstModeIdQuery = queryParam.FirstModeIdQuery;
             criteria = criteria.Add(Restrictions.Eq($"express.{nameof(ExpressInfo.FirstMode)}.{nameof(LogisticsModeInfo.Id)}", firstModeIdQuery));
         }

@@ -1,7 +1,6 @@
-using shunda.Core.Service;
-using shunda.Domain;
+using NHibernate;
 using NLog;
-using ISession = NHibernate.ISession;
+using shunda.Core.Service;
 
 namespace shunda.Service.Logistics;
 
@@ -9,14 +8,12 @@ namespace shunda.Service.Logistics;
 /// 物流方式通用费率 服务类
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class LogisticsModeFeeRateService
-{
+public class LogisticsModeFeeRateService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
+    private readonly ISession session;
 
-    public LogisticsModeFeeRateService(ISession session)
-    {
+    public LogisticsModeFeeRateService(ISession session) {
         this.session = session;
     }
 }

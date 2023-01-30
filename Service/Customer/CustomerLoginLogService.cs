@@ -11,51 +11,44 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
-public class CustomerLoginLogService
-{
+public class CustomerLoginLogService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private WebSessionService webSessionService;
-    private WechatSessionService wechatSessionService;
+    private readonly ISession session;
+    private readonly WebSessionService webSessionService;
+    private readonly WechatSessionService wechatSessionService;
 
     public CustomerLoginLogService(
         ISession session,
         WebSessionService webSessionService,
         WechatSessionService wechatSessionService
-    )
-    {
+    ) {
         this.session = session;
         this.webSessionService = webSessionService;
         this.wechatSessionService = wechatSessionService;
     }
 
-    public void AddLog(CustomerLoginStage stage, int customerId, HttpRequest request)
-    {
-        if (stage == null)
-        {
+    public void AddLog(CustomerLoginStage stage, int customerId, HttpRequest request) {
+        if (stage == null) {
             stage = CustomerLoginStage.None;
         }
 
         CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
+        if (customer == null) {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
 
 
         string sessionId = webSessionService.SessionId;
-        if (string.IsNullOrWhiteSpace(sessionId))
-        {
+        if (string.IsNullOrWhiteSpace(sessionId)) {
             sessionId = string.Empty;
         }
 
         string openId = wechatSessionService.GetOpenId();
-        if (string.IsNullOrWhiteSpace(openId))
-        {
+        if (string.IsNullOrWhiteSpace(openId)) {
             openId = string.Empty;
         }
-        
+
         // todo 记录 client id 和 微信场景值
 
         CustomerLoginLogInfo customerLoginLog = new CustomerLoginLogInfo {

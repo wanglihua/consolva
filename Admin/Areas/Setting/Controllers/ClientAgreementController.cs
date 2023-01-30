@@ -18,8 +18,8 @@ namespace shunda.Admin.Areas.Setting.Controllers;
 [SettingArea]
 [AdminAuth(PassRes.Setting.ClientAgreement)]
 public class ClientAgreementController : Controller {
-    private ISession session;
-    private LoginUserService loginUserService;
+    private readonly ISession session;
+    private readonly LoginUserService loginUserService;
 
     public ClientAgreementController(ISession session, LoginUserService loginUserService) {
         this.session = session;

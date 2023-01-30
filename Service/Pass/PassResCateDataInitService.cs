@@ -7,7 +7,7 @@ namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
 public class PassResCateDataInitService {
-    private ISession session;
+    private readonly ISession session;
 
     public PassResCateDataInitService(ISession session) {
         this.session = session;

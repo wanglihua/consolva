@@ -6,28 +6,23 @@ using shunda.Domain.Express;
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
-public class ExpressSizeWeightService
-{
-    private ISession session;
+public class ExpressSizeWeightService {
+    private readonly ISession session;
 
-    public ExpressSizeWeightService(ISession session)
-    {
+    public ExpressSizeWeightService(ISession session) {
         this.session = session;
     }
 
-    public void BindAndSum(int expressId)
-    {
+    public void BindAndSum(int expressId) {
         ExpressInfo express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的快递单#{expressId}不存在！");
         }
 
         BindAndSum(express);
     }
 
-    public void BindAndSum(ExpressInfo express)
-    {
+    public void BindAndSum(ExpressInfo express) {
         // if (string.IsNullOrWhiteSpace(trackingNo))
         // {
         //     throw new ValidationException("绑定尺寸重量，快递单号不能为空！");
@@ -48,8 +43,7 @@ public class ExpressSizeWeightService
         decimal totalWeight = 0m;
         int packageCount = 0;
 
-        foreach (ExpressSizeWeightInfo sizeWeight in sizeWeightList)
-        {
+        foreach (ExpressSizeWeightInfo sizeWeight in sizeWeightList) {
             sizeWeight.Express = express;
             session.Update(sizeWeight);
 
@@ -71,11 +65,9 @@ public class ExpressSizeWeightService
     /// 汇总单个快递单号尺寸体积重量等
     /// </summary>
     /// <param name="expressId"></param>
-    public void SumDataAndUpdateExpress(int expressId)
-    {
+    public void SumDataAndUpdateExpress(int expressId) {
         ExpressInfo express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的快递单#{expressId}不存在！");
         }
 
@@ -87,8 +79,7 @@ public class ExpressSizeWeightService
         decimal totalWeight = 0m;
         int packageCount = 0;
 
-        foreach (var sizeWeight in sizeWeightList)
-        {
+        foreach (var sizeWeight in sizeWeightList) {
             totalVolume += (sizeWeight.Length * sizeWeight.Width * sizeWeight.Height) * sizeWeight.PackageCount / 100_00_00;
             totalWeight += sizeWeight.Weight * sizeWeight.PackageCount;
             packageCount += sizeWeight.PackageCount;

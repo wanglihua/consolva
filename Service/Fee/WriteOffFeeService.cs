@@ -11,37 +11,32 @@ using shunda.Service.LogisticsOrder;
 namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
-public class WriteOffFeeService
-{
-    private ISession session;
-    private LogisticsOrderPaySumService logisticsOrderPaySumService;
-    private LogisticsOrderActionService logisticsOrderActionService;
-    private CustomerScoreService customerScoreService;
+public class WriteOffFeeService {
+    private readonly ISession session;
+    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly LogisticsOrderActionService logisticsOrderActionService;
+    private readonly CustomerScoreService customerScoreService;
 
     public WriteOffFeeService(ISession session,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         LogisticsOrderActionService logisticsOrderActionService,
-        CustomerScoreService customerScoreService)
-    {
+        CustomerScoreService customerScoreService) {
         this.session = session;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.customerScoreService = customerScoreService;
     }
 
-    public void AddWriteOffFee(LogisticsOrderInfo logisticsOrder, CustomerInfo customer, decimal amount, int feeReasonId, int userId)
-    {
+    public void AddWriteOffFee(LogisticsOrderInfo logisticsOrder, CustomerInfo customer, decimal amount, int feeReasonId, int userId) {
         ManualFeeReasonInfo? manualFeeReason = session.Get<ManualFeeReasonInfo>(feeReasonId);
-        if (manualFeeReason == null)
-        {
+        if (manualFeeReason == null) {
             throw new Exception($"指定的核销原因#{feeReasonId}不存在！");
         }
 
         string reasonContent = manualFeeReason.Content ?? string.Empty;
 
         UserInfo? user = session.Get<UserInfo>(userId);
-        if (user == null)
-        {
+        if (user == null) {
             throw new Exception($"指定的操作用户#{userId}不存在！");
         }
 

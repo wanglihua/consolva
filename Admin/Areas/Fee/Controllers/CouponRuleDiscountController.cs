@@ -13,42 +13,34 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.Coupon)]
-public class CouponRuleDiscountController : Controller
-{
-    private ISession session;
-    private CouponRuleDiscountService couponRuleDiscountService ;
+public class CouponRuleDiscountController : Controller {
+    private readonly ISession session;
+    private readonly CouponRuleDiscountService couponRuleDiscountService;
 
     public CouponRuleDiscountController(
         ISession session,
-        CouponRuleDiscountService couponRuleDiscountService)
-    {
+        CouponRuleDiscountService couponRuleDiscountService) {
         this.session = session;
         this.couponRuleDiscountService = couponRuleDiscountService;
     }
 
     [HttpGet]
     [Route("/admin/coupon/rule/discount/detail")]
-    public IActionResult Detail(int id, int batchId)
-    {
+    public IActionResult Detail(int id, int batchId) {
         session.DefaultReadOnly = true;
 
         CouponBatchInfo? batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"优惠券批次#{batchId}不存在！");
         }
 
         CouponRuleDiscountInfo? couponRuleDiscount;
 
-        if (id == 0)
-        {
+        if (id == 0) {
             couponRuleDiscount = new CouponRuleDiscountInfo();
-        }
-        else
-        {
+        } else {
             couponRuleDiscount = session.Get<CouponRuleDiscountInfo>(id);
-            if (couponRuleDiscount == null)
-            {
+            if (couponRuleDiscount == null) {
                 throw new ValidationException($"指定的 优惠券折扣规则#{id} 不存在！");
             }
         }
@@ -66,10 +58,8 @@ public class CouponRuleDiscountController : Controller
     [HttpPost]
     [Route("/admin/coupon/rule/discount/save")]
     [Transactional]
-    public IActionResult Save(CouponRuleDiscountDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(CouponRuleDiscountDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -79,15 +69,11 @@ public class CouponRuleDiscountController : Controller
 
         CouponRuleDiscountInfo? rule;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             rule = new CouponRuleDiscountInfo();
-        }
-        else
-        {
+        } else {
             rule = session.Get<CouponRuleDiscountInfo>(couponRuleDiscountId);
-            if (rule == null)
-            {
+            if (rule == null) {
                 throw new ValidationException($"指定的 优惠券折扣规则#{couponRuleDiscountId} 不存在！");
             }
         }
@@ -99,12 +85,9 @@ public class CouponRuleDiscountController : Controller
 
         couponRuleDiscountService.CheckRuleValid(rule);
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(rule);
-        }
-        else
-        {
+        } else {
             session.Update(rule);
         }
 

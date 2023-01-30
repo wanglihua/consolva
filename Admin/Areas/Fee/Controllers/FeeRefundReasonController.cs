@@ -14,27 +14,23 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.FeeRefundReason)]
-public class FeeRefundReasonController : Controller
-{
-    private ISession session;
+public class FeeRefundReasonController : Controller {
+    private readonly ISession session;
 
-    public FeeRefundReasonController(ISession session)
-    {
+    public FeeRefundReasonController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/fee/refund/reason")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         FeeRefundReasonIndexModel model = new FeeRefundReasonIndexModel();
         return View("FeeRefundReasonIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/fee/refund/reason/list")]
-    public IActionResult List(FeeRefundReasonListQueryParam queryParam)
-    {
+    public IActionResult List(FeeRefundReasonListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -48,8 +44,7 @@ public class FeeRefundReasonController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<FeeRefundReasonInfo>();
 
-        foreach (FeeRefundReasonInfo refundReasonInfo in refundReasonList)
-        {
+        foreach (FeeRefundReasonInfo refundReasonInfo in refundReasonList) {
             // refundReasonInfo
         }
 
@@ -60,8 +55,7 @@ public class FeeRefundReasonController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(FeeRefundReasonListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(FeeRefundReasonListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<FeeRefundReasonInfo>();
         criteria.SetReadOnly(true);
 
@@ -70,21 +64,16 @@ public class FeeRefundReasonController : Controller
 
     [HttpPost]
     [Route("/admin/fee/refund/reason/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         session.DefaultReadOnly = true;
 
         FeeRefundReasonInfo? refundReason;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             refundReason = new FeeRefundReasonInfo();
-        }
-        else
-        {
+        } else {
             refundReason = session.Get<FeeRefundReasonInfo>(id.Value);
-            if (refundReason == null)
-            {
+            if (refundReason == null) {
                 throw new ValidationException("指定的数据项不存在！");
             }
         }
@@ -100,10 +89,8 @@ public class FeeRefundReasonController : Controller
     [HttpPost]
     [Route("/admin/fee/refund/reason/save")]
     [Transactional]
-    public IActionResult Save(FeeRefundReasonSaveModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(FeeRefundReasonSaveModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
@@ -114,24 +101,18 @@ public class FeeRefundReasonController : Controller
 
         FeeRefundReasonInfo? refundReason;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             refundReason = new FeeRefundReasonInfo();
-        }
-        else
-        {
+        } else {
             refundReason = session.Get<FeeRefundReasonInfo>(refundReasonId);
         }
 
         refundReason.Content = refundReasonFromUi.Content;
         refundReason.Status = refundReasonFromUi.Status;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(refundReason);
-        }
-        else
-        {
+        } else {
             session.Update(refundReason);
         }
 
@@ -146,10 +127,8 @@ public class FeeRefundReasonController : Controller
     [HttpPost]
     [Route("/admin/fee/refund/reason/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (int id in idList)
-        {
+    public IActionResult Delete(int[] idList) {
+        foreach (int id in idList) {
             FeeRefundReasonInfo refundReason = session.Load<FeeRefundReasonInfo>(id);
             session.Delete(refundReason);
         }

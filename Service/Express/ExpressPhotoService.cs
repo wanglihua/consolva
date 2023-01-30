@@ -13,28 +13,24 @@ namespace shunda.Service.Express;
 /// 跟图片和文件有关的逻辑放在 ExpressPhotoFileService 中
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class ExpressPhotoService
-{
+public class ExpressPhotoService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
+    private readonly ISession session;
 
     // private CustomerMessageService customerMessageService = null;
     private ExpressPhotoFileService expressPhotoFileService;
 
     public ExpressPhotoService(ISession session,
         // CustomerMessageService customerMessageService,
-        ExpressPhotoFileService expressPhotoFileService)
-    {
+        ExpressPhotoFileService expressPhotoFileService) {
         this.session = session;
         // this.customerMessageService = customerMessageService;
         this.expressPhotoFileService = expressPhotoFileService;
     }
 
-    public IList<ExpressPhotoInfo> GetExpressPhotoList(IList<string> trackingNoList)
-    {
-        if (trackingNoList == null || trackingNoList.Count == 0)
-        {
+    public IList<ExpressPhotoInfo> GetExpressPhotoList(IList<string> trackingNoList) {
+        if (trackingNoList == null || trackingNoList.Count == 0) {
             return new List<ExpressPhotoInfo>();
         }
 
@@ -43,8 +39,7 @@ public class ExpressPhotoService
             .OrderBy(e => e.Type)
             .ToList();
 
-        foreach (ExpressPhotoInfo orderPhoto in orderPhotoList)
-        {
+        foreach (ExpressPhotoInfo orderPhoto in orderPhotoList) {
             orderPhoto.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
             orderPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
         }
@@ -52,10 +47,8 @@ public class ExpressPhotoService
         return orderPhotoList;
     }
 
-    public IList<ExpressPhotoInfo> GetExpressPhotoList(IList<int> expressIdList)
-    {
-        if (expressIdList == null || expressIdList.Count == 0)
-        {
+    public IList<ExpressPhotoInfo> GetExpressPhotoList(IList<int> expressIdList) {
+        if (expressIdList == null || expressIdList.Count == 0) {
             return new List<ExpressPhotoInfo>();
         }
 
@@ -64,8 +57,7 @@ public class ExpressPhotoService
             .OrderBy(e => e.Type)
             .ToList();
 
-        foreach (ExpressPhotoInfo orderPhoto in orderPhotoList)
-        {
+        foreach (ExpressPhotoInfo orderPhoto in orderPhotoList) {
             orderPhoto.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
             orderPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
         }
@@ -78,11 +70,9 @@ public class ExpressPhotoService
     /// 绑定图片到快递单号，添加和更新图片时调用
     /// </summary>
     /// <param name="photoId"></param>
-    public void BindPhotoToExpress(int photoId)
-    {
+    public void BindPhotoToExpress(int photoId) {
         ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
-        if (expressPhoto == null)
-        {
+        if (expressPhoto == null) {
             throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
         }
 
@@ -102,32 +92,24 @@ public class ExpressPhotoService
     /// </summary>
     /// <param name="photoId"></param>
     /// <param name="express">可以为空</param>
-    public void BindPhotoToExpress(int photoId, ExpressInfo? express)
-    {
+    public void BindPhotoToExpress(int photoId, ExpressInfo? express) {
         ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
-        if (expressPhoto == null)
-        {
+        if (expressPhoto == null) {
             throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
         }
 
-        if (express == null)
-        {
+        if (express == null) {
             expressPhoto.Express = null;
             expressPhoto.Customer = null;
             expressPhoto.Order = null;
             expressPhoto.OrderCode = String.Empty;
-        }
-        else
-        {
+        } else {
             expressPhoto.Express = express;
             expressPhoto.Customer = express.Customer; // 有可能为 null，也有可能不是
             expressPhoto.Order = express.Order; // 有可能为 null，也有可能不是
-            if (express.Order != null)
-            {
+            if (express.Order != null) {
                 expressPhoto.OrderCode = express.Order?.Code ?? string.Empty;
-            }
-            else
-            {
+            } else {
                 expressPhoto.OrderCode = string.Empty;
             }
         }
@@ -141,11 +123,9 @@ public class ExpressPhotoService
     /// </summary>
     /// <param name="photoId"></param>
     /// <param name="order"></param>
-    public void BindPhotoToOrder(int photoId, LogisticsOrderInfo order)
-    {
+    public void BindPhotoToOrder(int photoId, LogisticsOrderInfo order) {
         ExpressPhotoInfo? expressPhoto = session.Get<ExpressPhotoInfo>(photoId);
-        if (expressPhoto == null)
-        {
+        if (expressPhoto == null) {
             throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
         }
 
@@ -161,11 +141,9 @@ public class ExpressPhotoService
     /// 绑定快递单号到图片，添加和更新快递单时调用
     /// </summary>
     /// <param name="expressId"></param>
-    public void BindExpressPhoto(int expressId)
-    {
+    public void BindExpressPhoto(int expressId) {
         ExpressInfo? express = session.Get<ExpressInfo>(expressId);
-        if (express == null)
-        {
+        if (express == null) {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
@@ -175,17 +153,13 @@ public class ExpressPhotoService
             .Where(e => e.TrackingNo == trackingNo)
             .ToList();
 
-        foreach (ExpressPhotoInfo expressPhoto in expressPhotoList)
-        {
+        foreach (ExpressPhotoInfo expressPhoto in expressPhotoList) {
             expressPhoto.Express = express;
             expressPhoto.Customer = express.Customer; // 有可能为 null，也有可能不是
             expressPhoto.Order = express.Order; // 有可能为 null，也有可能不是
-            if (express.Order != null)
-            {
+            if (express.Order != null) {
                 expressPhoto.OrderCode = express.Order.Code ?? string.Empty;
-            }
-            else
-            {
+            } else {
                 expressPhoto.OrderCode = string.Empty;
             }
 
@@ -200,14 +174,12 @@ public class ExpressPhotoService
     /// 给图片从快递单号解绑，用户快递单号删除的时候调用
     /// </summary>
     /// <param name="expressId"></param>
-    public void UnbindPhotoFromExpress(int expressId)
-    {
+    public void UnbindPhotoFromExpress(int expressId) {
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => e.Express!.Id == expressId)
             .ToList();
 
-        foreach (ExpressPhotoInfo expressPhoto in expressPhotoList)
-        {
+        foreach (ExpressPhotoInfo expressPhoto in expressPhotoList) {
             expressPhoto.Express = null;
             expressPhoto.Customer = null;
             expressPhoto.Order = null;
@@ -223,8 +195,7 @@ public class ExpressPhotoService
     /// 挂接 订单图片的 orderId 和 expressId
     /// 这里是针对，只有一个express_tracking_no 的数据，order_id, express_id 空缺的情况
     /// </summary>
-    public void BindOrderPhotoEntity(bool sleepInRepeat, bool useInnerTransaction)
-    {
+    public void BindOrderPhotoEntity(bool sleepInRepeat, bool useInnerTransaction) {
         // todo e 这里做实时绑定，这个方法感觉也不需要了
 
         /*
@@ -376,8 +347,7 @@ WHERE op.create_time > DATE_SUB(CURDATE(), INTERVAL 100 DAY)
     /// 发送订单图片添加消息通知
     /// </summary>
     /// <param name="expressPhoto"></param>
-    public void SendAddOrderPhotoMessage(ExpressPhotoInfo expressPhoto)
-    {
+    public void SendAddOrderPhotoMessage(ExpressPhotoInfo expressPhoto) {
         /*
          todo a 后面补上
         if (expressPhoto == null || expressPhoto.Order == null || expressPhoto.Customer == null || expressPhoto.Type == null)
@@ -425,8 +395,7 @@ WHERE op.create_time > DATE_SUB(CURDATE(), INTERVAL 100 DAY)
     /// 发送图片快递添加消息通知
     /// </summary>
     /// <param name="expressPhoto"></param>
-    public void SendAddExpressPhotoMessage(ExpressPhotoInfo expressPhoto)
-    {
+    public void SendAddExpressPhotoMessage(ExpressPhotoInfo expressPhoto) {
         /*
         todo a 后面补上
         
@@ -476,8 +445,7 @@ WHERE op.create_time > DATE_SUB(CURDATE(), INTERVAL 100 DAY)
         */
     }
 
-    private CustomerMessageType GetMessageType(ExpressPhotoType photoType)
-    {
+    private CustomerMessageType GetMessageType(ExpressPhotoType photoType) {
         /*
          todo a 后面补上
         if (photoType == ExpressPhotoType.SignIn)
@@ -524,8 +492,7 @@ WHERE op.create_time > DATE_SUB(CURDATE(), INTERVAL 100 DAY)
         return CustomerMessageType.None;
     }
 
-    private void SendMessageOrderPhoto(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto)
-    {
+    private void SendMessageOrderPhoto(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto) {
         /*
         if (photoType == ExpressPhotoType.None)
         {
@@ -593,8 +560,7 @@ WHERE op.create_time > DATE_SUB(CURDATE(), INTERVAL 100 DAY)
         */
     }
 
-    private void SendMessageExpressPhoto(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto)
-    {
+    private void SendMessageExpressPhoto(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto) {
         /*
         if (photoType == ExpressPhotoType.SignIn)
         {

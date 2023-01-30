@@ -5,17 +5,14 @@ using shunda.Domain.Fee;
 namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
-public class FeeApplyCountService
-{
-    private ISession session;
+public class FeeApplyCountService {
+    private readonly ISession session;
 
-    public FeeApplyCountService(ISession session)
-    {
+    public FeeApplyCountService(ISession session) {
         this.session = session;
     }
 
-    public IDictionary<int, int> GetApplyCount(IList<int> orderIdList)
-    {
+    public IDictionary<int, int> GetApplyCount(IList<int> orderIdList) {
         IList<FeeWriteOffApplyCountInfo> writeOffApplyCountList = session
             .Query<FeeWriteOffApplyCountInfo>()
             .Where(e => orderIdList.Contains(e.OrderId))
@@ -33,33 +30,27 @@ public class FeeApplyCountService
 
         IDictionary<int, int> dictOrderApplyCount = new Dictionary<int, int>();
 
-        foreach (FeeWriteOffApplyCountInfo applyCount in writeOffApplyCountList)
-        {
+        foreach (FeeWriteOffApplyCountInfo applyCount in writeOffApplyCountList) {
             int count = applyCount.ApplyCount;
-            if (dictOrderApplyCount.ContainsKey(applyCount.OrderId))
-            {
+            if (dictOrderApplyCount.ContainsKey(applyCount.OrderId)) {
                 count = count + dictOrderApplyCount[applyCount.OrderId];
             }
 
             dictOrderApplyCount[applyCount.OrderId] = count;
         }
 
-        foreach (ManualFeeApplyCountInfo applyCount in manualFeeApplyCountList)
-        {
+        foreach (ManualFeeApplyCountInfo applyCount in manualFeeApplyCountList) {
             int count = applyCount.ApplyCount;
-            if (dictOrderApplyCount.ContainsKey(applyCount.OrderId))
-            {
+            if (dictOrderApplyCount.ContainsKey(applyCount.OrderId)) {
                 count = count + dictOrderApplyCount[applyCount.OrderId];
             }
 
             dictOrderApplyCount[applyCount.OrderId] = count;
         }
 
-        foreach (FeeRefundApplyCountInfo applyCount in refundApplyCountList)
-        {
+        foreach (FeeRefundApplyCountInfo applyCount in refundApplyCountList) {
             int count = applyCount.ApplyCount;
-            if (dictOrderApplyCount.ContainsKey(applyCount.OrderId))
-            {
+            if (dictOrderApplyCount.ContainsKey(applyCount.OrderId)) {
                 count = count + dictOrderApplyCount[applyCount.OrderId];
             }
 
@@ -69,8 +60,7 @@ public class FeeApplyCountService
         return dictOrderApplyCount;
     }
 
-    public IList<string> GetApplyCountDescList(int orderId)
-    {
+    public IList<string> GetApplyCountDescList(int orderId) {
         IList<string> applyCountDescList = new List<string>();
 
         FeeWriteOffApplyCountInfo? writeOffApplyCount = session
@@ -79,8 +69,7 @@ public class FeeApplyCountService
             .Take(1)
             .SingleOrDefault();
 
-        if (writeOffApplyCount != null)
-        {
+        if (writeOffApplyCount != null) {
             applyCountDescList.Add(string.Format("订单有{0}条【减少费用】申请", writeOffApplyCount.ApplyCount));
         }
 
@@ -90,8 +79,7 @@ public class FeeApplyCountService
             .Take(1)
             .SingleOrDefault();
 
-        if (manualFeeApplyCount != null)
-        {
+        if (manualFeeApplyCount != null) {
             applyCountDescList.Add(string.Format("订单有{0}条【费用核销】申请", manualFeeApplyCount.ApplyCount));
         }
 
@@ -101,8 +89,7 @@ public class FeeApplyCountService
             .Take(1)
             .SingleOrDefault();
 
-        if (refundApplyCount != null)
-        {
+        if (refundApplyCount != null) {
             applyCountDescList.Add(string.Format("订单有{0}条【退赔款】申请", refundApplyCount.ApplyCount));
         }
 

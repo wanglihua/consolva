@@ -15,15 +15,13 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.Coupon)]
-public class CouponBatchController : Controller
-{
-    private ISession session;
-    private CouponBatchService couponBatchService;
+public class CouponBatchController : Controller {
+    private readonly ISession session;
+    private readonly CouponBatchService couponBatchService;
 
     public CouponBatchController(
         ISession session,
-        CouponBatchService couponBatchService)
-    {
+        CouponBatchService couponBatchService) {
         this.session = session;
         this.couponBatchService = couponBatchService;
     }
@@ -31,8 +29,7 @@ public class CouponBatchController : Controller
     [HttpGet]
     [Route("/admin/coupon/batch")]
     [Transactional] // 需要事务
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         CouponBatchIndexModel model = new CouponBatchIndexModel();
 
         model.TypeList = CouponType.GetList();
@@ -46,8 +43,7 @@ public class CouponBatchController : Controller
 
     [HttpPost]
     [Route("/admin/coupon/batch/list")]
-    public IActionResult List(CouponBatchListQueryParam queryParam)
-    {
+    public IActionResult List(CouponBatchListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -61,8 +57,7 @@ public class CouponBatchController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<CouponBatchInfo>();
 
-        foreach (CouponBatchInfo couponBatch in couponBatchList)
-        {
+        foreach (CouponBatchInfo couponBatch in couponBatchList) {
         }
 
         CouponBatchListModel model = new CouponBatchListModel(listPager);
@@ -72,37 +67,31 @@ public class CouponBatchController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CouponBatchListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(CouponBatchListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<CouponBatchInfo>();
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false) {
             string nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<CouponBatchInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
 
-        if (queryParam.TypeQuery != null && queryParam.TypeQuery != CouponType.None)
-        {
+        if (queryParam.TypeQuery != null && queryParam.TypeQuery != CouponType.None) {
             var typeQuery = queryParam.TypeQuery;
             criteria = criteria.Add(Restrictions.Where<CouponBatchInfo>(e => e.Type == typeQuery));
         }
 
-        if (queryParam.StatusQuery != null && queryParam.StatusQuery != CouponBatchStatus.None)
-        {
+        if (queryParam.StatusQuery != null && queryParam.StatusQuery != CouponBatchStatus.None) {
             var statusQuery = queryParam.StatusQuery;
             criteria = criteria.Add(Restrictions.Where<CouponBatchInfo>(e => e.Status == statusQuery));
         }
 
-        if (queryParam.ExpireBeginQuery != null)
-        {
+        if (queryParam.ExpireBeginQuery != null) {
             var expireBeginQuery = queryParam.ExpireBeginQuery.Value.Date;
             criteria = criteria.Add(Restrictions.Where<CouponBatchInfo>(e => e.Expire >= expireBeginQuery));
         }
 
-        if (queryParam.ExpireEndQuery != null)
-        {
+        if (queryParam.ExpireEndQuery != null) {
             var expireEndQuery = queryParam.ExpireEndQuery.Value.Date.AddDays(1);
             criteria = criteria.Add(Restrictions.Where<CouponBatchInfo>(e => e.Expire < expireEndQuery));
         }
@@ -112,25 +101,20 @@ public class CouponBatchController : Controller
 
     [HttpPost]
     [Route("/admin/coupon/batch/detail")]
-    public IActionResult Detail(int id)
-    {
+    public IActionResult Detail(int id) {
         session.DefaultReadOnly = true;
 
         CouponBatchInfo? couponBatch;
 
         CouponBatchDetailModel model = new CouponBatchDetailModel();
 
-        if (id == 0)
-        {
+        if (id == 0) {
             couponBatch = new CouponBatchInfo();
             model.Status = CouponBatchStatus.New;
             model.Expire = DateTime.Today;
-        }
-        else
-        {
+        } else {
             couponBatch = session.Get<CouponBatchInfo>(id);
-            if (couponBatch == null)
-            {
+            if (couponBatch == null) {
                 throw new ValidationException($"指定的 优惠券批次#{id} 不存在！");
             }
 
@@ -158,10 +142,8 @@ public class CouponBatchController : Controller
     [HttpPost]
     [Route("/admin/coupon/batch/save")]
     [Transactional]
-    public IActionResult Save(CouponBatchDetailModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(CouponBatchDetailModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -171,22 +153,17 @@ public class CouponBatchController : Controller
 
         CouponBatchInfo? couponBatch;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             couponBatch = new CouponBatchInfo();
             couponBatch.Status = CouponBatchStatus.New;
-        }
-        else
-        {
+        } else {
             couponBatch = session.Get<CouponBatchInfo>(couponBatchId);
-            if (couponBatch == null)
-            {
+            if (couponBatch == null) {
                 throw new ValidationException($"指定的 优惠券批次#{couponBatchId} 不存在！");
             }
 
             // 已经投放的，不能再编辑
-            if (couponBatch.Status.Released())
-            {
+            if (couponBatch.Status.Released()) {
                 throw new ValidationException($"指定的 优惠券批次#{couponBatchId} 已投放，不能再修改！");
             }
         }
@@ -199,12 +176,9 @@ public class CouponBatchController : Controller
         couponBatch.MaxQtyPerCustomer = model.MaxQtyPerCustomer;
         // couponBatch.Status = model.Status; 状态不能通过详细编辑改变
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(couponBatch);
-        }
-        else
-        {
+        } else {
             session.Update(couponBatch);
         }
 
@@ -219,10 +193,8 @@ public class CouponBatchController : Controller
     [HttpPost]
     [Route("/admin/coupon/batch/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        if (idList == null || idList.Length == 0)
-        {
+    public IActionResult Delete(int[] idList) {
+        if (idList == null || idList.Length == 0) {
             throw new ValidationException("请选择要删除的数据！");
         }
 
@@ -230,16 +202,13 @@ public class CouponBatchController : Controller
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
-        foreach (var batch in batchList)
-        {
-            if (batch.Status.Released())
-            {
+        foreach (var batch in batchList) {
+            if (batch.Status.Released()) {
                 throw new ValidationException($"优惠券批次#{batch.Name}已投放不能删除！");
             }
         }
 
-        foreach (var batch in batchList)
-        {
+        foreach (var batch in batchList) {
             session.Delete(batch);
         }
 
@@ -254,19 +223,16 @@ public class CouponBatchController : Controller
     [HttpPost]
     [Route("/admin/coupon/batch/release")]
     [Transactional]
-    public IActionResult Release(int batchId)
-    {
+    public IActionResult Release(int batchId) {
         var batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"指定的优惠券批次#{batchId}不存在！");
         }
 
         // 检查规则是否已经编辑并且合法
         couponBatchService.CheckRuleValid(batchId);
 
-        if ((batch.Status?.Released() ?? false) == true)
-        {
+        if ((batch.Status?.Released() ?? false) == true) {
             throw new ValidationException($"优惠券批次#{batch.Name} 已经是投放客户或后续状态！");
         }
 
@@ -280,8 +246,7 @@ public class CouponBatchController : Controller
 
         if (batch.Status == CouponBatchStatus.Release) // 发布状态才设置
         {
-            if (batch.TotalQuantity <= batch.PickQuantity)
-            {
+            if (batch.TotalQuantity <= batch.PickQuantity) {
                 batch.Status = CouponBatchStatus.Picked;
                 session.Update(batch);
 
@@ -297,16 +262,13 @@ public class CouponBatchController : Controller
 
     [HttpPost]
     [Route("/admin/coupon/batch/show/rule")]
-    public IActionResult ShowRule(int batchId)
-    {
+    public IActionResult ShowRule(int batchId) {
         var batch = session.Get<CouponBatchInfo>(batchId);
-        if (batch == null)
-        {
+        if (batch == null) {
             throw new ValidationException($"指定的优惠券批次#{batchId}不存在！");
         }
 
-        if (batch.Type == CouponType.Deduct)
-        {
+        if (batch.Type == CouponType.Deduct) {
             var rule = session.Query<CouponRuleDeductInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)
@@ -317,8 +279,7 @@ public class CouponBatchController : Controller
             return RedirectToAction("Detail", "CouponRuleDeduct", new { id = ruleId, batchId = batchId, ts = timestamp });
         }
 
-        if (batch.Type == CouponType.Discount)
-        {
+        if (batch.Type == CouponType.Discount) {
             var rule = session.Query<CouponRuleDiscountInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)
@@ -329,8 +290,7 @@ public class CouponBatchController : Controller
             return RedirectToAction("Detail", "CouponRuleDiscount", new { id = ruleId, batchId = batchId, ts = timestamp });
         }
 
-        if (batch.Type == CouponType.PriceBreak)
-        {
+        if (batch.Type == CouponType.PriceBreak) {
             var rule = session.Query<CouponRulePriceBreakInfo>()
                 .Where(e => e.Batch.Id == batchId)
                 .Take(1)

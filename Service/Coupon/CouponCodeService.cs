@@ -5,12 +5,10 @@ using shunda.Domain.Coupon;
 namespace shunda.Service.Coupon;
 
 [Service(ServiceType.Scoped)]
-public class CouponCodeService
-{
-    private ISession session;
+public class CouponCodeService {
+    private readonly ISession session;
 
-    public CouponCodeService(ISession session)
-    {
+    public CouponCodeService(ISession session) {
         this.session = session;
     }
 
@@ -21,8 +19,7 @@ public class CouponCodeService
     /// <param name="couponType"></param>
     /// <param name="pickSeq"></param>
     /// <returns></returns>
-    public string Generate(int batchId, CouponType couponType, int pickSeq)
-    {
+    public string Generate(int batchId, CouponType couponType, int pickSeq) {
         return batchId.ToString().PadLeft(3, '0') + couponType.Code + pickSeq.ToString().PadLeft(3, '0');
     }
 }

@@ -14,10 +14,10 @@ namespace shunda.Admin.Areas.AutoApi.Controllers;
 [NoLoginRequired]
 [AutoApiArea]
 public class VideoUploadController : Controller {
-    private ISession session;
+    private readonly ISession session;
 
-    private ExpressTrackingNoService expressTrackingNoService;
-    private ExpressLogService expressLogService;
+    private readonly ExpressTrackingNoService expressTrackingNoService;
+    private readonly ExpressLogService expressLogService;
 
     public VideoUploadController(ISession session,
         ExpressTrackingNoService expressTrackingNoService,

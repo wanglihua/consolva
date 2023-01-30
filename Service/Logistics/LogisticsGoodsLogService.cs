@@ -7,17 +7,14 @@ using shunda.Domain.Pass;
 namespace shunda.Service.Logistics;
 
 [Service(ServiceType.Scoped)]
-public class LogisticsGoodsLogService
-{
-    private ISession session;
+public class LogisticsGoodsLogService {
+    private readonly ISession session;
 
-    public LogisticsGoodsLogService(ISession session)
-    {
+    public LogisticsGoodsLogService(ISession session) {
         this.session = session;
     }
 
-    public void AddLog(LogisticsGoodsLogType type, int goodsId, int userId)
-    {
+    public void AddLog(LogisticsGoodsLogType type, int goodsId, int userId) {
         AddLog(type, goodsId, userId, string.Empty);
     }
 
@@ -29,24 +26,20 @@ public class LogisticsGoodsLogService
     /// <param name="userId"></param>
     /// <param name="description"></param>
     /// <exception cref="ValidationException"></exception>
-    public void AddLog(LogisticsGoodsLogType type, int goodsId, int userId, string description)
-    {
+    public void AddLog(LogisticsGoodsLogType type, int goodsId, int userId, string description) {
         type ??= LogisticsGoodsLogType.None;
 
-        if (string.IsNullOrWhiteSpace(description))
-        {
+        if (string.IsNullOrWhiteSpace(description)) {
             description = string.Empty;
         }
 
         LogisticsGoodsInfo? goods = session.Get<LogisticsGoodsInfo>(goodsId);
-        if (goods == null)
-        {
+        if (goods == null) {
             throw new ValidationException($"指定的物品#{goodsId}不存在！");
         }
 
         UserInfo? user = session.Get<UserInfo>(userId);
-        if (user == null)
-        {
+        if (user == null) {
             throw new ValidationException($"指定的用户#{userId}不存在！");
         }
 

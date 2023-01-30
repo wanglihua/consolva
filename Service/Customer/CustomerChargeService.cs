@@ -7,17 +7,15 @@ using shunda.Service.Fee;
 namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
-public class CustomerChargeService
-{
-    private ISession session;
-
-    private ExchangeRateService exchangeRateService;
-    private CustomerAccountService customerAccountService;
+public class CustomerChargeService {
+    private readonly ISession session;
+    private readonly ExchangeRateService exchangeRateService;
+    private readonly CustomerAccountService customerAccountService;
 
     public CustomerChargeService(ISession session,
         ExchangeRateService exchangeRateService,
-        CustomerAccountService customerAccountService)
-    {
+        CustomerAccountService customerAccountService
+    ) {
         this.session = session;
         this.exchangeRateService = exchangeRateService;
         this.customerAccountService = customerAccountService;
@@ -29,35 +27,25 @@ public class CustomerChargeService
     /// <param name="customerCharge">确保已经是数据库中存在，但状态还不是完成状态</param>
     /// <param name="amount">RMB, 包括PayPal方式下</param>
     /// <param name="chargeType">充值方式</param>
-    public void CompleteCharge(CustomerChargeInfo customerCharge, decimal amount, CustomerChargeType chargeType)
-    {
-        if (customerCharge == null)
-        {
+    public void CompleteCharge(CustomerChargeInfo customerCharge, decimal amount, CustomerChargeType chargeType) {
+        if (customerCharge == null) {
             throw new ValidationException("指定的充值记录为空！");
         }
 
         string chargeDescription = "";
-        if (chargeType == CustomerChargeType.AliPay)
-        {
+        if (chargeType == CustomerChargeType.AliPay) {
             chargeDescription = "支付宝充值" + amount.ToString("0.00") + "元";
-        }
-        else if (chargeType == CustomerChargeType.Wechat)
-        {
+        } else if (chargeType == CustomerChargeType.Wechat) {
             chargeDescription = "微信充值" + amount.ToString("0.00") + "元";
-        }
-        else if (chargeType == CustomerChargeType.PayPal)
-        {
+        } else if (chargeType == CustomerChargeType.PayPal) {
             decimal audExchangeRate = exchangeRateService.GetAudFinalRate();
-            if (audExchangeRate <= 0)
-            {
+            if (audExchangeRate <= 0) {
                 throw new ValidationException("汇率值不合法!");
             }
 
             string totalAmountAud = (amount / audExchangeRate).ToString("#0.00");
             chargeDescription = $"PayPal 人民币支付：{amount.ToString("#0.00")}, 折算澳币: {totalAmountAud}";
-        }
-        else if (chargeType == CustomerChargeType.Manual)
-        {
+        } else if (chargeType == CustomerChargeType.Manual) {
             chargeDescription = "手工充值" + amount.ToString("0.00") + "元";
         }
 
