@@ -2,10 +2,9 @@ using shunda.Core.CodeType;
 
 namespace shunda.Domain.Fee;
 
-// todo 后面调整和精简
+// todo 费用改名
 
-public class LogisticsOrderFeeType : CodeTypeBase
-{
+public class LogisticsOrderFeeType : CodeTypeBase {
     /// <summary>
     /// 头程费
     /// </summary>
@@ -42,21 +41,6 @@ public class LogisticsOrderFeeType : CodeTypeBase
     public static readonly LogisticsOrderFeeType FirstLogisticsFeeExtraStorageDay = new LogisticsOrderFeeType(7000, "中国仓额外仓储费", "中国仓额外仓储费");
 
     /// <summary>
-    /// 头程限制类费用， 这个只有头程才有
-    /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeRestrictType = new LogisticsOrderFeeType(8000, "头程限制类费用", "头程限制类费用");
-
-    /// <summary>
-    /// 头程草木竹费用，这个只有头程才有
-    /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeBambooType = new LogisticsOrderFeeType(9000, "头程草木竹费用", "头程草木竹费用");
-
-    /// <summary>
-    /// 头程特货费用，这个只有头程才有
-    /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeSpecialType = new LogisticsOrderFeeType(10000, "头程特货费用", "头程特货费用");
-
-    /// <summary>
     /// 头程超级VIP折扣，这个费用是负的
     /// </summary>
     public static readonly LogisticsOrderFeeType FirstLogisticsSuperVipDiscount = new LogisticsOrderFeeType(11000, "头程超级VIP折扣", "头程超级VIP折扣");
@@ -69,7 +53,7 @@ public class LogisticsOrderFeeType : CodeTypeBase
     /// <summary>
     /// 中澳快递费
     /// </summary>
-    public static readonly LogisticsOrderFeeType CnAuExpressFee = new LogisticsOrderFeeType(13000, "中澳快递费", "中澳快递费");
+    public static readonly LogisticsOrderFeeType ExpressFee = new LogisticsOrderFeeType(13000, "跨国快递费", "跨国快递费");
 
     /// <summary>
     /// GST费用
@@ -85,7 +69,6 @@ public class LogisticsOrderFeeType : CodeTypeBase
     /// 保险费用
     /// </summary>
     public static readonly LogisticsOrderFeeType InsuranceFee = new LogisticsOrderFeeType(16000, "保险费用", "保险费用");
-    
 
     /// <summary>
     /// 手动增加费用
@@ -98,45 +81,10 @@ public class LogisticsOrderFeeType : CodeTypeBase
     public static readonly LogisticsOrderFeeType ManualDecrease = new LogisticsOrderFeeType(18000, "手动减少", "手动减少费用");
 
     /// <summary>
-    /// 订单拆分转入费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType OrderSplitIncrease = new LogisticsOrderFeeType(19000, "订单拆分转入费用", "订单拆分转入费用");
-
-    /// <summary>
-    /// 订单拆分转出费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType OrderSplitDecrease = new LogisticsOrderFeeType(20000, "订单拆分转出费用", "订单拆分转出费用");
-
-    /// <summary>
-    /// 订单合并转入费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType OrderCombineIncrease = new LogisticsOrderFeeType(21000, "订单合并转入费用", "订单合并转入费用");
-
-    /// <summary>
-    /// 订单合并转出费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType OrderCombineDecrease = new LogisticsOrderFeeType(22000, "订单合并转出费用", "订单合并转出费用");
-
-    /// <summary>
-    /// 问题件费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType IssueGoodsFee = new LogisticsOrderFeeType(23000, "问题件费用", "问题件费用");
-
-    /// <summary>
     /// 退款
     /// 这是一个正的费用
     /// </summary>
     public static readonly LogisticsOrderFeeType RefundFee = new LogisticsOrderFeeType(24000, "退款", "退款");
-
-    /// <summary>
-    /// 打木架费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType WoodFrameFee = new LogisticsOrderFeeType(25000, "打木架费用", "打木架费用");
-
-    /// <summary>
-    /// 清理树皮杂物费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType BarkCleanFee = new LogisticsOrderFeeType(26000, "清理树皮杂物费用", "清理树皮杂物费用");
 
     /// <summary>
     /// 超大超重附加费
@@ -164,31 +112,21 @@ public class LogisticsOrderFeeType : CodeTypeBase
         FirstLogisticsFeeSingleExtraWeight,
         FirstLogisticsFeeAverageExtraWeight,
         FirstLogisticsFeeExtraWeight,
-        FirstLogisticsFeeRestrictType,
-        FirstLogisticsFeeBambooType,
-        FirstLogisticsFeeSpecialType,
         FirstLogisticsFeeExtraPackage,
         FirstLogisticsFeeExtraStorageDay,
-        CnAuExpressFee,
+        ExpressFee,
 
         FirstLogisticsSuperVipDiscount,
         FirstLogisticsVipDiscount,
     };
 
     private static readonly List<LogisticsOrderFeeType> otherFeetypeList = new List<LogisticsOrderFeeType>() {
-        WoodFrameFee,
-        BarkCleanFee,
         ExtraSizeWeightFee,
         GstFee,
         InsuranceFee,
         CouponDiscountFee,
         ManualIncrease,
         ManualDecrease,
-        OrderSplitIncrease,
-        OrderSplitDecrease,
-        OrderCombineIncrease,
-        OrderCombineDecrease,
-        IssueGoodsFee,
         RefundFee,
         ManualAdjustFee,
         OtherFee,
@@ -198,48 +136,38 @@ public class LogisticsOrderFeeType : CodeTypeBase
 
     private static readonly Dictionary<int, LogisticsOrderFeeType> feeTypeMap = feeTypeList.ToDictionary(e => e.Id);
 
-    public static LogisticsOrderFeeType GetById(int typeId)
-    {
-        if (feeTypeMap.TryGetValue(typeId, out LogisticsOrderFeeType? feeType))
-        {
+    public static LogisticsOrderFeeType GetById(int typeId) {
+        if (feeTypeMap.TryGetValue(typeId, out LogisticsOrderFeeType? feeType)) {
             return feeType;
         }
 
         return None;
     }
 
-    public static IList<LogisticsOrderFeeType> GetList()
-    {
+    public static IList<LogisticsOrderFeeType> GetList() {
         return feeTypeList.ToList();
     }
 
-    public static IList<LogisticsOrderFeeType> GetLogisticsFeeTypeList()
-    {
+    public static IList<LogisticsOrderFeeType> GetLogisticsFeeTypeList() {
         return logisticsFeeTypeList.ToList();
     }
 
-    public static IList<LogisticsOrderFeeType> GetOtherFeeTypeList()
-    {
+    public static IList<LogisticsOrderFeeType> GetOtherFeeTypeList() {
         return otherFeetypeList.ToList();
     }
 
-    private LogisticsOrderFeeType(int id, string name, string description) : base(id, name, description)
-    {
+    private LogisticsOrderFeeType(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class LogisticsOrderFeeTypeHibernateType : CodeHibernateTypeBase<LogisticsOrderFeeType>
-{
-    protected override LogisticsOrderFeeType GetCodeTypeById(int id)
-    {
+public class LogisticsOrderFeeTypeHibernateType : CodeHibernateTypeBase<LogisticsOrderFeeType> {
+    protected override LogisticsOrderFeeType GetCodeTypeById(int id) {
         return LogisticsOrderFeeType.GetById(id);
     }
 }
 
-public class LogisticsOrderFeeTypeModelBinder : CodeTypeModelBinderBase<LogisticsOrderFeeType>
-{
-    protected override LogisticsOrderFeeType GetCodeTypeById(int id)
-    {
+public class LogisticsOrderFeeTypeModelBinder : CodeTypeModelBinderBase<LogisticsOrderFeeType> {
+    protected override LogisticsOrderFeeType GetCodeTypeById(int id) {
         return LogisticsOrderFeeType.GetById(id);
     }
 }

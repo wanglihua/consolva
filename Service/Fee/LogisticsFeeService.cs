@@ -1,4 +1,5 @@
 using NHibernate;
+using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Fee;
@@ -22,27 +23,24 @@ namespace shunda.Service.Fee;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class LogisticsFeeService {
-    private ISession session = null;
-    private LogisticsFeeInsuranceService logisticsFeeInsuranceService = null;
-    private LogisticsFeeGstService logisticsFeeGstService = null;
-    private LogisticsFeeCnAuExpressService logisticsFeeCnAuExpressService = null;
-    private LogisticsFeeAuExpressService logisticsFeeAuExpressService = null;
-    private FeeCalculateLogService feeCalculateLogService = null;
+    private readonly ISession session;
+    private readonly LogisticsFeeInsuranceService logisticsFeeInsuranceService;
+    private readonly LogisticsFeeGstService logisticsFeeGstService;
+    private readonly LogisticsFeeExpressService logisticsFeeExpressService;
+    private readonly FeeCalculateLogService feeCalculateLogService;
 
     public LogisticsFeeService(
         ISession session,
         LogisticsFeeInsuranceService logisticsFeeInsuranceService,
         LogisticsFeeGstService logisticsFeeGstService,
-        LogisticsFeeCnAuExpressService logisticsFeeCnAuExpressService,
-        LogisticsFeeAuExpressService logisticsFeeAuExpressService,
+        LogisticsFeeExpressService logisticsFeeExpressService,
         FeeCalculateLogService feeCalculateLogService) {
         this.session = session;
 
         this.logisticsFeeInsuranceService = logisticsFeeInsuranceService;
         this.logisticsFeeGstService = logisticsFeeGstService;
 
-        this.logisticsFeeCnAuExpressService = logisticsFeeCnAuExpressService;
-        this.logisticsFeeAuExpressService = logisticsFeeAuExpressService;
+        this.logisticsFeeExpressService = logisticsFeeExpressService;
         this.feeCalculateLogService = feeCalculateLogService;
     }
 
@@ -55,55 +53,6 @@ public class LogisticsFeeService {
     /// <returns></returns>
     public IList<LogisticsFeeResultEntry> GetLogisticsFeeForCustomer(LogisticsFeeData logisticsFeeData, LogisticsModeInfo logisticsMode) {
         return GetLogisticsFee(logisticsFeeData, logisticsMode, LogisticsFeeRateType.Customer, FeeMessageType.Customer);
-    }
-
-    /// <summary>
-    /// 生成一个假定费用都是零的取货的计费结果
-    /// </summary>
-    /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> MockPickupStationFee(LogisticsGoodsType goodsType) {
-        IList<LogisticsFeeResultEntry> feeResultEntryList = new List<LogisticsFeeResultEntry>();
-
-        feeResultEntryList.Add(new LogisticsFeeResultEntry() {
-            EntryType = LogisticsFeeResultEntryType.Single,
-            GoodsType = goodsType,
-            FeeType = LogisticsOrderFeeType.SecondLogisticsFee,
-            Title = "澳洲境内初始费用",
-            Fee = 0m
-        });
-
-        feeResultEntryList.Add(new LogisticsFeeResultEntry() {
-            EntryType = LogisticsFeeResultEntryType.Single,
-            GoodsType = goodsType,
-            FeeType = LogisticsOrderFeeType.SecondLogisticsFeeExtraLength,
-            Title = "超长费用",
-            Fee = 0m
-        });
-
-        feeResultEntryList.Add(new LogisticsFeeResultEntry() {
-            EntryType = LogisticsFeeResultEntryType.Single,
-            GoodsType = goodsType,
-            FeeType = LogisticsOrderFeeType.SecondLogisticsFeeSingleExtraWeight,
-            Title = "单箱超重费用",
-            Fee = 0m
-        });
-
-        feeResultEntryList.Add(new LogisticsFeeResultEntry() {
-            EntryType = LogisticsFeeResultEntryType.Single,
-            GoodsType = goodsType,
-            FeeType = LogisticsOrderFeeType.SecondLogisticsFeeExtraWeight,
-            Title = "超重费用",
-            Fee = 0m
-        });
-
-        feeResultEntryList.Add(new LogisticsFeeResultEntry() {
-            EntryType = LogisticsFeeResultEntryType.SubSum,
-            GoodsType = goodsType,
-            Title = "澳洲境内运费合计",
-            Fee = 0m
-        });
-
-        return feeResultEntryList;
     }
 
     /// <summary>
@@ -137,6 +86,8 @@ public class LogisticsFeeService {
             }
         }
 
+        int logisticsModeId = logisticsMode.Id;
+
         LogisticsGoodsType goodsType = logisticsFeeData.GoodsType;
 
         if (goodsType == LogisticsGoodsType.Forbidden) {
@@ -147,19 +98,7 @@ public class LogisticsFeeService {
             }
         }
 
-        bool isFirstLogisticsModeType = LogisticsModeType.IsCnAuFirstType(logisticsMode.Type.Id);
-        bool isSecondLogisticsModeType = LogisticsModeType.IsCnAuSecondLogisticsModeType(logisticsMode.Type.Id);
-        int goodsTypeId = logisticsFeeData.GoodsType.Id;
-
         #region 数据检查
-
-        if (isFirstLogisticsModeType == false && isSecondLogisticsModeType == false) {
-            if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0131");
-            } else {
-                throw new Exception($"{logisticsMode.Name} 当前不支持的物流方式类型！");
-            }
-        }
 
         IList<LogisticsFeePack> feePackList = logisticsFeeData.FeePackList;
         if (feePackList == null || feePackList.Count == 0) {
@@ -170,176 +109,73 @@ public class LogisticsFeeService {
             }
         }
 
-        IList<LogisticsFeeRateInfo> feeRateList = new List<LogisticsFeeRateInfo>();
-
-        if (isFirstLogisticsModeType) {
-            if (logisticsFeeData.GoodsType == LogisticsGoodsType.Common) {
-                if (logisticsMode.CommonFeeRate == null) {
-                    if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物流方式不支持！AP0150");
-                    } else {
-                        throw new LogisticsFeeException($"物流方式 {logisticsMode.Name} 普通类通用费率不能为空！");
-                    }
-                }
-
-                feeRateList.Add(logisticsMode.CommonFeeRate);
-            }
-
-            if (logisticsFeeData.GoodsType == LogisticsGoodsType.Restrict || logisticsFeeData.GoodsType == LogisticsGoodsType.RestrictBamboo) {
-                if (logisticsMode.RestrictFeeRate == null) {
-                    if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物流方式不支持！AP0160");
-                    } else {
-                        throw new LogisticsFeeException($"物流方式 {logisticsMode.Name} 限制类通用费率不能为空！");
-                    }
-                }
-
-                feeRateList.Add(logisticsMode.RestrictFeeRate);
-            }
-
-            if (logisticsFeeData.GoodsType == LogisticsGoodsType.Bamboo || logisticsFeeData.GoodsType == LogisticsGoodsType.RestrictBamboo) {
-                if (logisticsMode.BambooFeeRate == null) {
-                    if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物流方式不支持！AP0170");
-                    } else {
-                        throw new LogisticsFeeException($"物流方式 {logisticsMode.Name} 草木竹类通用费率不能为空！");
-                    }
-                }
-
-                feeRateList.Add(logisticsMode.BambooFeeRate);
-            }
-
-            if (logisticsFeeData.GoodsType == LogisticsGoodsType.Special) {
-                if (logisticsMode.SpecialFeeRate == null) {
-                    if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物流方式不支持！AP0180");
-                    } else {
-                        throw new LogisticsFeeException($"物流方式 {logisticsMode.Name} 特货类通用费率不能为空！");
-                    }
-                }
-
-                feeRateList.Add(logisticsMode.SpecialFeeRate);
-            }
+        // 检查物流类型和物流方式的匹配 
+        var logisticsModeGoodsType = session.Query<LogisticsModeGoodsTypeInfo>()
+            .Where(e => e.LogisticsMode.Id == logisticsModeId && e.GoodsType == goodsType)
+            .Take(1)
+            .SingleOrDefault();
+        if (logisticsModeGoodsType == null) {
+            throw new ValidationException($"物流方式{logisticsMode.Name}不支持物品类型{goodsType.Name}！");
         }
 
-        if (isSecondLogisticsModeType) {
-            if (logisticsMode.Type == LogisticsModeType.TerminalPickup) {
-                if (feeRateType == LogisticsFeeRateType.Customer) {
-                    if (logisticsMode.CustomerFeeRate == null) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物流方式不支持！AP0190");
-                        } else {
-                            throw new LogisticsFeeException($"自提点物流方式 {logisticsMode.Name} 客户费率不能为空！");
-                        }
-                    }
+        // todo 检查物流方式对应的费率设置
+        var logisticsModeFeeRate = session.Query<LogisticsModeFeeRateInfo>()
+            .Fetch(e => e.FeeRate)
+            .Where(e => e.Mode.Id == logisticsModeId
+                        && e.GoodsType == goodsType)
+            .Take(1)
+            .SingleOrDefault();
+        if (logisticsModeFeeRate == null) {
+            throw new ValidationException($"物流方式{logisticsMode.Name}中物品类型{goodsType.Name}对应的通用费率未设置！");
+        }
 
-                    feeRateList.Add(logisticsMode.CustomerFeeRate);
-                }
+        // 通用费率
+        LogisticsFeeRateInfo feeRate = logisticsModeFeeRate.FeeRate;
 
-                if (feeRateType == LogisticsFeeRateType.Inner) {
-                    if (logisticsMode.InnerFeeRate == null) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物流方式不支持！AP0200");
-                        } else {
-                            throw new LogisticsFeeException($"自提点物流方式 {logisticsMode.Name} 内部费率不能为空！");
-                        }
-                    }
-
-                    feeRateList.Add(logisticsMode.InnerFeeRate);
-                }
-            } else if (logisticsMode.Type == LogisticsModeType.HomeDelivery) {
-                if (feeRateType == LogisticsFeeRateType.Customer) {
-                    if (logisticsMode.CustomerFeeRate == null) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物流方式不支持！AP0210");
-                        } else {
-                            throw new LogisticsFeeException($"送货上门物流方式 {logisticsMode.Name} 客户费率不能为空！");
-                        }
-                    }
-
-                    feeRateList.Add(logisticsMode.CustomerFeeRate);
-                }
-
-                if (feeRateType == LogisticsFeeRateType.Inner) {
-                    if (logisticsMode.InnerFeeRate == null) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物流方式不支持！AP0220");
-                        } else {
-                            throw new LogisticsFeeException($"送货上门物流方式 {logisticsMode.Name} 内部费率不能为空！");
-                        }
-                    }
-
-                    feeRateList.Add(logisticsMode.InnerFeeRate);
-                }
+        if (feeRate.VolumeDenominator <= 0) {
+            if (feeMessageType == FeeMessageType.Customer) {
+                throw new LogisticsFeeException("物流方式不支持！AP0230");
             } else {
-                if (logisticsMode.FeeRate == null) {
-                    if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物流方式不支持！AP0221");
-                    } else {
-                        throw new LogisticsFeeException($"物流方式 {logisticsMode.Name} 通用费率不能为空！");
-                    }
-                }
-
-                feeRateList.Add(logisticsMode.FeeRate);
+                throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率考虑体积重时，体积重分母应该大于0！");
             }
         }
 
-        if (feeRateList.Count != 0) {
-            foreach (var feeRate in feeRateList) {
-                if (feeRate.CareVolumeWeight) {
-                    if (feeRate.VolumeDenominator <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物流方式不支持！AP0230");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率考虑体积重时，体积重分母应该大于0！");
-                        }
-                    }
-
-                    if (feeRate.CareVolumeActualWeightRatio && feeRate.MinVolumeActualWeightRatio <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物流方式不支持！AP0240");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率考虑体积重实际重倍率时，体积重实际重最小倍率应该大于0！");
-                        }
-                    }
-
-                    if (feeRate.VolumeWeightCareMaxSideLength && feeRate.VolumeWeightMaxSideLengthBegin <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物流方式不支持！AP0243");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率体积重考虑最长边时，体积重最长边起始应该大于0！");
-                        }
-                    }
-                }
+        if (feeRate.CareVolumeActualWeightRatio && feeRate.MinVolumeActualWeightRatio <= 0) {
+            if (feeMessageType == FeeMessageType.Customer) {
+                throw new LogisticsFeeException("物流方式不支持！AP0240");
+            } else {
+                throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率考虑体积重实际重倍率时，体积重实际重最小倍率应该大于0！");
             }
         }
 
-        if (feeRateList.Count == 0) {
-            feeRateList.Add(logisticsMode.FeeRate);
+        if (feeRate.VolumeWeightCareMaxSideLength && feeRate.VolumeWeightMaxSideLengthBegin <= 0) {
+            if (feeMessageType == FeeMessageType.Customer) {
+                throw new LogisticsFeeException("物流方式不支持！AP0243");
+            } else {
+                throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率体积重考虑最长边时，体积重最长边起始应该大于0！");
+            }
         }
 
         #endregion
 
         #region 检查起步长度和重量
 
-        foreach (LogisticsFeeRateInfo feeRate in feeRateList) {
-            CheckLengthStart(feePackList, feeRate, feeMessageType);
-            CheckSingleWeightStart(feePackList, feeRate, feeMessageType);
-            CheckAverageWeightStart(feePackList, feeRate, feeMessageType);
-            CheckWeightStart(feePackList, feeRate, feeMessageType);
-        }
+        CheckLengthStart(feePackList, feeRate, feeMessageType);
+        CheckSingleWeightStart(feePackList, feeRate, feeMessageType);
+        CheckAverageWeightStart(feePackList, feeRate, feeMessageType);
+        CheckWeightStart(feePackList, feeRate, feeMessageType);
 
         #endregion
 
         #region 计算最终体积重量和最长边
 
         // kg，订单总重量，考虑了体积重后的重量
-        decimal finalTotalWeightKg = feeRateList.Max(feeRate => GetWholePackTotalWeight(feePackList, feeRate, feeMessageType));
+        decimal finalTotalWeightKg = GetWholePackTotalWeight(feePackList, feeRate, feeMessageType);
 
         feeCalculateLogService.AddLog($"考虑体积重后的订单总重量：{finalTotalWeightKg}");
 
         // 立方厘米
-        // decimal finalTotalVolumeCm3 = feeRateList.Max(feeRate => GetAllPackTotalVolume(feePackList, feeRate));
+        // decimal finalTotalVolumeCm3 = GetAllPackTotalVolume(feePackList, feeRate);
 
         #endregion
 
@@ -347,43 +183,29 @@ public class LogisticsFeeService {
 
         #region 计算初步费用
 
-        feeCalculateLogService.AddLog($"计算初步费用 开始");
+        feeCalculateLogService.AddLog("计算初步费用 开始");
 
         decimal initialTotalFee = 0m;
 
-        var logisticsModeId = logisticsMode.Id;
-        var logisticsModeTypeId = logisticsMode.Type;
+        var logisticsModeType = logisticsMode.Type;
 
         // 跨国快递
-        if (logisticsModeTypeId == LogisticsModeType.Express)
-        {
-            initialTotalFee = logisticsFeeCnAuExpressService.GetFee(finalTotalWeightKg, logisticsModeId, feeMessageType);
+        if (logisticsModeType == LogisticsModeType.Express) {
+            initialTotalFee = logisticsFeeExpressService.GetFee(finalTotalWeightKg, logisticsModeId, feeMessageType);
         } else {
-            throw new ValidationException("未知物流方式类型，无法计费！");
-        }
-
-        string initialTotalFeeTitle = "初始费用";
-
-        LogisticsOrderFeeType feeType = null;
-
-        if (isFirstLogisticsModeType) {
-            initialTotalFeeTitle = "跨国段初始费用";
-            feeType = LogisticsOrderFeeType.FirstLogisticsFee;
-        } else if (isSecondLogisticsModeType) {
-            initialTotalFeeTitle = "澳洲境内初始费用";
-            feeType = LogisticsOrderFeeType.SecondLogisticsFee;
+            throw new ValidationException("计费不支持的物流方式类型，无法计费！");
         }
 
         resultEntryList.Add(new LogisticsFeeResultEntry() {
-            Title = initialTotalFeeTitle,
+            Title = LogisticsOrderFeeType.FirstLogisticsFee.Name,
+            FeeType = LogisticsOrderFeeType.FirstLogisticsFee,
             Fee = initialTotalFee,
             GoodsType = logisticsFeeData.GoodsType,
-            FeeType = feeType,
             EntryType = LogisticsFeeResultEntryType.Single
         });
 
-        feeCalculateLogService.AddLog($"{initialTotalFeeTitle}: {initialTotalFee}");
-        feeCalculateLogService.AddLog($"计算初步费用 结束");
+        feeCalculateLogService.AddLog($"{LogisticsOrderFeeType.FirstLogisticsFee.Name}: {initialTotalFee}");
+        feeCalculateLogService.AddLog("计算初步费用 结束");
 
         #endregion
 
@@ -395,27 +217,17 @@ public class LogisticsFeeService {
         // 这里实际使用的是 "打折后的数据"
 
         // 超长费用
-        decimal overLengthFee = feeRateList.Max(feeRate => GetOverLengthFee(feePackList, feeRate, feeMessageType));
+        decimal overLengthFee = GetOverLengthFee(feePackList, feeRate, feeMessageType);
 
         //if (overLengthFee > 0)
         {
             extraTotalFee += overLengthFee;
 
-            LogisticsOrderFeeType feeTypeExtraLength = null;
-
-            if (isFirstLogisticsModeType) {
-                feeTypeExtraLength = LogisticsOrderFeeType.FirstLogisticsFeeExtraLength;
-            }
-
-            if (isSecondLogisticsModeType) {
-                feeTypeExtraLength = LogisticsOrderFeeType.SecondLogisticsFeeExtraLength;
-            }
-
             resultEntryList.Add(new LogisticsFeeResultEntry() {
-                Title = "超长费用",
+                Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraLength.Name,
+                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraLength,
                 Fee = overLengthFee,
                 GoodsType = logisticsFeeData.GoodsType,
-                FeeType = feeTypeExtraLength,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
 
@@ -423,27 +235,17 @@ public class LogisticsFeeService {
         }
 
         // 单箱超重费用
-        decimal singleOverWeightFee = feeRateList.Max(feeRate => GetSingleOverWeightFee(feePackList, feeRate, feeMessageType));
+        decimal singleOverWeightFee = GetSingleOverWeightFee(feePackList, feeRate, feeMessageType);
 
         // if (singleOverWeightFee > 0)
         {
             extraTotalFee += singleOverWeightFee;
 
-            LogisticsOrderFeeType feeTypeSingleExtraWeight = null;
-
-            if (isFirstLogisticsModeType) {
-                feeTypeSingleExtraWeight = LogisticsOrderFeeType.FirstLogisticsFeeSingleExtraWeight;
-            }
-
-            if (isSecondLogisticsModeType) {
-                feeTypeSingleExtraWeight = LogisticsOrderFeeType.SecondLogisticsFeeSingleExtraWeight;
-            }
-
             resultEntryList.Add(new LogisticsFeeResultEntry() {
-                Title = "单箱超重费用",
+                Title = LogisticsOrderFeeType.FirstLogisticsFeeSingleExtraWeight.Name,
+                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeSingleExtraWeight,
                 Fee = singleOverWeightFee,
                 GoodsType = logisticsFeeData.GoodsType,
-                FeeType = feeTypeSingleExtraWeight,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
 
@@ -451,27 +253,17 @@ public class LogisticsFeeService {
         }
 
         // 平均单箱超重费用
-        decimal averageOverWeightFee = feeRateList.Max(feeRate => GetAverageOverWeightFee(feePackList, feeRate, feeMessageType));
+        decimal averageOverWeightFee = GetAverageOverWeightFee(feePackList, feeRate, feeMessageType);
 
         // if (averageOverWeightFee > 0)
         {
             extraTotalFee += averageOverWeightFee;
 
-            LogisticsOrderFeeType feeTypeExtraAverageWeight = null;
-
-            if (isFirstLogisticsModeType) {
-                feeTypeExtraAverageWeight = LogisticsOrderFeeType.FirstLogisticsFeeAverageExtraWeight;
-            }
-
-            if (isSecondLogisticsModeType) {
-                feeTypeExtraAverageWeight = LogisticsOrderFeeType.SecondLogisticsFeeAverageExtraWeight;
-            }
-
             resultEntryList.Add(new LogisticsFeeResultEntry() {
-                Title = "平均单箱超重费用",
+                Title = LogisticsOrderFeeType.FirstLogisticsFeeAverageExtraWeight.Name,
+                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeAverageExtraWeight,
                 Fee = averageOverWeightFee,
                 GoodsType = logisticsFeeData.GoodsType,
-                FeeType = feeTypeExtraAverageWeight,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
 
@@ -479,27 +271,17 @@ public class LogisticsFeeService {
         }
 
         // 超重费用
-        decimal overWeightFee = feeRateList.Max(feeRate => GetOverWeightFee(feePackList, feeRate, feeMessageType));
+        decimal overWeightFee = GetOverWeightFee(feePackList, feeRate, feeMessageType);
 
         // if (overWeightFee > 0)
         {
             extraTotalFee += overWeightFee;
 
-            LogisticsOrderFeeType feeTypeExtraWeight = null;
-
-            if (isFirstLogisticsModeType) {
-                feeTypeExtraWeight = LogisticsOrderFeeType.FirstLogisticsFeeExtraWeight;
-            }
-
-            if (isSecondLogisticsModeType) {
-                feeTypeExtraWeight = LogisticsOrderFeeType.SecondLogisticsFeeExtraWeight;
-            }
-
             resultEntryList.Add(new LogisticsFeeResultEntry() {
-                Title = "超重费用",
+                Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraWeight.Name,
+                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraWeight,
                 Fee = overWeightFee,
                 GoodsType = logisticsFeeData.GoodsType,
-                FeeType = feeTypeExtraWeight,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
 
@@ -508,16 +290,16 @@ public class LogisticsFeeService {
 
         // 额外包裹数量，调用 GetExtraPackageCountFee()，这里的额外包裹数量是快递单号的数量
 
-        if (isFirstLogisticsModeType && logisticsFeeData.PackageCount > 0) {
-            decimal extraPackageCountFee = feeRateList.Max(feeRate => GetExtraPackageCountFee(logisticsFeeData.PackageCount, feeRate, feeMessageType));
+        if (logisticsFeeData.PackageCount > 0) {
+            decimal extraPackageCountFee = GetExtraPackageCountFee(logisticsFeeData.PackageCount, feeRate, feeMessageType);
 
             extraTotalFee += extraPackageCountFee;
 
             resultEntryList.Add(new LogisticsFeeResultEntry() {
-                Title = "额外包裹费",
+                Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraPackage.Name,
+                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraPackage,
                 Fee = extraPackageCountFee,
                 GoodsType = logisticsFeeData.GoodsType,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraPackage,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
 
@@ -528,94 +310,20 @@ public class LogisticsFeeService {
 
         #endregion
 
-        #region 限制类、草木竹类、特货类
-
-        // todo 普通类默认所有物流方式都允许，直接忽略通用费率中的相关设置
-        // 普通类一般都允许, 这里基本也不会去用到和去判断那个普通类是不是允许的设置
-
-        decimal typeTotalFee = 0m;
-
-        if (isFirstLogisticsModeType) // 头程才需要计算这个 限制类和草木竹类
-        {
-            // 限制类
-            decimal restrictGoodsFee = feeRateList.Max(feeRate => GetRestrictTypeFee(feePackList, logisticsFeeData.TotalPrice, logisticsFeeData.GoodsType, feeRate, feeMessageType));
-
-            //if (restrictGoodsFee > 0)
-            {
-                typeTotalFee += restrictGoodsFee;
-
-                resultEntryList.Add(new LogisticsFeeResultEntry() {
-                    Title = "限制类物品加收",
-                    Fee = restrictGoodsFee,
-                    GoodsType = logisticsFeeData.GoodsType,
-                    FeeType = LogisticsOrderFeeType.FirstLogisticsFeeRestrictType,
-                    EntryType = LogisticsFeeResultEntryType.Single
-                });
-
-                feeCalculateLogService.AddLog($"限制类物品加收 {restrictGoodsFee}");
-            }
-
-            // 草木竹类
-            decimal bambooGoodsFee = feeRateList.Max(feeRate => GetBambooTypeFee(feePackList, logisticsFeeData.TotalPrice, logisticsFeeData.GoodsType, feeRate, feeMessageType));
-
-            // if (bambooGoodsFee > 0)
-            {
-                typeTotalFee += bambooGoodsFee;
-
-                resultEntryList.Add(new LogisticsFeeResultEntry() {
-                    Title = "草木竹类物品加收",
-                    Fee = bambooGoodsFee,
-                    GoodsType = logisticsFeeData.GoodsType,
-                    FeeType = LogisticsOrderFeeType.FirstLogisticsFeeBambooType,
-                    EntryType = LogisticsFeeResultEntryType.Single
-                });
-
-                feeCalculateLogService.AddLog($"草木竹类物品加收 {bambooGoodsFee}");
-            }
-
-            // 特货类
-            decimal specialGoodsFee = feeRateList.Max(feeRate => GetSpecialTypeFee(feePackList, logisticsFeeData.TotalPrice, logisticsFeeData.GoodsType, feeRate, feeMessageType));
-
-            // if (specialGoodsFee > 0)
-            {
-                typeTotalFee += specialGoodsFee;
-
-                resultEntryList.Add(new LogisticsFeeResultEntry() {
-                    Title = "特货类物品加收",
-                    Fee = specialGoodsFee,
-                    GoodsType = logisticsFeeData.GoodsType,
-                    FeeType = LogisticsOrderFeeType.FirstLogisticsFeeSpecialType,
-                    EntryType = LogisticsFeeResultEntryType.Single
-                });
-
-                feeCalculateLogService.AddLog($"特货类物品加收 {specialGoodsFee}");
-            }
-        }
-
-        #endregion
-
         // 公布系数
 
-        decimal publishRate = feeRateList.Max(feeRate => feeRate.PublishRate.HasValue ? feeRate.PublishRate.Value : 1.0m);
+        decimal publishRate = feeRate.PublishRate;
 
         feeCalculateLogService.AddLog($"公布系数 {publishRate}");
 
-        decimal totalFee = (initialTotalFee + extraTotalFee + typeTotalFee) * publishRate;
+        decimal totalFee = (initialTotalFee + extraTotalFee) * publishRate;
 
         #region 记录合计费用
 
-        string totalFeeTitle = "";
-
-        if (isFirstLogisticsModeType) {
-            totalFeeTitle = "跨国段运费合计";
-        }
-
-        if (isSecondLogisticsModeType) {
-            totalFeeTitle = "澳洲境内运费合计";
-        }
-
+        string totalFeeTitle = "物流运费小计";
         resultEntryList.Add(new LogisticsFeeResultEntry() {
             Title = totalFeeTitle,
+            FeeType = LogisticsOrderFeeType.None,
             Fee = totalFee,
             GoodsType = logisticsFeeData.GoodsType,
             EntryType = LogisticsFeeResultEntryType.SubSum
@@ -1125,7 +833,7 @@ public class LogisticsFeeService {
     /// <param name="feeRate"></param>
     /// <param name="feeMessageType"></param>
     private void CheckLengthStart(IList<LogisticsFeePack> packList, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
-        if (feeRate.HasLengthStart) {
+        if (feeRate.HasLengthStart && feeRate.LengthStart != null) {
             if (feeRate.LengthStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
                     throw new LogisticsFeeException("物品起步长度物流方式不支持！AP0810");
@@ -1135,7 +843,7 @@ public class LogisticsFeeService {
             }
 
             decimal maxLength = GetAllPackMaxLength(packList, feeRate); // 最大长度，就是这个订单的长度  
-            decimal lengthStart = feeRate.LengthStart;
+            decimal lengthStart = feeRate.LengthStart.Value;
             if (maxLength < lengthStart) {
                 if (feeMessageType == FeeMessageType.Customer) {
                     throw new LogisticsFeeException("物品长度未到物流方式起步长度！AP0820");
@@ -1155,7 +863,7 @@ public class LogisticsFeeService {
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     private void CheckSingleWeightStart(IList<LogisticsFeePack> packList, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
-        if (feeRate.HasSingleWeightStart) {
+        if (feeRate.HasSingleWeightStart && feeRate.SingleWeightStart != null) {
             if (feeRate.SingleWeightStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
                     throw new LogisticsFeeException("物品单箱起步重量物流方式不支持！AP0830");
@@ -1164,7 +872,7 @@ public class LogisticsFeeService {
                 }
             }
 
-            decimal singleWeightStart = feeRate.SingleWeightStart;
+            decimal singleWeightStart = feeRate.SingleWeightStart.Value;
             foreach (var orderPack in packList) {
                 decimal singleFinalWeight = GetSinglePackWeight(orderPack, feeRate, feeMessageType);
                 if (singleFinalWeight < singleWeightStart) {
@@ -1187,7 +895,7 @@ public class LogisticsFeeService {
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     private void CheckAverageWeightStart(IList<LogisticsFeePack> packList, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
-        if (feeRate.HasAverageWeightStart) {
+        if (feeRate.HasAverageWeightStart && feeRate.AverageWeightStart != null) {
             if (feeRate.AverageWeightStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
                     throw new LogisticsFeeException("物品平均单箱起步重量物流方式不支持！AP0831");
@@ -1196,7 +904,7 @@ public class LogisticsFeeService {
                 }
             }
 
-            decimal averageWeightStart = feeRate.AverageWeightStart;
+            decimal averageWeightStart = feeRate.AverageWeightStart.Value;
             decimal averageFinalWeight = GetAveragePackWeight(packList, feeRate, feeMessageType);
             if (averageFinalWeight < averageWeightStart) {
                 if (feeMessageType == FeeMessageType.Customer) {
@@ -1215,7 +923,7 @@ public class LogisticsFeeService {
     /// <param name="feeRate"></param>
     /// <param name="feeMessageType"></param>
     private void CheckWeightStart(IList<LogisticsFeePack> packList, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
-        if (feeRate.HasWeightStart) {
+        if (feeRate.HasWeightStart && feeRate.WeightStart != null) {
             if (feeRate.WeightStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
                     throw new LogisticsFeeException("物品起步重量物流方式不支持！AP0850");
@@ -1225,7 +933,7 @@ public class LogisticsFeeService {
             }
 
             decimal totalWeight = GetWholePackTotalWeight(packList, feeRate, feeMessageType);
-            decimal weightStart = feeRate.WeightStart;
+            decimal weightStart = feeRate.WeightStart.Value;
             if (totalWeight < weightStart) {
                 if (feeMessageType == FeeMessageType.Customer) {
                     throw new LogisticsFeeException("物品重量未到物流方式起步重量！AP0860");
@@ -1695,359 +1403,6 @@ public class LogisticsFeeService {
         }
 
         return 0m;
-    }
-
-    #endregion
-
-    #region 限制类、草木竹类、特货类 费用
-
-    /// <summary>
-    /// 计算限制类加收费用
-    /// </summary>
-    /// <param name="packList"></param>
-    /// <param name="totalPrice"></param>
-    /// <param name="goodsType"></param>
-    /// <param name="feeRate"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    private decimal GetRestrictTypeFee(IList<LogisticsFeePack> packList, decimal totalPrice, LogisticsGoodsType goodsType, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
-        if (goodsType == LogisticsGoodsType.Restrict || goodsType == LogisticsGoodsType.RestrictBamboo) {
-            decimal restrictGoodsFee = 0m;
-
-            if (feeRate.RestrictGoodsPermit) {
-                // 按件加收费用
-                if (feeRate.RestrictGoodsByCount) {
-                    if (feeRate.RestrictGoodsByCountFee.HasValue == false || feeRate.RestrictGoodsByCountFee.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("限制类物品物流方式不支持！AP0530");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，限制类已启用按件加收，但 按件加收费用 未设置 或为0！");
-                        }
-                    }
-
-                    int goodsCount = packList.Count;
-                    restrictGoodsFee = goodsCount * feeRate.RestrictGoodsByCountFee.Value;
-                }
-
-                // 按体积加收费用
-                if (feeRate.RestrictGoodsByVolume) {
-                    if (feeRate.RestrictGoodsByVolumeFee.HasValue == false || feeRate.RestrictGoodsByVolumeFee.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("限制类物品物流方式不支持！AP0540");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，限制类已启用按体积加收，但 按体积加收费用 未设置 或为0！");
-                        }
-                    }
-
-                    decimal totalVolumeCm3 = GetAllPackTotalVolume(packList, feeRate);
-                    restrictGoodsFee = (totalVolumeCm3 / 1_00_00_00m) * feeRate.RestrictGoodsByVolumeFee.Value;
-                }
-
-                // 按申报金额加收费用
-                if (feeRate.RestrictGoodsByAmount) {
-                    if (feeRate.RestrictGoodsByAmountFeePercent.HasValue == false || feeRate.RestrictGoodsByAmountFeePercent.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("限制类物品物流方式不支持！AP0550");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，限制类已启用按金额加收，但 按金额加收比率 未设置 或为0！");
-                        }
-                    }
-
-                    restrictGoodsFee = totalPrice * feeRate.RestrictGoodsByAmountFeePercent.Value;
-                }
-
-                if (feeRate.HasRestrictGoodsCapAmount) {
-                    if (feeRate.RestrictGoodsCapAmount.HasValue == false || feeRate.RestrictGoodsCapAmount.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("限制类物品物流方式不支持！AP0560");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，限制类有费用封顶，但 封顶金额 未设置 或为0！");
-                        }
-                    }
-
-                    if (restrictGoodsFee > feeRate.RestrictGoodsCapAmount.Value) {
-                        restrictGoodsFee = feeRate.RestrictGoodsCapAmount.Value;
-                    }
-                }
-
-                return restrictGoodsFee;
-            } else {
-                if (goodsType == LogisticsGoodsType.RestrictBamboo) {
-                    return 0m;
-                }
-
-                if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("限制类物品物流方式不支持！AP0570");
-                } else {
-                    throw new LogisticsFeeException($"通用费率{feeRate.Name} 当前费率不允许限制类的物品！");
-                }
-            }
-        }
-
-        // 如果不是限制类型的，限制类的加收费用就为0
-        return 0m;
-    }
-
-    /// <summary>
-    /// 计算草木竹类加收费用
-    /// </summary>
-    /// <param name="packList"></param>
-    /// <param name="totalPrice"></param>
-    /// <param name="goodsType"></param>
-    /// <param name="feeRate"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    private decimal GetBambooTypeFee(IList<LogisticsFeePack> packList, decimal totalPrice, LogisticsGoodsType goodsType, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
-        if (goodsType == LogisticsGoodsType.Bamboo || goodsType == LogisticsGoodsType.RestrictBamboo) {
-            if (feeRate.BambooGoodsPermit) {
-                decimal bambooGoodsFee = 0m;
-
-                // 按件加收费用
-                if (feeRate.BambooGoodsByCount) {
-                    if (feeRate.BambooGoodsByCountFee.HasValue == false || feeRate.BambooGoodsByCountFee.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("草木竹类物品物流方式不支持！AP0580");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，草木竹类已启用按件加收，但 按件加收费用 未设置 或为0！");
-                        }
-                    }
-
-                    int goodsCount = packList.Count;
-                    bambooGoodsFee = goodsCount * feeRate.BambooGoodsByCountFee.Value;
-                }
-
-                // 按体积加收费用
-                if (feeRate.BambooGoodsByVolume) {
-                    if (feeRate.BambooGoodsByVolumeFee.HasValue == false || feeRate.BambooGoodsByVolumeFee.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("草木竹类物品物流方式不支持！AP0590");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，草木竹类已启用按体积加收，但 按体积加收费用 未设置 或为0！");
-                        }
-                    }
-
-                    decimal totalVolumeCm3 = GetAllPackTotalVolume(packList, feeRate);
-                    bambooGoodsFee = (totalVolumeCm3 / 1_00_00_00) * feeRate.BambooGoodsByVolumeFee.Value;
-                }
-
-                // 按申报金额加收费用
-                if (feeRate.BambooGoodsByAmount) {
-                    if (feeRate.BambooGoodsByAmountFeePercent.HasValue == false || feeRate.BambooGoodsByAmountFeePercent.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("草木竹类物品物流方式不支持！AP0600");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，草木竹类已启用按金额加收，但 按金额加收比率 未设置 或为0！");
-                        }
-                    }
-
-                    bambooGoodsFee = totalPrice * feeRate.BambooGoodsByAmountFeePercent.Value;
-                }
-
-                if (feeRate.HasBambooGoodsCapAmount) {
-                    if (feeRate.BambooGoodsCapAmount.HasValue == false || feeRate.BambooGoodsCapAmount.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("草木竹类物品物流方式不支持！AP0610");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，草木竹类有费用封顶，但 封顶金额 未设置 或为0！");
-                        }
-                    }
-
-                    if (bambooGoodsFee > feeRate.BambooGoodsCapAmount.Value) {
-                        bambooGoodsFee = feeRate.BambooGoodsCapAmount.Value;
-                    }
-                }
-
-                return bambooGoodsFee;
-            } else {
-                if (goodsType == LogisticsGoodsType.RestrictBamboo) {
-                    return 0m;
-                }
-
-                if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("草木竹类物品物流方式不支持！AP0620");
-                } else {
-                    throw new LogisticsFeeException($"通用费率 {feeRate.Name} 当前费率不允许草木竹类的物品！");
-                }
-            }
-        }
-
-        // 如果不是草木竹类型的，草木竹类的加收费用就为0
-        return 0m;
-    }
-
-    /// <summary>
-    /// 计算特货类加收费用
-    /// </summary>
-    /// <param name="packList"></param>
-    /// <param name="totalPrice"></param>
-    /// <param name="goodsType"></param>
-    /// <param name="feeRate"></param>
-    /// <param name="feeMessageType"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    private decimal GetSpecialTypeFee(IList<LogisticsFeePack> packList, decimal totalPrice, LogisticsGoodsType goodsType, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
-        if (goodsType == LogisticsGoodsType.Special) {
-            if (feeRate.SpecialGoodsPermit) {
-                decimal specialGoodsFee = 0m;
-
-                // 按件加收费用
-                if (feeRate.SpecialGoodsByCount) {
-                    if (feeRate.SpecialGoodsByCountFee.HasValue == false || feeRate.SpecialGoodsByCountFee.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("特货类物品物流方式不支持！AP0630");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，特货类已启用按件加收，但 按件加收费用 未设置 或为0！");
-                        }
-                    }
-
-                    int goodsCount = packList.Count;
-                    specialGoodsFee = goodsCount * feeRate.SpecialGoodsByCountFee.Value;
-                }
-
-                // 按体积加收费用
-                if (feeRate.SpecialGoodsByVolume) {
-                    if (feeRate.SpecialGoodsByVolumeFee.HasValue == false || feeRate.SpecialGoodsByVolumeFee.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("特货类物品物流方式不支持！AP0640");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，特货类已启用按体积加收，但 按体积加收费用 未设置 或为0！");
-                        }
-                    }
-
-                    decimal totalVolumeCm3 = GetAllPackTotalVolume(packList, feeRate);
-                    specialGoodsFee = (totalVolumeCm3 / 1_00_00_00) * feeRate.SpecialGoodsByVolumeFee.Value;
-                }
-
-                // 按申报金额加收费用
-                if (feeRate.SpecialGoodsByAmount) {
-                    if (feeRate.SpecialGoodsByAmountFeePercent.HasValue == false || feeRate.SpecialGoodsByAmountFeePercent.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("特货类物品物流方式不支持！AP0650");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，特货类已启用按金额加收，但 按金额加收比率 未设置 或为0！");
-                        }
-                    }
-
-                    specialGoodsFee = totalPrice * feeRate.SpecialGoodsByAmountFeePercent.Value;
-                }
-
-                if (feeRate.HasSpecialGoodsCapAmount) {
-                    if (feeRate.SpecialGoodsCapAmount.HasValue == false || feeRate.SpecialGoodsCapAmount.Value <= 0) {
-                        if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("特货类物品物流方式不支持！AP0660");
-                        } else {
-                            throw new LogisticsFeeException($"通用费率 {feeRate.Name}，特货类有费用封顶，但 封顶金额 未设置 或为0！");
-                        }
-                    }
-
-                    if (specialGoodsFee > feeRate.SpecialGoodsCapAmount.Value) {
-                        specialGoodsFee = feeRate.SpecialGoodsCapAmount.Value;
-                    }
-                }
-
-                return specialGoodsFee;
-            } else {
-                if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("特货类物品物流方式不支持！AP0670");
-                } else {
-                    throw new LogisticsFeeException($"通用费率 {feeRate.Name} 当前费率不允许特货类的物品！");
-                }
-            }
-        }
-
-        // 如果不是特货类型的，特货类的加收费用就为0
-        return 0m;
-    }
-
-    #endregion
-
-    #region 计算保险和GST费用
-
-    /// <summary>
-    /// 计算保险费用， 一般只用于订单费用的计算
-    /// </summary>
-    /// <param name="amount">物品总价</param>
-    /// <param name="fee">运费</param>
-    /// <param name="logisticsInsuranceId">GST费用的设置记录的 Id</param>
-    /// <returns></returns>
-    public decimal GetInsuranceFee(decimal amount, decimal fee, int logisticsInsuranceId) {
-        return logisticsFeeInsuranceService.GetInsuranceFee(amount, fee, logisticsInsuranceId);
-    }
-
-    /// <summary>
-    /// 计算GST费用，只用于费用估算
-    /// </summary>
-    /// <param name="amount">物品总价</param>
-    /// <param name="fee">运费</param>
-    /// <param name="totalVolume"></param>
-    /// <param name="totalWeight"></param>
-    /// <param name="logisticsGstId">GST费用的设置记录的 Id</param>
-    /// <param name="firstLogisticsModeId"></param>
-    /// <param name="orderGoodsType"></param>
-    /// <returns></returns>
-    public decimal GetGstFeeWhenEstimate(decimal amount, decimal fee, decimal totalVolume, decimal totalWeight, int logisticsGstId, int firstLogisticsModeId, LogisticsGoodsType orderGoodsType) {
-        return logisticsFeeGstService.GetGstFeeWhenEstimate(amount, fee, totalVolume, totalWeight, logisticsGstId, firstLogisticsModeId, orderGoodsType);
-    }
-
-    /// <summary>
-    /// 计算GST费用，用于订单费用计算
-    /// </summary>
-    /// <param name="fee">运费，不包含保险费和GST费用的运费</param>
-    /// <param name="logisticsOrder"></param>
-    /// <returns></returns>
-    public decimal GetGstFeeAfterPacked(decimal fee, LogisticsOrderInfo logisticsOrder) {
-        return logisticsFeeGstService.GetGstFeeAfterPacked(fee, logisticsOrder);
-    }
-
-    public decimal GetGstFeeByWeightVolume(decimal fee, decimal goodsPrice, LogisticsGoodsType goodsType, decimal totalActualWeight, decimal totalVolume, LogisticsModeInfo firstMode, LogisticsGstInfo logisticsGst) {
-        return logisticsFeeGstService.GetGstFeeByWeightVolume(fee, goodsPrice, goodsType, totalActualWeight, totalVolume, firstMode, logisticsGst);
-    }
-
-    #endregion
-
-    #region 计算超大超重附加费用
-
-    public decimal GetExtraSizeWeightFee(IList<int> claimIdList) {
-        if (claimIdList == null || claimIdList.Count == 0) {
-            return 0;
-        }
-
-        var holdExpressList = session.Query<SizeWeightHoldExpressInfo>()
-            .Where(e => claimIdList.Contains(e.Claim.Id)
-                        && e.Status == SizeWeightHoldExpressStatus.Release)
-            .ToList();
-
-        if (holdExpressList.Count == 0) {
-            return 0;
-        }
-
-        return holdExpressList.Sum(e => e.Fee);
-    }
-
-    public decimal GetExtraSizeWeightFee(IList<string> trackingNoList) {
-        if (trackingNoList == null || trackingNoList.Count == 0) {
-            return 0;
-        }
-
-        var holdExpressList = session.Query<SizeWeightHoldExpressInfo>()
-            .Where(e => trackingNoList.Contains(e.Claim.TrackingNo)
-                        && e.Status == SizeWeightHoldExpressStatus.Release)
-            .ToList();
-
-        if (holdExpressList.Count == 0) {
-            return 0;
-        }
-
-        return holdExpressList.Sum(e => e.Fee);
-    }
-
-    public decimal GetExtraSizeWeightFee(int orderId) {
-        IList<string> trackingNoList = session.Query<LogisticsOrderGoodsExpressInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .Select(e => e.ExpressTrackingNo)
-            .ToList();
-
-        return GetExtraSizeWeightFee(trackingNoList);
     }
 
     #endregion

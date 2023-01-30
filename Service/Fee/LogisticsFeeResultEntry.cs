@@ -8,9 +8,14 @@ namespace shunda.Service.Fee;
 /// </summary>
 public class LogisticsFeeResultEntry {
     /// <summary>
-    /// 费用名目
+    /// 费用标题
     /// </summary>
     public string Title { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 费用类型
+    /// </summary>
+    public LogisticsOrderFeeType FeeType { get; set; } = LogisticsOrderFeeType.None;
 
     /// <summary>
     /// 费用金额
@@ -26,11 +31,6 @@ public class LogisticsFeeResultEntry {
     /// 物品类型
     /// </summary>
     public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
-
-    /// <summary>
-    /// 费用类型
-    /// </summary>
-    public LogisticsOrderFeeType FeeType { get; set; } = LogisticsOrderFeeType.None;
 
     /// <summary>
     /// 结果明细类型
