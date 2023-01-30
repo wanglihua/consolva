@@ -7,16 +7,14 @@ using shunda.Service;
 
 namespace shunda.Admin.Controllers;
 
-public class HomeController : Controller
-{
+public class HomeController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly SidebarStateService sidebarStateService;
     private readonly LoginUserService loginUserService;
 
     public HomeController(SidebarStateService sidebarStateService,
-        LoginUserService loginUserService)
-    {
+        LoginUserService loginUserService) {
         this.sidebarStateService = sidebarStateService;
         this.loginUserService = loginUserService;
     }
@@ -24,16 +22,14 @@ public class HomeController : Controller
     [NoLoginRequired]
     [HttpGet]
     [Route("/")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         return RedirectToAction("AdminIndex", "Home");
     }
 
     [AdminAuth]
     [HttpGet]
     [Route("/admin")]
-    public IActionResult AdminIndex()
-    {
+    public IActionResult AdminIndex() {
         var model = new HomeAdminIndexModel();
 
         return View("HomeAdminIndex", model);
@@ -42,8 +38,7 @@ public class HomeController : Controller
     [AdminAuth]
     [HttpPost]
     [Route("/admin/home/set/sidebar/state")]
-    public IActionResult SetSidebarState(bool isMin)
-    {
+    public IActionResult SetSidebarState(bool isMin) {
         int loginUserId = loginUserService.GetLoginUserId();
         sidebarStateService.SetState(loginUserId, isMin);
 
