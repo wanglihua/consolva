@@ -4,7 +4,7 @@
     <van-cell-group title="收货地址-订单创建"/>
 
     <block wx:if="{{ !addressList || addressList.length === 0 }}">
-        <van-empty description="您暂时还没有{{ country }}的收货地址！"/>
+        <van-empty description="您暂时还没有{{ country }}的收货地址，请在[我的地址]中添加收货地址！"/>
     </block>
     <block wx:else>
         <block wx:for="{{ addressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">

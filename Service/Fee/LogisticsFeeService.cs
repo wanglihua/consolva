@@ -4,7 +4,6 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
-using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Fee;
 
@@ -24,21 +23,14 @@ namespace shunda.Service.Fee;
 [Service(ServiceType.Scoped)]
 public class LogisticsFeeService {
     private readonly ISession session;
-    private readonly LogisticsFeeInsuranceService logisticsFeeInsuranceService;
-    private readonly LogisticsFeeGstService logisticsFeeGstService;
     private readonly LogisticsFeeExpressService logisticsFeeExpressService;
     private readonly FeeCalculateLogService feeCalculateLogService;
 
     public LogisticsFeeService(
         ISession session,
-        LogisticsFeeInsuranceService logisticsFeeInsuranceService,
-        LogisticsFeeGstService logisticsFeeGstService,
         LogisticsFeeExpressService logisticsFeeExpressService,
         FeeCalculateLogService feeCalculateLogService) {
         this.session = session;
-
-        this.logisticsFeeInsuranceService = logisticsFeeInsuranceService;
-        this.logisticsFeeGstService = logisticsFeeGstService;
 
         this.logisticsFeeExpressService = logisticsFeeExpressService;
         this.feeCalculateLogService = feeCalculateLogService;
@@ -542,11 +534,11 @@ public class LogisticsFeeService {
 
     private decimal GetMultiPackActualWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate) {
         // 如果没有 "数量" 数据，就假设为 1
-        if (feePack.Quantity <= 0) {
-            feePack.Quantity = 1;
+        if (feePack.PackageCount <= 0) {
+            feePack.PackageCount = 1;
         }
 
-        return GetSinglePackActualWeight(feePack, feeRate) * feePack.Quantity;
+        return GetSinglePackActualWeight(feePack, feeRate) * feePack.PackageCount;
     }
 
     /// <summary>
@@ -672,7 +664,7 @@ public class LogisticsFeeService {
         }
 
         decimal wholePackTotalWeight = GetWholePackTotalWeight(packList, feeRate, feeMessageType);
-        return wholePackTotalWeight / packList.Sum(e => e.Quantity);
+        return wholePackTotalWeight / packList.Sum(e => e.PackageCount);
     }
 
     /*
@@ -721,11 +713,11 @@ public class LogisticsFeeService {
         decimal finalVolumeCm3 = GetSinglePackVolume(feePack, feeRate); // 立方厘米
 
         // 如果没有 "数量" 数据，就假设为 1
-        if (feePack.Quantity <= 0) {
-            feePack.Quantity = 1;
+        if (feePack.PackageCount <= 0) {
+            feePack.PackageCount = 1;
         }
 
-        return finalVolumeCm3 * feePack.Quantity;
+        return finalVolumeCm3 * feePack.PackageCount;
     }
 
     private decimal GetSinglePackVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
@@ -750,11 +742,11 @@ public class LogisticsFeeService {
 
     private decimal GetMultiPackVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         // 如果没有 "数量" 数据，就假设为 1
-        if (feePack.Quantity <= 0) {
-            feePack.Quantity = 1;
+        if (feePack.PackageCount <= 0) {
+            feePack.PackageCount = 1;
         }
 
-        return GetSinglePackVolumeWeight(feePack, feeRate, feeMessageType) * feePack.Quantity;
+        return GetSinglePackVolumeWeight(feePack, feeRate, feeMessageType) * feePack.PackageCount;
     }
 
     private decimal GetSinglePackSideAvgVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
@@ -793,11 +785,11 @@ public class LogisticsFeeService {
 
     private decimal GetMultiPackSideAvgVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         // 如果没有 "数量" 数据，就假设为 1
-        if (feePack.Quantity <= 0) {
-            feePack.Quantity = 1;
+        if (feePack.PackageCount <= 0) {
+            feePack.PackageCount = 1;
         }
 
-        return GetSinglePackSideAvgVolumeWeight(feePack, feeRate, feeMessageType) * feePack.Quantity;
+        return GetSinglePackSideAvgVolumeWeight(feePack, feeRate, feeMessageType) * feePack.PackageCount;
     }
 
     /// <summary>
@@ -1027,7 +1019,7 @@ public class LogisticsFeeService {
                             decimal overStepCount = Math.Ceiling(Math.Abs(singlePackMaxLength - lengthLimit) / overLengthStep);
 
                             // 累加
-                            overLengthFee = overLengthFee + (overStepCount * overLengthStepFee) * feePack.Quantity; // Quantity 也不能忘了 
+                            overLengthFee = overLengthFee + (overStepCount * overLengthStepFee) * feePack.PackageCount; // Quantity 也不能忘了 
                         }
                     }
 
@@ -1115,7 +1107,7 @@ public class LogisticsFeeService {
                             singleOverStepCount = Math.Ceiling(Math.Abs(singleFinalWeight - singleWeightLimit) / singleOverWeightStep);
                         }
 
-                        decimal singleOverWeightFee = singleOverStepCount * singleOverWeightStepFee * orderPack.Quantity;
+                        decimal singleOverWeightFee = singleOverStepCount * singleOverWeightStepFee * orderPack.PackageCount;
 
                         totalSingleOverWeightFee += singleOverWeightFee;
                     } else {

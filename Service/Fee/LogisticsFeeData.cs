@@ -10,7 +10,7 @@ public class LogisticsFeeData {
 
     public string Zipcode { get; set; } = string.Empty;
 
-    public decimal TotalPrice { get; set; }
+    public decimal GoodsValue { get; set; }
 
     public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
@@ -43,7 +43,7 @@ public class LogisticsFeePack {
     /// <summary>
     /// 数量，默认为 1
     /// </summary>
-    public int Quantity { get; set; } = 1;
+    public int PackageCount { get; set; } = 1;
 }
 
 public class LogisticsFeeExpress {
