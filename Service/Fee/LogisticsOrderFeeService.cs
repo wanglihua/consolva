@@ -49,6 +49,7 @@ public class LogisticsOrderFeeService {
         }
 
         var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Fetch(e => e.FirstMode)
             .Where(e => e.Order.Id == orderId)
             .OrderBy(e => e.GoodsType)
             .ThenBy(e => e.Id)
@@ -78,7 +79,10 @@ public class LogisticsOrderFeeService {
             }
         }
 
+        var feeDataList = new List<LogisticsFeeData>();
+        foreach (var orderFirstMode in orderFirstModeList) {
+        }
 
-        return new List<LogisticsFeeData>();
+        return feeDataList;
     }
 }
