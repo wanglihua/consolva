@@ -122,7 +122,7 @@ public class ExpressExpectController : Controller {
         }
 
         if (expressExpect.Customer.Id != loginCustomerId) {
-            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前会员 #{loginCustomerId} ！");
+            throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前客户 #{loginCustomerId} ！");
         }
 
         return Json(new JsonResultData {

@@ -28,7 +28,7 @@ public class CustomerScoreLogCustomerController : Controller {
     public IActionResult Index(int customerId) {
         CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) {
-            throw new ValidationException("指定的会员不存在！");
+            throw new ValidationException("指定的客户不存在！");
         }
 
         customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);

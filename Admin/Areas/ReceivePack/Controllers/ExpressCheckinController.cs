@@ -500,7 +500,7 @@ public class ExpressCheckinController : Controller {
                 /*
                 if (express != null && (express.Picked == true || ExpressStatus.IsCheckedIn(express.Status)))
                 {
-                    throw new ValidationException("该快递单号已被会员认领，不能修改更新记录信息！");
+                    throw new ValidationException("该快递单号已被客户认领，不能修改更新记录信息！");
                 }
                 */
 
@@ -798,7 +798,7 @@ public class ExpressCheckinController : Controller {
                 if (expressExpect != null) // 优先按预报的发送消息
                 {
                     customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
-                } else if (billCustomerId != 0) // 没预报但有面单会员ID
+                } else if (billCustomerId != 0) // 没预报但有面单客户ID
                 {
                     CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
                     if (billCustomer != null) {

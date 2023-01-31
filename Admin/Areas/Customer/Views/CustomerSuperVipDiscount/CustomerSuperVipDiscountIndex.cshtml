@@ -9,7 +9,7 @@
 }
 
 @section Breadcrumb {
-    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="parent" data-menu="customer-menu">客户管理</li>
     <li class="active" data-menu="customer-customer-super-vip-discount-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
@@ -37,12 +37,12 @@
 
     <button class="btn btn-pink btn-sm" onclick="updateCustomerVip()">
         <i class="ace-icon fa fa-gear"></i>
-        手动更新会员VIP标识
+        手动更新客户VIP标识
     </button>
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-    <label for="customerCode">会员ID</label>&nbsp;<input id="customerCode" name="customerCode" style="width: 100px; height: 30px;" placeholder="会员ID查询"/>&nbsp;
+    <label for="customerCode">客户ID</label>&nbsp;<input id="customerCode" name="customerCode" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerSuperVipDiscountList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>

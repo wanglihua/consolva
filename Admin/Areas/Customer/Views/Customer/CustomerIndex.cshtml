@@ -5,12 +5,12 @@
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.Customer.CustomerIndexModel
 @{
-    ViewData[ViewDataKey.Title] = "会员列表";
+    ViewData[ViewDataKey.Title] = "客户列表";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
-    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="parent" data-menu="customer-menu">客户管理</li>
     <li class="active" data-menu="customer-customer-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
@@ -22,7 +22,7 @@
 
     <button class="btn btn-pink btn-sm" onclick="updateCustomerVip()">
         <i class="ace-icon fa fa-gear"></i>
-        手动更新会员VIP标识
+        手动更新客户VIP标识
     </button>
 
     @if (Model.CanImportTestCustomer)
@@ -60,9 +60,9 @@
     <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="注册时间起始" autocomplete="off"/>&nbsp;
     <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="注册时间截止" autocomplete="off"/>&nbsp;
 
-    <label for="characterQuery">会员性质</label>&nbsp;
+    <label for="characterQuery">客户性质</label>&nbsp;
     <select id="characterQuery" name="characterQuery" style="width: 100px; height: 30px;">
-        <option value="">会员性质</option>
+        <option value="">客户性质</option>
         @foreach (var character in Model.CharacterList)
         {
             <option value="@(character.Content)">@(character.Content)</option>

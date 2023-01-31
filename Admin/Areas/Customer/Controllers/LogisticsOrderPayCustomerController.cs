@@ -33,7 +33,7 @@ public class LogisticsOrderPayCustomerController : Controller
         var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null)
         {
-            throw new ValidationException("指定的会员不存在！");
+            throw new ValidationException("指定的客户不存在！");
         }
 
         customer.CustomerCodeCache = customerCodeService.GetCustomerCode(customer.Id);
@@ -98,7 +98,7 @@ public class LogisticsOrderPayCustomerController : Controller
         // 排除掉费用核销的费用
         // 可能也需要的，比如线下付款的 criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.PayType != PayType.WriteOff));
 
-        // 只显示指定会员的
+        // 只显示指定客户的
         var customerId = queryParam.CustomerId;
         criteria = criteria.Add(Restrictions.Where<LogisticsOrderPayInfo>(e => e.Customer.Id == customerId));
 

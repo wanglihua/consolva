@@ -129,7 +129,7 @@ public class CustomerChargeController : Controller
         var customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode);
         var customer = session.Get<CustomerInfo>(customerId);
 
-        if (customer == null) throw new ValidationException("指定的会员ID不存在！");
+        if (customer == null) throw new ValidationException("指定的客户ID不存在！");
 
         if (model.Amount == 0) throw new ValidationException("充值金额不能为0！");
 
@@ -219,7 +219,7 @@ public class CustomerChargeController : Controller
             {
                 var customer = importItem.Customer;
 
-                if (customer == null) throw new ValidationException($"导入的第 {dataIndex} 行，编号为 {importItem.CustomerCode} 的会员不存在！");
+                if (customer == null) throw new ValidationException($"导入的第 {dataIndex} 行，编号为 {importItem.CustomerCode} 的客户不存在！");
 
                 var amount = importItem.Amount;
 

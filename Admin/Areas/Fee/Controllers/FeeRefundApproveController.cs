@@ -210,7 +210,7 @@ public class FeeRefundApproveController : Controller {
             // 记录订单费用
             // 如果是退款的话，一般是客户多付了，退给他们后，需要增加一条费用平衡原来多付的。
             LogisticsOrderFeeInfo logisticsOrderFeeInfo = new LogisticsOrderFeeInfo();
-            logisticsOrderFeeInfo.Customer = refundApply.Customer; // 一般情况下，这个 会员 和 订单 是匹配的
+            logisticsOrderFeeInfo.Customer = refundApply.Customer; // 一般情况下，这个 客户 和 订单 是匹配的
             logisticsOrderFeeInfo.Order = refundApply.Order;
             logisticsOrderFeeInfo.GoodsType = LogisticsGoodsType.None;
             logisticsOrderFeeInfo.Type = LogisticsOrderFeeType.RefundFee;

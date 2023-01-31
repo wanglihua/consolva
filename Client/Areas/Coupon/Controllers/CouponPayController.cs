@@ -55,7 +55,7 @@ public class CouponPayController : Controller {
         }
 
         if (order.Customer.Id != loginCustomerId) {
-            throw new ValidationException($"指定的订单#{orderId}不属于当前登录会员#{loginCustomerId}");
+            throw new ValidationException($"指定的订单#{orderId}不属于当前登录客户#{loginCustomerId}");
         }
 
         var orderCoupon = session.Query<CouponInfo>()

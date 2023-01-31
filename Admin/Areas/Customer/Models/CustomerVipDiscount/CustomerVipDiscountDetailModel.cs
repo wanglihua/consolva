@@ -13,9 +13,9 @@ public class CustomerVipDiscountDetailModel
     public int CustomerVipDiscountId { get; set; }
 
     /// <summary>
-    /// 会员VIP等级
+    /// 客户VIP等级
     /// </summary>
-    [Required(ErrorMessage = "会员VIP等级不能为空！")]
+    [Required(ErrorMessage = "客户VIP等级不能为空！")]
     [ModelBinder(typeof(CustomerVipRankModelBinder))]
     public virtual CustomerVipRank Rank { get; set; } = CustomerVipRank.None;
 

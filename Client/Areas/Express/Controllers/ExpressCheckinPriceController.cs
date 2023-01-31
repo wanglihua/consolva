@@ -40,7 +40,7 @@ public class ExpressCheckinPriceController : Controller {
         }
 
         if ((express.Customer?.Id ?? 0) != loginCustomerId) {
-            throw new ValidationException($"指定的快递单号{express.TrackingNo}不属于当前登录会员#{loginCustomerId}！");
+            throw new ValidationException($"指定的快递单号{express.TrackingNo}不属于当前登录客户#{loginCustomerId}！");
         }
 
         var goodsList = session.Query<ExpressGoodsInfo>()

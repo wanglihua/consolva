@@ -23,9 +23,9 @@ public class FeeRefundInfo : Entity
     public virtual string OrderCode { get; set; } = string.Empty;
 
     /// <summary>
-    /// 会员
+    /// 客户
     /// </summary>
-    [Required(ErrorMessage = "会员不能为空！")]
+    [Required(ErrorMessage = "客户不能为空！")]
     public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>

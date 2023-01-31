@@ -37,7 +37,7 @@ public class CustomerSuperVipDiscountExcelService {
         var headerCellStyle = ExcelUtil.CreateHeaderCellStyle(workbook);
         var contentCellStyle = ExcelUtil.CreateContentCellStyle(workbook);
 
-        // 会员 备注 折扣
+        // 客户 备注 折扣
 
         var rowIndex = 0;
 
@@ -49,7 +49,7 @@ public class CustomerSuperVipDiscountExcelService {
         sheet.SetColumnWidth(cellIndex, 16 * 256);
         cell.CellStyle = headerCellStyle;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue("会员");
+        cell.SetCellValue("客户");
 
         cell = row.CreateCell(cellIndex++);
         sheet.SetColumnWidth(cellIndex, 16 * 256);
@@ -69,7 +69,7 @@ public class CustomerSuperVipDiscountExcelService {
 
             cellIndex = 0;
 
-            // 会员
+            // 客户
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.String);
@@ -104,7 +104,7 @@ public class CustomerSuperVipDiscountExcelService {
 
         IList<CustomerSuperVipDiscountInfo> superVipDiscountList = new List<CustomerSuperVipDiscountInfo>();
 
-        // 会员  备注  折扣 
+        // 客户  备注  折扣 
 
         // 略过标题行，所以 rowIndex = 1 开始
         var lastRowNum = sheet.LastRowNum;
@@ -125,18 +125,18 @@ public class CustomerSuperVipDiscountExcelService {
 
             cellIndex = 0;
 
-            // 会员
+            // 客户
             var customerIdStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             if (string.IsNullOrWhiteSpace(customerIdStr)) break;
 
             var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerIdStr);
             if (customerId == 0) {
-                throw new ValidationException($"第{rowIndex}行数据 会员 数据格式有误，导入失败！");
+                throw new ValidationException($"第{rowIndex}行数据 客户 数据格式有误，导入失败！");
             }
 
             var customer = session.Get<CustomerInfo>(customerId);
             if (customer == null) {
-                throw new ValidationException($"第{rowIndex}行数据 会员 不存在，导入失败！");
+                throw new ValidationException($"第{rowIndex}行数据 客户 不存在，导入失败！");
             }
 
             // 备注

@@ -45,7 +45,7 @@ public class ExpressCheckinDetailController : Controller {
         }
 
         if ((express.Customer?.Id ?? 0) != loginCustomerId) {
-            throw new ValidationException($"指定的快递单号{express.TrackingNo}不属于当前登录会员#{loginCustomerId}！");
+            throw new ValidationException($"指定的快递单号{express.TrackingNo}不属于当前登录客户#{loginCustomerId}！");
         }
 
         // 入库备注

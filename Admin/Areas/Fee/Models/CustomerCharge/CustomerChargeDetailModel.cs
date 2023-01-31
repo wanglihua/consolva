@@ -6,7 +6,7 @@ namespace shunda.Admin.Areas.Fee.Models.CustomerCharge;
 
 public class CustomerChargeDetailModel
 {
-    [Required(ErrorMessage = "会员ID不能为空！")]
+    [Required(ErrorMessage = "客户ID不能为空！")]
     public string CustomerCode { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "充值金额不能为空！")]

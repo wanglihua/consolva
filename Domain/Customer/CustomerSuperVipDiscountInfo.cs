@@ -12,7 +12,7 @@ namespace shunda.Domain.Customer;
 public class CustomerSuperVipDiscountInfo : Entity
 {
     /// <summary>
-    /// 会员
+    /// 客户
     /// </summary>
     [BindNever]
     public virtual CustomerInfo Customer { get; set; } = new ();
@@ -37,9 +37,9 @@ public class CustomerSuperVipDiscountInfo : Entity
     #region cache
 
     /// <summary>
-    /// 会员
+    /// 客户
     /// </summary>
-    [Required(ErrorMessage = "会员不能为空！")]
+    [Required(ErrorMessage = "客户不能为空！")]
     public virtual string CustomerCodeCache { get; set; } = string.Empty;
 
     #endregion

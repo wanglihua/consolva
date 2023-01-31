@@ -4,14 +4,14 @@
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerAccountEntryCustomer.CustomerAccountEntryCustomerIndexModel
 @{
-    ViewData[ViewDataKey.Title] = "会员余额明细";
+    ViewData[ViewDataKey.Title] = "客户余额明细";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
-    <li class="parent" data-menu="customer-menu">会员管理</li>
+    <li class="parent" data-menu="customer-menu">客户管理</li>
     <li class="active" data-menu="customer-customer-index-menu">
-        <a href="@Url.Action("Index","Customer")">会员列表</a>
+        <a href="@Url.Action("Index","Customer")">客户列表</a>
     </li>
     <li>
         <a target="_blank" href="@Url.Action("Detail", "Customer", new {id = Model.Customer.Id})"><span>@Model.Customer.CustomerCodeCache</span></a>
