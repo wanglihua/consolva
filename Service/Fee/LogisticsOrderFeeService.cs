@@ -13,16 +13,19 @@ public class LogisticsOrderFeeService {
     private readonly LogisticsFeeService logisticsFeeService;
     private readonly CustomerVipDiscountService customerVipDiscountService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly CustomerReceiveAddressService customerReceiveAddressService;
 
     public LogisticsOrderFeeService(ISession session,
         LogisticsFeeService logisticsFeeService,
         CustomerVipDiscountService customerVipDiscountService,
-        LogisticsOrderPaySumService logisticsOrderPaySumService
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
+        CustomerReceiveAddressService customerReceiveAddressService
     ) {
         this.session = session;
         this.logisticsFeeService = logisticsFeeService;
         this.customerVipDiscountService = customerVipDiscountService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
+        this.customerReceiveAddressService = customerReceiveAddressService;
     }
 
     /// <summary>
@@ -81,6 +84,14 @@ public class LogisticsOrderFeeService {
 
         var feeDataList = new List<LogisticsFeeData>();
         foreach (var orderFirstMode in orderFirstModeList) {
+            int orderFirstModeId = orderFirstMode.Id;
+            var orderFirstModeOrderPackList = orderPackList
+                .Where(e => e.OrderFirstMode.Id == orderFirstModeId)
+                .OrderBy(e => e.GoodsType)
+                .ThenBy(e => e.Id)
+                .ToList();
+            
+            
         }
 
         return feeDataList;
