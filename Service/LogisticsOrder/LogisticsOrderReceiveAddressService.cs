@@ -19,11 +19,7 @@ public class LogisticsOrderReceiveAddressService {
 
     /// <summary>
     /// 获取完整地址
-    ///
-    /// 参考 https://www.zhihu.com/question/20562267
     /// </summary>
-    /// <param name="receiveAddress"></param>
-    /// <returns></returns>
     public string GetFullAddress(LogisticsOrderReceiveAddressInfo receiveAddress) {
         return customerReceiveAddressService.GetFullAddress(receiveAddress);
     }
