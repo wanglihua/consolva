@@ -17,17 +17,118 @@ public class CustomerVipDiscountService {
     /// 获取会员VIP折扣列表
     /// 总的数量也不多，后面的操作都建立在这个获取的列表之上
     /// </summary>
-    /// <returns></returns>
     public IList<CustomerVipDiscountInfo> GetCustomerVipDiscountList() {
         return session.Query<CustomerVipDiscountInfo>().OrderBy(e => e.Score).ToList();
     }
 
+    /// <summary>
+    /// 获得会员VIP折扣
+    /// </summary>
+    /// <returns>不存在时，就返回 null</returns>
     public CustomerVipDiscountInfo? GetDiscount(int customerId, IList<CustomerVipDiscountInfo> customerVipDiscountList) {
         var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
 
-        return null;
+        if (customerVipDiscountList.Count == 0) {
+            return null;
+        }
+
+        return GetDiscount(customer.TotalScore, customerVipDiscountList);
+    }
+
+    /// <summary>
+    /// 获得会员VIP折扣
+    /// </summary>
+    /// <returns>不存在时，就返回 null</returns>
+    public CustomerVipDiscountInfo? GetDiscount(decimal score, IList<CustomerVipDiscountInfo> customerVipDiscountList) {
+        if (score <= 0) {
+            return null;
+        }
+
+        if (customerVipDiscountList.Count == 0) {
+            return null;
+        }
+
+        var discount = customerVipDiscountList
+            .Where(e => e.Score <= score)
+            .OrderByDescending(e => e.Score)
+            .Take(1)
+            .SingleOrDefault();
+
+        return discount;
+    }
+
+    /// <summary>
+    /// 获取下一级会员VIP折扣
+    /// </summary>
+    /// <returns>不存在时，就返回 null</returns>
+    public CustomerVipDiscountInfo? GetNextLevelDiscount(int customerId, IList<CustomerVipDiscountInfo> customerVipDiscountList) {
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        if (customerVipDiscountList.Count == 0) {
+            return null;
+        }
+
+        return GetNextLevelDiscount(customer.TotalScore, customerVipDiscountList);
+    }
+
+    /// <summary>
+    /// 获取积分对应的下一级VIP折扣
+    /// </summary>
+    /// <returns>不存在时，就返回 null</returns>
+    public CustomerVipDiscountInfo? GetNextLevelDiscount(decimal score, IList<CustomerVipDiscountInfo> customerVipDiscountList) {
+        if (customerVipDiscountList.Count == 0) {
+            return null;
+        }
+
+        // 大于会员当前历史总积分的折扣设置中的最小的一个折扣设置
+        var customerVipDiscount = customerVipDiscountList
+            .Where(e => e.Score > score)
+            .OrderBy(e => e.Score)
+            .Take(1)
+            .SingleOrDefault();
+
+        return customerVipDiscount;
+    }
+
+    /// <summary>
+    /// 新积分相对旧的积分，
+    /// </summary>
+    /// <param name="oldScore"></param>
+    /// <param name="newScore"></param>
+    /// <param name="customerVipDiscountList"></param>
+    /// <returns></returns>
+    public bool ShouldVipUpgrade(decimal oldScore, decimal newScore, IList<CustomerVipDiscountInfo> customerVipDiscountList) {
+        if (customerVipDiscountList.Count == 0) {
+            return false;
+        }
+
+        if (oldScore >= newScore) {
+            return false;
+        }
+
+        var oldScoreCustomerVipDiscount = GetDiscount(oldScore, customerVipDiscountList);
+        var newScoreCustomerVipDiscount = GetDiscount(newScore, customerVipDiscountList);
+
+        // 原来没有VIP等级
+        if (oldScoreCustomerVipDiscount == null && newScoreCustomerVipDiscount != null) {
+            return true;
+        }
+
+        //说明已经是最高级别VIP了
+        if (oldScoreCustomerVipDiscount != null && newScoreCustomerVipDiscount == null) {
+            return true;
+        }
+
+        if ((oldScoreCustomerVipDiscount?.Score ?? 0m) < (newScoreCustomerVipDiscount?.Score ?? 0m)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
