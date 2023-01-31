@@ -145,7 +145,8 @@ public class FreightEstimateSummaryController : Controller {
                 TotalPackageCount = totalPackageCount,
                 ReceiveAddress = addressReceiveItem,
                 FirstMode = firstModeItem,
-                FeeList = feeItemList,
+                FirstModeFee = estimateFee.FirstModeFee.ToString("#0.00"),
+                FirstModeFeeList = feeItemList,
                 GstFee = estimateFee.GstFee.ToString("#0.00"), // GST费用
                 TotalFee = estimateFee.TotalFee.ToString("#0.00"), // 总费用
             },

@@ -7,7 +7,7 @@ page {
 }
 
 .container {
-    padding: 20rpx 20rpx 150rpx 20rpx;
+    padding: 20rpx 20rpx 280rpx 20rpx;
 }
 
 .container-top {
@@ -19,7 +19,7 @@ page {
 }
 
 .container-bottom {
-    padding: 0 20rpx 150rpx 20rpx;
+    padding: 0 20rpx 280rpx 20rpx;
 }
 
 .home-grid-icon {
@@ -53,6 +53,10 @@ page {
 
 .item {
     padding-bottom: 0 !important;
+}
+
+.item-title-long {
+    flex: 3 !important;
 }
 
 .item-last-vspace {

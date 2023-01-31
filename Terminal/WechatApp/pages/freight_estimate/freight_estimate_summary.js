@@ -9,8 +9,10 @@ Page({
         totalPackageCount: 0,
         receiveAddress: {},
         firstMode: {},
-        feeList: [],
+        firstModeFee: "",
+        firstModeFeeList: [],
         gstFee: "",
+        totalFee: "",
     },
 
     onLoad(options) {
@@ -27,8 +29,10 @@ Page({
                 totalPackageCount: res.data.totalPackageCount,
                 receiveAddress: res.data.receiveAddress,
                 firstMode: res.data.firstMode,
-                feeList: res.data.feeList,
+                firstModeFee: res.data.firstModeFee,
+                firstModeFeeList: res.data.firstModeFeeList,
                 gstFee: res.data.gstFee,
+                totalFee: res.data.totalFee,
             });
         });
     },
