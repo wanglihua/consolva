@@ -195,7 +195,7 @@ public class ExpressListService {
         if (expressListMenuCate == ExpressListMenuCate.NotOrderLongDumpSchedule) {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime < EXPRESS_CHECKIN_RECENT_AGO
-                && (e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder)
+                && e.Status == ExpressStatus.CheckIn
                 && e.DumpStatus == ExpressDumpStatus.NotDump));
         }
 
@@ -364,7 +364,7 @@ public class ExpressListService {
             criteria = criteria.Add(Restrictions.And(
                     Restrictions.Where<ExpressInfo>(e => e.AddTime >= EXPRESS_CHECKIN_RECENT_AGO),
                     Restrictions.Or(
-                        Restrictions.Where<ExpressInfo>(e => (e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder)),
+                        Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.CheckIn),
                         Subqueries.PropertyIn(nameof(ExpressInfo.TrackingNo), expectExpressCriteria)
                     )
                 )
@@ -416,7 +416,7 @@ public class ExpressListService {
         if (expressListMenuCate == ExpressListMenuCate.NotOrderLong) {
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime < EXPRESS_CHECKIN_RECENT_AGO
-                && (e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder)
+                && e.Status == ExpressStatus.CheckIn
                 && e.DumpStatus == ExpressDumpStatus.NotDump
                 && e.ArchiveType == ExpressArchiveType.None)
             );
@@ -449,7 +449,7 @@ public class ExpressListService {
 
             criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
                 e.AddTime < EXPRESS_CHECKIN_RECENT_AGO
-                && (e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder)
+                && e.Status == ExpressStatus.CheckIn
                 && e.DumpStatus == ExpressDumpStatus.NotDump
                 && e.ArchiveType == ExpressArchiveType.None));
 
@@ -472,7 +472,7 @@ public class ExpressListService {
                     e.ArchiveType == ExpressArchiveType.ToOnShelf
                     || e.ArchiveType == ExpressArchiveType.ToOffShelf
                     || ((e.Status == ExpressStatus.WaitPick && e.ArchiveType == ExpressArchiveType.None) || e.ArchiveType == ExpressArchiveType.NotPickedLong)
-                    || (((e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder) && e.ArchiveType == ExpressArchiveType.None) || e.ArchiveType == ExpressArchiveType.NotOrderLong)
+                    || ((e.Status == ExpressStatus.CheckIn && e.ArchiveType == ExpressArchiveType.None) || e.ArchiveType == ExpressArchiveType.NotOrderLong)
                 ));
             }
 
@@ -496,7 +496,7 @@ public class ExpressListService {
 
             if (queryParam.ArchiveTypeQuery == ExpressArchiveType.NotOrderLong) {
                 criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e =>
-                    (((e.Status == ExpressStatus.CheckIn || e.Status == ExpressStatus.WaitOrder) && e.ArchiveType == ExpressArchiveType.None) || e.ArchiveType == ExpressArchiveType.NotOrderLong)
+                    ((e.Status == ExpressStatus.CheckIn && e.ArchiveType == ExpressArchiveType.None) || e.ArchiveType == ExpressArchiveType.NotOrderLong)
                 ));
             }
         }

@@ -82,6 +82,14 @@ public class LogisticsOrderFeeService {
             }
         }
 
+        var orderReceiveAddress = session.Query<LogisticsOrderReceiveAddressInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+        if (orderReceiveAddress == null) {
+            throw new ValidationException($"订单{order.Code}收货地址不存在，数据有问题！");
+        }
+
         var feeDataList = new List<LogisticsFeeData>();
         foreach (var orderFirstMode in orderFirstModeList) {
             int orderFirstModeId = orderFirstMode.Id;
@@ -90,8 +98,13 @@ public class LogisticsOrderFeeService {
                 .OrderBy(e => e.GoodsType)
                 .ThenBy(e => e.Id)
                 .ToList();
-            
-            
+            var feeData = new LogisticsFeeData {
+                Address = customerReceiveAddressService.GetFullAddress(orderReceiveAddress),
+                Zipcode = orderReceiveAddress.Zipcode,
+                GoodsValue = order.GoodsValue, // todo 这里还有问题
+                GoodsType = orderFirstMode.GoodsType,
+                
+            };
         }
 
         return feeDataList;

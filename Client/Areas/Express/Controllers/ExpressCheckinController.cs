@@ -187,7 +187,7 @@ public class ExpressCheckinController : Controller {
 
         var query = session.Query<ExpressInfo>()
             .Where(e => e.Customer!.Id == loginCustomerId
-                        && (e.Status == ExpressStatus.WaitOrder || e.Status == ExpressStatus.CheckIn));
+                        && e.Status == ExpressStatus.CheckIn);
 
         if (string.IsNullOrWhiteSpace(param.Query) == false) {
             string queryStr = param.Query.Trim();

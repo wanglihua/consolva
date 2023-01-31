@@ -41,13 +41,6 @@ public class ExpressStatus : CodeTypeBase {
     /// </summary>
     public static readonly ExpressStatus ThrowAway = new ExpressStatus(6000, "已丢弃", "已丢弃");
 
-    // todo 这个状态，可以不要了
-    /// <summary>
-    /// 待建单
-    /// 这是一个客户端操作时的一个临时选中状态，创建一个新订单时会用待建单状态的快递单号生成
-    /// </summary>
-    public static readonly ExpressStatus WaitOrder = new ExpressStatus(7000, "待建单", "待建单");
-
     /// <summary>
     /// 已建单
     /// </summary>
@@ -110,7 +103,6 @@ public class ExpressStatus : CodeTypeBase {
         WaitReturn,
         Returned,
         ThrowAway,
-        WaitOrder,
         Order,
         WaitPack,
         PartOffShelf,
@@ -146,7 +138,6 @@ public class ExpressStatus : CodeTypeBase {
             Expect,
             CheckIn,
             WaitReturn,
-            WaitOrder,
             Order,
             WaitPack, // 这个状态是不是应该放到里面，还有点争议
         };
@@ -229,7 +220,6 @@ public class ExpressStatus : CodeTypeBase {
         WaitReturn,
         Returned,
         ThrowAway,
-        WaitOrder,
     };
 
     /// <summary>
@@ -274,7 +264,6 @@ public class ExpressStatus : CodeTypeBase {
             Expect,
             CheckIn,
             WaitReturn,
-            WaitOrder,
             Order,
             WaitPack,
             PartOffShelf,

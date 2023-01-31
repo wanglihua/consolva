@@ -9,6 +9,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsOrder;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
@@ -125,6 +126,11 @@ public class ExpressCheckinDetailController : Controller {
             })
             .ToList();
 
+        var createSelectExpress = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+            .Where(e => e.ExpressId == expressId)
+            .Take(1)
+            .SingleOrDefault();
+
         // model
         ExpressCheckinDetailModel model = new ExpressCheckinDetailModel {
             Id = express.Id,
@@ -137,7 +143,7 @@ public class ExpressCheckinDetailController : Controller {
             ClaimDate = express.ClaimTime?.ToString("yyyy-MM-dd") ?? string.Empty,
             WarehouseRemark = warehouseRemark,
             Status = express.Status.Name,
-            WaitOrder = express.Status == ExpressStatus.WaitOrder,
+            WaitOrder = createSelectExpress != null,
 
             // goods
             GoodsCount = goodsCount,
