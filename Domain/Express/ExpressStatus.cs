@@ -12,14 +12,6 @@ public class ExpressStatus : CodeTypeBase {
     public static readonly ExpressStatus WaitPick = new ExpressStatus(1000, "待认领", "待认领");
 
     /// <summary>
-    /// 已预报
-    /// 快递单号有预报，相当于已完成认领，但还没录货值
-    /// </summary>
-    public static readonly ExpressStatus Expect = new ExpressStatus(2000, "已预报", "已预报");
-
-    //  todo 这里是不是可以加个状态 enter，录货值状态
-
-    /// <summary>
     /// 已认领
     /// 系统的已入库状态
     /// 已完成认领和录完货值
@@ -98,7 +90,7 @@ public class ExpressStatus : CodeTypeBase {
 
     private static readonly IReadOnlyList<ExpressStatus> codeTypeList = new List<ExpressStatus>() {
         WaitPick,
-        Expect,
+        // Expect,
         CheckIn,
         WaitReturn,
         Returned,
@@ -135,7 +127,7 @@ public class ExpressStatus : CodeTypeBase {
     public static IList<ExpressStatus> GetMayToOnShelfList() {
         return new List<ExpressStatus>() {
             WaitPick,
-            Expect,
+            // Expect,
             CheckIn,
             WaitReturn,
             Order,
@@ -188,7 +180,7 @@ public class ExpressStatus : CodeTypeBase {
     /// </summary>
     private static readonly IReadOnlyList<ExpressStatus> codeTypeListNotCheckedIn = new List<ExpressStatus>() {
         WaitPick,
-        Expect,
+        // Expect,
     };
 
     /// <summary>
@@ -215,7 +207,7 @@ public class ExpressStatus : CodeTypeBase {
     /// </summary>
     private static readonly IReadOnlyList<ExpressStatus> codeTypeListNoOrder = new List<ExpressStatus>() {
         WaitPick,
-        Expect,
+        // Expect,
         CheckIn,
         WaitReturn,
         Returned,
@@ -261,7 +253,7 @@ public class ExpressStatus : CodeTypeBase {
     public static IList<ExpressStatus> GetOccupyStorageLocStatusList() {
         return new List<ExpressStatus>() {
             WaitPick,
-            Expect,
+            // Expect,
             CheckIn,
             WaitReturn,
             Order,

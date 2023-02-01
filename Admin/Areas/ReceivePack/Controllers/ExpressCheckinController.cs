@@ -553,17 +553,21 @@ public class ExpressCheckinController : Controller {
                     session.Flush();
                 }
 
+                DateTime now = DateTime.Now;
+
                 if (express == null) {
-                    express = new ExpressInfo();
-                    express.TrackingNo = expressTrackingNo;
-                    express.CheckinTrackingNo = string.Empty; // 后面会回填这个澳拼跟踪号
-                    express.Status = ExpressStatus.WaitPick; // 初始化为 WaitPick     
-                    express.ShelfStatus = ExpressShelfStatus.ToOnShelf; // 初始化为 待上架
-                    express.AddTime = DateTime.Now;
+                    express = new ExpressInfo {
+                        TrackingNo = expressTrackingNo,
+                        CheckinTrackingNo = string.Empty, // 后面会回填这个澳拼跟踪号
+                        Status = ExpressStatus.WaitPick, // 初始化为 WaitPick     
+                        ShelfStatus = ExpressShelfStatus.ToOnShelf, // 初始化为 待上架
+                        AddTime = now,
+                    };
 
                     if (expressExpect != null) {
-                        express.ClaimTime = DateTime.Now;
-                        express.Status = ExpressStatus.Expect;
+                        express.ClaimTime = now;
+                        // express.Status = ExpressStatus.Expect;
+                        express.Status = ExpressStatus.CheckIn;
                         express.Customer = expressExpect.Customer;
                     }
                 }
