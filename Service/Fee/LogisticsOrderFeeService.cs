@@ -1,6 +1,7 @@
 using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
@@ -35,6 +36,19 @@ public class LogisticsOrderFeeService {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        int customerId = order.Customer.Id;
+
+        CustomerSuperVipDiscountInfo? superVipDiscount = session.Query<CustomerSuperVipDiscountInfo>()
+            .Where(e => e.Customer.Id == customerId)
+            .Take(1)
+            .SingleOrDefault();
+
+        CustomerVipDiscountInfo? vipDiscount = null;
+        // 不是超级VIP的才需要查看VIP折扣
+        if (superVipDiscount == null) {
+            vipDiscount = customerVipDiscountService.GetDiscount(customerId);
         }
 
         return new LogisticsFeeResult {
@@ -103,7 +117,6 @@ public class LogisticsOrderFeeService {
                 Zipcode = orderReceiveAddress.Zipcode,
                 GoodsValue = order.GoodsValue, // todo 这里还有问题
                 GoodsType = orderFirstMode.GoodsType,
-                
             };
         }
 

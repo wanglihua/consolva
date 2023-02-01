@@ -15,10 +15,29 @@ public class CustomerVipDiscountService {
 
     /// <summary>
     /// 获取会员VIP折扣列表
-    /// 总的数量也不多，后面的操作都建立在这个获取的列表之上
+    /// 总的数量也不多，后面的很多操作都建立在这个获取的列表之上
     /// </summary>
     public IList<CustomerVipDiscountInfo> GetCustomerVipDiscountList() {
         return session.Query<CustomerVipDiscountInfo>().OrderBy(e => e.Score).ToList();
+    }
+
+    /// <summary>
+    /// 获得会员VIP折扣
+    /// </summary>
+    /// <returns>不存在时，就返回 null</returns>
+    public CustomerVipDiscountInfo? GetDiscount(int customerId) {
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        var vipRank = customer.VipRank;
+        var discount = session.Query<CustomerVipDiscountInfo>()
+            .Where(e => e.Rank == vipRank)
+            .Take(1)
+            .SingleOrDefault();
+
+        return discount;
     }
 
     /// <summary>
@@ -35,7 +54,13 @@ public class CustomerVipDiscountService {
             return null;
         }
 
-        return GetDiscount(customer.TotalScore, customerVipDiscountList);
+        var vipRank = customer.VipRank;
+        var discount = customerVipDiscountList
+            .Where(e => e.Rank == vipRank)
+            .Take(1)
+            .SingleOrDefault();
+
+        return discount;
     }
 
     /// <summary>
