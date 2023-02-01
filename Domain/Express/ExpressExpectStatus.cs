@@ -5,8 +5,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 快递单预告状态
 /// </summary>
-public class ExpressExpectStatus : CodeTypeBase
-{
+public class ExpressExpectStatus : CodeTypeBase {
     /// <summary>
     /// 未到货
     /// </summary>
@@ -23,54 +22,43 @@ public class ExpressExpectStatus : CodeTypeBase
     /// </summary>
     public static readonly ExpressExpectStatus Checkin = new ExpressExpectStatus(3000, "已入库", "已入库");
 
-
     /// <summary>
     /// None
     /// </summary>
     public static readonly ExpressExpectStatus None = new ExpressExpectStatus(0, "", "");
 
-    public static ExpressExpectStatus GetById(int id)
-    {
-        IList<ExpressExpectStatus> typeList = GetList();
-        foreach (ExpressExpectStatus type in typeList)
-        {
-            if (type.Id == id)
-            {
-                return type;
-            }
+    private static readonly IReadOnlyList<ExpressExpectStatus> codeTypeList = new List<ExpressExpectStatus>() {
+        Create,
+        Enter,
+        Checkin,
+    };
+
+    private static readonly IDictionary<int, ExpressExpectStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
+
+    public static ExpressExpectStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out ExpressExpectStatus? codeType)) {
+            return codeType;
         }
 
         return None;
     }
 
-    public static IList<ExpressExpectStatus> GetList()
-    {
-        IList<ExpressExpectStatus> typeList = new List<ExpressExpectStatus>();
-
-        typeList.Add(Create);
-        typeList.Add(Enter);
-        typeList.Add(Checkin);
-
-        return typeList;
+    public static IList<ExpressExpectStatus> GetList() {
+        return codeTypeList.ToList();
     }
 
-    private ExpressExpectStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private ExpressExpectStatus(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class ExpressExpectStatusHibernateType : CodeHibernateTypeBase<ExpressExpectStatus>
-{
-    protected override ExpressExpectStatus GetCodeTypeById(int id)
-    {
+public class ExpressExpectStatusHibernateType : CodeHibernateTypeBase<ExpressExpectStatus> {
+    protected override ExpressExpectStatus GetCodeTypeById(int id) {
         return ExpressExpectStatus.GetById(id);
     }
 }
 
-public class ExpressExpectStatusModelBinder : CodeTypeModelBinderBase<ExpressExpectStatus>
-{
-    protected override ExpressExpectStatus GetCodeTypeById(int id)
-    {
+public class ExpressExpectStatusModelBinder : CodeTypeModelBinderBase<ExpressExpectStatus> {
+    protected override ExpressExpectStatus GetCodeTypeById(int id) {
         return ExpressExpectStatus.GetById(id);
     }
 }
