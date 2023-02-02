@@ -8,10 +8,8 @@ using shunda.Domain.Pass;
 
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderFeeInfoMapping : EntityMapping<LogisticsOrderFeeInfo>
-{
-    public LogisticsOrderFeeInfoMapping()
-    {
+public class LogisticsOrderFeeInfoMapping : EntityMapping<LogisticsOrderFeeInfo> {
+    public LogisticsOrderFeeInfoMapping() {
         Table("tbl_logistics_order_fee");
 
         ManyToOne(
@@ -51,6 +49,17 @@ public class LogisticsOrderFeeInfoMapping : EntityMapping<LogisticsOrderFeeInfo>
                 map.Type<LogisticsGoodsTypeHibernateType>();
                 map.Column("goods_type_id");
                 map.NotNullable(true);
+            }
+        );
+
+        ManyToOne(
+            x => x.OrderFirstMode,
+            map => {
+                map.Class(typeof(LogisticsOrderFirstModeInfo));
+                map.Column("order_first_mode_id");
+                map.NotNullable(false);
+                map.Cascade(Cascade.None);
+                map.Fetch(FetchKind.Select);
             }
         );
 

@@ -12,21 +12,20 @@ namespace shunda.Domain.Fee;
 /// <summary>
 /// 订单费用
 /// </summary>
-public class LogisticsOrderFeeInfo : Entity
-{
+public class LogisticsOrderFeeInfo : Entity {
     /// <summary>
     ///  客户，非空
     /// </summary>
     [Required(ErrorMessage = " 客户不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new ();
+    public virtual CustomerInfo Customer { get; set; } = new();
 
     /// <summary>
     /// 订单，非空
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new ();
+    public virtual LogisticsOrderInfo Order { get; set; } = new();
 
     /// <summary>
     /// 订单编号，非空
@@ -40,6 +39,12 @@ public class LogisticsOrderFeeInfo : Entity
     [JsonProperty("goodsType")]
     [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
     public virtual LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
+
+    /// <summary>
+    /// 订单头程物流记录，可空
+    /// </summary>
+    [JsonProperty("orderFirstMode")]
+    public virtual LogisticsOrderFirstModeInfo? OrderFirstMode { get; set; }
 
     /// <summary>
     /// 费用类型，非空
