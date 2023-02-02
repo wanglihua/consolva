@@ -4,8 +4,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Core;
 
-public class Entity : EntityNoCreateNoUpdate
-{
+public abstract class Entity : EntityNoCreateNoUpdate {
     [BindNever()]
     [JsonProperty("createTime")]
     [JsonConverter(typeof(ShortDateTimeConverter))]

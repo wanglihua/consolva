@@ -2,6 +2,7 @@ using System.Text;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ValidationFailure = NHibernate.Classic.ValidationFailure;
 
 namespace shunda.Core.Util;
 
@@ -57,6 +58,16 @@ public static class ValidationUtil {
             // 只提示第一个错误
             string message = result.Errors.FirstOrDefault()?.ErrorMessage ?? string.Empty;
             throw new ValidationException(message);
+        }
+    }
+
+    public static void ValidateEntity<V, E>(E data) where V : AbstractValidator<E>, new() {
+        var validator = new V();
+        ValidationResult result = validator.Validate(data);
+        if (result.IsValid == false) {
+            // 只提示第一个错误
+            string message = result.Errors.FirstOrDefault()?.ErrorMessage ?? string.Empty;
+            throw new ValidationFailure(message);
         }
     }
 }
