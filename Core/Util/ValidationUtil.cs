@@ -52,6 +52,9 @@ public static class ValidationUtil {
     }
 
     public static void Validate<V, E>(E data) where V : AbstractValidator<E>, new() {
+        ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
+        ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+
         var validator = new V();
         ValidationResult result = validator.Validate(data);
         if (result.IsValid == false) {

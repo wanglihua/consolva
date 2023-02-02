@@ -4,8 +4,6 @@ using shunda.Domain.Logistics;
 
 namespace shunda.Service.Fee;
 
-// todo 加上这个数据结构的数据验证器
-
 /// <summary>
 /// 运费计算时需要的数据
 /// </summary>
@@ -47,7 +45,7 @@ public class LogisticsFeeData {
 }
 
 /// <summary>
-/// 运费计算中的物品信息
+/// 运费计算中的包裹信息
 /// </summary>
 public class LogisticsFeePack {
     public decimal Length { get; set; }
@@ -64,10 +62,21 @@ public class LogisticsFeePack {
     public int PackageCount { get; set; } = 1;
 }
 
+public class LogisticsFeePackValidator : AbstractValidator<LogisticsFeePack> {
+    public LogisticsFeePackValidator() {
+        RuleFor(e => e.Length).Must(p => p > 0).WithMessage("计费包裹长度不能为空！");
+        RuleFor(e => e.Width).Must(p => p > 0).WithMessage("计费包裹宽度不能为空！");
+        RuleFor(e => e.Height).Must(p => p > 0).WithMessage("计费包裹高度不能为空！");
+        RuleFor(e => e.Weight).Must(p => p > 0).WithMessage("计费包裹重量不能为空！");
+        RuleFor(e => e.PackageCount).Must(p => p > 0).WithMessage("计费包裹数量不能为空！");
+    }
+}
+
 public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeData> {
     public LogisticsFeeDataValidator() {
-        ClassLevelCascadeMode = CascadeMode.Stop;
-        RuleLevelCascadeMode = CascadeMode.Stop;
+        // 已经 ValidationUtil 中全局设置
+        // ClassLevelCascadeMode = CascadeMode.Stop;
+        // RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(e => e.Country).NotNull().NotEqual(Country.None).WithMessage("计费目的国家不能为空，或值不合法！");
         RuleFor(e => e.LogisticsMode).NotNull().Must(p => p.Id > 0).WithMessage("计费物流方式不能为空！");
@@ -76,5 +85,6 @@ public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeData> {
         RuleFor(e => e.GoodsValue).Must(p => p > 0).WithMessage("计费物品货值不能为空！");
         RuleFor(e => e.GoodsType).NotNull().NotEqual(LogisticsGoodsType.None).WithMessage("计费物品类型不能为空，或值不合法！");
         RuleFor(e => e.FeePackList).NotNull().NotEmpty().WithMessage("计费包裹列表不能为空！");
+        RuleForEach(e => e.FeePackList).SetValidator(new LogisticsFeePackValidator());
     }
 }
