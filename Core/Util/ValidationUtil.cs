@@ -73,7 +73,8 @@ public static class ValidationUtil {
         if (result.IsValid == false) {
             // 只提示第一个错误
             string message = result.Errors.FirstOrDefault()?.ErrorMessage ?? string.Empty;
-            throw new ValidationFailure(message);
+            // throw new ValidationFailure(message); 暂时也抛出 ValidationException 
+            throw new ValidationException(message);
         }
     }
 }

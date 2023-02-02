@@ -1,14 +1,13 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using shunda.Core;
+using shunda.Core.Util;
 
 namespace shunda.Domain.Pass;
 
 /// <summary>
 /// 群组
 /// </summary>
-public class GroupInfo : Entity
-{
+public class GroupInfo : Entity {
     /// <summary>
     /// 编码
     /// </summary>
@@ -29,4 +28,8 @@ public class GroupInfo : Entity
     /// </summary>
     [MaxLength(200, ErrorMessage = "描述长度不能大于200！")]
     public virtual string? Description { get; set; }
+
+    public override void Validate() {
+        ValidationUtil.ValidateEntity<GroupInfoValidator, GroupInfo>(this);
+    }
 }

@@ -13,27 +13,23 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 
 [AdminAuth(AdminOnly = true)]
 [PassArea]
-public class GroupController : Controller
-{
+public class GroupController : Controller {
     private readonly ISession session;
 
-    public GroupController(ISession session)
-    {
+    public GroupController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/group")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new GroupIndexModel();
         return View("GroupIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/group/list")]
-    public IActionResult List(GroupListQueryParam queryParam)
-    {
+    public IActionResult List(GroupListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -54,25 +50,21 @@ public class GroupController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(GroupListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(GroupListQueryParam queryParam) {
         var criteria = session.CreateCriteria<GroupInfo>();
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(queryParam.CodeQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.CodeQuery) == false) {
             var codeQuery = queryParam.CodeQuery.Trim();
             criteria = criteria.Add(Restrictions.On<GroupInfo>(e => e.Code).IsInsensitiveLike(codeQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false) {
             var nameQuery = queryParam.NameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<GroupInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.UserQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.UserQuery) == false) {
             var userQuery = queryParam.UserQuery;
 
             var groupIdCriteria = DetachedCriteria.For<GroupMemberInfo>();
@@ -93,16 +85,12 @@ public class GroupController : Controller
 
     [HttpPost]
     [Route("/admin/group/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         GroupInfo? group;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             group = new GroupInfo();
-        }
-        else
-        {
+        } else {
             group = session.Get<GroupInfo>(id.Value);
             if (group == null) throw new ValidationException("指定的数据项不存在！");
         }
@@ -119,9 +107,9 @@ public class GroupController : Controller
     [HttpPost]
     [Route("/admin/group/save")]
     [Transactional]
-    public IActionResult Save(GroupDetailModel model)
-    {
-        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+    public IActionResult Save(GroupSaveModel model) {
+        // if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        ValidationUtil.Validate<GroupSaveModelValidator, GroupSaveModel>(model);
 
         var groupId = model.GroupId;
 
@@ -154,10 +142,8 @@ public class GroupController : Controller
     [HttpPost]
     [Route("/admin/group/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (var id in idList)
-        {
+    public IActionResult Delete(int[] idList) {
+        foreach (var id in idList) {
             var group = session.Load<GroupInfo>(id);
             session.Delete(group);
         }
