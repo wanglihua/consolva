@@ -1,9 +1,8 @@
+using FluentValidation;
 using shunda.Domain;
 using shunda.Domain.Logistics;
 
 namespace shunda.Service.Fee;
-
-// todo LogisticsMode 已经放入这个类中，用到这个类又用到物流方式那里，就不用多一个参数了
 
 // todo 加上这个数据结构的数据验证器
 
@@ -11,27 +10,40 @@ namespace shunda.Service.Fee;
 /// 运费计算时需要的数据
 /// </summary>
 public class LogisticsFeeData {
+    /// <summary>
+    /// 目的国家
+    /// </summary>
     public Country Country { get; set; } = Country.None;
 
+    /// <summary>
+    /// 物流方式
+    /// </summary>
     public LogisticsModeInfo LogisticsMode { get; set; } = new();
 
+    /// <summary>
+    /// 收货地址
+    /// </summary>
     public string Address { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 收货邮编
+    /// </summary>
     public string Zipcode { get; set; } = string.Empty;
 
     /// <summary>
-    /// 货值
+    /// 物品货值
     /// </summary>
     public decimal GoodsValue { get; set; }
 
+    /// <summary>
+    /// 物品类型
+    /// </summary>
     public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
-    public IList<LogisticsFeePack> FeePackList { get; set; } = new List<LogisticsFeePack>();
-
     /// <summary>
-    /// 包裹数量，快递单号数量
+    /// 包裹列表
     /// </summary>
-    public int PackageCount { get; set; }
+    public IList<LogisticsFeePack> FeePackList { get; set; } = new List<LogisticsFeePack>();
 }
 
 /// <summary>
@@ -50,4 +62,19 @@ public class LogisticsFeePack {
     /// 数量，默认为 1
     /// </summary>
     public int PackageCount { get; set; } = 1;
+}
+
+public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeData> {
+    public LogisticsFeeDataValidator() {
+        ClassLevelCascadeMode = CascadeMode.Stop;
+        RuleLevelCascadeMode = CascadeMode.Stop;
+
+        RuleFor(e => e.Country).NotNull().NotEqual(Country.None).WithMessage("计费目的国家不能为空，或值不合法！");
+        RuleFor(e => e.LogisticsMode).NotNull().Must(p => p.Id > 0).WithMessage("计费物流方式不能为空！");
+        RuleFor(e => e.Address).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("计费收货地址不能为空！");
+        RuleFor(e => e.Zipcode).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("计费收货邮编不能为空！");
+        RuleFor(e => e.GoodsValue).Must(p => p > 0).WithMessage("计费物品货值不能为空！");
+        RuleFor(e => e.GoodsType).NotNull().NotEqual(LogisticsGoodsType.None).WithMessage("计费物品类型不能为空，或值不合法！");
+        RuleFor(e => e.FeePackList).NotNull().NotEmpty().WithMessage("计费包裹列表不能为空！");
+    }
 }

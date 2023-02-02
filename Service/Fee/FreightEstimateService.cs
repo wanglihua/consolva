@@ -148,7 +148,7 @@ public class FreightEstimateService {
                 ).ToList(),
             Address = customerReceiveAddressService.GetFullAddress(addressReceive),
             Zipcode = addressReceive.Zipcode,
-            PackageCount = freightEstimateSelectGoodsList.Sum(e => e.PackageCount),
+            // PackageCount = freightEstimateSelectGoodsList.Sum(e => e.PackageCount),
         };
     }
 }

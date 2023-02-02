@@ -281,8 +281,10 @@ public class LogisticsFeeService {
 
         // 额外包裹数量，调用 GetExtraPackageCountFee()，这里的额外包裹数量是快递单号的数量
 
-        if (logisticsFeeData.PackageCount > 0) {
-            decimal extraPackageCountFee = GetExtraPackageCountFee(logisticsFeeData.PackageCount, feeRate, feeMessageType);
+        // if (logisticsFeeData.PackageCount > 0) // 这个肯定成立
+        {
+            int totalPackageCount = logisticsFeeData.FeePackList.Sum(e => e.PackageCount);
+            decimal extraPackageCountFee = GetExtraPackageCountFee(totalPackageCount, feeRate, feeMessageType);
 
             extraTotalFee += extraPackageCountFee;
 
