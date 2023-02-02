@@ -2,6 +2,7 @@ using NHibernate;
 using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 
@@ -38,7 +39,6 @@ public class LogisticsFeeService {
 
     /// <summary>
     /// 根据物流数据计算物流费用
-    /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
     /// </summary>
     /// <param name="logisticsFeeData"></param>
     /// <returns></returns>
@@ -48,13 +48,13 @@ public class LogisticsFeeService {
 
     /// <summary>
     /// 根据物流数据计算物流费用
-    /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
+    ///
+    /// 原来的代码都调用了这个版本
     /// </summary>
     /// <param name="logisticsFeeData"></param>
     /// <param name="feeRateType"></param>
     /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType) // 原来的代码都调用了这个版本
-    {
+    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType) {
         return GetLogisticsFee(logisticsFeeData, feeRateType, FeeMessageType.User);
     }
 
@@ -67,6 +67,8 @@ public class LogisticsFeeService {
     /// <param name="feeMessageType"></param>
     /// <returns></returns>
     public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType, FeeMessageType feeMessageType) {
+        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeData>(logisticsFeeData);
+
         var logisticsMode = logisticsFeeData.LogisticsMode;
 
         if (logisticsMode == null) {

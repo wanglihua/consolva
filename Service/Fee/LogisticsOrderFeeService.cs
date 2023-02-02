@@ -1,6 +1,7 @@
 using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Customer;
@@ -49,6 +50,11 @@ public class LogisticsOrderFeeService {
         // 不是超级VIP的才需要查看VIP折扣
         if (superVipDiscount == null) {
             vipDiscount = customerVipDiscountService.GetDiscount(customerId);
+        }
+
+        var feeDataList = OrderToFeeDataList(orderId);
+        foreach (var feeData in feeDataList) {
+            ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeData>(feeData);
         }
 
         return new LogisticsFeeResult {

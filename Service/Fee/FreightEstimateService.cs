@@ -1,6 +1,7 @@
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
@@ -39,6 +40,7 @@ public class FreightEstimateService {
         IList<LogisticsFeeResultEntry> firstModeFeeEntryList = new List<LogisticsFeeResultEntry>();
 
         LogisticsFeeData logisticsFeeData = GetLogisticsFeeData(customerId);
+        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeData>(logisticsFeeData);
 
         #region 头程
 
