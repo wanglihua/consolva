@@ -21,13 +21,17 @@ public class LogisticsOrderFeeService {
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly CustomerReceiveAddressService customerReceiveAddressService;
     private readonly CouponService couponService;
+    private readonly LogisticsFeeInsuranceService logisticsFeeInsuranceService;
+    private readonly LogisticsFeeGstService logisticsFeeGstService;
 
     public LogisticsOrderFeeService(ISession session,
         LogisticsFeeService logisticsFeeService,
         CustomerVipDiscountService customerVipDiscountService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         CustomerReceiveAddressService customerReceiveAddressService,
-        CouponService couponService
+        CouponService couponService,
+        LogisticsFeeInsuranceService logisticsFeeInsuranceService,
+        LogisticsFeeGstService logisticsFeeGstService
     ) {
         this.session = session;
         this.logisticsFeeService = logisticsFeeService;
@@ -35,6 +39,8 @@ public class LogisticsOrderFeeService {
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.customerReceiveAddressService = customerReceiveAddressService;
         this.couponService = couponService;
+        this.logisticsFeeInsuranceService = logisticsFeeInsuranceService;
+        this.logisticsFeeGstService = logisticsFeeGstService;
     }
 
     /// <summary>
@@ -68,10 +74,10 @@ public class LogisticsOrderFeeService {
             orderResultEntryList.AddRange(modeResultEntryList);
         }
 
-        decimal totalFirstModeFee = 0m;
+        decimal firstModeFee = 0m;
         foreach (var entry in orderResultEntryList) {
             if (entry.EntryType == LogisticsFeeResultEntryType.Single) {
-                totalFirstModeFee += entry.Fee;
+                firstModeFee += entry.Fee;
             }
         }
 
@@ -93,7 +99,7 @@ public class LogisticsOrderFeeService {
         }
 
         if (superVipDiscount != null) {
-            decimal discount = -totalFirstModeFee * superVipDiscount.Discount / 100m; // 负的费用
+            decimal discount = -firstModeFee * superVipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
                 // OrderFirstMode LogisticsMode 这里不用设置
                 Title = LogisticsOrderFeeType.SuperVipDiscount.Name,
@@ -103,7 +109,7 @@ public class LogisticsOrderFeeService {
                 EntryType = LogisticsFeeResultEntryType.Single
             });
         } else if (vipDiscount != null) {
-            decimal discount = -totalFirstModeFee * vipDiscount.Discount / 100m; // 负的费用
+            decimal discount = -firstModeFee * vipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
                 // OrderFirstMode LogisticsMode 这里不用设置
                 Title = LogisticsOrderFeeType.VipDiscount.Name,
@@ -156,7 +162,45 @@ public class LogisticsOrderFeeService {
 
         #endregion
 
+        // 相当于把当前头程的数据复制一份
+        IList<LogisticsFeeResultEntry> firstModeFeeEntryList = new List<LogisticsFeeResultEntry>(orderResultEntryList);
+
+        #region 计算保险费
+
+        decimal insuranceFee = logisticsFeeInsuranceService.GetInsuranceFee(order.GoodsValue, totalLogisticsFee, order.Insurance.Id);
+
+        orderResultEntryList.Add(new LogisticsFeeResultEntry() {
+            // OrderFirstMode LogisticsMode 这里不用设置
+            Title = LogisticsOrderFeeType.InsuranceFee.Name,
+            Fee = insuranceFee,
+            GoodsType = LogisticsGoodsType.None,
+            FeeType = LogisticsOrderFeeType.InsuranceFee,
+            EntryType = LogisticsFeeResultEntryType.Single
+        });
+
+        #endregion
+
+        #region 计算GST
+
+        decimal gstFee = logisticsFeeGstService.GetGstFee(order.GoodsValue, totalLogisticsFee, order.Gst.Id);
+
+        orderResultEntryList.Add(new LogisticsFeeResultEntry() {
+            // OrderFirstMode LogisticsMode 这里不用设置
+            Title = LogisticsOrderFeeType.GstFee.Name,
+            Fee = gstFee,
+            GoodsType = LogisticsGoodsType.None,
+            FeeType = LogisticsOrderFeeType.GstFee,
+            EntryType = LogisticsFeeResultEntryType.Single
+        });
+
+        #endregion
+
         return new LogisticsFeeResult {
+            FirstModeFeeEntryList = firstModeFeeEntryList,
+            FirstModeFee = firstModeFee,
+            InsuranceFee = insuranceFee,
+            GstFee = gstFee,
+            EntryList = orderResultEntryList,
         };
     }
 

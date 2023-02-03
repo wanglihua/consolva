@@ -96,7 +96,7 @@ public class FreightEstimateService {
             FirstModeFee = logisticsFee,
             InsuranceFee = 0,
             GstFee = gstFee,
-            FeeEntryList = feeEntryList,
+            EntryList = feeEntryList,
             TotalFee = logisticsFee + gstFee
         };
 
