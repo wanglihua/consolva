@@ -74,7 +74,7 @@ public class FreightEstimateService {
         }
 
         int logisticsGstId = logisticsGst.Id;
-        decimal gstFee = logisticsFeeGstService.GetGstFee(logisticsFeeData.GoodsValue, logisticsFee, logisticsGstId);
+        decimal gstFee = logisticsFeeGstService.GetGstFee(logisticsFeeData.OrderGoodsValue, logisticsFee, logisticsGstId);
 
         List<LogisticsFeeResultEntry> feeEntryList = new List<LogisticsFeeResultEntry>();
         feeEntryList.AddRange(firstModeFeeEntryList);
@@ -137,7 +137,7 @@ public class FreightEstimateService {
 
         return new LogisticsFeeData {
             LogisticsMode = firstMode,
-            GoodsValue = freightEstimateSelect.GoodsValue,
+            OrderGoodsValue = freightEstimateSelect.GoodsValue,
             GoodsType = freightEstimateSelect.GoodsType,
             FeePackList = freightEstimateSelectGoodsList
                 .Select(e => new LogisticsFeePack {

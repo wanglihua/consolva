@@ -121,7 +121,7 @@ public class LogisticsOrderFeeService {
             var feeData = new LogisticsFeeData {
                 Address = customerReceiveAddressService.GetFullAddress(orderReceiveAddress),
                 Zipcode = orderReceiveAddress.Zipcode,
-                GoodsValue = order.GoodsValue, // todo 这里还有问题
+                OrderGoodsValue = order.GoodsValue, // todo 这里还有问题
                 GoodsType = orderFirstMode.GoodsType,
             };
         }

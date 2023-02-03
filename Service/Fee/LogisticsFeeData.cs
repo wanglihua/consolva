@@ -30,8 +30,9 @@ public class LogisticsFeeData {
 
     /// <summary>
     /// 物品货值
+    /// 注意，这个是整个订单的货值
     /// </summary>
-    public decimal GoodsValue { get; set; }
+    public decimal OrderGoodsValue { get; set; }
 
     /// <summary>
     /// 物品类型
@@ -82,7 +83,7 @@ public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeData> {
         RuleFor(e => e.LogisticsMode).NotNull().Must(p => p.Id > 0).WithMessage("计费物流方式不能为空！");
         RuleFor(e => e.Address).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("计费收货地址不能为空！");
         RuleFor(e => e.Zipcode).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("计费收货邮编不能为空！");
-        RuleFor(e => e.GoodsValue).Must(p => p > 0).WithMessage("计费物品货值不能为空！");
+        RuleFor(e => e.OrderGoodsValue).Must(p => p > 0).WithMessage("计费物品货值不能为空！");
         RuleFor(e => e.GoodsType).NotNull().NotEqual(LogisticsGoodsType.None).WithMessage("计费物品类型不能为空，或值不合法！");
         RuleFor(e => e.FeePackList).NotNull().NotEmpty().WithMessage("计费包裹列表不能为空！");
         RuleForEach(e => e.FeePackList).SetValidator(new LogisticsFeePackValidator());
