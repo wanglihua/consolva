@@ -286,4 +286,96 @@ public class LogisticsOrderFeeService {
 
         return feeDataList;
     }
+
+    /// <summary>
+    /// 清除之前计算保存的订单费用数据
+    /// 只清除物流费用和保险GST费用
+    /// </summary>
+    public void RemovePreviousSavedFee(int orderId) {
+        IList<LogisticsOrderFeeType> feeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
+        feeTypeList.Add(LogisticsOrderFeeType.InsuranceFee);
+        feeTypeList.Add(LogisticsOrderFeeType.GstFee);
+        feeTypeList.Add(LogisticsOrderFeeType.CouponDiscountFee);
+
+        // 只清除头程的，优惠券折扣，保险，GST 费用，其他费用不清除
+        var orderFeeListToRemove = session.Query<LogisticsOrderFeeInfo>()
+            .Where(e => e.Order.Id == orderId && feeTypeList.Contains(e.Type))
+            .ToList();
+
+        // 清除坑的优惠券上记录的实际折扣数据
+        var couponFeeEntry = orderFeeListToRemove
+            .Where(e => e.Type == LogisticsOrderFeeType.CouponDiscountFee)
+            .Take(1)
+            .SingleOrDefault();
+        if (couponFeeEntry != null) {
+            var coupon = session.Query<CouponInfo>()
+                .Where(e => e.Order!.Id == orderId)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (coupon != null) {
+                coupon.ActualDiscountAmount = 0;
+                session.Save(coupon);
+                session.Flush();
+            }
+        }
+
+        foreach (var orderFee in orderFeeListToRemove) {
+            session.Delete(orderFee);
+        }
+
+        session.Flush();
+    }
+
+    /// <summary>
+    /// 将费用计算结果保存到订单费用表中
+    /// </summary>
+    /// <param name="logisticsFeeResult">费用计算结果</param>
+    /// <param name="orderId">物流订单Id</param>
+    public void SaveOrderFee(LogisticsFeeResult logisticsFeeResult, int orderId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        // 保存费用明细
+        foreach (LogisticsFeeResultEntry resultEntry in logisticsFeeResult.EntryList) {
+            if (resultEntry.EntryType == LogisticsFeeResultEntryType.Single) {
+                LogisticsOrderFeeInfo orderFee = new LogisticsOrderFeeInfo {
+                    Customer = order.Customer,
+                    Order = order,
+                    OrderCode = order.Code,
+                    GoodsType = resultEntry.GoodsType,
+                    Type = resultEntry.FeeType,
+                    Fee = resultEntry.Fee,
+                    Description = resultEntry.Title
+                };
+
+                session.Save(orderFee);
+            }
+        }
+
+        session.Flush();
+
+        // 汇总订单费用，并更新订单支付状态
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order);
+
+        // 记录优惠券实际折扣
+        var couponFeeEntry = logisticsFeeResult.EntryList
+            .Where(e => e.FeeType == LogisticsOrderFeeType.CouponDiscountFee)
+            .Take(1)
+            .SingleOrDefault();
+        if (couponFeeEntry != null) {
+            var coupon = session.Query<CouponInfo>()
+                .Where(e => e.Order!.Id == orderId)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (coupon != null) {
+                coupon.ActualDiscountAmount = Math.Abs(couponFeeEntry.Fee);
+                session.Save(coupon);
+                session.Flush();
+            }
+        }
+    }
 }

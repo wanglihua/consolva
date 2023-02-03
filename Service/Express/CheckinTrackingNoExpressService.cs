@@ -93,7 +93,7 @@ namespace Service.Logistics
             // 删除已有的子单号
             session.Query<AoPinTrackingNoExpressInfo>()
                 .Where(e => e.Claim.Id == expressId && e.LogisticsExpress != null)
-                .Delete();
+                .Delete(); 不要再用这种方式来删除
 
             int totalQuantity = expressItemList.Sum(e => e.Quantity);
             int seq = 1;

@@ -212,6 +212,7 @@ public class FeeRefundApproveController : Controller {
             LogisticsOrderFeeInfo logisticsOrderFeeInfo = new LogisticsOrderFeeInfo();
             logisticsOrderFeeInfo.Customer = refundApply.Customer; // 一般情况下，这个 客户 和 订单 是匹配的
             logisticsOrderFeeInfo.Order = refundApply.Order;
+            logisticsOrderFeeInfo.OrderCode = refundApply.Order.Code;
             logisticsOrderFeeInfo.GoodsType = LogisticsGoodsType.None;
             logisticsOrderFeeInfo.Type = LogisticsOrderFeeType.RefundFee;
             logisticsOrderFeeInfo.Fee = refundApply.Amount;

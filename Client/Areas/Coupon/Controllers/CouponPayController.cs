@@ -214,6 +214,7 @@ public class CouponPayController : Controller {
             var couponFee = new LogisticsOrderFeeInfo();
             couponFee.Customer = order.Customer;
             couponFee.Order = order;
+            couponFee.OrderCode = order.Code;
             couponFee.GoodsType = LogisticsGoodsType.None;
             couponFee.Type = LogisticsOrderFeeType.CouponDiscountFee;
             couponFee.Description = "优惠券实扣," + (selectCoupon?.Code ?? string.Empty);

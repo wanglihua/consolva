@@ -85,11 +85,6 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     public static readonly LogisticsOrderFeeType RefundFee = new LogisticsOrderFeeType(24000, "退款", "退款");
 
     /// <summary>
-    /// 超大超重附加费
-    /// </summary>
-    public static readonly LogisticsOrderFeeType ExtraSizeWeightFee = new LogisticsOrderFeeType(27000, "超大超重附加费", "超大超重附加费");
-
-    /// <summary>
     /// 手工修正费用
     /// </summary>
     public static readonly LogisticsOrderFeeType ManualAdjustFee = new LogisticsOrderFeeType(28000, "手工修正", "手工修正");
@@ -119,7 +114,6 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     };
 
     private static readonly List<LogisticsOrderFeeType> otherFeetypeList = new List<LogisticsOrderFeeType>() {
-        ExtraSizeWeightFee,
         GstFee,
         InsuranceFee,
         CouponDiscountFee,

@@ -59,6 +59,7 @@ public class ManualFeeService
         }
 
         logisticsOrderFee.Order = logisticsOrder;
+        logisticsOrderFee.OrderCode = logisticsOrder.Code;
         logisticsOrderFee.Customer = customer;
         logisticsOrderFee.GoodsType = LogisticsGoodsType.None;
         logisticsOrderFee.Type = LogisticsOrderFeeType.ManualIncrease;
@@ -114,6 +115,7 @@ public class ManualFeeService
         }
 
         logisticsOrderFee.Order = logisticsOrder;
+        logisticsOrderFee.OrderCode = logisticsOrder.Code;
         logisticsOrderFee.Customer = customer;
         logisticsOrderFee.GoodsType = LogisticsGoodsType.None;
         logisticsOrderFee.Type = LogisticsOrderFeeType.ManualDecrease;
