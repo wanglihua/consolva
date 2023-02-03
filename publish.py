@@ -9,8 +9,8 @@ client_publish_path = publish_path + '/client'
 # chat_publish_path = publish_path + '/chat'
 shunda_path = publish_path + '/shunda'
 
-os.system('dotnet publish /Users/wanglihua/projects/shunda/csharp/Admin/Admin.csproj -c Release -o ' + admin_publish_path)
-os.system('dotnet publish /Users/wanglihua/projects/shunda/csharp/Client/Client.csproj -c Release -o ' + client_publish_path)
+os.system('dotnet publish /Users/wanglihua/projects/shunda/Admin/P01_Admin.csproj -c Release -o ' + admin_publish_path)
+os.system('dotnet publish /Users/wanglihua/projects/shunda/Client/P04_Client.csproj -c Release -o ' + client_publish_path)
 # os.system('dotnet publish /Users/wanglihua/projects/shunda/csharp/Chat/Chat.csproj -c Release -o ' + chat_publish_path)
 
 os.system('rm -rf {shunda_path}'.format(shunda_path=shunda_path))

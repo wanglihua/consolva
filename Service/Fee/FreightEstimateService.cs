@@ -97,7 +97,6 @@ public class FreightEstimateService {
             InsuranceFee = 0,
             GstFee = gstFee,
             EntryList = feeEntryList,
-            TotalFee = logisticsFee + gstFee
         };
 
         #endregion

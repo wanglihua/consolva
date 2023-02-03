@@ -6,6 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>shunda.Admin</AssemblyName>
         <RootNamespace>shunda.Admin</RootNamespace>
+        <RazorCompileOnBuild>false</RazorCompileOnBuild>
+        <RazorCompileOnPublish>true</RazorCompileOnPublish>
     </PropertyGroup>
 
     <ItemGroup>

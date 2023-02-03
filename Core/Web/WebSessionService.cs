@@ -123,7 +123,7 @@ public class WebSessionService
         response.Headers[WebSessionConfig.SessionIdHeaderKey] = sessionId;
 #else
         // 放到 cookie 中
-        response.Cookies.Append(SessionIdCookieKey, sessionId, new CookieOptions() {
+        response.Cookies.Append(WebSessionConfig.SessionIdCookieKey, sessionId, new CookieOptions() {
             HttpOnly = true,
             IsEssential = true,
             Expires = DateTimeOffset.Now.AddHours(1), // 这个时间应该稍微大于 登陆过期时间，就是登录标志的 redis 过期时间

@@ -6,6 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>shunda.Client</AssemblyName>
         <RootNamespace>shunda.Client</RootNamespace>
+        <RazorCompileOnBuild>false</RazorCompileOnBuild>
+        <RazorCompileOnPublish>true</RazorCompileOnPublish>
     </PropertyGroup>
 
     <ItemGroup>
