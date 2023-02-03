@@ -7,6 +7,7 @@ using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Service.Express;
+using shunda.Service.Fee;
 
 namespace shunda.Service.LogisticsOrder;
 
@@ -16,16 +17,19 @@ public class LogisticsOrderPackService {
     private readonly LogisticsOrderStorageLocService logisticsOrderStorageLocService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
+    private readonly LogisticsOrderFeeService logisticsOrderFeeService;
 
     public LogisticsOrderPackService(ISession session,
         LogisticsOrderStorageLocService logisticsOrderStorageLocService,
         ExpressLogService expressLogService,
-        LogisticsOrderActionService logisticsOrderActionService
+        LogisticsOrderActionService logisticsOrderActionService,
+        LogisticsOrderFeeService logisticsOrderFeeService
     ) {
         this.session = session;
         this.logisticsOrderStorageLocService = logisticsOrderStorageLocService;
         this.expressLogService = expressLogService;
         this.logisticsOrderActionService = logisticsOrderActionService;
+        this.logisticsOrderFeeService = logisticsOrderFeeService;
     }
 
     /// <summary>
@@ -318,7 +322,8 @@ public class LogisticsOrderPackService {
         session.SaveOrUpdate(orderPackData);
         session.Flush();
 
-        // todo 订单计费
+        // 订单计费
+        logisticsOrderFeeService.CalculateAndSaveFee(orderId);
 
         // todo 发送消息
     }

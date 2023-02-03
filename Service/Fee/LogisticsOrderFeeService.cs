@@ -378,4 +378,20 @@ public class LogisticsOrderFeeService {
             }
         }
     }
+
+    /// <summary>
+    /// 计算并保存订单费用
+    /// </summary>
+    public void CalculateAndSaveFee(int orderId) {
+        // 先删除
+        RemovePreviousSavedFee(orderId);
+
+        // 计算
+        LogisticsFeeResult feeResult = Calculate(orderId);
+
+        // 保存
+        SaveOrderFee(feeResult, orderId);
+
+        session.Flush();
+    }
 }
