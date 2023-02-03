@@ -1,6 +1,7 @@
 using FluentValidation;
 using shunda.Domain;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Fee;
 
@@ -12,6 +13,12 @@ public class LogisticsFeeData {
     /// 目的国家
     /// </summary>
     public Country Country { get; set; } = Country.None;
+
+    /// <summary>
+    /// 订单头程物流方式记录
+    /// 订单计费时才需要这个，其他时候不需要
+    /// </summary>
+    public LogisticsOrderFirstModeInfo OrderFirstMode { get; set; } = new();
 
     /// <summary>
     /// 物流方式
@@ -73,6 +80,10 @@ public class LogisticsFeePackValidator : AbstractValidator<LogisticsFeePack> {
     }
 }
 
+/// <summary>
+/// 一般验证的时候就用这个验证器
+/// 订单计费时还需要验证字段 LogisticsOrderFirstModeInfo OrderFirstMode
+/// </summary>
 public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeData> {
     public LogisticsFeeDataValidator() {
         // 已经 ValidationUtil 中全局设置
@@ -87,5 +98,14 @@ public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeData> {
         RuleFor(e => e.GoodsType).NotNull().NotEqual(LogisticsGoodsType.None).WithMessage("计费物品类型不能为空，或值不合法！");
         RuleFor(e => e.FeePackList).NotNull().NotEmpty().WithMessage("计费包裹列表不能为空！");
         RuleForEach(e => e.FeePackList).SetValidator(new LogisticsFeePackValidator());
+    }
+}
+
+/// <summary>
+/// 订单计费验证的时候，用这个验证器
+/// </summary>
+public class LogisticsFeeDataOrderFeeValidator : LogisticsFeeDataValidator {
+    public LogisticsFeeDataOrderFeeValidator() {
+        RuleFor(e => e.OrderFirstMode).NotNull().Must(p => p.Id > 0).WithMessage("订单计费订单头程物流方式记录不能为空！");
     }
 }

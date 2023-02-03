@@ -53,8 +53,10 @@ public class LogisticsOrderFeeService {
         }
 
         var feeDataList = OrderToFeeDataList(orderId);
+
+        // 计费数据验证
         foreach (var feeData in feeDataList) {
-            ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeData>(feeData);
+            ValidationUtil.Validate<LogisticsFeeDataOrderFeeValidator, LogisticsFeeData>(feeData);
         }
 
         return new LogisticsFeeResult {
@@ -110,6 +112,10 @@ public class LogisticsOrderFeeService {
             throw new ValidationException($"订单{order.Code}收货地址不存在，数据有问题！");
         }
 
+        if (orderReceiveAddress.Country != order.Country) {
+            throw new ValidationException($"订单{order.Code}收货地址国家和订单目的国家不一致，数据有问题！");
+        }
+
         var feeDataList = new List<LogisticsFeeData>();
         foreach (var orderFirstMode in orderFirstModeList) {
             int orderFirstModeId = orderFirstMode.Id;
@@ -118,12 +124,23 @@ public class LogisticsOrderFeeService {
                 .OrderBy(e => e.GoodsType)
                 .ThenBy(e => e.Id)
                 .ToList();
-            var feeData = new LogisticsFeeData {
+
+            feeDataList.Add(new LogisticsFeeData {
+                Country = order.Country,
+                OrderFirstMode = orderFirstMode,
+                LogisticsMode = orderFirstMode.FirstMode,
                 Address = customerReceiveAddressService.GetFullAddress(orderReceiveAddress),
                 Zipcode = orderReceiveAddress.Zipcode,
-                OrderGoodsValue = order.GoodsValue, // todo 这里还有问题
+                OrderGoodsValue = order.GoodsValue,
                 GoodsType = orderFirstMode.GoodsType,
-            };
+                FeePackList = orderFirstModeOrderPackList.Select(e => new LogisticsFeePack {
+                    Length = e.Length,
+                    Width = e.Width,
+                    Height = e.Height,
+                    Weight = e.Weight,
+                    PackageCount = e.PackageCount,
+                }).ToList(),
+            });
         }
 
         return feeDataList;
