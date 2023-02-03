@@ -1,4 +1,5 @@
 using NHibernate;
+using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
@@ -16,11 +17,10 @@ public class LogisticsOrderPaySumService {
     /// <summary>
     /// 合计费用表
     /// </summary>
-    /// <param name="logisticsOrder"></param>
     /// <returns>合计的费用</returns>
-    private decimal SumFee(LogisticsOrderInfo logisticsOrder) {
+    private decimal SumFee(int orderId) {
         IList<decimal> feeList = session.Query<LogisticsOrderFeeInfo>()
-            .Where(e => e.Order.Id == logisticsOrder.Id)
+            .Where(e => e.Order.Id == orderId)
             .Select(e => e.Fee)
             .ToList();
 
@@ -35,11 +35,10 @@ public class LogisticsOrderPaySumService {
     /// <summary>
     /// 合计已支付费用
     /// </summary>
-    /// <param name="logisticsOrder"></param>
-    /// <returns></returns>
-    private decimal SumPay(LogisticsOrderInfo logisticsOrder) {
+    /// <returns>已支付金额合计</returns>
+    private decimal SumPay(int orderId) {
         IList<decimal> paidList = session.Query<LogisticsOrderPayInfo>()
-            .Where(e => e.Order.Id == logisticsOrder.Id && e.Status == PayStatus.Paid) // 一定要加上已支付状态
+            .Where(e => e.Order.Id == orderId && e.Status == PayStatus.Paid) // 一定要加上已支付状态
             .Select(e => e.Amount)
             .ToList();
 
@@ -54,34 +53,38 @@ public class LogisticsOrderPaySumService {
     /// <summary>
     /// 合计费用表数据并更新支付状态
     /// </summary>
-    /// <param name="logisticsOrder"></param>
-    public void SumFeeAndUpdatePayStatus(LogisticsOrderInfo logisticsOrder) {
-        decimal totalFee = SumFee(logisticsOrder);
-        decimal totalPaid = SumPay(logisticsOrder);
+    public void SumFeeAndUpdatePayStatus(int orderId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
 
-        logisticsOrder.OrderAmount = totalFee;
-        logisticsOrder.PaidAmount = totalPaid;
+        decimal totalFee = SumFee(orderId);
+        decimal totalPaid = SumPay(orderId);
 
-        if (logisticsOrder.PaidAmount > 0 && logisticsOrder.PaidAmount < logisticsOrder.OrderAmount) {
-            if (logisticsOrder.PayStatus != PayStatus.PartPaid) {
-                logisticsOrder.PayTime = DateTime.Now;
-                logisticsOrder.PayStatus = PayStatus.PartPaid;
+        order.OrderAmount = totalFee;
+        order.PaidAmount = totalPaid;
+
+        if (order.PaidAmount > 0 && order.PaidAmount < order.OrderAmount) {
+            if (order.PayStatus != PayStatus.PartPaid) {
+                order.PayTime = DateTime.Now;
+                order.PayStatus = PayStatus.PartPaid;
             }
         }
 
-        if (logisticsOrder.OrderAmount > 0 && logisticsOrder.PaidAmount >= logisticsOrder.OrderAmount) {
-            if (logisticsOrder.PayStatus != PayStatus.Paid) {
-                logisticsOrder.PayTime = DateTime.Now;
-                logisticsOrder.PayStatus = PayStatus.Paid;
+        if (order.OrderAmount > 0 && order.PaidAmount >= order.OrderAmount) {
+            if (order.PayStatus != PayStatus.Paid) {
+                order.PayTime = DateTime.Now;
+                order.PayStatus = PayStatus.Paid;
             }
         }
 
-        if (logisticsOrder.PaidAmount <= 0 && logisticsOrder.OrderAmount > 0) {
-            logisticsOrder.PayTime = null;
-            logisticsOrder.PayStatus = PayStatus.NotPaid;
+        if (order.PaidAmount <= 0 && order.OrderAmount > 0) {
+            order.PayTime = null;
+            order.PayStatus = PayStatus.NotPaid;
         }
 
-        session.Update(logisticsOrder);
+        session.Update(order);
         session.Flush();
     }
 }

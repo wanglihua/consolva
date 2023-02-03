@@ -57,7 +57,7 @@ public class WriteOffFeeService {
         session.Save(logisticsOrderPay);
         session.Flush();
 
-        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrderPay.Order);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrderPay.Order.Id);
 
         session.Flush();
 

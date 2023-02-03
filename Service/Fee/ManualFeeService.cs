@@ -74,7 +74,7 @@ public class ManualFeeService
 
         PayStatus payStatusBefore = logisticsOrder.PayStatus;
 
-        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder.Id);
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 
@@ -130,7 +130,7 @@ public class ManualFeeService
 
         PayStatus payStatusBefore = logisticsOrder.PayStatus;
 
-        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder.Id);
 
         PayStatus payStatusAfter = logisticsOrder.PayStatus;
 

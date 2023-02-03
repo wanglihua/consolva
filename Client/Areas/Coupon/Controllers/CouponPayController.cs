@@ -217,7 +217,7 @@ public class CouponPayController : Controller {
             couponFee.OrderCode = order.Code;
             couponFee.GoodsType = LogisticsGoodsType.None;
             couponFee.Type = LogisticsOrderFeeType.CouponDiscountFee;
-            couponFee.Description = "优惠券实扣," + (selectCoupon?.Code ?? string.Empty);
+            couponFee.Description = "优惠券实扣," + (selectCoupon.Code);
             couponFee.Fee = -couponDiscount;
 
             session.Save(couponFee);
@@ -225,7 +225,7 @@ public class CouponPayController : Controller {
         }
 
         // 更新订单总费用和支付状态
-        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
 
         return Json(new JsonResultData {
             Success = true,

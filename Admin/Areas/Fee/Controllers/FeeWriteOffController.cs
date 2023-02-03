@@ -149,7 +149,7 @@ public class FeeWriteOffController : Controller {
             .ToList();
 
         foreach (LogisticsOrderInfo logisticsOrder in writeOffOrderList) {
-            logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder);
+            logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(logisticsOrder.Id);
         }
 
         return Json(new Dictionary<string, object>() {

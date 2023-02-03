@@ -223,7 +223,7 @@ public class FeeRefundApproveController : Controller {
         }
 
         // 费用变动后，这个也要调用一下的 
-        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(refundApply.Order);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(refundApply.Order.Id);
 
         // 余额充值
         customerAccountService.Change(CustomerAccountChangeType.Refund, refundApply.Customer.Id, refundApply.Amount, $"订单 {refundApply.Order.Code} 退赔款");

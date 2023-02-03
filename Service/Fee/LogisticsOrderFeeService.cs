@@ -358,7 +358,7 @@ public class LogisticsOrderFeeService {
         session.Flush();
 
         // 汇总订单费用，并更新订单支付状态
-        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
 
         // 记录优惠券实际折扣
         var couponFeeEntry = logisticsFeeResult.EntryList
