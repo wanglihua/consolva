@@ -2,8 +2,12 @@ using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Core.Util;
+using shunda.Domain.Coupon;
 using shunda.Domain.Customer;
+using shunda.Domain.Fee;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Coupon;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
@@ -16,18 +20,21 @@ public class LogisticsOrderFeeService {
     private readonly CustomerVipDiscountService customerVipDiscountService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly CustomerReceiveAddressService customerReceiveAddressService;
+    private readonly CouponService couponService;
 
     public LogisticsOrderFeeService(ISession session,
         LogisticsFeeService logisticsFeeService,
         CustomerVipDiscountService customerVipDiscountService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
-        CustomerReceiveAddressService customerReceiveAddressService
+        CustomerReceiveAddressService customerReceiveAddressService,
+        CouponService couponService
     ) {
         this.session = session;
         this.logisticsFeeService = logisticsFeeService;
         this.customerVipDiscountService = customerVipDiscountService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.customerReceiveAddressService = customerReceiveAddressService;
+        this.couponService = couponService;
     }
 
     /// <summary>
@@ -38,6 +45,39 @@ public class LogisticsOrderFeeService {
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
+
+        var feeDataList = OrderToFeeDataList(orderId);
+
+        #region 计费数据验证
+
+        if (feeDataList.Count == 0) {
+            throw new ValidationException("订单计费数据不能为空！");
+        }
+
+        foreach (var feeData in feeDataList) {
+            ValidationUtil.Validate<LogisticsFeeDataOrderFeeValidator, LogisticsFeeData>(feeData);
+        }
+
+        #endregion
+
+        #region 头程费用
+
+        List<LogisticsFeeResultEntry> orderResultEntryList = new List<LogisticsFeeResultEntry>();
+        foreach (var feeData in feeDataList) {
+            var modeResultEntryList = logisticsFeeService.GetLogisticsFeeForCustomer(feeData);
+            orderResultEntryList.AddRange(modeResultEntryList);
+        }
+
+        decimal totalFirstModeFee = 0m;
+        foreach (var entry in orderResultEntryList) {
+            if (entry.EntryType == LogisticsFeeResultEntryType.Single) {
+                totalFirstModeFee += entry.Fee;
+            }
+        }
+
+        #endregion
+
+        #region vip 和 超级 vip折扣
 
         int customerId = order.Customer.Id;
 
@@ -52,12 +92,69 @@ public class LogisticsOrderFeeService {
             vipDiscount = customerVipDiscountService.GetDiscount(customerId);
         }
 
-        var feeDataList = OrderToFeeDataList(orderId);
-
-        // 计费数据验证
-        foreach (var feeData in feeDataList) {
-            ValidationUtil.Validate<LogisticsFeeDataOrderFeeValidator, LogisticsFeeData>(feeData);
+        if (superVipDiscount != null) {
+            decimal discount = -totalFirstModeFee * superVipDiscount.Discount / 100m; // 负的费用
+            orderResultEntryList.Add(new LogisticsFeeResultEntry() {
+                // OrderFirstMode LogisticsMode 这里不用设置
+                Title = LogisticsOrderFeeType.FirstLogisticsSuperVipDiscount.Name,
+                Fee = discount,
+                GoodsType = LogisticsGoodsType.None,
+                FeeType = LogisticsOrderFeeType.FirstLogisticsSuperVipDiscount,
+                EntryType = LogisticsFeeResultEntryType.Single
+            });
+        } else if (vipDiscount != null) {
+            decimal discount = -totalFirstModeFee * vipDiscount.Discount / 100m; // 负的费用
+            orderResultEntryList.Add(new LogisticsFeeResultEntry() {
+                // OrderFirstMode LogisticsMode 这里不用设置
+                Title = LogisticsOrderFeeType.FirstLogisticsVipDiscount.Name,
+                Fee = discount,
+                GoodsType = LogisticsGoodsType.None,
+                FeeType = LogisticsOrderFeeType.FirstLogisticsVipDiscount,
+                EntryType = LogisticsFeeResultEntryType.Single
+            });
         }
+
+        #endregion
+
+        #region 合计考虑折扣后的物流费用
+
+        decimal totalLogisticsFee = 0m;
+        foreach (var entry in orderResultEntryList) {
+            if (entry.EntryType == LogisticsFeeResultEntryType.Single) {
+                totalLogisticsFee += entry.Fee;
+            }
+        }
+
+        #endregion
+
+        #region 计算优惠券实扣
+
+        var coupon = session.Query<CouponInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .Take(1) // 一个订单只能使用一张优惠券，如果可以使用多张，需要在这里修改
+            .SingleOrDefault();
+        if (coupon != null) {
+            var couponId = coupon.Id;
+            var couponDiscountResult = couponService.CalculateCouponDiscount(couponId, totalLogisticsFee);
+            if (couponDiscountResult.Success == true && couponDiscountResult.Discount > 0) {
+                decimal couponDiscount = couponDiscountResult.Discount;
+
+                orderResultEntryList.Add(new LogisticsFeeResultEntry() {
+                    // OrderFirstMode LogisticsMode 这里不用设置
+                    Title = $"{LogisticsOrderFeeType.CouponDiscountFee.Name},{coupon.Code}",
+                    Fee = -couponDiscount, // 负的费用
+                    GoodsType = LogisticsGoodsType.None,
+                    FeeType = LogisticsOrderFeeType.CouponDiscountFee,
+                    EntryType = LogisticsFeeResultEntryType.Single
+                });
+
+                couponService.UpdateActualDiscountAmount(couponId, couponDiscount);
+            } else {
+                couponService.SetCouponNotUsedAndSumSaveBatchTotalUsed(couponId);
+            }
+        }
+
+        #endregion
 
         return new LogisticsFeeResult {
         };

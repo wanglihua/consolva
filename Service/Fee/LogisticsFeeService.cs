@@ -189,7 +189,9 @@ public class LogisticsFeeService {
             throw new ValidationException("计费不支持的物流方式类型，无法计费！");
         }
 
-        resultEntryList.Add(new LogisticsFeeResultEntry() {
+        resultEntryList.Add(new LogisticsFeeResultEntry {
+            OrderFirstMode = logisticsFeeData.OrderFirstMode,
+            LogisticsMode = logisticsFeeData.LogisticsMode,
             Title = LogisticsOrderFeeType.FirstLogisticsFee.Name,
             FeeType = LogisticsOrderFeeType.FirstLogisticsFee,
             Fee = initialTotalFee,
@@ -216,7 +218,9 @@ public class LogisticsFeeService {
         {
             extraTotalFee += overLengthFee;
 
-            resultEntryList.Add(new LogisticsFeeResultEntry() {
+            resultEntryList.Add(new LogisticsFeeResultEntry {
+                OrderFirstMode = logisticsFeeData.OrderFirstMode,
+                LogisticsMode = logisticsFeeData.LogisticsMode,
                 Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraLength.Name,
                 FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraLength,
                 Fee = overLengthFee,
@@ -234,7 +238,9 @@ public class LogisticsFeeService {
         {
             extraTotalFee += singleOverWeightFee;
 
-            resultEntryList.Add(new LogisticsFeeResultEntry() {
+            resultEntryList.Add(new LogisticsFeeResultEntry {
+                OrderFirstMode = logisticsFeeData.OrderFirstMode,
+                LogisticsMode = logisticsFeeData.LogisticsMode,
                 Title = LogisticsOrderFeeType.FirstLogisticsFeeSingleExtraWeight.Name,
                 FeeType = LogisticsOrderFeeType.FirstLogisticsFeeSingleExtraWeight,
                 Fee = singleOverWeightFee,
@@ -252,7 +258,9 @@ public class LogisticsFeeService {
         {
             extraTotalFee += averageOverWeightFee;
 
-            resultEntryList.Add(new LogisticsFeeResultEntry() {
+            resultEntryList.Add(new LogisticsFeeResultEntry {
+                OrderFirstMode = logisticsFeeData.OrderFirstMode,
+                LogisticsMode = logisticsFeeData.LogisticsMode,
                 Title = LogisticsOrderFeeType.FirstLogisticsFeeAverageExtraWeight.Name,
                 FeeType = LogisticsOrderFeeType.FirstLogisticsFeeAverageExtraWeight,
                 Fee = averageOverWeightFee,
@@ -270,7 +278,9 @@ public class LogisticsFeeService {
         {
             extraTotalFee += overWeightFee;
 
-            resultEntryList.Add(new LogisticsFeeResultEntry() {
+            resultEntryList.Add(new LogisticsFeeResultEntry {
+                OrderFirstMode = logisticsFeeData.OrderFirstMode,
+                LogisticsMode = logisticsFeeData.LogisticsMode,
                 Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraWeight.Name,
                 FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraWeight,
                 Fee = overWeightFee,
@@ -290,7 +300,9 @@ public class LogisticsFeeService {
 
             extraTotalFee += extraPackageCountFee;
 
-            resultEntryList.Add(new LogisticsFeeResultEntry() {
+            resultEntryList.Add(new LogisticsFeeResultEntry {
+                OrderFirstMode = logisticsFeeData.OrderFirstMode,
+                LogisticsMode = logisticsFeeData.LogisticsMode,
                 Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraPackage.Name,
                 FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraPackage,
                 Fee = extraPackageCountFee,
@@ -316,7 +328,9 @@ public class LogisticsFeeService {
         #region 记录合计费用
 
         string totalFeeTitle = "物流运费小计";
-        resultEntryList.Add(new LogisticsFeeResultEntry() {
+        resultEntryList.Add(new LogisticsFeeResultEntry {
+            OrderFirstMode = logisticsFeeData.OrderFirstMode,
+            LogisticsMode = logisticsFeeData.LogisticsMode,
             Title = totalFeeTitle,
             FeeType = LogisticsOrderFeeType.None,
             Fee = totalFee,

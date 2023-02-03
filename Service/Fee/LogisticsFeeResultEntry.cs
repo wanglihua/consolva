@@ -1,5 +1,6 @@
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Fee;
 
@@ -7,6 +8,17 @@ namespace shunda.Service.Fee;
 /// 费用计算结果明细
 /// </summary>
 public class LogisticsFeeResultEntry {
+    /// <summary>
+    /// 订单头程物流方式记录
+    /// 订单计费时才需要这个，其他时候不需要
+    /// </summary>
+    public LogisticsOrderFirstModeInfo OrderFirstMode { get; set; } = new();
+
+    /// <summary>
+    /// 物流方式
+    /// </summary>
+    public LogisticsModeInfo LogisticsMode { get; set; } = new();
+
     /// <summary>
     /// 费用标题
     /// </summary>
