@@ -2,53 +2,51 @@ using shunda.Core.CodeType;
 
 namespace shunda.Domain.Fee;
 
-// todo 费用改名
-
 public class LogisticsOrderFeeType : CodeTypeBase {
     /// <summary>
-    /// 头程费
+    /// 初始费
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFee = new LogisticsOrderFeeType(1000, "头程初始费", "头程初始费");
+    public static readonly LogisticsOrderFeeType InitFee = new LogisticsOrderFeeType(1000, "初始费", "初始费");
 
     /// <summary>
-    /// 头程超长费
+    /// 超长费
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeExtraLength = new LogisticsOrderFeeType(2000, "头程超长费", "头程超长费");
+    public static readonly LogisticsOrderFeeType ExtraLengthFee = new LogisticsOrderFeeType(2000, "超长费", "超长费");
 
     /// <summary>
-    /// 头程单箱超重费
+    /// 单箱超重费
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeSingleExtraWeight = new LogisticsOrderFeeType(3000, "头程单箱超重费", "头程单箱超重费");
+    public static readonly LogisticsOrderFeeType SingleExtraWeightFee = new LogisticsOrderFeeType(3000, "单箱超重费", "单箱超重费");
 
     /// <summary>
-    /// 头程平均单箱超重费
+    /// 平均单箱超重费
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeAverageExtraWeight = new LogisticsOrderFeeType(4000, "头程平均单箱超重费", "头程平均单箱超重费");
+    public static readonly LogisticsOrderFeeType AverageExtraWeightFee = new LogisticsOrderFeeType(4000, "平均单箱超重费", "平均单箱超重费");
 
     /// <summary>
-    /// 头程超重费
+    /// 超重费
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeExtraWeight = new LogisticsOrderFeeType(5000, "独立报关费", "独立报关费"); // 头程超重费
+    public static readonly LogisticsOrderFeeType ExtraWeightFee = new LogisticsOrderFeeType(5000, "独立报关费", "独立报关费"); // 超重费
 
     /// <summary>
-    /// 头程额外包裹费
+    /// 额外包裹费
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeExtraPackage = new LogisticsOrderFeeType(6000, "头程额外包裹费", "头程额外包裹费");
+    public static readonly LogisticsOrderFeeType ExtraPackageFee = new LogisticsOrderFeeType(6000, "额外包裹费", "额外包裹费");
 
     /// <summary>
     /// 中国仓额外仓储费
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsFeeExtraStorageDay = new LogisticsOrderFeeType(7000, "中国仓额外仓储费", "中国仓额外仓储费");
+    public static readonly LogisticsOrderFeeType ExtraStorageDayFee = new LogisticsOrderFeeType(7000, "中国仓额外仓储费", "中国仓额外仓储费");
 
     /// <summary>
-    /// 头程超级VIP折扣，这个费用是负的
+    /// 超级VIP折扣，这个费用是负的
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsSuperVipDiscount = new LogisticsOrderFeeType(11000, "头程超级VIP折扣", "头程超级VIP折扣");
+    public static readonly LogisticsOrderFeeType SuperVipDiscount = new LogisticsOrderFeeType(11000, "超级VIP折扣", "超级VIP折扣");
 
     /// <summary>
-    /// 头程VIP折扣，这个费用是负的
+    /// VIP折扣，这个费用是负的
     /// </summary>
-    public static readonly LogisticsOrderFeeType FirstLogisticsVipDiscount = new LogisticsOrderFeeType(12000, "头程VIP折扣", "头程VIP折扣");
+    public static readonly LogisticsOrderFeeType VipDiscount = new LogisticsOrderFeeType(12000, "VIP折扣", "VIP折扣");
 
     /// <summary>
     /// 中澳快递费
@@ -107,17 +105,17 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     public static readonly LogisticsOrderFeeType None = new LogisticsOrderFeeType(0, "None", "None");
 
     private static readonly List<LogisticsOrderFeeType> logisticsFeeTypeList = new List<LogisticsOrderFeeType>() {
-        FirstLogisticsFee,
-        FirstLogisticsFeeExtraLength,
-        FirstLogisticsFeeSingleExtraWeight,
-        FirstLogisticsFeeAverageExtraWeight,
-        FirstLogisticsFeeExtraWeight,
-        FirstLogisticsFeeExtraPackage,
-        FirstLogisticsFeeExtraStorageDay,
+        InitFee,
+        ExtraLengthFee,
+        SingleExtraWeightFee,
+        AverageExtraWeightFee,
+        ExtraWeightFee,
+        ExtraPackageFee,
+        ExtraStorageDayFee,
         ExpressFee,
 
-        FirstLogisticsSuperVipDiscount,
-        FirstLogisticsVipDiscount,
+        SuperVipDiscount,
+        VipDiscount,
     };
 
     private static readonly List<LogisticsOrderFeeType> otherFeetypeList = new List<LogisticsOrderFeeType>() {

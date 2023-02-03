@@ -96,20 +96,20 @@ public class LogisticsOrderFeeService {
             decimal discount = -totalFirstModeFee * superVipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
                 // OrderFirstMode LogisticsMode 这里不用设置
-                Title = LogisticsOrderFeeType.FirstLogisticsSuperVipDiscount.Name,
+                Title = LogisticsOrderFeeType.SuperVipDiscount.Name,
                 Fee = discount,
                 GoodsType = LogisticsGoodsType.None,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsSuperVipDiscount,
+                FeeType = LogisticsOrderFeeType.SuperVipDiscount,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
         } else if (vipDiscount != null) {
             decimal discount = -totalFirstModeFee * vipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
                 // OrderFirstMode LogisticsMode 这里不用设置
-                Title = LogisticsOrderFeeType.FirstLogisticsVipDiscount.Name,
+                Title = LogisticsOrderFeeType.VipDiscount.Name,
                 Fee = discount,
                 GoodsType = LogisticsGoodsType.None,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsVipDiscount,
+                FeeType = LogisticsOrderFeeType.VipDiscount,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
         }

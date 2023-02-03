@@ -192,14 +192,14 @@ public class LogisticsFeeService {
         resultEntryList.Add(new LogisticsFeeResultEntry {
             OrderFirstMode = logisticsFeeData.OrderFirstMode,
             LogisticsMode = logisticsFeeData.LogisticsMode,
-            Title = LogisticsOrderFeeType.FirstLogisticsFee.Name,
-            FeeType = LogisticsOrderFeeType.FirstLogisticsFee,
+            Title = LogisticsOrderFeeType.InitFee.Name,
+            FeeType = LogisticsOrderFeeType.InitFee,
             Fee = initialTotalFee,
             GoodsType = logisticsFeeData.GoodsType,
             EntryType = LogisticsFeeResultEntryType.Single
         });
 
-        feeCalculateLogService.AddLog($"{LogisticsOrderFeeType.FirstLogisticsFee.Name}: {initialTotalFee}");
+        feeCalculateLogService.AddLog($"{LogisticsOrderFeeType.InitFee.Name}: {initialTotalFee}");
         feeCalculateLogService.AddLog("计算初步费用 结束");
 
         #endregion
@@ -221,8 +221,8 @@ public class LogisticsFeeService {
             resultEntryList.Add(new LogisticsFeeResultEntry {
                 OrderFirstMode = logisticsFeeData.OrderFirstMode,
                 LogisticsMode = logisticsFeeData.LogisticsMode,
-                Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraLength.Name,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraLength,
+                Title = LogisticsOrderFeeType.ExtraLengthFee.Name,
+                FeeType = LogisticsOrderFeeType.ExtraLengthFee,
                 Fee = overLengthFee,
                 GoodsType = logisticsFeeData.GoodsType,
                 EntryType = LogisticsFeeResultEntryType.Single
@@ -241,8 +241,8 @@ public class LogisticsFeeService {
             resultEntryList.Add(new LogisticsFeeResultEntry {
                 OrderFirstMode = logisticsFeeData.OrderFirstMode,
                 LogisticsMode = logisticsFeeData.LogisticsMode,
-                Title = LogisticsOrderFeeType.FirstLogisticsFeeSingleExtraWeight.Name,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeSingleExtraWeight,
+                Title = LogisticsOrderFeeType.SingleExtraWeightFee.Name,
+                FeeType = LogisticsOrderFeeType.SingleExtraWeightFee,
                 Fee = singleOverWeightFee,
                 GoodsType = logisticsFeeData.GoodsType,
                 EntryType = LogisticsFeeResultEntryType.Single
@@ -261,8 +261,8 @@ public class LogisticsFeeService {
             resultEntryList.Add(new LogisticsFeeResultEntry {
                 OrderFirstMode = logisticsFeeData.OrderFirstMode,
                 LogisticsMode = logisticsFeeData.LogisticsMode,
-                Title = LogisticsOrderFeeType.FirstLogisticsFeeAverageExtraWeight.Name,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeAverageExtraWeight,
+                Title = LogisticsOrderFeeType.AverageExtraWeightFee.Name,
+                FeeType = LogisticsOrderFeeType.AverageExtraWeightFee,
                 Fee = averageOverWeightFee,
                 GoodsType = logisticsFeeData.GoodsType,
                 EntryType = LogisticsFeeResultEntryType.Single
@@ -281,8 +281,8 @@ public class LogisticsFeeService {
             resultEntryList.Add(new LogisticsFeeResultEntry {
                 OrderFirstMode = logisticsFeeData.OrderFirstMode,
                 LogisticsMode = logisticsFeeData.LogisticsMode,
-                Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraWeight.Name,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraWeight,
+                Title = LogisticsOrderFeeType.ExtraWeightFee.Name,
+                FeeType = LogisticsOrderFeeType.ExtraWeightFee,
                 Fee = overWeightFee,
                 GoodsType = logisticsFeeData.GoodsType,
                 EntryType = LogisticsFeeResultEntryType.Single
@@ -303,8 +303,8 @@ public class LogisticsFeeService {
             resultEntryList.Add(new LogisticsFeeResultEntry {
                 OrderFirstMode = logisticsFeeData.OrderFirstMode,
                 LogisticsMode = logisticsFeeData.LogisticsMode,
-                Title = LogisticsOrderFeeType.FirstLogisticsFeeExtraPackage.Name,
-                FeeType = LogisticsOrderFeeType.FirstLogisticsFeeExtraPackage,
+                Title = LogisticsOrderFeeType.ExtraPackageFee.Name,
+                FeeType = LogisticsOrderFeeType.ExtraPackageFee,
                 Fee = extraPackageCountFee,
                 GoodsType = logisticsFeeData.GoodsType,
                 EntryType = LogisticsFeeResultEntryType.Single
