@@ -127,7 +127,7 @@
                             </a>
                         </div>
                         <div>
-                            <a href="@Url.Action("Detail", "Customer", new { id = logisticsOrder.Customer.Id })" target="_blank">
+                            <a href="@Url.Action("Detail", "Customer", new { id = logisticsOrder.Customer.Id, Area = "Customer" })" target="_blank">
                                 <span>@(logisticsOrder.CustomerCode)</span>
                             </a>
                             @if (string.IsNullOrWhiteSpace(logisticsOrder.Customer.CustomerCharacter) == false) {
