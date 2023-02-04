@@ -1227,8 +1227,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderCodeList.Add(orderCode);
             orderIdList.Add(orderPackBox.Order.Id.ToString());
 
-            orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox));
-            orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox));
+            orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox.Id));
+            orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox.Id));
             orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
@@ -1308,8 +1308,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderCodeList.Add(orderCode);
             orderIdList.Add(orderPackBox.Order.Id.ToString());
 
-            orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox));
-            orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox));
+            orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox.Id));
+            orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox.Id));
             orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
@@ -1384,8 +1384,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderCodeList.Add(orderCode);
             orderIdList.Add(orderPackBox.Order.Id.ToString());
 
-            orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox));
-            orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox));
+            orderPackBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox.Id));
+            orderPackBoxShortCodeList.Add(logisticsOrderPackBoxService.GetBoxShortCode(orderPackBox.Id));
             orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 

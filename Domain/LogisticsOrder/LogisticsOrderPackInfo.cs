@@ -81,4 +81,14 @@ public class LogisticsOrderPackInfo : Entity {
     [Required(ErrorMessage = "打包时间不能为空！")]
     [JsonProperty("packTime")]
     public virtual DateTime PackTime { get; set; } = DateTime.MinValue;
+
+    #region Caches
+
+    public virtual string PackBoxCodes { get; set; } = string.Empty;
+
+    public virtual string GoodsNames { get; set; } = string.Empty;
+
+    public virtual string TrackingNos { get; set; } = string.Empty;
+
+    #endregion
 }

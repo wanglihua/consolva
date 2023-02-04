@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NHibernate.Mapping;
 using shunda.Domain.Logistics;
 
 namespace shunda.Domain.LogisticsOrder;
@@ -9,14 +10,13 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 物流订单头程
 /// </summary>
-public class LogisticsOrderFirstModeInfo : EntityNoUpdate
-{
+public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
     /// <summary>
     /// 物流订单，非空
     /// </summary>
     [Required(ErrorMessage = "物流订单不能为空！")]
     [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new ();
+    public virtual LogisticsOrderInfo Order { get; set; } = new();
 
     /// <summary>
     /// 订单编号，非空
@@ -47,11 +47,20 @@ public class LogisticsOrderFirstModeInfo : EntityNoUpdate
     /// </summary>
     [Required(ErrorMessage = "物流方式不能为空！")]
     [JsonProperty("firstMode")]
-    public virtual LogisticsModeInfo FirstMode { get; set; } = new ();
+    public virtual LogisticsModeInfo FirstMode { get; set; } = new();
 
     /// <summary>
     /// 渠道类型，非空
     /// </summary>
     [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
     public virtual LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
+
+    #region Caches
+
+    /// <summary>
+    /// 订单头程对应的订单打包列表
+    /// </summary>
+    public virtual IList<LogisticsOrderPackInfo> OrderPackList { get; set; } = new List<LogisticsOrderPackInfo>();
+
+    #endregion
 }

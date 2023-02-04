@@ -45,7 +45,12 @@ public class LogisticsOrderPackBoxService {
     /// 生成箱号
     /// 箱号格式 参考这里，之后查找箱号格式，就可以找到这里
     /// </summary>
-    public string GetBoxCode(LogisticsOrderPackBoxInfo orderPackBox) {
+    public string GetBoxCode(int packBoxId) {
+        var orderPackBox = session.Get<LogisticsOrderPackBoxInfo>(packBoxId);
+        if (orderPackBox == null) {
+            throw new ValidationException($"指定的箱号#{packBoxId}不存在！");
+        }
+
         return $"{orderPackBox.Order.Code}{orderPackBox.BoxNum:#0000}"; // 最后是 4 位数字
     }
 
@@ -67,18 +72,24 @@ public class LogisticsOrderPackBoxService {
     /// <summary>
     /// 短箱号
     /// </summary>
-    /// <param name="orderPackBox"></param>
-    /// <returns></returns>
-    public string GetBoxShortCode(LogisticsOrderPackBoxInfo orderPackBox) {
+    public string GetBoxShortCode(int packBoxId) {
+        var orderPackBox = session.Get<LogisticsOrderPackBoxInfo>(packBoxId);
+        if (orderPackBox == null) {
+            throw new ValidationException($"指定的箱号#{packBoxId}不存在！");
+        }
+
         return $"{orderPackBox.OrderPack.Id}#{orderPackBox.Order.Id}@{orderPackBox.BoxNum}";
     }
 
     /// <summary>
     /// 获取非常短箱号
     /// </summary>
-    /// <param name="orderPackBox"></param>
-    /// <returns></returns>
-    public string GetBoxExtraShortCode(LogisticsOrderPackBoxInfo orderPackBox) {
+    public string GetBoxExtraShortCode(int packBoxId) {
+        var orderPackBox = session.Get<LogisticsOrderPackBoxInfo>(packBoxId);
+        if (orderPackBox == null) {
+            throw new ValidationException($"指定的箱号#{packBoxId}不存在！");
+        }
+
         return $"{orderPackBox.Order.Id}@{orderPackBox.BoxNum}";
     }
 
