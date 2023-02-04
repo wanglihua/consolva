@@ -19,10 +19,8 @@ using StackExchange.Profiling;
 
 namespace shunda.Client;
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
+public class Program {
+    public static void Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
         builder.WebHost
             .UseUrls("http://*:9003")
@@ -105,6 +103,9 @@ public class Program
             HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly)
         );
 
+        // 提前生成已经是静态变量存储的session fatory，不用等到首次访问时.
+        HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly);
+
         // 必须 Scoped 
         services.AddScoped(provider => { return HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!); }
         );
@@ -128,7 +129,7 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
-        
+
         app.UseMiddleware<SessionIdMiddleware>();
         app.UseMiddleware<RequestLogMiddleware>(); // 还是放在有了 sessionId 后放心点
         app.UseMiddleware<HibernateMiddleware>();
