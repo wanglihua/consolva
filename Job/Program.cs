@@ -102,6 +102,9 @@ public class Program
             HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, (new DomainMock()).GetType().Assembly)
         );
 
+        // 提前生成已经是静态变量存储的session fatory，不用等到首次访问时.
+        HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly);
+
         // 必须 Scoped 
         services.AddScoped<ISession>((provider) => {
                 // ISessionFactory sessionFactory = provider.GetService<ISessionFactory>()!;
