@@ -7,6 +7,7 @@ using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Express;
+using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
@@ -155,6 +156,12 @@ public class LogisticsOrderDetailController : Controller {
                 .ToList();
         }
 
+        // 订单费用
+        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.Id)
+            .ToList();
+
         // 订单操作日志
         var orderActionList = session.Query<LogisticsOrderActionInfo>()
             .Fetch(e => e.User)
@@ -172,6 +179,7 @@ public class LogisticsOrderDetailController : Controller {
             ExpressList = expressList,
             OrderFirstModeList = orderFirstModeList,
             OrderPackBoxList = orderPackBoxList,
+            OrderFeeList = orderFeeList,
             LogisticsOrderActionList = orderActionList,
 
             CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),

@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailFee
 @using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList
 @using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark
 @using shunda.Core.Web
@@ -819,6 +820,84 @@
                                 </table>
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelFee').toggle();">
+                            <div style="float: left;">
+                                订单费用
+                            </div>
+
+                            <div style="float: right">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelFee" style="display: none;">
+
+                            <div style="margin-top: 15px; margin-bottom: -10px; text-align: right;">
+                                <a href="javascript: reCalculateOrderFee();">重新计算费用</a>
+                                <script type="text/javascript">
+
+                                    function reCalculateOrderFee() {
+                                        $.msg.confirm("确认要重新计算费用吗？", function() {
+                                            showMask("数据加载中，请稍候");
+                                            $.ajax({
+                                                url: "@Url.Action("ReCalculateOrderFee", "LogisticsOrderDetailFee", new { Area = "LogisticsOrder" })",
+                                                type: "POST",
+                                                data: {
+                                                    'orderId': @(Model.LogisticsOrder.Id)
+                                                },
+                                                success: function(data) {
+                                                    hideMask();
+
+                                                    if (data.success === false) {
+                                                        $.msg.error(data.message);
+                                                        return;
+                                                    }
+                                                   
+                                                    $.msg.show(data.message);
+                                                    // window.location.reload();
+                                                    reloadFeeList();
+                                                }
+                                            });                                            
+                                        });
+                                    }
+
+                                    function reloadFeeList()
+                                    {
+                                        showMask("数据加载中，请稍候");
+                                
+                                        $.ajax({
+                                            url: "@Url.Action("FeeList", "LogisticsOrderDetailFee", new { Area = "LogisticsOrder" })",
+                                            type: "POST",
+                                            data: {
+                                                'orderId': @(Model.LogisticsOrder.Id)
+                                            },
+                                            success: function(data) {
+                                                hideMask();
+                                
+                                                if (data.success === false) {
+                                                    $.msg.error(data.message);
+                                                    return;
+                                                }
+                                
+                                                var orderFeeListWrapper = $("#orderFeeListWrapper");
+                                                orderFeeListWrapper.html("");
+                                                orderFeeListWrapper.html(data);
+                                            }
+                                        });
+                                    }
+
+                                </script>
+                            </div>
+
+                            <div id="orderFeeListWrapper">
+                                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderDetailFee/LogisticsOrderDetailFeeList.cshtml" model="new LogisticsOrderDetailFeeListModel { Order = Model.LogisticsOrder, OrderFeeList = Model.OrderFeeList }" />
+                            </div>
                         </div>
                     </div>
                 </div>

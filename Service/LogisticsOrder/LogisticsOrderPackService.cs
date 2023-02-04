@@ -269,7 +269,7 @@ public class LogisticsOrderPackService {
         logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Pack, orderStatusBefore, orderStatusAfter, userId);
 
         // 保存打包汇总数据
-        SaveOrderPackData(orderId);
+        SaveOrderPackData(orderId, userId);
 
         // 订单计费
         logisticsOrderFeeService.CalculateAndSaveFee(orderId);
@@ -281,7 +281,18 @@ public class LogisticsOrderPackService {
     /// 新增或者更新打包汇总数据
     /// </summary>
     /// <param name="orderId">订单id</param>
-    public void SaveOrderPackData(int orderId) {
+    /// <param name="packUserId">打包工或操作用户id</param>
+    public void SaveOrderPackData(int orderId, int packUserId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        var packUser = session.Get<UserInfo>(packUserId);
+        if (packUser == null) {
+            throw new ValidationException($"指定的用户#{packUserId}不存在！");
+        }
+
         var orderPackList = session.Query<LogisticsOrderPackInfo>().Where(e => e.Order.Id == orderId).ToList();
 
         var orderPackData = session.Query<LogisticsOrderPackDataInfo>().Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
@@ -323,7 +334,7 @@ public class LogisticsOrderPackService {
         totalVolume = totalVolume / 100_00_00; // 单位转成立方米
         maxVolumeSinglePack = maxVolumeSinglePack / 100_00_00; // 单位转成立方米
 
-        orderPackData.PackUser = user;
+        orderPackData.PackUser = packUser;
         orderPackData.TotalActualWeight = totalActualWeight;
         orderPackData.TotalVolumeWeight = totalVolumeWeight;
         orderPackData.TotalVolume = totalVolume;

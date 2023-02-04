@@ -157,13 +157,6 @@
         </tbody>
     </table>
 
-    @*
-    <div style="text-align: right;">
-        <button type="button" class="btn btn-pink btn-xs" onclick="showManualIncreaseFee()">手动增加费用</button>
-        <button type="button" class="btn btn-purple btn-xs" onclick="showManualDecreaseFee()">手动减少费用</button>
-    </div>
-    *@
-
     <table id="tblLogisticsOrderFeeListTotal" class="data-list-table table table-striped table-bordered table-hover">
         <caption style="padding: 8px; font-weight: bold; color: red;">费用总额</caption>
         <thead>
@@ -197,13 +190,12 @@
                 <td style="text-align: right;">
                     <span style="color: red;">
                         @(Model.OrderFeeList.Count == 0 ? 0m : Model.OrderFeeList.Sum(e => e.Fee))
-                        @* @Model.Order.OrderAmount.ToString("#0.00") *@
                     </span>
                 </td>
                 <td style="text-align: center;">
                 </td>
                 <td>
-                    订单总计应支付总金额
+                    订单应支付总额
                 </td>
             </tr>
             <tr>
@@ -215,7 +207,7 @@
                 </td>
                 <td style="text-align: right;">
                     <span style="color: red;">
-                        @Model.Order.PaidAmount.ToString("#0.00")
+                        @(Model.Order.PaidAmount.ToString("#0.00"))
                     </span>
                 </td>
                 <td style="text-align: center;">
@@ -233,7 +225,7 @@
                 </td>
                 <td style="text-align: right;">
                     <span style="color: red;">
-                        @Model.Order.ArrearsAmountFormula.ToString("#0.00")
+                        @(Model.Order.ArrearsAmountFormula.ToString("#0.00"))
                     </span>
                 </td>
                 <td style="text-align: center;">
