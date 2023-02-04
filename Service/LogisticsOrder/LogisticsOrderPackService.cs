@@ -269,6 +269,19 @@ public class LogisticsOrderPackService {
         logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Pack, orderStatusBefore, orderStatusAfter, userId);
 
         // 保存打包汇总数据
+        SaveOrderPackData(orderId);
+
+        // 订单计费
+        logisticsOrderFeeService.CalculateAndSaveFee(orderId);
+
+        // todo 发送消息
+    }
+
+    /// <summary>
+    /// 新增或者更新打包汇总数据
+    /// </summary>
+    /// <param name="orderId">订单id</param>
+    public void SaveOrderPackData(int orderId) {
         var orderPackList = session.Query<LogisticsOrderPackInfo>().Where(e => e.Order.Id == orderId).ToList();
 
         var orderPackData = session.Query<LogisticsOrderPackDataInfo>().Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
@@ -321,10 +334,5 @@ public class LogisticsOrderPackService {
 
         session.SaveOrUpdate(orderPackData);
         session.Flush();
-
-        // 订单计费
-        logisticsOrderFeeService.CalculateAndSaveFee(orderId);
-
-        // todo 发送消息
     }
 }
