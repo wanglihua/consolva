@@ -5,8 +5,7 @@
 @{
     Layout = null;
 }
-@if (Model.HasOneOfPassRes(PassRes.ReceivePack.All))
-{
+@if (Model.HasOneOfPassRes(PassRes.ReceivePack.All)) {
     <li id="goods-receive-pack-menu">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-archive"></i>
@@ -16,8 +15,7 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
-            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckin))
-            {
+            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckin)) {
                 <li id="goods-receive-pack-logistics-express-checkin">
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text">收货入库</span>
@@ -26,8 +24,7 @@
                     <b class="arrow"></b>
                     <ul class="submenu">
 
-                        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
-                        {
+                        @foreach (WarehouseInfo warehouse in Model.WarehouseList) {
                             <li id="goods-receive-pack-logistics-express-checkin-warehouse@(warehouse.Id)-index-menu">
                                 <a asp-area="ReceivePack" asp-controller="ExpressCheckin" asp-action="Index" asp-route-warehouseId="@(warehouse.Id)">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -41,8 +38,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPack))
-            {
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPack)) {
                 <li id="goods-receive-pack-goods-repack">
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text">打包</span>
@@ -50,10 +46,9 @@
                     </a>
                     <b class="arrow"></b>
                     <ul class="submenu">
-                        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
-                        {
+                        @foreach (WarehouseInfo warehouse in Model.WarehouseList) {
                             <li id="goods-receive-pack-goods-repack-warehouse@(warehouse.Id)-index-menu">
-                                <a href="@Url.Action("Index", "LogisticsOrderGoodsPack", new { warehouseId = warehouse.Id })">
+                                <a asp-area="ReceivePack" asp-controller="LogisticsOrderGoodsPack" asp-action="Index" asp-route-warehouseId="@(warehouse.Id)">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     @(warehouse.Name)
                                 </a>
@@ -64,8 +59,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
-            {
+            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig)) {
                 <li id="goods-receive-pack-express-checkin-config-index-menu">
                     <a asp-area="ReceivePack" asp-controller="ExpressCheckinConfig" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -75,8 +69,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig))
-            {
+            @if (Model.HasPassRes(PassRes.ReceivePack.ExpressCheckinConfig)) {
                 <li id="goods-receive-pack-shelf-user-index-menu">
                     <a asp-area="ReceivePack" asp-controller="ShelfUser" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -84,10 +77,9 @@
                     </a>
                     <b class="arrow"></b>
                 </li>
-            }        
+            }
 
-            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackConfig))
-            {
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackConfig)) {
                 <li id="goods-receive-pack-order-pack-config-index-menu">
                     <a href="@Url.Action("Index", "LogisticsOrderPackConfig")">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -110,8 +102,7 @@
             }
             *@
 
-            @if (Model.HasPassRes(PassRes.ReceivePack.PackReport))
-            {
+            @if (Model.HasPassRes(PassRes.ReceivePack.PackReport)) {
                 <li id="goods-receive-pack-pack-report-index-menu">
                     <a href="@Url.Action("Index", "LogisticsOrderGoodsPackReport")">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -136,8 +127,7 @@
 
             *@
 
-            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackSchedule))
-            {
+            @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackSchedule)) {
                 <li id="goods-receive-pack-order-pack-schedule">
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text">打包排班</span>
@@ -145,8 +135,7 @@
                     </a>
                     <b class="arrow"></b>
                     <ul class="submenu">
-                        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
-                        {
+                        @foreach (WarehouseInfo warehouse in Model.WarehouseList) {
                             <li id="goods-receive-pack-order-pack-schedule-warehouse@(warehouse.Id)-index-menu">
                                 <a href="@Url.Action("Index", "LogisticsOrderPackSchedule", new { warehouseId = warehouse.Id })">
                                     <i class="menu-icon fa fa-caret-right"></i>
