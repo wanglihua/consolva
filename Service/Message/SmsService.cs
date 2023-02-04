@@ -12,8 +12,7 @@ using shunda.Core.Config;
 namespace shunda.Service.CustomerMessage;
 
 [Service(ServiceType.Scoped)]
-public class SmsService
-{
+public class SmsService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
@@ -23,8 +22,7 @@ public class SmsService
     public SmsService(
         ISession session,
         MobileService mobileService,
-        SiteErrorService siteErrorService)
-    {
+        SiteErrorService siteErrorService) {
         this.session = session;
         this.mobileService = mobileService;
         this.siteErrorService = siteErrorService;
@@ -36,10 +34,8 @@ public class SmsService
     /// <param name="mobile">不加国家代号的手机号码</param>
     /// <param name="message">message</param>
     /// <returns></returns>
-    public SendSmsResult SendSms(string mobile, string message)
-    {
-        if (mobileService.IsCorrectMobile(mobile) == false)
-        {
+    public SendSmsResult SendSms(string mobile, string message) {
+        if (mobileService.IsCorrectMobile(mobile) == false) {
             var result = new SendSmsResult(SendSmsResult.MobileFormatError, "不是正确的电话号码格式！", "");
 
             AddSmsSendRecord(mobile, message, result);
@@ -61,59 +57,58 @@ public class SmsService
         return sendResult;
 
 #else
-            string senderId = SmsConfig.SenderId;
-            string account = SmsConfig.Account;
-            string password = SmsConfig.Password;
+        string senderId = SmsConfig.SenderId;
+        string account = SmsConfig.Account;
+        string password = SmsConfig.Password;
 
-            string url = "http://intapi.253.com/send/json";
+        string url = "http://intapi.253.com/send/json";
 
-            HttpClient httpClient = new HttpClient();
+        HttpClient httpClient = new HttpClient();
 
-            JsonContent jsonContent = JsonContent.Create(new SendSmsRequest(senderId, account, password, mobile, message));
+        JsonContent jsonContent = JsonContent.Create(new SendSmsRequest(senderId, account, password, mobile, message));
 
-            Task<HttpResponseMessage> taskResponseMessage = httpClient.PostAsync(url, jsonContent);
+        Task<HttpResponseMessage> taskResponseMessage = httpClient.PostAsync(url, jsonContent);
 
-            taskResponseMessage.Wait();
-            HttpResponseMessage responseMessage = taskResponseMessage.Result;
+        taskResponseMessage.Wait();
+        HttpResponseMessage responseMessage = taskResponseMessage.Result;
 
-            if (responseMessage.IsSuccessStatusCode == false)
-            {
-                var sendResult = new SendSmsResult(SendSmsResult.CodeRequestFailed, "短信服务器请求未成功！", "");
-                AddSmsSendRecord(mobile, message, sendResult);
+        if (responseMessage.IsSuccessStatusCode == false) {
+            var sendResult = new SendSmsResult(SendSmsResult.CodeRequestFailed, "短信服务器请求未成功！", "");
+            AddSmsSendRecord(mobile, message, sendResult);
 
-                return sendResult;
-            }
+            return sendResult;
+        }
 
-            Task<Stream> taskStream = responseMessage.Content.ReadAsStreamAsync();
-            taskStream.Wait();
-            Stream dataStream = taskStream.Result;
-            StreamReader reader = new StreamReader(dataStream);
-            string response = reader.ReadToEnd();
+        Task<Stream> taskStream = responseMessage.Content.ReadAsStreamAsync();
+        taskStream.Wait();
+        Stream dataStream = taskStream.Result;
+        StreamReader reader = new StreamReader(dataStream);
+        string response = reader.ReadToEnd();
 
-            SendSmsResult sendSmsResult = JsonConvert.DeserializeObject<SendSmsResult>(response);
+        var sendSmsResult = JsonConvert.DeserializeObject<SendSmsResult>(response);
+        if (sendSmsResult == null) {
+            throw new Exception("短信发送，未能解析返回内容！");
+        }
 
-            if (sendSmsResult.Code == SendSmsResult.CodeInsufficientBalance)
-            {
-                log.Error("短信发送接口账户余额不足，请紧急充值！");
-                siteErrorService.AddSiteError(SiteErrorType.SmsSend, "短信发送接口账户余额不足，请紧急充值！");
+        if (sendSmsResult.Code == SendSmsResult.CodeInsufficientBalance) {
+            log.Error("短信发送接口账户余额不足，请紧急充值！");
+            siteErrorService.AddSiteError(SiteErrorType.SmsSend, "短信发送接口账户余额不足，请紧急充值！");
 
-                // 余额不足的话进行 邮件通知
-                // smtpMailService.SendMail(smsConfig.NoticeEmailAddress, "账户余额不足", "253账户余额不足了！");
-            }
+            // 余额不足的话进行 邮件通知
+            // smtpMailService.SendMail(smsConfig.NoticeEmailAddress, "账户余额不足", "253账户余额不足了！");
+        }
 
-            AddSmsSendRecord(mobile, message, sendSmsResult);
+        AddSmsSendRecord(mobile, message, sendSmsResult);
 
-            if (sendSmsResult.Code != SendSmsResult.CodeSuccess)
-            {
-                throw new Exception("短信发送失败，请紧急联系管理员或客服！");
-            }
+        if (sendSmsResult.Code != SendSmsResult.CodeSuccess) {
+            throw new Exception("短信发送失败，请紧急联系管理员或客服！");
+        }
 
-            return sendSmsResult;
+        return sendSmsResult;
 #endif
     }
 
-    private void AddSmsSendRecord(string mobile, string message, SendSmsResult sendSmsResult)
-    {
+    private void AddSmsSendRecord(string mobile, string message, SendSmsResult sendSmsResult) {
         var smsSendRecord = new SmsSendRecordInfo() {
             Mobile = mobile,
             Message = message,
@@ -132,11 +127,9 @@ public class SmsService
     /// <param name="mobile">不加国家代号的手机号码</param>
     /// <param name="message">message</param>
     /// <returns></returns>
-    public CustomerMessageStatus SendSmsMessage(string mobile, string message)
-    {
+    public CustomerMessageStatus SendSmsMessage(string mobile, string message) {
         var result = SendSms(mobile, message);
-        if (result.Code != SendSmsResult.CodeSuccess)
-        {
+        if (result.Code != SendSmsResult.CodeSuccess) {
             return CustomerMessageStatus.SendFail;
         }
 
@@ -144,14 +137,11 @@ public class SmsService
     }
 }
 
-public class SendSmsRequest
-{
-    public SendSmsRequest()
-    {
+public class SendSmsRequest {
+    public SendSmsRequest() {
     }
 
-    public SendSmsRequest(string senderId, string account, string password, string mobile, string message)
-    {
+    public SendSmsRequest(string senderId, string account, string password, string mobile, string message) {
         this.SenderId = senderId;
         this.Account = account;
         this.Password = password;
@@ -181,8 +171,7 @@ public class SendSmsRequest
 /// 返回的 json 文本类似：
 /// {"code": "114", "error":"客户端IP错误", "msgid":""}
 /// </summary>
-public class SendSmsResult
-{
+public class SendSmsResult {
     /// <summary>
     /// 调用成功的代码
     /// </summary>
@@ -212,12 +201,10 @@ public class SendSmsResult
     /// </summary>
     public static readonly string MobileFormatError = "-2";
 
-    public SendSmsResult()
-    {
+    public SendSmsResult() {
     }
 
-    public SendSmsResult(string code, string error, string messageId)
-    {
+    public SendSmsResult(string code, string error, string messageId) {
         this.Code = code;
         this.Error = error;
         this.MessageId = messageId;
