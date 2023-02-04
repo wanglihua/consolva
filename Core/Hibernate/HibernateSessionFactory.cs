@@ -22,6 +22,8 @@ namespace shunda.Core.Hibernate;
 public class HibernateSessionFactory {
     private static readonly string MAPPING_CLASS_NAME_SUFFIX = "InfoMapping";
 
+    private static ISessionFactory? sessionFactorySingleton = null;
+
     private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes) {
         return BuildConfiguration(dataBaseType, mappingTypes, null);
     }
@@ -126,6 +128,8 @@ public class HibernateSessionFactory {
         return configuration;
     }
 
+    private static object objLock = new object();
+
     public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, Assembly mappingAssembly) {
 /*
 
@@ -150,17 +154,25 @@ public class HibernateSessionFactory {
 #endif
 
  */
-        var configuration = BuildConfiguration(dataBaseType, mappingAssembly);
-        return configuration.BuildSessionFactory();
+        lock (objLock) {
+            if (sessionFactorySingleton == null) {
+                var configuration = BuildConfiguration(dataBaseType, mappingAssembly);
+                sessionFactorySingleton = configuration.BuildSessionFactory();
+            }
+
+            return sessionFactorySingleton;
+        }
     }
 
     public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes) {
-        var configuration = BuildConfiguration(dataBaseType, mappingTypes);
-        return configuration.BuildSessionFactory();
-    }
+        lock (objLock) {
+            if (sessionFactorySingleton == null) {
+                var configuration = BuildConfiguration(dataBaseType, mappingTypes);
+                sessionFactorySingleton = configuration.BuildSessionFactory();
+            }
 
-    private static ISessionFactory BuildSessionFactoryFromConfigration(Configuration configuration) {
-        return configuration.BuildSessionFactory();
+            return sessionFactorySingleton;
+        }
     }
 
     /// <summary>
@@ -172,8 +184,7 @@ public class HibernateSessionFactory {
         NLogConfiguration.Config();
 
         var cfg = BuildConfiguration(DataBaseConfig.DataBaseType.SQLite, mappingTypes);
-        ISessionFactory sessionFactory = BuildSessionFactoryFromConfigration(cfg);
-        ISession session = OpenSession(sessionFactory);
+        ISession session = OpenSession(cfg.BuildSessionFactory());
 
 #if DEBUG
         new SchemaExport(cfg).Create(false, true, session.Connection);
@@ -191,8 +202,7 @@ public class HibernateSessionFactory {
         NLogConfiguration.Config();
 
         var cfg = BuildConfiguration(DataBaseConfig.DataBaseType.SQLite, mappingAssembly);
-        ISessionFactory sessionFactory = BuildSessionFactoryFromConfigration(cfg);
-        ISession session = OpenSession(sessionFactory);
+        ISession session = OpenSession(cfg.BuildSessionFactory());
 
 #if DEBUG
         new SchemaExport(cfg).Create(false, true, session.Connection);
