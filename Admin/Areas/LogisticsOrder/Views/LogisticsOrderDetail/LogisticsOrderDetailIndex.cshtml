@@ -698,7 +698,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 @* 箱号跟踪 *@
                 <div class="row">
                     <div class="col-xs-12">
@@ -726,7 +726,7 @@
                                             </th>
                                             <th style="width: 120px; text-align: center;">
                                                 <div>
-                                                    <span>是否已发货</span>
+                                                    发货状态
                                                 </div>
                                                 <div>
                                                     发货时间
@@ -734,15 +734,19 @@
                                             </th>
                                             <th style="width: 120px; text-align: center;">
                                                 <div>
-                                                    <span>是否已交货</span>
+                                                    交货状态
                                                 </div>
                                                 <div>
                                                     交货时间
                                                 </div>
                                             </th>
                                             <th style="width: 120px; text-align: center;">
-                                                <div>打包工</div>
-                                                <div>打包时间</div>
+                                                <div>
+                                                    打包工
+                                                </div>
+                                                <div>
+                                                    打包时间
+                                                </div>
                                             </th>
                                             <th style="width: 120px; text-align: center;">
                                                 <div>状态</div>
@@ -751,11 +755,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (Model.OrderPackBoxList.Count != 0)
-                                        {
+                                        @if (Model.OrderPackBoxList.Count != 0) {
                                             int order = 1;
-                                            foreach (LogisticsOrderPackBoxInfo logisticsOrderPackBox in Model.OrderPackBoxList)
-                                            {
+                                            foreach (LogisticsOrderPackBoxInfo logisticsOrderPackBox in Model.OrderPackBoxList) {
                                                 <tr>
                                                     <td style="text-align: center;">@(order++)</td>
                                                     <td style="text-align: center;" class="break-word">
@@ -768,12 +770,9 @@
                                                     </td>
                                                     <td style="text-align: center;">
                                                         <div>
-                                                            @if (logisticsOrderPackBox.Status.IsShip())
-                                                            {
+                                                            @if (logisticsOrderPackBox.Status.IsShip()) {
                                                                 <span>已发货</span>
-                                                            }
-                                                            else
-                                                            {
+                                                            } else {
                                                                 <span>未发货</span>
                                                             }
                                                         </div>
@@ -783,12 +782,9 @@
                                                     </td>
                                                     <td style="text-align: center;">
                                                         <div>
-                                                            @if (logisticsOrderPackBox.Status.IsDeliver())
-                                                            {
+                                                            @if (logisticsOrderPackBox.Status.IsDeliver()) {
                                                                 <span>已交货</span>
-                                                            }
-                                                            else
-                                                            {
+                                                            } else {
                                                                 <span>未交货</span>
                                                             }
                                                         </div>
@@ -798,7 +794,7 @@
                                                     </td>
                                                     <td style="text-align: center;">
                                                         <div>
-                                                            @(logisticsOrderPackBox.OrderPack?.PackUser?.UserName)
+                                                            @(logisticsOrderPackBox.OrderPack.PackUser.UserName)
                                                         </div>
                                                         <div>
                                                             @logisticsOrderPackBox.CreateTime.ToString("yyyy-MM-dd HH:mm")
@@ -812,9 +808,7 @@
                                                     <td></td>
                                                 </tr>
                                             }
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             <tr>
                                                 <td colspan="7">
                                                     暂时没有数据！
@@ -868,7 +862,7 @@
                                                 <td style="text-align: center;">@(order++)</td>
                                                 <td style="text-align: center;">@logisticsOrderAction.User?.UserName</td>
                                                 <td style="text-align: center;">@logisticsOrderAction.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                                                <td style="text-align: center;">@logisticsOrderAction.Type?.Name</td>
+                                                <td style="text-align: center;">@logisticsOrderAction.Type.Name</td>
                                                 <td class="break-word">@logisticsOrderAction.ActionDesc</td>
                                             </tr>
                                         }
