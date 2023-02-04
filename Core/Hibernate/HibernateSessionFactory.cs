@@ -22,8 +22,6 @@ namespace shunda.Core.Hibernate;
 public class HibernateSessionFactory {
     private static readonly string MAPPING_CLASS_NAME_SUFFIX = "InfoMapping";
 
-    private static ISessionFactory? sessionFactorySingleton = null;
-
     private static Configuration BuildConfiguration(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes) {
         return BuildConfiguration(dataBaseType, mappingTypes, null);
     }
@@ -128,8 +126,6 @@ public class HibernateSessionFactory {
         return configuration;
     }
 
-    private static object objLock = new object();
-
     public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, Assembly mappingAssembly) {
 /*
 
@@ -154,25 +150,13 @@ public class HibernateSessionFactory {
 #endif
 
  */
-        lock (objLock) {
-            if (sessionFactorySingleton == null) {
-                var configuration = BuildConfiguration(dataBaseType, mappingAssembly);
-                sessionFactorySingleton = configuration.BuildSessionFactory();
-            }
-
-            return sessionFactorySingleton;
-        }
+        var configuration = BuildConfiguration(dataBaseType, mappingAssembly);
+        return configuration.BuildSessionFactory();
     }
 
     public static ISessionFactory BuildSessionFactory(DataBaseConfig.DataBaseType dataBaseType, IEnumerable<Type> mappingTypes) {
-        lock (objLock) {
-            if (sessionFactorySingleton == null) {
-                var configuration = BuildConfiguration(dataBaseType, mappingTypes);
-                sessionFactorySingleton = configuration.BuildSessionFactory();
-            }
-
-            return sessionFactorySingleton;
-        }
+        var configuration = BuildConfiguration(dataBaseType, mappingTypes);
+        return configuration.BuildSessionFactory();
     }
 
     /// <summary>

@@ -14,8 +14,10 @@ using shunda.Core.Json;
 using shunda.Core.Log;
 using shunda.Core.Service;
 using shunda.Domain;
+using shunda.Domain.Pass;
 using shunda.Service;
 using StackExchange.Profiling;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Admin;
 
@@ -100,8 +102,6 @@ public class Program {
 
         // 必须 Singleton
         services.AddSingleton(provider => HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly));
-        // 提前生成已经是静态变量存储的session fatory，不用等到首次访问时.
-        HibernateSessionFactory.BuildSessionFactory(DataBaseConfig.DataBaseType.MySQL, new DomainMock().GetType().Assembly);
 
         // 必须 Scoped 
         services.AddScoped(provider => HibernateSessionFactory.OpenSession(provider.GetService<ISessionFactory>()!));
