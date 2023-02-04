@@ -5,8 +5,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// <summary>
 /// 订单打包箱号状态
 /// </summary>
-public class LogisticsOrderPackBoxStatus : CodeTypeBase
-{
+public class LogisticsOrderPackBoxStatus : CodeTypeBase {
     /// <summary>
     /// 已打包
     /// </summary>
@@ -35,38 +34,50 @@ public class LogisticsOrderPackBoxStatus : CodeTypeBase
 
     private static Dictionary<int, LogisticsOrderPackBoxStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static LogisticsOrderPackBoxStatus GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out LogisticsOrderPackBoxStatus? codeType))
-        {
+    public static LogisticsOrderPackBoxStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out LogisticsOrderPackBoxStatus? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<LogisticsOrderPackBoxStatus> GetList()
-    {
+    public static IList<LogisticsOrderPackBoxStatus> GetList() {
         return codeTypeList.ToList();
     }
 
-    private LogisticsOrderPackBoxStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private LogisticsOrderPackBoxStatus(int id, string name, string description) : base(id, name, description) {
+    }
+
+    public bool IsShip() {
+        if (this == None) {
+            return false;
+        }
+
+        if (this == Pack) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool IsDeliver() {
+        if (this == Deliver) {
+            return true;
+        }
+
+        return false;
     }
 }
 
-public class LogisticsOrderPackBoxStatusHibernateType : CodeHibernateTypeBase<LogisticsOrderPackBoxStatus>
-{
-    protected override LogisticsOrderPackBoxStatus GetCodeTypeById(int id)
-    {
+public class LogisticsOrderPackBoxStatusHibernateType : CodeHibernateTypeBase<LogisticsOrderPackBoxStatus> {
+    protected override LogisticsOrderPackBoxStatus GetCodeTypeById(int id) {
         return LogisticsOrderPackBoxStatus.GetById(id);
     }
 }
 
-public class LogisticsOrderPackBoxStatusModelBinder : CodeTypeModelBinderBase<LogisticsOrderPackBoxStatus>
-{
-    protected override LogisticsOrderPackBoxStatus GetCodeTypeById(int id)
-    {
+public class LogisticsOrderPackBoxStatusModelBinder : CodeTypeModelBinderBase<LogisticsOrderPackBoxStatus> {
+    protected override LogisticsOrderPackBoxStatus GetCodeTypeById(int id) {
         return LogisticsOrderPackBoxStatus.GetById(id);
     }
 }

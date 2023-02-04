@@ -82,7 +82,7 @@ public class LogisticsOrderPackInfo : Entity {
     [JsonProperty("packTime")]
     public virtual DateTime PackTime { get; set; } = DateTime.MinValue;
 
-    #region Caches
+    #region Cache
 
     public virtual IList<string> PackBoxCodeListCache { get; set; } = new List<string>();
 

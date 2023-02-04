@@ -57,4 +57,10 @@ public class LogisticsOrderPackBoxInfo : Entity
     [JsonProperty("status")]
     [ModelBinder(typeof(LogisticsOrderPackBoxStatusModelBinder))]
     public virtual LogisticsOrderPackBoxStatus Status { get; set; } = LogisticsOrderPackBoxStatus.None;
+
+    #region Cache
+
+    public virtual string CodeCache { get; set; } = string.Empty;
+
+    #endregion
 }

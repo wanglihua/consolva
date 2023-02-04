@@ -34,6 +34,9 @@ public class LogisticsOrderDetailIndexModel {
     public IList<LogisticsOrderFirstModeInfo> OrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeInfo>();
 
     [BindNever]
+    public IList<LogisticsOrderPackBoxInfo> OrderPackBoxList { get; set; } = new List<LogisticsOrderPackBoxInfo>();
+
+    [BindNever]
     public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
 
     [BindNever]

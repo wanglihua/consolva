@@ -102,7 +102,7 @@ public class LogisticsOrderDetailController : Controller {
         // 订单商品
         var expressList = expressService.GetExpressListForOrderDetail(orderId);
 
-        // 订单头程物流和打包信息
+        // 订单头程物流，打包信息，箱号
         IList<LogisticsOrderFirstModeInfo> orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Where(e => e.Order.Id == orderId)
             .ToList();
@@ -124,13 +124,18 @@ public class LogisticsOrderDetailController : Controller {
 
         IList<LogisticsOrderPackBoxInfo> orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
             .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.Id)
             .ToList();
+
+        foreach (var packBox in orderPackBoxList) {
+            packBox.CodeCache = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
+        }
 
         foreach (var orderPack in orderPackList) {
             int orderPackId = orderPack.Id;
 
             var boxListOfPack = orderPackBoxList.Where(e => e.OrderPack.Id == orderPackId).OrderBy(e => e.Id).ToList();
-            orderPack.PackBoxCodeListCache = boxListOfPack.Select(e => logisticsOrderPackBoxService.GetBoxCode(e.Id)).ToList();
+            orderPack.PackBoxCodeListCache = boxListOfPack.Select(e => e.CodeCache).ToList();
 
             var orderPackExpressListOfPack = orderPackExpressList.Where(e => e.OrderPack.Id == orderPackId).ToList();
             var expressListOfPack = orderPackExpressListOfPack.Select(e => e.Express).ToList();
@@ -166,6 +171,7 @@ public class LogisticsOrderDetailController : Controller {
             SendAddress = sendAddress,
             ExpressList = expressList,
             OrderFirstModeList = orderFirstModeList,
+            OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,
 
             CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),

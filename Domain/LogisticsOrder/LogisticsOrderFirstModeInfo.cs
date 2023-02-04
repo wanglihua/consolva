@@ -55,7 +55,7 @@ public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
     [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
     public virtual LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
 
-    #region Caches
+    #region Cache
 
     /// <summary>
     /// 订单头程对应的订单打包列表
