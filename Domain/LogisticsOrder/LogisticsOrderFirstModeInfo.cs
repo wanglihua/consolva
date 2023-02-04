@@ -60,7 +60,7 @@ public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
     /// <summary>
     /// 订单头程对应的订单打包列表
     /// </summary>
-    public virtual IList<LogisticsOrderPackInfo> OrderPackList { get; set; } = new List<LogisticsOrderPackInfo>();
+    public virtual IList<LogisticsOrderPackInfo> OrderPackListCache { get; set; } = new List<LogisticsOrderPackInfo>();
 
     #endregion
 }

@@ -6,6 +6,7 @@ using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Web;
+using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
@@ -24,13 +25,15 @@ public class LogisticsOrderDetailController : Controller {
     private readonly ExpressRemarkService expressRemarkService;
     private readonly ExpressService expressService;
     private readonly PassResService passResService;
+    private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
 
     public LogisticsOrderDetailController(ISession session,
         LoginUserService loginUserService,
         LogisticsOrderRemarkService logisticsOrderRemarkService,
         ExpressRemarkService expressRemarkService,
         ExpressService expressService,
-        PassResService passResService
+        PassResService passResService,
+        LogisticsOrderPackBoxService logisticsOrderPackBoxService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -38,6 +41,7 @@ public class LogisticsOrderDetailController : Controller {
         this.expressRemarkService = expressRemarkService;
         this.expressService = expressService;
         this.passResService = passResService;
+        this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
     }
 
     [HttpGet]
@@ -98,6 +102,7 @@ public class LogisticsOrderDetailController : Controller {
         // 订单商品
         var expressList = expressService.GetExpressListForOrderDetail(orderId);
 
+        // 订单头程物流和打包信息
         IList<LogisticsOrderFirstModeInfo> orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Where(e => e.Order.Id == orderId)
             .ToList();
@@ -106,75 +111,44 @@ public class LogisticsOrderDetailController : Controller {
             .Where(e => e.Order.Id == orderId)
             .ToList();
 
+        var orderPackExpressList = session.Query<LogisticsOrderPackExpressInfo>()
+            .Fetch(e => e.Express)
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
+        var expressIdList = orderPackExpressList.Select(e => e.Express.Id).ToList();
+        var expressGoodsList = session.Query<ExpressGoodsInfo>()
+            .Fetch(e => e.Goods)
+            .Where(e => expressIdList.Contains(e.Express.Id))
+            .ToList();
+
         IList<LogisticsOrderPackBoxInfo> orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
             .Where(e => e.Order.Id == orderId)
             .ToList();
-        
-        
 
-        /*
-         
-            IList<LogisticsOrderPackInfo> orderPackList = session.Query<LogisticsOrderPackInfo>().Where(e => e.Order.Id == orderId).OrderBy(e => e.GoodsType).ThenBy(e => e.Id).ToList();
-            var orderPackExpressList = session.Query<LogisticsOrderPackExpressInfo>().Fetch(e => e.OrderExpress).Where(e => e.Order.Id == orderId).ToList();
-            foreach (LogisticsOrderPackInfo pack in orderPackList)
-            {
-                var boxNumList = session.Query<LogisticsOrderPackBoxInfo>().Where(e => e.OrderPack.Id == pack.Id).Select(e => e.OrderPackBoxNum).ToList();
-                pack.BoxNumStr = string.Join(",", boxNumList);
+        foreach (var orderPack in orderPackList) {
+            int orderPackId = orderPack.Id;
 
-                var packExpressTrackingNoList = orderPackExpressList.Where(e => e.OrderPack.Id == pack.Id).Select(e => e.OrderExpress.ExpressTrackingNo).ToList();
-                pack.ExpressTrackingNos = string.Join(",", packExpressTrackingNoList);
+            var boxListOfPack = orderPackBoxList.Where(e => e.OrderPack.Id == orderPackId).OrderBy(e => e.Id).ToList();
+            orderPack.PackBoxCodeListCache = boxListOfPack.Select(e => logisticsOrderPackBoxService.GetBoxCode(e.Id)).ToList();
 
-                var expressIdList = orderPackExpressList.Where(e => e.OrderPack.Id == pack.Id).Select(e => e.OrderExpress.Id).ToList();
-                var orderPackGoodsList = orderGoodsList.Where(e => expressIdList.Contains(e.Express.Id)).ToList();
+            var orderPackExpressListOfPack = orderPackExpressList.Where(e => e.OrderPack.Id == orderPackId).ToList();
+            var expressListOfPack = orderPackExpressListOfPack.Select(e => e.Express).ToList();
+            orderPack.TrackingNoListCache = expressListOfPack.Select(e => e.TrackingNo).ToList();
 
-                var goodsNameList = new List<string>();
-                foreach (var orderPackGoods in orderPackGoodsList)
-                {
-                    string goodsName = string.Empty;
-                    if (orderPackGoods.GoodsAdminId.HasValue && orderPackGoods.GoodsAdminId.Value != 0)
-                    {
-                        var goodsAdminId = orderPackGoods.GoodsAdminId.Value;
-                        goodsName = goodsList.Where(e => e.Id == goodsAdminId).Take(1).SingleOrDefault()?.GetGoodsAdminName();
-                    }
+            var expressIdListOfPack = expressListOfPack.Select(e => e.Id).ToList();
+            var expressGoodsListOfPack = expressGoodsList.Where(e => expressIdListOfPack.Contains(e.Express.Id)).ToList();
+            orderPack.GoodsNameListCache = expressGoodsListOfPack.Select(e => e.Goods.Name).Distinct().ToList();
+        }
 
-                    if (string.IsNullOrWhiteSpace(goodsName))
-                    {
-                        goodsName = goodsList.Where(e => e.Id == orderPackGoods.GoodsId).Take(1).SingleOrDefault()?.Name;
-                    }
+        foreach (var orderFirstMode in orderFirstModeList) {
+            int orderFirstModeId = orderFirstMode.Id;
 
-                    if (goodsNameList.Contains(goodsName) == false)
-                    {
-                        goodsNameList.Add(goodsName);
-                    }
-                }
-
-                pack.GoodsNames = string.Join(",", goodsNameList);
-            }
-
-            IList<LogisticsOrderDetailGoodsTypePack> goodsTypePackList = new List<LogisticsOrderDetailGoodsTypePack>();
-            IList<LogisticsGoodsType> goodsTypeList = LogisticsGoodsType.GetInnerList();
-            foreach (LogisticsGoodsType goodsType in goodsTypeList)
-            {
-                IList<LogisticsOrderPackInfo> packList = orderPackList.Where(e => e.GoodsType == goodsType).ToList();
-
-                if (packList.Count > 0)
-                {
-                    LogisticsOrderDetailGoodsTypePack goodsTypePack = new LogisticsOrderDetailGoodsTypePack();
-
-                    goodsTypePack.GoodsType = goodsType;
-                    goodsTypePack.TotalVolume = packList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount);
-                    goodsTypePack.TotalWeight = packList.Sum(e => e.Weight * e.PackageCount);
-                    goodsTypePack.TotalVolumeWeight = packList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount) / logisticsFeeRateService.GetVolumeDenominator();
-                    goodsTypePack.PackCount = packList.Sum(e => e.PackageCount);
-
-                    goodsTypePack.PackList = packList;
-
-                    goodsTypePackList.Add(goodsTypePack);
-                }
-            }         
-         
-         */
-
+            orderFirstMode.OrderPackListCache = orderPackList
+                .Where(e => e.OrderFirstMode.Id == orderFirstModeId)
+                .OrderBy(e => e.Id)
+                .ToList();
+        }
 
         // 订单操作日志
         var orderActionList = session.Query<LogisticsOrderActionInfo>()
@@ -191,6 +165,7 @@ public class LogisticsOrderDetailController : Controller {
             ReceiveAddress = receiveAddress,
             SendAddress = sendAddress,
             ExpressList = expressList,
+            OrderFirstModeList = orderFirstModeList,
             LogisticsOrderActionList = orderActionList,
 
             CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),

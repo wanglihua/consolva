@@ -84,11 +84,11 @@ public class LogisticsOrderPackInfo : Entity {
 
     #region Caches
 
-    public virtual string PackBoxCodes { get; set; } = string.Empty;
+    public virtual IList<string> PackBoxCodeListCache { get; set; } = new List<string>();
 
-    public virtual string GoodsNames { get; set; } = string.Empty;
+    public virtual IList<string> GoodsNameListCache { get; set; } = new List<string>();
 
-    public virtual string TrackingNos { get; set; } = string.Empty;
+    public virtual IList<string> TrackingNoListCache { get; set; } = new List<string>();
 
     #endregion
 }

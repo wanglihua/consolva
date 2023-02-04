@@ -16,7 +16,7 @@ public class LogisticsOrderDetailIndexModel {
     public IList<LogisticsOrderRemarkInfo> OrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();
 
     [BindNever]
-    public IList<ExpressRemarkInfo> ExpressRemarkList { get; set; } = new List<ExpressRemarkInfo>();    
+    public IList<ExpressRemarkInfo> ExpressRemarkList { get; set; } = new List<ExpressRemarkInfo>();
 
     [BindNever]
     public LogisticsOrderReceiveAddressInfo ReceiveAddress { get; set; } = new();
@@ -27,9 +27,15 @@ public class LogisticsOrderDetailIndexModel {
     [BindNever]
     public IList<ExpressInfo> ExpressList { get; set; } = new List<ExpressInfo>();
 
+    /// <summary>
+    /// 这里同时包含有订单打包信息
+    /// </summary>
+    [BindNever]
+    public IList<LogisticsOrderFirstModeInfo> OrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeInfo>();
+
     [BindNever]
     public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
 
     [BindNever]
-    public bool CanOrderRemarkEdit { get; set; }    
+    public bool CanOrderRemarkEdit { get; set; }
 }
