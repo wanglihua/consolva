@@ -6,8 +6,6 @@ using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Web;
-using shunda.Domain.Express;
-using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
@@ -22,24 +20,18 @@ namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
 public class LogisticsOrderDetailController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
-    private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
-    private readonly ExpressRemarkService expressRemarkService;
     private readonly ExpressService expressService;
     private readonly PassResService passResService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
 
     public LogisticsOrderDetailController(ISession session,
         LoginUserService loginUserService,
-        LogisticsOrderRemarkService logisticsOrderRemarkService,
-        ExpressRemarkService expressRemarkService,
         ExpressService expressService,
         PassResService passResService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
-        this.logisticsOrderRemarkService = logisticsOrderRemarkService;
-        this.expressRemarkService = expressRemarkService;
         this.expressService = expressService;
         this.passResService = passResService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
@@ -72,12 +64,6 @@ public class LogisticsOrderDetailController : Controller {
             menuType = OrderListMenuType.Cancel;
         }
 
-        // 订单备注
-        var orderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId);
-
-        // 快递单备注
-        var expressRemarkList = expressRemarkService.GetOrderExpressRemarkList(orderId);
-
         // 收货地址
         var receiveAddress = session.Query<LogisticsOrderReceiveAddressInfo>()
             .Where(e => e.Order.Id == orderId)
@@ -108,6 +94,9 @@ public class LogisticsOrderDetailController : Controller {
             .Where(e => e.Order.Id == orderId)
             .OrderBy(e => e.Id)
             .ToList();
+        foreach (var packBox in orderPackBoxList) {
+            packBox.CodeCache = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
+        }
 
         // 订单操作日志
         var orderActionList = session.Query<LogisticsOrderActionInfo>()
@@ -119,15 +108,11 @@ public class LogisticsOrderDetailController : Controller {
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             Order = order,
-            OrderRemarkList = orderRemarkList,
-            ExpressRemarkList = expressRemarkList,
             ReceiveAddress = receiveAddress,
             SendAddress = sendAddress,
             ExpressList = expressList,
             OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,
-
-            CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),
         };
 
         return View("LogisticsOrderDetailIndex", model);

@@ -480,13 +480,10 @@ public class LogisticsOrderGoodsPackController : Controller {
 
             model.GoodsTypeCommonPackageCount = commonPackageCount;
 
-            // 订单备注
-            model.OrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(nextOrderIdValue);
-
-            // 快递单备注
-            model.ExpressRemarkList = expressRemarkService.GetOrderExpressRemarkList(nextOrderIdValue);
-
-            model.CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack);
+            // 订单备注 快递单备注。查询列表，同一个请求中还会做同样的查询的，所以二级缓存下没有性能问题
+            var orderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(nextOrderIdValue);
+            var expressRemarkList = expressRemarkService.GetOrderExpressRemarkList(nextOrderIdValue);
+            model.RemarkTotalCount = orderRemarkList.Count + expressRemarkList.Count;
 
             model.IsOrderPackComplete = logisticsOrder.OrderStatus == LogisticsOrderStatus.Packed;
 

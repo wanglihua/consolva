@@ -1,8 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailFee
-@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailOrderPack
 @using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList
-@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark
 @using shunda.Core.Web
 @using shunda.Domain.LogisticsOrder
 @using shunda.Service.Express
@@ -11,13 +8,6 @@
 @{
     ViewData[ViewDataKey.Title] = "订单详细";
     Layout = "_AdminLayout";
-
-    var orderRemarkListModel = new LogisticsOrderRemarkListModel {
-        OrderId = Model.Order.Id,
-        OrderRemarkList = Model.OrderRemarkList,
-        ExpressRemarkList = Model.ExpressRemarkList,
-        CanOrderRemarkEdit = Model.CanOrderRemarkEdit
-    };
 }
 
 @section Breadcrumb {
@@ -294,7 +284,7 @@
                         <div id="panelRemark" style="display: none;">
                             <div class="row">
                                 <div id="orderRemarkListWrapper">
-                                    <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="orderRemarkListModel"/>
+                                    @Html.Action("OrderRemarkList", "LogisticsOrderRemark", "LogisticsOrder", new { orderId = Model.Order.Id })
                                 </div>
                             </div>
                         </div>

@@ -1,22 +1,16 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark
 @using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack
+@using shunda.Core.Web
 @model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderModel
 
 @{
     Layout = null;
-
-    var orderRemarkListModel = new LogisticsOrderRemarkListModel {
-        OrderId = Model.Order.Id,
-        OrderRemarkList = Model.OrderRemarkList,
-        ExpressRemarkList = Model.ExpressRemarkList,
-        CanOrderRemarkEdit = Model.CanOrderRemarkEdit
-    };
 }
 
 <input id="orderId" type="hidden" value="@Model.Order.Id"/>
 
-@if (Model.Order == null || Model.Order.Id <= 0) {
+@if (Model.Order.Id <= 0) {
     <div style="margin: 10px 0;padding: 10px;border: 1px solid red; background-color: #F8A1A4;">
         <i class="fa fa-warning" style="color:red;"></i>
         没有待打包的后续订单，或指定的订单不存在！请刷新页面，重新尝试获取打包订单。
@@ -163,8 +157,8 @@
                             </td>
                             <td>
                                 <a href="javascript:document.getElementById('orderRemark').scrollIntoView(false);">
-                                    @if (Model.OrderRemarkList.Count != 0) {
-                                        <span>@(Model.OrderRemarkList.Count + Model.ExpressRemarkList.Count)&nbsp;个</span>
+                                    @if (Model.RemarkTotalCount != 0) {
+                                        <span>@(Model.RemarkTotalCount)&nbsp;个</span>
                                     } else {
                                         <span>暂无</span>
                                     }
@@ -230,9 +224,8 @@
 
         <div id="orderRemark" style="border-top: 1px solid lightgray; margin-top: 30px; padding-top: 20px; padding-bottom: 30px; ">
             <div id="orderRemarkListWrapper">
-                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderRemark/LogisticsOrderRemarkList.cshtml" model="orderRemarkListModel"/>
+                @Html.Action("OrderRemarkList", "LogisticsOrderRemark", "LogisticsOrder", new { orderId = Model.Order.Id })
             </div>
-
         </div>
     </div>
 
