@@ -1,0 +1,271 @@
+@using shunda.Domain.Fee
+@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailFee.LogisticsOrderDetailFeeListViewComponentModel
+@{
+    Layout = null;
+}
+
+@if (Model.OrderFeeList.Count != 0) {
+    var orderFirstModeList = Model.OrderFirstModeList;
+    var orderFeeList = Model.OrderFeeList;
+
+    if (orderFirstModeList.Count != 0) {
+        foreach (var orderFirstMode in orderFirstModeList) {
+            int orderFirstModeId = orderFirstMode.Id;
+            var orderFeeListOfMode = orderFeeList
+                .Where(e => e.OrderFirstMode != null && e.OrderFirstMode.Id == orderFirstModeId)
+                .OrderBy(e => e.Id)
+                .ToList();
+
+            <table class="data-list-table table table-striped table-bordered table-hover">
+                <caption style="padding: 8px; font-weight: bold; color: #2a62bc;">物流方式&nbsp;@(orderFirstMode.FirstMode.Name)</caption>
+                <thead>
+                    <tr>
+                        <th style="width: 50px; text-align: center;">序号</th>
+                        <th style="width: 100px; text-align: center;">
+                            物品类型
+                        </th>
+                        <th style="width: 120px; text-align: center;">
+                            费用类型
+                        </th>
+                        <th style="width: 80px; text-align: right;">
+                            金额
+                        </th>
+                        <th style="width: 120px; text-align: center;">
+                            产生时间
+                        </th>
+                        <th>
+                            描述
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int firstGoodsTypeFeeOrder = 1;
+                        foreach (var logisticsOrderFee in orderFeeListOfMode) {
+                            <tr>
+                                <td style="text-align: center;">@(firstGoodsTypeFeeOrder++)</td>
+                                <td style="text-align: center;">
+                                    @logisticsOrderFee.GoodsType.Name
+                                </td>
+                                <td style="text-align: center;">
+                                    @logisticsOrderFee.Type.Name
+                                </td>
+                                <td style="text-align: right;">
+                                    @logisticsOrderFee.Fee
+                                </td>
+                                <td style="text-align: center;">
+                                    @logisticsOrderFee.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                                </td>
+                                <td>
+                                    @logisticsOrderFee.Description
+                                </td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td style="text-align: center;"></td>
+                            <td style="text-align: center;"></td>
+                            <td style="text-align: center;">
+                                小计
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="color: #2a62bc;">
+                                    @(orderFeeListOfMode.Count == 0 ? 0m : orderFeeListOfMode.Sum(e => e.Fee))
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+
+    var otherOrderFeeTypeList = LogisticsOrderFeeType.GetOtherFeeTypeList();
+    var otherOrderFeeList = Model.OrderFeeList.Where(e => otherOrderFeeTypeList.Contains(e.Type)).OrderBy(e => e.Id).ToList();
+
+    <table id="tblLogisticsOrderFeeListSecondLogistics" class="data-list-table table table-striped table-bordered table-hover">
+        <caption style="padding: 8px; font-weight: bold; color: #2a62bc;">其他费用</caption>
+        <thead>
+            <tr>
+                <th style="width: 50px; text-align: center;">序号</th>
+                <th style="width: 100px; text-align: center;">
+                    物品类型
+                </th>
+                <th style="width: 120px; text-align: center;">
+                    费用类型
+                </th>
+                <th style="width: 80px; text-align: right;">
+                    金额
+                </th>
+                <th style="width: 120px; text-align: center;">
+                    产生时间
+                </th>
+                <th>
+                    描述
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int otherFeeOrder = 1;
+                foreach (var orderFee in otherOrderFeeList) {
+                    <tr>
+                        <td style="text-align: center;">@(otherFeeOrder++)</td>
+                        <td style="text-align: center;">
+                            @orderFee.GoodsType.Name
+                        </td>
+                        <td style="text-align: center;">
+                            @orderFee.Type.Name
+                        </td>
+                        <td style="text-align: right;">
+                            @orderFee.Fee
+                        </td>
+                        <td style="text-align: center;">
+                            @orderFee.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </td>
+                        <td class="break-word">
+                            @if (string.IsNullOrWhiteSpace(orderFee.ManualReasonContent) == false) {
+                                <text>【@(orderFee.ManualReasonContent)】</text>
+                            }
+                            @(orderFee.Description)
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;">
+                        其他费用
+                    </td>
+                    <td style="text-align: center;">
+                        小计
+                    </td>
+                    <td style="text-align: right;">
+                        <span style="color: #2a62bc;">
+                            @(otherOrderFeeList.Count == 0 ? 0m : otherOrderFeeList.Sum(e => e.Fee))
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <table id="tblLogisticsOrderFeeListTotal" class="data-list-table table table-striped table-bordered table-hover">
+        <caption style="padding: 8px; font-weight: bold; color: red;">费用总额</caption>
+        <thead>
+            <tr>
+                <th style="width: 50px; text-align: center;">序号</th>
+                <th style="width: 100px; text-align: center;">
+                    物品类型
+                </th>
+                <th style="width: 120px; text-align: center;">
+                    费用类型
+                </th>
+                <th style="width: 80px; text-align: right;">
+                    金额
+                </th>
+                <th style="width: 120px; text-align: center;">
+                    产生时间
+                </th>
+                <th>
+                    描述
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;">
+                </td>
+                <td style="text-align: center;">
+                    订单总计
+                </td>
+                <td style="text-align: right;">
+                    <span style="color: red;">
+                        @(Model.OrderFeeList.Count == 0 ? 0m : Model.OrderFeeList.Sum(e => e.Fee))
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                </td>
+                <td>
+                    订单应支付总额
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;">
+                </td>
+                <td style="text-align: center;">
+                    客户支付费用
+                </td>
+                <td style="text-align: right;">
+                    <span style="color: red;">
+                        @(Model.Order.PaidAmount.ToString("#0.00"))
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                </td>
+                <td>
+                    客户支付费用
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;">
+                </td>
+                <td style="text-align: center;">
+                    欠费金额
+                </td>
+                <td style="text-align: right;">
+                    <span style="color: red;">
+                        @(Model.Order.ArrearsAmountFormula.ToString("#0.00"))
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                </td>
+                <td>
+                    欠费金额
+                </td>
+            </tr>
+        </tbody>
+    </table>
+} else {
+    <table id="tblLogisticsOrderFeeList" class="data-list-table table table-striped table-bordered table-hover">
+        <caption style="padding: 8px;">&nbsp;</caption>
+        <thead>
+            <tr>
+                <th style="width: 50px; text-align: center;">序号</th>
+                <th style="width: 120px; text-align: center;">
+                    物品类型
+                </th>
+                <th style="width: 80px; text-align: center;">
+                    费用类型
+                </th>
+                <th style="width: 80px; text-align: right;">
+                    金额
+                </th>
+                <th style="width: 120px; text-align: center;">
+                    产生时间
+                </th>
+                <th>
+                    描述
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="6">
+                    暂时没有数据！
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
