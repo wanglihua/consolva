@@ -1,0 +1,70 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailOrderPack.LogisticsOrderDetailPackDetailModel
+
+@{
+    Layout = null;
+}
+
+<div class="modal fade" id="orderPackDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">订单打包信息详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="orderPackDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="OrderPackId" type="hidden" />
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Length" class="col-xs-2 control-label">长</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Length" type="text" class="input-sm form-control" min="0.01" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Width" class="col-xs-2 control-label">宽</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Width" type="text" class="input-sm form-control" min="0.01" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Height" class="col-xs-2 control-label">高</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Height" type="text" class="input-sm form-control" min="0.01" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Weight" class="col-xs-2 control-label">重量</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Weight" type="text" class="input-sm form-control" min="0.001" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveOrderPackDetail();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
