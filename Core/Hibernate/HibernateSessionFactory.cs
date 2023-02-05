@@ -1,6 +1,7 @@
 using System.Data;
 using System.Reflection;
 using NHibernate;
+using NHibernate.Caches.RtMemoryCache;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Dialect;
@@ -82,17 +83,13 @@ public class HibernateSessionFactory {
 
         #region 二级缓存配置
 
-        /*
-        二级缓存先不启用了，有时会造成不明错误吧
-
         configuration.Cache(
             cfg => {
-                cfg.DefaultExpiration = 5 * 60; // 感觉 5分钟就够了
-                cfg.UseQueryCache = false;
+                cfg.DefaultExpiration = 5; // 5 秒钟都够了，只要一次请求中，不重复查询数据就可以了
+                cfg.UseQueryCache = true;
                 cfg.Provider<RtMemoryCacheProvider>(); // 这里面已经相当于设置了 configuration.SetProperty(Environment.UseSecondLevelCache, "true");
             }
         );
-        */
 
         #endregion
 
