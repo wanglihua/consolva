@@ -48,12 +48,11 @@
         "pages/instruction/instruction_transport_limit",
         "pages/instruction/instruction_use_agreement",
         "pages/order/order_detail",
-        "pages/order/order_list_pay",
         "pages/order/order_list_submitted",
-        "pages/order/order_list_packed",
+        "pages/order/order_list_pay",
+        "pages/order/order_wait_transport",
         "pages/order/order_list_transporting",
-        "pages/order/order_list_delivered",
-        "pages/order/order_wait_transport"
+        "pages/order/order_list_delivered"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",
