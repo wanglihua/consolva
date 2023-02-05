@@ -1,3 +1,6 @@
+#nullable disable
+
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
-
-#nullable disable
 
 namespace shunda.Core.Web;
 
@@ -25,6 +26,37 @@ namespace shunda.Core.Web;
 public static class HtmlHelperViewExtensions {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
+    public static IHtmlContent Action<TController>(this IHtmlHelper helper, Expression<Action<TController>> action, string areaName) where TController : Controller {
+        var controllerName = GetControllerName(typeof(TController));
+        var methodCallExpression = GetMethodCallExpression(action);
+        var actionName = methodCallExpression.Method.Name;
+        var routes = RouteValueExtractor.GetRouteValues(methodCallExpression, areaName);
+
+        return Action(helper, actionName, controllerName, areaName, routes);
+    }
+
+    private static string GetControllerName(Type controllerType) {
+        var controllerName = controllerType.Name;
+        if (controllerType.Name.EndsWith("Controller")) {
+            var totalLength = controllerType.Name.Length;
+            var suffixLength = "Controller".Length;
+            controllerName = controllerType.Name.Substring(0, totalLength - suffixLength);
+        }
+
+        return controllerName;
+    }
+
+    private static MethodCallExpression GetMethodCallExpression<TController>(Expression<Action<TController>> actionSelector) {
+        var call = actionSelector.Body as MethodCallExpression;
+        if (call == null) {
+            throw new ArgumentException("You must call a method on " + typeof(TController).Name, "actionSelector");
+        }
+
+        return call;
+    }
+
+    /*
+     这两个方法在项目中暂时用不到
     public static IHtmlContent Action(this IHtmlHelper helper, string action, object parameters = null) {
         var controller = (string)helper.ViewContext.RouteData.Values["controller"];
 
@@ -36,8 +68,9 @@ public static class HtmlHelperViewExtensions {
 
         return Action(helper, action, controller, area, parameters);
     }
+    */
 
-    public static IHtmlContent Action(this IHtmlHelper helper, string action, string controller, string area, object parameters = null) {
+    private static IHtmlContent Action(this IHtmlHelper helper, string action, string controller, string area, object parameters = null) {
         if (action == null) {
             throw new ArgumentNullException("action");
         }
