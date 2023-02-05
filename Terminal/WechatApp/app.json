@@ -52,7 +52,8 @@
         "pages/order/order_list_submitted",
         "pages/order/order_list_packed",
         "pages/order/order_list_transporting",
-        "pages/order/order_list_delivered"
+        "pages/order/order_list_delivered",
+        "pages/order/order_wait_transport"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",

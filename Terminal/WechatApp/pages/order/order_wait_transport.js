@@ -1,4 +1,4 @@
-// pages/order/order_list_packed.js
+// pages/order/order_wait_transport.js
 Page({
 
     /**

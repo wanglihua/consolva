@@ -5,8 +5,7 @@ namespace shunda.Domain;
 /// <summary>
 /// 网站错误类型
 /// </summary>
-public class SiteErrorType : CodeTypeBase
-{
+public class SiteErrorType : CodeTypeBase {
     /// <summary>
     /// 短信发送
     /// </summary>
@@ -35,38 +34,30 @@ public class SiteErrorType : CodeTypeBase
 
     private static Dictionary<int, SiteErrorType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static SiteErrorType GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out SiteErrorType? codeType))
-        {
+    public static SiteErrorType GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out SiteErrorType? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<SiteErrorType> GetList()
-    {
+    public static IList<SiteErrorType> GetList() {
         return codeTypeList.ToList();
     }
 
-    private SiteErrorType(int id, string name, string description) : base(id, name, description)
-    {
+    private SiteErrorType(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class SiteErrorTypeHibernateType : CodeHibernateTypeBase<SiteErrorType>
-{
-    protected override SiteErrorType GetCodeTypeById(int id)
-    {
+public class SiteErrorTypeHibernateType : CodeHibernateTypeBase<SiteErrorType> {
+    protected override SiteErrorType GetCodeTypeById(int id) {
         return SiteErrorType.GetById(id);
     }
 }
 
-public class SiteErrorTypeModelBinder : CodeTypeModelBinderBase<SiteErrorType>
-{
-    protected override SiteErrorType GetCodeTypeById(int id)
-    {
+public class SiteErrorTypeModelBinder : CodeTypeModelBinderBase<SiteErrorType> {
+    protected override SiteErrorType GetCodeTypeById(int id) {
         return SiteErrorType.GetById(id);
     }
 }
