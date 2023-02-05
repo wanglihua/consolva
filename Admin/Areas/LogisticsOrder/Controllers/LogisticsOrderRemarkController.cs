@@ -112,12 +112,8 @@ public class LogisticsOrderRemarkController : Controller {
     public IActionResult OrderRemarkList(int orderId) {
         int loginUserId = loginUserService.GetLoginUserId();
 
-        LogisticsOrderRemarkListModel model = new LogisticsOrderRemarkListModel {
+        var model = new LogisticsOrderRemarkListModel {
             OrderId = orderId,
-            OrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId),
-            ExpressRemarkList = expressRemarkService.GetOrderExpressRemarkList(orderId),
-
-            CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),
         };
 
         return View("LogisticsOrderRemarkList", model);

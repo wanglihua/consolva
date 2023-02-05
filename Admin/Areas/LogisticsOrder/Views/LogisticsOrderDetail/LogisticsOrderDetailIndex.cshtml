@@ -284,7 +284,7 @@
                         <div id="panelRemark" style="display: none;">
                             <div class="row">
                                 <div id="orderRemarkListWrapper">
-                                    @Html.Action("OrderRemarkList", "LogisticsOrderRemark", "LogisticsOrder", new { orderId = Model.Order.Id })
+                                    @(await Component.InvokeAsync("LogisticsOrderRemarkList", new { orderId = Model.Order.Id }))
                                 </div>
                             </div>
                         </div>
