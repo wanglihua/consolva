@@ -88,6 +88,7 @@ public class Program {
 
         services.AddHttpClient();
 
+        // 这个可以保证 Html.Action() 的正确执行
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 

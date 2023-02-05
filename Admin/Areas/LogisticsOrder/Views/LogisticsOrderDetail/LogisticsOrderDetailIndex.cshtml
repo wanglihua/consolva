@@ -727,7 +727,7 @@
                                         url: "@Url.Action("List", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder"})",
                                         type: "POST",
                                         data: {
-                                            "orderId": "@(Model.Order?.Id ?? 0)"
+                                            "orderId": "@(Model.Order.Id)"
                                         },
                                         success: function(data) {
                                             hideMask();
