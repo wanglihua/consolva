@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using NHibernate.Linq;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailFee;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
-using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Fee;

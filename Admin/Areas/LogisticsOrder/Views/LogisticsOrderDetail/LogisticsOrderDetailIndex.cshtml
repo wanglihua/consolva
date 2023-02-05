@@ -706,7 +706,7 @@
                         <div id="panelPack" style="display: none;">
 
                             <div id="packListWrapper">
-                                @Html.Action("List", "LogisticsOrderDetailOrderPack", "LogisticsOrder", new { orderId = Model.Order.Id })
+                                @await Component.InvokeAsync("LogisticsOrderDetailOrderPackList", new { orderId = Model.Order.Id }) )
                             </div>
 
                             <script type="text/javascript">
