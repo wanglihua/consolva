@@ -26,6 +26,7 @@ namespace shunda.Core.Web;
 public static class HtmlHelperViewExtensions {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
+    // 这个页面编译不成功
     public static IHtmlContent Action<TController>(this IHtmlHelper helper, Expression<Action<TController>> action, string areaName) where TController : Controller {
         var controllerName = GetControllerName(typeof(TController));
         var methodCallExpression = GetMethodCallExpression(action);
@@ -70,6 +71,7 @@ public static class HtmlHelperViewExtensions {
     }
     */
 
+    // 这个的问题是，调用这个时也会运行Filter等的进行权限验证等等的，所以还不如用 View Compoent 来替代
     public static IHtmlContent Action(this IHtmlHelper helper, string action, string controller, string area, object parameters = null) {
         if (action == null) {
             throw new ArgumentNullException("action");
@@ -78,7 +80,6 @@ public static class HtmlHelperViewExtensions {
         if (controller == null) {
             throw new ArgumentNullException("controller");
         }
-
 
         var task = RenderActionAsync(helper, action, controller, area, parameters);
 
