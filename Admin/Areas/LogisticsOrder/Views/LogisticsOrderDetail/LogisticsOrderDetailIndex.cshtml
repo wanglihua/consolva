@@ -13,7 +13,7 @@
     Layout = "_AdminLayout";
 
     var orderRemarkListModel = new LogisticsOrderRemarkListModel {
-        OrderId = Model.LogisticsOrder.Id,
+        OrderId = Model.Order.Id,
         OrderRemarkList = Model.OrderRemarkList,
         ExpressRemarkList = Model.ExpressRemarkList,
         CanOrderRemarkEdit = Model.CanOrderRemarkEdit
@@ -34,7 +34,7 @@
     @if (Model.MenuType == OrderListMenuType.Cancel) {
         <li class="active" data-menu="logistics-order-order-list-cancel-menu">作废订单</li>
     }
-    <li>@(Model.LogisticsOrder.Code)</li>
+    <li>@(Model.Order.Code)</li>
     <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
@@ -77,52 +77,52 @@
                             <div style="clear: both;"></div>
                         </div>
                         <div id="panelBaseInfo" style="display: none;">
-                            <input asp-for="LogisticsOrder.Id" type="hidden"/>
+                            <input asp-for="Order.Id" type="hidden"/>
                             <div class="row">
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.Code" class="col-xs-4 control-label">订单编号</label>
+                                        <label asp-for="Order.Code" class="col-xs-4 control-label">订单编号</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.Code" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.Code" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.Country.Name" class="col-xs-4 control-label">国家</label>
+                                        <label asp-for="Order.Country.Name" class="col-xs-4 control-label">国家</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.Country.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.Country.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.GoodsType.Name" class="col-xs-4 control-label">物品类型</label>
+                                        <label asp-for="Order.GoodsType.Name" class="col-xs-4 control-label">物品类型</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.GoodsType.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.GoodsType.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.CreateMethod.Name" class="col-xs-4 control-label">创建方式</label>
+                                        <label asp-for="Order.CreateMethod.Name" class="col-xs-4 control-label">创建方式</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.CreateMethod.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.CreateMethod.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.CustomerCode" class="col-xs-4 control-label">客户</label>
+                                        <label asp-for="Order.CustomerCode" class="col-xs-4 control-label">客户</label>
                                         <div class="col-xs-8">
-                                            <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(Model.LogisticsOrder.Customer.Id)" target="_blank" style="line-height: 28px;">@(Model.LogisticsOrder.CustomerCode)</a>
-                                            @if (string.IsNullOrWhiteSpace(Model.LogisticsOrder.Customer.CustomerCharacter) == false) {
-                                                <span>(@(Model.LogisticsOrder.Customer.CustomerCharacter))</span>
+                                            <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(Model.Order.Customer.Id)" target="_blank" style="line-height: 28px;">@(Model.Order.CustomerCode)</a>
+                                            @if (string.IsNullOrWhiteSpace(Model.Order.Customer.CustomerCharacter) == false) {
+                                                <span>(@(Model.Order.Customer.CustomerCharacter))</span>
                                             }
                                         </div>
                                     </div>
@@ -130,18 +130,18 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.OrderStatus" class="col-xs-4 control-label">订单状态</label>
+                                        <label asp-for="Order.OrderStatus" class="col-xs-4 control-label">订单状态</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.OrderStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.OrderStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.PayStatus" class="col-xs-4 control-label">支付状态</label>
+                                        <label asp-for="Order.PayStatus" class="col-xs-4 control-label">支付状态</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.PayStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.PayStatus.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -150,17 +150,17 @@
                                     <div class="form-group">
                                         <label for="logisticsOrderPayType" class="col-xs-4 control-label">支付方式</label>
                                         <div class="col-xs-8">
-                                            <input id="logisticsOrderPayType" name="LogisticsOrder.PayType" type="text" value="@(Model.LogisticsOrder.PayType?.Name)" disabled="disabled" class="input-sm form-control"/>
+                                            <input id="logisticsOrderPayType" name="LogisticsOrder.PayType" type="text" value="@(Model.Order.PayType?.Name)" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.GoodsValue" class="col-xs-4 control-label">商品总价</label>
+                                        <label asp-for="Order.GoodsValue" class="col-xs-4 control-label">商品总价</label>
                                         <div class="col-xs-8">
                                             <div class="input-group">
-                                                <input asp-for="LogisticsOrder.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="Order.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
                                                 <span class="input-group-addon">RMB</span>
                                             </div>
                                         </div>
@@ -169,10 +169,10 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.OrderAmount" class="col-xs-4 control-label">订单总额</label>
+                                        <label asp-for="Order.OrderAmount" class="col-xs-4 control-label">订单总额</label>
                                         <div class="col-xs-8">
                                             <div class="input-group">
-                                                <input asp-for="LogisticsOrder.OrderAmount" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="Order.OrderAmount" type="text" disabled="disabled" class="input-sm form-control"/>
                                                 <span class="input-group-addon">RMB</span>
                                             </div>
                                         </div>
@@ -181,10 +181,10 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.PaidAmount" class="col-xs-4 control-label">支付金额</label>
+                                        <label asp-for="Order.PaidAmount" class="col-xs-4 control-label">支付金额</label>
                                         <div class="col-xs-8">
                                             <div class="input-group">
-                                                <input asp-for="LogisticsOrder.PaidAmount" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input asp-for="Order.PaidAmount" type="text" disabled="disabled" class="input-sm form-control"/>
                                                 <span class="input-group-addon">RMB</span>
                                             </div>
                                         </div>
@@ -193,81 +193,81 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.CreateTime" class="col-xs-4 control-label">创建时间</label>
+                                        <label asp-for="Order.CreateTime" class="col-xs-4 control-label">创建时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.CreateTime" value="@(Model.LogisticsOrder.CreateTime.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.CreateTime" value="@(Model.Order.CreateTime.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.PayTime" class="col-xs-4 control-label">支付时间</label>
+                                        <label asp-for="Order.PayTime" class="col-xs-4 control-label">支付时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.PayTime" value="@(Model.LogisticsOrder.PayTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.PayTime" value="@(Model.Order.PayTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.SubmitPackTime" class="col-xs-4 control-label">提交打包时间</label>
+                                        <label asp-for="Order.SubmitPackTime" class="col-xs-4 control-label">提交打包时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.SubmitPackTime" value="@(Model.LogisticsOrder.SubmitPackTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.SubmitPackTime" value="@(Model.Order.SubmitPackTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.CompletePackTime" class="col-xs-4 control-label">完成打包时间</label>
+                                        <label asp-for="Order.CompletePackTime" class="col-xs-4 control-label">完成打包时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.CompletePackTime" value="@(Model.LogisticsOrder.CompletePackTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.CompletePackTime" value="@(Model.Order.CompletePackTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.TransferTime" class="col-xs-4 control-label">转运时间</label>
+                                        <label asp-for="Order.TransferTime" class="col-xs-4 control-label">转运时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.TransferTime" value="@(Model.LogisticsOrder.TransferTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.TransferTime" value="@(Model.Order.TransferTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.DeliverTime" class="col-xs-4 control-label">签收时间</label>
+                                        <label asp-for="Order.DeliverTime" class="col-xs-4 control-label">签收时间</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.DeliverTime" value="@(Model.LogisticsOrder.DeliverTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.DeliverTime" value="@(Model.Order.DeliverTime?.ToString("yyyy-MM-dd HH:mm"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.RepackType" class="col-xs-4 control-label">打包方式</label>
+                                        <label asp-for="Order.RepackType" class="col-xs-4 control-label">打包方式</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.RepackType" type="text" disabled="disabled" class="input-sm form-control" value="@Model.LogisticsOrder.RepackType.Name"/>
+                                            <input asp-for="Order.RepackType" type="text" disabled="disabled" class="input-sm form-control" value="@Model.Order.RepackType.Name"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-6">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.Insurance" class="col-xs-2 control-label">保险</label>
+                                        <label asp-for="Order.Insurance" class="col-xs-2 control-label">保险</label>
                                         <div class="col-xs-10">
-                                            <input asp-for="LogisticsOrder.Insurance.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.Insurance.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-12">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.Gst" class="col-xs-1 control-label">纳税申报</label>
+                                        <label asp-for="Order.Gst" class="col-xs-1 control-label">纳税申报</label>
                                         <div class="col-xs-11">
-                                            <input asp-for="LogisticsOrder.Gst.Name" type="text" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.Gst.Name" type="text" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -318,27 +318,27 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.Country" class="col-xs-4 control-label">目的国家</label>
+                                        <label asp-for="Order.Country" class="col-xs-4 control-label">目的国家</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.Country" type="text" value="@(Model.LogisticsOrder.Country.Name)" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.Country" type="text" value="@(Model.Order.Country.Name)" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.Warehouse" class="col-xs-4 control-label">收货仓库</label>
+                                        <label asp-for="Order.Warehouse" class="col-xs-4 control-label">收货仓库</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.Warehouse" type="text" value="@(Model.LogisticsOrder.Warehouse.Name)" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.Warehouse" type="text" value="@(Model.Order.Warehouse.Name)" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.FirstModeType" class="col-xs-4 control-label">头程物流类型</label>
+                                        <label asp-for="Order.FirstModeType" class="col-xs-4 control-label">头程物流类型</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="LogisticsOrder.FirstModeType" type="text" value="@(Model.LogisticsOrder.FirstModeType.Name)" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.FirstModeType" type="text" value="@(Model.Order.FirstModeType.Name)" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -347,16 +347,16 @@
                                     <div class="form-group">
                                         <label for="LogisticsOrder.FirstMode.Code" class="col-xs-2 control-label">头程物流编号</label>
                                         <div class="col-xs-10">
-                                            <input id="LogisticsOrder.FirstMode.Code" type="text" value="@(Model.LogisticsOrder.FirstMode.Code)" disabled="disabled" class="input-sm form-control"/>
+                                            <input id="LogisticsOrder.FirstMode.Code" type="text" value="@(Model.Order.FirstMode.Code)" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-6">
                                     <div class="form-group">
-                                        <label asp-for="LogisticsOrder.FirstMode" class="col-xs-2 control-label">头程物流方式</label>
+                                        <label asp-for="Order.FirstMode" class="col-xs-2 control-label">头程物流方式</label>
                                         <div class="col-xs-10">
-                                            <input asp-for="LogisticsOrder.FirstMode" type="text" value="@(Model.LogisticsOrder.FirstMode.Name)" disabled="disabled" class="input-sm form-control"/>
+                                            <input asp-for="Order.FirstMode" type="text" value="@(Model.Order.FirstMode.Name)" disabled="disabled" class="input-sm form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -716,7 +716,7 @@
                         <div id="panelPack" style="display: none;">
 
                             <div id="packListWrapper">
-                                @Html.Partial("~/Areas/LogisticsOrder/Views/LogisticsOrderDetailOrderPack/LogisticsOrderDetailPackList.cshtml", new LogisticsOrderDetailOrderPackListModel() { OrderFirstModeList = Model.OrderFirstModeList, OrderPackData = null, HasModifyOrderPackDataPass = false})
+                                @Html.Action("List", "LogisticsOrderDetailOrderPack", "LogisticsOrder", new { orderId = Model.Order.Id })
                             </div>
 
                             <script type="text/javascript">
@@ -724,10 +724,10 @@
                                 function loadOrderPackList() {
                                     showMask("数据加载中，请稍候");
                                     $.ajax({
-                                        url: "@Url.Action("PackList", "LogisticsOrderDetailPack", new { Area = "LogisticsOrder"})",
+                                        url: "@Url.Action("List", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder"})",
                                         type: "POST",
                                         data: {
-                                            "orderId": "@(Model.LogisticsOrder?.Id ?? 0)"
+                                            "orderId": "@(Model.Order?.Id ?? 0)"
                                         },
                                         success: function(data) {
                                             hideMask();
@@ -748,7 +748,7 @@
                                     showMask("加载中...");
                             
                                     $.ajax({
-                                        url: '@Url.Action("ShowPackDetail", "LogisticsOrder")',
+                                        url: "@Url.Action("ShowDetail", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder"})",
                                         type: "POST",
                                         data: { "orderPackId": id },
                                         success: function(data) {
@@ -773,7 +773,7 @@
                                         showMask("提交中...");
                                         
                                         $.ajax({
-                                            url: '@Url.Action("SavePackDetail", "LogisticsOrder")',
+                                           url: "@Url.Action("SavePack", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder"})",
                                             type: "POST",
                                             data: form.serialize(),
                                             success: function(data) {
@@ -948,7 +948,7 @@
                                                 url: "@Url.Action("ReCalculateOrderFee", "LogisticsOrderDetailFee", new { Area = "LogisticsOrder" })",
                                                 type: "POST",
                                                 data: {
-                                                    'orderId': @(Model.LogisticsOrder.Id)
+                                                    'orderId': @(Model.Order.Id)
                                                 },
                                                 success: function(data) {
                                                     hideMask();
@@ -974,7 +974,7 @@
                                             url: "@Url.Action("FeeList", "LogisticsOrderDetailFee", new { Area = "LogisticsOrder" })",
                                             type: "POST",
                                             data: {
-                                                'orderId': @(Model.LogisticsOrder.Id)
+                                                'orderId': @(Model.Order.Id)
                                             },
                                             success: function(data) {
                                                 hideMask();
@@ -995,7 +995,7 @@
                             </div>
 
                             <div id="orderFeeListWrapper">
-                                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderDetailFee/LogisticsOrderDetailFeeList.cshtml" model="new LogisticsOrderDetailFeeListModel { Order = Model.LogisticsOrder, OrderFirstModeList = Model.OrderFirstModeList, OrderFeeList = Model.OrderFeeList }" />
+                                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderDetailFee/LogisticsOrderDetailFeeList.cshtml" model="new LogisticsOrderDetailFeeListModel { Order = Model.Order, OrderFirstModeList = Model.OrderFirstModeList, OrderFeeList = Model.OrderFeeList }" />
                             </div>
                         </div>
                     </div>

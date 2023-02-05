@@ -171,7 +171,7 @@ public class LogisticsOrderDetailController : Controller {
 
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
-            LogisticsOrder = order,
+            Order = order,
             OrderRemarkList = orderRemarkList,
             ExpressRemarkList = expressRemarkList,
             ReceiveAddress = receiveAddress,

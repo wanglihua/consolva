@@ -11,7 +11,7 @@ public class LogisticsOrderDetailIndexModel {
     public OrderListMenuType MenuType { get; set; }
 
     [BindNever]
-    public LogisticsOrderInfo LogisticsOrder { get; set; } = new();
+    public LogisticsOrderInfo Order { get; set; } = new();
 
     [BindNever]
     public IList<LogisticsOrderRemarkInfo> OrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();

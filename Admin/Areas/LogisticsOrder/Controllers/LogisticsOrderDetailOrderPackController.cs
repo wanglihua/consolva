@@ -41,9 +41,9 @@ public class LogisticsOrderDetailOrderPackController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/detail/order/pack/list")]
     public IActionResult List(int orderId) {
-        LogisticsOrderInfo logisticsOrder = session.Get<LogisticsOrderInfo>(orderId);
-        if (logisticsOrder == null) {
-            throw new ValidationException($"指定的订单 #{orderId} 不存在！");
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
         // 订单头程物流，打包信息，箱号
@@ -99,9 +99,18 @@ public class LogisticsOrderDetailOrderPackController : Controller {
                 .ToList();
         }
 
+        // 打包汇总信息记录
+        var orderPackData = session.Query<LogisticsOrderPackDataInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .SingleOrDefault();
+        if (orderPackData == null) {
+            throw new ValidationException($"指定的订单{order.Code}打包汇总数据不存在！");
+        }
+
         int loginUserId = loginUserService.GetLoginUserId();
         var model = new LogisticsOrderDetailOrderPackListModel {
             OrderFirstModeList = orderFirstModeList,
+            OrderPackData = orderPackData,
             HasModifyOrderPackDataPass = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderPackDataModify)
         };
 
@@ -129,7 +138,7 @@ public class LogisticsOrderDetailOrderPackController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/detail/save/order/pack")]
     [AdminAuth(PassRes.LogisticsOrder.OrderPackDataModify)]
-    public IActionResult SavePackDetail(LogisticsOrderDetailOrderPackSavelModel model) {
+    public IActionResult SavePack(LogisticsOrderDetailOrderPackSavelModel model) {
         ValidationUtil.Validate<LogisticsOrderDetailOrderPackSavelModelValidator, LogisticsOrderDetailOrderPackSavelModel>(model);
 
         if (model.Width <= 0 || model.Length <= 0 || model.Height <= 0 || model.Weight <= 0) {
