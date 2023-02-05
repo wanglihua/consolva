@@ -1,0 +1,35 @@
+using Newtonsoft.Json;
+
+namespace shunda.Client.Areas.OrderCreate.Models.FreightEstimateSummary;
+
+public class FreightEstimateSummaryModel {
+    [JsonProperty("goodsList")]
+    public IList<FreightEstimateSummaryGoodsListItem> GoodsList = new List<FreightEstimateSummaryGoodsListItem>();
+
+    [JsonProperty("goodsType")]
+    public string GoodsType { get; set; } = string.Empty;
+
+    [JsonProperty("goodsValue")]
+    public string GoodsValue { get; set; } = string.Empty;
+
+    [JsonProperty("totalPackageCount")]
+    public int TotalPackageCount { get; set; }
+
+    [JsonProperty("receiveAddress")]
+    public FreightEstimateSummaryAddressReceiveItem ReceiveAddress { get; set; } = new();
+
+    [JsonProperty("firstMode")]
+    public FreightEstimateSummaryFirstModeItem FirstMode { get; set; } = new();
+
+    [JsonProperty("firstModeFee")]
+    public string FirstModeFee { get; set; } = string.Empty;
+
+    [JsonProperty("firstModeFeeList")]
+    public IList<FreightEstimateSummaryFeeListItem> FirstModeFeeList { get; set; } = new List<FreightEstimateSummaryFeeListItem>();
+
+    [JsonProperty("gstFee")]
+    public string GstFee { get; set; } = string.Empty;
+
+    [JsonProperty("totalFee")]
+    public string TotalFee { get; set; } = string.Empty;
+}
