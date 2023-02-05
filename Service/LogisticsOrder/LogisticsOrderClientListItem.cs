@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Order.Models.OrderList;
+namespace shunda.Service.LogisticsOrder; 
 
-public class OrderListItem {
+public class LogisticsOrderClientListItem {
     [JsonProperty("id")]
     public int Id { get; set; }
 
