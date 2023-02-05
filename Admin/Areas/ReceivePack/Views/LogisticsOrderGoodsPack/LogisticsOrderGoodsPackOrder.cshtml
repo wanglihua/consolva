@@ -224,7 +224,7 @@
 
         <div id="orderRemark" style="border-top: 1px solid lightgray; margin-top: 30px; padding-top: 20px; padding-bottom: 30px; ">
             <div id="orderRemarkListWrapper">
-                @Html.Action("OrderRemarkList", "LogisticsOrderRemark", "LogisticsOrder", new { orderId = Model.Order.Id })
+                @(await Component.InvokeAsync("LogisticsOrderRemarkList", new { orderId = Model.Order.Id }))
             </div>
         </div>
     </div>
