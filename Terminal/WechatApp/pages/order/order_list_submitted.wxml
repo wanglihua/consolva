@@ -1,2 +1,5 @@
 <!--pages/order/order_list_submitted.wxml-->
-<text>pages/order/order_list_submitted.wxml</text>
+<header/>
+<view class="container">
+    <van-cell-group title="待打包"/>
+</view>

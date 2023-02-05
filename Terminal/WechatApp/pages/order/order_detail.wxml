@@ -1,2 +1,5 @@
 <!--pages/order/order_detail.wxml-->
-<text>pages/order/order_detail.wxml</text>
+<header/>
+<view class="container">
+    <van-cell-group title="订单详细"/>
+</view>

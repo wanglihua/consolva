@@ -1,0 +1,5 @@
+<!--pages/order/order_wait_transport.wxml-->
+<header/>
+<view class="container">
+    <van-cell-group title="待转运"/>
+</view>

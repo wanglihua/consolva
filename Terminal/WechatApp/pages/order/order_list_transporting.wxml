@@ -1,2 +1,5 @@
 <!--pages/order/order_list_transporting.wxml-->
-<text>pages/order/order_list_transporting.wxml</text>
+<header/>
+<view class="container">
+    <van-cell-group title="转运中"/>
+</view>

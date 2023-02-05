@@ -50,7 +50,7 @@
         "pages/order/order_detail",
         "pages/order/order_list_submitted",
         "pages/order/order_list_pay",
-        "pages/order/order_wait_transport",
+        "pages/order/order_list_wait_transport",
         "pages/order/order_list_transporting",
         "pages/order/order_list_delivered"
     ],

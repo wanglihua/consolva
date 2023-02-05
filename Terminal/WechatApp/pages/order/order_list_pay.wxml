@@ -1,2 +1,5 @@
 <!--pages/order/order_list_pay.wxml-->
-<text>pages/order/order_list_pay.wxml</text>
+<header/>
+<view class="container">
+    <van-cell-group title="待支付"/>
+</view>
