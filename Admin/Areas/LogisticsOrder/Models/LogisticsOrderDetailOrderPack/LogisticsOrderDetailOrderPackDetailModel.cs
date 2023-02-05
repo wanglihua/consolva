@@ -1,0 +1,4 @@
+namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailOrderPack;
+
+public class LogisticsOrderDetailOrderPackDetailModel : LogisticsOrderDetailOrderPackSavelModel {
+}

@@ -3,7 +3,7 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailOrderPack;
 
-public class LogisticsOrderDetailPackListModel {
+public class LogisticsOrderDetailOrderPackListModel {
     [BindNever]
     public IList<LogisticsOrderFirstModeInfo> OrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeInfo>();
 
