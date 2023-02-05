@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace shunda.Admin.Areas.Setting;
 
-public class SettingAreaAttribute : AreaAttribute
-{
-    public static readonly string Name = "Setting";
+public class SettingArea {
+    public static string Name => "Setting";
+}
 
-    public SettingAreaAttribute() : base(Name)
-    {
+public class SettingAreaAttribute : AreaAttribute {
+    public SettingAreaAttribute() : base(SettingArea.Name) {
     }
 }

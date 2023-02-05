@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace shunda.Admin.Areas.Pass;
 
-public class PassAreaAttribute : AreaAttribute
-{
-    public static readonly string Name = "Pass";
+public class PassArea {
+    public static string Name => "Pass";
+}
 
-    public PassAreaAttribute() : base(Name)
-    {
+public class PassAreaAttribute : AreaAttribute {
+    public PassAreaAttribute() : base(PassArea.Name) {
     }
 }

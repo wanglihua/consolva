@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace shunda.Admin.Areas.Storage;
 
-public class StorageAreaAttribute : AreaAttribute
-{
-    public static readonly string Name = "Storage";
+public class StorageArea {
+    public static string Name => "Storage";
+}
 
-    public StorageAreaAttribute() : base(Name)
-    {
+public class StorageAreaAttribute : AreaAttribute {
+    public StorageAreaAttribute() : base(StorageArea.Name) {
     }
 }

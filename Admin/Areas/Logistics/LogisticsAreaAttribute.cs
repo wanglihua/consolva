@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace shunda.Admin.Areas.Logistics;
 
-public class LogisticsAreaAttribute : AreaAttribute
-{
-    public static readonly string Name = "Logistics";
+public class LogisticsArea {
+    public static string Name => "Logistics";
+}
 
-    public LogisticsAreaAttribute() : base(Name)
-    {
+public class LogisticsAreaAttribute : AreaAttribute {
+    public LogisticsAreaAttribute() : base(LogisticsArea.Name) {
     }
 }
