@@ -101,7 +101,8 @@ public class LogisticsOrderFeeService {
         if (superVipDiscount != null) {
             decimal discount = -firstModeFee * superVipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
-                // OrderFirstMode LogisticsMode 这里不用设置
+                OrderFirstMode = null,
+                LogisticsMode = null,
                 Title = LogisticsOrderFeeType.SuperVipDiscount.Name,
                 Fee = discount,
                 GoodsType = LogisticsGoodsType.None,
@@ -111,7 +112,8 @@ public class LogisticsOrderFeeService {
         } else if (vipDiscount != null) {
             decimal discount = -firstModeFee * vipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
-                // OrderFirstMode LogisticsMode 这里不用设置
+                OrderFirstMode = null,
+                LogisticsMode = null,
                 Title = LogisticsOrderFeeType.VipDiscount.Name,
                 Fee = discount,
                 GoodsType = LogisticsGoodsType.None,
@@ -146,7 +148,8 @@ public class LogisticsOrderFeeService {
                 decimal couponDiscount = couponDiscountResult.Discount;
 
                 orderResultEntryList.Add(new LogisticsFeeResultEntry() {
-                    // OrderFirstMode LogisticsMode 这里不用设置
+                    OrderFirstMode = null,
+                    LogisticsMode = null,
                     Title = $"{LogisticsOrderFeeType.CouponDiscountFee.Name},{coupon.Code}",
                     Fee = -couponDiscount, // 负的费用
                     GoodsType = LogisticsGoodsType.None,
@@ -170,7 +173,8 @@ public class LogisticsOrderFeeService {
         decimal insuranceFee = logisticsFeeInsuranceService.GetInsuranceFee(order.GoodsValue, totalLogisticsFee, order.Insurance.Id);
 
         orderResultEntryList.Add(new LogisticsFeeResultEntry() {
-            // OrderFirstMode LogisticsMode 这里不用设置
+            OrderFirstMode = null,
+            LogisticsMode = null,
             Title = LogisticsOrderFeeType.InsuranceFee.Name,
             Fee = insuranceFee,
             GoodsType = LogisticsGoodsType.None,
@@ -185,7 +189,8 @@ public class LogisticsOrderFeeService {
         decimal gstFee = logisticsFeeGstService.GetGstFee(order.GoodsValue, totalLogisticsFee, order.Gst.Id);
 
         orderResultEntryList.Add(new LogisticsFeeResultEntry() {
-            // OrderFirstMode LogisticsMode 这里不用设置
+            OrderFirstMode = null,
+            LogisticsMode = null,
             Title = LogisticsOrderFeeType.GstFee.Name,
             Fee = gstFee,
             GoodsType = LogisticsGoodsType.None,
@@ -345,6 +350,7 @@ public class LogisticsOrderFeeService {
                     Customer = order.Customer,
                     Order = order,
                     OrderCode = order.Code,
+                    OrderFirstMode = resultEntry.OrderFirstMode,
                     GoodsType = resultEntry.GoodsType,
                     Type = resultEntry.FeeType,
                     Fee = resultEntry.Fee,

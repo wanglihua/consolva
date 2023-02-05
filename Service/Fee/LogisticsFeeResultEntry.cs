@@ -12,12 +12,12 @@ public class LogisticsFeeResultEntry {
     /// 订单头程物流方式记录
     /// 订单计费时才需要这个，其他时候不需要
     /// </summary>
-    public LogisticsOrderFirstModeInfo OrderFirstMode { get; set; } = new();
+    public LogisticsOrderFirstModeInfo? OrderFirstMode { get; set; }
 
     /// <summary>
     /// 物流方式
     /// </summary>
-    public LogisticsModeInfo LogisticsMode { get; set; } = new();
+    public LogisticsModeInfo? LogisticsMode { get; set; }
 
     /// <summary>
     /// 费用标题
