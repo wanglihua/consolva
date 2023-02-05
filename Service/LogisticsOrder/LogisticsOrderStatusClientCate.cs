@@ -2,6 +2,9 @@ using shunda.Core.CodeType;
 
 namespace shunda.Service.LogisticsOrder;
 
+/// <summary>
+/// 订单列表客户端分类
+/// </summary>
 public class LogisticsOrderStatusClientCate : CodeTypeBase {
     /// <summary>
     /// 1000, 待支付
