@@ -156,12 +156,6 @@ public class LogisticsOrderDetailController : Controller {
                 .ToList();
         }
 
-        // 订单费用
-        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .OrderBy(e => e.Id)
-            .ToList();
-
         // 订单操作日志
         var orderActionList = session.Query<LogisticsOrderActionInfo>()
             .Fetch(e => e.User)
@@ -179,7 +173,6 @@ public class LogisticsOrderDetailController : Controller {
             ExpressList = expressList,
             OrderFirstModeList = orderFirstModeList,
             OrderPackBoxList = orderPackBoxList,
-            OrderFeeList = orderFeeList,
             LogisticsOrderActionList = orderActionList,
 
             CanOrderRemarkEdit = passResService.UserHasOneOfPassRes(loginUserId, PassRes.LogisticsOrder.OrderRemarkEdit, PassRes.ReceivePack.OrderPack),

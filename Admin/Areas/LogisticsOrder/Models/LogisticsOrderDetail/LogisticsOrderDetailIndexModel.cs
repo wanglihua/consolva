@@ -38,9 +38,6 @@ public class LogisticsOrderDetailIndexModel {
     public IList<LogisticsOrderPackBoxInfo> OrderPackBoxList { get; set; } = new List<LogisticsOrderPackBoxInfo>();
 
     [BindNever]
-    public IList<LogisticsOrderFeeInfo> OrderFeeList { get; set; } = new List<LogisticsOrderFeeInfo>();
-
-    [BindNever]
     public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
 
     [BindNever]

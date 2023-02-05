@@ -49,7 +49,7 @@ public class LogisticsOrderDetailFeeController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/detail/fee/list")]
-    public IActionResult FeeList(int orderId) {
+    public IActionResult List(int orderId) {
         LogisticsOrderInfo logisticsOrder = session.Get<LogisticsOrderInfo>(orderId);
         if (logisticsOrder == null) {
             throw new ValidationException("指定的数据项不存在！");

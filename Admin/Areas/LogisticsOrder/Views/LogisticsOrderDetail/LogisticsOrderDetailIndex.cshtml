@@ -971,7 +971,7 @@
                                         showMask("数据加载中，请稍候");
                                 
                                         $.ajax({
-                                            url: "@Url.Action("FeeList", "LogisticsOrderDetailFee", new { Area = "LogisticsOrder" })",
+                                            url: "@Url.Action("List", "LogisticsOrderDetailFee", new { Area = "LogisticsOrder" })",
                                             type: "POST",
                                             data: {
                                                 'orderId': @(Model.Order.Id)
@@ -995,7 +995,7 @@
                             </div>
 
                             <div id="orderFeeListWrapper">
-                                <partial name="~/Areas/LogisticsOrder/Views/LogisticsOrderDetailFee/LogisticsOrderDetailFeeList.cshtml" model="new LogisticsOrderDetailFeeListModel { Order = Model.Order, OrderFirstModeList = Model.OrderFirstModeList, OrderFeeList = Model.OrderFeeList }" />
+                                @Html.Action("List", "LogisticsOrderDetailFee", "LogisticsOrder", new { orderId = Model.Order.Id })
                             </div>
                         </div>
                     </div>
