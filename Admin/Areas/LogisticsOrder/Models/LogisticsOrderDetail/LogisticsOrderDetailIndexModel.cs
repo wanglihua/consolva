@@ -28,12 +28,6 @@ public class LogisticsOrderDetailIndexModel {
     [BindNever]
     public IList<ExpressInfo> ExpressList { get; set; } = new List<ExpressInfo>();
 
-    /// <summary>
-    /// 这里同时包含有订单打包信息
-    /// </summary>
-    [BindNever]
-    public IList<LogisticsOrderFirstModeInfo> OrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeInfo>();
-
     [BindNever]
     public IList<LogisticsOrderPackBoxInfo> OrderPackBoxList { get; set; } = new List<LogisticsOrderPackBoxInfo>();
 

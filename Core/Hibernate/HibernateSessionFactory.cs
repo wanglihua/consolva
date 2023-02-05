@@ -85,7 +85,7 @@ public class HibernateSessionFactory {
 
         configuration.Cache(
             cfg => {
-                cfg.DefaultExpiration = 5; // 5 秒钟都够了，只要一次请求中，不重复查询数据就可以了
+                cfg.DefaultExpiration = 3; // 3 秒钟都够了，只要一次请求中，不重复查询数据就可以了
                 cfg.UseQueryCache = true;
                 cfg.Provider<RtMemoryCacheProvider>(); // 这里面已经相当于设置了 configuration.SetProperty(Environment.UseSecondLevelCache, "true");
             }

@@ -8,6 +8,9 @@ public class LogisticsOrderDetailFeeListModel {
     [BindNever]
     public LogisticsOrderInfo Order { get; set; } = new();
 
+    /// <summary>
+    /// 这里同时包含有订单打包信息
+    /// </summary>
     [BindNever]
     public IList<LogisticsOrderFirstModeInfo> OrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeInfo>();
 

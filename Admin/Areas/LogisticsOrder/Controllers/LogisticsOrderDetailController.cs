@@ -103,58 +103,11 @@ public class LogisticsOrderDetailController : Controller {
         // 订单商品
         var expressList = expressService.GetExpressListForOrderDetail(orderId);
 
-        // 订单头程物流，打包信息，箱号
-        IList<LogisticsOrderFirstModeInfo> orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .ToList();
-
-        IList<LogisticsOrderPackInfo> orderPackList = session.Query<LogisticsOrderPackInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .ToList();
-
-        var orderPackExpressList = session.Query<LogisticsOrderPackExpressInfo>()
-            .Fetch(e => e.Express)
-            .Where(e => e.Order.Id == orderId)
-            .ToList();
-
-        var expressIdList = orderPackExpressList.Select(e => e.Express.Id).ToList();
-        var expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Fetch(e => e.Goods)
-            .Where(e => expressIdList.Contains(e.Express.Id))
-            .ToList();
-
+        // 箱号
         IList<LogisticsOrderPackBoxInfo> orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
             .Where(e => e.Order.Id == orderId)
             .OrderBy(e => e.Id)
             .ToList();
-
-        foreach (var packBox in orderPackBoxList) {
-            packBox.CodeCache = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
-        }
-
-        foreach (var orderPack in orderPackList) {
-            int orderPackId = orderPack.Id;
-
-            var boxListOfPack = orderPackBoxList.Where(e => e.OrderPack.Id == orderPackId).OrderBy(e => e.Id).ToList();
-            orderPack.PackBoxCodeListCache = boxListOfPack.Select(e => e.CodeCache).ToList();
-
-            var orderPackExpressListOfPack = orderPackExpressList.Where(e => e.OrderPack.Id == orderPackId).ToList();
-            var expressListOfPack = orderPackExpressListOfPack.Select(e => e.Express).ToList();
-            orderPack.TrackingNoListCache = expressListOfPack.Select(e => e.TrackingNo).ToList();
-
-            var expressIdListOfPack = expressListOfPack.Select(e => e.Id).ToList();
-            var expressGoodsListOfPack = expressGoodsList.Where(e => expressIdListOfPack.Contains(e.Express.Id)).ToList();
-            orderPack.GoodsNameListCache = expressGoodsListOfPack.Select(e => e.Goods.Name).Distinct().ToList();
-        }
-
-        foreach (var orderFirstMode in orderFirstModeList) {
-            int orderFirstModeId = orderFirstMode.Id;
-
-            orderFirstMode.OrderPackListCache = orderPackList
-                .Where(e => e.OrderFirstMode.Id == orderFirstModeId)
-                .OrderBy(e => e.Id)
-                .ToList();
-        }
 
         // 订单操作日志
         var orderActionList = session.Query<LogisticsOrderActionInfo>()
@@ -171,7 +124,6 @@ public class LogisticsOrderDetailController : Controller {
             ReceiveAddress = receiveAddress,
             SendAddress = sendAddress,
             ExpressList = expressList,
-            OrderFirstModeList = orderFirstModeList,
             OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,
 
