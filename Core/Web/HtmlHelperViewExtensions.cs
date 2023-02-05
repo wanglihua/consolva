@@ -70,7 +70,7 @@ public static class HtmlHelperViewExtensions {
     }
     */
 
-    private static IHtmlContent Action(this IHtmlHelper helper, string action, string controller, string area, object parameters = null) {
+    public static IHtmlContent Action(this IHtmlHelper helper, string action, string controller, string area, object parameters = null) {
         if (action == null) {
             throw new ArgumentNullException("action");
         }
