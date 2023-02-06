@@ -1,4 +1,6 @@
 using shunda.Core.Service;
+using shunda.Core.Util;
+using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
@@ -6,12 +8,21 @@ namespace shunda.Service.LogisticsOrder;
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderClientListService {
     private readonly ISession session;
+
     public LogisticsOrderClientListService(ISession session) {
         this.session = session;
     }
-    
-    
-    
+
+    public IList<LogisticsOrderClientListItem> GetCustomerOrderList(LogisticsOrderClientListParam param) {
+        ValidationUtil.Validate<LogisticsOrderClientListParamServiceValidator, LogisticsOrderClientListParam>(param);
+
+        int customerId = param.CustomerId;
+        var query = session.Query<LogisticsOrderInfo>().Where(e => e.Customer.Id == customerId);
+
+        return query.Select(e => new LogisticsOrderClientListItem {
+            
+        }).ToList();
+    }
 }
 
 /*
