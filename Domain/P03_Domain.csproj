@@ -10,7 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.10" />
-        <PackageReference Include="MySql.Data" Version="8.0.31" />
+        <PackageReference Include="MySql.Data" Version="8.0.32" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="NHibernate" Version="5.3.14" />
         <PackageReference Include="NHibernate.Caches.RtMemoryCache" Version="5.7.0" />
