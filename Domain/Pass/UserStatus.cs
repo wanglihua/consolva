@@ -10,12 +10,12 @@ public class UserStatus : CodeTypeBase
     /// <summary>
     /// 正常状态, 100
     /// </summary>
-    public static readonly UserStatus Normal = new UserStatus(100, "正常", "正常");
+    public static readonly UserStatus Normal = new UserStatus(1000, "正常", "正常");
 
     /// <summary>
     /// 冻结状态, 200
     /// </summary>
-    public static readonly UserStatus Frozen = new UserStatus(200, "冻结", "冻结");
+    public static readonly UserStatus Frozen = new UserStatus(2000, "冻结", "冻结");
 
     /// <summary>
     /// None
