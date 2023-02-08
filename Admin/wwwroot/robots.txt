@@ -1,7 +1,7 @@
 # https://www.robotstxt.org/robotstxt.html
 # User-agent: *
-# Disallow: /client/
-# Disallow: /admin/
+Disallow: /client/
+Disallow: /admin/
 
 # 这个要修改的
-# Sitemap: http://hk.iepoch.store/sitemap.xml
+# Sitemap: http://hk.shudaquanqiu.com/sitemap.xml
