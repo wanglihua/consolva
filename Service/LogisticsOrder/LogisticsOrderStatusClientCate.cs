@@ -7,14 +7,14 @@ namespace shunda.Service.LogisticsOrder;
 /// </summary>
 public class LogisticsOrderStatusClientCate : CodeTypeBase {
     /// <summary>
-    /// 1000, 待支付
+    /// 1000, 待打包
     /// </summary>
-    public static readonly LogisticsOrderStatusClientCate Pay = new LogisticsOrderStatusClientCate(1000, "待支付", "待支付");
+    public static readonly LogisticsOrderStatusClientCate Submitted = new LogisticsOrderStatusClientCate(1000, "待打包", "待打包");
 
     /// <summary>
-    /// 2000, 待打包
+    /// 2000, 待支付
     /// </summary>
-    public static readonly LogisticsOrderStatusClientCate Submitted = new LogisticsOrderStatusClientCate(2000, "待打包", "待打包");
+    public static readonly LogisticsOrderStatusClientCate Pay = new LogisticsOrderStatusClientCate(2000, "待支付", "待支付");
 
     /// <summary>
     /// 3000, 待转运
@@ -37,8 +37,8 @@ public class LogisticsOrderStatusClientCate : CodeTypeBase {
     public static readonly LogisticsOrderStatusClientCate None = new LogisticsOrderStatusClientCate(0, "", "");
 
     private static readonly IReadOnlyList<LogisticsOrderStatusClientCate> codeTypeList = new List<LogisticsOrderStatusClientCate>() {
-        Pay,
         Submitted,
+        Pay,
         WaitingTransport,
         Transporting,
         Delivered,
