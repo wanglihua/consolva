@@ -1,5 +1,6 @@
 using NHibernate;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 
@@ -13,16 +14,65 @@ public class ExpressSizeWeightService {
         this.session = session;
     }
 
-    public void BindAndSum(int expressId) {
+    public IList<ExpressSizeWeightInfo> GetOrderSizeWeightList(int orderId) {
+        return session.Query<ExpressSizeWeightInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .OrderBy(e => e.Id)
+            .ToList();
+    }
+
+    public int GetTotalPackageCount(IList<ExpressSizeWeightInfo> sizeWeightList) {
+        if (sizeWeightList.Count == 0) {
+            return 0;
+        }
+
+        return sizeWeightList.Sum(e => e.PackageCount);
+    }
+
+    /// <summary>
+    /// 获取体积，单位是立方米 
+    /// </summary>
+    public decimal GetTotalVolume(IList<ExpressSizeWeightInfo> sizeWeightList) {
+        if (sizeWeightList.Count == 0) {
+            return 0;
+        }
+
+        return sizeWeightList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount) / 100_00_00;
+    }
+
+    /// <summary>
+    /// 获取体积重，单位是KG 
+    /// </summary>
+    public decimal GetTotalVolumeWeight(IList<ExpressSizeWeightInfo> sizeWeightList) {
+        if (sizeWeightList.Count == 0) {
+            return 0;
+        }
+
+        return sizeWeightList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount) / LogisticsConfig.VolumeWeightDenominator;
+    }
+
+    /// <summary>
+    /// 获取实际重，单位是KG 
+    /// </summary>
+    public decimal GetTotalActualWeight(IList<ExpressSizeWeightInfo> sizeWeightList) {
+        if (sizeWeightList.Count == 0) {
+            return 0;
+        }
+
+        return sizeWeightList.Sum(e => e.Weight * e.PackageCount);
+    }
+
+    /// <summary>
+    /// 绑定快递单并合计更新快递单合计
+    /// </summary>
+    /// <param name="expressId"></param>
+    /// <exception cref="ValidationException"></exception>
+    public void BindExpressByTrackingNo(int expressId) {
         ExpressInfo express = session.Get<ExpressInfo>(expressId);
         if (express == null) {
             throw new ValidationException($"指定的快递单#{expressId}不存在！");
         }
 
-        BindAndSum(express);
-    }
-
-    public void BindAndSum(ExpressInfo express) {
         // if (string.IsNullOrWhiteSpace(trackingNo))
         // {
         //     throw new ValidationException("绑定尺寸重量，快递单号不能为空！");
@@ -58,38 +108,6 @@ public class ExpressSizeWeightService {
 
         session.Update(express);
 
-        session.Flush();
-    }
-
-    /// <summary>
-    /// 汇总单个快递单号尺寸体积重量等
-    /// </summary>
-    /// <param name="expressId"></param>
-    public void SumDataAndUpdateExpress(int expressId) {
-        ExpressInfo express = session.Get<ExpressInfo>(expressId);
-        if (express == null) {
-            throw new ValidationException($"指定的快递单#{expressId}不存在！");
-        }
-
-        var sizeWeightList = session.Query<ExpressSizeWeightInfo>()
-            .Where(e => e.Express!.Id == expressId)
-            .ToList();
-
-        decimal totalVolume = 0m;
-        decimal totalWeight = 0m;
-        int packageCount = 0;
-
-        foreach (var sizeWeight in sizeWeightList) {
-            totalVolume += (sizeWeight.Length * sizeWeight.Width * sizeWeight.Height) * sizeWeight.PackageCount / 100_00_00;
-            totalWeight += sizeWeight.Weight * sizeWeight.PackageCount;
-            packageCount += sizeWeight.PackageCount;
-        }
-
-        express.TotalVolume = totalVolume;
-        express.TotalWeight = totalWeight;
-        express.PackageCount = packageCount; // 这样包裹数量就完全依赖于尺寸重量里面的数据了
-
-        session.Update(express);
         session.Flush();
     }
 }

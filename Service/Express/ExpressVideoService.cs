@@ -44,7 +44,7 @@ public class ExpressVideoService
     /// <summary>
     /// 绑定快递单号到视频，添加和更新快递单时调用
     /// </summary>
-    public void BindExpressVideo(int expressId)
+    public void BindExpressByTrackingNo(int expressId)
     {
         ExpressInfo? express = session.Get<ExpressInfo>(expressId);
         if (express == null)

@@ -141,7 +141,7 @@ public class ExpressPhotoService {
     /// 绑定快递单号到图片，添加和更新快递单时调用
     /// </summary>
     /// <param name="expressId"></param>
-    public void BindExpressPhoto(int expressId) {
+    public void BindExpressByTrackingNo(int expressId) {
         ExpressInfo? express = session.Get<ExpressInfo>(expressId);
         if (express == null) {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");

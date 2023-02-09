@@ -789,7 +789,7 @@ public class ExpressCheckinController : Controller {
                     expressLogService.UserLog(express.Id, ExpressLogType.CheckinEdit, logDesc, loginUserId);
                 }
 
-                expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
+                // 后面 已经调用了，这里就不用了 expressSizeWeightService.BindAndSum(express.Id);
 
                 expressCheckinService.SaveUserShelfSelect(loginUserId, model.ShelfId ?? 0, model.StorageLocSpecId ?? 0);
             });
@@ -814,9 +814,9 @@ public class ExpressCheckinController : Controller {
 
         Transactional.Wrap(session, () => {
             int expressId = express?.Id ?? 0;
-            expressSizeWeightService.BindAndSum(expressId);
-            expressPhotoService.BindExpressPhoto(expressId);
-            expressVideoService.BindExpressVideo(expressId);
+            expressSizeWeightService.BindExpressByTrackingNo(expressId);
+            expressPhotoService.BindExpressByTrackingNo(expressId);
+            expressVideoService.BindExpressByTrackingNo(expressId);
         });
 
         return Json(new Dictionary<string, object>() {
@@ -1207,7 +1207,8 @@ public class ExpressCheckinController : Controller {
             // 如果是已入库的快递单，就要更新包裹数量尺寸重量等
             if (express != null) {
                 // expressSizeWeightService.SumDataAndUpdateExpress(express.Id);
-                expressSizeWeightService.BindAndSum(express);
+                int expressId = express.Id;
+                expressSizeWeightService.BindExpressByTrackingNo(expressId);
             }
 
             session.Flush();

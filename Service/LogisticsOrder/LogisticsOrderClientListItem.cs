@@ -18,8 +18,6 @@ public class LogisticsOrderClientListItem {
     [JsonProperty("arearsAmount")]
     public string ArearsAmount { get; set; } = string.Empty;
 
-    // todo packed data
-
     #region checkin size weight data
 
     [JsonProperty("checkinTotalPackageCount")]
