@@ -31,12 +31,37 @@ public class LogisticsOrderClientListService {
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
         }
 
-        listQuery = listQuery
+        IList<LogisticsOrderInfo> orderList = listQuery
             .OrderByDescending(e => e.Id) // 按Id降序排序
-            .Take(15); // 每次下拉取15个
+            .Take(15) // 每次下拉取15个
+            .ToList();
 
-        return listQuery.Select(e => new LogisticsOrderClientListItem {
-        }).ToList();
+        IList<int> orderIdList = orderList.Select(e => e.Id).ToList();
+        IList<LogisticsOrderPackDataInfo> orderPackDataList = session.Query<LogisticsOrderPackDataInfo>()
+            .Where(e => orderIdList.Contains(e.Order.Id))
+            .ToList();
+
+        IList<LogisticsOrderClientListItem> orderItemList = new List<LogisticsOrderClientListItem>();
+        foreach (var order in orderList) {
+            int ordreId = order.Id;
+            var orderPackData = orderPackDataList
+                .Where(e => e.Order.Id == ordreId)
+                .Take(1)
+                .SingleOrDefault();
+
+            var orderItem = new LogisticsOrderClientListItem {
+                Id = order.Id,
+                OrderCode = order.Code,
+                OrderStatus = order.OrderStatus.Name,
+                GoodsValue = order.GoodsValue.ToString("#0.00"),
+                ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
+                TotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
+            };
+
+            orderItemList.Add(orderItem);
+        }
+
+        return orderItemList;
     }
 
     /// <summary>
@@ -86,4 +111,3 @@ public class LogisticsOrderClientListService {
         return query;
     }
 }
-Z

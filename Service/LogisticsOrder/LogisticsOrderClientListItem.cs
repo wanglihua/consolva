@@ -19,7 +19,7 @@ public class LogisticsOrderClientListItem {
     public string ArearsAmount { get; set; } = string.Empty;
 
     [JsonProperty("totalPackageCount")]
-    public int TotalPackageCount { get; set; }
+    public string TotalPackageCount { get; set; } = string.Empty;
 
     [JsonProperty("totalVolume")]
     public string TotalVolume { get; set; } = string.Empty;
