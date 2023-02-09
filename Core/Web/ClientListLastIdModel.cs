@@ -1,7 +1,6 @@
-namespace shunda.Client.Models;
+namespace shunda.Core.Web;
 
-public class ListLastIdModel
-{
+public class ClientListLastIdModel {
     /// <summary>
     /// 列表最后Id，被认为没有设置过值时的值
     /// </summary>

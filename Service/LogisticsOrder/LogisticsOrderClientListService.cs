@@ -1,5 +1,8 @@
 using shunda.Core.Service;
 using shunda.Core.Util;
+using shunda.Core.Web;
+using shunda.Domain.Express;
+using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
@@ -13,66 +16,74 @@ public class LogisticsOrderClientListService {
         this.session = session;
     }
 
+    /// <summary>
+    /// 获取客户端订单列表
+    /// </summary>
+    /// <returns>按订单id倒序排列的订单列表</returns>
     public IList<LogisticsOrderClientListItem> GetCustomerOrderList(LogisticsOrderClientListParam param) {
         ValidationUtil.Validate<LogisticsOrderClientListParamServiceValidator, LogisticsOrderClientListParam>(param);
 
+        var listQuery = GetListQuery(param);
+
+        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE) {
+            // 跟降序排序匹配
+            int lastIdQuery = param.LastId;
+            listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
+        }
+
+        listQuery = listQuery
+            .OrderByDescending(e => e.Id) // 按Id降序排序
+            .Take(15); // 每次下拉取15个
+
+        return listQuery.Select(e => new LogisticsOrderClientListItem {
+        }).ToList();
+    }
+
+    /// <summary>
+    /// 获取客户端订单列表订单数量
+    /// </summary>
+    public int GetCustomerOrderCount(LogisticsOrderClientListParam param) {
+        var listQuery = GetListQuery(param);
+        return listQuery.Count();
+    }
+
+    private IQueryable<LogisticsOrderInfo> GetListQuery(LogisticsOrderClientListParam param) {
         int customerId = param.CustomerId;
         var query = session.Query<LogisticsOrderInfo>().Where(e => e.Customer.Id == customerId);
 
-        return query.Select(e => new LogisticsOrderClientListItem {
-            
-        }).ToList();
+        if (string.IsNullOrWhiteSpace(param.Query) == false) {
+            string queryStr = param.Query.Trim();
+
+            var expressList = session.Query<ExpressInfo>()
+                .Where(e => e.Customer!.Id == customerId && e.Order != null && e.TrackingNo.Contains(queryStr))
+                .ToList();
+
+            var expressOrderIdList = expressList.Select(e => e.Order!.Id).Distinct().ToList();
+
+            query = query.Where(e => expressOrderIdList.Contains(e.Id) || e.Code.Contains(queryStr));
+        }
+
+        if (param.Cate == LogisticsOrderStatusClientCate.Submitted) {
+            query = query.Where(e => e.OrderStatus == LogisticsOrderStatus.Create || e.OrderStatus == LogisticsOrderStatus.WaitPack);
+        }
+
+        if (param.Cate == LogisticsOrderStatusClientCate.Pay) {
+            query = query.Where(e => e.PayStatus != PayStatus.Paid && e.ArrearsAmountFormula > 0);
+        }
+
+        if (param.Cate == LogisticsOrderStatusClientCate.WaitingTransport) {
+            query = query.Where(e => e.OrderStatus == LogisticsOrderStatus.Packed || e.OrderStatus == LogisticsOrderStatus.WaitTransfer);
+        }
+
+        if (param.Cate == LogisticsOrderStatusClientCate.Transporting) {
+            query = query.Where(e => e.OrderStatus == LogisticsOrderStatus.Transferred);
+        }
+
+        if (param.Cate == LogisticsOrderStatusClientCate.Delivered) {
+            query = query.Where(e => e.OrderStatus == LogisticsOrderStatus.Completed);
+        }
+
+        return query;
     }
 }
-
-/*
-
-
-    public List<LogisticsOrderInfo> getCustomerOrderList(Integer customerId, CustomerOrderStatusCate statusCate, String query, Integer preLastId) {
-
-        if (customerId == null || customerId == 0) {
-            throw new ValidationException("会员Id不能为空！");
-        }
-
-        if (preLastId == null) {
-            throw new ValidationException("上一个列表中末尾的数据Id不能为空！");
-        }
-
-        LogisticsOrderDbQueryParam queryParam = new LogisticsOrderDbQueryParam();
-        queryParam.setCustomerIdQuery(customerId);
-
-        queryParam.setQuery(query);
-        // queryParam.setOrderCodeQuery(query);
-        // queryParam.setExpressTrackingNoQuery(query);
-        // queryParam.setGoodsNameQuery(query);
-
-        if (statusCate != CustomerOrderStatusCate.Pay) {
-            queryParam.setIncludeStatusList(customerOrderStatusCateService.getOrderStatusList(statusCate));
-        }
-
-        / *
-        后来又说显示全部了
-        if (statusCate == CustomerOrderStatusCate.Submitted) { // 提交打包的只显示3.0创建的订单
-            queryParam.setFeeMethodQuery(LogisticsOrderFeeMethod.Express); // 暂时用计费方式来区分
-        }
-         * /
-
-        if (statusCate == CustomerOrderStatusCate.Pay) {
-            // queryParam.setFeeMethodQuery(LogisticsOrderFeeMethod.Express);
-
-            // queryParam.setHasArrears(true);
-            // queryParam.setVersion3Order(true);
-            queryParam.setClientPayList(true);
-        }
-
-        queryParam.setPreLastId(preLastId);
-        queryParam.setSortField(LogisticsOrderInfo.schema.id);
-        queryParam.setSortDir(SortDir.DESC);
-
-        queryParam.setSortByArrived(customerOrderStatusCateService.getSortByArrived(statusCate));
-
-        return logisticsOrderMapper.list(queryParam);
-
-        }
-
-*/
+Z

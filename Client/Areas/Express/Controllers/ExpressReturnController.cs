@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressReturn;
-using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -31,7 +30,7 @@ public class ExpressReturnController : Controller {
 
         var listQuery = GetListQuery(param);
 
-        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE) {
+        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE) {
             // 跟降序排序匹配
             int lastIdQuery = param.LastId;
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
@@ -130,7 +129,7 @@ public class ExpressReturnController : Controller {
         // 取最末尾，其实降序时就是最小的那一个Id
         var lastData = expressReturnList.LastOrDefault();
         // 这里的 1 很重要，不要取0。如果取值1的话也不破坏逻辑，1的时候就正好就是没数据了，查询时 <1 也是数据
-        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+        int lastId = lastData?.Id ?? ClientListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
         int expressReturnCount = GetListQuery(param).Count();
 

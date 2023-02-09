@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Customer.Models.CustomerPay;
-using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Fee;
@@ -26,7 +25,7 @@ public class CustomerPayController : Controller
     {
         var listQuery = GetListQuery(param);
 
-        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE)
+        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE)
         {
             // 跟降序排序匹配
             int lastIdQuery = param.LastId;
@@ -49,7 +48,7 @@ public class CustomerPayController : Controller
             .ToList();
 
         var lastPay = orderPayList.LastOrDefault();
-        int lastId = lastPay?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+        int lastId = lastPay?.Id ?? ClientListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
         int orderPayCount = GetListQuery(param).Count();
 

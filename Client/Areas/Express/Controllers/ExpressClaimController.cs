@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate.Linq;
 using shunda.Client.Areas.Express.Models.ExpressClaim;
-using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -37,7 +36,7 @@ public class ExpressClaimController : Controller {
 
         var listQuery = GetListQuery(param);
 
-        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE) {
+        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE) {
             // 跟降序排序匹配
             int lastIdQuery = param.LastId;
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
@@ -45,7 +44,7 @@ public class ExpressClaimController : Controller {
 
         IList<ExpressInfo> expressClaimList = listQuery
             .OrderByDescending(e => e.Id) // 按Id降序排序
-            .Take(15) // 每次下拉去15个
+            .Take(15) // 每次下拉取s15个
             .ToList();
 
         IList<int> expressIdList = expressClaimList.Select(e => e.Id).ToList();
@@ -78,7 +77,7 @@ public class ExpressClaimController : Controller {
         // 取最末尾，其实降序时就是最小的那一个Id
         var lastData = expressClaimList.LastOrDefault();
         // 这里的 1 很重要，不要取0。如果取值1的话也不破坏逻辑，1的时候就正好就是没数据了，查询时 <1 也是数据
-        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+        int lastId = lastData?.Id ?? ClientListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
         int expressClaimCount = GetListQuery(param).Count();
 

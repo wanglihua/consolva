@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Message.Models.CustomerMessage;
-using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
@@ -34,7 +33,7 @@ public class CustomerMessageController : Controller
 
         var listQuery = GetListQuery(param);
 
-        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE)
+        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE)
         {
             // 跟降序排序匹配
             int lastIdQuery = param.LastId;
@@ -54,11 +53,11 @@ public class CustomerMessageController : Controller
         }).ToList();
 
         var lastData = msgList.LastOrDefault();
-        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+        int lastId = lastData?.Id ?? ClientListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
         int msgCount = GetListQuery(param).Count();
 
-        if (param.LastId == ListLastIdModel.LAST_ID_NOT_SET_VALUE) // 只需要这个时候设置就可以了，就是界面打开第一次加载列表的时候
+        if (param.LastId == ClientListLastIdModel.LAST_ID_NOT_SET_VALUE) // 只需要这个时候设置就可以了，就是界面打开第一次加载列表的时候
         {
             customerMessageClientViewRecordService.RecordView(loginCustomerId, msgList.FirstOrDefault()?.Id ?? 0);
         }

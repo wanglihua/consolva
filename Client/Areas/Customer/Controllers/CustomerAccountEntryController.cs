@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Customer.Models.CustomerAccountEntry;
-using shunda.Client.Models;
 using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -26,7 +25,7 @@ public class CustomerAccountEntryController : Controller
     {
         var listQuery = GetListQuery(param);
 
-        if (param.LastId != ListLastIdModel.LAST_ID_NOT_SET_VALUE)
+        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE)
         {
             // 跟降序排序匹配
             int lastIdQuery = param.LastId;
@@ -51,7 +50,7 @@ public class CustomerAccountEntryController : Controller
             .ToList();
 
         var lastData = accountEntryList.LastOrDefault();
-        int lastId = lastData?.Id ?? ListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
+        int lastId = lastData?.Id ?? ClientListLastIdModel.LAST_ID_NO_MORE_DATA_VALUE;
 
         int accountEntryCount = GetListQuery(param).Count();
 
