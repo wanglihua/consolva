@@ -55,7 +55,7 @@ public class LogisticsOrderClientListService {
                 OrderStatus = order.OrderStatus.Name,
                 GoodsValue = order.GoodsValue.ToString("#0.00"),
                 ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
-                TotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
+                PackedTotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
             };
 
             orderItemList.Add(orderItem);

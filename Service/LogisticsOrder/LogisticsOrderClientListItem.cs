@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Service.LogisticsOrder; 
+namespace shunda.Service.LogisticsOrder;
 
 public class LogisticsOrderClientListItem {
     [JsonProperty("id")]
@@ -18,20 +18,45 @@ public class LogisticsOrderClientListItem {
     [JsonProperty("arearsAmount")]
     public string ArearsAmount { get; set; } = string.Empty;
 
-    [JsonProperty("totalPackageCount")]
-    public string TotalPackageCount { get; set; } = string.Empty;
+    // todo packed data
 
-    [JsonProperty("totalVolume")]
-    public string TotalVolume { get; set; } = string.Empty;
+    #region checkin size weight data
 
-    [JsonProperty("totalVolumeWeight")]
-    public string TotalVolumeWeight { get; set; } = string.Empty;
+    [JsonProperty("checkinTotalPackageCount")]
+    public string CheckinTotalPackageCount { get; set; } = string.Empty;
 
-    [JsonProperty("totalActualWeight")]
-    public string TotalActualWeight { get; set; } = string.Empty;
+    [JsonProperty("checkinTotalVolume")]
+    public string CheckinTotalVolume { get; set; } = string.Empty;
 
-    [JsonProperty("maxSideLength")]
-    public string MaxSideLength { get; set; } = string.Empty;
+    [JsonProperty("checkinTotalVolumeWeight")]
+    public string CheckinTotalVolumeWeight { get; set; } = string.Empty;
+
+    [JsonProperty("checkinTotalActualWeight")]
+    public string CheckinTotalActualWeight { get; set; } = string.Empty;
+
+    [JsonProperty("checkinMaxSideLength")]
+    public string CheckinMaxSideLength { get; set; } = string.Empty;
+
+    #endregion
+
+    #region packed size weight data
+
+    [JsonProperty("packedTotalPackageCount")]
+    public string PackedTotalPackageCount { get; set; } = string.Empty;
+
+    [JsonProperty("packedTotalVolume")]
+    public string PackedTotalVolume { get; set; } = string.Empty;
+
+    [JsonProperty("packedTotalVolumeWeight")]
+    public string PackedTotalVolumeWeight { get; set; } = string.Empty;
+
+    [JsonProperty("packedTotalActualWeight")]
+    public string PackedTotalActualWeight { get; set; } = string.Empty;
+
+    [JsonProperty("packedMaxSideLength")]
+    public string PackedMaxSideLength { get; set; } = string.Empty;
+
+    #endregion
 
     [JsonProperty("firstModeName")]
     public string FirstModeName { get; set; } = string.Empty;
