@@ -44,13 +44,13 @@ public class WechatSystemType : CodeTypeBase {
     }
 }
 
-public class WechatAccessTokenTypeHibernateType : CodeHibernateTypeBase<WechatSystemType> {
+public class WechatSystemTypeHibernateType : CodeHibernateTypeBase<WechatSystemType> {
     protected override WechatSystemType GetCodeTypeById(int id) {
         return WechatSystemType.GetById(id);
     }
 }
 
-public class WechatAccessTokenTypeModelBinder : CodeTypeModelBinderBase<WechatSystemType> {
+public class WechatSystemTypeModelBinder : CodeTypeModelBinderBase<WechatSystemType> {
     protected override WechatSystemType GetCodeTypeById(int id) {
         return WechatSystemType.GetById(id);
     }

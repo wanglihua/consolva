@@ -9,21 +9,18 @@ namespace shunda.Service.Wechat.WechatApp;
 /// https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/phonenumber/phonenumber.getPhoneNumber.html
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class WechatAppPhoneNumberService
-{
+public class WechatAppPhoneNumberService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly HttpClient httpClient;
     private readonly WechatAppAccessTokenService wechatAppAccessTokenService;
 
-    public WechatAppPhoneNumberService(HttpClient httpClient, WechatAppAccessTokenService wechatAppAccessTokenService)
-    {
+    public WechatAppPhoneNumberService(HttpClient httpClient, WechatAppAccessTokenService wechatAppAccessTokenService) {
         this.httpClient = httpClient;
         this.wechatAppAccessTokenService = wechatAppAccessTokenService;
     }
 
-    public string GetPhoneNumber(string code)
-    {
+    public string GetPhoneNumber(string code) {
         string accessToken = wechatAppAccessTokenService.GetAccessToken();
 
         // POST https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=ACCESS_TOKEN
@@ -48,19 +45,17 @@ public class WechatAppPhoneNumberService
 
         var result = JsonConvert.DeserializeObject<PhoneNumberResult>(taskRead.Result);
 
-        if (result == null)
-        {
+        if (result == null) {
             throw new Exception("微信小程序 phonenumber.getPhoneNumber 出错，未能获取返回结果！");
         }
 
-        if (result.ErrorCode != 0)
-        {
+        if (result.ErrorCode != 0) {
             throw new Exception($"微信小程序 phonenumber.getPhoneNumber 出错, 错误代码:{result.ErrorCode}, 错误消息:{result.ErrorMessage}");
         }
 
-        log.Trace($"phone number: {result.Phone.PhoneNumber}");
-        log.Trace($"pure phone number: {result.Phone.PurePhoneNumber}");
-        log.Trace($"country code: {result.Phone.CountryCode}");
+        log.Trace($"wechat app phone number: {result.Phone.PhoneNumber}");
+        log.Trace($"wechat app pure phone number: {result.Phone.PurePhoneNumber}");
+        log.Trace($"wechat app country code: {result.Phone.CountryCode}");
 
         return result.Phone.PhoneNumber;
     }
@@ -83,13 +78,11 @@ public class WechatAppPhoneNumberService
      
      */
 
-    public class PhoneNumberResult : WechatJsonResult
-    {
+    private class PhoneNumberResult : WechatJsonResult {
         [JsonProperty("phone_info")]
-        public PhoneInfo Phone { get; set; } = new ();
+        public PhoneInfo Phone { get; set; } = new();
 
-        public class PhoneInfo
-        {
+        public class PhoneInfo {
             [JsonProperty("phoneNumber")]
             public string PhoneNumber { get; set; } = string.Empty;
 
@@ -100,10 +93,9 @@ public class WechatAppPhoneNumberService
             public int CountryCode { get; set; }
 
             [JsonProperty("watermark")]
-            public WatermarkInfo Watermark { get; set; } = new ();
+            public WatermarkInfo Watermark { get; set; } = new();
 
-            public class WatermarkInfo
-            {
+            public class WatermarkInfo {
                 [JsonProperty("timestamp")]
                 public int TimeStamp { get; set; }
 

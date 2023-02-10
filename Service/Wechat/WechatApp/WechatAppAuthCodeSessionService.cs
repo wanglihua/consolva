@@ -52,9 +52,9 @@ public class WechatAppAuthCodeSessionService
             throw new Exception($"微信小程序 auth.code2Session 出错, 错误代码:{result.ErrorCode}, 错误消息:{result.ErrorMessage}");
         }
         
-        log.Trace($"open id: {result.OpenId}");
-        log.Trace($"session key: {result.SessionKey}");
-        log.Trace($"union id: {result.UnionId}");
+        log.Trace($"wechat app open id: {result.OpenId}");
+        log.Trace($"wechat app session key: {result.SessionKey}");
+        log.Trace($"wechat app union id: {result.UnionId}");
 
         return result;
     }

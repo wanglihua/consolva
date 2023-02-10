@@ -4,6 +4,8 @@ using NLog;
 using shunda.Core.Config;
 using shunda.Core.Redis;
 using shunda.Core.Service;
+using shunda.Domain.Wechat;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Wechat.WechatApp;
 
@@ -12,36 +14,32 @@ namespace shunda.Service.Wechat.WechatApp;
 /// https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getAccessToken.html
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class WechatAppAccessTokenService
-{
+public class WechatAppAccessTokenService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
+    private readonly ISession session;
     private readonly HttpClient httpClient;
 
-    public WechatAppAccessTokenService(HttpClient httpClient)
-    {
+    public WechatAppAccessTokenService(HttpClient httpClient, ISession session) {
+        this.session = session;
         this.httpClient = httpClient;
     }
 
-    private string GetAccessTokenRedisKey()
-    {
-        return $"{RedisClientUtil.RedisKeyPrefix}:weapp_access_token_token";
+    private string GetAccessTokenRedisKey() {
+        return $"{RedisClientUtil.RedisKeyPrefix}:wechat_app_access_token_token";
     }
 
-    private string GetTokenExpireRedisKey()
-    {
-        return $"{RedisClientUtil.RedisKeyPrefix}:weapp_access_token_expire";
+    private string GetTokenExpireRedisKey() {
+        return $"{RedisClientUtil.RedisKeyPrefix}:wechat_app_access_token_expire";
     }
 
-    public string GetAccessToken()
-    {
+    public string GetAccessToken() {
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
 
         DateTime? expire = redisClient.Get<DateTime?>(GetTokenExpireRedisKey());
         string accessToken = redisClient.Get(GetAccessTokenRedisKey());
         // 过期时间缓存存在 并且 过期时间是在当前时间之后 并且 access token 缓存存在
-        if (expire != null && expire > DateTime.Now && string.IsNullOrWhiteSpace(accessToken) == false)
-        {
+        if (expire != null && expire > DateTime.Now && string.IsNullOrWhiteSpace(accessToken) == false) {
             return accessToken;
         }
 
@@ -57,20 +55,28 @@ public class WechatAppAccessTokenService
 
         var result = JsonConvert.DeserializeObject<AccessTokenResult>(task.Result);
 
-        if (result == null)
-        {
+        if (result == null) {
             throw new Exception("微信小程序 Get Access Token 出错，未能获取返回结果！");
         }
 
-        if (result.ErrorCode != 0)
-        {
+        if (result.ErrorCode != 0) {
             throw new Exception($"微信小程序 Get Access Token 出错, 错误代码:{result.ErrorCode}, 错误消息:{result.ErrorMessage}");
         }
 
-        log.Trace($"access token: {result.AccessToken}");
-        log.Trace($"token expire: {result.ExpiresIn}");
+        log.Trace($"wechat app access token: {result.AccessToken}");
+        log.Trace($"wechat app token expire: {result.ExpiresIn}");
+
 
         accessToken = result.AccessToken;
+
+        // 记录数据库表历史
+        var wechatAccesToken = new WechatAccessTokenInfo {
+            SystemType = WechatSystemType.WechatApp,
+            AccessToken = accessToken,
+        };
+
+        session.Save(wechatAccesToken);
+        session.Flush();
 
         TimeSpan timeout = TimeSpan.FromSeconds(result.ExpiresIn);
         redisClient.Set(GetAccessTokenRedisKey(), accessToken, timeout);
@@ -80,8 +86,7 @@ public class WechatAppAccessTokenService
         return accessToken;
     }
 
-    private class AccessTokenResult : WechatJsonResult
-    {
+    private class AccessTokenResult : WechatJsonResult {
         [JsonProperty("access_token")]
         public string AccessToken { get; set; } = string.Empty;
 

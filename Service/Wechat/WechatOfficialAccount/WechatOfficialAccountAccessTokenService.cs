@@ -1,11 +1,14 @@
+using CSRedis;
 using NHibernate;
 using NHibernate.Linq;
 using NLog;
 using Senparc.Weixin.MP.Containers;
 using Senparc.Weixin.MP.Entities;
 using shunda.Core.Config;
+using shunda.Core.Redis;
 using shunda.Core.Service;
 using shunda.Domain.Wechat;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Wechat.WechatOfficialAccount;
 
@@ -22,51 +25,49 @@ public class WechatOfficialAccountAccessTokenService {
         this.session = session;
     }
 
+    private string GetAccessTokenRedisKey() {
+        return $"{RedisClientUtil.RedisKeyPrefix}:wechat_official_account_access_token_token";
+    }
+
+    private string GetTokenExpireRedisKey() {
+        return $"{RedisClientUtil.RedisKeyPrefix}:wechat_official_account_access_token_expire";
+    }
+
     public string GetAccessToken() {
-        DateTime now = DateTime.Now;
+        CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
 
-        // 获取最新的 access token
-        WechatAccessTokenInfo? wechatAccessToken = session.Query<WechatAccessTokenInfo>()
-            .OrderByDescending(e => e.Id)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (wechatAccessToken == null // 为空，一般程序开始的时候才会有这种情况
-            || wechatAccessToken.Expire <= now) // 最新的已过期
-        {
-            if (wechatAccessToken != null) // 只是过期
-            {
-                if (now.Date.Day == 1 && now.Hour > 4 && now.Hour < 8) // 每月的 1日，4个小时内最多过期两次，最多也就执行2次了。
-                {
-                    int latestId = wechatAccessToken.Id;
-                    var tokenList = session.Query<WechatAccessTokenInfo>()
-                        .Where(e => e.Id < latestId) // 这里暂时用 < 
-                        .ToList();
-                    foreach (var token in tokenList) {
-                        session.Delete(token);
-                    }
-
-                    session.Flush();
-                }
-            }
-
-            AccessTokenResult tokenResult = AccessTokenContainer.GetAccessTokenResult(WeChatConfig.AppId, true);
-
-            if (string.IsNullOrWhiteSpace(tokenResult.access_token)) {
-                throw new Exception("获取token出错：" + tokenResult.errmsg);
-            }
-
-            log.Warn("get weixin access token. " + tokenResult.access_token);
-
-            wechatAccessToken = new WechatAccessTokenInfo() {
-                AccessToken = tokenResult.access_token,
-                Expire = DateTime.Now + TimeSpan.FromSeconds(tokenResult.expires_in - 60), // 比实际失效提早个一会会，这个提早量应该大于Hibernate二级缓存时间
-            };
-
-            session.Save(wechatAccessToken);
-            session.Flush();
+        DateTime? expire = redisClient.Get<DateTime?>(GetTokenExpireRedisKey());
+        string accessToken = redisClient.Get(GetAccessTokenRedisKey());
+        // 过期时间缓存存在 并且 过期时间是在当前时间之后 并且 access token 缓存存在
+        if (expire != null && expire > DateTime.Now && string.IsNullOrWhiteSpace(accessToken) == false) {
+            return accessToken;
         }
 
-        return wechatAccessToken.AccessToken;
+        AccessTokenResult result = AccessTokenContainer.GetAccessTokenResult(WeChatConfig.AppId, true);
+
+        if (string.IsNullOrWhiteSpace(result.access_token)) {
+            throw new Exception("获取token出错：" + result.errmsg);
+        }
+
+        log.Trace($"wechat official account access token: {result.access_token}");
+        log.Trace($"wechat official account token expire: {result.expires_in}");
+
+        accessToken = result.access_token;
+
+         // 记录数据库表历史
+        var wechatAccesToken = new WechatAccessTokenInfo {
+            SystemType = WechatSystemType.WechatOfficialAccount,
+            AccessToken = accessToken,
+        };
+
+        session.Save(wechatAccesToken);
+        session.Flush();
+
+        TimeSpan timeout = TimeSpan.FromSeconds(result.expires_in);
+        redisClient.Set(GetAccessTokenRedisKey(), accessToken, timeout);
+        // 减去 5 分钟是保证redis中存储的 token 确定有效。
+        redisClient.Set(GetTokenExpireRedisKey(), DateTime.Now.AddSeconds(result.expires_in - 5 * 60), timeout);
+
+        return accessToken;
     }
 }

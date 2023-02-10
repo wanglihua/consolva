@@ -9,20 +9,21 @@ public class WechatAccessTokenInfoMapping : EntityNoUpdateMapping<WechatAccessTo
     {
         Table("tbl_wechat_access_token");
 
+
         Property(
-            x => x.AccessToken,
+            x => x.SystemType,
             map => {
-                map.Type(NHibernateUtil.String);
-                map.Column("access_token");
+                map.Type<WechatSystemTypeHibernateType>();
+                map.Column("system_type_id");
                 map.NotNullable(true);
             }
         );
 
         Property(
-            x => x.Expire,
+            x => x.AccessToken,
             map => {
-                map.Type(NHibernateUtil.DateTime);
-                map.Column("expire");
+                map.Type(NHibernateUtil.String);
+                map.Column("access_token");
                 map.NotNullable(true);
             }
         );
