@@ -18,4 +18,9 @@ public class WechatAccessTokenInfo : EntityNoUpdate {
     /// </summary>
     [JsonProperty("accessToken")]
     public virtual string AccessToken { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// 过期时间(秒)
+    /// </summary>
+    public virtual int ExpiresIn { get; set; }
 }

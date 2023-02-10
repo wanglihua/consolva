@@ -63,16 +63,17 @@ public class WechatAppAccessTokenService {
             throw new Exception($"微信小程序 Get Access Token 出错, 错误代码:{result.ErrorCode}, 错误消息:{result.ErrorMessage}");
         }
 
-        log.Trace($"wechat app access token: {result.AccessToken}");
-        log.Trace($"wechat app token expire: {result.ExpiresIn}");
-
-
         accessToken = result.AccessToken;
+        int expiresIn = result.ExpiresIn;
+
+        log.Trace($"wechat app access token: {accessToken}");
+        log.Trace($"wechat app token expire: {expiresIn}");
 
         // 记录数据库表历史
         var wechatAccesToken = new WechatAccessTokenInfo {
             SystemType = WechatSystemType.WechatApp,
             AccessToken = accessToken,
+            ExpiresIn = expiresIn,
         };
 
         session.Save(wechatAccesToken);

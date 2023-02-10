@@ -49,15 +49,17 @@ public class WechatOfficialAccountAccessTokenService {
             throw new Exception("获取token出错：" + result.errmsg);
         }
 
-        log.Trace($"wechat official account access token: {result.access_token}");
-        log.Trace($"wechat official account token expire: {result.expires_in}");
-
         accessToken = result.access_token;
+        int expiresIn = result.expires_in;
 
-         // 记录数据库表历史
+        log.Trace($"wechat official account access token: {accessToken}");
+        log.Trace($"wechat official account token expire: {expiresIn}");
+
+        // 记录数据库表历史
         var wechatAccesToken = new WechatAccessTokenInfo {
             SystemType = WechatSystemType.WechatOfficialAccount,
             AccessToken = accessToken,
+            ExpiresIn = expiresIn,
         };
 
         session.Save(wechatAccesToken);
