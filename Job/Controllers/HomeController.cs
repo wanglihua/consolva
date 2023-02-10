@@ -1,18 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NLog;
+using shunda.Core.Web;
+using shunda.Job.Models.Home;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Job.Controllers;
 
 public class HomeController : Controller {
+    private static Logger log = LogManager.GetCurrentClassLogger();
+    
     private readonly ISession session;
 
     public HomeController(ISession session) {
         this.session = session;
     }
 
+    [NoLoginRequired]
     [HttpGet]
     [Route("/")]
     public IActionResult Index() {
-        return Json(true);
+        HomeIndexModel model = new HomeIndexModel();
+        return View("HomeIndex", model);
     }
 }
