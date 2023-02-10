@@ -1,15 +1,107 @@
 using NHibernate;
-using shunda.Core.Quartz;
+using Quartz;
+using shunda.Core.Hibernate;
 using shunda.Core.Service;
+using shunda.Domain.Express;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Job.Jobs;
 
 [Service(ServiceType.Singleton)]
-public class ExpressSizeWeightPhotoVideoBindJob : JobBase {
-    public ExpressSizeWeightPhotoVideoBindJob(ISessionFactory sessionFactory) : base(sessionFactory) {
+public class ExpressSizeWeightPhotoVideoBindJob : IJob {
+    private readonly ISessionFactory sessionFactory;
+
+    public ExpressSizeWeightPhotoVideoBindJob(ISessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    public override void Execute() {
-        throw new NotImplementedException();
+    public static void Schedule(IScheduler scheduler, DateTime jobStartTime) {
+        IJobDetail jobDetail = JobBuilder.Create<ExpressSizeWeightPhotoVideoBindJob>().WithDescription("ExpressSizeWeightPhotoVideoBindJob").Build();
+        ITrigger jobTrigger = TriggerBuilder.Create()
+            .StartAt(new DateTimeOffset(jobStartTime, new TimeSpan(10, 0, 0))) // 澳大利亚时区是在 东10区
+            .WithSimpleSchedule(x => x.WithIntervalInHours(12).RepeatForever())
+            .Build();
+
+        scheduler.ScheduleJob(jobDetail, jobTrigger).Wait();
+    }
+
+    public Task Execute(IJobExecutionContext context) {
+        ISession session = HibernateSessionFactory.OpenSession(sessionFactory);
+
+        DateTime yesterdayBegin = DateTime.Today.AddDays(-1);
+
+        Transactional.Wrap(session, () => {
+            // 先按尺寸重量，图片，视频
+            var sizeWeightList = session.Query<ExpressSizeWeightInfo>()
+                .Where(e => e.UpdateTime >= yesterdayBegin)
+                .ToList();
+
+            foreach (var sizeWeight in sizeWeightList) {
+                string trackingNo = sizeWeight.TrackingNo;
+                var express = session.Query<ExpressInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                sizeWeight.Express = express; // 可能为 null
+                sizeWeight.Order = express?.Order; // 可能为 null
+
+                session.Update(sizeWeight);
+            }
+
+            session.Flush();
+
+
+            var photoList = session.Query<ExpressPhotoInfo>()
+                .Where(e => e.UpdateTime >= yesterdayBegin)
+                .ToList();
+
+            var vidoeList = session.Query<ExpressVideoInfo>()
+                .Where(e => e.UpdateTime >= yesterdayBegin)
+                .ToList();
+
+            // 再按快递单号
+            var recentExpressList = session.Query<ExpressInfo>()
+                .Where(e => e.UpdateTime >= yesterdayBegin)
+                .ToList();
+
+            foreach (var express in recentExpressList) {
+                string trackingNo = express.TrackingNo;
+
+                var expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .ToList();
+                foreach (var sizeWeight in expressSizeWeightList) {
+                    sizeWeight.Express = express;
+                    sizeWeight.Order = express.Order; // 可能为 null
+
+                    session.Update(sizeWeight);
+                }
+
+                var expressPhotoList = session.Query<ExpressPhotoInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .ToList();
+                foreach (var photo in expressPhotoList) {
+                    photo.Express = express;
+                    photo.Order = express.Order; // 可能为 null
+
+                    session.Update(photo);
+                }
+
+                var expressVideoList = session.Query<ExpressVideoInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .ToList();
+                foreach (var video in expressVideoList) {
+                    video.Express = express;
+                    video.Order = express.Order; // 可能为 null
+
+                    session.Update(video);
+                }
+
+                session.Flush();
+            }
+        });
+
+        return Task.CompletedTask;
     }
 }
