@@ -121,6 +121,8 @@ public class ExpressClaimController : Controller {
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
+        string trackingNo = express.TrackingNo;
+
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         bool claimed = ExpressStatus.IsCheckedIn(express.Status);
@@ -129,7 +131,6 @@ public class ExpressClaimController : Controller {
         }
 
         // 查看有没有当前登录客户的相同单号的预报
-        string trackingNo = express.TrackingNo;
         var expressExpect = session.Query<ExpressExpectInfo>()
             .Where(e => e.Customer.Id == loginCustomerId && e.TrackingNo == trackingNo)
             .Take(1)
@@ -194,7 +195,8 @@ public class ExpressClaimController : Controller {
 
         // 尺寸重量
         var expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
-            .Where(e => e.Express!.Id == expressId)
+            // .Where(e => e.Express!.Id == expressId)
+            .Where(e => e.TrackingNo == trackingNo)
             .OrderBy(e => e.Id)
             .ToList();
 

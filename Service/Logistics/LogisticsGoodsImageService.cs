@@ -148,7 +148,7 @@ public class LogisticsGoodsImageService {
         ExpressPhotoInfo? ep = null;
         ExpressGoodsInfo? eg = null;
         int epId = session.QueryOver<ExpressPhotoInfo>(() => ep!)
-            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
+            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id) // 暂时用这个办法
             .Select(e => ep!.Id)
             .Where(() => eg!.Goods.Id == goodsId)
             .Take(1)
@@ -191,7 +191,7 @@ public class LogisticsGoodsImageService {
         ExpressGoodsInfo? eg = null;
 
         IList<int> orderIdList = session.QueryOver<ExpressPhotoInfo>(() => ep!)
-            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
+            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id) // 暂时用这个办法
             .Select(Projections.Distinct(Projections.Property($"{nameof(ep)}.{nameof(ep.Order)}.{nameof(ep.Order.Id)}")))
             .Where(() => eg!.Goods.Id == goodsId && ep!.Order != null)
             .OrderByAlias(() => ep!.Order!.Id).Desc
@@ -199,7 +199,7 @@ public class LogisticsGoodsImageService {
             .List<int>();
 
         IList<ExpressPhotoInfo> expressPhotoList = session.QueryOver<ExpressPhotoInfo>(() => ep!)
-            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id)
+            .JoinEntityQueryOver(() => eg, () => ep!.Express!.Id == eg!.Express.Id) // 暂时用这个办法
             .Select(e => ep)
             // .Where(() => eg!.Goods.Id == goodsId && orderIdList.Contains(ep!.Order!.Id)) 这个会报错 不支持 Contains()
             .Where(Restrictions.And(Restrictions.Where(() => eg!.Goods.Id == goodsId), Restrictions.InG($"{nameof(ep)}.{nameof(ep.Order)}.{nameof(ep.Order.Id)}", orderIdList)))

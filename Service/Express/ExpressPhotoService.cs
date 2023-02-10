@@ -52,8 +52,11 @@ public class ExpressPhotoService {
             return new List<ExpressPhotoInfo>();
         }
 
+        var expressList = session.Query<ExpressInfo>().Where(e => expressIdList.Contains(e.Id)).ToList();
+        var trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+
         IList<ExpressPhotoInfo> orderPhotoList = session.Query<ExpressPhotoInfo>()
-            .Where(e => expressIdList.Contains(e.Express!.Id))
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
             .OrderBy(e => e.Type)
             .ToList();
 

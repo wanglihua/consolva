@@ -90,7 +90,8 @@ public class ExpressListService {
             .ToList();
 
         IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
-            .Where(e => expressIdList.Contains(e.Express!.Id))
+            // .Where(e => expressIdList.Contains(e.Express!.Id))
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
 
         IList<ExpressExpectInfo> expressExpectList = session.Query<ExpressExpectInfo>()
@@ -121,7 +122,8 @@ public class ExpressListService {
                 .ToList();
             express.GoodsNamesCache = string.Join(",", goodsListForExpress.Select(e => e.Goods.Name).ToArray());
 
-            express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.Express!.Id == expressId).ToList();
+            // express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.Express!.Id == expressId).ToList();
+            express.ExpressSizeWeightListCache = expressSizeWeightList.Where(e => e.TrackingNo == trackingNo).ToList();
             express.ExpressRemarkListCache = expressRemarkList.Where(e => (e.Express?.Id ?? 0) == expressId).ToList();
             express.ExpressExpectCache = expressExpectList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
 

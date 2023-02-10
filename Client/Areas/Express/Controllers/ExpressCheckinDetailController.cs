@@ -49,6 +49,8 @@ public class ExpressCheckinDetailController : Controller {
             throw new ValidationException($"指定的快递单号{express.TrackingNo}不属于当前登录客户#{loginCustomerId}！");
         }
 
+        string trackingNo = express.TrackingNo;
+
         // 入库备注
         var expressWarehouseRemark = session.Query<ExpressRemarkInfo>()
             .Where(e => e.Express!.Id == expressId
@@ -75,7 +77,8 @@ public class ExpressCheckinDetailController : Controller {
 
         // size weight
         var sizeWeightList = session.Query<ExpressSizeWeightInfo>()
-            .Where(e => e.Express!.Id == expressId)
+            // .Where(e => e.Express!.Id == expressId)
+            .Where(e => e.TrackingNo == trackingNo)
             .ToList();
         decimal totalVolume = 0m;
         decimal totalVolumeWeight = 0m;
@@ -104,7 +107,7 @@ public class ExpressCheckinDetailController : Controller {
             .ToList();
 
         // photo
-        var photoList = session.Query<ExpressPhotoInfo>().Where(e => e.Express!.Id == expressId).ToList();
+        var photoList = session.Query<ExpressPhotoInfo>().Where(e => e.TrackingNo == trackingNo).ToList();
         var photoTypeList = photoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
 
         var photoTypeItemList = photoTypeList
