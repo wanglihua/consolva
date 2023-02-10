@@ -60,7 +60,7 @@ public class WechatOfficialAccountAccessTokenService {
 
             wechatAccessToken = new WechatAccessTokenInfo() {
                 AccessToken = tokenResult.access_token,
-                Expire = DateTime.Now + TimeSpan.FromSeconds(tokenResult.expires_in - 60), // 比实际失效提早个一会会
+                Expire = DateTime.Now + TimeSpan.FromSeconds(tokenResult.expires_in - 60), // 比实际失效提早个一会会，这个提早量应该大于Hibernate二级缓存时间
             };
 
             session.Save(wechatAccessToken);
