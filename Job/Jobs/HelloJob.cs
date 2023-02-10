@@ -1,26 +1,26 @@
 using NHibernate;
 using NLog;
 using Quartz;
-using shunda.Core.Quartz;
+using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using shunda.Domain.Pass;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Job.Jobs;
 
 [Service(ServiceType.Singleton)]
-public class HelloJob : JobBase
-{
+public class HelloJob : IJob {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
+    private readonly ISessionFactory sessionFactory;
     private readonly IHttpClientFactory httpClientFactory;
 
-    public HelloJob(ISessionFactory sessionFactory, IHttpClientFactory httpClientFactory) : base(sessionFactory)
-    {
+    public HelloJob(ISessionFactory sessionFactory, IHttpClientFactory httpClientFactory) {
+        this.sessionFactory = sessionFactory;
         this.httpClientFactory = httpClientFactory;
     }
 
-    public static void Schedule(IScheduler scheduler)
-    {
+    public static void Schedule(IScheduler scheduler) {
         var jobDetail = JobBuilder.Create<HelloJob>().WithDescription("HelloJob").Build();
         // var sampleTrigger = TriggerBuilder.Create().StartNow().WithCronSchedule("* * * * * ? *").Build();
         var jobTrigger = TriggerBuilder.Create()
@@ -33,14 +33,19 @@ public class HelloJob : JobBase
         scheduler.ScheduleJob(jobDetail, jobTrigger).Wait();
     }
 
-    public override void Execute()
-    {
+    public Task Execute(IJobExecutionContext context) {
         HttpClient httpClient = httpClientFactory.CreateClient();
-        
-        IList<GroupInfo> groupList = session.Query<GroupInfo>().ToList();
 
-        log.Trace("group count " + groupList.Count);
+        ISession session = HibernateSessionFactory.OpenSession(sessionFactory);
 
-        log.Trace("Hello World from HelloJob！" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        Transactional.Wrap(session, () => {
+            IList<GroupInfo> groupList = session.Query<GroupInfo>().ToList();
+
+            log.Trace("group count " + groupList.Count);
+
+            log.Trace("Hello World from HelloJob！" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        });
+
+        return Task.CompletedTask;
     }
 }

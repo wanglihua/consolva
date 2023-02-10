@@ -13,19 +13,16 @@ namespace shunda.Job.Jobs;
 /// 作为一种补偿纠正
 /// </summary>
 [Service(ServiceType.Singleton)]
-public class StorageLocExpressUpdateJob : IJob
-{
+public class StorageLocExpressUpdateJob : IJob {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISessionFactory sessionFactory;
 
-    public StorageLocExpressUpdateJob(ISessionFactory sessionFactory)
-    {
+    public StorageLocExpressUpdateJob(ISessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    public static void Schedule(IScheduler scheduler, DateTime jobStartTime)
-    {
+    public static void Schedule(IScheduler scheduler, DateTime jobStartTime) {
         IJobDetail jobDetail = JobBuilder.Create<StorageLocExpressUpdateJob>().WithDescription("StorageLocExpressUpdateJob").Build();
         ITrigger jobTrigger = TriggerBuilder.Create()
             .StartAt(new DateTimeOffset(jobStartTime, new TimeSpan(10, 0, 0))) // 澳大利亚时区是在 东10区
@@ -35,14 +32,12 @@ public class StorageLocExpressUpdateJob : IJob
         scheduler.ScheduleJob(jobDetail, jobTrigger).Wait();
     }
 
-    public Task Execute(IJobExecutionContext context)
-    {
+    public Task Execute(IJobExecutionContext context) {
         DateTime beginTime = DateTime.Now;
         log.Warn("StorageLocExpressUpdateJob Begin");
 
         ISession? session = null;
-        try
-        {
+        try {
             session = HibernateSessionFactory.OpenSession(sessionFactory);
 
             StorageLocExpressService storageLocExpressService = new StorageLocExpressService(session);
@@ -51,12 +46,10 @@ public class StorageLocExpressUpdateJob : IJob
 
             session.Flush();
         }
-        catch (Exception exp)
-        {
+        catch (Exception exp) {
             log.Error(exp);
         }
-        finally
-        {
+        finally {
             session?.Close();
         }
 

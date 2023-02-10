@@ -3,8 +3,6 @@ using NLog;
 using Quartz;
 using shunda.Core.Hibernate;
 
-#nullable disable
-
 namespace shunda.Core.Quartz;
 
 public abstract class JobBase : IJob
@@ -42,6 +40,11 @@ public abstract class JobBase : IJob
         {
             session?.Close();
         }
+        
+        
+        Transactional.Wrap(session, () => { 
+        
+        });
 
         return Task.CompletedTask;
     }
