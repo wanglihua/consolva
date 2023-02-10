@@ -24,7 +24,7 @@ os.system('cp -f {client_publish_path}/shunda.Client.pdb {shunda_path}/client/sh
 os.system('cp -f {client_publish_path}/shunda.Client.pdb {shunda_path}/client/shunda.Client.pdb'.format(client_publish_path=client_publish_path, shunda_path=shunda_path))
 os.system('cp -f {client_publish_path}/shunda.Client.dll {shunda_path}/client/shunda.Client.dll'.format(client_publish_path=client_publish_path, shunda_path=shunda_path))
 os.system('cp -f {client_publish_path}/shunda.Client.deps.json {shunda_path}/client/shunda.Client.deps.json'.format(client_publish_path=client_publish_path, shunda_path=shunda_path))
-os.system('cp -f {client_publish_path}/shunda.Client.deps.json {shunda_path}/client/shunda.Client.runtimeconfig.json'.format(client_publish_path=client_publish_path, shunda_path=shunda_path))
+os.system('cp -f {client_publish_path}/shunda.Client.runtimeconfig.json {shunda_path}/client/shunda.Client.runtimeconfig.json'.format(client_publish_path=client_publish_path, shunda_path=shunda_path))
 
 os.system('rm -f {publish_path}/shunda_client.7z'.format(publish_path=publish_path))
 os.system('7z a {publish_path}/shunda_client.7z {publish_path}/shunda'.format(publish_path=publish_path))
