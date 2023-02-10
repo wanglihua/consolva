@@ -25,7 +25,7 @@ public class StorageLocExpressUpdateJob : IJob {
     public static void Schedule(IScheduler scheduler, DateTime jobStartTime) {
         IJobDetail jobDetail = JobBuilder.Create<StorageLocExpressUpdateJob>().WithDescription("StorageLocExpressUpdateJob").Build();
         ITrigger jobTrigger = TriggerBuilder.Create()
-            .StartAt(new DateTimeOffset(jobStartTime, new TimeSpan(10, 0, 0))) // 澳大利亚时区是在 东10区
+            .StartAt(new DateTimeOffset(jobStartTime, new TimeSpan(8, 0, 0))) // 暂时按中国区时间
             .WithSimpleSchedule(x => x.WithIntervalInHours(24).RepeatForever())
             .Build();
 

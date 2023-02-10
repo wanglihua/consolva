@@ -18,7 +18,7 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
     public static void Schedule(IScheduler scheduler, DateTime jobStartTime) {
         IJobDetail jobDetail = JobBuilder.Create<ExpressSizeWeightPhotoVideoBindJob>().WithDescription("ExpressSizeWeightPhotoVideoBindJob").Build();
         ITrigger jobTrigger = TriggerBuilder.Create()
-            .StartAt(new DateTimeOffset(jobStartTime, new TimeSpan(10, 0, 0))) // 澳大利亚时区是在 东10区
+            .StartAt(new DateTimeOffset(jobStartTime, new TimeSpan(8, 0, 0))) // 暂时按中国区时间
             .WithSimpleSchedule(x => x.WithIntervalInHours(12).RepeatForever())
             .Build();
 
@@ -51,14 +51,43 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
 
             session.Flush();
 
-
             var photoList = session.Query<ExpressPhotoInfo>()
                 .Where(e => e.UpdateTime >= yesterdayBegin)
                 .ToList();
 
+            foreach (var photo in photoList) {
+                string trackingNo = photo.TrackingNo;
+                var express = session.Query<ExpressInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                photo.Express = express; // 可能为 null
+                photo.Order = express?.Order; // 可能为 null
+
+                session.Update(photo);
+            }
+
+            session.Flush();
+
             var vidoeList = session.Query<ExpressVideoInfo>()
                 .Where(e => e.UpdateTime >= yesterdayBegin)
                 .ToList();
+
+            foreach (var video in vidoeList) {
+                string trackingNo = video.TrackingNo;
+                var express = session.Query<ExpressInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                video.Express = express; // 可能为 null
+                video.Order = express?.Order; // 可能为 null
+
+                session.Update(video);
+            }
+
+            session.Flush();
 
             // 再按快递单号
             var recentExpressList = session.Query<ExpressInfo>()
