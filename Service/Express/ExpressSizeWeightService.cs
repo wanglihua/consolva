@@ -24,6 +24,9 @@ public class ExpressSizeWeightService {
             .ToList();
     }
 
+    /// <summary>
+    /// 获取总的包裹数量
+    /// </summary>
     public int GetTotalPackageCount(IList<ExpressSizeWeightInfo> sizeWeightList) {
         if (sizeWeightList.Count == 0) {
             return 0;
@@ -33,7 +36,7 @@ public class ExpressSizeWeightService {
     }
 
     /// <summary>
-    /// 获取体积，单位是立方米 
+    /// 获取总的体积，单位是立方米 
     /// </summary>
     public decimal GetTotalVolume(IList<ExpressSizeWeightInfo> sizeWeightList) {
         if (sizeWeightList.Count == 0) {
@@ -44,7 +47,7 @@ public class ExpressSizeWeightService {
     }
 
     /// <summary>
-    /// 获取体积重，单位是KG 
+    /// 获取总的体积重，单位是KG 
     /// </summary>
     public decimal GetTotalVolumeWeight(IList<ExpressSizeWeightInfo> sizeWeightList) {
         if (sizeWeightList.Count == 0) {
@@ -55,7 +58,7 @@ public class ExpressSizeWeightService {
     }
 
     /// <summary>
-    /// 获取实际重，单位是KG 
+    /// 获取总的实际重，单位是KG 
     /// </summary>
     public decimal GetTotalActualWeight(IList<ExpressSizeWeightInfo> sizeWeightList) {
         if (sizeWeightList.Count == 0) {
@@ -63,6 +66,17 @@ public class ExpressSizeWeightService {
         }
 
         return sizeWeightList.Sum(e => e.Weight * e.PackageCount);
+    }
+
+    /// <summary>
+    /// 获取最长边，单位是cm
+    /// </summary>
+    public decimal GetMaxSizeLength(IList<ExpressSizeWeightInfo> sizeWeightList) {
+        if (sizeWeightList.Count == 0) {
+            return 0;
+        }
+
+        return sizeWeightList.Max(e => Math.Max(Math.Max(e.Width, e.Length), e.Height));
     }
 
     /// <summary>

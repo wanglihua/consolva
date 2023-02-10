@@ -71,10 +71,28 @@ public class LogisticsOrderClientListService {
                 OrderStatus = order.OrderStatus.Name,
                 GoodsValue = order.GoodsValue.ToString("#0.00"),
                 ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
-                
+
                 CheckinTotalPackageCount = expressSizeWeightService.GetTotalPackageCount(sizeWeightListOfOrder).ToString(),
+                CheckinTotalVolume = expressSizeWeightService.GetTotalVolume(sizeWeightListOfOrder).ToString("#0.000000"),
+                CheckinTotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(sizeWeightListOfOrder).ToString("#0.000"),
+                CheckinTotalActualWeight = expressSizeWeightService.GetTotalActualWeight(sizeWeightListOfOrder).ToString("#0.000"),
+                CheckinMaxSideLength = expressSizeWeightService.GetMaxSizeLength(sizeWeightListOfOrder).ToString("#0.0"),
 
                 PackedTotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
+                PackedTotalVolume = orderPackData?.TotalVolume.ToString("#0.000000") ?? string.Empty,
+                PackedTotalVolumeWeight = orderPackData?.TotalVolumeWeight.ToString("#0.000000") ?? string.Empty,
+                PackedTotalActualWeight = orderPackData?.TotalActualWeight.ToString("#0.000000") ?? string.Empty,
+                PackedMaxSideLength = orderPackData?.MaxSideLength.ToString("#0.0") ?? string.Empty,
+
+                FirstModeName = order.FirstMode.Name,
+                CreateTime = order.CreateTime.ToString("yyyy-MM-dd HH:mm"),
+                PackTime = order.CompletePackTime?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty,
+                TransferTime = order.TransferTime?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty,
+                DeliverTime = order.DeliverTime?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty,
+                ShouldPay = order.ArrearsAmountFormula > 0,
+                Paid = order.PayStatus == PayStatus.Paid,
+
+                AirExpressTrackingNo = string.Empty, // todo 暂时为空，后面还要改
             };
 
             orderItemList.Add(orderItem);
