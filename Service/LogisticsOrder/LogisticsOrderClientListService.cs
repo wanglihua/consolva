@@ -4,6 +4,7 @@ using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Express;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
@@ -11,9 +12,11 @@ namespace shunda.Service.LogisticsOrder;
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderClientListService {
     private readonly ISession session;
+    private readonly ExpressSizeWeightService expressSizeWeightService;
 
-    public LogisticsOrderClientListService(ISession session) {
+    public LogisticsOrderClientListService(ISession session, ExpressSizeWeightService expressSizeWeightService) {
         this.session = session;
+        this.expressSizeWeightService = expressSizeWeightService;
     }
 
     /// <summary>
@@ -41,9 +44,22 @@ public class LogisticsOrderClientListService {
             .Where(e => orderIdList.Contains(e.Order.Id))
             .ToList();
 
+        IList<ExpressInfo> expressList = session.Query<ExpressInfo>().Where(e => orderIdList.Contains(e.Order!.Id)).ToList();
+
+        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+        IList<ExpressSizeWeightInfo> sizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
+            .ToList();
+
         IList<LogisticsOrderClientListItem> orderItemList = new List<LogisticsOrderClientListItem>();
         foreach (var order in orderList) {
             int ordreId = order.Id;
+            var expressListOfOrder = expressList.Where(e => e.Order!.Id == ordreId).ToList();
+            IList<string> trackingNoListOfOrder = expressListOfOrder.Select(e => e.TrackingNo).ToList();
+            var sizeWeightListOfOrder = sizeWeightList
+                .Where(e => trackingNoListOfOrder.Contains(e.TrackingNo))
+                .ToList();
+
             var orderPackData = orderPackDataList
                 .Where(e => e.Order.Id == ordreId)
                 .Take(1)
@@ -55,6 +71,9 @@ public class LogisticsOrderClientListService {
                 OrderStatus = order.OrderStatus.Name,
                 GoodsValue = order.GoodsValue.ToString("#0.00"),
                 ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
+                
+                CheckinTotalPackageCount = expressSizeWeightService.GetTotalPackageCount(sizeWeightListOfOrder).ToString(),
+
                 PackedTotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
             };
 
