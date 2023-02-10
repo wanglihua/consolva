@@ -7,7 +7,7 @@ public class WechatArea {
 }
 
 /// <summary>
-/// 后台APP接口
+/// 微信相关
 /// </summary>
 public class WechatAreaAttribute : AreaAttribute {
     public WechatAreaAttribute() : base(WechatArea.Name) {
