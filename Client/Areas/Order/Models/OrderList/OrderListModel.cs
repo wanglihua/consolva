@@ -5,7 +5,7 @@ namespace shunda.Client.Areas.Order.Models.OrderList;
 
 public class OrderListModel {
     [JsonProperty("orderList")]
-    public List<LogisticsOrderClientListItem> OrderList { get; set; } = new List<LogisticsOrderClientListItem>();
+    public IList<LogisticsOrderClientListItem> OrderList { get; set; } = new List<LogisticsOrderClientListItem>();
 
     [JsonProperty("orderCount")]
     public int OrderCount { get; set; }

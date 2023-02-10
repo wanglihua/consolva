@@ -91,6 +91,7 @@ public class LogisticsOrderClientListService {
                 DeliverTime = order.DeliverTime?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty,
                 ShouldPay = order.ArrearsAmountFormula > 0,
                 Paid = order.PayStatus == PayStatus.Paid,
+                CanCancel = order.PayStatus == PayStatus.NotPaid,
 
                 AirExpressTrackingNo = string.Empty, // todo 暂时为空，后面还要改
             };
