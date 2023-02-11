@@ -7,6 +7,7 @@ using shunda.Service.Customer;
 
 namespace shunda.Service.Wechat;
 
+// todo 类名和文件名 改名
 [Service(ServiceType.Scoped)]
 public class WeiXinFollowService {
     private static Logger log = LogManager.GetCurrentClassLogger();
@@ -84,7 +85,10 @@ public class WeiXinFollowService {
             // 场景关注处理
 
             int sceneIdValue = sceneId.Value;
-            var weiXinScene = session.Query<WeiXinSceneInfo>().Where(e => e.SceneId == sceneIdValue).Take(1).SingleOrDefault();
+            var weiXinScene = session.Query<WechatSceneInfo>()
+                .Where(e => e.SceneId == sceneIdValue)
+                .Take(1)
+                .SingleOrDefault();
 
             // log.Warn($"WeiXinFollowService.NewFellow 00500, {sceneId.Value}");
 
