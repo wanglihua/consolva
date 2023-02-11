@@ -14,28 +14,25 @@ public class WechatCallbackService {
         this.session = session;
     }
 
-    public void EnableTracking() {
-        trackingEnabled = true;
+    public bool TrackingEnabled {
+        get { return trackingEnabled; }
+        set { trackingEnabled = value; }
     }
 
-    public void DisabledTracking() {
-        trackingEnabled = false;
+    public void AddWechatOfficialAccountGetCallbackRecord(string param, string body, string responseContent) {
+        AddCallbackRecord(WechatSystemType.WechatOfficialAccount, WechatCallbackHttpMethod.Get, param, body, responseContent);
     }
 
-    public void AddWechatOfficialAccountGetCallbackRecord(string param, string responseContent) {
-        AddCallbackRecord(WechatSystemType.WechatOfficialAccount, WechatCallbackHttpMethod.Get, param, string.Empty, responseContent);
+    public void AddWechatOfficialAccountPostCallbackRecord(string param, string body, string responseContent) {
+        AddCallbackRecord(WechatSystemType.WechatOfficialAccount, WechatCallbackHttpMethod.Post, param, body, responseContent);
     }
 
-    public void AddWechatOfficialAccountPostCallbackRecord(string param, string responseContent) {
-        AddCallbackRecord(WechatSystemType.WechatOfficialAccount, WechatCallbackHttpMethod.Post, param, string.Empty, responseContent);
+    public void AddWechatAppGetCallbackRecord(string param, string body, string responseContent) {
+        AddCallbackRecord(WechatSystemType.WechatApp, WechatCallbackHttpMethod.Get, param, body, responseContent);
     }
 
-    public void AddWechatAppGetCallbackRecord(string param, string responseContent) {
-        AddCallbackRecord(WechatSystemType.WechatApp, WechatCallbackHttpMethod.Get, param, string.Empty, responseContent);
-    }
-
-    public void AddWechatAppPostCallbackRecord(string param, string responseContent) {
-        AddCallbackRecord(WechatSystemType.WechatApp, WechatCallbackHttpMethod.Post, param, string.Empty, responseContent);
+    public void AddWechatAppPostCallbackRecord(string param, string body, string responseContent) {
+        AddCallbackRecord(WechatSystemType.WechatApp, WechatCallbackHttpMethod.Post, param, body, responseContent);
     }
 
     private void AddCallbackRecord(WechatSystemType systemType, WechatCallbackHttpMethod httpMethod, string param, string requestBody, string responseContent) {
