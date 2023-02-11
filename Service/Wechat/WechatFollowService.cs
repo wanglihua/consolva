@@ -7,15 +7,14 @@ using shunda.Service.Customer;
 
 namespace shunda.Service.Wechat;
 
-// todo 类名和文件名 改名
 [Service(ServiceType.Scoped)]
-public class WeiXinFollowService {
+public class WechatFollowService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
     private CustomerPromotionService customerPromotionService;
 
-    public WeiXinFollowService(ISession session, CustomerPromotionService customerPromotionService) {
+    public WechatFollowService(ISession session, CustomerPromotionService customerPromotionService) {
         this.session = session;
         this.customerPromotionService = customerPromotionService;
     }
@@ -33,7 +32,7 @@ public class WeiXinFollowService {
             .Take(1)
             .SingleOrDefault();
 
-        // log.Warn("WeiXinFollowService.NewFellow 00100");
+        // log.Warn("WechatFollowService.NewFellow 00100");
 
         bool isNewFollow = false;
 
@@ -80,7 +79,7 @@ public class WeiXinFollowService {
         }
 
         if (sceneId != null && sceneId.Value != 0) {
-            // log.Warn($"WeiXinFollowService.NewFellow 00400, {sceneId.Value}");
+            // log.Warn($"WechatFollowService.NewFellow 00400, {sceneId.Value}");
 
             // 场景关注处理
 
@@ -90,11 +89,11 @@ public class WeiXinFollowService {
                 .Take(1)
                 .SingleOrDefault();
 
-            // log.Warn($"WeiXinFollowService.NewFellow 00500, {sceneId.Value}");
+            // log.Warn($"WechatFollowService.NewFellow 00500, {sceneId.Value}");
 
             // 客户推广逻辑
             if (weiXinScene != null && weiXinScene.Type == WechatSceneType.CustomerPromotion) {
-                // log.Warn("WeiXinFollowService.NewFellow 00600");
+                // log.Warn("WechatFollowService.NewFellow 00600");
 
                 // 是客户推广的场景值
                 customerPromotionService.NewFellow(openId, sceneIdValue);
