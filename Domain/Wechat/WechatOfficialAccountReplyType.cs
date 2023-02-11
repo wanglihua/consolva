@@ -6,12 +6,12 @@ public class WechatOfficialAccountReplyType : CodeTypeBase {
     /// <summary>
     /// 公众号关注回复
     /// </summary>
-    public static readonly WechatOfficialAccountReplyType FollowReply = new WechatOfficialAccountReplyType(100, "公众号关注回复", "公众号关注回复");
+    public static readonly WechatOfficialAccountReplyType FollowReply = new WechatOfficialAccountReplyType(1000, "公众号关注回复", "公众号关注回复");
 
     /// <summary>
     /// 文字信息默认回复
     /// </summary>
-    public static readonly WechatOfficialAccountReplyType TextMessageReply = new WechatOfficialAccountReplyType(200, "文字信息默认回复", "文字信息默认回复");
+    public static readonly WechatOfficialAccountReplyType TextMessageReply = new WechatOfficialAccountReplyType(2000, "文字信息默认回复", "文字信息默认回复");
 
     /// <summary>
     /// None

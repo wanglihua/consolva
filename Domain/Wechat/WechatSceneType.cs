@@ -6,7 +6,7 @@ public class WechatSceneType : CodeTypeBase {
     /// <summary>
     /// 客户推广
     /// </summary>
-    public static readonly WechatSceneType CustomerPromotion = new WechatSceneType(100, "客户推广", "客户推广");
+    public static readonly WechatSceneType CustomerPromotion = new WechatSceneType(1000, "客户推广", "客户推广");
 
     /// <summary>
     /// None
