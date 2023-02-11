@@ -9,17 +9,17 @@ public class WechatOfficialAccountFollowStatus : CodeTypeBase {
     /// <summary>
     /// 未关注
     /// </summary>
-    public static readonly WechatOfficialAccountFollowStatus NotFollow = new WechatOfficialAccountFollowStatus(100, "未关注", "未关注");
+    public static readonly WechatOfficialAccountFollowStatus NotFollow = new WechatOfficialAccountFollowStatus(1000, "未关注", "未关注");
 
     /// <summary>
     /// 已关注
     /// </summary>
-    public static readonly WechatOfficialAccountFollowStatus Followed = new WechatOfficialAccountFollowStatus(200, "已关注", "已关注");
+    public static readonly WechatOfficialAccountFollowStatus Followed = new WechatOfficialAccountFollowStatus(2000, "已关注", "已关注");
 
     /// <summary>
     /// 取消关注
     /// </summary>
-    public static readonly WechatOfficialAccountFollowStatus UnFollowed = new WechatOfficialAccountFollowStatus(300, "取消关注", "取消关注");
+    public static readonly WechatOfficialAccountFollowStatus UnFollowed = new WechatOfficialAccountFollowStatus(3000, "取消关注", "取消关注");
 
     /// <summary>
     /// None
