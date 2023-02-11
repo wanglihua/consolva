@@ -94,6 +94,10 @@ public class WechatOfficialAccountCallbackController : Controller {
 
             #endregion
 
+            return Content("123"); // 临时让编译通过
+
+            /*
+
             //v4.2.2之后的版本，可以设置每个人上下文消息储存的最大数量，防止内存占用过多，如果该参数小于等于0，则不限制
             var maxRecordCount = 50000;
 
@@ -123,6 +127,8 @@ public class WechatOfficialAccountCallbackController : Controller {
             }
 
             return Content(responseXml, "text/xml", Encoding.UTF8);
+                    
+             */
         }
         catch (Exception exp) {
             log.Error("微信CallbackPost发生错误");
