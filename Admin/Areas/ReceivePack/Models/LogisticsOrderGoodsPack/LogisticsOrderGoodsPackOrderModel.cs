@@ -10,12 +10,10 @@ public class LogisticsOrderGoodsPackOrderModel {
     public LogisticsOrderInfo Order { get; set; } = new LogisticsOrderInfo();
 
     [BindNever]
-    // todo a OrderTotalExpressPackageCount 马上修改
-    public int OrderTotalPackageCount { get; set; }
+    public int OrderTotalExpressPackageCount { get; set; }
 
-    // todo GoodsTypeCommonExpressPackageCount
     [BindNever]
-    public int GoodsTypeCommonPackageCount { get; set; }
+    public int GoodsTypeCommonExpressPackageCount { get; set; }
 
     [BindNever]
     public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = LogisticsGoodsType.GetCustomerList();

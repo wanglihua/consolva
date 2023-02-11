@@ -117,7 +117,7 @@
                             <td class="break-word">
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
-                                    @Model.OrderTotalPackageCount
+                                    @Model.OrderTotalExpressPackageCount
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>
@@ -129,7 +129,7 @@
                             <td>
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
-                                    @(Model.GoodsTypeCommonPackageCount)
+                                    @(Model.GoodsTypeCommonExpressPackageCount)
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>
@@ -141,7 +141,7 @@
                             <td>
                                 <span>共&nbsp;</span>
                                 <span style="color:red; font-weight: bold;">
-                                    @(Model.OrderTotalPackageCount - Model.GoodsTypeCommonPackageCount)
+                                    @(Model.OrderTotalExpressPackageCount - Model.GoodsTypeCommonExpressPackageCount)
                                 </span>
                                 <span>&nbsp;个快递包裹</span>
                             </td>

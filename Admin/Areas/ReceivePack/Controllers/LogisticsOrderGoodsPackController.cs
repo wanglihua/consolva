@@ -467,7 +467,7 @@ public class LogisticsOrderGoodsPackController : Controller {
                 .ToList();
 
             model.ExpressList = expressList;
-            model.OrderTotalPackageCount = expressList.Sum(e => e.PackageCount);
+            model.OrderTotalExpressPackageCount = expressList.Sum(e => e.PackageCount);
 
             // Common count
             var expressCommonTypeList = expressList
@@ -478,7 +478,7 @@ public class LogisticsOrderGoodsPackController : Controller {
                 commonPackageCount = expressCommonTypeList.Sum(e => e.PackageCount);
             }
 
-            model.GoodsTypeCommonPackageCount = commonPackageCount;
+            model.GoodsTypeCommonExpressPackageCount = commonPackageCount;
 
             // 订单备注 快递单备注。查询列表，同一个请求中还会做同样的查询的，所以二级缓存下没有性能问题
             var orderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(nextOrderIdValue);
