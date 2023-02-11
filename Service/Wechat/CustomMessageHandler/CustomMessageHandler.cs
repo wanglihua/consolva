@@ -93,33 +93,20 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
     }
 
     private void SaveMessageRequest(string openId, string messageContent) {
-        WeiXinMessageInfo weiXinMessage = new WeiXinMessageInfo();
-        weiXinMessage.Account = account;
-        weiXinMessage.Direction = WeiXinMessageDirection.CustomerToUser;
-        weiXinMessage.OpenId = openId;
+        WechatOfficialAccountMessageInfo message = new WechatOfficialAccountMessageInfo();
+        message.Direction = WechatOfficialAccountMessageDirection.CustomerToUser;
+        message.OpenId = openId;
 
-        if (account == WeChatOfficialAccount.Account2) {
-            CustomerInfo customer = session.Query<CustomerInfo>()
-                .Where(e => e.OpenId2 == openId)
-                .Take(1)
-                .SingleOrDefault();
+        var customer = session.Query<CustomerInfo>()
+            .Where(e => e.WechatOfficialAccountOpenId == openId)
+            .Take(1)
+            .SingleOrDefault();
 
-            weiXinMessage.Customer = customer;
-        } else if (account == WeChatOfficialAccount.Account1
-                   || account == WeChatOfficialAccount.None
-                   || account == null) {
-            CustomerInfo customer = session.Query<CustomerInfo>()
-                .Where(e => e.OpenId == openId)
-                .Take(1)
-                .SingleOrDefault();
+        message.Customer = customer;
+        message.Message = messageContent;
+        message.Status = WechatOfficialAccountMessageStatus.NotReply;
 
-            weiXinMessage.Customer = customer;
-        }
-
-        weiXinMessage.Message = messageContent;
-        weiXinMessage.Status = WeiXinMessageStatus.NotReply;
-
-        session.Save(weiXinMessage);
+        session.Save(message);
         session.Flush();
     }
 
@@ -156,7 +143,6 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
     /// 处理图片请求
     /// </summary>
     public override IResponseMessageBase OnImageRequest(RequestMessageImage requestMessage) {
-        // todo 可以把图片显示出来的
         string openId = requestMessage.FromUserName;
         SaveMessageRequest(openId, "你有一个图片信息");
         return new ResponseMessageNoResponse();

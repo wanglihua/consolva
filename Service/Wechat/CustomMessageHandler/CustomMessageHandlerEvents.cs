@@ -5,6 +5,8 @@ using shunda.Domain.Wechat;
 
 namespace shunda.Service.Wechat.CustomMessageHandler;
 
+#pragma warning disable 0618
+
 /// <summary>
 /// 自定义MessageHandler
 /// </summary>
@@ -16,22 +18,7 @@ public partial class CustomMessageHandler {
     /// <returns></returns>
     public override IResponseMessageBase OnEvent_ScanRequest(RequestMessageEvent_Scan requestMessage) {
         // to do 好像扫描带参数关注时不走这里 ??
-        var openId = requestMessage.FromUserName;
-
-        string accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
-        var userInfo = UserApi.Info(accessToken, openId);
-        string nickName = userInfo.nickname;
-
-        int? sceneId = null;
-        if (!string.IsNullOrEmpty(requestMessage.EventKey)) {
-            sceneId = int.Parse(requestMessage.EventKey.Replace("qrscene_", ""));
-        }
-
-        wechatFollowService.NewFellow(openId, nickName, sceneId);
-
-        var responseMessage = ResponseMessageBase.CreateFromRequestMessage<ResponseMessageText>(requestMessage);
-        responseMessage.Content = wechatOfficialAccountReplyService.GetReply(WechatOfficialAccountReplyType.FollowReply);
-        return responseMessage;
+        return AddNewFollow(requestMessage, requestMessage.EventKey);
     }
 
     /// <summary>
@@ -39,6 +26,10 @@ public partial class CustomMessageHandler {
     /// </summary>
     /// <returns></returns>
     public override IResponseMessageBase OnEvent_SubscribeRequest(RequestMessageEvent_Subscribe requestMessage) {
+        return AddNewFollow(requestMessage, requestMessage.EventKey);
+    }
+
+    private IResponseMessageBase AddNewFollow(RequestMessageEventBase requestMessage, string eventKey) {
         var openId = requestMessage.FromUserName;
 
         string accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
@@ -46,8 +37,8 @@ public partial class CustomMessageHandler {
         string nickName = userInfo.nickname;
 
         int? sceneId = null;
-        if (!string.IsNullOrEmpty(requestMessage.EventKey)) {
-            sceneId = int.Parse(requestMessage.EventKey.Replace("qrscene_", ""));
+        if (!string.IsNullOrEmpty(eventKey)) {
+            sceneId = int.Parse(eventKey.Replace("qrscene_", ""));
         }
 
         wechatFollowService.NewFellow(openId, nickName, sceneId);
