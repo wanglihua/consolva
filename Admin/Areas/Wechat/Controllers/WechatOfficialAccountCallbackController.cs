@@ -8,9 +8,12 @@ using Senparc.Weixin.MP.Entities.Request;
 using shunda.Core.Config;
 using shunda.Core.Web;
 using shunda.Service.Wechat;
+using shunda.Service.Wechat.CustomMessageHandler;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Wechat.Controllers;
+
+#pragma warning disable 0618
 
 [WechatArea]
 [NoLoginRequired]
@@ -94,20 +97,10 @@ public class WechatOfficialAccountCallbackController : Controller {
 
             #endregion
 
-            return Content("123"); // 临时让编译通过
-
-            /*
-
-            //v4.2.2之后的版本，可以设置每个人上下文消息储存的最大数量，防止内存占用过多，如果该参数小于等于0，则不限制
-            var maxRecordCount = 50000;
-
             //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
             XDocument requestXmlDoc = XDocument.Load(Request.Body);
             MessageContextGlobalConfig.UseMessageContext = false;
-            var messageHandler = new CustomMessageHandler(session, sessionFactory, account, requestXmlDoc, postModel, maxRecordCount);
-
-            // 设置消息去重
-            messageHandler.OmitRepeatedMessage = false;
+            var messageHandler = new CustomMessageHandler(session, requestXmlDoc, postModel);
 
             // 执行微信处理过程（关键）
             messageHandler.Execute();
@@ -127,8 +120,6 @@ public class WechatOfficialAccountCallbackController : Controller {
             }
 
             return Content(responseXml, "text/xml", Encoding.UTF8);
-                    
-             */
         }
         catch (Exception exp) {
             log.Error("微信CallbackPost发生错误");

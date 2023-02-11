@@ -43,6 +43,8 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
         this.wechatOfficialAccountReplyService = new WechatOfficialAccountReplyService(session);
         this.wechatOfficialAccountReplyKeywordService = new WechatOfficialAccountReplyKeywordService(session);
         this.wechatOfficialAccountAccessTokenService = new WechatOfficialAccountAccessTokenService(session);
+
+        this.OmitRepeatedMessage = false;
     }
 
     /// <summary>
