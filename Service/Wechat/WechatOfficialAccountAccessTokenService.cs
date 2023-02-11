@@ -1,6 +1,5 @@
 using CSRedis;
 using NHibernate;
-using NHibernate.Linq;
 using NLog;
 using Senparc.Weixin.MP.Containers;
 using Senparc.Weixin.MP.Entities;
@@ -8,9 +7,8 @@ using shunda.Core.Config;
 using shunda.Core.Redis;
 using shunda.Core.Service;
 using shunda.Domain.Wechat;
-using ISession = NHibernate.ISession;
 
-namespace shunda.Service.Wechat.WechatOfficialAccount;
+namespace shunda.Service.Wechat;
 
 /// <summary>
 /// 这里的实现是用数据库表来存储的，跟现在微信小程序的实现不太一样

@@ -3,7 +3,7 @@ using NLog;
 using shunda.Core.Config;
 using shunda.Core.Service;
 
-namespace shunda.Service.Wechat.WechatApp;
+namespace shunda.Service.Wechat;
 
 /// <summary>
 /// auth.code2Session

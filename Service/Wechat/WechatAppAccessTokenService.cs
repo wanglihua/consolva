@@ -7,7 +7,7 @@ using shunda.Core.Service;
 using shunda.Domain.Wechat;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service.Wechat.WechatApp;
+namespace shunda.Service.Wechat;
 
 /// <summary>
 /// Get Access Token

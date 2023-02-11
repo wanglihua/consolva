@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using NLog;
 using shunda.Core.Service;
 
-namespace shunda.Service.Wechat.WechatApp;
+namespace shunda.Service.Wechat;
 
 /// <summary>
 /// phonenumber.getPhoneNumber
