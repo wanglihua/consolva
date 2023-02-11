@@ -24,7 +24,7 @@ public class WechatOfficialAccountFollowStatus : CodeTypeBase {
     /// <summary>
     /// None
     /// </summary>
-    private static readonly WechatOfficialAccountFollowStatus None = new WechatOfficialAccountFollowStatus(0, "", "");
+    public static readonly WechatOfficialAccountFollowStatus None = new WechatOfficialAccountFollowStatus(0, "", "");
 
     private static readonly IReadOnlyList<WechatOfficialAccountFollowStatus> codeTypeList = new List<WechatOfficialAccountFollowStatus>() {
         NotFollow,
