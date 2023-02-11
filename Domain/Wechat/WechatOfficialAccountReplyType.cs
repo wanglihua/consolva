@@ -41,13 +41,13 @@ public class WechatOfficialAccountReplyType : CodeTypeBase {
     }
 }
 
-public class WechatOfficialAccountReplyTypeTypeHibernateType : CodeHibernateTypeBase<WechatOfficialAccountReplyType> {
+public class WechatOfficialAccountReplyTypeHibernateType : CodeHibernateTypeBase<WechatOfficialAccountReplyType> {
     protected override WechatOfficialAccountReplyType GetCodeTypeById(int id) {
         return WechatOfficialAccountReplyType.GetById(id);
     }
 }
 
-public class WechatOfficialAccountReplyTypeTypeModelBinder : CodeTypeModelBinderBase<WechatOfficialAccountReplyType> {
+public class WechatOfficialAccountReplyTypeModelBinder : CodeTypeModelBinderBase<WechatOfficialAccountReplyType> {
     protected override WechatOfficialAccountReplyType GetCodeTypeById(int id) {
         return WechatOfficialAccountReplyType.GetById(id);
     }

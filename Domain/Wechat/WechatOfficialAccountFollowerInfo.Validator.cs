@@ -10,7 +10,7 @@ public class WechatOfficialAccountFollowerInfoValidator : AbstractValidator<Wech
 
         RuleFor(e => e.NickName).MaximumLength(100).WithMessage("微信昵称长度不能大于100！");
 
-        RuleFor(e => e.OpenId).NotNull().NotEmpty().WithMessage("open id不能为空！");
+        RuleFor(e => e.OpenId).NotNull().WithMessage("open id不能为空！");
         RuleFor(e => e.OpenId).MaximumLength(100).WithMessage("open id长度不能大于100！");
 
         RuleFor(e => e.FollowStatus).NotNull().Must(p => p != WechatOfficialAccountFollowStatus.None).WithMessage("关注状态不能为空！");
