@@ -12,8 +12,8 @@ namespace shunda.Service.Wechat;
 public class WeiXinFollowService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session = null;
-    private CustomerPromotionService customerPromotionService = null;
+    private ISession session;
+    private CustomerPromotionService customerPromotionService;
 
     public WeiXinFollowService(ISession session, CustomerPromotionService customerPromotionService) {
         this.session = session;
@@ -28,7 +28,7 @@ public class WeiXinFollowService {
     /// <param name="sceneId">场景Id</param>
     public void NewFellow(string openId, string nickName, int? sceneId) {
         // 一个 openid 一般【只】对应一个 WechatOfficialAccountFollowerInfo，不会有多于两个的情况
-        var weiXinFollower = session.Query<WechatOfficialAccountFollowerInfo>()
+        var follower = session.Query<WechatOfficialAccountFollowerInfo>()
             .Where(e => e.OpenId == openId)
             .Take(1)
             .SingleOrDefault();
@@ -38,18 +38,18 @@ public class WeiXinFollowService {
         bool isNewFollow = false;
 
         // 重复关注的话，就确认设置能是已关注就行了，这是用户推广的逻辑也不会有
-        if (weiXinFollower == null) {
-            weiXinFollower = new WechatOfficialAccountFollowerInfo();
-            weiXinFollower.OpenId = openId;
+        if (follower == null) {
+            follower = new WechatOfficialAccountFollowerInfo();
+            follower.OpenId = openId;
 
             // 在这里设置最早关注时间，也可以用create_time来代替
 
             isNewFollow = true;
         }
 
-        weiXinFollower.NickName = nickName;
-        weiXinFollower.FollowStatus = WechatOfficialAccountFollowStatus.Followed;
-        weiXinFollower.FollowTime = DateTime.Now;
+        follower.NickName = nickName;
+        follower.FollowStatus = WechatOfficialAccountFollowStatus.Followed;
+        follower.FollowTime = DateTime.Now;
 
         var customer = session.Query<CustomerInfo>()
             .Where(e => e.WechatOfficialAccountOpenId == openId)
@@ -57,16 +57,16 @@ public class WeiXinFollowService {
             .SingleOrDefault();
 
         if (customer != null) {
-            weiXinFollower.Customer = customer;
+            follower.Customer = customer;
         }
 
-        session.SaveOrUpdate(weiXinFollower);
+        session.SaveOrUpdate(follower);
         session.Flush();
 
         // 无论是新的还是老的关注都要更新客户表的状态
         if (customer != null) {
-            customer.FollowStatus = WechatOfficialAccountFollowStatus.Followed;
-            customer.FollowTime = DateTime.Now;
+            customer.WechatOfficialAccountFollowStatus = WechatOfficialAccountFollowStatus.Followed;
+            customer.WechatOfficialAccountFollowTime = DateTime.Now;
 
             session.Update(customer);
             session.Flush();
@@ -124,29 +124,29 @@ public class WeiXinFollowService {
 
         // 检查 微信关注者 表的记录
 
-        var weiXinFollower = session.Query<WechatOfficialAccountFollowerInfo>()
+        var follower = session.Query<WechatOfficialAccountFollowerInfo>()
             .Where(e => e.OpenId == openId)
             .Take(1)
             .SingleOrDefault();
 
-        if (weiXinFollower == null) {
-            weiXinFollower = new WechatOfficialAccountFollowerInfo();
-            weiXinFollower.OpenId = openId;
+        if (follower == null) {
+            follower = new WechatOfficialAccountFollowerInfo();
+            follower.OpenId = openId;
         }
 
         if (customer != null) {
-            weiXinFollower.Customer = customer;
+            follower.Customer = customer;
         }
 
-        weiXinFollower.FollowStatus = WechatOfficialAccountFollowStatus.UnFollowed;
-        weiXinFollower.UnfollowTime = DateTime.Now;
+        follower.FollowStatus = WechatOfficialAccountFollowStatus.UnFollowed;
+        follower.UnfollowTime = DateTime.Now;
 
-        session.SaveOrUpdate(weiXinFollower);
+        session.SaveOrUpdate(follower);
         session.Flush();
 
         if (customer != null) {
-            customer.FollowStatus = WechatOfficialAccountFollowStatus.UnFollowed;
-            customer.UnfollowTime = DateTime.Now;
+            customer.WechatOfficialAccountFollowStatus = WechatOfficialAccountFollowStatus.UnFollowed;
+            customer.WechatOfficialAccountUnfollowTime = DateTime.Now;
 
             session.Update(customer);
             session.Flush();
@@ -155,6 +155,8 @@ public class WeiXinFollowService {
 }
 
 /*
+ 
+ 原来澳拼的逻辑
 
 1. 是否 9688之前的ID。如果是，本次扫专属二维码无效
 

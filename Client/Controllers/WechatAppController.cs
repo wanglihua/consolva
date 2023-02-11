@@ -10,7 +10,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Service.Customer;
-using shunda.Service.Wechat.WechatApp;
+using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Controllers;

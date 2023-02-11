@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Core;
 using Newtonsoft.Json;
+using shunda.Domain.Wechat;
 
 namespace shunda.Domain.Customer;
 
@@ -43,6 +44,24 @@ public class CustomerInfo : Entity
     [MaxLength(100, ErrorMessage = "微信公众号OpenId长度不能大于100！")]
     [JsonProperty("wechatOfficialAccountOpenId")]
     public virtual string WechatOfficialAccountOpenId { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// 微信公众号关注状态，非空
+    /// </summary>
+    [JsonProperty("wechatOfficialAccountFollowStatus")]
+    public virtual WechatOfficialAccountFollowStatus WechatOfficialAccountFollowStatus { get; set; } = WechatOfficialAccountFollowStatus.None;
+
+    /// <summary>
+    /// 微信公众号关注时间，可空
+    /// </summary>
+    [JsonProperty("wechatOfficialAccountFollowTime")]
+    public virtual  DateTime? WechatOfficialAccountFollowTime { get; set; }
+
+    /// <summary>
+    /// 微信公众号取消关注时间，可空
+    /// </summary>
+    [JsonProperty("wechatOfficialAccountUnfollowTime")]
+    public virtual DateTime? WechatOfficialAccountUnfollowTime { get; set; } 
 
     /// <summary>
     /// 微信UnionId，非空

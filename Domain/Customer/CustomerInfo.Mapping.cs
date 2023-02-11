@@ -1,12 +1,11 @@
 using NHibernate;
 using shunda.Core;
+using shunda.Domain.Wechat;
 
 namespace shunda.Domain.Customer;
 
-public class CustomerInfoMapping : EntityMapping<CustomerInfo>
-{
-    public CustomerInfoMapping()
-    {
+public class CustomerInfoMapping : EntityMapping<CustomerInfo> {
+    public CustomerInfoMapping() {
         Table("tbl_customer");
 
         Property(
@@ -46,13 +45,40 @@ public class CustomerInfoMapping : EntityMapping<CustomerInfo>
         );
 
         Property(
+            x => x.WechatOfficialAccountFollowStatus,
+            map => {
+                map.Type<WechatOfficialAccountFollowStatusHibernateType>();
+                map.Column("wechat_official_account_follow_status_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.WechatOfficialAccountFollowTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("wechat_official_account_follow_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.WechatOfficialAccountUnfollowTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("wechat_official_account_unfollow_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
             x => x.WechatUnionId,
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("wechat_union_id");
                 map.NotNullable(true);
             }
-        );        
+        );
 
         Property(
             x => x.Mobile,
