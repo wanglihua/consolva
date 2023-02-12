@@ -16,16 +16,16 @@ public class CustomerLoginLogService {
 
     private readonly ISession session;
     private readonly WebSessionService webSessionService;
-    private readonly WechatSessionService wechatSessionService;
+    private readonly WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
 
     public CustomerLoginLogService(
         ISession session,
         WebSessionService webSessionService,
-        WechatSessionService wechatSessionService
+        WechatOfficialAccountSessionService wechatOfficialAccountSessionService
     ) {
         this.session = session;
         this.webSessionService = webSessionService;
-        this.wechatSessionService = wechatSessionService;
+        this.wechatOfficialAccountSessionService = wechatOfficialAccountSessionService;
     }
 
     public void AddLog(CustomerLoginStage stage, int customerId, HttpRequest request) {
@@ -44,7 +44,7 @@ public class CustomerLoginLogService {
             sessionId = string.Empty;
         }
 
-        string openId = wechatSessionService.GetOpenId();
+        string openId = wechatOfficialAccountSessionService.GetOpenId();
         if (string.IsNullOrWhiteSpace(openId)) {
             openId = string.Empty;
         }

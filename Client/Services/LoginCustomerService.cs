@@ -3,6 +3,7 @@ using NETCore.Encrypt;
 using NHibernate.Linq;
 using NLog;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Redis;
 using shunda.Core.Service;
 using shunda.Core.Util;
@@ -22,15 +23,6 @@ namespace shunda.Client.Services;
 public class LoginCustomerService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    /// <summary>
-    /// 登陆失效时间，这个时间用于Redis的过期时间，公众号登陆时，不用这个时间，公众号登陆应该是长期可以的
-    /// </summary>
-#if DEBUG
-    public static TimeSpan SESSION_TIMEOUT => TimeSpan.FromDays(10);
-#else
-    public static TimeSpan SESSION_TIMEOUT => TimeSpan.FromMinutes(120); // 120 分钟已经足够长
-#endif
-
     private static string AES_KEY => "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";
     private static string AES_IV => "XHK4nB5iWlQhRNzu";
 
@@ -39,7 +31,7 @@ public class LoginCustomerService {
     private readonly PasswordService passwordService;
     private readonly CustomerSupperPasswordService customerSupperPasswordService;
     private readonly CustomerCodeService customerCodeService;
-    private readonly WechatSessionService wechatSessionService;
+    private readonly WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
     private readonly CustomerLoginLogService customerLoginLogService;
 
     public LoginCustomerService(ISession session,
@@ -47,14 +39,14 @@ public class LoginCustomerService {
         PasswordService passwordService,
         CustomerSupperPasswordService customerSupperPasswordService,
         CustomerCodeService customerCodeService,
-        WechatSessionService wechatSessionService,
+        WechatOfficialAccountSessionService wechatOfficialAccountSessionService,
         CustomerLoginLogService customerLoginLogService) {
         this.session = session;
         this.webSessionService = webSessionService;
         this.passwordService = passwordService;
         this.customerSupperPasswordService = customerSupperPasswordService;
         this.customerCodeService = customerCodeService;
-        this.wechatSessionService = wechatSessionService;
+        this.wechatOfficialAccountSessionService = wechatOfficialAccountSessionService;
         this.customerLoginLogService = customerLoginLogService;
     }
 
@@ -166,7 +158,7 @@ public class LoginCustomerService {
             // 是否是微信环境访问，如果是将当前 open id 保存到用户信息里面去
             if (WebUtil.IsWechatRequest(request)) {
                 // 这是一个事务
-                wechatSessionService.BindOpenIdToCustomerAndValidatePromotionNewThread(customerId);
+                wechatOfficialAccountSessionService.BindOpenIdToCustomerAndValidatePromotionNewThread(customerId);
             }
         }
 
@@ -235,7 +227,7 @@ public class LoginCustomerService {
         var loginCustomerIdStrEncrypted = EncryptProvider.AESEncrypt(loginCustomerId.ToString(), AES_KEY, AES_IV);
 
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
-        redisClient.Set(GetLoginCustomerIdRedisKey(), loginCustomerIdStrEncrypted, SESSION_TIMEOUT);
+        redisClient.Set(GetLoginCustomerIdRedisKey(), loginCustomerIdStrEncrypted, WebSessionConfig.LOGIN_CUSTOMER_SESSION_TIMEOUT);
     }
 
     public void Logout(HttpRequest request, HttpResponse response) {
@@ -265,9 +257,9 @@ public class LoginCustomerService {
         }
 
         // openid 也一定要滑动，否则 jsapi支付 会出错
-        string openId = wechatSessionService.GetOpenId();
+        string openId = wechatOfficialAccountSessionService.GetOpenId();
         if (string.IsNullOrWhiteSpace(openId) == false) {
-            wechatSessionService.SetOpenId(openId);
+            wechatOfficialAccountSessionService.SetOpenId(openId);
         }
     }
 }

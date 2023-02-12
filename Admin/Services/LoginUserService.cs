@@ -2,6 +2,7 @@ using CSRedis;
 using NETCore.Encrypt;
 using NLog;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Redis;
 using shunda.Core.Service;
 using shunda.Core.Web;
@@ -17,15 +18,6 @@ namespace shunda.Admin.Services;
 [Service(ServiceType.Scoped)]
 public class LoginUserService {
     private static Logger log = LogManager.GetCurrentClassLogger();
-
-    /// <summary>
-    /// 登陆失效时间，这个时间用于Redis的过期时间
-    /// </summary>
-#if DEBUG
-    public static TimeSpan SessionTimeout = TimeSpan.FromDays(10);
-#else
-        public static TimeSpan SessionTimeout = TimeSpan.FromMinutes(60);
-#endif
 
     private static string aesKey = "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";
     private static string aesIv = "XHK4nB5iWlQhRNzu";
@@ -230,7 +222,7 @@ public class LoginUserService {
         var loginUserIdStrEncrypted = EncryptProvider.AESEncrypt(loginUserId.ToString(), aesKey, aesIv);
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
 
-        redisClient.Set(GetLoginUserIdRedisKey(), loginUserIdStrEncrypted, SessionTimeout);
+        redisClient.Set(GetLoginUserIdRedisKey(), loginUserIdStrEncrypted, WebSessionConfig.LOGIN_USER_SESSION_TIMEOUT);
     }
 
     /// <summary>
