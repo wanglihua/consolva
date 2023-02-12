@@ -6,15 +6,17 @@ using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.AdvancedAPIs.OAuth;
 using shunda.Core.Config;
 using shunda.Core.Redis;
+using shunda.Core.Web;
 using shunda.Service.Wechat;
 
 namespace shunda.Client.Controllers;
 
+[NoLoginRequired]
 public class WechatOfficialAccountOAuthController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
-    private WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService;
+    private readonly WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
+    private readonly WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService;
 
     public WechatOfficialAccountOAuthController(WechatOfficialAccountSessionService wechatOfficialAccountSessionService,
         WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService
