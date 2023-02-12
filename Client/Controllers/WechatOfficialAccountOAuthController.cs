@@ -4,20 +4,19 @@ using NLog;
 using Senparc.Weixin;
 using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.AdvancedAPIs.OAuth;
-using shunda.Client.Services;
 using shunda.Core.Config;
 using shunda.Core.Redis;
 using shunda.Service.Wechat;
 
 namespace shunda.Client.Controllers;
 
-public class OAuthController : Controller {
+public class WechatOfficialAccountOAuthController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
-    private WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService = null;
+    private WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService;
 
-    public OAuthController(WechatOfficialAccountSessionService wechatOfficialAccountSessionService,
+    public WechatOfficialAccountOAuthController(WechatOfficialAccountSessionService wechatOfficialAccountSessionService,
         WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService
     ) {
         this.wechatOfficialAccountSessionService = wechatOfficialAccountSessionService;
