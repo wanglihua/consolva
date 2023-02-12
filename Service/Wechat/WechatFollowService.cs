@@ -23,9 +23,10 @@ public class WechatFollowService {
     /// 新的微信关注
     /// </summary>
     /// <param name="openId">open id</param>
+    /// <param name="unionId">union id</param>
     /// <param name="nickName">微信昵称</param>
     /// <param name="sceneId">场景Id</param>
-    public void NewFellow(string openId, string nickName, int? sceneId) {
+    public void NewFellow(string openId, string unionId, string nickName, int? sceneId) {
         // 一个 openid 一般【只】对应一个 WechatOfficialAccountFollowerInfo，不会有多于两个的情况
         var follower = session.Query<WechatOfficialAccountFollowerInfo>()
             .Where(e => e.OpenId == openId)
@@ -46,12 +47,13 @@ public class WechatFollowService {
             isNewFollow = true;
         }
 
+        follower.UnionId = unionId;
         follower.NickName = nickName;
         follower.FollowStatus = WechatOfficialAccountFollowStatus.Followed;
         follower.FollowTime = DateTime.Now;
 
         var customer = session.Query<CustomerInfo>()
-            .Where(e => e.WechatOfficialAccountOpenId == openId)
+            .Where(e => e.WechatOfficialAccountOpenId == openId || e.WechatUnionId == unionId)
             .Take(1)
             .SingleOrDefault();
 
@@ -64,6 +66,8 @@ public class WechatFollowService {
 
         // 无论是新的还是老的关注都要更新客户表的状态
         if (customer != null) {
+            customer.WechatOfficialAccountOpenId = openId;
+            customer.WechatUnionId = unionId;
             customer.WechatOfficialAccountFollowStatus = WechatOfficialAccountFollowStatus.Followed;
             customer.WechatOfficialAccountFollowTime = DateTime.Now;
 
@@ -96,7 +100,7 @@ public class WechatFollowService {
                 // log.Warn("WechatFollowService.NewFellow 00600");
 
                 // 是客户推广的场景值
-                customerPromotionService.NewFellow(openId, sceneIdValue);
+                customerPromotionService.NewFellow(openId, unionId, sceneIdValue);
             }
         }
     }
@@ -105,32 +109,33 @@ public class WechatFollowService {
     /// 新微信关注，无场景
     /// </summary>
     /// <param name="openId">open id</param>
+    /// <param name="unionId">union id</param>
     /// <param name="nickName">微信昵称</param>
-    public void NewFellow(string openId, string nickName) {
-        NewFellow(openId, nickName, null);
+    public void NewFellow(string openId, string unionId, string nickName) {
+        NewFellow(openId, unionId, nickName, null);
     }
 
     /// <summary>
     /// 取消关注
     /// </summary>
-    /// <param name="openId"></param>
+    /// <param name="openId">open id，只有这个参数，不使用 union id</param>
     public void UnFollow(string openId) {
         var customer = session.Query<CustomerInfo>()
-            .Where(e => e.WechatOfficialAccountOpenId == openId)
+            .Where(e => e.WechatOfficialAccountOpenId == openId) // 只按 open id: WechatOfficialAccountOpenId 查询 
             .Take(1)
             .SingleOrDefault();
-
 
         // 检查 微信关注者 表的记录
 
         var follower = session.Query<WechatOfficialAccountFollowerInfo>()
-            .Where(e => e.OpenId == openId)
+            .Where(e => e.OpenId == openId) // 只按 open id: WechatOfficialAccountOpenId 查询 
             .Take(1)
             .SingleOrDefault();
 
         if (follower == null) {
             follower = new WechatOfficialAccountFollowerInfo();
             follower.OpenId = openId;
+            follower.UnionId = string.Empty; // 只能先设置一个空的字符串了
         }
 
         if (customer != null) {
@@ -144,6 +149,8 @@ public class WechatFollowService {
         session.Flush();
 
         if (customer != null) {
+            // 这个 open id 可以置空也可以不置空。下次关注时还是会设置一个一样的 open id。这里选择置空。
+            customer.WechatOfficialAccountOpenId = string.Empty; // 只设置 open id: WechatOfficialAccountOpenId
             customer.WechatOfficialAccountFollowStatus = WechatOfficialAccountFollowStatus.UnFollowed;
             customer.WechatOfficialAccountUnfollowTime = DateTime.Now;
 

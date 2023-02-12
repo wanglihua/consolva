@@ -76,13 +76,15 @@ public class WechatAppController : Controller {
         if (customer != null && (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId)) {
             customer.WechatAppOpenId = wechatAppOpenId;
             customer.WechatUnionId = wechatUnionId;
+            
+            // todo 可能得更新微信公众号 open id
 
             session.Update(customer);
             session.Flush();
         }
 
         if (customer == null) {
-            customer = customerService.CreateCustomerByOpenId(wechatAppOpenId, string.Empty, wechatUnionId);
+            customer = customerService.CreateCustomerByOpenId(wechatAppOpenId, string.Empty, wechatUnionId); // todo 这里也加上可能得微信公众号open id
         }
 
         loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, Request);

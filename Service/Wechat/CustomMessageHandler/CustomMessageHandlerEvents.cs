@@ -35,13 +35,22 @@ public partial class CustomMessageHandler {
         string accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
         var userInfo = UserApi.Info(accessToken, openId);
         string nickName = userInfo.nickname;
+        string unionId = userInfo.unionid;
+
+        if (string.IsNullOrWhiteSpace(nickName)) {
+            nickName = string.Empty;
+        }
+
+        if (string.IsNullOrWhiteSpace(unionId)) {
+            unionId = string.Empty;
+        }
 
         int? sceneId = null;
         if (!string.IsNullOrEmpty(eventKey)) {
             sceneId = int.Parse(eventKey.Replace("qrscene_", ""));
         }
 
-        wechatFollowService.NewFellow(openId, nickName, sceneId);
+        wechatFollowService.NewFellow(openId, unionId, nickName, sceneId);
 
         var responseMessage = ResponseMessageBase.CreateFromRequestMessage<ResponseMessageText>(requestMessage);
         responseMessage.Content = wechatOfficialAccountReplyService.GetReply(WechatOfficialAccountReplyType.FollowReply);

@@ -12,6 +12,6 @@ public class CustomerPromotionService {
         this.session = session;
     }
 
-    public void NewFellow(string openId, int sceneId) {
+    public void NewFellow(string openId, string unionId, int sceneId) {
     }
 }
