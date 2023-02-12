@@ -39,6 +39,15 @@ public class WechatOfficialAccountFollowerInfoMapping : EntityMapping<WechatOffi
         );
 
         Property(
+            x => x.UnionId,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("union_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.FollowStatus,
             map => {
                 map.Type<WechatOfficialAccountFollowStatusHibernateType>();
@@ -64,6 +73,5 @@ public class WechatOfficialAccountFollowerInfoMapping : EntityMapping<WechatOffi
                 map.NotNullable(false);
             }
         );
-
     }
 }

@@ -24,6 +24,11 @@ public class WechatOfficialAccountFollowerInfo : Entity {
     public virtual string OpenId { get; set; } = string.Empty;
 
     /// <summary>
+    /// union id，非空
+    /// </summary>
+    public virtual string UnionId { get; set; } = string.Empty;
+
+    /// <summary>
     /// 关注状态，非空
     /// </summary>
     public virtual WechatOfficialAccountFollowStatus FollowStatus { get; set; } = WechatOfficialAccountFollowStatus.None;
@@ -39,6 +44,6 @@ public class WechatOfficialAccountFollowerInfo : Entity {
     public virtual DateTime? UnfollowTime { get; set; } = null;
 
     public override void Validate() {
-        ValidationUtil.ValidateEntity<WechatOfficialAccountFollowerInfoValidator,  WechatOfficialAccountFollowerInfo>(this);
+        ValidationUtil.ValidateEntity<WechatOfficialAccountFollowerInfoValidator, WechatOfficialAccountFollowerInfo>(this);
     }
 }
