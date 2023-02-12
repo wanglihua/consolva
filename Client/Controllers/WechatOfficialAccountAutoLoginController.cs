@@ -54,9 +54,11 @@ public class WechatOfficialAccountAutoLoginController : Controller {
                 // 登录的时候会自动关联 open id
                 return Redirect(clientLoginUrl);
             }
+            
+            // todo 这里参考 微信小程序自动登录
 
             // 使用 open id 自动登录
-            LoginResult result = loginCustomerService.Login(openId, Request);
+            LoginResult result = loginCustomerService.Login(customer, CustomerLoginStage.WechatOfficialAccountLogin, Request);
             if (result.ResultCode != LoginResultCode.Success) {
                 return Redirect(clientLoginUrl);
             }

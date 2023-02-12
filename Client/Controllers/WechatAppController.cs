@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NHibernate;
@@ -12,12 +13,12 @@ using shunda.Domain.Customer;
 using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace shunda.Client.Controllers;
 
 [NoLoginRequired]
-public class WechatAppController : Controller
-{
+public class WechatAppController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
@@ -31,8 +32,7 @@ public class WechatAppController : Controller
         WechatAppAuthCodeSessionService wechatAppAuthCodeSessionService,
         CustomerService customerService,
         LoginCustomerService loginCustomerService,
-        WechatAppPhoneNumberService wechatAppPhoneNumberService)
-    {
+        WechatAppPhoneNumberService wechatAppPhoneNumberService) {
         this.session = session;
         this.wechatAppAuthCodeSessionService = wechatAppAuthCodeSessionService;
         this.customerService = customerService;
@@ -40,22 +40,23 @@ public class WechatAppController : Controller
         this.wechatAppPhoneNumberService = wechatAppPhoneNumberService;
     }
 
-    public class LoginParam
-    {
+    public class LoginParam {
         [BindProperty(Name = "code")]
         [JsonProperty("code")]
         public string Code { get; set; } = string.Empty;
     }
 
+    public class LoginParamValidator : AbstractValidator<LoginParam> {
+        public LoginParamValidator() {
+            RuleFor(e => e.Code).NotNull().NotEmpty().WithMessage("code不能为空！");
+        }
+    }
+
     [HttpPost]
     [Route("/client/wechat/app/login")]
     [Transactional]
-    public IActionResult Login([FromBody] LoginParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
+    public IActionResult Login([FromBody] LoginParam param) {
+        ValidationUtil.Validate<LoginParamValidator, LoginParam>(param);
 
         var result = wechatAppAuthCodeSessionService.GetResult(param.Code);
         string wechatAppOpenId = result.OpenId;
@@ -72,8 +73,7 @@ public class WechatAppController : Controller
             .Take(1)
             .SingleOrDefault();
 
-        if (customer != null && (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId))
-        {
+        if (customer != null && (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId)) {
             customer.WechatAppOpenId = wechatAppOpenId;
             customer.WechatUnionId = wechatUnionId;
 
@@ -81,8 +81,7 @@ public class WechatAppController : Controller
             session.Flush();
         }
 
-        if (customer == null)
-        {
+        if (customer == null) {
             customer = customerService.CreateCustomerByOpenId(wechatAppOpenId, string.Empty, wechatUnionId);
         }
 
@@ -94,8 +93,7 @@ public class WechatAppController : Controller
         });
     }
 
-    public class GetPhoneNumberParam
-    {
+    public class GetPhoneNumberParam {
         [BindProperty(Name = "code")]
         [JsonProperty("code")]
         [Required(ErrorMessage = "获取电话号码, code 不能为空！")]
@@ -104,10 +102,8 @@ public class WechatAppController : Controller
 
     [HttpPost]
     [Route("/client/wechat/app/get/phone/number")]
-    public IActionResult GetPhoneNumber([FromBody] GetPhoneNumberParam param)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult GetPhoneNumber([FromBody] GetPhoneNumberParam param) {
+        if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
         }
 
