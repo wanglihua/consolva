@@ -60,9 +60,11 @@ public class WechatOfficialAccountMenuController : Controller {
         //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/express/checkin/list")
         // });
 
-        mainMenu1.sub_button.Add(new SingleViewButton {
-            name = "官网首页",
-            // url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile")
+        mainMenu1.sub_button.Add(new SingleMiniProgramButton {
+            name = "舜达首页",
+            // url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/client")
+            appid = WechatAppConfig.AppId,
+            pagepath = "pages/home/home_index",
         });
 
         menu.button.Add(mainMenu1);
