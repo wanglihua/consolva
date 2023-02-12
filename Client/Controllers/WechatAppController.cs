@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using System.Data.Entity;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NHibernate;
 using NHibernate.Criterion;
 using NLog;
 using shunda.Client.Services;
@@ -11,7 +9,6 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
-using shunda.Domain.Wechat;
 using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;

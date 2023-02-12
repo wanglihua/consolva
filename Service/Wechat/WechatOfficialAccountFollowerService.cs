@@ -20,7 +20,7 @@ public class WechatOfficialAccountFollowerService {
     }
 
     /// <summary>
-    /// 通过微信公众号关注记录中的 union id 获取 open id
+    /// 通过微信公众号关注记录中的 union id 获取 微信公众号 open id
     /// </summary>
     /// <param name="unionId">union id</param>
     /// <returns></returns>
@@ -30,6 +30,19 @@ public class WechatOfficialAccountFollowerService {
             .Take(1)
             .SingleOrDefault();
         return follower?.OpenId ?? string.Empty;
+    }
+
+    /// <summary>
+    /// 通过微信公众号关注记录中的 微信公众号 open id 获取 union id 
+    /// </summary>
+    /// <param name="wechatOfficialAccountOpenId">微信公众号open id</param>
+    /// <returns></returns>
+    public string GetUnionId(string wechatOfficialAccountOpenId) {
+        var follower = session.Query<WechatOfficialAccountFollowerInfo>()
+            .Where(e => e.OpenId == wechatOfficialAccountOpenId)
+            .Take(1)
+            .SingleOrDefault();
+        return follower?.UnionId ?? string.Empty;
     }
 
     /// <summary>

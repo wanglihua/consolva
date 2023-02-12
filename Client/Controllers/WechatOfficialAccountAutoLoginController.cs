@@ -7,6 +7,7 @@ using shunda.Core.Config;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
 
@@ -16,15 +17,21 @@ namespace shunda.Client.Controllers;
 public class WechatOfficialAccountAutoLoginController : Controller {
     private readonly ISession session;
     private readonly WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
+    private readonly CustomerService customerService;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService;
 
     public WechatOfficialAccountAutoLoginController(ISession session,
         WechatOfficialAccountSessionService wechatOfficialAccountSessionService,
-        LoginCustomerService loginCustomerService
+        CustomerService customerService,
+        LoginCustomerService loginCustomerService,
+        WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService
     ) {
         this.session = session;
         this.wechatOfficialAccountSessionService = wechatOfficialAccountSessionService;
+        this.customerService = customerService;
         this.loginCustomerService = loginCustomerService;
+        this.wechatOfficialAccountFollowerService = wechatOfficialAccountFollowerService;
     }
 
     [HttpGet]
@@ -48,19 +55,25 @@ public class WechatOfficialAccountAutoLoginController : Controller {
                 .Where(e => e.WechatOfficialAccountOpenId == openId)
                 .Take(1)
                 .SingleOrDefault();
+
+            if (customer != null && string.IsNullOrWhiteSpace(customer.WechatUnionId)) {
+                string unionId = wechatOfficialAccountFollowerService.GetUnionId(openId); // 这个结果可能为空
+                if (string.IsNullOrWhiteSpace(unionId) == false) {
+                    customer.WechatUnionId = unionId;
+
+                    session.Update(customer);
+                    session.Flush();
+                }
+            }
+
             // 就是 open id 还没关联客户
             if (customer == null) {
-                // 登录的时候会自动关联 open id
-                return Redirect(clientLoginUrl);
+                string unionId = wechatOfficialAccountFollowerService.GetUnionId(openId); // 这个结果可能为空
+                customer = customerService.CreateCustomerByOpenId(string.Empty, openId, unionId);
             }
-            
-            // todo 这里参考 微信小程序自动登录
 
             // 使用 open id 自动登录
-            LoginResult result = loginCustomerService.Login(customer, CustomerLoginStage.WechatOfficialAccountLogin, Request);
-            if (result.ResultCode != LoginResultCode.Success) {
-                return Redirect(clientLoginUrl);
-            }
+            loginCustomerService.Login(customer, CustomerLoginStage.WechatOfficialAccountLogin, Request);
 
             return Redirect(url);
         }
