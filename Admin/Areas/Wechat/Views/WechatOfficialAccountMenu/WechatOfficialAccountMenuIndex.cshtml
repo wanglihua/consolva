@@ -1,0 +1,40 @@
+@using shunda.Core.Web
+@model shunda.Admin.Areas.Wechat.Models.WechatOfficialAccountMenu.WechatOfficialAccountMenuIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = "微信公众号菜单";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="wechat-menu">微信设置</li>
+    <li class="active" data-menu="wechat-official-account-menu-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-success btn-sm" onclick="uploadMenu();">
+        <i class="ace-icon fa fa-plus"></i>
+        上传菜单
+    </button>
+</div>
+
+<script type="text/javascript">
+    
+    function uploadMenu() {
+        $.msg.confirm("确认要上传微信公众号菜单吗？", function() {
+            $.ajax({
+                url: '@Url.Action("UploadMenu", "WechatOfficialAccountMenu")',
+                type: "POST",
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    } 
+                    
+                    $.msg.show(data.message);
+                }
+            });
+        });
+    }
+    
+</script>
