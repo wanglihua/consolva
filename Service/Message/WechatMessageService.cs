@@ -158,7 +158,7 @@ public class WechatMessageService
                 remark = new TemplateDataItem(remark)
             };
 
-            return SendTemplateMessage(openId, WeChatConfig.OrderNoticeTemplateId, data, url);
+            return SendTemplateMessage(openId, WechatOfficialAccountConfig.OrderNoticeTemplateId, data, url);
 #endif
     }
 
@@ -193,7 +193,7 @@ public class WechatMessageService
                 remark = new TemplateDataItem(remark + "【" + sender + "】")
             };
 
-            return SendTemplateMessage(openId, WeChatConfig.OrderAbnormalTemplateId, data);
+            return SendTemplateMessage(openId, WechatOfficialAccountConfig.OrderAbnormalTemplateId, data);
 #endif
     }
 }

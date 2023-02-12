@@ -57,7 +57,7 @@ public class WechatOfficialAccountCallbackController : Controller {
     public IActionResult CallbackGet(PostModel postModel, string echostr) {
         string responseContent;
 
-        string token = WeChatOfficialAccountConfig.Token;
+        string token = WechatOfficialAccountConfig.Token;
 
         if (CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, token)) {
             responseContent = echostr; //返回随机字符串则表示验证通过
@@ -75,9 +75,9 @@ public class WechatOfficialAccountCallbackController : Controller {
     public IActionResult CallbackPost(PostModel postModel) {
         try {
             // postModel 里面的这三个值都为空
-            string token = WeChatOfficialAccountConfig.Token;
-            string encodingAesKey = WeChatOfficialAccountConfig.EncodingAESKey;
-            string appId = WeChatOfficialAccountConfig.AppId;
+            string token = WechatOfficialAccountConfig.Token;
+            string encodingAesKey = WechatOfficialAccountConfig.EncodingAESKey;
+            string appId = WechatOfficialAccountConfig.AppId;
 
             if (!CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, token)) {
                 log.Error($"CallbackPost 微信调用参数错误：Signature: {postModel.Signature}, Timestamp: {postModel.Timestamp}, Nonce: {postModel.Nonce}, token: {token}");

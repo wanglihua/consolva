@@ -38,7 +38,7 @@ public class WechatOfficialAccountAccessTokenService {
             return accessToken;
         }
 
-        AccessTokenResult result = AccessTokenContainer.GetAccessTokenResult(WeChatOfficialAccountConfig.AppId, true);
+        AccessTokenResult result = AccessTokenContainer.GetAccessTokenResult(WechatOfficialAccountConfig.AppId, true);
 
         if (string.IsNullOrWhiteSpace(result.access_token)) {
             throw new Exception("获取token出错：" + result.errmsg);
