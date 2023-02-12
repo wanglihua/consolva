@@ -15,19 +15,19 @@ public class OAuthController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
-    private WeiXinOauthAccessTokenService weiXinOauthAccessTokenService = null;
+    private WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService = null;
 
     public OAuthController(WechatOfficialAccountSessionService wechatOfficialAccountSessionService,
-        WeiXinOauthAccessTokenService weiXinOauthAccessTokenService
+        WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService
     ) {
         this.wechatOfficialAccountSessionService = wechatOfficialAccountSessionService;
-        this.weiXinOauthAccessTokenService = weiXinOauthAccessTokenService;
+        this.wechatOfficialAccountOAuthAccessTokenService = wechatOfficialAccountOAuthAccessTokenService;
     }
 
-    public const string CallbackUrl1 = "/oauth/callback/1";
+    public const string CallbackUrl = "/client/wechat/official/account/oauth/callback";
 
     [HttpGet]
-    [Route(CallbackUrl1)]
+    [Route(CallbackUrl)]
     public IActionResult Callback1(string code, string state, string returnUrl) {
         return CallbackInternal(code, state, returnUrl);
     }
@@ -69,7 +69,7 @@ public class OAuthController : Controller {
                 OAuthAccessTokenResult result = OAuthApi.GetAccessToken(WechatOfficialAccountConfig.AppId, WechatOfficialAccountConfig.AppSecret, code); // 这个 access_token 是 OAuth 专用的
 
                 // 插入数据用于调试
-                weiXinOauthAccessTokenService.Insert(code, result.access_token, result.openid);
+                wechatOfficialAccountOAuthAccessTokenService.Insert(code, result.access_token, result.openid);
 
                 if (result.errcode != ReturnCode.请求成功) {
                     throw new Exception($"获取 access token 错误：{result.errmsg}, code: {code}");
