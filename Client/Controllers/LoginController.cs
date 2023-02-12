@@ -11,8 +11,7 @@ using shunda.Service.Customer;
 namespace shunda.Client.Controllers;
 
 [NoLoginRequired]
-public class LoginController : Controller
-{
+public class LoginController : Controller {
     private readonly CaptchaService captchaService;
     private readonly LoginCustomerService loginCustomerService;
     private readonly CustomerCodeService customerCodeService;
@@ -20,22 +19,17 @@ public class LoginController : Controller
     public LoginController(
         CaptchaService captchaService,
         LoginCustomerService loginCustomerService,
-        CustomerCodeService customerCodeService)
-    {
+        CustomerCodeService customerCodeService) {
         this.captchaService = captchaService;
         this.loginCustomerService = loginCustomerService;
         this.customerCodeService = customerCodeService;
     }
-    
-    // todo 加上一个登录页面
 
     [HttpPost]
     [Route("/client/login")]
     [Transactional]
-    public IActionResult Login(LoginModel model)
-    {
-        if (ModelState.IsValid == false)
-        {
+    public IActionResult Login(LoginModel model) {
+        if (ModelState.IsValid == false) {
             // if (model.IsReactRequest)
             // {
             //     throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(this.ModelState));
@@ -48,8 +42,7 @@ public class LoginController : Controller
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(this.ModelState));
         }
 
-        if (captchaService.CheckInputCode(model.Captcha) == false)
-        {
+        if (captchaService.CheckInputCode(model.Captcha) == false) {
             // 如果发现验证码不对,应该马上把原来的验证码设为无效
             captchaService.MakeCurrentExpire();
 
@@ -61,13 +54,11 @@ public class LoginController : Controller
 
         LoginResult loginResult = loginCustomerService.Login(loginName, password, Request);
 
-        if (loginResult.ResultCode == LoginResultCode.CustomerFrozen)
-        {
+        if (loginResult.ResultCode == LoginResultCode.CustomerFrozen) {
             throw new ValidationException("用户账号已冻结！");
         }
 
-        if (loginResult.ResultCode != LoginResultCode.Success)
-        {
+        if (loginResult.ResultCode != LoginResultCode.Success) {
             // 如果发现用户名或者密码不对,应该马上把原来的验证码设为无效
             captchaService.MakeCurrentExpire();
 
@@ -78,13 +69,11 @@ public class LoginController : Controller
         string vip = string.Empty;
 
         CustomerInfo? customer = loginResult.Customer;
-        if (customer != null)
-        {
+        if (customer != null) {
             customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
             vip = customer.Level.Name;
-            if (customer.Level == CustomerLevel.Vip)
-            {
+            if (customer.Level == CustomerLevel.Vip) {
                 vip = customer.VipRank.Name;
             }
         }
@@ -99,8 +88,7 @@ public class LoginController : Controller
 
     [HttpPost]
     [Route("/client/logout")]
-    public IActionResult Logout()
-    {
+    public IActionResult Logout() {
         loginCustomerService.Logout(Request, Response);
 
         return Json(new JsonResultData {
