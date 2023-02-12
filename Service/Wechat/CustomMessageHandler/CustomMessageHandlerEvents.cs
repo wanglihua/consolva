@@ -50,7 +50,7 @@ public partial class CustomMessageHandler {
             sceneId = int.Parse(eventKey.Replace("qrscene_", ""));
         }
 
-        wechatFollowService.NewFellow(openId, unionId, nickName, sceneId);
+        wechatOfficialAccountFollowerService.NewFellow(openId, unionId, nickName, sceneId);
 
         var responseMessage = ResponseMessageBase.CreateFromRequestMessage<ResponseMessageText>(requestMessage);
         responseMessage.Content = wechatOfficialAccountReplyService.GetReply(WechatOfficialAccountReplyType.FollowReply);
@@ -64,7 +64,7 @@ public partial class CustomMessageHandler {
     /// </summary>
     public override IResponseMessageBase OnEvent_UnsubscribeRequest(RequestMessageEvent_Unsubscribe requestMessage) {
         var openId = requestMessage.FromUserName;
-        wechatFollowService.UnFollow(openId);
+        wechatOfficialAccountFollowerService.UnFollow(openId);
 
         return new ResponseMessageNoResponse(); //不返回任何消息
     }

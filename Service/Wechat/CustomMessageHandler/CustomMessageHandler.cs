@@ -26,7 +26,7 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
 
     private readonly ISession session;
 
-    private readonly WechatFollowService wechatFollowService;
+    private readonly WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService;
     private readonly WechatOfficialAccountReplyService wechatOfficialAccountReplyService;
     private readonly WechatOfficialAccountReplyKeywordService wechatOfficialAccountReplyKeywordService;
     private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;
@@ -39,7 +39,7 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
     public CustomMessageHandler(ISession session, XDocument document, PostModel postModel, int maxRecordCount = 0)
         : base(document, postModel, maxRecordCount) {
         this.session = session;
-        this.wechatFollowService = new WechatFollowService(session, new CustomerPromotionService(session));
+        this.wechatOfficialAccountFollowerService = new WechatOfficialAccountFollowerService(session, new CustomerPromotionService(session));
         this.wechatOfficialAccountReplyService = new WechatOfficialAccountReplyService(session);
         this.wechatOfficialAccountReplyKeywordService = new WechatOfficialAccountReplyKeywordService(session);
         this.wechatOfficialAccountAccessTokenService = new WechatOfficialAccountAccessTokenService(session);

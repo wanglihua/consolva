@@ -8,15 +8,28 @@ using shunda.Service.Customer;
 namespace shunda.Service.Wechat;
 
 [Service(ServiceType.Scoped)]
-public class WechatFollowService {
+public class WechatOfficialAccountFollowerService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private ISession session;
     private CustomerPromotionService customerPromotionService;
 
-    public WechatFollowService(ISession session, CustomerPromotionService customerPromotionService) {
+    public WechatOfficialAccountFollowerService(ISession session, CustomerPromotionService customerPromotionService) {
         this.session = session;
         this.customerPromotionService = customerPromotionService;
+    }
+
+    /// <summary>
+    /// 通过微信公众号关注记录中的 union id 获取 open id
+    /// </summary>
+    /// <param name="unionId">union id</param>
+    /// <returns></returns>
+    public string GetWechatOfficialAccountOpenId(string unionId) {
+        var follower = session.Query<WechatOfficialAccountFollowerInfo>()
+            .Where(e => e.UnionId == unionId)
+            .Take(1)
+            .SingleOrDefault();
+        return follower?.OpenId ?? string.Empty;
     }
 
     /// <summary>
@@ -41,8 +54,6 @@ public class WechatFollowService {
         if (follower == null) {
             follower = new WechatOfficialAccountFollowerInfo();
             follower.OpenId = openId;
-
-            // 在这里设置最早关注时间，也可以用create_time来代替
 
             isNewFollow = true;
         }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Domain.Wechat;
 using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
@@ -26,18 +28,21 @@ public class WechatAppController : Controller {
     private readonly CustomerService customerService;
     private readonly LoginCustomerService loginCustomerService;
     private readonly WechatAppPhoneNumberService wechatAppPhoneNumberService;
+    private readonly WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService;
 
     public WechatAppController(
         ISession session,
         WechatAppAuthCodeSessionService wechatAppAuthCodeSessionService,
         CustomerService customerService,
         LoginCustomerService loginCustomerService,
-        WechatAppPhoneNumberService wechatAppPhoneNumberService) {
+        WechatAppPhoneNumberService wechatAppPhoneNumberService,
+        WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService) {
         this.session = session;
         this.wechatAppAuthCodeSessionService = wechatAppAuthCodeSessionService;
         this.customerService = customerService;
         this.loginCustomerService = loginCustomerService;
         this.wechatAppPhoneNumberService = wechatAppPhoneNumberService;
+        this.wechatOfficialAccountFollowerService = wechatOfficialAccountFollowerService;
     }
 
     public class LoginParam {
@@ -76,15 +81,22 @@ public class WechatAppController : Controller {
         if (customer != null && (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId)) {
             customer.WechatAppOpenId = wechatAppOpenId;
             customer.WechatUnionId = wechatUnionId;
-            
-            // todo 可能得更新微信公众号 open id
+
+            // 可能的更新微信公众号 open id
+            if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId)) {
+                string wechatOfficialAccountOpenId = wechatOfficialAccountFollowerService.GetWechatOfficialAccountOpenId(wechatUnionId);
+                if (string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == false) {
+                    customer.WechatOfficialAccountOpenId = wechatOfficialAccountOpenId;
+                }
+            }
 
             session.Update(customer);
             session.Flush();
         }
 
         if (customer == null) {
-            customer = customerService.CreateCustomerByOpenId(wechatAppOpenId, string.Empty, wechatUnionId); // todo 这里也加上可能得微信公众号open id
+            string wechatOfficialAccountOpenId = wechatOfficialAccountFollowerService.GetWechatOfficialAccountOpenId(wechatUnionId); // 这个结果可能为空
+            customer = customerService.CreateCustomerByOpenId(wechatAppOpenId, wechatOfficialAccountOpenId, wechatUnionId);
         }
 
         loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, Request);
