@@ -44,7 +44,7 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
         this.wechatOfficialAccountReplyKeywordService = new WechatOfficialAccountReplyKeywordService(session);
         this.wechatOfficialAccountAccessTokenService = new WechatOfficialAccountAccessTokenService(session);
 
-        this.OmitRepeatedMessage = false;
+        this.OmitRepeatedMessage = true;
     }
 
     /// <summary>
@@ -95,18 +95,18 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
     }
 
     private void SaveMessageRequest(string openId, string messageContent) {
-        WechatOfficialAccountMessageInfo message = new WechatOfficialAccountMessageInfo();
-        message.Direction = WechatOfficialAccountMessageDirection.CustomerToUser;
-        message.OpenId = openId;
-
         var customer = session.Query<CustomerInfo>()
             .Where(e => e.WechatOfficialAccountOpenId == openId)
             .Take(1)
             .SingleOrDefault();
 
-        message.Customer = customer;
-        message.Message = messageContent;
-        message.Status = WechatOfficialAccountMessageStatus.NotReply;
+        WechatOfficialAccountMessageInfo message = new WechatOfficialAccountMessageInfo {
+            Direction = WechatOfficialAccountMessageDirection.CustomerToUser,
+            OpenId = openId,
+            Customer = customer,
+            Message = messageContent,
+            Status = WechatOfficialAccountMessageStatus.NotReply,
+        };
 
         session.Save(message);
         session.Flush();

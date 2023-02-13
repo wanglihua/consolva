@@ -6,6 +6,7 @@ using Senparc.NeuChar.Context;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.Entities.Request;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Service.Wechat;
 using shunda.Service.Wechat.CustomMessageHandler;
@@ -72,6 +73,7 @@ public class WechatOfficialAccountCallbackController : Controller {
 
     [HttpPost]
     [Route(callbackUrl)]
+    [Transactional]
     public IActionResult CallbackPost(PostModel postModel) {
         try {
             // postModel 里面的这三个值都为空
@@ -100,12 +102,12 @@ public class WechatOfficialAccountCallbackController : Controller {
             //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
 
             // XDocument requestXmlDoc = XDocument.Load(Request.Body); 这个同步读取会报错
-            
+
             // 这个异步读取就不会报错
             StreamReader streamReader = new StreamReader(Request.Body);
             string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
             XDocument requestXmlDoc = XDocument.Parse(requestBody);
-            
+
             MessageContextGlobalConfig.UseMessageContext = false;
             var messageHandler = new CustomMessageHandler(session, requestXmlDoc, postModel);
 

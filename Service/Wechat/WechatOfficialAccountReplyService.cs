@@ -23,7 +23,7 @@ public class WechatOfficialAccountReplyService {
             .Take(1)
             .SingleOrDefault();
 
-        string replyContent = reply?.Content?? string.Empty;
+        string replyContent = reply?.Content ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(replyContent)) {
             if (replyType == WechatOfficialAccountReplyType.FollowReply) {
@@ -51,6 +51,6 @@ public class WechatOfficialAccountReplyService {
     /// </summary>
     /// <returns></returns>
     private string GetDefaultTextMessageReply() {
-        return @"请使用应用内客户功能！";
+        return @"请使用应用内客服功能！";
     }
 }
