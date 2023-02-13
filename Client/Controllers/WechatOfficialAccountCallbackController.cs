@@ -12,11 +12,10 @@ using shunda.Service.Wechat;
 using shunda.Service.Wechat.CustomMessageHandler;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.Wechat.Controllers;
+namespace shunda.Client.Controllers;
 
 #pragma warning disable 0618
 
-[WechatArea]
 [NoLoginRequired]
 public class WechatOfficialAccountCallbackController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
@@ -30,7 +29,7 @@ public class WechatOfficialAccountCallbackController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/wechat/official/account/callback/tracking/enable")]
+    [Route("/client/wechat/official/account/callback/tracking/enable")]
     public IActionResult EnableCallbackTracking() {
         wechatCallbackService.TrackingEnabled = true;
 
@@ -41,7 +40,7 @@ public class WechatOfficialAccountCallbackController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/wechat/official/account/callback/tracking/disable")]
+    [Route("/client/wechat/official/account/callback/tracking/disable")]
     public IActionResult DisableCallbackTracking() {
         wechatCallbackService.TrackingEnabled = false;
 
@@ -51,7 +50,7 @@ public class WechatOfficialAccountCallbackController : Controller {
         });
     }
 
-    private const string callbackUrl = "/admin/wechat/official/account/callback";
+    private const string callbackUrl = "/client/wechat/official/account/callback";
 
     [HttpGet]
     [Route(callbackUrl)]
