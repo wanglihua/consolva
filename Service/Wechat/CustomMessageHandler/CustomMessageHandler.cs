@@ -17,6 +17,7 @@ using shunda.Service.Customer;
 namespace shunda.Service.Wechat.CustomMessageHandler;
 
 /// <summary>
+/// todo 现在公众号和小程序都在使用这个自定义消息处理器，看看是不是应该分开
 /// 自定义MessageHandler
 /// 把MessageHandler作为基类，重写对应请求的处理方法
 /// 每个回调生成这个类的一个实例
