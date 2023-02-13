@@ -35,7 +35,7 @@ public class WechatOfficialAccountCallbackController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "回调启用成功！",
+            Message = "回调跟踪启用成功！",
         });
     }
 
@@ -46,7 +46,7 @@ public class WechatOfficialAccountCallbackController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "回调禁用成功！",
+            Message = "回调跟踪禁用成功！",
         });
     }
 
