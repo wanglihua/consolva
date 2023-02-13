@@ -129,7 +129,7 @@ public class WechatOfficialAccountCallbackController : Controller {
             return Content(responseXml, "text/xml", Encoding.UTF8);
         }
         catch (Exception exp) {
-            log.Error("微信CallbackPost发生错误");
+            log.Error("微信公众号CallbackPost发生错误");
             log.Error(exp);
 
             // 记录微信调用记录

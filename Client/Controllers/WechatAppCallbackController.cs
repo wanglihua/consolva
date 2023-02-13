@@ -1,13 +1,19 @@
+using System.Text;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using Senparc.NeuChar.Context;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.Entities.Request;
 using shunda.Core.Config;
 using shunda.Core.Web;
 using shunda.Service.Wechat;
+using shunda.Service.Wechat.CustomMessageHandler;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Controllers;
+
+#pragma warning disable 0618
 
 [NoLoginRequired]
 public class WechatAppCallbackController : Controller {
@@ -67,7 +73,9 @@ public class WechatAppCallbackController : Controller {
 
     [HttpPost]
     [Route(callbackUrl)]
-    public IActionResult CallbackPost() {
+    public IActionResult CallbackPost(PostModel postModel) {
+        #region 记录微信传过来的参数用于开始时的调试
+
         foreach (var query in Request.Query) {
             log.Error($"query, key: {query.Key}, value: {string.Join(",", query.Value)}");
         }
@@ -76,7 +84,75 @@ public class WechatAppCallbackController : Controller {
             log.Error($"form, key: {form.Key}, value: {string.Join(",", form.Value)}");
         }
 
-        return Content("");
+        StreamReader streamReader = new StreamReader(Request.Body);
+        string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
+        log.Error($"request body: {requestBody}");
+
+        #endregion
+
+        try {
+            // postModel 里面的这三个值都为空
+            string token = WechatAppConfig.Token;
+            string encodingAesKey = WechatAppConfig.EncodingAESKey;
+            string appId = WechatAppConfig.AppId;
+
+            if (!CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, token)) {
+                log.Error($"CallbackPost 微信调用参数错误：Signature: {postModel.Signature}, Timestamp: {postModel.Timestamp}, Nonce: {postModel.Nonce}, token: {token}");
+
+                string result = "参数错误！";
+
+                wechatCallbackService.AddWechatAppPostCallbackRecord(GetParamFormPostModel(postModel), "body-01", result);
+
+                return Content(result);
+            }
+
+            #region 打包 PostModel 信息
+
+            postModel.Token = token;
+            postModel.EncodingAESKey = encodingAesKey;
+            postModel.AppId = appId;
+
+            #endregion
+
+            //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
+
+            // XDocument requestXmlDoc = XDocument.Load(Request.Body); 这个同步读取会报错
+
+            // 这个异步读取就不会报错
+            // StreamReader streamReader = new StreamReader(Request.Body); 改在上面记录日志时调用了
+            // string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
+            XDocument requestXmlDoc = XDocument.Parse(requestBody);
+
+            MessageContextGlobalConfig.UseMessageContext = false;
+            var messageHandler = new CustomMessageHandler(session, requestXmlDoc, postModel);
+
+            // 执行微信处理过程（关键）
+            messageHandler.Execute();
+
+            string responseXml = messageHandler.FinalResponseDocument?.ToString() ?? "";
+
+            // 记录微信调用记录
+            if (string.IsNullOrWhiteSpace(responseXml) == false) {
+                wechatCallbackService.AddWechatAppPostCallbackRecord(GetParamFormPostModel(postModel), requestBody, responseXml);
+            } else {
+                wechatCallbackService.AddWechatAppPostCallbackRecord(GetParamFormPostModel(postModel), requestBody, "empty-01");
+            }
+
+            if (string.IsNullOrWhiteSpace(responseXml)) {
+                responseXml = "error"; // 给个信息否则微信服务器认为没反应
+            }
+
+            return Content(responseXml, "text/xml", Encoding.UTF8);
+        }
+        catch (Exception exp) {
+            log.Error("微信小程序CallbackPost发生错误");
+            log.Error(exp);
+
+            // 记录微信调用记录
+            wechatCallbackService.AddWechatAppPostCallbackRecord(GetParamFormPostModel(postModel), "body-02", "empty-02");
+
+            return Content("exception", "text/xml", Encoding.UTF8); // 给个信息否则微信服务器认为没反应
+        }
     }
 
     [NonAction]
