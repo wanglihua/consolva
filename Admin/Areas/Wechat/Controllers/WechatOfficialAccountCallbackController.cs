@@ -98,7 +98,14 @@ public class WechatOfficialAccountCallbackController : Controller {
             #endregion
 
             //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
-            XDocument requestXmlDoc = XDocument.Load(Request.Body);
+
+            // XDocument requestXmlDoc = XDocument.Load(Request.Body); 这个同步读取会报错
+            
+            // 这个异步读取就不会报错
+            StreamReader streamReader = new StreamReader(Request.Body);
+            string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
+            XDocument requestXmlDoc = XDocument.Parse(requestBody);
+            
             MessageContextGlobalConfig.UseMessageContext = false;
             var messageHandler = new CustomMessageHandler(session, requestXmlDoc, postModel);
 
@@ -108,7 +115,6 @@ public class WechatOfficialAccountCallbackController : Controller {
             string responseXml = messageHandler.FinalResponseDocument?.ToString() ?? "";
 
             // 记录微信调用记录
-            string requestBody = requestXmlDoc.ToString();
             if (string.IsNullOrWhiteSpace(responseXml) == false) {
                 wechatCallbackService.AddWechatOfficialAccountPostCallbackRecord(GetParamFormPostModel(postModel), requestBody, responseXml);
             } else {
