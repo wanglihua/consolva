@@ -69,8 +69,11 @@ public class WechatOfficialAccountFollowerController : Controller {
                         .Take(1)
                         .SingleOrDefault();
 
+                    // 这里也可以考虑更新 customer  的 WechatOfficialAccountOpenId, 有些有可能这个值还是空的
+
                     follower.Customer = customer;
                     follower.OpenId = openId;
+                    follower.UnionId = unionId;
                     follower.NickName = userInfo.nickname;
                     follower.FollowTime = new DateTime(2023, 1, 1);
                     follower.FollowStatus = WechatOfficialAccountFollowStatus.Followed;
