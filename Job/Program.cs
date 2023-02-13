@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using NHibernate;
 using NLog.Web;
+using Senparc.CO2NET.Cache;
+using Senparc.CO2NET.RegisterServices;
+using Senparc.Weixin.Cache;
+using Senparc.Weixin.MP.Containers;
+using Senparc.Weixin.RegisterServices;
 using shunda.Core;
 using shunda.Core.Binder;
 using shunda.Core.Config;
@@ -21,10 +26,8 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Job;
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
+public class Program {
+    public static void Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
         builder.WebHost
             .UseUrls("http://*:9002")
@@ -81,6 +84,12 @@ public class Program
             options.CheckConsentNeeded = context => false;
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
+
+        services.AddMemoryCache();
+
+        // 微信开发相关
+        services.AddSenparcGlobalServices(builder.Configuration);
+        services.AddSenparcWeixinServices(builder.Configuration);
 
         services.AddHttpClient();
 
@@ -150,6 +159,9 @@ public class Program
 
             // endpoints.MapHub<HandleHub>("/hub/handle");
         });
+
+        CacheStrategyDomainWarehouse.RegisterCacheStrategyDomain(LocalContainerCacheStrategy.Instance);
+        AccessTokenContainer.RegisterAsync(WechatOfficialAccountConfig.AppId, WechatOfficialAccountConfig.AppSecret);
 
         var quartz = new QuartzStartup(app.Services, app.Environment.IsDevelopment());
         app.Lifetime.ApplicationStarted.Register(quartz.Start);

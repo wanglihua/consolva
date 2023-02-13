@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using NHibernate;
 using NLog.Web;
+using Senparc.CO2NET.Cache;
+using Senparc.CO2NET.RegisterServices;
+using Senparc.Weixin.Cache;
+using Senparc.Weixin.MP.Containers;
+using Senparc.Weixin.RegisterServices;
 using shunda.Admin.Filters;
 using shunda.Admin.Middlewares;
 using shunda.Core;
@@ -86,6 +91,13 @@ public class Program {
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
+
+        services.AddMemoryCache();
+
+        // 微信开发相关
+        services.AddSenparcGlobalServices(builder.Configuration);
+        services.AddSenparcWeixinServices(builder.Configuration);
+
         services.AddHttpClient();
 
         // 这个可以保证 Html.Action() 的正确执行
@@ -146,6 +158,9 @@ public class Program {
 
             // endpoints.MapHub<HandleHub>("/hub/handle");
         });
+
+        CacheStrategyDomainWarehouse.RegisterCacheStrategyDomain(LocalContainerCacheStrategy.Instance);
+        AccessTokenContainer.RegisterAsync(WechatOfficialAccountConfig.AppId, WechatOfficialAccountConfig.AppSecret);
 
         app.Run();
     }

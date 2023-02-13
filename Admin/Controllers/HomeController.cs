@@ -47,10 +47,4 @@ public class HomeController : Controller {
             { "message", "Sidebar状态设置成功！" }
         });
     }
-
-    [HttpGet, HttpPost]
-    [Route("/MP_verify_Mksc2okoWIwoh96g.txt")]
-    public IActionResult WechatOfficialAccountDomainCheck() {
-        return Content("Mksc2okoWIwoh96g");
-    }
 }
