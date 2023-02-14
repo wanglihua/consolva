@@ -55,6 +55,7 @@ public class HomeController : Controller {
             wechatAppLoginService.Login(param.Code, Request);
         }
 
+        // 这时肯定已经登录
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         var clientHomeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
