@@ -36,13 +36,6 @@ public class ClientHomeCountInfo {
     /// </summary>
     public bool HasCouponBatchPick { get; set; }
 
-/*
-       v_new_message_count             AS new_message_count,
-       v_coupon_batch_id IS NOT NULL   AS has_coupon_batch_pick;
-           
- */
-
-
     #region override
 
     public override bool Equals(object? obj) {
