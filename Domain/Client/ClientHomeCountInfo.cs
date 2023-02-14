@@ -43,11 +43,11 @@ public class ClientHomeCountInfo {
             return false;
         }
 
-        if (obj is CustomerMessageViewRecordInfo == false) {
+        if (obj is ClientHomeCountInfo == false) {
             return false;
         }
 
-        if (CustomerId == (obj as CustomerMessageViewRecordInfo)?.CustomerId) {
+        if (CustomerId == (obj as ClientHomeCountInfo)?.CustomerId) {
             return true;
         }
 

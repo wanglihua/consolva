@@ -16,31 +16,111 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeCountInfo> {
         );
 
         Property(
-            x => x.LastViewMessageId,
+            x => x.ExpressClaimCount,
             map => {
                 map.Type(NHibernateUtil.Int32);
-                map.Column("last_view_message_id");
+                map.Column("express_claim_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExpressExpectCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("express_expect_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExpressExpectEnterCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("express_expect_enter_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExpressCheckinCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("express_checkin_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.ExpressReturnCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("express_return_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderPayCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_pay_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderSubmittedCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_submitted_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderWaitingTransportCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_waiting_transport_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderTransportingCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_transporting_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderDeliveredCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_delivered_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.NewMessageCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("new_message_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.HasCouponBatchPick,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("has_coupon_batch_pick");
                 map.NotNullable(true);
             }
         );
     }
 }
-
-
-/*
-
-SELECT p_customer_id                   AS customer_id,
-       v_express_claim_count           AS express_claim_count,
-       v_express_expect_count          AS express_expect_count,
-       v_express_expect_enter_count    AS express_expect_enter_count,
-       v_express_checkin_count         AS express_checkin_count,
-       v_express_return_count          AS express_return_count,
-       v_order_pay_count               AS order_pay_count,
-       v_order_submitted_count         AS order_submitted_count,
-       v_order_waiting_transport_count AS order_waiting_transport_count,
-       v_order_transporting_count      AS order_transporting_count,
-       v_order_delivered_count         AS order_delivered_count,
-       v_new_message_count             AS new_message_count,
-       v_coupon_batch_id IS NOT NULL   AS has_coupon_batch_pick;
-           
- */
