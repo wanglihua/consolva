@@ -9,37 +9,37 @@ public class ClientInstructionType : CodeTypeBase {
     /// <summary>
     /// 使用协议
     /// </summary>
-    public static readonly ClientInstructionType UseAgreement = new ClientInstructionType(100, "使用协议", "使用协议");
+    public static readonly ClientInstructionType UseAgreement = new ClientInstructionType(1000, "使用协议", "使用协议");
 
     /// <summary>
     /// 保险条款
     /// </summary>
-    public static readonly ClientInstructionType InsuranceClause = new ClientInstructionType(200, "保险条款", "保险条款");
+    public static readonly ClientInstructionType InsuranceClause = new ClientInstructionType(2000, "保险条款", "保险条款");
 
     /// <summary>
     /// 运费说明
     /// </summary>
-    public static readonly ClientInstructionType FreightDesc = new ClientInstructionType(300, "运费说明", "运费说明");
+    public static readonly ClientInstructionType FreightDesc = new ClientInstructionType(3000, "运费说明", "运费说明");
 
     /// <summary>
     /// 下单流程
     /// </summary>
-    public static readonly ClientInstructionType OrderProcess = new ClientInstructionType(400, "下单流程", "下单流程");
+    public static readonly ClientInstructionType OrderProcess = new ClientInstructionType(4000, "下单流程", "下单流程");
 
     /// <summary>
     /// 优惠活动
     /// </summary>
-    public static readonly ClientInstructionType Promotion = new ClientInstructionType(500, "优惠活动", "优惠活动");
+    public static readonly ClientInstructionType Promotion = new ClientInstructionType(5000, "优惠活动", "优惠活动");
 
     /// <summary>
     /// 仓储说明
     /// </summary>
-    public static readonly ClientInstructionType StorageInstruction = new ClientInstructionType(600, "仓储说明", "仓储说明");
+    public static readonly ClientInstructionType StorageInstruction = new ClientInstructionType(6000, "仓储说明", "仓储说明");
 
     /// <summary>
     /// 运输时效
     /// </summary>
-    public static readonly ClientInstructionType TransportLimit = new ClientInstructionType(700, "运输时效", "运输时效");
+    public static readonly ClientInstructionType TransportLimit = new ClientInstructionType(7000, "运输时效", "运输时效");
 
     /// <summary>
     /// None
