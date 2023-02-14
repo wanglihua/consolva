@@ -1,9 +1,9 @@
 namespace shunda.Domain.Client;
 
 /// <summary>
-/// 用于接收 client_home_count 的结果
+/// 用于接收 client_home_data 存储过程的输出结果
 /// </summary>
-public class ClientHomeCountInfo {
+public class ClientHomeDataInfo {
     /// <summary>
     /// 客户Id
     /// </summary>
@@ -43,11 +43,11 @@ public class ClientHomeCountInfo {
             return false;
         }
 
-        if (obj is ClientHomeCountInfo == false) {
+        if (obj is ClientHomeDataInfo == false) {
             return false;
         }
 
-        if (CustomerId == (obj as ClientHomeCountInfo)?.CustomerId) {
+        if (CustomerId == (obj as ClientHomeDataInfo)?.CustomerId) {
             return true;
         }
 

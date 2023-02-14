@@ -4,7 +4,7 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace shunda.Domain.Client;
 
-public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeCountInfo> {
+public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
     public ClientHomeCountInfoMapping() {
         Id(
             x => x.CustomerId,
