@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Instruction.Models.UseAgreement;
+using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Client;
+using shunda.Service.Client;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Instruction.Controllers;
@@ -9,14 +11,23 @@ namespace shunda.Client.Areas.Instruction.Controllers;
 [InstructionArea]
 public class UseAgreementController : Controller {
     private readonly ISession session;
+    private readonly LoginCustomerService loginCustomerService;
+    private readonly CustomerClientContentViewRecordService customerClientContentViewRecordService;
 
-    public UseAgreementController(ISession session) {
+    public UseAgreementController(ISession session,
+        LoginCustomerService loginCustomerService,
+        CustomerClientContentViewRecordService customerClientContentViewRecordService
+    ) {
         this.session = session;
+        this.loginCustomerService = loginCustomerService;
+        this.customerClientContentViewRecordService = customerClientContentViewRecordService;
     }
 
     [HttpPost]
     [Route("/client/use/agreement/detail")]
     public IActionResult Detail() {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
         var instruction = session.Query<ClientInstructionInfo>()
             .Where(e => e.Type == ClientInstructionType.UseAgreement)
             .Take(1)
@@ -24,6 +35,8 @@ public class UseAgreementController : Controller {
 
         string title = instruction?.Title ?? string.Empty;
         string content = instruction?.Content ?? string.Empty;
+
+        customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.UseAgreement);
 
         return Json(new JsonResultData {
             Success = true,

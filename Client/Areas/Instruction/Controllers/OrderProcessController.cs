@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Instruction.Models.OrderProcess;
+using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Client;
+using shunda.Service.Client;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Instruction.Controllers;
@@ -9,14 +11,23 @@ namespace shunda.Client.Areas.Instruction.Controllers;
 [InstructionArea]
 public class OrderProcessController : Controller {
     private readonly ISession session;
+    private readonly LoginCustomerService loginCustomerService;
+    private readonly CustomerClientContentViewRecordService customerClientContentViewRecordService;
 
-    public OrderProcessController(ISession session) {
+    public OrderProcessController(ISession session,
+        LoginCustomerService loginCustomerService,
+        CustomerClientContentViewRecordService customerClientContentViewRecordService
+    ) {
         this.session = session;
+        this.loginCustomerService = loginCustomerService;
+        this.customerClientContentViewRecordService = customerClientContentViewRecordService;
     }
 
     [HttpPost]
     [Route("/client/order/process/detail")]
     public IActionResult Detail() {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
         var instruction = session.Query<ClientInstructionInfo>()
             .Where(e => e.Type == ClientInstructionType.OrderProcess)
             .Take(1)
@@ -24,6 +35,8 @@ public class OrderProcessController : Controller {
 
         string title = instruction?.Title ?? string.Empty;
         string content = instruction?.Content ?? string.Empty;
+
+        customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.OrderProcess);
 
         return Json(new JsonResultData {
             Success = true,

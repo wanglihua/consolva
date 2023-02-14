@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Instruction.Models.Promotion;
+using shunda.Client.Services;
 using shunda.Core.Web;
 using shunda.Domain.Client;
+using shunda.Service.Client;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Instruction.Controllers;
@@ -9,14 +11,23 @@ namespace shunda.Client.Areas.Instruction.Controllers;
 [InstructionArea]
 public class PromotionController : Controller {
     private readonly ISession session;
+    private readonly LoginCustomerService loginCustomerService;
+    private readonly CustomerClientContentViewRecordService customerClientContentViewRecordService;
 
-    public PromotionController(ISession session) {
+    public PromotionController(ISession session,
+        LoginCustomerService loginCustomerService,
+        CustomerClientContentViewRecordService customerClientContentViewRecordService
+    ) {
         this.session = session;
+        this.loginCustomerService = loginCustomerService;
+        this.customerClientContentViewRecordService = customerClientContentViewRecordService;
     }
 
     [HttpPost]
     [Route("/client/promotion/detail")]
     public IActionResult Detail() {
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
         var instruction = session.Query<ClientInstructionInfo>()
             .Where(e => e.Type == ClientInstructionType.Promotion)
             .Take(1)
@@ -24,6 +35,8 @@ public class PromotionController : Controller {
 
         string title = instruction?.Title ?? string.Empty;
         string content = instruction?.Content ?? string.Empty;
+        
+        customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.Promotion);
 
         return Json(new JsonResultData {
             Success = true,
