@@ -10,6 +10,9 @@ using shunda.Service.Customer;
 
 namespace shunda.Client.Controllers;
 
+/// <summary>
+/// 用户客户端手动切换登录客户时使用
+/// </summary>
 [NoLoginRequired]
 public class LoginController : Controller {
     private readonly CaptchaService captchaService;

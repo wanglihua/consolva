@@ -4,7 +4,6 @@ using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.AdvancedAPIs;
 using shunda.Client.Services;
 using shunda.Core.Config;
-using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Service.Customer;
@@ -37,15 +36,9 @@ public class WechatOfficialAccountAutoLoginController : Controller {
     [HttpGet]
     [Route("/client/wechat/official/account/auto/login")]
     public IActionResult AutoLogin(string url) {
-        string clientLoginUrl = "/client/login";
-
         // 如果当前是已经登录的
         if (loginCustomerService.IsLogined == true) {
             return Redirect(url);
-        }
-
-        if (WebUtil.IsWechatRequest(Request)) {
-            return Redirect(clientLoginUrl);
         }
 
         string openId = wechatOfficialAccountSessionService.GetOpenId();

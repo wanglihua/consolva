@@ -98,6 +98,8 @@ public class WechatAppController : Controller {
 
         loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, Request);
 
+        //  todo 做个测试，在这里停顿一会儿试试
+
         return Json(new JsonResultData {
             Success = true,
             Message = "登录成功！",
