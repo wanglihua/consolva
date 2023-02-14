@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace shunda.Domain.Message;
+namespace shunda.Domain.Client;
 
 /// <summary>
 /// 客户消息客户端查看记录

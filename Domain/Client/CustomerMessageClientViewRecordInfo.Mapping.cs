@@ -2,7 +2,7 @@ using NHibernate;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace shunda.Domain.Message;
+namespace shunda.Domain.Client;
 
 public class CustomerMessageClientViewRecordInfoMapping : ClassMapping<CustomerMessageClientViewRecordInfo>
 {
