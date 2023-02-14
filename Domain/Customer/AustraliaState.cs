@@ -17,14 +17,6 @@ public class AustraliaState : StringCodeTypeBase {
 
     public static readonly AustraliaState None = new AustraliaState("", "", "");
 
-    /// <summary>
-    /// 表示所有区域, 这样客服区域等的设置的时候就不用每个州都设置一遍了
-    /// </summary>
-    public static readonly AustraliaState All = new AustraliaState("ALL", "ALL", "ALL");
-
-    private AustraliaState(string code, string name, string description) : base(code, name, description) {
-    }
-
     private static readonly IReadOnlyList<AustraliaState> codeTypeList = new List<AustraliaState>() {
         QLD,
         VIC,
@@ -36,28 +28,7 @@ public class AustraliaState : StringCodeTypeBase {
         NT,
     };
 
-    private static readonly IReadOnlyList<AustraliaState> codeTypeListWithAll = new List<AustraliaState>() {
-        QLD,
-        VIC,
-        NSW,
-        ACT,
-        SA,
-        WA,
-        TAS,
-        NT,
-        All,
-    };
-
-    private static readonly IDictionary<string, AustraliaState> codeTypeMap = codeTypeListWithAll.ToDictionary(e => e.Code);
-
-
-    public static IList<AustraliaState> GetList() {
-        return codeTypeList.ToList();
-    }
-
-    public static IList<AustraliaState> GetListWithAll() {
-        return codeTypeListWithAll.ToList();
-    }
+    private static readonly IDictionary<string, AustraliaState> codeTypeMap = codeTypeList.ToDictionary(e => e.Code);
 
     public static AustraliaState GetByCode(string code) {
         if (codeTypeMap.TryGetValue(code, out AustraliaState? codeType)) {
@@ -65,6 +36,13 @@ public class AustraliaState : StringCodeTypeBase {
         }
 
         return None;
+    }
+
+    public static IList<AustraliaState> GetList() {
+        return codeTypeList.ToList();
+    }
+
+    private AustraliaState(string code, string name, string description) : base(code, name, description) {
     }
 }
 
