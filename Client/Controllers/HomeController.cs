@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.Home;
 using shunda.Client.Services;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Service.Client;
 using ISession = NHibernate.ISession;
@@ -13,14 +14,17 @@ public class HomeController : Controller {
 
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly WechatAppLoginService wechatAppLoginService;
     private readonly ClientHomeDataService clientHomeDataService;
 
     public HomeController(ISession session,
         LoginCustomerService loginCustomerService,
+        WechatAppLoginService wechatAppLoginService,
         ClientHomeDataService clientHomeDataService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.wechatAppLoginService = wechatAppLoginService;
         this.clientHomeDataService = clientHomeDataService;
     }
 
@@ -41,9 +45,16 @@ public class HomeController : Controller {
         return View("HomeClientIndex", model);
     }
 
+    [NoLoginRequired] // 里面会自动登录
     [HttpPost]
     [Route("/client/home/data")]
-    public IActionResult ClientHomeData() {
+    public IActionResult ClientHomeData([FromBody] HomeClientHomeDataParam param) {
+        if (loginCustomerService.IsLogined == false) {
+            // 这时才是需要验证这个参数
+            ValidationUtil.Validate<HomeClientHomeDataParamValidator, HomeClientHomeDataParam>(param);
+            wechatAppLoginService.Login(param.Code, Request);
+        }
+
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         var clientHomeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);

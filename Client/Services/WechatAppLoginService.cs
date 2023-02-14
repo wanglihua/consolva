@@ -1,66 +1,41 @@
-using System.ComponentModel.DataAnnotations;
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using NHibernate.Criterion;
-using NLog;
-using shunda.Client.Services;
-using shunda.Core.Hibernate;
-using shunda.Core.Util;
-using shunda.Core.Web;
+using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
-namespace shunda.Client.Controllers;
+namespace shunda.Client.Services;
 
-[NoLoginRequired]
-public class WechatAppController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
-
+[Service(ServiceType.Scoped)]
+public class WechatAppLoginService {
     private readonly ISession session;
     private readonly WechatAppAuthCodeSessionService wechatAppAuthCodeSessionService;
     private readonly CustomerService customerService;
     private readonly LoginCustomerService loginCustomerService;
-    private readonly WechatAppPhoneNumberService wechatAppPhoneNumberService;
     private readonly WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService;
 
-    public WechatAppController(
+    public WechatAppLoginService(
         ISession session,
         WechatAppAuthCodeSessionService wechatAppAuthCodeSessionService,
         CustomerService customerService,
         LoginCustomerService loginCustomerService,
-        WechatAppPhoneNumberService wechatAppPhoneNumberService,
-        WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService) {
+        WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService
+    ) {
         this.session = session;
         this.wechatAppAuthCodeSessionService = wechatAppAuthCodeSessionService;
         this.customerService = customerService;
         this.loginCustomerService = loginCustomerService;
-        this.wechatAppPhoneNumberService = wechatAppPhoneNumberService;
         this.wechatOfficialAccountFollowerService = wechatOfficialAccountFollowerService;
     }
 
-    public class LoginParam {
-        [BindProperty(Name = "code")]
-        [JsonProperty("code")]
-        public string Code { get; set; } = string.Empty;
-    }
-
-    public class LoginParamValidator : AbstractValidator<LoginParam> {
-        public LoginParamValidator() {
-            RuleFor(e => e.Code).NotNull().NotEmpty().WithMessage("code不能为空！");
-        }
-    }
-
-    [HttpPost]
-    [Route("/client/wechat/app/login")]
-    [Transactional]
-    public IActionResult Login([FromBody] LoginParam param) {
-        ValidationUtil.Validate<LoginParamValidator, LoginParam>(param);
-
-        var result = wechatAppAuthCodeSessionService.GetResult(param.Code);
+    /// <summary>
+    /// 微信小程序登录
+    /// </summary>
+    /// <param name="code">wx.login() 获得的 code</param>
+    /// <param name="request"></param>
+    public void Login(string code, HttpRequest request) {
+        var result = wechatAppAuthCodeSessionService.GetResult(code);
         string wechatAppOpenId = result.OpenId;
         string wechatUnionId = result.UnionId;
 
@@ -96,41 +71,6 @@ public class WechatAppController : Controller {
             customer = customerService.CreateCustomerByOpenId(wechatAppOpenId, wechatOfficialAccountOpenId, wechatUnionId);
         }
 
-        loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, Request);
-
-        //  todo 做个测试，在这里停顿一会儿试试
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "登录成功！",
-        });
-    }
-
-    public class GetPhoneNumberParam {
-        [BindProperty(Name = "code")]
-        [JsonProperty("code")]
-        [Required(ErrorMessage = "获取电话号码, code 不能为空！")]
-        public string Code { get; set; } = string.Empty;
-    }
-
-    [HttpPost]
-    [Route("/client/wechat/app/get/phone/number")]
-    public IActionResult GetPhoneNumber([FromBody] GetPhoneNumberParam param) {
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
-
-        string code = param.Code.Trim();
-        string phoneNumber = wechatAppPhoneNumberService.GetPhoneNumber(code);
-
-        log.Trace($"phone number: {phoneNumber}");
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-            Data = new {
-                phoneNumber = phoneNumber,
-            }
-        });
+        loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, request);
     }
 }

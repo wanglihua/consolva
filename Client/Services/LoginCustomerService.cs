@@ -1,6 +1,5 @@
 using CSRedis;
 using NETCore.Encrypt;
-using NHibernate.Linq;
 using NLog;
 using shunda.Core;
 using shunda.Core.Config;
