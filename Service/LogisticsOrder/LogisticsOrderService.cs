@@ -74,7 +74,7 @@ public class LogisticsOrderService {
             // 更新快递单状态
             foreach (var express in expressList) {
                 express.Order = null;
-                express.Status = ExpressStatus.CheckIn;
+                express.Status = ExpressStatus.Checkin;
                 session.Update(express);
             }
 

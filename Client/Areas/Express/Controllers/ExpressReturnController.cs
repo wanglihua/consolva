@@ -184,7 +184,7 @@ public class ExpressReturnController : Controller {
             throw new ValidationException($"指定的快递单号{express.TrackingNo}不属于当前登录会员#{loginCustomerId}！");
         }
 
-        if (express.Status != ExpressStatus.CheckIn) {
+        if (express.Status != ExpressStatus.Checkin) {
             throw new ValidationException("指定的快递单号{express.TrackingNo}不是已入库状态！");
         }
 

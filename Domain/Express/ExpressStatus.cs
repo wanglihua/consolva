@@ -16,7 +16,7 @@ public class ExpressStatus : CodeTypeBase {
     /// 系统的已入库状态
     /// 已完成认领和录完货值
     /// </summary>
-    public static readonly ExpressStatus CheckIn = new ExpressStatus(3000, "已认领", "已认领");
+    public static readonly ExpressStatus Checkin = new ExpressStatus(3000, "已认领", "已认领");
 
     /// <summary>
     /// 待退运
@@ -91,7 +91,7 @@ public class ExpressStatus : CodeTypeBase {
     private static readonly IReadOnlyList<ExpressStatus> codeTypeList = new List<ExpressStatus>() {
         WaitPick,
         // Expect,
-        CheckIn,
+        Checkin,
         WaitReturn,
         Returned,
         ThrowAway,
@@ -128,7 +128,7 @@ public class ExpressStatus : CodeTypeBase {
         return new List<ExpressStatus>() {
             WaitPick,
             // Expect,
-            CheckIn,
+            Checkin,
             WaitReturn,
             Order,
             WaitPack, // 这个状态是不是应该放到里面，还有点争议
@@ -208,7 +208,7 @@ public class ExpressStatus : CodeTypeBase {
     private static readonly IReadOnlyList<ExpressStatus> codeTypeListNoOrder = new List<ExpressStatus>() {
         WaitPick,
         // Expect,
-        CheckIn,
+        Checkin,
         WaitReturn,
         Returned,
         ThrowAway,
@@ -254,7 +254,7 @@ public class ExpressStatus : CodeTypeBase {
         return new List<ExpressStatus>() {
             WaitPick,
             // Expect,
-            CheckIn,
+            Checkin,
             WaitReturn,
             Order,
             WaitPack,

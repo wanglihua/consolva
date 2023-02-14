@@ -28,7 +28,7 @@ public class LogisticsOrderCreateSelectExpressService {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
-        if (express.Customer == null || express.Status != ExpressStatus.CheckIn) {
+        if (express.Customer == null || express.Status != ExpressStatus.Checkin) {
             throw new ValidationException($"快递单号#{expressId}未被认领，或不是已入库状态！");
         }
 
@@ -71,7 +71,7 @@ public class LogisticsOrderCreateSelectExpressService {
     public void AddWaitOrderAll(int customerId) {
         // 同时，物品列表查询时，相当于对应的快递单实体已经预取了
         var expressList = session.Query<ExpressInfo>()
-            .Where(e => e.Customer!.Id == customerId && e.Status == ExpressStatus.CheckIn)
+            .Where(e => e.Customer!.Id == customerId && e.Status == ExpressStatus.Checkin)
             .ToList();
 
         // 检查物品价格设置
@@ -123,7 +123,7 @@ public class LogisticsOrderCreateSelectExpressService {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
         }
 
-        if (express.Customer == null || express.Status != ExpressStatus.CheckIn) {
+        if (express.Customer == null || express.Status != ExpressStatus.Checkin) {
             throw new ValidationException($"快递单号#{expressId}未被认领，或不是已入库状态！");
         }
 

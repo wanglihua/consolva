@@ -63,7 +63,7 @@ public class ExpressClaimService {
         }
 
         express.ClaimTime = DateTime.Now;
-        express.Status = ExpressStatus.CheckIn;
+        express.Status = ExpressStatus.Checkin;
         express.Customer = customer;
 
         session.Update(express);

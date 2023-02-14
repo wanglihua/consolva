@@ -50,7 +50,7 @@ public class OrderCreateCountryController : Controller {
         }
 
         foreach (ExpressInfo express in expressList) {
-            if (express.Status != ExpressStatus.CheckIn) {
+            if (express.Status != ExpressStatus.Checkin) {
                 throw new ValidationException($"快递单号#{express.TrackingNo}不是已入库状态，快递单选择选择数据有误！");
             }
         }

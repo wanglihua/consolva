@@ -131,7 +131,7 @@ public class LogisticsOrderClientListService {
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.Pay) {
-            query = query.Where(e => e.PayStatus != PayStatus.Paid && e.ArrearsAmountFormula > 0);
+            query = query.Where(e => e.ArrearsAmountFormula > 0 && e.OrderStatus != LogisticsOrderStatus.Canceled);
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.WaitingTransport) {
