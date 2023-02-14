@@ -1,7 +1,6 @@
 namespace shunda.Core.CodeType;
 
-public abstract class StringCodeTypeBase
-{
+public abstract class StringCodeTypeBase {
     /// <summary>
     /// 编码
     /// </summary>
@@ -17,8 +16,7 @@ public abstract class StringCodeTypeBase
     /// </summary>
     public string Description { get; protected set; } = string.Empty;
 
-    public StringCodeTypeBase(string code, string name, string description)
-    {
+    protected StringCodeTypeBase(string code, string name, string description) {
         Code = code;
         Name = name;
         Description = description;
@@ -28,8 +26,7 @@ public abstract class StringCodeTypeBase
     /// 字符串表示, 这个的实现方式很重要
     /// </summary>
     /// <returns>string</returns>
-    public override string ToString()
-    {
+    public override string ToString() {
         return Code;
     }
 
@@ -39,15 +36,12 @@ public abstract class StringCodeTypeBase
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns></returns>
-    public new bool Equals(object x, object y)
-    {
-        if (x is StringCodeTypeBase == false)
-        {
+    public new bool Equals(object x, object y) {
+        if (x is StringCodeTypeBase == false) {
             return false;
         }
 
-        if (y is StringCodeTypeBase == false)
-        {
+        if (y is StringCodeTypeBase == false) {
             return false;
         }
 
