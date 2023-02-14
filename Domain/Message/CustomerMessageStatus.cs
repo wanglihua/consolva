@@ -5,70 +5,59 @@ namespace shunda.Domain.Message;
 /// <summary>
 /// 客户消息发送状态
 /// </summary>
-public class CustomerMessageStatus : CodeTypeBase
-{
+public class CustomerMessageStatus : CodeTypeBase {
     /// <summary>
-    /// 未发送
+    /// 未发送，1000, 这个状态已经不常用
     /// </summary>
-    public static readonly CustomerMessageStatus NotSend = new CustomerMessageStatus(100, "未发送", "未发送");
+    public static readonly CustomerMessageStatus NotSend = new CustomerMessageStatus(1000, "未发送", "未发送");
 
     /// <summary>
-    /// 发送失败
+    /// 发送失败, 2000
     /// </summary>
-    public static readonly CustomerMessageStatus SendFail = new CustomerMessageStatus(150, "发送失败", "发送失败");  // todo a 改成 Fail
+    public static readonly CustomerMessageStatus Fail = new CustomerMessageStatus(2000, "发送失败", "发送失败");
 
     /// <summary>
-    /// 已发送
+    /// 发送成功, 3000
     /// </summary>
-    public static readonly CustomerMessageStatus Sent = new CustomerMessageStatus(200, "已发送", "已发送"); // todo a 改成 Success
+    public static readonly CustomerMessageStatus Success = new CustomerMessageStatus(3000, "发送成功", "发送成功");
 
     /// <summary>
     /// None
     /// </summary>
     public static readonly CustomerMessageStatus None = new CustomerMessageStatus(0, "", "");
 
-    public static CustomerMessageStatus GetById(int id)
-    {
-        IList<CustomerMessageStatus> statusList = GetList();
-        foreach (CustomerMessageStatus messageType in statusList)
-        {
-            if (messageType.Id == id)
-            {
-                return messageType;
-            }
+    private static readonly IReadOnlyList<CustomerMessageStatus> codeTypeList = new List<CustomerMessageStatus>() {
+        NotSend,
+        Fail,
+        Success,
+    };
+
+    private static readonly IDictionary<int, CustomerMessageStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
+
+    public static CustomerMessageStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out CustomerMessageStatus? codeType)) {
+            return codeType;
         }
 
         return None;
     }
 
-    public static IList<CustomerMessageStatus> GetList()
-    {
-        IList<CustomerMessageStatus> statusList = new List<CustomerMessageStatus>() {
-            NotSend,
-            SendFail,
-            Sent
-        };
-
-        return statusList;
+    public static IList<CustomerMessageStatus> GetList() {
+        return codeTypeList.ToList();
     }
 
-    private CustomerMessageStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private CustomerMessageStatus(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class CustomerMessageStatusHibernateType : CodeHibernateTypeBase<CustomerMessageStatus>
-{
-    protected override CustomerMessageStatus GetCodeTypeById(int id)
-    {
+public class CustomerMessageStatusHibernateType : CodeHibernateTypeBase<CustomerMessageStatus> {
+    protected override CustomerMessageStatus GetCodeTypeById(int id) {
         return CustomerMessageStatus.GetById(id);
     }
 }
 
-public class CustomerMessageStatusModelBinder : CodeTypeModelBinderBase<CustomerMessageStatus>
-{
-    protected override CustomerMessageStatus GetCodeTypeById(int id)
-    {
+public class CustomerMessageStatusModelBinder : CodeTypeModelBinderBase<CustomerMessageStatus> {
+    protected override CustomerMessageStatus GetCodeTypeById(int id) {
         return CustomerMessageStatus.GetById(id);
     }
 }

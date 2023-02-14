@@ -130,10 +130,10 @@ public class SmsService {
     public CustomerMessageStatus SendSmsMessage(string mobile, string message) {
         var result = SendSms(mobile, message);
         if (result.Code != SendSmsResult.CodeSuccess) {
-            return CustomerMessageStatus.SendFail;
+            return CustomerMessageStatus.Fail;
         }
 
-        return CustomerMessageStatus.Sent;
+        return CustomerMessageStatus.Success;
     }
 }
 

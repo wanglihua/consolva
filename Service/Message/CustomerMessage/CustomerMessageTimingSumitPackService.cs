@@ -112,7 +112,7 @@ public class CustomerMessageTimingSumitPackService
             {
                 if (setting.WechatSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     // string? url = GetMessageUrl(orderId);
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
@@ -134,7 +134,7 @@ public class CustomerMessageTimingSumitPackService
 
                 if (setting.SmsSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }

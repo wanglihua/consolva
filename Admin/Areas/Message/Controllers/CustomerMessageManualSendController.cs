@@ -225,7 +225,7 @@ public class CustomerMessageManualSendController : Controller
                 customerMessage.SmsSend = model.SendBySms;
                 customerMessage.WechatSend = model.SendByWechat;
                 customerMessage.SendTime = DateTime.Now;
-                customerMessage.Status = CustomerMessageStatus.Sent;
+                customerMessage.Status = CustomerMessageStatus.Success;
                 customerMessage.Sender = loginUserName;
 
                 session.Save(customerMessage);
@@ -333,7 +333,7 @@ public class CustomerMessageManualSendController : Controller
                     customerMessage.SmsSend = model.SendBySms;
                     customerMessage.WechatSend = model.SendByWechat;
                     customerMessage.SendTime = DateTime.Now;
-                    customerMessage.Status = CustomerMessageStatus.Sent;
+                    customerMessage.Status = CustomerMessageStatus.Success;
                     customerMessage.Sender = loginUserName;
 
                     session.Save(customerMessage);

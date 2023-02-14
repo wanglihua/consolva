@@ -98,7 +98,7 @@ public class CustomerMessageNotRegisterService
             {
                 if (setting.WechatSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     // string? url = GetMessageUrl();
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
@@ -120,7 +120,7 @@ public class CustomerMessageNotRegisterService
 
                 if (setting.SmsSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }

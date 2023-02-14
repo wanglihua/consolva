@@ -117,7 +117,7 @@ public class CustomerMessageExpressCheckinService
             {
                 if (setting.WechatSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     // string? url = GetMessageUrl(express);
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
@@ -139,7 +139,7 @@ public class CustomerMessageExpressCheckinService
 
                 if (setting.SmsSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }

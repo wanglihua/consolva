@@ -100,7 +100,7 @@ public class CustomerMessageNoOrderService
             {
                 if (setting.WechatSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     string? url = GetMessageUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false)
@@ -121,7 +121,7 @@ public class CustomerMessageNoOrderService
 
                 if (setting.SmsSend)
                 {
-                    messageStatus = CustomerMessageStatus.Sent;
+                    messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }

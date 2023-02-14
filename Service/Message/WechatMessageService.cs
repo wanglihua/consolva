@@ -62,10 +62,10 @@ public class WechatMessageService
 
             new Thread(new ParameterizedThreadStart(SendTemplateMessageNewThread)).Start(param);
 
-            return CustomerMessageStatus.Sent; // 不管线程中是否发送成功，这里暂时返回是已发送
+            return CustomerMessageStatus.Success; // 不管线程中是否发送成功，这里暂时返回是已发送
         }
 
-        return CustomerMessageStatus.SendFail; // 一般这时还没关注公众号，也算发送失败
+        return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
     }
 
     #region 多线程发送
@@ -131,7 +131,7 @@ public class WechatMessageService
         string openId = customer.WechatOfficialAccountOpenId;
         if (string.IsNullOrWhiteSpace(openId))
         {
-            return CustomerMessageStatus.SendFail; // 一般这时还没关注公众号，也算发送失败
+            return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
         }
 
 #if DEBUG
@@ -145,7 +145,7 @@ public class WechatMessageService
         log.Trace($"url: {url}");
 
 
-        return CustomerMessageStatus.Sent;
+        return CustomerMessageStatus.Success;
 #else
             DateTime processTime = DateTime.Now;
 
@@ -182,7 +182,7 @@ public class WechatMessageService
         log.Trace($"remark: {remark}");
         log.Trace($"sender: {sender}");
 
-        return CustomerMessageStatus.Sent;
+        return CustomerMessageStatus.Success;
 #else
             DateTime abnormalTime = DateTime.Now;
 
