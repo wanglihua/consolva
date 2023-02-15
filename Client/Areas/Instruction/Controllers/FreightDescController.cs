@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Instruction.Models.FreightDesc;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Client;
 using shunda.Service.Client;
@@ -25,6 +26,7 @@ public class FreightDescController : Controller {
 
     [HttpPost]
     [Route("/client/freight/desc/detail")]
+    [Transactional]
     public IActionResult Detail() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
