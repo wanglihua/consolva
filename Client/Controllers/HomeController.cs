@@ -61,12 +61,27 @@ public class HomeController : Controller {
         // 这时肯定已经登录
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        ClientHomeDataInfo clientHomeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
+        var homeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
+
+        var model = new HomeClientHomeDataModel {
+            ExpressClaimBadge = homeData.ExpressClaimCount.ToString(),
+            HasExpressExpectEnter = homeData.ExpressExpectEnterCount > 0,
+            ExpressExpectBadge = homeData.ExpressExpectEnterCount > 0 ? homeData.ExpressExpectEnterCount.ToString() : homeData.ExpressExpectCount.ToString(),
+            ExpressCheckinBadge = homeData.ExpressCheckinCount > 0 ? homeData.ExpressCheckinCount.ToString() : string.Empty,
+            ExpressReturnBadge = homeData.ExpressReturnCount > 0 ? homeData.ExpressReturnCount.ToString() : string.Empty,
+            OrderSubmittedBadge = homeData.OrderSubmittedCount > 0 ? homeData.OrderSubmittedCount.ToString() : string.Empty,
+            OrderWaitingTransportBadge = homeData.OrderWaitingTransportCount > 0 ? homeData.OrderWaitingTransportCount.ToString() : string.Empty,
+            OrderTransportingBadge = homeData.OrderTransportingCount > 0 ? homeData.OrderTransportingCount.ToString() : string.Empty,
+            OrderDeliveredBadge = homeData.OrderDeliveredCount > 0 ? homeData.OrderDeliveredCount.ToString() : string.Empty,
+            NewMessageBadge = homeData.NewMessageCount > 0 ? homeData.NewMessageCount.ToString() : string.Empty,
+            CouponBatchPickBadge = homeData.HasCouponBatchPick ? "抢" : string.Empty,
+        };
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = new {
-                homeData = clientHomeData,
+                homeData = model,
             },
         });
     }
