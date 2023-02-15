@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.Home;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Client;
 using shunda.Service.Client;
 using ISession = NHibernate.ISession;
 
@@ -48,6 +50,7 @@ public class HomeController : Controller {
     [NoLoginRequired] // 里面会自动登录
     [HttpPost]
     [Route("/client/home/data")]
+    [Transactional] // login的时候需要事务
     public IActionResult ClientHomeData([FromBody] HomeClientHomeDataParam param) {
         if (loginCustomerService.IsLogined == false) {
             // 这时才是需要验证这个参数
@@ -58,11 +61,13 @@ public class HomeController : Controller {
         // 这时肯定已经登录
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        var clientHomeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
+        ClientHomeDataInfo clientHomeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = clientHomeData,
+            Data = new {
+                homeData = clientHomeData,
+            },
         });
     }
 }

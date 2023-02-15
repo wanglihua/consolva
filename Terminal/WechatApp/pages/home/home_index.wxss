@@ -13,3 +13,7 @@
     margin: 20rpx;
     border-radius: 50%;
 }
+
+#express-expect .van-info {
+    background-color: bisque !important;
+}

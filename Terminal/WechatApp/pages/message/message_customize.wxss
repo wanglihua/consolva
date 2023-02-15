@@ -1,1 +1,9 @@
 /* pages/message/message_customize/message_customize.wxss */
+
+.message-customize-item-title {
+    flex: 5 !important;
+}
+
+.message-customize-item-value {
+    flex: 2 !important;
+}

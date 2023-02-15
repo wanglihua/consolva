@@ -7,7 +7,7 @@
     <block wx:else>
         <van-cell-group title="消息定制">
             <block wx:for="{{ messageCustomizeList }}" wx:key="typeId" wx:for-item="messageCustomize" wx:for-index="index">
-                <van-cell title="{{ index + 1 }}、{{ messageCustomize.title }}" label="{{ messageCustomize.description }}">
+                <van-cell title="{{ index + 1 }}、{{ messageCustomize.title }}" title-class="message-customize-item-title" value-class="message-customize-item-value" label="{{ messageCustomize.description }}">
                     <view>
                         <view style="display:block;">
                             <van-switch checked="{{ messageCustomize.send }}" data-item="{{ messageCustomize }}" bind:change="onSwitchChange"/>

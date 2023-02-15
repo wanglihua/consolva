@@ -4,7 +4,9 @@ const app = getApp();
 
 Page({
     id: "index",
-    data: {},
+    data: {
+        homeData: {},
+    },
     onLoad() {
         const nowMilliSeconds = new Date().getTime();
         const loginMilliSeconds = wx.getStorageSync("client-login-time");
@@ -29,6 +31,10 @@ Page({
             }, function (res) {
                 // 存储的是登录时间毫秒值
                 wx.setStorageSync('client-login-time', new Date().getTime());
+
+                that.setData({
+                    homeData: res.data.homeData,
+                });
             }
         );
     }

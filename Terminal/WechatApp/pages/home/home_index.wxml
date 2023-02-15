@@ -3,9 +3,11 @@
 <view class="container">
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}">
-            <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="申领件" badge="3" url="../express/express_claim/express_claim_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="3" url="../express/express_expect/express_expect_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="3" url="../express/express_checkin/express_checkin_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="申领件" badge="{{ homeData.expressClaimCount }}" url="../express/express_claim/express_claim_list"/>
+            <view id="express-expect">
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="{{ 4 }}" url="../express/express_expect/express_expect_list"/>
+        </view>
+            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="{{ ' ' }}" url="../express/express_checkin/express_checkin_list"/>
             <van-grid-item icon-prefix="iconfont" icon="pack-list" icon-class="home-grid-icon" text="待打包" badge="3" url="../order/order_list_submitted"/>
             <van-grid-item icon-prefix="iconfont" icon="pay-list" icon-class="home-grid-icon" text="待支付" badge="3" url="../order/order_list_pay"/>
             <van-grid-item icon-prefix="iconfont" icon="waiting-transport" icon-class="home-grid-icon" text="待转运" badge="3" url="../order/order_list_wait_transport"/>
