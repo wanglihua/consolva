@@ -8,6 +8,7 @@ namespace shunda.Domain.Client;
 
 /// <summary>
 /// 客户端协议
+/// 这个主要是订单创建时的协议
 /// </summary>
 public class ClientAgreementInfo : Entity {
     /// <summary>
@@ -61,5 +62,4 @@ public class ClientAgreementInfo : Entity {
     [Required(ErrorMessage = "序号不能为空！")]
     [JsonProperty("orderNum")]
     public virtual int OrderNum { get; set; } = 0;
-
 }
