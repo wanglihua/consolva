@@ -64,9 +64,9 @@ public class HomeController : Controller {
         var homeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
 
         var model = new HomeClientHomeDataModel {
-            ExpressClaimBadge = homeData.ExpressClaimCount.ToString(),
+            ExpressClaimBadge = homeData.ExpressClaimCount > 0 ? homeData.ExpressClaimCount.ToString() : string.Empty,
             HasExpressExpectEnter = homeData.ExpressExpectEnterCount > 0,
-            ExpressExpectBadge = homeData.ExpressExpectEnterCount > 0 ? homeData.ExpressExpectEnterCount.ToString() : homeData.ExpressExpectCount.ToString(),
+            ExpressExpectBadge = homeData.ExpressExpectEnterCount > 0 ? homeData.ExpressExpectEnterCount.ToString() : ((homeData.ExpressExpectCount > 0 ? homeData.ExpressExpectCount.ToString() : string.Empty)),
             ExpressCheckinBadge = homeData.ExpressCheckinCount > 0 ? homeData.ExpressCheckinCount.ToString() : string.Empty,
             ExpressReturnBadge = homeData.ExpressReturnCount > 0 ? homeData.ExpressReturnCount.ToString() : string.Empty,
             OrderSubmittedBadge = homeData.OrderSubmittedCount > 0 ? homeData.OrderSubmittedCount.ToString() : string.Empty,
