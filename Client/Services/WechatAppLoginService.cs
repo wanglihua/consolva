@@ -50,7 +50,9 @@ public class WechatAppLoginService {
             .Take(1)
             .SingleOrDefault();
 
-        if (customer != null && (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId)) {
+        if (customer != null &&
+            (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId || string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId))
+           ) {
             customer.WechatAppOpenId = wechatAppOpenId;
             customer.WechatUnionId = wechatUnionId;
 
