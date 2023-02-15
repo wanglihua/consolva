@@ -31,24 +31,24 @@
             <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="../message/message_customize"/>
             <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="../customer/customer_address/customer_address_receive/customer_address_receive_list"/>
             <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text="推广返利" url=""/>
-            <van-grid-item icon-prefix="iconfont" icon="promotion" icon-class="home-grid-icon" text="优惠活动" url="../instruction/instruction_promotion"/>
+            <van-grid-item icon-prefix="iconfont" icon="promotion" icon-class="home-grid-icon" text="优惠活动" badge="{{ homeData.promotionBadge }}" url="../instruction/instruction_promotion"/>
             <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" badge="{{ homeData.CouponBatchPickBadge }}" url="../coupon/coupon_mine"/>
             <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额" url="../customer/customer_account/customer_account"/>
             <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="../customer/customer_score/customer_score"/>
             <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="../customer/customer_pay/customer_pay"/>
             <van-grid-item icon-prefix="iconfont" icon="profile" icon-class="home-grid-icon" text="个人中心" url=""/>
-            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" text="使用协议" url="../instruction/instruction_use_agreement"/>
-            <van-grid-item icon-prefix="iconfont" icon="insurance-clause" icon-class="home-grid-icon" text="保险条款" url="../instruction/instruction_insurance_clause"/>
+            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" text="使用协议" badge="{{ homeData.useAgreementBadge }}" url="../instruction/instruction_use_agreement"/>
+            <van-grid-item icon-prefix="iconfont" icon="insurance-clause" icon-class="home-grid-icon" text="保险条款" badge="{{ homeData.insuranceClauseBadge }}" url="../instruction/instruction_insurance_clause"/>
         </van-grid>
     </view>
 
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}">
             <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="../freight_estimate/freight_estimate_goods"/>
-            <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" text="运费说明" url="../instruction/instruction_freight_desc"/>
-            <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text="下单流程" url="../instruction/instruction_order_process"/>
-            <van-grid-item icon-prefix="iconfont" icon="transport-limit" icon-class="home-grid-icon" text="运输时效" url="../instruction/instruction_transport_limit"/>
-            <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text="仓储说明" url="../instruction/instruction_storage"/>
+            <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" text="运费说明" badge="{{ homeData.freightDescBadge }}" url="../instruction/instruction_freight_desc"/>
+            <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text="下单流程" badge="{{ homeData.orderProcessBadge }}" url="../instruction/instruction_order_process"/>
+            <van-grid-item icon-prefix="iconfont" icon="transport-limit" icon-class="home-grid-icon" text="运输时效" badge="{{ homeData.transportLimitBadge }}" url="../instruction/instruction_transport_limit"/>
+            <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text="仓储说明" badge="{{ homeData.storageInstructionBadge }}" url="../instruction/instruction_storage"/>
         </van-grid>
     </view>
 </view>
