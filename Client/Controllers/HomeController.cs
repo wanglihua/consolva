@@ -75,6 +75,14 @@ public class HomeController : Controller {
             OrderDeliveredBadge = homeData.OrderDeliveredCount > 0 ? homeData.OrderDeliveredCount.ToString() : string.Empty,
             NewMessageBadge = homeData.NewMessageCount > 0 ? homeData.NewMessageCount.ToString() : string.Empty,
             CouponBatchPickBadge = homeData.HasCouponBatchPick ? "抢" : string.Empty,
+            UseAgreementBadge = homeData.UseAgreementHasNew ? " " : string.Empty,
+            InsuranceClauseBadge = homeData.InsuranceClauseHasNew ? " " : string.Empty,
+            FreightDescBadge = homeData.FreightDescHasNew ? " " : string.Empty,
+            OrderProcessBadge = homeData.OrderProcessHasNew ? " " : string.Empty,
+            PromotionBadge = homeData.PromotionHasNew ? " " : string.Empty,
+            StorageInstructionBadge = homeData.StorageInstructionHasNew ? " " : string.Empty,
+            TransportLimitBadge = homeData.TransportLimitHasNew ? " " : string.Empty,
+            HasFollowed = homeData.HasFollowed,
         };
 
         return Json(new JsonResultData {
