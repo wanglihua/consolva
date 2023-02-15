@@ -51,6 +51,32 @@ public class ClientHomeDataInfo {
     [JsonProperty("hasCouponBatchPick")]
     public virtual bool HasCouponBatchPick { get; set; }
 
+    [JsonProperty("useAgreementHasNew")]
+    public virtual bool UseAgreementHasNew { get; set; }
+
+    [JsonProperty("insuranceClauseHasNew")]
+    public virtual bool InsuranceClauseHasNew { get; set; }
+
+    [JsonProperty("freightDescHasNew")]
+    public virtual bool FreightDescHasNew { get; set; }
+
+    [JsonProperty("orderProcessHasNew")]
+    public virtual bool OrderProcessHasNew { get; set; }
+
+    [JsonProperty("promotionHasNew")]
+    public virtual bool PromotionHasNew { get; set; }
+
+    [JsonProperty("storageInstructionHasNew")]
+    public virtual bool StorageInstructionHasNew { get; set; }
+
+    [JsonProperty("transportLimitHasNew")]
+    public virtual bool TransportLimitHasNew { get; set; }
+
+    /// <summary>
+    /// 是否已经关注公众号
+    /// </summary>
+    public virtual bool HasFollowed { get; set; }
+
     #region override
 
     public override bool Equals(object? obj) {

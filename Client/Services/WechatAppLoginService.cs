@@ -50,22 +50,31 @@ public class WechatAppLoginService {
             .Take(1)
             .SingleOrDefault();
 
-        if (customer != null &&
-            (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId || string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId))
-           ) {
-            customer.WechatAppOpenId = wechatAppOpenId;
-            customer.WechatUnionId = wechatUnionId;
+        if (customer != null) {
+            bool shouldUpdateCustomer = false;
+
+            // 这里主要是可能的更新 union_id
+            if (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId) {
+                customer.WechatAppOpenId = wechatAppOpenId;
+                customer.WechatUnionId = wechatUnionId;
+
+                shouldUpdateCustomer = true;
+            }
 
             // 可能的更新微信公众号 open id
             if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId)) {
                 string wechatOfficialAccountOpenId = wechatOfficialAccountFollowerService.GetWechatOfficialAccountOpenId(wechatUnionId);
                 if (string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == false) {
                     customer.WechatOfficialAccountOpenId = wechatOfficialAccountOpenId;
+
+                    shouldUpdateCustomer = true;
                 }
             }
 
-            session.Update(customer);
-            session.Flush();
+            if (shouldUpdateCustomer == true) {
+                session.Update(customer);
+                session.Flush();
+            }
         }
 
         if (customer == null) {
