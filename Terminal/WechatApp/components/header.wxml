@@ -16,7 +16,9 @@
         </view>
     </view>
     <view slot="right">
-        vip
+        <view style="margin-right: -5px;">
+            {{ customerCode }}
+        </view>
     </view>
 </van-nav-bar>
 <chat-icon/>

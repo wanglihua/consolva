@@ -9,16 +9,32 @@ Component({
 
     properties: {},
 
-    data: {},
+    data: {
+        customerCode: "",
+    },
 
     pageLifetimes: {
         show: function () {
+            const nowMilliSeconds = new Date().getTime();
+            const loginMilliSeconds = wx.getStorageSync("client-login-time");
+            const that = this;
+            // 最多5分钟尝试 wx.login() 一次
+            if (!loginMilliSeconds || nowMilliSeconds - loginMilliSeconds > 5 * 60 * 1000) {
+                wx.login({
+                    success: res => {
+                        that.getClientHeaderData(res.code);
+                        // 存储的是登录时间毫秒值
+                        wx.setStorageSync('client-login-time', new Date().getTime());
+                    }
+                });
+            } else {
+                that.getClientHeaderData("");
+            }
         }
     },
 
     methods: {
         onClickLeft() {
-            wx.showToast({title: '点击logo', icon: 'none'});
             // wx.navigateTo({
             //     url: "/pages/home/home_index",
             // });
@@ -30,8 +46,21 @@ Component({
             });
 
         },
+
         onClickRight() {
-            wx.showToast({title: '点击VIP', icon: 'none'});
+        },
+
+        getClientHeaderData(code) {
+            const that = this;
+            app.postWithoutLoading(
+                "/client/header/data", {
+                    code: code
+                }, function (res) {
+                    that.setData({
+                        customerCode: res.data.customerCode,
+                    });
+                }
+            );
         },
     },
 })
