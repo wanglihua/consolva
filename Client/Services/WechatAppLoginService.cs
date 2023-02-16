@@ -86,8 +86,7 @@ public class WechatAppLoginService {
         }
 
         if (customer == null) {
-            string wechatOfficialAccountOpenId = wechatOfficialAccountFollowerService.GetWechatOfficialAccountOpenId(wechatUnionId); // 这个结果可能为空
-            customer = customerService.CreateCustomerByOpenId(wechatAppOpenId, wechatOfficialAccountOpenId, wechatUnionId);
+            customer = customerService.CreateCustomerByWechatApp(wechatAppOpenId, wechatUnionId);
         }
 
         loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, request);

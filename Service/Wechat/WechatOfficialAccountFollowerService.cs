@@ -11,11 +11,16 @@ namespace shunda.Service.Wechat;
 public class WechatOfficialAccountFollowerService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    private ISession session;
-    private CustomerPromotionService customerPromotionService;
+    private readonly ISession session;
+    private readonly CustomerService customerService;
+    private readonly CustomerPromotionService customerPromotionService;
 
-    public WechatOfficialAccountFollowerService(ISession session, CustomerPromotionService customerPromotionService) {
+    public WechatOfficialAccountFollowerService(ISession session,
+        CustomerService customerService,
+        CustomerPromotionService customerPromotionService
+    ) {
         this.session = session;
+        this.customerService = customerService;
         this.customerPromotionService = customerPromotionService;
     }
 
@@ -76,13 +81,13 @@ public class WechatOfficialAccountFollowerService {
         follower.FollowStatus = WechatOfficialAccountFollowStatus.Followed;
         follower.FollowTime = DateTime.Now;
 
+        session.SaveOrUpdate(follower);
+        session.Flush();
+
         var customer = session.Query<CustomerInfo>()
             .Where(e => e.WechatOfficialAccountOpenId == openId || e.WechatUnionId == unionId)
             .Take(1)
             .SingleOrDefault();
-
-        session.SaveOrUpdate(follower);
-        session.Flush();
 
         // 无论是新的还是老的关注都要更新客户表的状态
         if (customer != null) {
@@ -93,14 +98,19 @@ public class WechatOfficialAccountFollowerService {
 
             session.Update(customer);
             session.Flush();
+        }
 
-            return;
+        if (customer == null) {
+            customerService.CreateCustomerByWechatOfficialAccount(follower);
         }
 
         // 如果是老的关注者，下面的逻辑就不做了
         if (isNewFollow == false) {
             return;
         }
+
+        // 通过从公众号下载的关注用户，这里的逻辑也不会走
+        // todo 在这里可以加上公众号关注奖励等等的逻辑 
 
         if (sceneId != null && sceneId.Value != 0) {
             // log.Warn($"WechatFollowService.NewFellow 00400, {sceneId.Value}");

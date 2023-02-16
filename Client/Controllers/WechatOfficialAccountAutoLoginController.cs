@@ -6,6 +6,7 @@ using shunda.Client.Services;
 using shunda.Core.Config;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
+using shunda.Domain.Wechat;
 using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
@@ -49,20 +50,25 @@ public class WechatOfficialAccountAutoLoginController : Controller {
                 .Take(1)
                 .SingleOrDefault();
 
-            if (customer != null && string.IsNullOrWhiteSpace(customer.WechatUnionId)) {
-                string unionId = wechatOfficialAccountFollowerService.GetUnionId(openId); // 这个结果可能为空
-                if (string.IsNullOrWhiteSpace(unionId) == false) {
-                    customer.WechatUnionId = unionId;
+            var follower = session.Query<WechatOfficialAccountFollowerInfo>()
+                .Where(e => e.OpenId == openId)
+                .Take(1)
+                .SingleOrDefault();
 
-                    session.Update(customer);
-                    session.Flush();
-                }
+            if (follower == null) {
+                throw new Exception("您还没有关注微信公众号，请先关注微信公众号再访问！"); 
+            }
+
+            if (customer != null && string.IsNullOrWhiteSpace(customer.WechatUnionId)) {
+                customer.WechatUnionId = follower.UnionId;
+
+                session.Update(customer);
+                session.Flush();
             }
 
             // 就是 open id 还没关联客户
             if (customer == null) {
-                string unionId = wechatOfficialAccountFollowerService.GetUnionId(openId); // 这个结果可能为空
-                customer = customerService.CreateCustomerByOpenId(string.Empty, openId, unionId);
+                customer = customerService.CreateCustomerByWechatOfficialAccount(follower);
             }
 
             // 使用 open id 自动登录
