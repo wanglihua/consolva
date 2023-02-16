@@ -29,7 +29,6 @@ Page({
             query: that.data.query,
             lastId: that.data.lastId
         }, function (res) {
-
             const expressClaimCount = res.data.expressClaimCount;
             const expressClaimList = res.data.expressClaimList;
             const lastId = res.data.lastId;
