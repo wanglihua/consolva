@@ -1,6 +1,7 @@
 using NHibernate.Criterion;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
+using shunda.Domain.Wechat;
 using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
@@ -53,7 +54,7 @@ public class WechatAppLoginService {
         if (customer != null) {
             bool shouldUpdateCustomer = false;
 
-            // 这里主要是可能的更新 union_id
+            // 这里可能是更新由关注公众号创建的客户的信息，也可能原来没有union id的更新 union_id，这种可能性很小s
             if (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId) {
                 customer.WechatAppOpenId = wechatAppOpenId;
                 customer.WechatUnionId = wechatUnionId;
@@ -63,9 +64,16 @@ public class WechatAppLoginService {
 
             // 可能的更新微信公众号 open id
             if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId)) {
-                string wechatOfficialAccountOpenId = wechatOfficialAccountFollowerService.GetWechatOfficialAccountOpenId(wechatUnionId);
-                if (string.IsNullOrWhiteSpace(wechatOfficialAccountOpenId) == false) {
-                    customer.WechatOfficialAccountOpenId = wechatOfficialAccountOpenId;
+                var follower = session.Query<WechatOfficialAccountFollowerInfo>()
+                    .Where(e => e.UnionId == wechatUnionId)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                if (follower != null) {
+                    customer.WechatOfficialAccountOpenId = follower.OpenId;
+                    customer.WechatOfficialAccountFollowStatus = follower.FollowStatus;
+                    customer.WechatOfficialAccountFollowTime = follower.FollowTime;
+                    customer.WechatOfficialAccountUnfollowTime = follower.UnfollowTime;
 
                     shouldUpdateCustomer = true;
                 }

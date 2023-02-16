@@ -27,6 +27,7 @@ public class CustomerController : Controller {
     public static readonly int NoVipRankId = -100;
     public static readonly int SuperVipRankId = -200;
     private readonly CustomerCodeService customerCodeService;
+    private readonly CustomerCheckinCodeService customerCheckinCodeService;
     private readonly LoginUserService loginUserService;
     private readonly PasswordService passwordService;
     private readonly PassResService passResService;
@@ -35,11 +36,13 @@ public class CustomerController : Controller {
 
     public CustomerController(ISession session,
         CustomerCodeService customerCodeService,
+        CustomerCheckinCodeService customerCheckinCodeService,
         LoginUserService loginUserService,
         PasswordService passwordService,
         PassResService passResService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
+        this.customerCheckinCodeService = customerCheckinCodeService;
         this.loginUserService = loginUserService;
         this.passwordService = passwordService;
         this.passResService = passResService;
@@ -545,6 +548,9 @@ public class CustomerController : Controller {
 
         Transactional.Wrap(session, () => {
             foreach (var customer in customerList) {
+                string checkinCode = customerCheckinCodeService.GenerateNewCheckinCode();
+
+                customer.CheckinCode = checkinCode;
                 customer.CustomerCharacter = "测试账户";
                 customer.MobileValidated = true;
 
@@ -569,10 +575,14 @@ public class CustomerController : Controller {
                 customer.Status = CustomerStatus.Normal;
 
                 session.Save(customer);
-            }
+                session.Flush();
 
-            session.Flush();
+                // 创建客户后，必须要调用这个，否则会有入库码重复的可能
+                customerCheckinCodeService.SaveCheckinCodeToCache(checkinCode, customer.Id);
+            }
         });
+
+        session.Flush();
 
         return Json(new Dictionary<string, object> {
             { "success", true },
