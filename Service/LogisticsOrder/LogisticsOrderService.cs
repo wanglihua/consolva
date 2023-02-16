@@ -45,6 +45,10 @@ public class LogisticsOrderService {
         }
 
         if (backend == false) {
+            if (order.Customer.Id != customerId) {
+                throw new ValidationException("指定所属客户与指定的客户不一致！");
+            }
+
             var orderStatusListBeforeSubmitPack = LogisticsOrderStatus.GetBeforeSubmitPackStatusList();
             if (orderStatusListBeforeSubmitPack.Contains(order.OrderStatus) == false) {
                 throw new ValidationException("订单已提交打包或后续状态，不能取消订单！");
