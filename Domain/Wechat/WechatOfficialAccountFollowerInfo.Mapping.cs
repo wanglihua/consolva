@@ -1,7 +1,5 @@
-using shunda.Core;
 using NHibernate;
-using NHibernate.Mapping.ByCode;
-using shunda.Domain.Customer;
+using shunda.Core;
 
 namespace shunda.Domain.Wechat;
 
