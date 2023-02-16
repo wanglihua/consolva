@@ -6,7 +6,9 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Client;
+using shunda.Domain.Customer;
 using shunda.Service.Client;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Controllers;
@@ -16,16 +18,19 @@ public class HomeController : Controller {
 
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly CustomerCodeService customerCodeService;
     private readonly WechatAppLoginService wechatAppLoginService;
     private readonly ClientHomeDataService clientHomeDataService;
 
     public HomeController(ISession session,
         LoginCustomerService loginCustomerService,
+        CustomerCodeService customerCodeService,
         WechatAppLoginService wechatAppLoginService,
         ClientHomeDataService clientHomeDataService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.customerCodeService = customerCodeService;
         this.wechatAppLoginService = wechatAppLoginService;
         this.clientHomeDataService = clientHomeDataService;
     }
@@ -45,6 +50,42 @@ public class HomeController : Controller {
     public IActionResult ClientIndex() {
         var model = new HomeClientIndexModel();
         return View("HomeClientIndex", model);
+    }
+
+    [NoLoginRequired] // 里面会自动登录
+    [HttpPost]
+    [Route("/client/header/data")]
+    [Transactional] // login的时候需要事务
+    public IActionResult ClientHeaderData([FromBody] HomeClientHeaderDataParam param) {
+        if (loginCustomerService.IsLogined == false) {
+            // 这时才是需要验证这个参数
+            ValidationUtil.Validate<HomeClientHeaderDataParamValidator, HomeClientHeaderDataParam>(param);
+            wechatAppLoginService.Login(param.Code, Request);
+        }
+
+        // 这时肯定已经登录
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        // 客户信息
+        string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
+
+        var customer = loginCustomerService.GetLoginCustomer();
+        CustomerLevel customerLevel = customer.Level;
+        if (customerLevel == CustomerLevel.SuperVip) {
+            customerCode += $" {CustomerLevel.SuperVip.Name}";
+        } else if (customerLevel == CustomerLevel.Vip) {
+            customerCode += $" {customer.VipRank.Name}";
+        }
+
+        var model = new HomeClientHeaderDataModel {
+            CustomerCode = customerCode,
+        };
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = model,
+        });
     }
 
     [NoLoginRequired] // 里面会自动登录

@@ -13,6 +13,7 @@ using Senparc.Weixin.Tencent;
 using shunda.Domain.Customer;
 using shunda.Domain.Wechat;
 using shunda.Service.Customer;
+using shunda.Service.Pass;
 
 namespace shunda.Service.Wechat.CustomMessageHandler;
 
@@ -40,7 +41,10 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
     public CustomMessageHandler(ISession session, XDocument document, PostModel postModel, int maxRecordCount = 0)
         : base(document, postModel, maxRecordCount) {
         this.session = session;
-        this.wechatOfficialAccountFollowerService = new WechatOfficialAccountFollowerService(session, new CustomerPromotionService(session));
+        this.wechatOfficialAccountFollowerService = new WechatOfficialAccountFollowerService(session,
+            new CustomerService(session, new CustomerCheckinCodeService(session), new PasswordService()),
+            new CustomerPromotionService(session)
+        );
         this.wechatOfficialAccountReplyService = new WechatOfficialAccountReplyService(session);
         this.wechatOfficialAccountReplyKeywordService = new WechatOfficialAccountReplyKeywordService(session);
         this.wechatOfficialAccountAccessTokenService = new WechatOfficialAccountAccessTokenService(session);
