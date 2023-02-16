@@ -12,7 +12,7 @@ Page({
         showActionSheet: false,
         actionSheetActions: [],
     },
-    
+
     onLoad(options) {
         this.loadOrderList();
     },
@@ -20,7 +20,7 @@ Page({
     onReachBottom() {
         this.loadOrderList();
     },
-    
+
     loadOrderList() {
         const that = this;
 
@@ -55,9 +55,9 @@ Page({
         });
 
         actionSheetActions.push({
-            action: "claim",
-            name: '认领',
-            className: 'iconfont iconfont-claim-pick',
+            action: "cancel",
+            name: '取消订单',
+            className: 'iconfont iconfont-reject',
         });
 
         this.setData({
@@ -72,19 +72,39 @@ Page({
         });
     },
     onActionSheetSelect(e) {
-        const orderId = this.data.currentOrder.id;
+        const currentOrder = this.data.currentOrder;
+        const orderId = currentOrder.id;
+        const orderCode = currentOrder.orderCode;
         const action = e.detail.action;
 
         const that = this;
         if (action === "detail") {
             wx.navigateTo({
-                url: './express_claim_detail?id=' + orderId,
+                url: './order_detail?id=' + orderId,
             });
         }
 
-        if (action === "claim") {
-            wx.navigateTo({
-                url: './express_claim_pick?id=' + orderId,
+        if (action === "cancel") {
+            wx.showModal({
+                title: '订单取消确认',
+                content: '确实要取消订单 ' + orderCode + ' 吗？',
+                success(res) {
+                    if (res.confirm) {
+                        app.post("/client/order/action/cancel", {orderId: orderId}, function (res) {
+                            wx.showToast({
+                                title: res.message,
+                            });
+
+                            // 重置lastId
+                            that.setData({
+                                lastId: 0,
+                            });
+
+                            // 重新加载订单列表
+                            that.loadOrderList();
+                        });
+                    }
+                }
             });
         }
 

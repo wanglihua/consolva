@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Client.Areas.Order.Models.OrderDetail;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Web;
@@ -30,9 +31,14 @@ public class OrderDetailController : Controller {
             throw new ValidationException($"订单{order.Code}不属于当前登录客户！");
         }
 
+        var model = new OrderDetailModel {
+
+        };
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = model,
         });
     }
 }
