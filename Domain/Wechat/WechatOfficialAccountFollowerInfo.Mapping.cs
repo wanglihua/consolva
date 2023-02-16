@@ -9,17 +9,6 @@ public class WechatOfficialAccountFollowerInfoMapping : EntityMapping<WechatOffi
     public WechatOfficialAccountFollowerInfoMapping() {
         Table("tbl_wechat_official_account_follower");
 
-        ManyToOne(
-            x => x.Customer,
-            map => {
-                map.Class(typeof(CustomerInfo));
-                map.Column("customer_id");
-                map.NotNullable(false);
-                map.Cascade(Cascade.None);
-                map.Fetch(FetchKind.Select);
-            }
-        );
-
         Property(
             x => x.NickName,
             map => {

@@ -64,14 +64,6 @@ public class WechatOfficialAccountFollowerController : Controller {
                         follower = new WechatOfficialAccountFollowerInfo();
                     }
 
-                    var customer = session.Query<CustomerInfo>()
-                        .Where(e => e.WechatOfficialAccountOpenId == openId || e.WechatUnionId == unionId)
-                        .Take(1)
-                        .SingleOrDefault();
-
-                    // 这里也可以考虑更新 customer  的 WechatOfficialAccountOpenId, 有些有可能这个值还是空的
-
-                    follower.Customer = customer;
                     follower.OpenId = openId;
                     follower.UnionId = unionId;
                     follower.NickName = userInfo.nickname;

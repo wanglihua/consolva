@@ -1,6 +1,5 @@
 using shunda.Core;
 using shunda.Core.Util;
-using shunda.Domain.Customer;
 
 namespace shunda.Domain.Wechat;
 
@@ -8,10 +7,6 @@ namespace shunda.Domain.Wechat;
 /// 微信公众号关注者
 /// </summary>
 public class WechatOfficialAccountFollowerInfo : Entity {
-    /// <summary>
-    /// 客户Id，可空
-    /// </summary>
-    public virtual CustomerInfo? Customer { get; set; } = null;
 
     /// <summary>
     /// 微信昵称，可空

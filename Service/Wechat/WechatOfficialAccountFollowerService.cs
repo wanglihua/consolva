@@ -81,10 +81,6 @@ public class WechatOfficialAccountFollowerService {
             .Take(1)
             .SingleOrDefault();
 
-        if (customer != null) {
-            follower.Customer = customer;
-        }
-
         session.SaveOrUpdate(follower);
         session.Flush();
 
@@ -160,10 +156,6 @@ public class WechatOfficialAccountFollowerService {
             follower = new WechatOfficialAccountFollowerInfo();
             follower.OpenId = openId;
             follower.UnionId = string.Empty; // 只能先设置一个空的字符串了
-        }
-
-        if (customer != null) {
-            follower.Customer = customer;
         }
 
         follower.FollowStatus = WechatOfficialAccountFollowStatus.UnFollowed;
