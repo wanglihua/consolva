@@ -56,6 +56,9 @@ public class LogisticsOrderClientListItem {
 
     #endregion
 
+    [JsonProperty("firstModeType")]
+    public string FirstModeType { get; set; } = string.Empty;
+
     [JsonProperty("firstModeName")]
     public string FirstModeName { get; set; } = string.Empty;
 

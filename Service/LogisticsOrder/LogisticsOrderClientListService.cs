@@ -65,6 +65,11 @@ public class LogisticsOrderClientListService {
                 .Take(1)
                 .SingleOrDefault();
 
+            int checkinPackageCount = expressSizeWeightService.GetTotalPackageCount(sizeWeightListOfOrder);
+            if (checkinPackageCount == 0) {
+                checkinPackageCount = expressListOfOrder.Sum(e => e.PackageCount);
+            }
+
             var orderItem = new LogisticsOrderClientListItem {
                 Id = order.Id,
                 OrderCode = order.Code,
@@ -72,7 +77,7 @@ public class LogisticsOrderClientListService {
                 GoodsValue = order.GoodsValue.ToString("#0.00"),
                 ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
 
-                CheckinTotalPackageCount = expressSizeWeightService.GetTotalPackageCount(sizeWeightListOfOrder).ToString(),
+                CheckinTotalPackageCount = checkinPackageCount.ToString(),
                 CheckinTotalVolume = expressSizeWeightService.GetTotalVolume(sizeWeightListOfOrder).ToString("#0.000000"),
                 CheckinTotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(sizeWeightListOfOrder).ToString("#0.000"),
                 CheckinTotalActualWeight = expressSizeWeightService.GetTotalActualWeight(sizeWeightListOfOrder).ToString("#0.000"),
@@ -84,6 +89,7 @@ public class LogisticsOrderClientListService {
                 PackedTotalActualWeight = orderPackData?.TotalActualWeight.ToString("#0.000000") ?? string.Empty,
                 PackedMaxSideLength = orderPackData?.MaxSideLength.ToString("#0.0") ?? string.Empty,
 
+                FirstModeType = order.FirstModeType.Name,
                 FirstModeName = order.FirstMode.Name,
                 CreateTime = order.CreateTime.ToString("yyyy-MM-dd HH:mm"),
                 PackTime = order.CompletePackTime?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty,

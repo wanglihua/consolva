@@ -2,23 +2,22 @@
 <header/>
 <view class="container">
     <van-cell-group title="待打包"/>
-    <!-- todo 这里的要修改 -->
     <block wx:if="{{ orderCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
     </block>
     <block wx:else>
         <block wx:for="{{ orderList }}" wx:key="id" wx:for-item="order" wx:for-index="index">
             <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ order }}">
-                <van-cell title="{{ index + 1 }}、{{ order.checkinTrackingNo }}" value="{{ order.addDate }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="快递单号" value="{{ order.trackingNo }}" border="{{ false }}" custom-class="item"/>
-                <!--<van-cell title="快递公司" value="{{ order.orderCompany }}" border="{{ false }}" custom-class="item"/>-->
-                <van-cell title="入库单号" value="{{ order.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物品类型" value="{{ order.goodsType }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="登记日期" value="{{ order.addDate }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="面单会员" value="{{ order.billCustomerCode }}" border="{{ false }}" custom-class="item"/>
-                <block wx:if="{{ order.warehouseRemark && order.warehouseRemark !== '' }}">
-                    <van-cell title="仓库备注" value="{{order.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
-                </block>
+                <van-cell title="{{ index + 1 }}、{{ order.orderCode }}" value="{{ order.orderStatus }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="订单编号" value="{{ order.orderCode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单状态" value="{{ order.orderStatus }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物流类型" value="{{ order.firstModeType }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物流名称" value="{{ order.firstModeName }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单货值" value="¥ {{ order.goodsValue }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="欠费总额" value="¥ {{ order.arearsAmount }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="入库包裹数" value="{{ order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
+                <van-cell title="入库总体积" value="{{ order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
+                <van-cell title="入库总重量" value="{{ order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
                 <view class="item-last-vspace"/>
                 <van-cell title="操作" value="{{order.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ order }}" custom-class="item-footer" value-class="item-footer-value"/>
             </van-cell-group>
