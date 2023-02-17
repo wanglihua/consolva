@@ -85,7 +85,4 @@ public class LogisticsOrderClientListItem {
 
     [JsonProperty("canCancel")]
     public bool CanCancel { get; set; }
-
-    [JsonProperty("airExpressTrackingNo")]
-    public string AirExpressTrackingNo { get; set; } = string.Empty;
 }

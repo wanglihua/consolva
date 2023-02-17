@@ -53,15 +53,15 @@ public class LogisticsOrderClientListService {
 
         IList<LogisticsOrderClientListItem> orderItemList = new List<LogisticsOrderClientListItem>();
         foreach (var order in orderList) {
-            int ordreId = order.Id;
-            var expressListOfOrder = expressList.Where(e => e.Order!.Id == ordreId).ToList();
+            int orderId = order.Id;
+            var expressListOfOrder = expressList.Where(e => e.Order!.Id == orderId).ToList();
             IList<string> trackingNoListOfOrder = expressListOfOrder.Select(e => e.TrackingNo).ToList();
             var sizeWeightListOfOrder = sizeWeightList
                 .Where(e => trackingNoListOfOrder.Contains(e.TrackingNo))
                 .ToList();
 
             var orderPackData = orderPackDataList
-                .Where(e => e.Order.Id == ordreId)
+                .Where(e => e.Order.Id == orderId)
                 .Take(1)
                 .SingleOrDefault();
 
@@ -99,8 +99,6 @@ public class LogisticsOrderClientListService {
                 ShouldPay = order.ArrearsAmountFormula > 0,
                 Paid = order.PayStatus == PayStatus.Paid,
                 CanCancel = order.PayStatus == PayStatus.NotPaid,
-
-                AirExpressTrackingNo = string.Empty, // todo 暂时为空，后面还要改
             };
 
             orderItemList.Add(orderItem);
