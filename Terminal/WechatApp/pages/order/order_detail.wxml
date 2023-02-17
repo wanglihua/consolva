@@ -9,6 +9,9 @@
         <van-cell title="物流类型" value="{{ orderDetail.order.firstModeType }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="创建时间" value="{{ orderDetail.order.createTime }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="打包时间" value="{{ orderDetail.order.packTime }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="转运时间" value="{{ orderDetail.order.transferTime }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="签收时间" value="{{ orderDetail.order.deliverTime }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="订单货值" value="¥ {{ orderDetail.order.goodsValue }}" border="{{ false }}" custom-class="item"/>
         <block wx:if="{{ orderDetail.order.hasPacked === true }}">
             <van-cell title="物流费用" value="¥ {{ orderDetail.order.orderAmount }}" border="{{ false }}" custom-class="item"/>
