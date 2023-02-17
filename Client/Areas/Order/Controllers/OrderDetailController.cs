@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderDetail;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Fee;
@@ -28,7 +29,10 @@ public class OrderDetailController : Controller {
 
     [HttpPost]
     [Route("/client/order/detail")]
-    public IActionResult Detail(int orderId) {
+    public IActionResult Detail([FromBody] OrderDetailParam param) {
+        ValidationUtil.Validate<OrderDetailParamValidator, OrderDetailParam>(param);
+
+        int orderId = param.OrderId;
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -50,17 +54,12 @@ public class OrderDetailController : Controller {
             .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
 
-        IList<string> trackingNoListOfOrder = expressList.Select(e => e.TrackingNo).ToList();
-        var sizeWeightListOfOrder = sizeWeightList
-            .Where(e => trackingNoListOfOrder.Contains(e.TrackingNo))
-            .ToList();
-
         var orderPackData = orderPackDataList
             .Where(e => e.Order.Id == orderId)
             .Take(1)
             .SingleOrDefault();
 
-        int checkinPackageCount = expressSizeWeightService.GetTotalPackageCount(sizeWeightListOfOrder);
+        int checkinPackageCount = expressSizeWeightService.GetTotalPackageCount(sizeWeightList);
         if (checkinPackageCount == 0) {
             checkinPackageCount = expressList.Sum(e => e.PackageCount);
         }
@@ -74,12 +73,14 @@ public class OrderDetailController : Controller {
             OrderAmount = order.OrderAmount.ToString("#0.00"),
             ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
 
+            HasCheckinSizeWeightData = sizeWeightList.Count != 0,
             CheckinTotalPackageCount = checkinPackageCount.ToString(),
-            CheckinTotalVolume = expressSizeWeightService.GetTotalVolume(sizeWeightListOfOrder).ToString("#0.000000"),
-            CheckinTotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(sizeWeightListOfOrder).ToString("#0.000"),
-            CheckinTotalActualWeight = expressSizeWeightService.GetTotalActualWeight(sizeWeightListOfOrder).ToString("#0.000"),
-            CheckinMaxSideLength = expressSizeWeightService.GetMaxSizeLength(sizeWeightListOfOrder).ToString("#0.0"),
+            CheckinTotalVolume = expressSizeWeightService.GetTotalVolume(sizeWeightList).ToString("#0.000000"),
+            CheckinTotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(sizeWeightList).ToString("#0.000"),
+            CheckinTotalActualWeight = expressSizeWeightService.GetTotalActualWeight(sizeWeightList).ToString("#0.000"),
+            CheckinMaxSideLength = expressSizeWeightService.GetMaxSizeLength(sizeWeightList).ToString("#0.0"),
 
+            HasPackedSizeWeightData = orderPackData != null,
             PackedTotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
             PackedTotalVolume = orderPackData?.TotalVolume.ToString("#0.000000") ?? string.Empty,
             PackedTotalVolumeWeight = orderPackData?.TotalVolumeWeight.ToString("#0.000000") ?? string.Empty,
