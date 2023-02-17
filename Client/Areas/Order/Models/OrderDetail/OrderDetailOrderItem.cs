@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Order.Models.OrderDetail;
 
-public class OrderDetailItem {
+public class OrderDetailOrderItem {
     [JsonProperty("id")]
     public int Id { get; set; }
 

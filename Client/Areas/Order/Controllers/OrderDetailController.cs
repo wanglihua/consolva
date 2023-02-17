@@ -84,7 +84,7 @@ public class OrderDetailController : Controller {
         string serviceRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Service));
 
         // 订单基本信息
-        var orderDetailItem = new OrderDetailItem {
+        var orderDetailItem = new OrderDetailOrderItem {
             Id = order.Id,
             OrderCode = order.Code,
             OrderStatus = order.OrderStatus.Name,
