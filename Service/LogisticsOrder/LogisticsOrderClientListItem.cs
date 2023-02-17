@@ -15,6 +15,9 @@ public class LogisticsOrderClientListItem {
     [JsonProperty("goodsValue")]
     public string GoodsValue { get; set; } = string.Empty;
 
+    [JsonProperty("orderAmount")]
+    public string OrderAmount { get; set; } = string.Empty;
+
     [JsonProperty("arearsAmount")]
     public string ArearsAmount { get; set; } = string.Empty;
 
