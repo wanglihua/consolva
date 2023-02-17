@@ -97,4 +97,22 @@ public class OrderDetailItem {
 
     [JsonProperty("airExpressTrackingNo")]
     public string AirExpressTrackingNo { get; set; } = string.Empty;
+
+    [JsonProperty("insurance")]
+    public string Insurance { get; set; } = string.Empty;
+
+    [JsonProperty("gst")]
+    public string Gst { get; set; } = string.Empty;
+
+    [JsonProperty("repackType")]
+    public string RepackType { get; set; } = string.Empty;
+
+    [JsonProperty("customerRemark")]
+    public string CustomerRemark { get; set; } = string.Empty;
+
+    [JsonProperty("warehouseRemark")]
+    public string WarehouseRemark { get; set; } = string.Empty;
+
+    [JsonProperty("serviceRemark")]
+    public string ServiceRemark { get; set; } = string.Empty;
 }

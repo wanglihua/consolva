@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NHibernate;
 using shunda.Client.Areas.Order.Models.OrderDetail;
 using shunda.Client.Services;
 using shunda.Core;
@@ -6,6 +7,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Fee;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;
@@ -64,6 +66,14 @@ public class OrderDetailController : Controller {
             checkinPackageCount = expressList.Sum(e => e.PackageCount);
         }
 
+        NHibernateUtil.Initialize(order.Insurance);
+        string insurance = order.Insurance.Name;
+
+        NHibernateUtil.Initialize(order.Gst);
+        string gst = order.Gst.Name;
+
+        var repackType = order.RepackType.Name;
+
         // 订单基本信息
         var orderDetailItem = new OrderDetailItem {
             Id = order.Id,
@@ -98,7 +108,11 @@ public class OrderDetailController : Controller {
             Paid = order.PayStatus == PayStatus.Paid,
             CanCancel = order.PayStatus == PayStatus.NotPaid,
 
-            AirExpressTrackingNo = string.Empty, // todo 暂时为空，后面还要改            
+            AirExpressTrackingNo = string.Empty, // todo 暂时为空，后面还要改      
+
+            Insurance = insurance,
+            Gst = gst,
+            RepackType = repackType,
         };
 
         var model = new OrderDetailModel {

@@ -27,6 +27,9 @@
             <van-cell title="打包总体积" value="{{ orderDetail.order.packedTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
             <van-cell title="打包总重量" value="{{ orderDetail.order.packedTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
         </block>
+        <van-cell title="保险类型" value="{{ orderDetail.order.insurance }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="GST申报" value="{{ orderDetail.order.gst }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="打包方式" value="{{ orderDetail.order.repackType }}" border="{{ false }}" custom-class="item"/>
         <view class="item-last-vspace"/>
     </van-cell-group>
 </view>
