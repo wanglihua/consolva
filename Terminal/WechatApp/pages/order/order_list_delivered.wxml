@@ -2,4 +2,33 @@
 <header/>
 <view class="container">
     <van-cell-group title="已交付"/>
+    <block wx:if="{{ orderCount === 0 }}">
+        <van-empty description="暂时没有数据项！"/>
+    </block>
+    <block wx:else>
+        <block wx:for="{{ orderList }}" wx:key="id" wx:for-item="order" wx:for-index="index">
+            <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ order }}">
+                <van-cell title="{{ index + 1 }}、{{ order.orderCode }}" value="{{ order.orderStatus }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="订单编号" value="{{ order.orderCode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单状态" value="{{ order.orderStatus }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物流类型" value="{{ order.firstModeType }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物流名称" value="{{ order.firstModeName }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="创建时间" value="{{ order.createTime }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="交付时间" value="{{ order.DeliverTime }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单货值" value="¥ {{ order.goodsValue }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="欠费总额" value="¥ {{ order.arearsAmount }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="打包包裹数" value="{{ order.packTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
+                <van-cell title="打包总体积" value="{{ order.packTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
+                <van-cell title="打包总重量" value="{{ order.packTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
+                <van-cell title="操作" value="{{order.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ order }}" custom-class="item-footer" value-class="item-footer-value"/>
+            </van-cell-group>
+        </block>
+        <view class="bottom-divider">
+            <van-divider contentPosition="center">共 {{ orderCount }} 项</van-divider>
+        </view>
+    </block>
+
+    <van-action-sheet title="订单 {{ currentOrder.orderCode }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>
+
 </view>

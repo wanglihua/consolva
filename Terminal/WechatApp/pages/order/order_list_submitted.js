@@ -66,11 +66,13 @@ Page({
             showActionSheet: true
         });
     },
+
     onActionSheetCloseClick(e) {
         this.setData({
             showActionSheet: false
         });
     },
+
     onActionSheetSelect(e) {
         const currentOrder = this.data.currentOrder;
         const orderId = currentOrder.id;
