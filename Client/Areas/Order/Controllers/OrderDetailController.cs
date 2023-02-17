@@ -69,6 +69,7 @@ public class OrderDetailController : Controller {
             Id = order.Id,
             OrderCode = order.Code,
             OrderStatus = order.OrderStatus.Name,
+            HasPacked = order.OrderStatus.HasPacked(),
             GoodsValue = order.GoodsValue.ToString("#0.00"),
             OrderAmount = order.OrderAmount.ToString("#0.00"),
             ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),

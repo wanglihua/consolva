@@ -10,13 +10,20 @@
         <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="创建时间" value="{{ orderDetail.order.createTime }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="订单货值" value="¥ {{ orderDetail.order.goodsValue }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arearsAmount }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
-        <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-        <van-cell title="入库总重量" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
-        <van-cell title="打包包裹数" value="{{ orderDetail.order.packedTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
-        <van-cell title="打包总体积" value="{{ orderDetail.order.packedTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-        <van-cell title="打包总重量" value="{{ orderDetail.order.packedTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+        <block wx:if="{{ orderDetail.order.hasPacked === true }}">
+            <van-cell title="物流费用" value="¥ {{ orderDetail.order.orderAmount }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arearsAmount }}" border="{{ false }}" custom-class="item"/>
+        </block>
+        <block wx:if="{{ orderDetail.order.hasCheckinSizeWeightData === true }}">
+            <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
+            <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
+            <van-cell title="入库总重量" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+        </block>
+        <block wx:if="{{ orderDetail.order.hasPacked === true }}">
+            <van-cell title="打包包裹数" value="{{ orderDetail.order.packedTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
+            <van-cell title="打包总体积" value="{{ orderDetail.order.packedTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
+            <van-cell title="打包总重量" value="{{ orderDetail.order.packedTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+        </block>
         <view class="item-last-vspace"/>
     </van-cell-group>
 </view>

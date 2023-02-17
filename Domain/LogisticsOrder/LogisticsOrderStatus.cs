@@ -107,6 +107,21 @@ public class LogisticsOrderStatus : CodeTypeBase {
     /// <param name="description"></param>
     private LogisticsOrderStatus(int id, string name, string description) : base(id, name, description) {
     }
+
+    /// <summary>
+    /// 是否已经打包
+    /// </summary>
+    public bool HasPacked() {
+        if (this == Create) {
+            return false;
+        }
+
+        if (this == WaitPack) {
+            return false;
+        }
+
+        return true;
+    }
 }
 
 public class LogisticsOrderStatusHibernateType : CodeHibernateTypeBase<LogisticsOrderStatus> {

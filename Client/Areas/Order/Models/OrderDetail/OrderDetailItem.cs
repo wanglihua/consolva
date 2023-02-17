@@ -12,6 +12,9 @@ public class OrderDetailItem {
     [JsonProperty("orderStatus")]
     public string OrderStatus { get; set; } = string.Empty;
 
+    [JsonProperty("hasPacked")]
+    public bool HasPacked { get; set; }
+
     [JsonProperty("goodsValue")]
     public string GoodsValue { get; set; } = string.Empty;
 
