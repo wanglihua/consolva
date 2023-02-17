@@ -74,6 +74,15 @@ public class OrderDetailController : Controller {
 
         var repackType = order.RepackType.Name;
 
+        var orderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        string customerRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Customer));
+        string warehouseRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Warehouse));
+        string serviceRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Service));
+
         // 订单基本信息
         var orderDetailItem = new OrderDetailItem {
             Id = order.Id,
@@ -113,6 +122,10 @@ public class OrderDetailController : Controller {
             Insurance = insurance,
             Gst = gst,
             RepackType = repackType,
+
+            CustomerRemark = customerRemark,
+            WarehouseRemark = warehouseRemark,
+            ServiceRemark = serviceRemark,
         };
 
         var model = new OrderDetailModel {
