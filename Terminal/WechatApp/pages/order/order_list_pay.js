@@ -57,7 +57,7 @@ Page({
         actionSheetActions.push({
             action: "pay",
             name: '订单支付',
-            className: 'iconfont iconfont-reject',
+            className: 'iconfont iconfont-pay',
         });
 
         this.setData({
