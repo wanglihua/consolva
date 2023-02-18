@@ -12,11 +12,9 @@ public class ExpressStatus : CodeTypeBase {
     public static readonly ExpressStatus WaitPick = new ExpressStatus(1000, "待认领", "待认领");
 
     /// <summary>
-    /// 已认领
-    /// 系统的已入库状态
-    /// 已完成认领和录完货值
+    /// 已入库
     /// </summary>
-    public static readonly ExpressStatus Checkin = new ExpressStatus(3000, "已认领", "已认领");
+    public static readonly ExpressStatus Checkin = new ExpressStatus(3000, "已入库", "已入库");
 
     /// <summary>
     /// 待退运

@@ -359,31 +359,12 @@ public class ExpressListService {
 
         // 已认领
         if (expressListMenuCate == ExpressListMenuCate.Picked) {
-            DetachedCriteria expectExpressCriteria = DetachedCriteria.For<ExpressExpectInfo>()
-                .Add(Restrictions.Where<ExpressExpectInfo>(e => e.Status == ExpressExpectStatus.Create || e.Status == ExpressExpectStatus.Enter)) // create 状态放在这里只是为了容错
-                .SetProjection(Projections.Property<ExpressExpectInfo>(e => e.TrackingNo));
-
-            criteria = criteria.Add(Restrictions.And(
-                    Restrictions.Where<ExpressInfo>(e => e.AddTime >= EXPRESS_CHECKIN_RECENT_AGO),
-                    Restrictions.Or(
-                        Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.Checkin),
-                        Subqueries.PropertyIn(nameof(ExpressInfo.TrackingNo), expectExpressCriteria)
-                    )
-                )
-            );
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.AddTime >= EXPRESS_CHECKIN_RECENT_AGO && e.Status != ExpressStatus.WaitPick));
         }
 
         // 未认领
         if (expressListMenuCate == ExpressListMenuCate.NotPicked) {
-            DetachedCriteria expectExpressCriteria = DetachedCriteria.For<ExpressExpectInfo>()
-                .Add(Restrictions.Where<ExpressExpectInfo>(e => e.Status == ExpressExpectStatus.Create || e.Status == ExpressExpectStatus.Enter)) // create 状态放在这里只是为了容错
-                .SetProjection(Projections.Property<ExpressExpectInfo>(e => e.TrackingNo));
-
-            criteria = criteria.Add(Restrictions.And(
-                    Restrictions.Where<ExpressInfo>(e => e.AddTime >= EXPRESS_CHECKIN_RECENT_AGO && e.Status == ExpressStatus.WaitPick),
-                    Restrictions.Not(Subqueries.PropertyIn(nameof(ExpressInfo.TrackingNo), expectExpressCriteria))
-                )
-            );
+            criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.AddTime >= EXPRESS_CHECKIN_RECENT_AGO && e.Status == ExpressStatus.WaitPick));
         }
 
         // 已预报
@@ -649,22 +630,13 @@ public class ExpressListService {
         if (queryParam.ExpectedQuery != null) {
             bool expectedQueryValue = queryParam.ExpectedQuery.Value;
 
+            // 这子查询，会带来可能得性能问题
+            DetachedCriteria expectExpressCriteria = DetachedCriteria.For<ExpressExpectInfo>()
+                .SetProjection(Projections.Property<ExpressExpectInfo>(e => e.TrackingNo));
 
             if (expectedQueryValue == true) {
-                DetachedCriteria expectExpressCriteria = DetachedCriteria.For<ExpressExpectInfo>()
-                    .Add(Restrictions.Or(
-                        Restrictions.Eq(nameof(ExpressExpectInfo.Status), ExpressExpectStatus.Create),
-                        Restrictions.Eq(nameof(ExpressExpectInfo.Status), ExpressExpectStatus.Enter))
-                    )
-                    .SetProjection(Projections.Property<ExpressExpectInfo>(e => e.TrackingNo));
-
-                criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.WaitPick));
-
                 criteria = criteria.Add(Subqueries.PropertyIn(nameof(ExpressInfo.TrackingNo), expectExpressCriteria));
             } else {
-                DetachedCriteria expectExpressCriteria = DetachedCriteria.For<ExpressExpectInfo>()
-                    .SetProjection(Projections.Property<ExpressExpectInfo>(e => e.TrackingNo));
-
                 criteria = criteria.Add(Subqueries.PropertyNotIn(nameof(ExpressInfo.TrackingNo), expectExpressCriteria));
             }
         }

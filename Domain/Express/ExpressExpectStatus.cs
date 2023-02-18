@@ -12,12 +12,6 @@ public class ExpressExpectStatus : CodeTypeBase {
     public static readonly ExpressExpectStatus Create = new ExpressExpectStatus(1000, "未到货", "未到货");
 
     /// <summary>
-    /// 可认领
-    /// 录货值
-    /// </summary>
-    public static readonly ExpressExpectStatus Enter = new ExpressExpectStatus(2000, "录货值", "录货值");
-
-    /// <summary>
     /// 已入库
     /// </summary>
     public static readonly ExpressExpectStatus Checkin = new ExpressExpectStatus(3000, "已入库", "已入库");
@@ -29,7 +23,6 @@ public class ExpressExpectStatus : CodeTypeBase {
 
     private static readonly IReadOnlyList<ExpressExpectStatus> codeTypeList = new List<ExpressExpectStatus>() {
         Create,
-        Enter,
         Checkin,
     };
 

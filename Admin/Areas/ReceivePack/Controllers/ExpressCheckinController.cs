@@ -548,7 +548,7 @@ public class ExpressCheckinController : Controller {
                     .SingleOrDefault();
 
                 if (expressExpect != null && expressExpect.Status == ExpressExpectStatus.Create) {
-                    expressExpect.Status = ExpressExpectStatus.Enter;
+                    expressExpect.Status = ExpressExpectStatus.Checkin;
                     session.Save(expressExpect);
                     session.Flush();
                 }
@@ -566,7 +566,6 @@ public class ExpressCheckinController : Controller {
 
                     if (expressExpect != null) {
                         express.ClaimTime = now;
-                        // express.Status = ExpressStatus.Expect;
                         express.Status = ExpressStatus.Checkin;
                         express.Customer = expressExpect.Customer;
                     }
