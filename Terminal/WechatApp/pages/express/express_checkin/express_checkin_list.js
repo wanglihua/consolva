@@ -38,7 +38,7 @@ Page({
         const expressTotalCount = resData.expressTotalCount;
 
         for (const express of expressWaitOrderList) {
-            express.actions = "转运，查看详细，修改价格等";
+            express.actions = "转运，查看详细，修改货值等";
 
             if (express.forbidden === true) {
                 express.headerValueClass = 'item-header-value-forbidden';
@@ -48,7 +48,7 @@ Page({
         }
 
         for (const express of expressCheckinList) {
-            express.actions = "转运，查看详细，修改价格等";
+            express.actions = "转运，查看详细，修改货值等";
 
             if (express.forbidden === true) {
                 express.headerValueClass = 'item-header-value-forbidden';
@@ -130,8 +130,8 @@ Page({
         });
 
         actionSheetActions.push({
-            action: "editPrice",
-            name: '修改价格',
+            action: "editGoodsValue",
+            name: '修改货值',
             className: 'iconfont iconfont-edit',
         });
 
@@ -237,7 +237,7 @@ Page({
             });
         }
 
-        if (action === "editPrice") {
+        if (action === "editGoodsValue") {
             wx.navigateTo({
                 url: './express_checkin_price?id=' + expressId,
             });
