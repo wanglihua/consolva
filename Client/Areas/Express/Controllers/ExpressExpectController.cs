@@ -58,19 +58,12 @@ public class ExpressExpectController : Controller {
             string trackingNo = expressExpect.TrackingNo;
             var express = expressList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
 
-            var status = expressExpect.Status;
-            if (express == null && status == ExpressExpectStatus.Enter) // 这里是在做一个状态的纠正，正常情况不会发生状态错误
-            {
-                status = ExpressExpectStatus.Create;
-            }
-
-            itemList.Add(new ExpressExpectListItem() {
+            itemList.Add(new ExpressExpectListItem {
                 Id = expressExpect.Id,
                 TrackingNo = trackingNo,
                 Description = expressExpect.Description,
-                Status = status.Name,
+                Status = expressExpect.Status.Name,
                 AddTime = expressExpect.CreateTime.ToString("yyyy-MM-dd"),
-                Enter = status == ExpressExpectStatus.Enter,
                 ExpressId = express?.Id, // 可能会是 null
             });
         }
@@ -92,7 +85,6 @@ public class ExpressExpectController : Controller {
 
         IList<ExpressExpectStatus> notCheckinStatusList = new List<ExpressExpectStatus>() {
             ExpressExpectStatus.Create,
-            ExpressExpectStatus.Enter,
         };
 
         var query = session.Query<ExpressExpectInfo>()
