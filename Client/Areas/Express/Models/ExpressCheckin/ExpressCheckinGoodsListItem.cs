@@ -15,7 +15,4 @@ public class ExpressCheckinGoodsListItem
 
     [JsonProperty("unit")]
     public string Unit { get; set; } = string.Empty;
-
-    [JsonProperty("price")]
-    public string Price { get; set; } = string.Empty;
 }

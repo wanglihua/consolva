@@ -137,6 +137,7 @@ public class ExpressCheckinController : Controller {
                 TrackingNo = express.TrackingNo,
                 ExpressCompany = express.ExpressCompany,
                 GoodsType = express.GoodsType.Name,
+                GoodsValue = express.GoodsValue.ToString("#0.00"),
                 Forbidden = express.GoodsType == LogisticsGoodsType.Forbidden,
                 CheckinTrackingNo = express.CheckinTrackingNo,
                 AddDate = express.AddTime.ToString("yyyy-MM-dd"),
@@ -152,7 +153,6 @@ public class ExpressCheckinController : Controller {
                         Id = e.Id,
                         GoodsName = e.Goods.Name,
                         Quantity = e.Quantity,
-                        Price = e.Price.ToString("#0.00"),
                         Unit = e.Unit,
                     })
                     .ToList();

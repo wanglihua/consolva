@@ -2,8 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Express.Models.ExpressClaim;
 
-public class ExpressClaimDetailModel
-{
+public class ExpressClaimDetailModel {
     [JsonProperty("id")]
     public int Id { get; set; }
 
@@ -18,6 +17,9 @@ public class ExpressClaimDetailModel
 
     [JsonProperty("goodsType")]
     public string GoodsType { get; set; } = string.Empty;
+
+    [JsonProperty("goodsValue")]
+    public string GoodsValue { get; set; } = string.Empty;
 
     [JsonProperty("addDate")]
     public string AddDate { get; set; } = string.Empty;
@@ -78,8 +80,7 @@ public class ExpressClaimDetailModel
     [JsonProperty("expressSizeWeightList")]
     public IList<ExpressSizeWeightItem> ExpressSizeWeightList { get; set; } = new List<ExpressSizeWeightItem>();
 
-    public class ExpressGoodsItem
-    {
+    public class ExpressGoodsItem {
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -92,9 +93,6 @@ public class ExpressClaimDetailModel
         [JsonProperty("goodsName")]
         public string GoodsName { get; set; } = string.Empty;
 
-        [JsonProperty("price")]
-        public string Price { get; set; } = string.Empty;
-
         [JsonProperty("quantity")]
         public int Quantity { get; set; }
 
@@ -102,8 +100,7 @@ public class ExpressClaimDetailModel
         public string Unit { get; set; } = string.Empty;
     }
 
-    public class ExpressSizeWeightItem
-    {
+    public class ExpressSizeWeightItem {
         [JsonProperty("id")]
         public int Id { get; set; }
 

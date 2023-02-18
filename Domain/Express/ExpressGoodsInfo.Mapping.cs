@@ -34,15 +34,6 @@ public class ExpressGoodsInfoMapping : EntityMapping<ExpressGoodsInfo>
         );
 
         Property(
-            x => x.Price,
-            map => {
-                map.Type(NHibernateUtil.Decimal);
-                map.Column("price");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
             x => x.Quantity,
             map => {
                 map.Type(NHibernateUtil.Int32);

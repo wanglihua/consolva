@@ -25,13 +25,6 @@ public class ExpressGoodsInfo : Entity
     public virtual LogisticsGoodsInfo Goods { get; set; } = new ();
 
     /// <summary>
-    /// 价格，非空
-    /// </summary>
-    [Required(ErrorMessage = "价格不能为空！")]
-    [JsonProperty("price")]
-    public virtual decimal Price { get; set; } = 0m;
-
-    /// <summary>
     /// 数量，非空
     /// </summary>
     [Required(ErrorMessage = "数量不能为空！")]

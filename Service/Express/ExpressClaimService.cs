@@ -52,14 +52,8 @@ public class ExpressClaimService {
             throw new ValidationException("当前快递单号状态不是 待认领 或 录货值 状态！");
         }
 
-        var expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Where(e => e.Express.Id == expressId)
-            .ToList();
-
-        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
-            if (expressGoods.Price <= 0) {
-                throw new ValidationException($"物品 {expressGoods.Goods.Name} 价格不能为零！");
-            }
+        if (express.GoodsValue <= 0) {
+            throw new ValidationException("快递单货品总值不能为空！");
         }
 
         express.ClaimTime = DateTime.Now;

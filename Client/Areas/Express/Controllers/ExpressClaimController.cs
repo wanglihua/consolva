@@ -150,6 +150,7 @@ public class ExpressClaimController : Controller {
             ExpressCompany = express.ExpressCompany,
             BillCustomerCode = express.BillCustomerCode,
             GoodsType = express.GoodsType.Name,
+            GoodsValue = express.GoodsValue > 0 ? express.GoodsValue.ToString("#0.00") : string.Empty,
             CheckinTrackingNo = express.CheckinTrackingNo,
             ExpectTrackingNo = expressExpect?.TrackingNo ?? string.Empty,
             ExpectDescription = expressExpect?.Description ?? string.Empty,
@@ -174,18 +175,11 @@ public class ExpressClaimController : Controller {
 
         var expressGoodsItemList = new List<ExpressClaimDetailModel.ExpressGoodsItem>();
         foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
-            // 价格为0的时候，值为空
-            string price = expressGoods.Price.ToString("#0.00");
-            if (expressGoods.Price <= 0) {
-                price = string.Empty;
-            }
-
             expressGoodsItemList.Add(new ExpressClaimDetailModel.ExpressGoodsItem() {
                 Id = expressGoods.Id,
                 ExpressId = expressGoods.Express.Id,
                 GoodsId = expressGoods.Goods.Id,
                 GoodsName = expressGoods.Goods.Name,
-                Price = price,
                 Quantity = expressGoods.Quantity,
                 Unit = expressGoods.Unit,
             });
@@ -240,49 +234,23 @@ public class ExpressClaimController : Controller {
     [Route("/client/express/claim/pick")]
     [Transactional]
     public IActionResult Pick([FromBody] ExpressClaimPickParam param) {
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
+        ValidationUtil.Validate<ExpressClaimPickParamValidator, ExpressClaimPickParam>(param);
 
         int expressId = param.ExpressId;
         string trackingNoInput = param.TrackingNoInput;
-        var goodsPriceList = param.GoodsPriceList;
 
         var express = session.Get<ExpressInfo>(expressId);
         if (express == null) {
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
-        if (goodsPriceList == null || goodsPriceList.Count == 0) {
-            throw new ValidationException("物品价格不能为空！");
+        if (decimal.TryParse(param.GoodsValue, out decimal goodsValue) == false || goodsValue <= 0) {
+            throw new ValidationException($"您还未完善快递单号货品总值。请如实申报货值，虚假申报可能会导致高额税金、罚款、销毁物品！");
         }
 
-        // 检查快递单的物品是不是对有界面上传过来的价格，并且都是大于0的价格
-        var expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Where(e => e.Express.Id == expressId)
-            .OrderBy(e => e.Id) // 快递单号物品都按id升序排
-            .ToList();
-        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
-            int expressGoodsId = expressGoods.Id;
-            var goodsPrice = goodsPriceList.Where(e => e.ExpressGoodsId == expressGoodsId)
-                .Take(1)
-                .SingleOrDefault();
-            if (goodsPrice == null || goodsPrice.Price <= 0) {
-                throw new ValidationException($"您还未完善物品 {expressGoods.Goods.Name} 单价。请如实申报货值，虚假申报可能会导致高额税金、罚款、销毁物品！");
-            }
-        }
+        express.GoodsValue = goodsValue;
 
-        foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
-            int expressGoodsId = expressGoods.Id;
-            var goodsPrice = goodsPriceList.Where(e => e.ExpressGoodsId == expressGoodsId)
-                .Take(1)
-                .SingleOrDefault();
-
-            expressGoods.Price = goodsPrice!.Price;
-
-            session.Update(expressGoods);
-        }
-
+        session.Update(express);
         session.Flush();
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();

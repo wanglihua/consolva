@@ -127,6 +127,18 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
+                                        <label asp-for="Express.GoodsValue" class="col-xs-4 control-label">货品总值</label>
+                                        <div class="col-xs-8">
+                                            <div class="input-group">
+                                                <input asp-for="Express.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <span class="input-group-addon">RMB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <div class="form-group">
                                         <label asp-for="Express.PackageCount" class="col-xs-4 control-label">包裹数量</label>
                                         <div class="col-xs-8">
                                             <input asp-for="Express.PackageCount" type="text" disabled="disabled" class="input-sm form-control"/>
@@ -149,7 +161,7 @@
                                         <div class="col-xs-8">
                                             @if (Model.ExpressExpect != null) {
                                                 <label class="control-label">
-                                                    <a href="@Url.Action("Detail", "Customer", new { id = Model.ExpressExpect?.Customer?.Id ?? 0 })" target="_blank">@(Model.ExpressExpect?.CustomerCodeCache)</a>
+                                                    <a href="@Url.Action("Detail", "Customer", new { id = Model.ExpressExpect?.Customer.Id ?? 0 })" target="_blank">@(Model.ExpressExpect?.CustomerCodeCache)</a>
                                                 </label>
                                             } else {
                                                 <input asp-for="ExpressExpect!.CustomerCodeCache" type="text" disabled="disabled" class="input-sm form-control"/>
@@ -157,6 +169,10 @@
                                         </div>
                                     </div>
                                 </div>
+
+                            </div>
+
+                            <div class="row">
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
@@ -166,10 +182,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-
-                            <div class="row">
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
@@ -583,10 +595,10 @@
                                             物品名称
                                         </th>
                                         <th style="width: 100px; text-align: center;">
-                                            单价
+                                            数量
                                         </th>
                                         <th style="width: 100px; text-align: center;">
-                                            数量
+                                            单位
                                         </th>
                                         <th></th>
                                     </tr>
@@ -600,16 +612,10 @@
                                                 <td style="text-align: center;">@item.Goods.Name</td>
                                                 <td style="text-align: center;">
                                                     <span>
-                                                        @(item.Price)
-                                                    </span>
-                                                    <span>
-                                                        元
+                                                        @(item.Quantity)
                                                     </span>
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <span>
-                                                        @(item.Quantity)
-                                                    </span>
                                                     <span>
                                                         @(item.Unit)
                                                     </span>

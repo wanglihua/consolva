@@ -115,7 +115,6 @@ public class ExpressReturnController : Controller {
                         Id = e.Id,
                         GoodsName = e.Goods.Name,
                         Quantity = e.Quantity,
-                        Price = e.Price.ToString("#0.00"),
                         Unit = e.Unit,
                     })
                     .ToList();

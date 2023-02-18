@@ -1,9 +1,8 @@
-using NHibernate.Linq;
+using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
 
@@ -37,14 +36,8 @@ public class LogisticsOrderCreateSelectExpressService {
         }
 
         // 检查价格是不是设置了
-        var expressOrderList = session.Query<ExpressGoodsInfo>()
-            .Fetch(e => e.Goods)
-            .Where(e => e.Express.Id == expressId)
-            .ToList();
-        foreach (ExpressGoodsInfo expressGoods in expressOrderList) {
-            if (expressGoods.Price <= 0) {
-                throw new ValidationException($"快递单号 {express.TrackingNo} 物品 {expressGoods.Goods.Name} 价格为0，不能转运，请点击单价修改！");
-            }
+        if (express.GoodsValue <= 0) {
+            throw new ValidationException($"快递单号 {express.TrackingNo} 货品总值为空，不能转运，请点击货品总值修改！");
         }
 
         var createSelectExpress = session.Query<LogisticsOrderCreateSelectExpressInfo>()
@@ -75,21 +68,15 @@ public class LogisticsOrderCreateSelectExpressService {
             .ToList();
 
         // 检查物品价格设置
-        var expressIdList = expressList.Select(e => e.Id).ToList();
-        var expressGoodsList = session.Query<ExpressGoodsInfo>()
-            .Where(e => expressIdList.Contains(e.Express.Id))
-            .ToList();
-
-        foreach (var expressGoods in expressGoodsList) {
-            if (expressGoods.Price <= 0) {
-                throw new ValidationException($"快递单号{expressGoods.Express.TrackingNo} 物品 {expressGoods.Goods.Name} 价格为零，不能转运，请点击单价修改！");
-            }
+        foreach (var express in expressList) {
+            throw new ValidationException($"快递单号 {express.TrackingNo} 货品总值为空，不能转运，请点击货品总值修改！");
         }
 
         var createSelectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
             .Where(e => e.CustomerId == customerId)
             .ToList();
 
+        var expressIdList = expressList.Select(e => e.Id).ToList();
         foreach (var expressId in expressIdList) {
             var createSelectExpress = createSelectExpressList
                 .Where(e => e.ExpressId == expressId)

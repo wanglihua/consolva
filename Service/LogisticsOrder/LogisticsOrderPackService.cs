@@ -63,6 +63,14 @@ public class LogisticsOrderPackService {
             }
         }
 
+        // 检查快递单货品总值
+        foreach (var express in expressList) {
+            if (express.GoodsValue <= 0) {
+                string trackingNo = express.TrackingNo;
+                throw new Exception($"快递单号 {trackingNo} 货品总值没有设置，请修改后继续！");
+            }
+        }
+
         IList<int> expressIdList = expressList.Select(e => e.Id).ToList();
 
         // 快递单物品列表
@@ -74,15 +82,6 @@ public class LogisticsOrderPackService {
             var expressGoods = expressGoodsList.Where(e => e.Express.Id == expressId).Take(1).SingleOrDefault();
             if (expressGoods == null) {
                 throw new ValidationException($"快递单号{express.TrackingNo}的物品列表为空, 不能提交打包!");
-            }
-        }
-
-        // 检查快递单物品单价
-        foreach (var expressGoods in expressGoodsList) {
-            if (expressGoods.Price <= 0) {
-                string trackingNo = expressGoods.Express.TrackingNo;
-                string goodsName = expressGoods.Goods.Name;
-                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价没有设置，请修改单价后继续！");
             }
         }
 
@@ -235,6 +234,14 @@ public class LogisticsOrderPackService {
             throw new ValidationException($"订单{order.Code} 快递单号 {string.Join(", ", notPackedTrackingNoList)} 不是已打包状态，订单不能完成打包！");
         }
 
+        // 检查快递单货品总值
+        foreach (var express in expressList) {
+            if (express.GoodsValue <= 0) {
+                string trackingNo = express.TrackingNo;
+                throw new Exception($"快递单号 {trackingNo} 货品总值没有设置，请修改后继续！");
+            }
+        }
+
         // 快递单物品列表
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => expressIdList.Contains(e.Express.Id))
@@ -244,15 +251,6 @@ public class LogisticsOrderPackService {
             var expressGoods = expressGoodsList.Where(e => e.Express.Id == expressId).Take(1).SingleOrDefault();
             if (expressGoods == null) {
                 throw new ValidationException($"订单{order.Code}快递单号{express.TrackingNo}的物品列表为空, 订单不能完成打包!");
-            }
-        }
-
-        // 检查快递单物品单价
-        foreach (var expressGoods in expressGoodsList) {
-            if (expressGoods.Price <= 0) {
-                string trackingNo = expressGoods.Express.TrackingNo;
-                string goodsName = expressGoods.Goods.Name;
-                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价没有设置，请修改单价后继续！");
             }
         }
 

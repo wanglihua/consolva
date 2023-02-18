@@ -148,6 +148,14 @@ public class LogisticsOrderCreateService {
             }
         }
 
+        // 检查快递单货品总值
+        foreach (var express in expressList) {
+            if (express.GoodsValue <= 0) {
+                string trackingNo = express.TrackingNo;
+                throw new Exception($"快递单号 {trackingNo} 货品总值没有设置，请修改后继续！");
+            }
+        }
+
         // 快递单物品列表
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => expressIdList.Contains(e.Express.Id))
@@ -160,20 +168,11 @@ public class LogisticsOrderCreateService {
             }
         }
 
-        // 检查快递单物品单价
-        foreach (var expressGoods in expressGoodsList) {
-            if (expressGoods.Price <= 0) {
-                string trackingNo = expressGoods.Express.TrackingNo;
-                string goodsName = expressGoods.Goods.Name;
-                throw new Exception($"快递单号 {trackingNo} 物品 {goodsName} 单价没有设置，请修改单价后继续！");
-            }
-        }
-
         string orderCode = logisticsOrderCodeService.GenerateNewCode(customerId);
         string customerCode = customerCodeService.GetCustomerCode(customerId);
         LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(expressList.Select(e => e.GoodsType).Distinct().ToList());
         var orderStorageLoc = logisticsOrderStorageLocService.GetOrderStorageLoc(expressList);
-        var goodsValue = expressGoodsList.Sum(e => e.Price * e.Quantity);
+        var goodsValue = expressList.Sum(e => e.GoodsValue);
 
         var order = new LogisticsOrderInfo {
             Code = orderCode,

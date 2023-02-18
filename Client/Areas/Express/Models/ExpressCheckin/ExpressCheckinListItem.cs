@@ -15,6 +15,9 @@ public class ExpressCheckinListItem {
     [JsonProperty("goodsType")]
     public string GoodsType { get; set; } = string.Empty;
 
+    [JsonProperty("goodsValue")]
+    public string GoodsValue { get; set; } = string.Empty;
+
     /// <summary>
     /// 是不是禁止类
     /// </summary>

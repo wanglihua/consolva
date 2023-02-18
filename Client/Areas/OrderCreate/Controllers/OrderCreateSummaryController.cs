@@ -136,7 +136,6 @@ public class OrderCreateSummaryController : Controller {
                         Id = e.Id,
                         GoodsName = e.Goods.Name,
                         Quantity = e.Quantity,
-                        Price = e.Price.ToString("#0.00"),
                         Unit = e.Unit,
                     })
                     .ToList();
@@ -153,7 +152,7 @@ public class OrderCreateSummaryController : Controller {
         );
 
         var totalPackageCount = expressList.Sum(e => e.PackageCount);
-        decimal totalGoodsValue = expressGoodsList.Sum(e => e.Price * e.Quantity);
+        decimal totalGoodsValue = expressList.Sum(e => e.GoodsValue);
 
         #endregion
 
