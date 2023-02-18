@@ -5,10 +5,8 @@ using shunda.Domain.Customer;
 
 namespace shunda.Domain.Express;
 
-public class ExpressExpectInfoMapping : EntityMapping<ExpressExpectInfo>
-{
-    public ExpressExpectInfoMapping()
-    {
+public class ExpressExpectInfoMapping : EntityMapping<ExpressExpectInfo> {
+    public ExpressExpectInfoMapping() {
         Table("tbl_express_expect");
 
         Property(
@@ -16,6 +14,15 @@ public class ExpressExpectInfoMapping : EntityMapping<ExpressExpectInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("tracking_no");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.GoodsValue,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("goods_value");
                 map.NotNullable(true);
             }
         );
@@ -66,6 +73,5 @@ public class ExpressExpectInfoMapping : EntityMapping<ExpressExpectInfo>
                 map.NotNullable(false);
             }
         );
-
     }
 }

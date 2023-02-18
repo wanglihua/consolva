@@ -61,6 +61,7 @@ public class ExpressExpectController : Controller {
             itemList.Add(new ExpressExpectListItem {
                 Id = expressExpect.Id,
                 TrackingNo = trackingNo,
+                GoodsValue = expressExpect.GoodsValue.ToString("#0.00"),
                 Description = expressExpect.Description,
                 Status = expressExpect.Status.Name,
                 AddTime = expressExpect.CreateTime.ToString("yyyy-MM-dd"),

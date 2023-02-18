@@ -2,13 +2,15 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Express.Models.ExpressExpect;
 
-public class ExpressExpectListItem
-{
+public class ExpressExpectListItem {
     [JsonProperty("id")]
     public int Id { get; set; }
 
     [JsonProperty("trackingNo")]
     public string TrackingNo { get; set; } = string.Empty;
+
+    [JsonProperty("goodsValue")]
+    public string GoodsValue { get; set; } = string.Empty;
 
     [JsonProperty("description")]
     public string Description { get; set; } = string.Empty;
@@ -25,12 +27,6 @@ public class ExpressExpectListItem
     [JsonProperty("addTime")]
     public string AddTime { get; set; } = string.Empty;
 
-    /// <summary>
-    /// 是不是已到货
-    /// </summary>
-    [JsonProperty("enter")]
-    public bool Enter { get; set; } = false;
-    
     /// <summary>
     /// 对应的快递单号id
     /// </summary>

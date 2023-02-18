@@ -9,8 +9,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 快递单号预报
 /// </summary>
-public class ExpressExpectInfo : Entity
-{
+public class ExpressExpectInfo : Entity {
     /// <summary>
     /// 快递单号，非空
     /// </summary>
@@ -18,6 +17,13 @@ public class ExpressExpectInfo : Entity
     [MaxLength(30, ErrorMessage = "快递单号长度不能大于30！")]
     [JsonProperty("trackingNo")]
     public virtual string TrackingNo { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 货品总值，非空
+    /// </summary>
+    [Required(ErrorMessage = "货品总值不能为空！")]
+    [JsonProperty("goodsValue")]
+    public virtual decimal GoodsValue { get; set; }
 
     /// <summary>
     /// 备注，非空
@@ -32,7 +38,7 @@ public class ExpressExpectInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new ();
+    public virtual CustomerInfo Customer { get; set; } = new();
 
     /// <summary>
     /// 客户最后编辑时间，非空
