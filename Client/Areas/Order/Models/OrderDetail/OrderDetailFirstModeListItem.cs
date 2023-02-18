@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 namespace shunda.Client.Areas.Order.Models.OrderDetail;
 
 public class OrderDetailFirstModeListItem {
+    public int Id { get; set; }
+
     /// <summary>
     /// 物流类型
     /// </summary>

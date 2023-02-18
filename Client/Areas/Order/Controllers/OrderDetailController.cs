@@ -136,6 +136,7 @@ public class OrderDetailController : Controller {
 
         var firstModeItemList = firstModeList
             .Select(e => new OrderDetailFirstModeListItem {
+                Id = e.Id,
                 ModeName = e.FirstMode.Name,
                 ModeType = e.FirstMode.Type.Name,
                 Channel = e.FirstMode.Channel.Name,
