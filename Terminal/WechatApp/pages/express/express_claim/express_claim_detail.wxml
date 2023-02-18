@@ -19,7 +19,7 @@
     <van-cell-group custom-class="items">
         <van-cell title="物品列表" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <block wx:for="{{ express.expressGoodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="index">
-            <van-cell title="{{ index + 1 }}、{{ expressGoods.goodsName }}" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="{{ index + 1 }}、{{ expressGoods.goodsName }}" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" title-class="item-title-long" value-class="item-value-short" border="{{ false }}" custom-class="item"/>
         </block>
         <view class="item-last-vspace"/>
     </van-cell-group>

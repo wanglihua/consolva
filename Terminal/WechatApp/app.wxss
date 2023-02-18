@@ -59,6 +59,10 @@ page {
     flex: 3 !important;
 }
 
+.item-value-short {
+    flex: 1 !important;
+}
+
 .item-last-vspace {
     padding: 5px 0;
     width: 100%;
