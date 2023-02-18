@@ -23,8 +23,6 @@ Component({
                 wx.login({
                     success: res => {
                         that.getClientHeaderData(res.code);
-                        // 存储的是登录时间毫秒值
-                        wx.setStorageSync('client-login-time', new Date().getTime());
                     }
                 });
             } else {
@@ -59,6 +57,9 @@ Component({
                     that.setData({
                         customerCode: res.data.customerCode,
                     });
+
+                    // 存储的是登录时间毫秒值
+                    wx.setStorageSync('client-login-time', new Date().getTime());
                 }
             );
         },

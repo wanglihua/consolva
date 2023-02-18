@@ -16,8 +16,6 @@ Page({
             wx.login({
                 success: res => {
                     that.getClientHomeData(res.code);
-                    // 存储的是登录时间毫秒值
-                    wx.setStorageSync('client-login-time', new Date().getTime());
                 }
             });
         } else {
@@ -34,6 +32,9 @@ Page({
                 that.setData({
                     homeData: res.data.homeData,
                 });
+
+                // 存储的是登录时间毫秒值
+                wx.setStorageSync('client-login-time', new Date().getTime());
             }
         );
     }
