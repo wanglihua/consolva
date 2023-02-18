@@ -136,12 +136,6 @@ public class ExpressClaimController : Controller {
             .Take(1)
             .SingleOrDefault();
 
-        bool enter = false;
-        if (expressExpect != null
-            && expressExpect.Status == ExpressExpectStatus.Enter) {
-            enter = true;
-        }
-
         ExpressClaimDetailModel model = new ExpressClaimDetailModel() {
             Id = express.Id,
             TrackingNo = expressTrackingNoService.GetHiddenTrackingNo(trackingNo),
@@ -154,7 +148,6 @@ public class ExpressClaimController : Controller {
             CheckinTrackingNo = express.CheckinTrackingNo,
             ExpectTrackingNo = expressExpect?.TrackingNo ?? string.Empty,
             ExpectDescription = expressExpect?.Description ?? string.Empty,
-            Enter = enter,
             Claimed = claimed,
         };
 
@@ -244,7 +237,7 @@ public class ExpressClaimController : Controller {
             throw new ValidationException($"指定的申领件#{expressId}不存在！");
         }
 
-        if (decimal.TryParse(param.GoodsValue, out decimal goodsValue) == false || goodsValue <= 0) {
+        if (decimal.TryParse(param.GoodsValueInput, out decimal goodsValue) == false || goodsValue <= 0) {
             throw new ValidationException($"您还未完善快递单号货品总值。请如实申报货值，虚假申报可能会导致高额税金、罚款、销毁物品！");
         }
 

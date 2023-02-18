@@ -5,8 +5,11 @@ Page({
     data: {
         express: {
             trackingNoInput: '',
+            goodsValueInput: '',
             trackingNoInputHasError: false,
             trackingNoInputErrorMsg: "",
+            goodsValueInputHasError: false,
+            goodsValueInputErrorMsg: "",
 
             expressGoodsList: [],
             expressSizeWeightList: [],
@@ -30,25 +33,12 @@ Page({
 
             express.trackingNoInputHasError = false;
             express.trackingNoInputErrorMsg = "";
-
-            const expressGoodsList = express.expressGoodsList;
-            for (const expressGoods of expressGoodsList) {
-                expressGoods.inputHasError = false;
-                expressGoods.inputErrorMsg = "";
-            }
-
-            express.expressGoodsList = expressGoodsList;
+            express.goodsValueInputHasError = false;
+            express.goodsValueInputErrorMsg = "";
 
             that.setData({
                 express: express,
             });
-
-            if (express.enter) {
-                that.setData({
-                    pageTitle: "货值录入",
-                    btnClaimText: "提交货值申报",
-                });
-            }
 
             if (express.claimed) {
                 that.setData({
@@ -68,17 +58,9 @@ Page({
         });
     },
 
-    onExpressGoodsPriceInput(e) {
-        const expressGoodsId = e.currentTarget.dataset.item.id;
-        const price = e.detail;
-
+    onGoodsValueInput(e) {
         const express = this.data.express;
-        const expressGoodsList = express.expressGoodsList; // 这里的列表是引用了原来的
-        for (const expressGoods of expressGoodsList) { // 这里的每个元素都是引用了原来的实例
-            if (expressGoods.id === expressGoodsId) {
-                expressGoods.price = price;
-            }
-        }
+        express.goodsValueInput = e.detail;
 
         this.setData({
             express: express,
@@ -98,78 +80,53 @@ Page({
             return;
         }
 
-        express.trackingNoInputHasError = false;
-        express.trackingNoInputErrorMsg = "";
-        this.setData({
-            express: express,
-        });
-
-        let hasPriceInputError = false;
-        const expressGoodsList = express.expressGoodsList;
-        for (const expressGoods of expressGoodsList) {
-            const priceNum = parseFloat(expressGoods.price);
-            if (isNaN(priceNum) || priceNum <= 0) {
-                hasPriceInputError = true;
-                expressGoods.inputHasError = true;
-                expressGoods.inputErrorMsg = "请输入正确的物品价格！";
-            } else {
-                expressGoods.inputHasError = false;
-                expressGoods.inputErrorMsg = "";
-            }
-        }
-
-        express.expressGoodsList = expressGoodsList;
-
-        this.setData({
-            express: express,
-        });
-
-        if (hasPriceInputError) {
+        const goodsValueInput = this.data.express.goodsValueInput;
+        if (!goodsValueInput) {
+            express.goodsValueInputHasError = true;
+            express.goodsValueInputErrorMsg = "货品总值不能为空！";
+            this.setData({
+                express: express,
+            });
             return;
         }
 
-        const pickData = {
+        express.trackingNoInputHasError = false;
+        express.trackingNoInputErrorMsg = "";
+        express.goodsValueInputHasError = false;
+        express.goodsValueInputErrorMsg = "";
+        this.setData({
+            express: express,
+        });
+
+        app.post("/client/express/claim/pick", {
             expressId: express.id,
             trackingNoInput: trackingNoInput,
-        };
-
-        const goodsPriceList = [];
-        for (const expressGoods of expressGoodsList) {
-            goodsPriceList.push({
-                expressGoodsId: expressGoods.id,
-                goodsName: expressGoods.goodsName,
-                price: expressGoods.price,
+            goodsValueInput: goodsValueInput,
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
             });
-        }
 
-        pickData.goodsPriceList = goodsPriceList;
-
-        app.post("/client/express/claim/pick", pickData,
-            function (res) {
-                wx.showToast({
-                    title: res.message,
-                });
-
-                setTimeout(function () {
-                    if (express.enter) {
-                        const pages = getCurrentPages();
-                        wx.navigateBack({
-                            complete: function (e) {
-                                if (pages.length >= 2) {
-                                    const prevPage = pages[pages.length - 2];
-                                    if (prevPage.loadExpressExpectList) {
-                                        prevPage.loadExpressExpectList();
-                                    }
+            setTimeout(function () {
+                if (express.enter) {
+                    const pages = getCurrentPages();
+                    wx.navigateBack({
+                        complete: function (e) {
+                            if (pages.length >= 2) {
+                                const prevPage = pages[pages.length - 2];
+                                if (prevPage.loadExpressExpectList) {
+                                    prevPage.loadExpressExpectList();
                                 }
                             }
-                        });
-                    } else {
-                        wx.navigateTo({
-                            url: './express_claim_list',
-                        });
-                    }
-                }, 1000);
-            });
+                        }
+                    });
+                } else {
+                    wx.navigateTo({
+                        url: './express_claim_list',
+                    });
+                }
+            }, 1000);
+        });
     },
 
     onBackClick() {

@@ -63,12 +63,6 @@ public class ExpressClaimDetailModel {
     public string ExpectDescription { get; set; } = string.Empty;
 
     /// <summary>
-    /// 是不是录货值状态
-    /// </summary>
-    [JsonProperty("enter")]
-    public bool Enter { get; set; } = false;
-
-    /// <summary>
     /// 是不是已经认领了
     /// </summary>
     [JsonProperty("claimed")]
