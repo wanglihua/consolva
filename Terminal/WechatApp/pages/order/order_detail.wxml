@@ -49,5 +49,26 @@
             </block>
         </block>
         <view class="item-last-vspace"/>
+
+        <van-cell title="收货地址" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <van-cell title="收货人" value="{{ orderDetail.receiveAddress.firstName }} {{ orderDetail.receiveAddress.lastName }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="手机" value="{{ orderDetail.receiveAddress.mobile }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="国家" value="{{ orderDetail.receiveAddress.country }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="洲" value="{{ orderDetail.receiveAddress.state }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="城市" value="{{ orderDetail.receiveAddress.city }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="地址" value="{{ orderDetail.receiveAddress.address }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="邮编" value="{{ orderDetail.receiveAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+
+        <van-cell title="发货地址" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <van-cell title="发货人" value="{{ orderDetail.sendAddress.name }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="手机" value="{{ orderDetail.sendAddress.mobile }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="省" value="{{ orderDetail.sendAddress.province }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="城市" value="{{ orderDetail.sendAddress.city }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="县区" value="{{ orderDetail.sendAddress.area }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="街道" value="{{ orderDetail.sendAddress.street }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="地址" value="{{ orderDetail.sendAddress.address }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="邮编" value="{{ orderDetail.sendAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
     </van-cell-group>
 </view>

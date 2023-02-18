@@ -24,9 +24,6 @@ public class OrderDetailReceiveAddressItem {
     [JsonProperty("address")]
     public string Address { get; set; } = string.Empty;
 
-    [JsonProperty("unitLoc")]
-    public string UnitLoc { get; set; } = string.Empty;
-
     [JsonProperty("zipcode")]
     public string Zipcode { get; set; } = string.Empty;
 }

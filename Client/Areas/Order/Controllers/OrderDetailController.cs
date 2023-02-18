@@ -152,6 +152,11 @@ public class OrderDetailController : Controller {
             throw new ValidationException($"订单{order.Code}收货地址不存在！");
         }
 
+        string receiveAddressDetail = orderReceiveAddress.Address;
+        if(string.IsNullOrWhiteSpace(orderReceiveAddress.UnitLoc) == false) {
+            receiveAddressDetail = $"{orderReceiveAddress.UnitLoc}, {receiveAddressDetail}";
+        }
+
         var receiveAddressItem = new OrderDetailReceiveAddressItem {
             Country = orderReceiveAddress.Country.Name,
             LastName = orderReceiveAddress.LastName,
@@ -159,8 +164,7 @@ public class OrderDetailController : Controller {
             Mobile = orderReceiveAddress.Mobile,
             State = orderReceiveAddress.State,
             City = orderReceiveAddress.City,
-            Address = orderReceiveAddress.Address,
-            UnitLoc = orderReceiveAddress.UnitLoc,
+            Address = receiveAddressDetail,
             Zipcode = orderReceiveAddress.Zipcode,
         };
 
