@@ -252,7 +252,7 @@ public class ExpressClaimController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "快递单号认领成功！",
+            Message = "认领成功！",
         });
     }
 
