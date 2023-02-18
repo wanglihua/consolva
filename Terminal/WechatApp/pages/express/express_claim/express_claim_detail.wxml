@@ -28,12 +28,12 @@
         <block wx:if="{{ express.expressSizeWeightList && express.expressSizeWeightList.length !==0 }}">
             <van-cell title="尺寸/体积重/实际重" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
             <block wx:for="{{ express.expressSizeWeightList }}" wx:key="id" wx:for-item="sizeWeight" wx:for-index="index">
-                <van-cell title="{{ index + 1 }}、单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}cm，单箱体积重：{{ sizeWeight.volumeWeight }}，单箱实际重：{{ sizeWeight.weight }}，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="{{ index + 1 }}、单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}CM，单箱体积重：{{ sizeWeight.volumeWeight }}KG，单箱实际重：{{ sizeWeight.weight }}KG，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}" custom-class="item"/>
+            </block>
+            <block wx:if="{{ express.expressSizeWeightList.length > 1 }}">
+                <van-cell title="总体积：{{ express.totalVolume }}CBM，总体积重：{{ express.totalVolumeWeight }}KG，总实际重：{{ express.totalActualWeight }}KG，总箱数：{{ express.totalPackageCount }}" custom-class="item-footer" value-class="item-footer-value"></van-cell>
             </block>
             <view class="item-last-vspace"/>
-            <block wx:if="{{ express.expressSizeWeightList.length > 1 }}">
-                <van-cell title="总体积：{{ express.totalVolume }}立方，总体积重：{{ express.totalVolumeWeight }}kg，总实际重：{{ express.totalActualWeight }}kg，总箱数：{{ express.totalPackageCount }}" custom-class="item-footer" value-class="item-footer-value"></van-cell>
-            </block>
         </block>
         <block wx:else>
             <van-cell title="暂时没有尺寸重量数据！" border="{{ false }}"/>
