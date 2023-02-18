@@ -2,8 +2,7 @@ using shunda.Core.CodeType;
 
 namespace shunda.Domain;
 
-public class Country : CodeTypeBase
-{
+public class Country : CodeTypeBase {
     /// <summary>
     /// 中国, 1000
     /// </summary>
@@ -19,6 +18,9 @@ public class Country : CodeTypeBase
     /// </summary>
     public static readonly Country America = new Country(3000, "America", "美国", "美国");
 
+    /*
+    暂时不开放
+    
     /// <summary>
     /// 加拿大, 4000
     /// </summary>
@@ -58,6 +60,8 @@ public class Country : CodeTypeBase
     /// 印度尼西亚, 11000
     /// </summary>
     public static readonly Country Indonesia = new Country(11000, "Indonesia", "印度尼西亚", "印度尼西亚");
+    
+    */
 
 
     /// <summary>
@@ -69,6 +73,7 @@ public class Country : CodeTypeBase
         China,
         Australia,
         America,
+        /*
         Canada,
         Britain,
         NewZealand,
@@ -77,27 +82,24 @@ public class Country : CodeTypeBase
         Japan,
         Thailand,
         Indonesia,
+        */
     };
 
     private static readonly IDictionary<int, Country> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static Country GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out Country? codeType))
-        {
+    public static Country GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out Country? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<Country> GetList()
-    {
+    public static IList<Country> GetList() {
         return codeTypeList.ToList();
     }
 
-    public static IList<Country> GetNoChinaList()
-    {
+    public static IList<Country> GetNoChinaList() {
         return codeTypeList.Where(e => e != China).ToList();
     }
 
@@ -106,24 +108,19 @@ public class Country : CodeTypeBase
     /// </summary>
     public string EnglishName { get; set; } = string.Empty;
 
-    private Country(int id, string englishName, string name, string description) : base(id, name, description)
-    {
+    private Country(int id, string englishName, string name, string description) : base(id, name, description) {
         this.EnglishName = englishName;
     }
 }
 
-public class CountryHibernateType : CodeHibernateTypeBase<Country>
-{
-    protected override Country GetCodeTypeById(int id)
-    {
+public class CountryHibernateType : CodeHibernateTypeBase<Country> {
+    protected override Country GetCodeTypeById(int id) {
         return Country.GetById(id);
     }
 }
 
-public class CountryModelBinder : CodeTypeModelBinderBase<Country>
-{
-    protected override Country GetCodeTypeById(int id)
-    {
+public class CountryModelBinder : CodeTypeModelBinderBase<Country> {
+    protected override Country GetCodeTypeById(int id) {
         return Country.GetById(id);
     }
 }

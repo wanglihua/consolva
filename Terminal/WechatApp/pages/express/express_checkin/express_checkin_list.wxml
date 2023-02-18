@@ -33,7 +33,7 @@
                     </block>
                     <van-cell title="物品" value="共 {{ express.goodsCount }} 项目" border="{{ false }}" custom-class="item" />
                     <block wx:for="{{ express.goodsList }}" wx:key="id" wx:for-item="goods" wx:for-index="goodsIndex">
-                        <van-cell value="{{ express.goodsName }} {{ express.quantity }}{{ express.Unit }} × {{ express.price }}RMB" border="{{ false }}" custom-class="item" />
+                        <van-cell value="{{ goods.goodsName }} {{ goods.quantity }}{{ goods.Unit }}" border="{{ false }}" custom-class="item" />
                     </block>
                     <view class="item-last-vspace" />
                     <van-cell title="操作" value="{{express.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ express }}" custom-class="item-footer" value-class="item-footer-value" />
