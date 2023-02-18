@@ -4,7 +4,11 @@ const util = app.require('utils/util.js');
 
 Page({
     data: {
-        express: {},
+        express: {
+            goodsValueInput: '',
+            goodsValueInputHasError: false,
+            goodsValueInputErrorMsg: "",
+        },
     },
 
     onLoad(options) {
@@ -28,26 +32,9 @@ Page({
         });
     },
 
-    onExpressGoodsPriceInput(e) {
-        const expressGoodsId = e.currentTarget.dataset.item.id;
-        const price = e.detail;
-
+    onGoodsValueInput(e) {
         const express = this.data.express;
-        const expressGoodsList = express.goodsList;
-        for (const expressGoods of expressGoodsList) {
-            if (expressGoods.id === expressGoodsId) {
-                expressGoods.price = price;
-
-                const priceNum = parseFloat(price);
-                if (priceNum && priceNum > 0) {
-                    expressGoods.inputHasError = false;
-                    expressGoods.inputErrorMsg = '';
-                } else {
-                    expressGoods.inputHasError = true;
-                    expressGoods.inputErrorMsg = '价格录入有误！';
-                }
-            }
-        }
+        express.goodsValueInput = e.detail;
 
         this.setData({
             express: express,
@@ -57,36 +44,25 @@ Page({
     onSavePriceClick(e) {
         const express = this.data.express;
 
-        let goodsPriceList = [];
-
-        if (!express.goodsList || express.goodsList.length === 0) {
-            wx.showModal({
-                title: '错误',
-                content: "未找到物品价格信息！",
-                showCancel: false
+        const goodsValueInput = this.data.express.goodsValueInput;
+        if (!goodsValueInput) {
+            express.goodsValueInputHasError = true;
+            express.goodsValueInputErrorMsg = "货品总值不能为空！";
+            this.setData({
+                express: express,
             });
             return;
         }
 
-        for (const goods of express.goodsList) {
-            if (goods.inputHasError === true) {
-                wx.showModal({
-                    title: '错误',
-                    content: "请先纠正价格录入错误！",
-                    showCancel: false
-                });
-                return;
-            }
-
-            goodsPriceList.push({
-                id: goods.id,
-                price: goods.price,
-            });
-        }
+        express.goodsValueInputHasError = false;
+        express.goodsValueInputErrorMsg = "";
+        this.setData({
+            express: express,
+        });
 
         app.post("/client/express/checkin/price/save", {
             expressId: express.id,
-            goodsPriceList: goodsPriceList,
+            goodsValueInput: goodsValueInput,
         }, function (res) {
             wx.showToast({
                 title: res.message,

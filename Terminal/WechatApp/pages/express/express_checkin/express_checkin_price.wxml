@@ -1,21 +1,22 @@
 <!--pages/express/express_checkin/express_checkin_price.wxml-->
 <header/>
 <view class="container">
-    <van-cell-group title="修改快递物品价格"/>
+    <van-cell-group title="修改物品总货值"/>
 
     <van-cell-group custom-class="items">
         <van-cell title="快递单" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
+        <van-field value="{{ express.goodsValueInput }}" label="货品总值" placeholder="请输入快递单物品总货值" border="{{ false }}" custom-class="item" input-align="right" error-message-align="right" error="{{ express.goodsValueInputHasError }}" error-message="{{ express.goodsValueInputErrorMsg }}" bind:input="onGoodsValueInput" custom-style="padding-bottom: 0;">
+            <view slot="right-icon">RMB</view>
+        </van-field>
         <view class="item-last-vspace"/>
     </van-cell-group>
 
     <van-cell-group custom-class="items">
         <van-cell title="物品列表" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <block wx:for="{{ express.goodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="index">
-            <van-field label="{{ index + 1 }}、{{ expressGoods.goodsName }} {{ expressGoods.quantity }} {{ expressGoods.unit }}" placeholder="输入物品单价" value="{{ expressGoods.price }}" error="{{ expressGoods.inputHasError }}" error-message="{{ expressGoods.inputErrorMsg }}" border="{{ false }}" type="number" input-align="right" error-message-align="right" use-right-icon-slot bind:input="onExpressGoodsPriceInput" data-item="{{ expressGoods }}" custom-style="padding-bottom: 0;">
-                <view slot="right-icon">RMB/{{ expressGoods.unit }}</view>
-            </van-field>
+            <van-cell title="{{ index + 1 }}、{{ expressGoods.goodsName }}" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" title-class="item-title-long" value-class="item-value-short" border="{{ false }}" custom-class="item" />
         </block>
         <view class="item-last-vspace"/>
     </van-cell-group>

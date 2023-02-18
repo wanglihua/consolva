@@ -131,7 +131,7 @@ Page({
 
         actionSheetActions.push({
             action: "editGoodsValue",
-            name: '修改货值',
+            name: '修改货品总值',
             className: 'iconfont iconfont-edit',
         });
 

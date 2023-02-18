@@ -88,7 +88,7 @@ public class ExpressCheckinPriceController : Controller {
         }
 
         // 检查价格录入
-        if (decimal.TryParse(param.GoodsValue, out decimal goodsValue) == false || goodsValue <= 0) {
+        if (decimal.TryParse(param.GoodsValueInput, out decimal goodsValue) == false || goodsValue <= 0) {
             throw new ValidationException("快递单货品总值录入有误！");
         }
 
@@ -99,7 +99,7 @@ public class ExpressCheckinPriceController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "价格保存成功！",
+            Message = "货值保存成功！",
         });
     }
 }
