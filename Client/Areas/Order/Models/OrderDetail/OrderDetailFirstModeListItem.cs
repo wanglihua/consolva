@@ -10,6 +10,12 @@ public class OrderDetailFirstModeListItem {
     public string ModeType { get; set; } = string.Empty;
 
     /// <summary>
+    /// 发货渠道
+    /// </summary>
+    [JsonProperty("channel")]
+    public string Channel { get; set; } = string.Empty;
+
+    /// <summary>
     /// 物流名称
     /// </summary>
     [JsonProperty("modeName")]

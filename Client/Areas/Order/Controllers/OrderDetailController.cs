@@ -128,8 +128,74 @@ public class OrderDetailController : Controller {
             ServiceRemark = serviceRemark,
         };
 
+        // 物流信息
+        var firstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        var firstModeItemList = firstModeList
+            .Select(e => new OrderDetailFirstModeListItem {
+                ModeName = e.FirstMode.Name,
+                ModeType = e.FirstMode.Type.Name,
+                Channel = e.FirstMode.Channel.Name,
+            })
+            .ToList();
+
+        // 收货地址
+        var orderReceiveAddress = session.Query<LogisticsOrderReceiveAddressInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+        if (orderReceiveAddress == null) {
+            throw new ValidationException($"订单{order.Code}收货地址不存在！");
+        }
+
+        var receiveAddressItem = new OrderDetailReceiveAddressItem {
+            Country = orderReceiveAddress.Country.Name,
+            LastName = orderReceiveAddress.LastName,
+            FirstName = orderReceiveAddress.FirstName,
+            Mobile = orderReceiveAddress.Mobile,
+            State = orderReceiveAddress.State,
+            City = orderReceiveAddress.City,
+            Address = orderReceiveAddress.Address,
+            UnitLoc = orderReceiveAddress.UnitLoc,
+            Zipcode = orderReceiveAddress.Zipcode,
+        };
+
+        // 发货地址
+        var orderSendAddress = session.Query<LogisticsOrderSendAddressInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+        if (orderSendAddress == null) {
+            throw new ValidationException($"订单{order.Code}发货地址不存在！");
+        }
+
+        NHibernateUtil.Initialize(orderSendAddress.Province);
+        NHibernateUtil.Initialize(orderSendAddress.City);
+        NHibernateUtil.Initialize(orderSendAddress.Area);
+        NHibernateUtil.Initialize(orderSendAddress.Street);
+
+        var sendAddressItem = new OrderDetailSendAddressItem {
+            Name = orderSendAddress.Name,
+            Mobile = orderSendAddress.Mobile,
+            Province = orderSendAddress.Province.Name,
+            City = orderSendAddress.City.Name,
+            Area = orderSendAddress.Area.Name,
+            Street = orderSendAddress.Street.Name,
+            Address = orderSendAddress.Address,
+            Zipcode = orderSendAddress.Zipcode,
+        };
+
+        // 订单详细数据
         var model = new OrderDetailModel {
             Order = orderDetailItem,
+            FirstMode = new OrderDetailFirstModeItem {
+                FirstModeList = firstModeItemList,
+            },
+            ReceiveAddress = receiveAddressItem,
+            SendAddress = sendAddressItem,
         };
 
         return Json(new JsonResultData {
