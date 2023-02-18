@@ -50,6 +50,15 @@ public class ExpressInfoMapping : EntityMapping<ExpressInfo> {
         );
 
         Property(
+            x => x.GoodsValue,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("goods_value");
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.AddTime,
             map => {
                 map.Type(NHibernateUtil.DateTime);

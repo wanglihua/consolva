@@ -47,6 +47,11 @@ public class ExpressInfo : Entity {
     public virtual LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
+    /// 快递单物品总货值，非空
+    /// </summary>
+    public virtual decimal GoodsValue { get; set; }
+
+    /// <summary>
     /// 入库时间，非空
     /// </summary>
     [Required(ErrorMessage = "入库时间不能为空！")]
