@@ -76,7 +76,7 @@ public class HomeController : Controller {
         } else if (customerLevel == CustomerLevel.Vip) {
             customerCode += $" {customer.VipRank.Name}";
         } else if (customerLevel == CustomerLevel.Common) {
-            customerCode += $" {customer.VipRank.Name}";
+            customerCode += $" {customer.Level.Name}";
         }
 
         var model = new HomeClientHeaderDataModel {

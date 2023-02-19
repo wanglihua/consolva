@@ -74,7 +74,20 @@ public class CustomerCodeService {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
 
-        return $"SD{customer.CheckinCode.ToUpper()}{customerId:#000}";
+        return $"SDQQ{customer.CheckinCode.ToUpper()}";
+    }
+
+    public string GetCustomerCodeWithNum(int customerId) {
+        if (customerId <= 0) {
+            return string.Empty;
+        }
+
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        return $"SDQQ{customer.CheckinCode.ToUpper()}{customerId:#000}";
     }
 
     public string GetGuestCode(int guestId) {
