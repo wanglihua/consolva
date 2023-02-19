@@ -1,17 +1,24 @@
 using System.Text.RegularExpressions;
+using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Customer;
 
 // todo 考虑客户编号后缀，一个固定长度的后缀，用于客户ID方面的校验。两位三位四位都可以，生成是可以去掉不吉利的数字
 
 [Service(ServiceType.Scoped)]
-public class CustomerCodeService
-{
+public class CustomerCodeService {
+    private readonly ISession session;
+
+    public CustomerCodeService(ISession session) {
+        this.session = session;
+    }
+
     private static readonly Regex regexCustomerId = new Regex(@"[0-9]+", RegexOptions.Compiled);
 
-    public int GetCustomerIdFromCustomerCode(string customerIdOrCode)
-    {
+    public int GetCustomerIdFromCustomerCode(string customerIdOrCode) {
         if (string.IsNullOrWhiteSpace(customerIdOrCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
         {
             return 0;
@@ -20,16 +27,13 @@ public class CustomerCodeService
         MatchCollection matches = regexCustomerId.Matches(customerIdOrCode);
 
         IList<string> matchDigitList = new List<string>();
-        foreach (Match match in matches)
-        {
+        foreach (Match match in matches) {
             matchDigitList.Add(match.Value);
         }
 
-        if (matchDigitList.Count != 0)
-        {
+        if (matchDigitList.Count != 0) {
             string? maxLengthDigit = matchDigitList.OrderByDescending(e => e.Length).Take(1).SingleOrDefault();
-            if (string.IsNullOrWhiteSpace(maxLengthDigit) == false && int.TryParse(maxLengthDigit, out int customerId))
-            {
+            if (string.IsNullOrWhiteSpace(maxLengthDigit) == false && int.TryParse(maxLengthDigit, out int customerId)) {
                 return customerId;
             }
         }
@@ -37,8 +41,7 @@ public class CustomerCodeService
         return 0;
     }
 
-    public int GetGuestIdFromGuestCode(string guestIdOrCode)
-    {
+    public int GetGuestIdFromGuestCode(string guestIdOrCode) {
         if (string.IsNullOrWhiteSpace(guestIdOrCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
         {
             return 0;
@@ -47,16 +50,13 @@ public class CustomerCodeService
         MatchCollection matches = regexCustomerId.Matches(guestIdOrCode);
 
         IList<string> matchDigitList = new List<string>();
-        foreach (Match match in matches)
-        {
+        foreach (Match match in matches) {
             matchDigitList.Add(match.Value);
         }
 
-        if (matchDigitList.Count != 0)
-        {
+        if (matchDigitList.Count != 0) {
             string? maxLengthDigit = matchDigitList.OrderByDescending(e => e.Length).Take(1).SingleOrDefault();
-            if (string.IsNullOrWhiteSpace(maxLengthDigit) == false && int.TryParse(maxLengthDigit, out int guestId))
-            {
+            if (string.IsNullOrWhiteSpace(maxLengthDigit) == false && int.TryParse(maxLengthDigit, out int guestId)) {
                 return guestId;
             }
         }
@@ -64,20 +64,21 @@ public class CustomerCodeService
         return 0;
     }
 
-    public string GetCustomerCode(int customerId)
-    {
-        if (customerId <= 0)
-        {
+    public string GetCustomerCode(int customerId) {
+        if (customerId <= 0) {
             return string.Empty;
         }
 
-        return "SD" + customerId.ToString("#000");
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        return $"SD{customer.CheckinCode.ToUpper()}{customerId:#000}";
     }
 
-    public string GetGuestCode(int guestId)
-    {
-        if (guestId >= 0)
-        {
+    public string GetGuestCode(int guestId) {
+        if (guestId >= 0) {
             return string.Empty;
         }
 
