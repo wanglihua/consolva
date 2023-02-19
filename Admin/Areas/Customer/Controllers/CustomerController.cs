@@ -576,9 +576,6 @@ public class CustomerController : Controller {
 
                 session.Save(customer);
                 session.Flush();
-
-                // 创建客户后，必须要调用这个，否则会有入库码重复的可能
-                customerCheckinCodeService.SaveCheckinCodeToCache(checkinCode, customer.Id);
             }
         });
 
