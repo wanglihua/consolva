@@ -31,6 +31,11 @@ public class CustomerCheckinCodeService {
                 randCheckCodeList.Add(RandCode());
             }
 
+            // 去掉sd 和 sdqq 开头的
+            randCheckCodeList = randCheckCodeList
+                .Where(e => e.StartsWith("sd") == false && e.StartsWith("sdqq") == false) // 假设生成的都是小写的
+                .ToList();
+
             // 查询生成的入库校验码当前正在使用的
             var existCheckinCodeList = session.Query<CustomerCheckinCodeInfo>()
                 .Where(e => randCheckCodeList.Contains(e.CheckinCode))

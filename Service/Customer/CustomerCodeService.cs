@@ -15,6 +15,8 @@ public class CustomerCodeService {
     }
 
     private static readonly Regex regexCustomerId = new Regex(@"[0-9]+", RegexOptions.Compiled);
+    
+    private static readonly int PARSE_FAIL_CUSTOMER_ID = 0;
 
     /// <summary>
     /// 解析类似 SDABCDE001, SDABCDE, SDQQABCDE, SDQQABCDE001 等的客户ID，可以有数字但必须要有校验码
@@ -55,7 +57,7 @@ public class CustomerCodeService {
 
         if (string.IsNullOrWhiteSpace(remain)) {
             // throw new ValidationException("客户ID格式错误，暂不支持纯数字形式的客户ID！");
-            return 0;
+            return PARSE_FAIL_CUSTOMER_ID;
         }
 
         if (remain.StartsWith("SDQQ") == true) {
@@ -64,6 +66,11 @@ public class CustomerCodeService {
 
         if (remain.StartsWith("SD") == true) {
             remain = remain.Substring(2);
+        }
+
+        if (string.IsNullOrWhiteSpace(remain) == true) {
+            // throw new ValidationException("客户ID格式错误，信息缺失！");
+            return PARSE_FAIL_CUSTOMER_ID;
         }
 
         remain = remain.ToLower(); // 数据库中是小写存储的
@@ -75,19 +82,19 @@ public class CustomerCodeService {
         if (customerCheckinCode != null) {
             if (hasCustomerIdFromDigits == true && customerCheckinCode.Id != customerIdFromDigits) {
                 // throw new ValidationException("客户ID格式错误，信息不匹配！");
-                return 0;
+                return PARSE_FAIL_CUSTOMER_ID;
             }
 
             return customerCheckinCode.Id;
         }
 
-        return 0;
+        return PARSE_FAIL_CUSTOMER_ID;
     }
 
     public int GetGuestIdFromGuestCode(string guestIdOrCode) {
         if (string.IsNullOrWhiteSpace(guestIdOrCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
         {
-            return 0;
+            return PARSE_FAIL_CUSTOMER_ID;
         }
 
         MatchCollection matches = regexCustomerId.Matches(guestIdOrCode);
@@ -104,7 +111,7 @@ public class CustomerCodeService {
             }
         }
 
-        return 0;
+        return PARSE_FAIL_CUSTOMER_ID;
     }
 
     public string GetCustomerCode(int customerId) {
