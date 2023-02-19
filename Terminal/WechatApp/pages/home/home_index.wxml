@@ -4,16 +4,7 @@
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}">
             <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="申领件" badge="{{ homeData.expressClaimBadge }}" url="../express/express_claim/express_claim_list"/>
-
-            <block wx:if="{{ homeData.hasExpressExpectEnter }}">
-                <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="{{ homeData.expressExpectBadge }}" url="../express/express_expect/express_expect_list"/>
-            </block>
-            <block wx:else>
-                <view id="express-expect">
-                    <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="{{ homeData.expressExpectBadge }}" url="../express/express_expect/express_expect_list"/>
-                </view>                
-            </block>
-
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="{{ homeData.expressExpectBadge }}" url="../express/express_expect/express_expect_list"/>
             <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="{{ homeData.expressCheckinBadge }}" url="../express/express_checkin/express_checkin_list"/>
             <van-grid-item icon-prefix="iconfont" icon="pack-list" icon-class="home-grid-icon" text="待打包" badge="{{ homeData.orderSubmittedBadge }}" url="../order/order_list_submitted"/>
             <van-grid-item icon-prefix="iconfont" icon="pay-list" icon-class="home-grid-icon" text="待支付" badge="{{ homeData.orderPayBadge }}" url="../order/order_list_pay"/>

@@ -34,15 +34,6 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
         );
 
         Property(
-            x => x.ExpressExpectEnterCount,
-            map => {
-                map.Type(NHibernateUtil.Int32);
-                map.Column("express_expect_enter_count");
-                map.NotNullable(true);
-            }
-        );
-
-        Property(
             x => x.ExpressCheckinCount,
             map => {
                 map.Type(NHibernateUtil.Int32);
