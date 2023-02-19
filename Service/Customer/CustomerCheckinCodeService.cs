@@ -63,8 +63,8 @@ public class CustomerCheckinCodeService {
         Random rand = new Random();
         for (int i = 0; i < CODE_LENGTH; i++) {
             int codeIndex = rand.Next(checkinCodeCharArray.Length);
-            while (codeIndexMap.ContainsKey(codeIndex)) // 保证生成的 checkin code 各个字母都不相同
-            {
+            // 保证生成的 checkin code 各个字母都不相同
+            while (codeIndexMap.ContainsKey(codeIndex)) {
                 codeIndex = rand.Next(checkinCodeCharArray.Length);
             }
 
