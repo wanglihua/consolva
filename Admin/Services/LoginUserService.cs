@@ -64,6 +64,14 @@ public class LoginUserService {
 
     public UserInfo GetLoginUser() {
         int loginUserId = GetLoginUserId();
+        if (loginUserId == UserInfo.DevUserId) {
+            return new UserInfo {
+                Id = loginUserId,
+                LoginName = UserInfo.DevLoginName,
+                UserName = "DEV",
+            };
+        }
+
         var loginUser = session.Get<UserInfo>(loginUserId);
         if (loginUser == null) {
             throw new ValidationException($"指定的登录用户#{loginUserId}不存在！");
