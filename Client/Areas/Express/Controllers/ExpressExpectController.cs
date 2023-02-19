@@ -101,11 +101,9 @@ public class ExpressExpectController : Controller {
     [HttpPost]
     [Route("/client/express/expect/detail")]
     public IActionResult Detail([FromBody] IdParam param) {
-        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        ValidationUtil.Validate<IdParamValidator, IdParam>(param);
 
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         int expressExpectId = param.Id;
         var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
@@ -133,13 +131,20 @@ public class ExpressExpectController : Controller {
     [Route("/client/express/expect/add/save")]
     [Transactional]
     public IActionResult AddSave([FromBody] ExpressExpectAddModel model) {
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
+        ValidationUtil.Validate<ExpressExpectAddModelValidator, ExpressExpectAddModel>(model);
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        expressExpectService.Add(loginCustomerId, model.TrackingNo, model.Description ?? string.Empty);
+        if (decimal.TryParse(model.GoodsValue.Trim(), out decimal goodsValue) == false) {
+            throw new ValidationException("货品总值输入格式不对！");
+        }
+
+        expressExpectService.Add(new ExpressExpectService.AddParam {
+            CustomerId = loginCustomerId,
+            TrackingNo = model.TrackingNo,
+            GoodsValue = goodsValue,
+            Description = model.Description ?? string.Empty,
+        });
 
         return Json(new JsonResultData {
             Success = true,
@@ -151,9 +156,7 @@ public class ExpressExpectController : Controller {
     [Route("/client/express/expect/edit/save")]
     [Transactional]
     public IActionResult EditSave([FromBody] ExpressExpectEditModel model) {
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
+        ValidationUtil.Validate<ExpressExpectEditModelValidator, ExpressExpectEditModel>(model);
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
@@ -169,9 +172,7 @@ public class ExpressExpectController : Controller {
     [Route("/client/express/expect/delete")]
     [Transactional]
     public IActionResult Delete([FromBody] ExpressExpectDeleteParam param) {
-        if (ModelState.IsValid == false) {
-            throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
-        }
+        ValidationUtil.Validate<ExpressExpectDeleteParamValidator, ExpressExpectDeleteParam>(param);
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 

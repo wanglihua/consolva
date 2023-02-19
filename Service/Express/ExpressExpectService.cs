@@ -1,10 +1,11 @@
-using shunda.Core.Service;
-using shunda.Domain;
+using FluentValidation;
+using NHibernate;
 using NLog;
-using shunda.Core;
+using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
-using ISession = NHibernate.ISession;
+using ValidationException = shunda.Core.ValidationException;
 
 namespace shunda.Service.Express;
 
@@ -23,21 +24,43 @@ public class ExpressExpectService {
         this.expressTrackingNoService = expressTrackingNoService;
     }
 
-    public void Add(int customerId, string trackingNo, string description) {
-        var customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null) {
-            throw new ValidationException($"指定的客户#{customerId}不存在！");
-        }
+    public class AddParam {
+        public int CustomerId { get; set; }
 
-        if (string.IsNullOrWhiteSpace(trackingNo)) {
-            throw new ValidationException("快递单号不能为空！");
+        public string TrackingNo { get; set; } = string.Empty;
+
+        public decimal GoodsValue { get; set; }
+
+        public string Description { get; set; } = string.Empty;
+    }
+
+    public class AddParamValidator : AbstractValidator<AddParam> {
+        public AddParamValidator() {
+            RuleFor(e => e.CustomerId).Must(p => p > 0).WithMessage("快递单号预报添加，客户Id不能为空");
+            RuleFor(e => e.TrackingNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("快递单号预报添加，快递单号不能为空！");
+            RuleFor(e => e.GoodsValue).Must(p => p > 0).WithMessage("快递单号预报添加，物品总货值不能为空！");
+            // RuleFor(e => e.Description).NotNull().WithMessage("快递单号预报添加，备注不能为空！");
         }
+    }
+
+    public void Add(AddParam param) {
+        ValidationUtil.Validate<AddParamValidator, AddParam>(param);
+
+        int customerId = param.CustomerId;
+        string trackingNo = param.TrackingNo;
+        decimal goodsValue = param.GoodsValue;
+        string description = param.Description;
+
+        trackingNo = trackingNo.Trim().ToUpper();
 
         if (string.IsNullOrWhiteSpace(description)) {
             description = string.Empty;
         }
 
-        trackingNo = trackingNo.Trim().ToUpper();
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
 
         if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false) {
             throw new ValidationException("快递单号格式不正确或不能在快递单号中录入中文！");
@@ -81,6 +104,7 @@ public class ExpressExpectService {
 
         expressExpectInDb.Customer = customer;
         expressExpectInDb.TrackingNo = trackingNo;
+        expressExpectInDb.GoodsValue = goodsValue;
         expressExpectInDb.Description = description;
         expressExpectInDb.LastEditTime = DateTime.Now;
         expressExpectInDb.Status = ExpressExpectStatus.Create;

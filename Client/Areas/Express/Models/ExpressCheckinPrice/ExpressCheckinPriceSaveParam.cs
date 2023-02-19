@@ -14,6 +14,6 @@ public class ExpressCheckinPriceSaveParam {
 public class ExpressCheckinPriceSaveParamValidator : AbstractValidator<ExpressCheckinPriceSaveParam> {
     public ExpressCheckinPriceSaveParamValidator() {
         RuleFor(e => e.ExpressId).Must(p => p > 0).WithMessage("快递单Id不能为空！");
-        RuleFor(e => e.GoodsValueInput).NotNull().NotEmpty().WithMessage("货品总值不能为空！");
+        RuleFor(e => e.GoodsValueInput).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("货品总值不能为空！");
     }
 }

@@ -16,10 +16,10 @@ public class ExpressExpectAddModel {
 
 public class ExpressExpectAddModelValidator : AbstractValidator<ExpressExpectAddModel> {
     public ExpressExpectAddModelValidator() {
-        RuleFor(e => e.TrackingNo).NotNull().NotEmpty().WithMessage("快递单号不能为空！");
+        RuleFor(e => e.TrackingNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("快递单号不能为空！");
         RuleFor(e => e.TrackingNo).MaximumLength(30).WithMessage("快递单号长度不能大于30！");
 
-        RuleFor(e => e.GoodsValue).NotNull().NotEmpty().WithMessage("货品总值不能为空！");
+        RuleFor(e => e.GoodsValue).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("货品总值不能为空！");
 
         RuleFor(e => e.Description).MaximumLength(500).WithMessage("备注长度不能大于500！");
     }

@@ -10,6 +10,6 @@ public class HomeClientHeaderDataParam {
 
 public class HomeClientHeaderDataParamValidator : AbstractValidator<HomeClientHeaderDataParam> {
     public HomeClientHeaderDataParamValidator() {
-        RuleFor(e => e.Code).NotNull().NotEmpty().WithMessage("code不能为空！");
+        RuleFor(e => e.Code).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("code不能为空！");
     }
 }
