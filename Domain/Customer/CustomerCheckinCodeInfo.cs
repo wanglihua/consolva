@@ -6,8 +6,7 @@ namespace shunda.Domain.Customer;
 /// <summary>
 /// 创建这个实体的目的是优化数据访问
 /// </summary>
-public class CustomerCheckinCodeInfo : EntityNoCreateNoUpdate
-{
+public class CustomerCheckinCodeInfo : EntityNoCreateNoUpdate {
     /// <summary>
     /// 入库校验，非空
     /// </summary>

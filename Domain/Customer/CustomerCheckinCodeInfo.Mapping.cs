@@ -3,13 +3,11 @@ using shunda.Core;
 
 namespace shunda.Domain.Customer;
 
-public class CustomerCheckinCodeInfoMapping : EntityNoCreateNoUpdateMapping<CustomerCheckinCodeInfo>
-{
-    public CustomerCheckinCodeInfoMapping()
-    {
+public class CustomerCheckinCodeInfoMapping : EntityNoCreateNoUpdateMapping<CustomerCheckinCodeInfo> {
+    public CustomerCheckinCodeInfoMapping() {
         Table("view_customer_checkin_code");
         Mutable(false); // 视图，不可变
-        
+
         Property(
             x => x.CheckinCode,
             map => {
