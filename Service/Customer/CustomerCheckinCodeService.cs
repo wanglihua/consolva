@@ -116,7 +116,7 @@ public class CustomerCheckinCodeService {
             }
         }
 
-        codeIndexSum %= CODE_LENGTH;
+        codeIndexSum %= CHECKIN_CODE_CHAR_ARRAY_LENGTH;
         if (CHECKIN_CODE_CHAR_ARRAY[codeIndexSum] != checkinCode[CODE_LENGTH - 1].ToString()) {
             return false;
         }

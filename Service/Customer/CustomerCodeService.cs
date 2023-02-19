@@ -9,13 +9,15 @@ namespace shunda.Service.Customer;
 [Service(ServiceType.Scoped)]
 public class CustomerCodeService {
     private readonly ISession session;
+    private readonly CustomerCheckinCodeService customerCheckinCodeService;
 
-    public CustomerCodeService(ISession session) {
+    public CustomerCodeService(ISession session, CustomerCheckinCodeService customerCheckinCodeService) {
         this.session = session;
+        this.customerCheckinCodeService = customerCheckinCodeService;
     }
 
-    private static readonly Regex regexCustomerId = new Regex(@"[0-9]+", RegexOptions.Compiled);
-    
+    private static readonly Regex REGEX_CUSTOMER_ID = new Regex(@"[0-9]+", RegexOptions.Compiled);
+
     private static readonly int PARSE_FAIL_CUSTOMER_ID = 0;
 
     /// <summary>
@@ -33,7 +35,7 @@ public class CustomerCodeService {
         customerIdOrCode = customerIdOrCode.ToUpper(); // 转成大写
 
         // 解析数字部分，如果含有多个数字部分，取长度最长的数字部分
-        MatchCollection matches = regexCustomerId.Matches(customerIdOrCode);
+        MatchCollection matches = REGEX_CUSTOMER_ID.Matches(customerIdOrCode);
 
         string maxLengthMatchValue = string.Empty;
         foreach (Match match in matches) {
@@ -75,6 +77,10 @@ public class CustomerCodeService {
 
         remain = remain.ToLower(); // 数据库中是小写存储的
 
+        if (customerCheckinCodeService.CheckCheckinCodeValid(remain) == false) {
+            return PARSE_FAIL_CUSTOMER_ID;
+        }
+
         var customerCheckinCode = session.Query<CustomerCheckinCodeInfo>()
             .Where(e => e.CheckinCode == remain)
             .Take(1)
@@ -97,7 +103,7 @@ public class CustomerCodeService {
             return PARSE_FAIL_CUSTOMER_ID;
         }
 
-        MatchCollection matches = regexCustomerId.Matches(guestIdOrCode);
+        MatchCollection matches = REGEX_CUSTOMER_ID.Matches(guestIdOrCode);
 
         IList<string> matchDigitList = new List<string>();
         foreach (Match match in matches) {
