@@ -6,10 +6,13 @@ Page({
     data: {
         id: 0,
         trackingNo: "",
+        goodsValue: "",
         description: "",
 
         trackingNoHasError: false,
         trackingNoErrorMsg: "",
+        goodsValueHasError: false,
+        goodsValueErrorMsg: "",
     },
 
     onLoad(options) {
@@ -35,14 +38,25 @@ Page({
             return;
         }
 
+        if (!this.data.goodsValue) {
+            this.setData({
+                goodsValueHasError: true,
+                goodsValueErrorMsg: "快递单货品总值不能为空！",
+            });
+            return;
+        }
+
         this.setData({
             trackingNoHasError: false,
             trackingNoErrorMsg: "",
+            goodsValueHasError: false,
+            goodsValueErrorMsg: "",
         });
 
         app.post("/client/express/expect/edit/save", {
             id: this.data.id,
             trackingNo: this.data.trackingNo,
+            goodsValue: this.data.goodsValue,
             description: this.data.description,
         }, function (res) {
             wx.showToast({

@@ -181,12 +181,10 @@ public class ExpressExpectService {
 
         // 已经存在
         if (expressExpectInDb != null) {
-            if (expressExpectInDb.Customer.Id != customerId) // 不是本人的
-            {
+            // 不是本人的
+            if (expressExpectInDb.Customer.Id != customerId) {
                 throw new ValidationException($"定的快递单号预报 {trackingNo} 别的会员已经添加，请检查是否录入有误！");
             }
-
-            throw new ValidationException($"指定的快递单号预报 {trackingNo} 已经存在，不能重复添加！");
         }
 
         var express = session.Query<ExpressInfo>()

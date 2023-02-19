@@ -3,6 +3,9 @@
 <view class="container">
     <van-cell-group title="编辑快递单号预报">
         <van-field model:value="{{ trackingNo }}" label="快递单号" placeholder="请输入预报快递单号" border="{{ false }}" error="{{trackingNoHasError}}" error-message="{{trackingNoErrorMsg}}" custom-style="padding-bottom: 0;"/>
+        <van-field model:value="{{ goodsValue }}" label="货品总值" placeholder="请输入快递单物品总货值" border="{{ false }}" error="{{ goodsValueHasError }}" error-message="{{ goodsValueErrorMsg }}" custom-style="padding-bottom: 0;">
+            <view slot="right-icon">RMB</view>
+        </van-field>
         <van-field model:value="{{ description }}" label="备注" type="textarea" autosize="{{ {minHeight:60, maxHeight:120 } }}" placeholder="请输入备注" border="{{ false }}"/>
     </van-cell-group>
     <van-cell-group custom-class="detail-buttons" border="{{false}}">
