@@ -133,11 +133,11 @@ public class ExpressExpectController : Controller {
     public IActionResult AddSave([FromBody] ExpressExpectAddModel model) {
         ValidationUtil.Validate<ExpressExpectAddModelValidator, ExpressExpectAddModel>(model);
 
-        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-
         if (decimal.TryParse(model.GoodsValue.Trim(), out decimal goodsValue) == false) {
             throw new ValidationException("货品总值输入格式不对！");
         }
+
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         expressExpectService.Add(new ExpressExpectService.AddParam {
             CustomerId = loginCustomerId,
@@ -158,9 +158,19 @@ public class ExpressExpectController : Controller {
     public IActionResult EditSave([FromBody] ExpressExpectEditModel model) {
         ValidationUtil.Validate<ExpressExpectEditModelValidator, ExpressExpectEditModel>(model);
 
+        if (decimal.TryParse(model.GoodsValue.Trim(), out decimal goodsValue) == false) {
+            throw new ValidationException("货品总值输入格式不对！");
+        }
+
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        expressExpectService.Edit(model.Id, loginCustomerId, model.TrackingNo, model.Description ?? string.Empty);
+        expressExpectService.Edit(new ExpressExpectService.EditParam {
+            ExpressExpectId = model.Id,
+            CustomerId = loginCustomerId,
+            TrackingNo = model.TrackingNo,
+            GoodsValue = goodsValue,
+            Description = model.Description ?? string.Empty,
+        });
 
         return Json(new JsonResultData {
             Success = true,

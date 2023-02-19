@@ -39,7 +39,7 @@ public class ExpressExpectService {
             RuleFor(e => e.CustomerId).Must(p => p > 0).WithMessage("快递单号预报添加，客户Id不能为空");
             RuleFor(e => e.TrackingNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("快递单号预报添加，快递单号不能为空！");
             RuleFor(e => e.GoodsValue).Must(p => p > 0).WithMessage("快递单号预报添加，物品总货值不能为空！");
-            // RuleFor(e => e.Description).NotNull().WithMessage("快递单号预报添加，备注不能为空！");
+            // RuleFor(e => e.Description).NotNull().WithMessage("快递单号预报添加，备注不能为空！"); // if (string.IsNullOrWhiteSpace(description)) { description = string.Empty }
         }
     }
 
@@ -53,6 +53,10 @@ public class ExpressExpectService {
 
         trackingNo = trackingNo.Trim().ToUpper();
 
+        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false) {
+            throw new ValidationException("快递单号格式不正确或不能在快递单号中录入中文！");
+        }
+
         if (string.IsNullOrWhiteSpace(description)) {
             description = string.Empty;
         }
@@ -60,10 +64,6 @@ public class ExpressExpectService {
         var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
-        }
-
-        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false) {
-            throw new ValidationException("快递单号格式不正确或不能在快递单号中录入中文！");
         }
 
         var expressExpectInDb = session.Query<ExpressExpectInfo>()
@@ -118,14 +118,53 @@ public class ExpressExpectService {
         session.Flush();
     }
 
+    public class EditParam {
+        public int ExpressExpectId { get; set; }
+
+        /// <summary>
+        /// 用于验证快递单号预报是不是属于当前会员
+        /// </summary>
+        public int CustomerId { get; set; }
+
+        public string TrackingNo { get; set; } = string.Empty;
+
+        public decimal GoodsValue { get; set; }
+
+        public string Description { get; set; } = string.Empty;
+    }
+
+    public class EditParamValidator : AbstractValidator<EditParam> {
+        public EditParamValidator() {
+            RuleFor(e => e.ExpressExpectId).Must(p => p > 0).WithMessage("快递单号预报编辑，快递单号预报Id不能为空");
+            RuleFor(e => e.CustomerId).Must(p => p > 0).WithMessage("快递单号预报编辑，客户Id不能为空");
+            RuleFor(e => e.TrackingNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("快递单号预报编辑，快递单号不能为空！");
+            RuleFor(e => e.GoodsValue).Must(p => p > 0).WithMessage("快递单号预报编辑，物品总货值不能为空！");
+            // RuleFor(e => e.Description).NotNull().WithMessage("快递单号预报编辑，备注不能为空！"); // if (string.IsNullOrWhiteSpace(description)) { description = string.Empty }
+        }
+    }
+
     /// <summary>
     /// 编辑快递单号预报
     /// </summary>
-    /// <param name="expressExpectId"></param>
-    /// <param name="customerId">用于验证快递单号预报是不是属于当前会员</param>
-    /// <param name="trackingNo"></param>
-    /// <param name="description"></param>
-    public void Edit(int expressExpectId, int customerId, string trackingNo, string description) {
+    public void Edit(EditParam param) {
+        ValidationUtil.Validate<EditParamValidator, EditParam>(param);
+
+        int expressExpectId = param.ExpressExpectId;
+        int customerId = param.CustomerId;
+        string trackingNo = param.TrackingNo;
+        decimal goodsValue = param.GoodsValue;
+        string description = param.Description;
+
+        trackingNo = trackingNo.Trim().ToUpper();
+
+        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false) {
+            throw new ValidationException("快递单号格式不正确或不能在快递单号中录入中文！");
+        }
+
+        if (string.IsNullOrWhiteSpace(description)) {
+            description = string.Empty;
+        }
+
         var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
         if (expressExpect == null) {
             throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不存在！");
@@ -133,16 +172,6 @@ public class ExpressExpectService {
 
         if (expressExpect.Customer.Id != customerId) {
             throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前会员 #{customerId} ！");
-        }
-
-        if (string.IsNullOrWhiteSpace(trackingNo)) {
-            throw new ValidationException("快递单号不能为空！");
-        }
-
-        trackingNo = trackingNo.Trim().ToUpper();
-
-        if (expressTrackingNoService.IsValidateTrackingNo(trackingNo) == false) {
-            throw new ValidationException("快递单号格式不正确或不能在快递单号中录入中文！");
         }
 
         var expressExpectInDb = session.Query<ExpressExpectInfo>()
@@ -176,6 +205,7 @@ public class ExpressExpectService {
         }
 
         expressExpect.TrackingNo = trackingNo;
+        expressExpect.GoodsValue = goodsValue;
         expressExpect.Description = description;
         expressExpect.LastEditTime = DateTime.Now;
         expressExpect.Status = ExpressExpectStatus.Create;
