@@ -84,18 +84,6 @@ Page({
             // color: "red",
         });
 
-        let enterPriceDisabled = true;
-        if (currentExpressExpect.enter === true) {
-            enterPriceDisabled = false;
-        }
-        actionSheetActions.push({
-            action: "enterPrice",
-            name: '录货值',
-            subname: '录入货品价格，完成最终入库',
-            className: 'iconfont iconfont-claim-pick',
-            disabled: enterPriceDisabled,
-        });
-
         this.setData({
             currentExpressExpect: currentExpressExpect,
             actionSheetActions: actionSheetActions,
@@ -150,12 +138,6 @@ Page({
                     }
                 }
             });
-        }
-
-        if (action === "enterPrice") {
-            wx.navigateTo({
-                url: '../express_checkin/express_checkin_price?id=' + expressId,
-            });            
         }
 
         this.setData({
