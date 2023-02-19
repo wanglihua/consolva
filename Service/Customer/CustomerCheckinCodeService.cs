@@ -5,14 +5,12 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
-public class CustomerCheckinCodeService
-{
+public class CustomerCheckinCodeService {
     private const int CODE_LENGTH = 5;
 
     private readonly ISession session;
 
-    public CustomerCheckinCodeService(ISession session)
-    {
+    public CustomerCheckinCodeService(ISession session) {
         this.session = session;
     }
 
@@ -21,8 +19,7 @@ public class CustomerCheckinCodeService
     /// <summary>
     /// 从数据库加载所有客户的入库校验码
     /// </summary>
-    public void LoadAllCustomerCheckinCode()
-    {
+    public void LoadAllCustomerCheckinCode() {
         IList<CustomerCheckinCodeInfo> customerCheckinCodeList = session.Query<CustomerCheckinCodeInfo>().ToList(); // 只获取了两个字段希望能有更好的效率
 
         checkinCodeCustomerIdMap.Clear(); // 方便原来的Map实例内存释放
@@ -36,16 +33,13 @@ public class CustomerCheckinCodeService
     /// <summary>
     /// 生成一个跟现有的不相重的入库校验码
     /// </summary>
-    public string GenerateNewCheckinCode()
-    {
-        if (checkinCodeCustomerIdMap.Count == 0)
-        {
+    public string GenerateNewCheckinCode() {
+        if (checkinCodeCustomerIdMap.Count == 0) {
             LoadAllCustomerCheckinCode();
         }
 
         string checkinCode = RandCode();
-        while (checkinCodeCustomerIdMap.ContainsKey(checkinCode))
-        {
+        while (checkinCodeCustomerIdMap.ContainsKey(checkinCode)) {
             checkinCode = RandCode();
         }
 
@@ -60,20 +54,17 @@ public class CustomerCheckinCodeService
     /// </summary>
     /// <param name="checkinCode"></param>
     /// <param name="customerId"></param>
-    public void SaveCheckinCodeToCache(string checkinCode, int customerId)
-    {
+    public void SaveCheckinCodeToCache(string checkinCode, int customerId) {
         checkinCodeCustomerIdMap[checkinCode] = customerId;
     }
 
-    public string RandCode()
-    {
+    public string RandCode() {
         string code = ""; //产生的随机数
         Dictionary<int, bool> codeIndexMap = new Dictionary<int, bool>();
         Random rand = new Random();
-        for (int i = 0; i < CODE_LENGTH; i++)
-        {
+        for (int i = 0; i < CODE_LENGTH; i++) {
             int codeIndex = rand.Next(checkinCodeCharArray.Length);
-            while (codeIndexMap.ContainsKey(codeIndex))
+            while (codeIndexMap.ContainsKey(codeIndex)) // 保证生成的 checkin code 各个字母都不相同
             {
                 codeIndex = rand.Next(checkinCodeCharArray.Length);
             }
