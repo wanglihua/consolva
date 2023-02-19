@@ -6,8 +6,6 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Customer;
 
-// todo 考虑客户编号后缀，一个固定长度的后缀，用于客户ID方面的校验。两位三位四位都可以，生成是可以去掉不吉利的数字
-
 [Service(ServiceType.Scoped)]
 public class CustomerCodeService {
     private readonly ISession session;
@@ -18,24 +16,69 @@ public class CustomerCodeService {
 
     private static readonly Regex regexCustomerId = new Regex(@"[0-9]+", RegexOptions.Compiled);
 
+    /// <summary>
+    /// 解析类似 SDABCDE001, SDABCDE, SDQQABCDE, SDQQABCDE001 等的客户ID，可以有数字但必须要有校验码
+    /// 实际如果写成这样也能识别的 SD001ABCDE, SDQQ001ABCDE
+    /// </summary>
+    /// <param name="customerIdOrCode"></param>
+    /// <returns></returns>
     public int GetCustomerIdFromCustomerCode(string customerIdOrCode) {
         if (string.IsNullOrWhiteSpace(customerIdOrCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
         {
             return 0;
         }
 
+        customerIdOrCode = customerIdOrCode.ToUpper(); // 转成大写
+
+        // 解析数字部分，如果含有多个数字部分，取长度最长的数字部分
         MatchCollection matches = regexCustomerId.Matches(customerIdOrCode);
 
-        IList<string> matchDigitList = new List<string>();
+        string maxLengthMatchValue = string.Empty;
         foreach (Match match in matches) {
-            matchDigitList.Add(match.Value);
+            string matchValue = match.Value;
+            if (matchValue.Length > maxLengthMatchValue.Length) {
+                maxLengthMatchValue = matchValue;
+            }
         }
 
-        if (matchDigitList.Count != 0) {
-            string? maxLengthDigit = matchDigitList.OrderByDescending(e => e.Length).Take(1).SingleOrDefault();
-            if (string.IsNullOrWhiteSpace(maxLengthDigit) == false && int.TryParse(maxLengthDigit, out int customerId)) {
-                return customerId;
+        bool hasCustomerIdFromDigits = false;
+        int customerIdFromDigits = 0;
+        if (string.IsNullOrWhiteSpace(maxLengthMatchValue) == false) {
+            hasCustomerIdFromDigits = int.TryParse(maxLengthMatchValue, out customerIdFromDigits);
+        }
+
+        // 处理最大数字部分剩下的部分
+        string remain = customerIdOrCode;
+        if (hasCustomerIdFromDigits == true) {
+            remain = customerIdOrCode.Replace(maxLengthMatchValue, "");
+        }
+
+        if (string.IsNullOrWhiteSpace(remain)) {
+            // throw new ValidationException("客户ID格式错误，暂不支持纯数字形式的客户ID！");
+            return 0;
+        }
+
+        if (remain.StartsWith("SDQQ") == true) {
+            remain = remain.Substring(4);
+        }
+
+        if (remain.StartsWith("SD") == true) {
+            remain = remain.Substring(2);
+        }
+
+        remain = remain.ToLower(); // 数据库中是小写存储的
+
+        var customerCheckinCode = session.Query<CustomerCheckinCodeInfo>()
+            .Where(e => e.CheckinCode == remain)
+            .Take(1)
+            .SingleOrDefault();
+        if (customerCheckinCode != null) {
+            if (hasCustomerIdFromDigits == true && customerCheckinCode.Id != customerIdFromDigits) {
+                // throw new ValidationException("客户ID格式错误，信息不匹配！");
+                return 0;
             }
+
+            return customerCheckinCode.Id;
         }
 
         return 0;
