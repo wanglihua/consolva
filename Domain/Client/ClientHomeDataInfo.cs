@@ -18,9 +18,6 @@ public class ClientHomeDataInfo {
     [JsonProperty("expressExpectCount")]
     public virtual int ExpressExpectCount { get; set; }
 
-    [JsonProperty("expressExpectEnterCount")]
-    public virtual int ExpressExpectEnterCount { get; set; }
-
     [JsonProperty("expressCheckinCount")]
     public virtual int ExpressCheckinCount { get; set; }
 

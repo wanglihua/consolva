@@ -6,9 +6,6 @@ public class HomeClientHomeDataModel {
     [JsonProperty("expressClaimBadge")]
     public string ExpressClaimBadge { get; set; } = string.Empty;
 
-    [JsonProperty("hasExpressExpectEnter")]
-    public bool HasExpressExpectEnter { get; set; }
-
     [JsonProperty("expressExpectBadge")]
     public string ExpressExpectBadge { get; set; } = string.Empty;
 
