@@ -10,31 +10,23 @@
     bool autoRecordCheckinVideo = Model.AutoRecordCheckinVideo;
 }
 
-@if (Model.Warehouse == null)
-{
+@if (Model.Warehouse == null) {
     autoRecordCheckinVideo = false;
     <h3 id="warehouseError" class="well">仓库参数不对，您进入的页面是否有误？</h3>
-}
-else if (string.IsNullOrWhiteSpace(Model.TrackingNo))
-{
+} else if (string.IsNullOrWhiteSpace(Model.TrackingNo)) {
     autoRecordCheckinVideo = false;
     <h3 id="expressTrackingNoError" class="well">请输入快递单号</h3>
-}
-else
-{
+} else {
     <div style="margin: 5px 0;">
         <div style="width: 980px;">
             <form id="logisticsExpressCheckinForm" class="form-horizontal" method="post">
 
-                @if (string.IsNullOrWhiteSpace(Model.Message) == false)
-                {
+                @if (string.IsNullOrWhiteSpace(Model.Message) == false) {
                     autoRecordCheckinVideo = false;
                     <h3 id="expressTrackingNoError" class="well">
                         @(Model.Message)
                     </h3>
-                }
-                else if (Model.ExpressId != 0)
-                {
+                } else if (Model.ExpressId != 0) {
                     autoRecordCheckinVideo = false;
                     <h3 id="expressTrackingNoError" class="well">
                         快递单号 @(Model.TrackingNo) 已成功入库，修改保存后将更新入库记录信息！
@@ -53,29 +45,28 @@ else
                                 <td style="width: 100px" class="lbl">
                                     <label for="expressTrackingNo">快递单号</label>
                                 </td>
-                                <td style="width: 388px">
+                                <td style="width: 175px">
                                     <input id="expressTrackingNo" asp-for="TrackingNo" type="text" readonly="readonly" required="required" class="input-sm form-control"/>
                                 </td>
+                                <td style="width: 100px;" class="lbl"></td>
+                                <td style="width: 180px"></td>
                                 <td style="width: 100px" class="lbl">
                                     <label for="expressCompany">物流公司</label>
                                 </td>
-                                <td style="width: 388px">
+                                <td>
                                     <input id="expressCompany" asp-for="ExpressCompany" type="text" class="input-sm form-control"/>
                                 </td>
                             </tr>
 
                             <tr>
-                                @if (Model.ExpressExpect == null)
-                                {
+                                @if (Model.ExpressExpect == null) {
                                     <td class="lbl">
                                         <label asp-for="BillCustomerCode">面单客户ID</label>
                                     </td>
                                     <td>
                                         <input asp-for="BillCustomerCode" type="text" class="input-sm form-control"/>
                                     </td>
-                                }
-                                else
-                                {
+                                } else {
                                     <td class="lbl" style="height: 37px;">
                                         <label asp-for="BillCustomerCode">预报客户ID</label>
                                     </td>
@@ -91,8 +82,7 @@ else
                                 <td>
                                     <select id="shelfId" asp-for="ShelfId" class="input-sm form-control" onchange="shelfSelectChange()">
                                         <option value="0">选择入库货架</option>
-                                        @foreach (ShelfInfo shelf in Model.ShelfList)
-                                        {
+                                        @foreach (ShelfInfo shelf in Model.ShelfList) {
                                             <option value="@(shelf.Id)">@(shelf.Name)</option>
                                         }
                                     </select>
@@ -135,7 +125,12 @@ else
                                     <input asp-for="ShelfId" value="@((Model.ShelfId ?? 0) != 0 ? (Model.ShelfId ?? 0) : Model.ShelfList.FirstOrDefault()?.Id)" type="hidden"/>
                                     *@
                                 </td>
-
+                                <td class="lbl">仓位规格</td>
+                                <td style="vert-align: middle;">
+                                    <div id="storageLocSpecWrapper">
+                                        <partial name="ExpressCheckinStorageLocSpecList" model="@(Model)"/>
+                                    </div>
+                                </td>
                             </tr>
 
                             <tr>
@@ -145,40 +140,16 @@ else
                                 <td>
                                     <input id="checkinPackageCount" asp-for="PackageCount" type="number" class="input-sm form-control" readonly="readonly"/>
                                 </td>
-                                <td class="lbl">仓位规格</td>
-                                <td style="vert-align: middle;">
-                                    <div id="storageLocSpecWrapper">
-                                        <partial name="ExpressCheckinStorageLocSpecList" model="@(Model)"/>
-                                    </div>
+                                <td class="lbl">仓位</td>
+                                <td colspan="3" style="vert-align: middle;">
+                                    <span style="color: blue;">@(Model.StorageLocName)</span>
                                 </td>
-                            </tr>
-                            <tr>
-
-                                @if (string.IsNullOrWhiteSpace(Model.StorageLocName) == false)
-                                {
-                                    <text>
-                                        <td class="lbl">仓位</td>
-                                        <td>
-                                            <span style="color: blue;">@(Model.StorageLocName)</span>
-                                        </td>
-                                    </text>
-                                }
-                                else
-                                {
-                                    <text>
-                                        <td class="lbl">
-                                        </td>
-                                        <td>
-                                        </td>
-                                    </text>
-                                }
-
                             </tr>
                             <tr>
                                 <td class="lbl">
                                     <label for="description">入库备注</label>
                                 </td>
-                                <td colspan="3">
+                                <td colspan="5">
                                     <div class="row">
                                         <div class="col-xs-8">
                                             <textarea id="description" asp-for="WarehouseRemark" rows="1" class="input-sm form-control"></textarea>
@@ -186,8 +157,7 @@ else
                                         <div class="col-xs-4">
                                             <select id="remarkList" class="input-sm form-control" style="margin-top: 2px;" onchange="remarkSelectChange()">
                                                 <option value="">选择预设入库备注</option>
-                                                @foreach (ExpressRemarkPresetSelectInfo remarkPreset in Model.RemarkPresetList)
-                                                {
+                                                @foreach (ExpressRemarkPresetSelectInfo remarkPreset in Model.RemarkPresetList) {
                                                     <option value="@(remarkPreset.Remark)">@(remarkPreset.Remark)</option>
                                                 }
                                             </select>
@@ -211,10 +181,8 @@ else
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model.GoodsList != null && Model.GoodsList.Count != 0)
-                            {
-                                foreach (LogisticsExpressCheckinExpressGoodsModel goodsModel in Model.GoodsList)
-                                {
+                            @if (Model.GoodsList != null && Model.GoodsList.Count != 0) {
+                                foreach (LogisticsExpressCheckinExpressGoodsModel goodsModel in Model.GoodsList) {
                                     <partial name="ExpressCheckinExpressGoods" model="@(goodsModel)"/>
                                 }
                             }
@@ -258,8 +226,7 @@ else
         });
     </script>
 
-    @if (Model.ExpressId == 0)
-    {
+    @if (Model.ExpressId == 0) {
         <script type="text/javascript">
             $(function() {
                 addGoods();
@@ -267,24 +234,20 @@ else
         </script>
     }
 
-    @if (autoRecordCheckinVideo)
-    {
+    @if (autoRecordCheckinVideo) {
         <script type="text/javascript">
             recordStart("@(Model.TrackingNo)");
         </script>
     }
 
-    @if (autoRecordCheckinVideo)
-    {
+    @if (autoRecordCheckinVideo) {
         <script type="application/javascript">
             function saveAndPrint() {
                 recordFinish('@(Model.TrackingNo)');
                 saveExpressPrintLabel('@(Model.TrackingNo)');
             }
         </script>
-    }
-    else
-    {
+    } else {
         <script type="application/javascript">
             function saveAndPrint() {
                 saveExpressPrintLabel('@(Model.TrackingNo)');
