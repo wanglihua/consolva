@@ -417,7 +417,7 @@ public class ExpressCheckinController : Controller {
             throw new ValidationException("快递单号格式不符合规范！");
         }
 
-        int billCustomerId = customerCodeService.GetCustomerIdFromCustomerCode(model.BillCustomerCode); // todo a 这个面单客户应该如果处理，主要是考虑入库校验码的情况
+        int billCustomerId = customerCodeService.GetCustomerIdFromCustomerCode(model.BillCustomerCode);
 
         //  这个检查先不用了
         /*
@@ -427,12 +427,15 @@ public class ExpressCheckinController : Controller {
         }
         */
 
+        /*
+         这个现在不用了，如果客户不存在，前面customerCodeService.GetCustomerIdFromCustomerCode()返回的就是0
         if (billCustomerId != 0) {
             CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
             if (billCustomer == null) {
                 throw new ValidationException("从面单客户ID中解析的客户ID不存在，请检查！");
             }
         }
+        */
 
         // 获取并检查尺寸重量信息是否已经存在
         IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
@@ -640,14 +643,13 @@ public class ExpressCheckinController : Controller {
 
                 express.BillCustomerCode = model.BillCustomerCode;
                 express.BillCustomerId = billCustomerId;
+                if (billCustomerId > 0) {
+                    express.Customer = session.Load<CustomerInfo>(billCustomerId); // customerCodeService.GetCustomerIdFromCustomerCode() 中已经检查客户的存在了，这里用 session.Load()也可以的
+                }
 
                 // 如果是新入库的，或者是 原来的但修改了货架, 或者是修改了仓位规格
-                if (isCreate == true || ( /* isCreate == false && */ (express.StorageLoc?.Shelf?.Id ?? 0) != model.ShelfId || (express.StorageLoc?.Spec.Id ?? 0) != model.StorageLocSpecId)) {
+                if (isCreate == true || ( /* isCreate == false && */ express.StorageLoc.Shelf.Id != model.ShelfId || (express.StorageLoc?.Spec.Id ?? 0) != model.StorageLocSpecId)) {
                     StorageLocInfo recommandStorage = expressCheckinService.GetRecommandStorage(shelf, storageLocSpec); // 从这里取到的仓位ID，已经保证是仓位上物品不超过限制了
-                    if (recommandStorage == null) {
-                        throw new ValidationException("未能获取推荐仓位，请尝试重新选择货架或仓位规格！");
-                    }
-
                     // 检查仓位和货架是否可用
                     storageLocService.CheckStorageLoc((recommandStorage.Id), ShelfType.Normal);
 
@@ -818,9 +820,12 @@ public class ExpressCheckinController : Controller {
             expressVideoService.BindExpressByTrackingNo(expressId);
         });
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "快递单号保存入库成功！" },
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "快递单号保存入库成功！",
+            Data = new {
+                claim = billCustomerId == 0,
+            }
         });
     }
 
