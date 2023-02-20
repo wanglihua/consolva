@@ -51,14 +51,12 @@ public class ExpressCheckinService {
         /*
 SELECT DISTINCT se.shelf_id
 FROM tbl_storage_loc_express se
-WHERE se.express_id != 0
 GROUP BY se.shelf_id, se.storage_loc_id
 HAVING COUNT(*) < 8;
          */
         string sql = $@"
 SELECT DISTINCT se.shelf_id
 FROM tbl_storage_loc_express se
-WHERE se.express_id != 0
 GROUP BY se.shelf_id, se.storage_loc_id
 HAVING COUNT(*) < {expressCountPerStorageLoc}
 ";
@@ -127,10 +125,9 @@ FROM tbl_storage_loc sl
          INNER JOIN tbl_shelf s ON sl.shelf_id = s.id
          INNER JOIN tbl_storage_loc_express sle ON sle.storage_loc_id = sl.id
 WHERE s.id = 1
-  AND s.status_id = 10000
+  AND s.status_id = 1000
   AND sl.status_id = 1000
   AND sl.spec_id = 1000
-  AND sle.express_id != 0
 GROUP BY sl.id, sl.col_num, sl.row_num, sl.order_num
 HAVING COUNT(*) < 8
 ORDER BY sl.order_num, sl.col_num, sl.row_num DESC, COUNT(*)
@@ -147,7 +144,6 @@ WHERE s.id = {shelfId}
   AND s.status_id = {ShelfStatus.Enabled.Id}
   AND sl.status_id = {StorageLocStatus.Enabled.Id}
   AND sl.spec_id = {storageLocSpecId}
-  AND sle.express_id != 0
 GROUP BY sl.id, sl.col_num, sl.row_num, sl.order_num
 HAVING COUNT(*) < {expressCountPerStorageLoc}
 ORDER BY sl.order_num, sl.col_num, sl.row_num DESC, COUNT(*)
@@ -157,7 +153,7 @@ LIMIT 1
         int? storageLocId = session.CreateSQLQuery(sql).UniqueResult<int?>();
 
         if (storageLocId == null) {
-            throw new ValidationException($"货架 {shelf.Name} 没有满足要求的仓位！");
+            throw new ValidationException($"货架 {shelf.Name} 没有满足要求的 {storageLocSpec.Name} 仓位！");
         }
 
         StorageLocInfo storageLoc = session.Get<StorageLocInfo>((storageLocId ?? 0));
