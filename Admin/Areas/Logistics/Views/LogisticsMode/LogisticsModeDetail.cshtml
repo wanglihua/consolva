@@ -131,7 +131,7 @@
 
                         @foreach (var goodsType in Model.GoodsTypeList) {
                             var feeRateFieldName = Model.GetFeeRateFieldName(goodsType);
-                            var feeRateId = Model.ModeFeeRateList.Where(e => e.GoodsType == goodsType).Take(1).SingleOrDefault()?.Id ?? 0;
+                            var feeRateId = Model.ModeFeeRateList.Where(e => e.GoodsType == goodsType).Take(1).SingleOrDefault()?.FeeRate.Id ?? 0;
 
                             <div class="col-xs-12">
                                 <div class="form-group">
@@ -155,20 +155,6 @@
                                 </div>
                             </div>
                         }
-
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label asp-for="SpecialFeeRateId" class="col-xs-2 control-label">特货类通用费率</label>
-                                <div class="col-xs-10">
-                                    <select asp-for="SpecialFeeRateId" class="input-sm form-control">
-                                        <option value=""></option>
-                                        @foreach (var feeRate in Model.LogisticsFeeRateList) {
-                                            <option value="@feeRate.Id">@feeRate.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">

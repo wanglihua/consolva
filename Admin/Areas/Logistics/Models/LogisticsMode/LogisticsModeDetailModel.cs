@@ -57,16 +57,6 @@ public class LogisticsModeDetailModel {
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// 普通类通用费率
-    /// </summary>
-    public int? CommonFeeRateId { get; set; }
-
-    /// <summary>
-    /// 特货类通用费率
-    /// </summary>
-    public int? SpecialFeeRateId { get; set; }
-
-    /// <summary>
     /// 费用计算描述
     /// </summary>
     public string? FeeCalDesc { get; set; }
