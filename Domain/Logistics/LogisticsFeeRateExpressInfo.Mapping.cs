@@ -81,5 +81,14 @@ public class LogisticsFeeRateExpressInfoMapping : EntityMapping<LogisticsFeeRate
                 map.NotNullable(false);
             }
         );
+
+        Property(
+            x => x.FeeByKilogram,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("fee_by_kilogram");
+                map.NotNullable(true);
+            }
+        );
     }
 }

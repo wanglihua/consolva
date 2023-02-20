@@ -52,6 +52,14 @@ public class LogisticsFeeExpressService {
             startPrice = feeRateExpress.StartPrice.Value;
         }
 
+        // 首重免费
+        if (feeRateExpress.StartFreeMinWeight != null // 不为空
+            && feeRateExpress.StartFreeMinWeight.Value > 0 // 不为零 和 负值，正确的正值
+            && feeRateExpress.StartFreeMinWeight.Value <= totalWeightKg) // 总重量超首重免费最小重量
+        {
+            startPrice = 0;
+        }
+
         decimal startWeight = 0m;
         if (feeRateExpress.StartWeight.HasValue) {
             startWeight = feeRateExpress.StartWeight.Value;
@@ -91,19 +99,20 @@ public class LogisticsFeeExpressService {
             }
         }
 
+        // 按公斤计费，这个逻辑暂且放在 重量满减 后面
+        if (feeRateExpress.FeeByKilogram == true) {
+            decimal totalWeightKgWholeNumber = Math.Floor(totalWeightKg);
+            if (totalWeightKg - totalWeightKgWholeNumber > 0) {
+                totalWeightKg = totalWeightKgWholeNumber + 1; // 不满一公斤按一公斤计算
+            }
+        }
+
+        // 阶梯费用
         decimal stepCount = 0m;
         if (totalWeightKg < startWeight) {
             stepCount = 0m;
         } else {
-            stepCount = Math.Ceiling(Math.Abs(totalWeightKg - startWeight) / stepWeight);
-        }
-
-        // 首重免费
-        if (feeRateExpress.StartFreeMinWeight != null // 不为空
-            && feeRateExpress.StartFreeMinWeight.Value > 0 // 不为零 和 负值，正确的正值
-            && feeRateExpress.StartFreeMinWeight.Value <= totalWeightKg) // 总重量超首重免费最小重量
-        {
-            startPrice = 0;
+            stepCount = Math.Ceiling(Math.Abs(totalWeightKg - startWeight) / stepWeight); // 不足部分算一个阶梯
         }
 
         feeCalculateLogService.AddLog($"费率: 起步重量 {startWeight}, 起步价格 {startPrice}, 阶梯重量 {startWeight}, 阶梯价格 {startPrice}, 首重免费最小总重 {feeRateExpress.StartFreeMinWeight}");
