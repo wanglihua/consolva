@@ -374,14 +374,14 @@
                             return;
                         } 
                         
-                        $.msg.tip(data.message);
-                        
                         if (data.data.claim === true) {
-                            $.msg.confirm("当前面单客户ID未能匹配任何客户，请检查确认是否填写正确，再点击确认继续！", function() {
+                            $.msg.confirm("快递单号保存入库成功，但当前面单客户ID未能匹配任何客户，请检查确认【" + data.data.billCustomerCode + "】是否填写正确，点击确认打印入库标签或修改后继续提交！", function() {
                                 printExpressLabel(expressTrackingNo, parseInt($("#checkinPackageCount").val()));
                                 getLogisticsExpress(expressTrackingNo, true);
                             });
                         } else {
+                            $.msg.tip(data.message);
+
                             printExpressLabel(expressTrackingNo, parseInt($("#checkinPackageCount").val()));
                             getLogisticsExpress(expressTrackingNo, true);
                         }

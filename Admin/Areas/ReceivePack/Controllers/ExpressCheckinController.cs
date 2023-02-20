@@ -571,7 +571,7 @@ public class ExpressCheckinController : Controller {
                     express.Customer = session.Load<CustomerInfo>(billCustomerId); // customerCodeService.GetCustomerIdFromCustomerCode() 中已经检查客户的存在了，这里用 session.Load()也可以的
                 } else if (express.Status == ExpressStatus.Checkin) {
                     express.ClaimTime = null;
-                    express.Status = ExpressStatus.WaitPack;
+                    express.Status = ExpressStatus.WaitPick;
                     express.Customer = null;
                 }
 
@@ -840,6 +840,7 @@ public class ExpressCheckinController : Controller {
             Message = "快递单号保存入库成功！",
             Data = new {
                 claim = billCustomerId == 0,
+                billCustomerCode = model.BillCustomerCode,
             }
         });
     }
