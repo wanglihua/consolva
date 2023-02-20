@@ -554,20 +554,25 @@ public class ExpressCheckinController : Controller {
                         Status = ExpressStatus.WaitPick, // 初始化为 WaitPick     
                         ShelfStatus = ExpressShelfStatus.ToOnShelf, // 初始化为 待上架
                         AddTime = now,
-                        BillCustomerCode = model.BillCustomerCode,
-                        BillCustomerId = billCustomerId,
                     };
+                }
 
-                    if (expressExpect != null) {
-                        express.ClaimTime = now;
-                        express.Status = ExpressStatus.Checkin;
-                        express.Customer = expressExpect.Customer;
-                    } else if (billCustomerId > 0) {
-                        // 这里是能解析得到 billCustomerId 就自动认领了
-                        express.ClaimTime = now;
-                        express.Status = ExpressStatus.Checkin;
-                        express.Customer = session.Load<CustomerInfo>(billCustomerId); // customerCodeService.GetCustomerIdFromCustomerCode() 中已经检查客户的存在了，这里用 session.Load()也可以的
-                    }
+                express.BillCustomerCode = model.BillCustomerCode;
+                express.BillCustomerId = billCustomerId;
+
+                if (expressExpect != null) {
+                    express.ClaimTime = now;
+                    express.Status = ExpressStatus.Checkin;
+                    express.Customer = expressExpect.Customer;
+                } else if (billCustomerId > 0) {
+                    // 这里是能解析得到 billCustomerId 就自动认领了
+                    express.ClaimTime = now;
+                    express.Status = ExpressStatus.Checkin;
+                    express.Customer = session.Load<CustomerInfo>(billCustomerId); // customerCodeService.GetCustomerIdFromCustomerCode() 中已经检查客户的存在了，这里用 session.Load()也可以的
+                } else if (express.Status == ExpressStatus.Checkin) {
+                    express.ClaimTime = null;
+                    express.Status = ExpressStatus.WaitPack;
+                    express.Customer = null;
                 }
 
                 IList<string> editDescList = new List<string>();

@@ -375,9 +375,16 @@
                         } 
                         
                         $.msg.tip(data.message);
-
-                        printExpressLabel(expressTrackingNo, parseInt($("#checkinPackageCount").val()));
-                        getLogisticsExpress(expressTrackingNo, true);
+                        
+                        if (data.data.claim === true) {
+                            $.msg.confirm("当前面单客户ID未能匹配任何客户，请检查确认是否填写正确，再点击确认继续！", function() {
+                                printExpressLabel(expressTrackingNo, parseInt($("#checkinPackageCount").val()));
+                                getLogisticsExpress(expressTrackingNo, true);
+                            });
+                        } else {
+                            printExpressLabel(expressTrackingNo, parseInt($("#checkinPackageCount").val()));
+                            getLogisticsExpress(expressTrackingNo, true);
+                        }
                     }
                 });
             }

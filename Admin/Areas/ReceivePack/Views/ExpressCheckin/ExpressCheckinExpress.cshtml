@@ -71,7 +71,7 @@
                                         <label asp-for="BillCustomerCode">面单客户ID</label>
                                     </td>
                                     <td>
-                                        <input asp-for="BillCustomerCode" type="text" class="input-sm form-control"/>
+                                        <input asp-for="BillCustomerCode" autocomplete="off" type="text" class="input-sm form-control"/>
                                     </td>
                                 } else {
                                     <td class="lbl" style="height: 37px;">
@@ -145,7 +145,7 @@
                                     <label for="checkinPackageCount" style="color: red;">入库包裹数量</label>
                                 </td>
                                 <td>
-                                    <input id="checkinPackageCount" asp-for="PackageCount" type="number" class="input-sm form-control" readonly="readonly"/>
+                                    <input id="checkinPackageCount" asp-for="PackageCount" type="number" autocomplete="off" class="input-sm form-control" readonly="readonly"/>
                                 </td>
                                 <td class="lbl">仓位</td>
                                 <td colspan="3" style="vert-align: middle;">
@@ -159,7 +159,7 @@
                                 <td colspan="5">
                                     <div class="row">
                                         <div class="col-xs-8">
-                                            <textarea id="description" asp-for="WarehouseRemark" rows="1" class="input-sm form-control"></textarea>
+                                            <textarea id="description" asp-for="WarehouseRemark" rows="1" autocomplete="off" class="input-sm form-control"></textarea>
                                         </div>
                                         <div class="col-xs-4">
                                             <select id="remarkList" class="input-sm form-control" style="margin-top: 2px;" onchange="remarkSelectChange()">
