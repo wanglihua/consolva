@@ -6,22 +6,28 @@
     string printFunName = "";
 }
 
-@if (Model.LabelType == ExpressCheckinLabelType.SizeW10H05)
-{
-    <partial name="~/Areas/ReceivePack/Views/ExpressCheckinConfig/ExpressCheckinConfigPrintLabelW10H05.cshtml" model="@(Model.Preview)" />
+@if (Model.LabelType == ExpressCheckinLabelType.SizeW10H05) {
+    <partial name="~/Areas/ReceivePack/Views/ExpressCheckinConfig/ExpressCheckinConfigPrintLabelW10H05.cshtml" model="@(Model.Preview)"/>
 
     printFunName = "printCheckinLabelCommonW10H05";
-}
-else if (Model.LabelType == ExpressCheckinLabelType.SizeW05H05)
-{
-    <partial name="~/Areas/ReceivePack/Views/ExpressCheckinConfig/ExpressCheckinConfigPrintLabelW05H05.cshtml" model="@(Model.Preview)" />
+} else if (Model.LabelType == ExpressCheckinLabelType.SizeW05H05) {
+    <partial name="~/Areas/ReceivePack/Views/ExpressCheckinConfig/ExpressCheckinConfigPrintLabelW05H05.cshtml" model="@(Model.Preview)"/>
 
     printFunName = "printCheckinLabelCommonW05H05";
 }
 
-<script type="text/javascript">
-    @* type: 1 正常件, 2 申领件， 3 问题件， 这个 packageCount 也只是用来控制打印数量 *@
-    function printCheckinLabelCommon(data, packageCount, printCount, type) {
-        @(printFunName)(data, packageCount, printCount, type);
-    }
-</script>
+@if (Model.Debug) {
+    <script type="text/javascript">
+        @* type: 1 正常件, 2 申领件， 3 问题件， 这个 packageCount 也只是用来控制打印数量 *@
+        function printCheckinLabelCommon(data, packageCount, printCount, type) {
+            // 暂时不打印
+        }
+    </script>
+} else {
+    <script type="text/javascript">
+        @* type: 1 正常件, 2 申领件， 3 问题件， 这个 packageCount 也只是用来控制打印数量 *@
+        function printCheckinLabelCommon(data, packageCount, printCount, type) {
+            @(printFunName)(data, packageCount, printCount, type);
+        }
+    </script>
+}
