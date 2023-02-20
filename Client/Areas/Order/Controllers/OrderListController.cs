@@ -134,7 +134,7 @@ public class OrderListController : Controller {
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         param.CustomerId = loginCustomerId;
-        param.Cate = LogisticsOrderStatusClientCate.Transporting;
+        param.Cate = LogisticsOrderStatusClientCate.Delivered;
 
         int orderCount = logisticsOrderClientListService.GetCustomerOrderCount(param);
         var orderList = logisticsOrderClientListService.GetCustomerOrderList(param);
