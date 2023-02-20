@@ -89,8 +89,10 @@
                                         <label asp-for="BillCustomerCode">预报客户ID</label>
                                     </td>
                                     <td>
-                                        <input asp-for="BillCustomerCode" type="hidden" value="@(Model.ExpressExpect?.Customer?.Id)" class="input-sm form-control"/>
-                                        <span style="color: red; font-weight: bold;">@(Model.ExpressExpect?.Customer?.Id)</span>
+                                        <input asp-for="BillCustomerCode" type="hidden" value="@(Model.ExpressExpect?.Customer.CheckinCode)" class="input-sm form-control"/>
+                                        <a asp-area="Customer" asp-controller="Customer" asp-action="Detail" asp-route-id="@(Model.ExpressExpect?.Customer.Id)" target="_blank">
+                                            <span style="color: red; font-weight: bold;">@(Model.ExpressExpect?.Customer.CheckinCode)</span>
+                                        </a>
                                     </td>
                                 }
 
