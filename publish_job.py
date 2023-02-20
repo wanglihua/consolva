@@ -7,7 +7,7 @@ publish_path = '/Users/wanglihua/files/publish/shunda'
 job_publish_path = publish_path + '/job'
 shunda_path = publish_path + '/shunda'
 
-os.system('dotnet publish /Users/wanglihua/projects/shunda/Job/P06_Job_Publish.csproj -c Release -o ' + job_publish_path)
+os.system('dotnet publish /Users/wanglihua/projects/shunda/Job/P06_Job_Publish.csproj --no-restore -c Release -o ' + job_publish_path)
 
 os.system('rm -rf {shunda_path}'.format(shunda_path=shunda_path))
 

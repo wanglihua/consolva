@@ -9,9 +9,9 @@ client_publish_path = publish_path + '/client'
 job_publish_path = publish_path + '/job'
 shunda_path = publish_path + '/shunda'
 
-os.system('dotnet publish /Users/wanglihua/projects/shunda/Admin/P01_Admin_Publish.csproj -c Release -o ' + admin_publish_path)
-os.system('dotnet publish /Users/wanglihua/projects/shunda/Client/P04_Client_Publish.csproj -c Release -o ' + client_publish_path)
-os.system('dotnet publish /Users/wanglihua/projects/shunda/Job/P06_Job_Publish.csproj -c Release -o ' + job_publish_path)
+os.system('dotnet publish /Users/wanglihua/projects/shunda/Admin/P01_Admin_Publish.csproj --no-restore -c Release -o ' + admin_publish_path)
+os.system('dotnet publish /Users/wanglihua/projects/shunda/Client/P04_Client_Publish.csproj --no-restore -c Release -o ' + client_publish_path)
+os.system('dotnet publish /Users/wanglihua/projects/shunda/Job/P06_Job_Publish.csproj --no-restore -c Release -o ' + job_publish_path)
 
 os.system('rm -rf {shunda_path}'.format(shunda_path=shunda_path))
 
