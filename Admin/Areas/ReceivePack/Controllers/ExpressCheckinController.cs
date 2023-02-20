@@ -273,6 +273,8 @@ public class ExpressCheckinController : Controller {
         var expressCheckinConfig = expressCheckinConfigService.GetExpressCheckinConfig();
         model.AutoRecordCheckinVideo = expressCheckinConfig.AutoRecordCheckinVideo;
 
+        model.ExpressStatus = expressExist?.Status ?? ExpressStatus.None;
+
         return View("ExpressCheckinExpress", model);
     }
 
@@ -788,18 +790,20 @@ public class ExpressCheckinController : Controller {
 
                 session.Flush();
 
-                StorageLocInfo? storageLoc = express.StorageLoc;
+                StorageLocInfo storageLoc = express.StorageLoc;
                 if (isCreate) {
-                    string logDesc = storageLoc?.GetFullName() ?? string.Empty;
+                    string logDesc = storageLoc.GetFullName();
                     if (expressExpect != null) {
-                        logDesc += $"，面单客户按预报客户：{expressExpect.Customer.Id}";
+                        string expectCustomerCode = customerCodeService.GetCustomerCode(expressExpect.Customer.Id);
+                        logDesc += $"，面单客户按预报客户：{expectCustomerCode}";
                     }
 
                     expressLogService.UserLog(express.Id, ExpressLogType.Checkin, logDesc, loginUserId);
                 } else {
-                    string logDesc = (storageLoc?.GetFullName() ?? string.Empty) + " " + string.Join(";", editDescList);
+                    string logDesc = storageLoc.GetFullName() + " " + string.Join(";", editDescList);
                     if (expressExpect != null) {
-                        logDesc += $"，面单客户按预报客户：{expressExpect.Customer.Id}";
+                        string expectCustomerCode = customerCodeService.GetCustomerCode(expressExpect.Customer.Id);
+                        logDesc += $"，面单客户按预报客户：{expectCustomerCode}";
                     }
 
                     expressLogService.UserLog(express.Id, ExpressLogType.CheckinEdit, logDesc, loginUserId);

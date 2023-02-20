@@ -2,6 +2,7 @@
 @using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin
 @using shunda.Domain.Express
 @using shunda.Domain.Storage
+@using shunda.Service.Express
 @model shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin.LogisticsExpressCheckinExpressDetailModel
 
 @{
@@ -43,10 +44,20 @@
 
                             <tr>
                                 <td style="width: 100px" class="lbl">
-                                    <label for="expressTrackingNo">快递单号</label>
+                                    <label for="expressTrackingNo">
+                                        快递单号
+                                        @if (Model.ExpressStatus != ExpressStatus.None) {
+                                            <span style="color: blue;">@(Model.ExpressStatus.Name)</span>
+                                        }
+                                    </label>
                                 </td>
                                 <td style="width: 175px">
-                                    <input id="expressTrackingNo" asp-for="TrackingNo" type="text" readonly="readonly" required="required" class="input-sm form-control"/>
+                                    <input id="expressTrackingNo" asp-for="TrackingNo" type="hidden" required="required" class="input-sm form-control"/>
+                                    @if (Model.ExpressId == 0) {
+                                        <span>@(Model.TrackingNo)</span>
+                                    } else {
+                                        <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All)" asp-route-id="@(Model.ExpressId)" target="_blank">@(Model.TrackingNo)</a>
+                                    }
                                 </td>
                                 <td style="width: 100px;" class="lbl">物品类型</td>
                                 <td style="width: 180px">

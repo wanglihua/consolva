@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Express;
 
-namespace shunda.Admin.Areas.Express.Models.Express;
+namespace shunda.Admin.Areas.Express.Models.ExpressList;
 
 public class ExpressListModel : ListModel
 {

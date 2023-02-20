@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Linq;
-using shunda.Admin.Areas.Express.Models.Express;
+using shunda.Admin.Areas.Express.Models.ExpressList;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -25,7 +25,7 @@ namespace shunda.Admin.Areas.Express.Controllers;
 /// </summary>
 [ExpressArea]
 [AdminAuth(PassRes.Express.ExpressList)]
-public class ExpressController : Controller {
+public class ExpressListController : Controller {
     private readonly ISession session;
     private readonly ExpressListService expressListService;
     private readonly ExpressSizeWeightService expressSizeWeightService;
@@ -37,7 +37,7 @@ public class ExpressController : Controller {
     private readonly WarehouseService warehouseService;
     private readonly PassResService passResService;
 
-    public ExpressController(ISession session,
+    public ExpressListController(ISession session,
         ExpressListService expressListService,
         ExpressSizeWeightService expressSizeWeightService,
         ExpressPhotoFileService expressPhotoFileService,

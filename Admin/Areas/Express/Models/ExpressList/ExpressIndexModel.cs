@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Pass;
 using shunda.Domain.Storage;
 
-namespace shunda.Admin.Areas.Express.Models.Express;
+namespace shunda.Admin.Areas.Express.Models.ExpressList;
 
 public class ExpressIndexModel
 {

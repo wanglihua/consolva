@@ -6,6 +6,12 @@ using shunda.Domain.Storage;
 namespace shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 
 public class LogisticsExpressCheckinExpressDetailModel : LogisticsExpressCheckinExpressSaveModel {
+    /// <summary>
+    /// 快递单状态，数据中还没的是None
+    /// </summary>
+    [BindNever]
+    public ExpressStatus ExpressStatus { get; set; } = ExpressStatus.None;
+    
     [BindNever]
     public WarehouseInfo Warehouse { get; set; } = new();
 
