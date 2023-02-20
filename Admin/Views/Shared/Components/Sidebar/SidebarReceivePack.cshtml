@@ -81,7 +81,7 @@
 
             @if (Model.HasPassRes(PassRes.ReceivePack.OrderPackConfig)) {
                 <li id="goods-receive-pack-order-pack-config-index-menu">
-                    <a href="@Url.Action("Index", "LogisticsOrderPackConfig")">
+                    <a asp-area="ReceivePack" asp-controller="LogisticsOrderPackConfig" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         订单打包配置
                     </a>
