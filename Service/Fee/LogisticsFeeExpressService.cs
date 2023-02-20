@@ -31,7 +31,7 @@ public class LogisticsFeeExpressService {
 
         if (feeRateExpressList.Count > 1) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持当前物品重量！AP0060");
+                throw new LogisticsFeeException("物流方式不支持当前物品重量！SD0060");
             } else {
                 throw new LogisticsFeeException($"跨国快递物流方式{logisticsMode.Name}的费率设置多于一个，费率设置有问题！");
             }
@@ -39,7 +39,7 @@ public class LogisticsFeeExpressService {
 
         if (feeRateExpressList.Count == 0) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持当前物品重量！AP0070");
+                throw new LogisticsFeeException("物流方式不支持当前物品重量！SD0070");
             } else {
                 throw new LogisticsFeeException($"跨国快递物流方式{logisticsMode.Name}中没有对应的费率设置！");
             }
@@ -69,7 +69,7 @@ public class LogisticsFeeExpressService {
 
         if (stepWeight == 0m) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持当前物品重量！AP0080");
+                throw new LogisticsFeeException("物流方式不支持当前物品重量！SD0080");
             } else {
                 throw new LogisticsFeeException($"跨国快递物流方式{logisticsMode.Name}费率设置有问题，其中续重阶梯为0！");
             }

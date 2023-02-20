@@ -70,7 +70,7 @@ public class LogisticsOrderFeeService {
 
         List<LogisticsFeeResultEntry> orderResultEntryList = new List<LogisticsFeeResultEntry>();
         foreach (var feeData in feeDataList) {
-            var modeResultEntryList = logisticsFeeService.GetLogisticsFeeForCustomer(feeData);
+            var modeResultEntryList = logisticsFeeService.GetLogisticsFee(feeData, LogisticsFeeRateType.Inner);
             orderResultEntryList.AddRange(modeResultEntryList);
         }
 

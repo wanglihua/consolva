@@ -221,6 +221,10 @@ public class LogisticsModeController : Controller {
     public IActionResult Save(LogisticsModeDetailModel model) {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
+        if (model.Country == null || model.Country == Country.None) {
+            throw new ValidationException("目的国家不能为空！");
+        }
+
         var repackTypeIdList = model.RepackTypeIdList;
         if (repackTypeIdList == null) repackTypeIdList = new List<int>();
 

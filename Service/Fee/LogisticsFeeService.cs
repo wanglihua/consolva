@@ -41,17 +41,6 @@ public class LogisticsFeeService {
     /// 根据物流数据计算物流费用
     /// </summary>
     /// <param name="logisticsFeeData"></param>
-    /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFeeForCustomer(LogisticsFeeData logisticsFeeData) {
-        return GetLogisticsFee(logisticsFeeData, LogisticsFeeRateType.Customer, FeeMessageType.Customer);
-    }
-
-    /// <summary>
-    /// 根据物流数据计算物流费用
-    ///
-    /// 原来的代码都调用了这个版本
-    /// </summary>
-    /// <param name="logisticsFeeData"></param>
     /// <param name="feeRateType"></param>
     /// <returns></returns>
     public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType) {
@@ -73,7 +62,7 @@ public class LogisticsFeeService {
 
         if (logisticsMode == null) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0121");
+                throw new LogisticsFeeException("物流方式不支持！SD0121");
             } else {
                 throw new Exception("物流方式不能为空！");
             }
@@ -85,7 +74,7 @@ public class LogisticsFeeService {
 
         if (goodsType == LogisticsGoodsType.Forbidden) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("禁止类物品不允许运输！AP0130");
+                throw new LogisticsFeeException("禁止类物品不允许运输！SD0130");
             } else {
                 throw new Exception("禁止类物品不进行计费！");
             }
@@ -96,7 +85,7 @@ public class LogisticsFeeService {
         IList<LogisticsFeePack> feePackList = logisticsFeeData.FeePackList;
         if (feePackList == null || feePackList.Count == 0) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("未能获取物品尺寸数据！AP0140");
+                throw new LogisticsFeeException("未能获取物品尺寸数据！SD0140");
             } else {
                 throw new Exception("物品打包数据不能为空！");
             }
@@ -127,7 +116,7 @@ public class LogisticsFeeService {
 
         if (feeRate.VolumeDenominator <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0230");
+                throw new LogisticsFeeException("物流方式不支持！SD0230");
             } else {
                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率考虑体积重时，体积重分母应该大于0！");
             }
@@ -135,7 +124,7 @@ public class LogisticsFeeService {
 
         if (feeRate.CareVolumeActualWeightRatio && feeRate.MinVolumeActualWeightRatio <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0240");
+                throw new LogisticsFeeException("物流方式不支持！SD0240");
             } else {
                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率考虑体积重实际重倍率时，体积重实际重最小倍率应该大于0！");
             }
@@ -143,7 +132,7 @@ public class LogisticsFeeService {
 
         if (feeRate.VolumeWeightCareMaxSideLength && feeRate.VolumeWeightMaxSideLengthBegin <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0243");
+                throw new LogisticsFeeException("物流方式不支持！SD0243");
             } else {
                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率体积重考虑最长边时，体积重最长边起始应该大于0！");
             }
@@ -434,7 +423,7 @@ public class LogisticsFeeService {
             {
                 if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
                     if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物流方式不支持！AP0250");
+                        throw new LogisticsFeeException("物流方式不支持！SD0250");
                     } else {
                         throw new LogisticsFeeException($"通用费率 {feeRate.Name} 考虑体积重，但体积重分母 未配置 或 为0 ！");
                     }
@@ -627,7 +616,7 @@ public class LogisticsFeeService {
             {
                 if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
                     if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物流方式不支持！AP0260");
+                        throw new LogisticsFeeException("物流方式不支持！SD0260");
                     } else {
                         throw new LogisticsFeeException($"通用费率 {feeRate.Name} 考虑体积重，但体积重分母 未配置 或 为0 ！");
                     }
@@ -740,7 +729,7 @@ public class LogisticsFeeService {
     private decimal GetSinglePackVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         if (feeRate.CareVolumeWeight == false) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0270");
+                throw new LogisticsFeeException("物流方式不支持！SD0270");
             } else {
                 throw new LogisticsFeeException($"通用费率{feeRate.Name}，不考虑体积重，不能计算体积重！");
             }
@@ -748,7 +737,7 @@ public class LogisticsFeeService {
 
         if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0280");
+                throw new LogisticsFeeException("物流方式不支持！SD0280");
             } else {
                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 考虑体积重，但体积重分母 未配置 或 为0 ！");
             }
@@ -769,7 +758,7 @@ public class LogisticsFeeService {
     private decimal GetSinglePackSideAvgVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         if (feeRate.CareVolumeWeight) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0290");
+                throw new LogisticsFeeException("物流方式不支持！SD0290");
             } else {
                 throw new LogisticsFeeException($"通用费率{feeRate.Name}，不考虑体积重，不能计算三边之和体积重！");
             }
@@ -777,7 +766,7 @@ public class LogisticsFeeService {
 
         if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0300");
+                throw new LogisticsFeeException("物流方式不支持！SD0300");
             } else {
                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 考虑体积重，但体积重分母 未配置 或 为0 ！");
             }
@@ -785,7 +774,7 @@ public class LogisticsFeeService {
 
         if (feeRate.CareSideSum) {
             if (feeMessageType == FeeMessageType.Customer) {
-                throw new LogisticsFeeException("物流方式不支持！AP0310");
+                throw new LogisticsFeeException("物流方式不支持！SD0310");
             } else {
                 throw new LogisticsFeeException($"通用费率{feeRate.Name}，不考虑三边之和，不能计算三边之和体积重！");
             }
@@ -845,7 +834,7 @@ public class LogisticsFeeService {
         if (feeRate.HasLengthStart && feeRate.LengthStart != null) {
             if (feeRate.LengthStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品起步长度物流方式不支持！AP0810");
+                    throw new LogisticsFeeException("物品起步长度物流方式不支持！SD0810");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有长度起步，但起步长度 未配置 或 为0 ！");
                 }
@@ -855,7 +844,7 @@ public class LogisticsFeeService {
             decimal lengthStart = feeRate.LengthStart.Value;
             if (maxLength < lengthStart) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品长度未到物流方式起步长度！AP0820");
+                    throw new LogisticsFeeException("物品长度未到物流方式起步长度！SD0820");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 长度未到起步长度！");
                 }
@@ -875,7 +864,7 @@ public class LogisticsFeeService {
         if (feeRate.HasSingleWeightStart && feeRate.SingleWeightStart != null) {
             if (feeRate.SingleWeightStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品单箱起步重量物流方式不支持！AP0830");
+                    throw new LogisticsFeeException("物品单箱起步重量物流方式不支持！SD0830");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有单箱重量起步，但单箱起步重量 未配置 或 为0 ！");
                 }
@@ -886,7 +875,7 @@ public class LogisticsFeeService {
                 decimal singleFinalWeight = GetSinglePackWeight(orderPack, feeRate, feeMessageType);
                 if (singleFinalWeight < singleWeightStart) {
                     if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物品单箱重量未到物流方式单箱起步重量！AP0840");
+                        throw new LogisticsFeeException("物品单箱重量未到物流方式单箱起步重量！SD0840");
                     } else {
                         throw new LogisticsFeeException($"通用费率 {feeRate.Name} 单箱重量(或体积重)未到单箱起步重量！");
                     }
@@ -907,7 +896,7 @@ public class LogisticsFeeService {
         if (feeRate.HasAverageWeightStart && feeRate.AverageWeightStart != null) {
             if (feeRate.AverageWeightStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品平均单箱起步重量物流方式不支持！AP0831");
+                    throw new LogisticsFeeException("物品平均单箱起步重量物流方式不支持！SD0831");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有平均单箱重量起步，但平均单箱起步重量 未配置 或 为0 ！");
                 }
@@ -917,7 +906,7 @@ public class LogisticsFeeService {
             decimal averageFinalWeight = GetAveragePackWeight(packList, feeRate, feeMessageType);
             if (averageFinalWeight < averageWeightStart) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品平均单箱重量未到物流方式平均单箱起步重量！AP0841");
+                    throw new LogisticsFeeException("物品平均单箱重量未到物流方式平均单箱起步重量！SD0841");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 平均单箱重量(或体积重)未到平均单箱起步重量！");
                 }
@@ -935,7 +924,7 @@ public class LogisticsFeeService {
         if (feeRate.HasWeightStart && feeRate.WeightStart != null) {
             if (feeRate.WeightStart <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品起步重量物流方式不支持！AP0850");
+                    throw new LogisticsFeeException("物品起步重量物流方式不支持！SD0850");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有重量起步，但起步重量 未配置 或 为0 ！");
                 }
@@ -945,7 +934,7 @@ public class LogisticsFeeService {
             decimal weightStart = feeRate.WeightStart.Value;
             if (totalWeight < weightStart) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品重量未到物流方式起步重量！AP0860");
+                    throw new LogisticsFeeException("物品重量未到物流方式起步重量！SD0860");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 重量未到起步重量！");
                 }
@@ -970,7 +959,7 @@ public class LogisticsFeeService {
         if (feeRate.HasLengthLimit) {
             if (feeRate.LengthLimit.HasValue == false || feeRate.LengthLimit.Value <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("物品超长物流方式不支持！AP0320");
+                    throw new LogisticsFeeException("物品超长物流方式不支持！SD0320");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有长度限制，但限制长度 未配置 或 为0 ！");
                 }
@@ -984,7 +973,7 @@ public class LogisticsFeeService {
                 if (feeRate.CanOverLength) {
                     if (feeRate.OverLengthStep.HasValue == false || feeRate.OverLengthStep.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品超长物流方式不支持！AP0330");
+                            throw new LogisticsFeeException("物品超长物流方式不支持！SD0330");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 可以超长，但超长阶梯 未配置 或 为0 ！");
                         }
@@ -992,7 +981,7 @@ public class LogisticsFeeService {
 
                     if (feeRate.OverLengthStepFee.HasValue == false || feeRate.OverLengthStepFee.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品超长物流方式不支持！AP0340");
+                            throw new LogisticsFeeException("物品超长物流方式不支持！SD0340");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 可以超长，但超长阶梯收费 未配置 或 为0 ！");
                         }
@@ -1001,7 +990,7 @@ public class LogisticsFeeService {
                     decimal overLengthStep = feeRate.OverLengthStep.Value;
                     if (overLengthStep <= 0m) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品超长物流方式不支持！AP0350");
+                            throw new LogisticsFeeException("物品超长物流方式不支持！SD0350");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率设置允许超长，但超长阶梯为0！");
                         }
@@ -1044,7 +1033,7 @@ public class LogisticsFeeService {
                     if (feeRate.HasOverLengthCapAmount) {
                         if (feeRate.OverLengthCapAmount.HasValue == false || feeRate.OverLengthCapAmount.Value <= 0) {
                             if (feeMessageType == FeeMessageType.Customer) {
-                                throw new LogisticsFeeException("物品超长物流方式不支持！AP0360");
+                                throw new LogisticsFeeException("物品超长物流方式不支持！SD0360");
                             } else {
                                 throw new LogisticsFeeException($"通用费率 {feeRate.Name}，长度有费用封顶，但封顶金额 未设置 或 为0 ！");
                             }
@@ -1058,7 +1047,7 @@ public class LogisticsFeeService {
                     return overLengthFee;
                 } else {
                     if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物品长度超出物流方式长度限制！AP0370");
+                        throw new LogisticsFeeException("物品长度超出物流方式长度限制！SD0370");
                     } else {
                         throw new LogisticsFeeException($"通用费率 {feeRate.Name} 长度超出长度限制，但费率设置不允许超长！");
                     }
@@ -1083,7 +1072,7 @@ public class LogisticsFeeService {
         if (feeRate.HasSingleWeightLimit) {
             if (feeRate.SingleWeightLimit.HasValue == false || feeRate.SingleWeightLimit.Value <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("重量超出物流方式单箱重量限制！AP0380");
+                    throw new LogisticsFeeException("重量超出物流方式单箱重量限制！SD0380");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有单箱重量限制，但单箱限制重量 未设置 或 为0 ！");
                 }
@@ -1099,7 +1088,7 @@ public class LogisticsFeeService {
                     if (feeRate.CanSingleOverWeight) {
                         if (feeRate.SingleOverWeightStep.HasValue == false || feeRate.SingleOverWeightStep.Value <= 0) {
                             if (feeMessageType == FeeMessageType.Customer) {
-                                throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！AP0390");
+                                throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！SD0390");
                             } else {
                                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率设置允许单箱超重，但单箱超重阶梯 未设置 或 为0 ！");
                             }
@@ -1107,7 +1096,7 @@ public class LogisticsFeeService {
 
                         if (feeRate.SingleOverWeightStepFee.HasValue == false || feeRate.SingleOverWeightStepFee.Value <= 0) {
                             if (feeMessageType == FeeMessageType.Customer) {
-                                throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！AP0400");
+                                throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！SD0400");
                             } else {
                                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率设置允许单箱超重，但单箱超重阶梯收费 未设置 或 为0 ！");
                             }
@@ -1129,7 +1118,7 @@ public class LogisticsFeeService {
                         totalSingleOverWeightFee += singleOverWeightFee;
                     } else {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！AP0410");
+                            throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！SD0410");
                         } else {
                             throw new LogisticsFeeException($"单箱重量(或体积重)超出重量限制，但通用费率 {feeRate.Name} 费率设置不允许单箱超重！");
                         }
@@ -1140,7 +1129,7 @@ public class LogisticsFeeService {
             if (feeRate.HasSingleOverWeightCapAmount) {
                 if (feeRate.SingleOverWeightCapAmount.HasValue == false || feeRate.SingleOverWeightCapAmount.Value <= 0) {
                     if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！AP0420");
+                        throw new LogisticsFeeException("物品重量超出物流方式单箱重量限制！SD0420");
                     } else {
                         throw new LogisticsFeeException($"通用费率 {feeRate.Name} 单箱重量有费用封顶，但封顶金额 未设置 或 为0 ！");
                     }
@@ -1180,7 +1169,7 @@ public class LogisticsFeeService {
                 if (feeRate.CanAverageOverWeight) {
                     if (feeRate.AverageOverWeightStep.HasValue == false || feeRate.AverageOverWeightStep.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品平均单箱重量超出物流方式限制！AP0431");
+                            throw new LogisticsFeeException("物品平均单箱重量超出物流方式限制！SD0431");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率设置允许平均单箱超重，但超重阶梯 未设置 或 为0 ！");
                         }
@@ -1188,7 +1177,7 @@ public class LogisticsFeeService {
 
                     if (feeRate.AverageOverWeightStepFee.HasValue == false || feeRate.AverageOverWeightStepFee.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品总重量超出物流方式限制！AP0441");
+                            throw new LogisticsFeeException("物品总重量超出物流方式限制！SD0441");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率设置允许平均单箱超重，但超重阶梯收费 未设置 或 为0 ！");
                         }
@@ -1210,7 +1199,7 @@ public class LogisticsFeeService {
                     if (feeRate.HasAverageOverWeightCapAmount) {
                         if (feeRate.AverageOverWeightCapAmount.HasValue == false || feeRate.AverageOverWeightCapAmount.Value <= 0) {
                             if (feeMessageType == FeeMessageType.Customer) {
-                                throw new LogisticsFeeException("物品平均单箱重量超出物流方式限制！AP0451");
+                                throw new LogisticsFeeException("物品平均单箱重量超出物流方式限制！SD0451");
                             } else {
                                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 重量有费用封顶，但封顶金额 未设置 或 为0 ！");
                             }
@@ -1224,7 +1213,7 @@ public class LogisticsFeeService {
                     return averageOverWeightFee;
                 } else {
                     if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物品平均单箱重量超出物流方式限制！AP0461");
+                        throw new LogisticsFeeException("物品平均单箱重量超出物流方式限制！SD0461");
                     } else {
                         throw new LogisticsFeeException($"平均单箱重量(或体积重)超出重量限制，但通用费率 {feeRate.Name} 费率设置不允许超重！");
                     }
@@ -1259,7 +1248,7 @@ public class LogisticsFeeService {
                 if (feeRate.CanOverWeight) {
                     if (feeRate.OverWeightStep.HasValue == false || feeRate.OverWeightStep.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品总重量超出物流方式限制！AP0430");
+                            throw new LogisticsFeeException("物品总重量超出物流方式限制！SD0430");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率设置允许超重，但超重阶梯 未设置 或 为0 ！");
                         }
@@ -1267,7 +1256,7 @@ public class LogisticsFeeService {
 
                     if (feeRate.OverWeightStepFee.HasValue == false || feeRate.OverWeightStepFee.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("物品总重量超出物流方式限制！AP0440");
+                            throw new LogisticsFeeException("物品总重量超出物流方式限制！SD0440");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率设置允许超重，但超重阶梯收费 未设置 或 为0 ！");
                         }
@@ -1289,7 +1278,7 @@ public class LogisticsFeeService {
                     if (feeRate.HasOverWeightCapAmount) {
                         if (feeRate.OverWeightCapAmount.HasValue == false || feeRate.OverWeightCapAmount.Value <= 0) {
                             if (feeMessageType == FeeMessageType.Customer) {
-                                throw new LogisticsFeeException("物品总重量超出物流方式限制！AP0450");
+                                throw new LogisticsFeeException("物品总重量超出物流方式限制！SD0450");
                             } else {
                                 throw new LogisticsFeeException($"通用费率 {feeRate.Name} 重量有费用封顶，但封顶金额 未设置 或 为0 ！");
                             }
@@ -1303,7 +1292,7 @@ public class LogisticsFeeService {
                     return overWeightFee;
                 } else {
                     if (feeMessageType == FeeMessageType.Customer) {
-                        throw new LogisticsFeeException("物品总重量超出物流方式限制！AP0460");
+                        throw new LogisticsFeeException("物品总重量超出物流方式限制！SD0460");
                     } else {
                         throw new LogisticsFeeException($"总重量(或体积重)超出重量限制，但通用费率 {feeRate.Name} 费率设置不允许超重！");
                     }
@@ -1326,7 +1315,7 @@ public class LogisticsFeeService {
         if (feeRate.HasFreePackageLimit) {
             if (feeRate.FreePackageLimit.HasValue == false || feeRate.FreePackageLimit.Value < 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("包裹数量超出物流方式限制！AP0470");
+                    throw new LogisticsFeeException("包裹数量超出物流方式限制！SD0470");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 包裹有免费数量限制，但免费包裹数量 未配置 或 小于0 ！");
                 }
@@ -1334,7 +1323,7 @@ public class LogisticsFeeService {
 
             if (feeRate.ExtraPackageFee.HasValue == false || feeRate.ExtraPackageFee.Value <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException("包裹数量超出物流方式限制！AP0480");
+                    throw new LogisticsFeeException("包裹数量超出物流方式限制！SD0480");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 包裹有免费数量限制，但额外包裹收费 未配置 或 值不大于0 ！");
                 }
@@ -1347,7 +1336,7 @@ public class LogisticsFeeService {
                 if (feeRate.HasExtraPackageFeeCapAmount) {
                     if (feeRate.ExtraPackageFeeCapAmount.HasValue == false || feeRate.ExtraPackageFeeCapAmount.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException("包裹数量超出物流方式限制！AP0490");
+                            throw new LogisticsFeeException("包裹数量超出物流方式限制！SD0490");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有额外包裹数量费用封顶，但封顶金额 未配置 或 值不大于0 ！");
                         }
@@ -1375,7 +1364,7 @@ public class LogisticsFeeService {
         if (feeRate.HasFreeStorageDayLimit) {
             if (feeRate.FreeStorageDayLimit.HasValue == false || feeRate.FreeStorageDayLimit.Value <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException($"超出物流方式仓储天数限制 ！AP0500");
+                    throw new LogisticsFeeException($"超出物流方式仓储天数限制 ！SD0500");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 仓储有免费天数限制，但免费仓储天数 未配置 或 为0 ！");
                 }
@@ -1383,7 +1372,7 @@ public class LogisticsFeeService {
 
             if (feeRate.ExtraStorageDayFee.HasValue == false || feeRate.ExtraStorageDayFee.Value <= 0) {
                 if (feeMessageType == FeeMessageType.Customer) {
-                    throw new LogisticsFeeException($"超出物流方式仓储天数限制 ！AP0510");
+                    throw new LogisticsFeeException($"超出物流方式仓储天数限制 ！SD0510");
                 } else {
                     throw new LogisticsFeeException($"通用费率 {feeRate.Name} 仓储有免费天数限制，但额外仓储收费 未配置 或 为0 ！");
                 }
@@ -1396,7 +1385,7 @@ public class LogisticsFeeService {
                 if (feeRate.HasExtraStorageDayFeeCapAmount) {
                     if (feeRate.ExtraStorageDayFeeCapAmount.HasValue == false || feeRate.ExtraStorageDayFeeCapAmount.Value <= 0) {
                         if (feeMessageType == FeeMessageType.Customer) {
-                            throw new LogisticsFeeException($"超出物流方式仓储天数限制 ！AP0520");
+                            throw new LogisticsFeeException($"超出物流方式仓储天数限制 ！SD0520");
                         } else {
                             throw new LogisticsFeeException($"通用费率 {feeRate.Name} 有额外仓储天数费用封顶，但封顶金额 未配置 或 为0 ！");
                         }
