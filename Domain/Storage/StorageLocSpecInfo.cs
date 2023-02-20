@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using shunda.Core;
@@ -8,8 +7,7 @@ namespace shunda.Domain.Storage;
 /// <summary>
 /// 库位标准
 /// </summary>
-public class StorageLocSpecInfo : Entity
-{
+public class StorageLocSpecInfo : Entity {
     /// <summary>
     /// 类型
     /// </summary>
@@ -55,4 +53,10 @@ public class StorageLocSpecInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "颜色不能为空！")]
     public virtual string Color { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 序号
+    /// </summary>
+    [Required(ErrorMessage = "序号不能为空！")]
+    public virtual int OrderNum { get; set; }
 }

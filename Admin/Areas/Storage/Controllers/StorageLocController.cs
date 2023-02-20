@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Storage.Models.StorageLoc;
 using shunda.Admin.Services;
 using shunda.Core;
@@ -14,7 +12,6 @@ using shunda.Domain.Express;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
-using shunda.Service;
 using shunda.Service.Express;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
@@ -149,7 +146,8 @@ public class StorageLocController : Controller {
         IList<StorageLocSpecInfo> storageLocSpecList = session
             .Query<StorageLocSpecInfo>()
             .Where(e => e.ShelfType == shelfType)
-            .OrderBy(e => e.Id)
+            .OrderBy(e => e.OrderNum)
+            .ThenBy(e => e.Id)
             .ToList();
 
         model.Id = storageLoc.Id;
@@ -465,7 +463,8 @@ public class StorageLocController : Controller {
         IList<StorageLocSpecInfo> storageLocSpecList = session
             .Query<StorageLocSpecInfo>()
             .Where(e => e.ShelfType == shelfType)
-            .OrderBy(e => e.Id)
+            .OrderBy(e => e.OrderNum)
+            .ThenBy(e => e.Id)
             .ToList();
 
         model.StorageLocSpecList = storageLocSpecList;

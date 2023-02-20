@@ -43,15 +43,17 @@
                 <a field="@(nameof(StorageLocSpecInfo.Height))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">高</a>
             </th>
 
+            <th style="width: 80px; text-align: center;">
+                <a field="@(nameof(StorageLocSpecInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortStorageLocSpecList">排序</a>
+            </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (Model.StorageLocSpecList != null && Model.StorageLocSpecList.Count() != 0)
-        {
+        @if (Model.StorageLocSpecList != null && Model.StorageLocSpecList.Count() != 0) {
             var order = 1;
-            foreach (var storageLocSpec in Model.StorageLocSpecList)
-            {
+            foreach (var storageLocSpec in Model.StorageLocSpecList) {
                 <tr ondblclick="showStorageLocSpecDetail(@(storageLocSpec.Id));">
                     <td style="text-align: center;">
                         <label for="storageLocSpecCheck_@(storageLocSpec.Id)"></label><input id="storageLocSpecCheck_@(storageLocSpec.Id)" type="checkbox" class="ace" value="@storageLocSpec.Id"/><span class="lbl"></span>
@@ -68,14 +70,13 @@
                     <td style="text-align: center;">@(storageLocSpec.Length)cm</td>
                     <td style="text-align: center;">@(storageLocSpec.Width)cm</td>
                     <td style="text-align: center;">@(storageLocSpec.Height)cm</td>
+                    <td style="text-align: center;">@(storageLocSpec.OrderNum)</td>
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
-                <td colspan="10">
+                <td colspan="11">
                     暂时没有数据！
                 </td>
             </tr>

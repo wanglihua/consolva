@@ -19,8 +19,7 @@
                                 <label asp-for="StorageLocSpec.ShelfType" class="col-xs-2 control-label">货架类型</label>
                                 <div class="col-xs-10">
                                     <select asp-for="StorageLocSpec.ShelfType" class="input-sm form-control">
-                                        @foreach (var type in Model.TypeList)
-                                        {
+                                        @foreach (var type in Model.TypeList) {
                                             <option value="@type.Id">@(type.Name)</option>
                                         }
                                     </select>
@@ -82,12 +81,20 @@
                                 <div class="col-xs-6">
                                     <select id="selColor" asp-for="StorageLocSpec.Color" class="input-sm form-control" onchange="onColorSelectChange();">
 
-                                        @foreach (var color in Model.ColorList)
-                                        {
+                                        @foreach (var color in Model.ColorList) {
                                             <option value="@(color.Hex)" style="color: @(color.Hex);">██████████&nbsp;<span>@(color.Hex)</span></option>
                                         }
 
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorageLocSpec.OrderNum" class="col-xs-2 control-label">排序</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorageLocSpec.OrderNum" type="number" step="10" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>

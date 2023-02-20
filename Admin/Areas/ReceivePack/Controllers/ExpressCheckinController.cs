@@ -298,7 +298,7 @@ public class ExpressCheckinController : Controller {
             .Distinct()
             .ToList();
 
-        specList = specList.OrderBy(e => e.Length * e.Width * e.Height).ToList();
+        specList = specList.OrderBy(e => e.OrderNum).ThenBy(e => e.Length * e.Width * e.Height).ToList();
 
         return specList;
     }

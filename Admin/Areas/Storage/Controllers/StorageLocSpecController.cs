@@ -111,7 +111,7 @@ public class StorageLocSpecController : Controller
     [HttpPost]
     [Route("/admin/storage/loc/spec/save")]
     [Transactional]
-    public IActionResult Save(StorageLocSpecDetailModel model)
+    public IActionResult Save(StorageLocSpecSaveModel model)
     {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
@@ -164,6 +164,7 @@ public class StorageLocSpecController : Controller
         storageLocSpec.Height = storageLocSpecFromUi.Height;
         storageLocSpec.Length = storageLocSpecFromUi.Length;
         storageLocSpec.Color = storageLocSpecFromUi.Color;
+        storageLocSpec.OrderNum = storageLocSpecFromUi.OrderNum;
 
         if (isCreate)
             session.Save(storageLocSpec);

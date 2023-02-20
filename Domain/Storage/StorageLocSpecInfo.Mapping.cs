@@ -3,10 +3,8 @@ using shunda.Core;
 
 namespace shunda.Domain.Storage;
 
-public class StorageLocSpecInfoMapping : EntityMapping<StorageLocSpecInfo>
-{
-    public StorageLocSpecInfoMapping()
-    {
+public class StorageLocSpecInfoMapping : EntityMapping<StorageLocSpecInfo> {
+    public StorageLocSpecInfoMapping() {
         Table("tbl_storage_loc_spec");
 
         Property(
@@ -72,6 +70,15 @@ public class StorageLocSpecInfoMapping : EntityMapping<StorageLocSpecInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("color");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderNum,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_num");
                 map.NotNullable(true);
             }
         );
