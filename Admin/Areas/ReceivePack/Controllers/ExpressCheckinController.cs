@@ -648,7 +648,7 @@ public class ExpressCheckinController : Controller {
                 }
 
                 // 如果是新入库的，或者是 原来的但修改了货架, 或者是修改了仓位规格
-                if (isCreate == true || ( /* isCreate == false && */ express.StorageLoc.Shelf.Id != model.ShelfId || (express.StorageLoc?.Spec.Id ?? 0) != model.StorageLocSpecId)) {
+                if (isCreate == true || ( /* isCreate == false && */ express.StorageLoc.Shelf.Id != model.ShelfId || express.StorageLoc.Spec.Id != model.StorageLocSpecId)) {
                     StorageLocInfo recommandStorage = expressCheckinService.GetRecommandStorage(shelf, storageLocSpec); // 从这里取到的仓位ID，已经保证是仓位上物品不超过限制了
                     // 检查仓位和货架是否可用
                     storageLocService.CheckStorageLoc((recommandStorage.Id), ShelfType.Normal);
