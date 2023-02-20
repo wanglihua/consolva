@@ -525,6 +525,7 @@ public class ExpressCheckinController : Controller {
                 */
 
                 // 检查有无物品照片
+                /* todo 这个检查暂时不需要，以后再打开这个功能
                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList) {
                     if (logisticsGoodsImageService.HasGoodsImage(goodsItem.GoodsId) == false) {
                         LogisticsGoodsInfo logisticsGoods = session.Get<LogisticsGoodsInfo>(goodsItem.GoodsId);
@@ -532,6 +533,7 @@ public class ExpressCheckinController : Controller {
                         throw new ValidationException($"物品 #Id:{goodsItem.GoodsId} #{logisticsGoods?.Name} 还没有任何关联照片，请设置物品创建单号，有单号相关订单照片后，再使用该物品名称！");
                     }
                 }
+                */
 
                 // 已丢弃的快递，应该可以在这里更新入库信息的
 

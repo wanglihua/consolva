@@ -403,9 +403,11 @@ public class LogisticsGoodsController : Controller {
 
         LogisticsGoodsInfo logisticsGoods = SaveInternal(model);
 
+        /* todo 暂时去掉这个检查，以后再加上
         if (logisticsGoods.Status == LogisticsGoodsStatus.PhotoRequired) {
             throw new ValidationException("物品还没有任何关联照片，请设置物品创建单号，有单号相关订单照片后，再确认该物品名称！");
         }
+        */
 
         logisticsGoods.Status = LogisticsGoodsStatus.Confirmed;
 
