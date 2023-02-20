@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Express;
+using shunda.Domain.Logistics;
 using shunda.Domain.Storage;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 
-public class LogisticsExpressCheckinExpressDetailModel: LogisticsExpressCheckinExpressSaveModel
-{
+public class LogisticsExpressCheckinExpressDetailModel : LogisticsExpressCheckinExpressSaveModel {
     [BindNever]
     public WarehouseInfo Warehouse { get; set; } = new();
+
+    [BindNever]
+    public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = LogisticsGoodsType.GetInnerList();
 
     [BindNever]
     public decimal? Length { get; set; }

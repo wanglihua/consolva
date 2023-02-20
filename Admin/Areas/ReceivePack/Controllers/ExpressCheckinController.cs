@@ -141,18 +141,16 @@ public class ExpressCheckinController : Controller {
             int expressExistId = expressExist.Id;
 
             model.ExpressId = expressExist.Id;
+            model.GoodsType = expressExist.GoodsType;
             model.BillCustomerCode = expressExist.BillCustomerCode;
             model.ExpressCompany = expressExist.ExpressCompany;
             model.PackageCount = expressExist.PackageCount;
 
             // 仓库备注
-
-            ExpressRemarkInfo? expressRemark = session.Query<ExpressRemarkInfo>()
-                .Where(e => e.Express!.Id == expressExistId)
-                .Take(1)
-                .SingleOrDefault();
-
-            model.WarehouseRemark = expressRemark?.Content ?? string.Empty;
+            var expressWarehouseRemarkList = session.Query<ExpressRemarkInfo>()
+                .Where(e => e.Express.Id == expressExistId && e.Type == ExpressRemarkType.Warehouse)
+                .ToList();
+            model.WarehouseRemark = string.Join(";", expressWarehouseRemarkList.Select(e => e.Content));
 
             int storageLocIdExist = expressExist.StorageLoc?.Id ?? 0;
             storageLocExist = session.Query<StorageLocInfo>()
@@ -172,7 +170,7 @@ public class ExpressCheckinController : Controller {
         if ((expressExistShelfId ?? 0) != 0) {
             model.ShelfId = expressExistShelfId;
         } else {
-            model.ShelfId = userSelect?.Shelf?.Id ?? 0;
+            model.ShelfId = userSelect.Shelf.Id;
         }
 
         model.ShelfList = expressCheckinService.GetAvaibleShelfList(warehouseId, loginUserId, expressExistShelfId);
@@ -187,6 +185,8 @@ public class ExpressCheckinController : Controller {
         } else {
             model.StorageLocSpecId = userSelect?.StorageLocSpec?.Id ?? 0;
         }
+
+        model.GoodsTypeList = LogisticsGoodsType.GetInnerList();
 
         model.RemarkPresetList = session.Query<ExpressRemarkPresetSelectInfo>().OrderBy(e => e.Id).ToList();
 
@@ -533,17 +533,6 @@ public class ExpressCheckinController : Controller {
 
                 // 已丢弃的快递，应该可以在这里更新入库信息的
 
-                // 物品类型
-                IList<int> goodsIdList = new List<int>();
-                foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList) {
-                    goodsIdList.Add(goodsItem.GoodsId);
-                }
-
-                IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
-                IList<LogisticsGoodsType> goodsTypeList = goodsList.Select(e => e.Type).Distinct().ToList();
-
-                LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(goodsTypeList);
-
                 // 如果已经在 快递单号预报 里面的，就设置 快递单号预报为 录货值 状态
                 expressExpect = session.Query<ExpressExpectInfo>()
                     .Where(e => e.TrackingNo == expressTrackingNo)
@@ -584,8 +573,8 @@ public class ExpressCheckinController : Controller {
                 IList<string> editDescList = new List<string>();
 
                 // 仓库
-                if (isCreate == false && (express.Warehouse?.Id ?? 0) != warehouseId) {
-                    editDescList.Add($"仓库:{express.Warehouse?.Name}=>{warehouse.Name}");
+                if (isCreate == false && express.Warehouse.Id != warehouseId) {
+                    editDescList.Add($"仓库:{express.Warehouse.Name}=>{warehouse.Name}");
                 }
 
                 express.Warehouse = warehouse;
@@ -598,8 +587,28 @@ public class ExpressCheckinController : Controller {
                 express.ExpressCompany = model.ExpressCompany;
 
                 // 物品类型
+
+                /*
+
+                IList<int> goodsIdList = new List<int>();
+                foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList) {
+                    goodsIdList.Add(goodsItem.GoodsId);
+                }
+
+                IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
+                IList<LogisticsGoodsType> goodsTypeList = goodsList.Select(e => e.Type).Distinct().ToList();
+
+                LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(goodsTypeList);
+
                 if (isCreate == false && express.GoodsType != goodsType) {
                     editDescList.Add($"物品类型:{express.GoodsType.Name}=>{goodsType.Name}");
+                }
+
+                */
+
+                LogisticsGoodsType goodsType = model.GoodsType;
+                if (goodsType == null || goodsType == LogisticsGoodsType.None) {
+                    throw new ValidationException("物品类型不能为空，请选择快递单物品类型！");
                 }
 
                 express.GoodsType = goodsType;

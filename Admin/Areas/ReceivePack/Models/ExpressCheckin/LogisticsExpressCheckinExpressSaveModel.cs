@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 
-public class LogisticsExpressCheckinExpressSaveModel
-{
+public class LogisticsExpressCheckinExpressSaveModel {
     public int ExpressId { get; set; }
 
     [Required(ErrorMessage = "快递入库仓库不能为空！")]
@@ -19,6 +20,9 @@ public class LogisticsExpressCheckinExpressSaveModel
     [Required(ErrorMessage = "面单客户不能为空！")]
     [MaxLength(50, ErrorMessage = "面单客户长度不能大于50！")]
     public string BillCustomerCode { get; set; } = string.Empty;
+
+    [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
+    public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
     /// 这个是申领件的入库包裹数量
