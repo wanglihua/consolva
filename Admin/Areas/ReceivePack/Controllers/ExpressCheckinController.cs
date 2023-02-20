@@ -709,23 +709,30 @@ public class ExpressCheckinController : Controller {
                 */
 
                 // 保存入库备注
-                if (warehouseRemarkInDb == null) {
-                    warehouseRemarkInDb = new ExpressRemarkInfo() {
-                        Express = express,
-                        Type = ExpressRemarkType.Warehouse,
-                        AddUser = loginUser,
-                    };
+                if (string.IsNullOrWhiteSpace(warehouseRemark) == false) {
+                    // 入库备注非空，就新增或更新入库备注
+                    if (warehouseRemarkInDb == null) {
+                        warehouseRemarkInDb = new ExpressRemarkInfo() {
+                            Express = express,
+                            Type = ExpressRemarkType.Warehouse,
+                            AddUser = loginUser,
+                        };
+                    }
+
+                    warehouseRemarkInDb.Content = warehouseRemark;
+
+                    if (isCreate == false && warehouseRemark != oldWarehouseRemark) {
+                        // 编辑时如果入库备注跟原来的不同，就更新添加用户
+                        warehouseRemarkInDb.AddUser = loginUser;
+                    }
+
+                    session.SaveOrUpdate(warehouseRemarkInDb);
+                    session.Flush();
+                } else if (warehouseRemarkInDb != null) {
+                    // 如果入库备注为空，并且原来的得数据存在，就删除原来的数据，不要留一个空内容的备注记录
+                    session.Delete(warehouseRemarkInDb);
+                    session.Flush();
                 }
-
-                warehouseRemarkInDb.Content = warehouseRemark;
-
-                if (isCreate == false && warehouseRemark != oldWarehouseRemark) {
-                    // 编辑时如果入库备注跟原来的不同，就更新添加用户
-                    warehouseRemarkInDb.AddUser = loginUser;
-                }
-
-                session.SaveOrUpdate(warehouseRemarkInDb);
-                session.Flush();
 
 
                 // 删除被移除的物品
