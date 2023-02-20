@@ -565,12 +565,18 @@ public class ExpressCheckinController : Controller {
                         Status = ExpressStatus.WaitPick, // 初始化为 WaitPick     
                         ShelfStatus = ExpressShelfStatus.ToOnShelf, // 初始化为 待上架
                         AddTime = now,
+                        BillCustomerCode = model.BillCustomerCode,
+                        BillCustomerId = billCustomerId,
                     };
 
                     if (expressExpect != null) {
                         express.ClaimTime = now;
                         express.Status = ExpressStatus.Checkin;
                         express.Customer = expressExpect.Customer;
+                    } else if (billCustomerId > 0) {
+                        express.ClaimTime = now;
+                        express.Status = ExpressStatus.Checkin;
+                        express.Customer = session.Load<CustomerInfo>(billCustomerId); // customerCodeService.GetCustomerIdFromCustomerCode() 中已经检查客户的存在了，这里用 session.Load()也可以的
                     }
                 }
 
@@ -639,12 +645,6 @@ public class ExpressCheckinController : Controller {
 
                 if (isCreate == false && express.BillCustomerCode != model.BillCustomerCode) {
                     editDescList.Add($"面单客户:{express.BillCustomerCode}=>{model.BillCustomerCode}");
-                }
-
-                express.BillCustomerCode = model.BillCustomerCode;
-                express.BillCustomerId = billCustomerId;
-                if (billCustomerId > 0) {
-                    express.Customer = session.Load<CustomerInfo>(billCustomerId); // customerCodeService.GetCustomerIdFromCustomerCode() 中已经检查客户的存在了，这里用 session.Load()也可以的
                 }
 
                 // 如果是新入库的，或者是 原来的但修改了货架, 或者是修改了仓位规格
