@@ -574,6 +574,7 @@ public class ExpressCheckinController : Controller {
                         express.Status = ExpressStatus.Checkin;
                         express.Customer = expressExpect.Customer;
                     } else if (billCustomerId > 0) {
+                        // 这里是能解析得到 billCustomerId 就自动认领了
                         express.ClaimTime = now;
                         express.Status = ExpressStatus.Checkin;
                         express.Customer = session.Load<CustomerInfo>(billCustomerId); // customerCodeService.GetCustomerIdFromCustomerCode() 中已经检查客户的存在了，这里用 session.Load()也可以的
