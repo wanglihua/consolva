@@ -65,6 +65,10 @@ public class LogisticsOrderPackConfigController : Controller {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
+        if (model.PackDelayMinutes < 0) {
+            throw new ValidationException("打包延迟不能小于0！");
+        }
+
         var config = session
             .Query<LogisticsOrderPackConfigInfo>()
             .OrderBy(e => e.Id)
