@@ -52,13 +52,15 @@ public class ExpressCheckinService {
 SELECT DISTINCT se.shelf_id
 FROM tbl_storage_loc_express se
 GROUP BY se.shelf_id, se.storage_loc_id
-HAVING COUNT(*) < 8;
+HAVING COUNT(*) < 8 + 1;
+
+按设置的加上 1 是因为有多出来的一条 express_id 为0的记录
          */
         string sql = $@"
 SELECT DISTINCT se.shelf_id
 FROM tbl_storage_loc_express se
 GROUP BY se.shelf_id, se.storage_loc_id
-HAVING COUNT(*) < {expressCountPerStorageLoc}
+HAVING COUNT(*) < {expressCountPerStorageLoc + 1}
 ";
 
         IList<int> shelfIdList = session.CreateSQLQuery(sql).List<int>();
@@ -129,9 +131,11 @@ WHERE s.id = 1
   AND sl.status_id = 1000
   AND sl.spec_id = 1000
 GROUP BY sl.id, sl.col_num, sl.row_num, sl.order_num
-HAVING COUNT(*) < 8
+HAVING COUNT(*) < 8 + 1
 ORDER BY sl.order_num, sl.col_num, sl.row_num DESC, COUNT(*)
 LIMIT 1
+
+按设置的加上 1 是因为有多出来的一条 express_id 为0的记录
         
         */
 
@@ -145,7 +149,7 @@ WHERE s.id = {shelfId}
   AND sl.status_id = {StorageLocStatus.Enabled.Id}
   AND sl.spec_id = {storageLocSpecId}
 GROUP BY sl.id, sl.col_num, sl.row_num, sl.order_num
-HAVING COUNT(*) < {expressCountPerStorageLoc}
+HAVING COUNT(*) < {expressCountPerStorageLoc + 1}
 ORDER BY sl.order_num, sl.col_num, sl.row_num DESC, COUNT(*)
 LIMIT 1
 ";
