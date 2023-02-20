@@ -1,4 +1,3 @@
-
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Core.Web
 @model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderPackConfig.LogisticsOrderPackConfigIndexModel
@@ -34,22 +33,20 @@
                                 <label asp-for="SortType" class="col-xs-6 control-label">打包订单排序</label>
                                 <div class="col-xs-6">
                                     <select asp-for="SortType" class="input-sm form-control" required="required">
-                                        @foreach (var sortType in Model.SortTypeList)
-                                        {
+                                        @foreach (var sortType in Model.SortTypeList) {
                                             <option value="@sortType.Id">@sortType.Name</option>
                                         }
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <label asp-for="DisplayType" class="col-xs-6 control-label">打包订单显示</label>
                                 <div class="col-xs-6">
                                     <select asp-for="DisplayType" class="input-sm form-control" required="required">
-                                        @foreach (var displayType in Model.DisplayTypeList)
-                                        {
+                                        @foreach (var displayType in Model.DisplayTypeList) {
                                             <option value="@displayType.Id">@displayType.Name</option>
                                         }
                                     </select>
@@ -57,8 +54,36 @@
                             </div>
                         </div>
 
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label asp-for="PackDelayMinutes" class="col-xs-6 control-label">打包延迟</label>
+                                <div class="col-xs-6">
+                                    <select asp-for="PackDelayMinutes" class="input-sm form-control" required="required">
+                                        <option value="0">无延迟</option>
+                                        <option value="1">1分钟</option>
+                                        <option value="2">2分钟</option>
+                                        <option value="3">3分钟</option>
+                                        <option value="4">4分钟</option>
+                                        <option value="5">5分钟</option>
+                                        <option value="10">10分钟</option>
+                                        <option value="15">15分钟</option>
+                                        <option value="20">20分钟</option>
+                                        <option value="25">25分钟</option>
+                                        <option value="30">30分钟</option>
+                                        <option value="35">35分钟</option>
+                                        <option value="40">40分钟</option>
+                                        <option value="45">45分钟</option>
+                                        <option value="50">50分钟</option>
+                                        <option value="55">55分钟</option>
+                                        <option value="60">60分钟</option>
+                                    </select>
+                                    <div class="help-block">未排班订单从提交打包到进入后台打包队列的延迟时间</div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    
+
                     <div class="row">
 
                         <div class="col-xs-4">
@@ -72,7 +97,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <label asp-for="Label1015PrintCount" class="col-xs-6 control-label">标签10*15打印数量</label>
@@ -92,7 +117,7 @@
                         </div>
 
                     </div>
-                    
+
                     <div class="row">
 
                         <div class="col-xs-4">
@@ -106,7 +131,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <label asp-for="Label1005PrintCount" class="col-xs-6 control-label">标签10*5打印数量</label>
@@ -119,14 +144,14 @@
                                         <option value="5">5</option>
                                         <option value="6">6</option>
                                         <option value="7">7</option>
-                                        <option value="8">8</option>                                        
+                                        <option value="8">8</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                    
+
                     <div class="row">
 
                         <div class="col-xs-4">
@@ -140,7 +165,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-4">
                             <div class="form-group">
                                 <label asp-for="Label0505PrintCount" class="col-xs-6 control-label">标签5*5打印数量</label>
@@ -175,8 +200,8 @@
                             </div>
                         </div>
 
-                    </div>                    
-                    
+                    </div>
+
                 </form>
             </div>
         </div>

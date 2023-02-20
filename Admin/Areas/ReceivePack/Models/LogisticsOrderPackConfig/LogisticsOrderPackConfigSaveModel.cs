@@ -23,6 +23,13 @@ public class LogisticsOrderPackConfigSaveModel {
     public LogisticsOrderPackDisplayType DisplayType { get; set; } = LogisticsOrderPackDisplayType.None;
 
     /// <summary>
+    /// 打包延迟，非空
+    /// </summary>
+    [Required(ErrorMessage = "打包延迟不能为空！")]
+    [JsonProperty("packDelayMinutes")]
+    public int PackDelayMinutes { get; set; }
+
+    /// <summary>
     /// 标签10*15是否启用，非空
     /// </summary>
     [Required(ErrorMessage = "标签10*15是否启用不能为空！")]

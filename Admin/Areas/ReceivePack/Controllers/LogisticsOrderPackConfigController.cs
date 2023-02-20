@@ -41,6 +41,8 @@ public class LogisticsOrderPackConfigController : Controller {
         model.SortType = config.SortType;
         model.DisplayType = config.DisplayType;
 
+        model.PackDelayMinutes = config.PackDelayMinutes;
+
         model.Label1015Enabled = config.Label1015Enabled;
         model.Label1015PrintCount = config.Label1015PrintCount;
 
@@ -49,7 +51,7 @@ public class LogisticsOrderPackConfigController : Controller {
 
         model.Label0505Enabled = config.Label0505Enabled;
         model.Label0505PrintCount = config.Label0505PrintCount;
-        
+
         model.TrackingNoManualInputEnabled = config.TrackingNoManualInputEnabled;
 
         return View("LogisticsOrderPackConfigIndex", model);
@@ -77,6 +79,8 @@ public class LogisticsOrderPackConfigController : Controller {
 
         config.SortType = model.SortType;
         config.DisplayType = model.DisplayType;
+
+        config.PackDelayMinutes = model.PackDelayMinutes;
 
         config.Label1015Enabled = model.Label1015Enabled;
         config.Label1015PrintCount = model.Label1015PrintCount;

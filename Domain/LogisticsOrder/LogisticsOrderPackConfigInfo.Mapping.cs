@@ -26,6 +26,15 @@ public class LogisticsOrderPackConfigInfoMapping : EntityMapping<LogisticsOrderP
         );
 
         Property(
+            x => x.PackDelayMinutes,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("pack_delay_minutes");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Label1015Enabled,
             map => {
                 map.Type(NHibernateUtil.Boolean);
