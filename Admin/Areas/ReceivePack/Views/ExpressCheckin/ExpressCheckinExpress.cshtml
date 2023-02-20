@@ -48,8 +48,15 @@
                                 <td style="width: 175px">
                                     <input id="expressTrackingNo" asp-for="TrackingNo" type="text" readonly="readonly" required="required" class="input-sm form-control"/>
                                 </td>
-                                <td style="width: 100px;" class="lbl"></td>
-                                <td style="width: 180px"></td>
+                                <td style="width: 100px;" class="lbl">物品类型</td>
+                                <td style="width: 180px">
+                                    <select asp-for="GoodsType" class="input-sm form-control" style="margin-top: 2px;">
+                                        <option value="">选择快递物品类型</option>
+                                        @foreach (var goodsType in Model.GoodsTypeList) {
+                                            <option value="@(goodsType.Id)">@(goodsType.Name)</option>
+                                        }
+                                    </select>
+                                </td>
                                 <td style="width: 100px" class="lbl">
                                     <label for="expressCompany">物流公司</label>
                                 </td>
