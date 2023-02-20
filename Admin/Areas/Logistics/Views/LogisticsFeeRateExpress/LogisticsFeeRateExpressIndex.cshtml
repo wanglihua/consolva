@@ -13,8 +13,7 @@
         <a asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">物流列表</a>
     </li>
 
-    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner)
-    {
+    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner) {
         <li>
             <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">内部物流列表</a>
         </li>
@@ -31,16 +30,14 @@
         保存
     </button>
 
-    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Customer)
-    {
+    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Customer) {
         <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
         </a>
     }
 
-    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner)
-    {
+    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner) {
         <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
@@ -101,6 +98,19 @@
                                         <input asp-for="StepPrice" type="number" step="1" required="required" class="input-sm form-control"/>
                                         <span class="input-group-addon">RMB</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FeeByKilogram" class="col-xs-3 control-label">按公斤计费</label>
+                                <div class="col-xs-9">
+                                    <select asp-for="FeeByKilogram" required="required" class="input-sm form-control">
+                                        <option value="@(false.ToString())">否，不按公斤向上取整计费</option>
+                                        <option value="@(true.ToString())">是，按公斤向上取整计费</option>
+                                    </select>
+                                    <div class="help-block">如果不是整数的公斤，就向上取整，如7.1公斤的取8公斤计算。</div>
                                 </div>
                             </div>
                         </div>
