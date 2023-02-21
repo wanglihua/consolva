@@ -119,8 +119,7 @@
                                         <div class="form-group">
                                             <label asp-for="LogisticsFeeRate.VolumeDenominator" class="col-xs-4 control-label">体积重分母</label>
                                             <div class="col-xs-8">
-                                                <input asp-for="LogisticsFeeRate.VolumeDenominator" type="hidden" value="@(LogisticsConfig.VolumeWeightDenominator)"/>
-                                                <input asp-for="LogisticsFeeRate.VolumeDenominator" type="number" disabled="disabled" required="required" min="1" step="1" class="input-sm form-control"/>
+                                                <input asp-for="LogisticsFeeRate.VolumeDenominator" type="number" required="required" min="1" step="1" class="input-sm form-control"/>
                                             </div>
                                         </div>
                                     </div>

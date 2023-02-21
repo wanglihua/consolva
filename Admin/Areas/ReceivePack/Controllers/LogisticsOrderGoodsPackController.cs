@@ -959,18 +959,27 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         session.Flush();
 
-        // 删除打包箱信息
         IList<LogisticsOrderPackBoxInfo> orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
             .Where(e => e.Order.Id == orderId && e.OrderPack.Id == orderPackId)
             .ToList();
 
+        // 删除箱号历史
+        IList<int> packBoxIdList = orderPackBoxList.Select(e => e.Id).ToList();
+        var packBoxHistoryList = session.Query<LogisticsOrderPackBoxHistoryInfo>()
+            .Where(e => packBoxIdList.Contains(e.PackBox.Id))
+            .ToList();
+        foreach (var packBoxHistory in packBoxHistoryList) {
+            session.Delete(packBoxHistory);
+        }
+
+        // 删除打包箱号信息
         foreach (LogisticsOrderPackBoxInfo orderPackBox in orderPackBoxList) {
             session.Delete(orderPackBox);
         }
 
-        session.Flush();
-
+        // 删除打包信息
         session.Delete(orderPack);
+
         session.Flush();
 
         // 可能的删除 订单头程物流记录
