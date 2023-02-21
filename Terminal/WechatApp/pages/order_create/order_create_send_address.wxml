@@ -4,7 +4,11 @@
     <van-cell-group title="发货地址-订单创建"/>
 
     <block wx:if="{{ !addressList || addressList.length === 0 }}">
-        <van-empty description="您暂时还没有发货地址，请在[我的地址]中添加发货地址！！"/>
+        <van-empty description="您暂时还没有发货地址，请在【我的地址】中添加发货地址！！"/>
+        <van-cell-group custom-class="items">
+            <van-cell title="前往【我的地址】添加发货地址" url="/pages/customer/customer_address/customer_address_send/customer_address_send_list" is-link border="{{ false }}" custom-class="item"/>
+            <view class="item-last-vspace"/>
+        </van-cell-group>
     </block>
     <block wx:else>
         <block wx:for="{{ addressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">
