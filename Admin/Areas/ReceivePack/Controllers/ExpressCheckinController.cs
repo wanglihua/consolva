@@ -561,9 +561,6 @@ public class ExpressCheckinController : Controller {
                     };
                 }
 
-                express.BillCustomerCode = model.BillCustomerCode;
-                express.BillCustomerId = billCustomerId;
-
                 if (expressExpect != null) {
                     express.ClaimTime = now;
                     express.Status = ExpressStatus.Checkin;
@@ -644,7 +641,7 @@ public class ExpressCheckinController : Controller {
 
                 express.PackageCount = packageCount;
 
-                // 入库备注 日志，后面 express 保存完后，保存到 express remark 表
+                // 入库备注 日志 放在新的日志保存到数据库之前，后面 express 保存完后，保存到 express remark 表
 
                 string warehouseRemark = model.WarehouseRemark?.Trim() ?? string.Empty;
                 ExpressRemarkInfo? warehouseRemarkInDb = null;
@@ -662,9 +659,13 @@ public class ExpressCheckinController : Controller {
 
                 // 面单客户
 
+                // 这个日志记录要放在 express.BillCustomerCode = model.BillCustomerCode; 之前
                 if (isCreate == false && express.BillCustomerCode != model.BillCustomerCode) {
                     editDescList.Add($"面单客户:{express.BillCustomerCode}=>{model.BillCustomerCode}");
                 }
+
+                express.BillCustomerCode = model.BillCustomerCode;
+                express.BillCustomerId = billCustomerId;
 
                 // 如果是新入库的，或者是 原来的但修改了货架, 或者是修改了仓位规格
                 if (isCreate == true || ( /* isCreate == false && */ express.StorageLoc.Shelf.Id != model.ShelfId || express.StorageLoc.Spec.Id != model.StorageLocSpecId)) {
