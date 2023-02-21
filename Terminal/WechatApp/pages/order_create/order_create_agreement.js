@@ -182,7 +182,10 @@ Page({
         // 创建订单
         app.post("/client/order/create/new", {}, function (res) {
             const orderId = res.data.orderId;
-            // todo 导航到订单详细界面
+            // 导航到订单详细界面
+            wx.redirectTo({
+                url: "/pages/order/order_detail?id=" + orderId,
+            });
         });
     }
 })
