@@ -176,7 +176,7 @@ public class LogisticsGoodsTradeExcelService {
                 .Take(1)
                 .SingleOrDefault();
             if (logisticsGoodsInDb == null) {
-                throw new ValidationException($"第{rowIndex}行数据指定的 扩展名+特征属性 不存在，导入失败！");
+                throw new ValidationException($"第{rowIndex}行数据指定的 扩展名+品牌 不存在，导入失败！");
             }
 
             logisticsGoodsInDb.Name = name;
