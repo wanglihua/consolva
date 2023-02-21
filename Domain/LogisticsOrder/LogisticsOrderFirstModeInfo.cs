@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NHibernate.Mapping;
+using shunda.Core;
 using shunda.Domain.Logistics;
 
 namespace shunda.Domain.LogisticsOrder;
@@ -54,6 +53,12 @@ public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
     /// </summary>
     [ModelBinder(typeof(LogisticsModeChannelModelBinder))]
     public virtual LogisticsModeChannel Channel { get; set; } = LogisticsModeChannel.None;
+
+    /// <summary>
+    /// 体积重分母，非空
+    /// 使用时判断是否 > 0, 如果不是就用 LogisticsConfig.VolumeWeightDenominator 中的值
+    /// </summary>
+    public virtual int VolumeWeightDenominator { get; set; }
 
     #region Cache
 

@@ -5,10 +5,8 @@ using shunda.Domain.Logistics;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderFirstModeInfoMapping : EntityNoUpdateMapping<LogisticsOrderFirstModeInfo>
-{
-    public LogisticsOrderFirstModeInfoMapping()
-    {
+public class LogisticsOrderFirstModeInfoMapping : EntityNoUpdateMapping<LogisticsOrderFirstModeInfo> {
+    public LogisticsOrderFirstModeInfoMapping() {
         Table("tbl_logistics_order_first_mode");
 
         ManyToOne(
@@ -65,6 +63,15 @@ public class LogisticsOrderFirstModeInfoMapping : EntityNoUpdateMapping<Logistic
             map => {
                 map.Type<LogisticsModeChannelHibernateType>();
                 map.Column("channel_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.VolumeWeightDenominator,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("volume_weight_denominator");
                 map.NotNullable(true);
             }
         );
