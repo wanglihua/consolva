@@ -593,8 +593,8 @@ public class ExpressCheckinController : Controller {
                 express.ExpressCompany = model.ExpressCompany;
 
                 // 物品类型
-
-                /*
+                LogisticsGoodsType goodsType = model.GoodsType;
+                LogisticsGoodsType goodsTypeBefore = express.GoodsType;
 
                 IList<int> goodsIdList = new List<int>();
                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList) {
@@ -603,21 +603,19 @@ public class ExpressCheckinController : Controller {
 
                 IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
                 IList<LogisticsGoodsType> goodsTypeList = goodsList.Select(e => e.Type).Distinct().ToList();
-
-                LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(goodsTypeList);
-
-                if (isCreate == false && express.GoodsType != goodsType) {
-                    editDescList.Add($"物品类型:{express.GoodsType.Name}=>{goodsType.Name}");
+                if (goodsTypeList.Count > 1 || goodsTypeList[0] != goodsType) {
+                    throw new ValidationException($"选择的物品类型{goodsType.Name}和物品列表中的类型不匹配！");
                 }
 
-                */
-
-                LogisticsGoodsType goodsType = model.GoodsType;
                 if (goodsType == null || goodsType == LogisticsGoodsType.None) {
                     throw new ValidationException("物品类型不能为空，请选择快递单物品类型！");
                 }
 
                 express.GoodsType = goodsType;
+
+                if (isCreate == false && goodsTypeBefore != goodsType) {
+                    editDescList.Add($"物品类型:{express.GoodsType.Name}=>{goodsType.Name}");
+                }
 
                 // 添加用户
                 if (isCreate == false && express.AddUser.Id != loginUserId) {
