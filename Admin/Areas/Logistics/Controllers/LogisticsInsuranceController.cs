@@ -3,6 +3,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using shunda.Admin.Areas.Logistics.Models.LogisticsInsurance;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Logistics;
@@ -97,6 +98,7 @@ public class LogisticsInsuranceController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/insurance/save")]
+    [Transactional]
     public IActionResult Save(LogisticsInsuranceDetailModel model)
     {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
@@ -138,6 +140,7 @@ public class LogisticsInsuranceController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/insurance/delete")]
+    [Transactional]
     public IActionResult Delete(int[] idList)
     {
         foreach (var id in idList)
