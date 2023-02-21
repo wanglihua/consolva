@@ -140,7 +140,7 @@ public class LogisticsOrderClientListService {
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.WaitingTransport) {
-            query = query.Where(e => e.OrderStatus == LogisticsOrderStatus.Packed || e.OrderStatus == LogisticsOrderStatus.WaitTransfer);
+            query = query.Where(e => (e.OrderStatus == LogisticsOrderStatus.Packed || e.OrderStatus == LogisticsOrderStatus.WaitTransfer) && e.ArrearsAmountFormula <= 0);
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.Transporting) {
