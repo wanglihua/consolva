@@ -136,19 +136,6 @@ public class LogisticsGoodsWarehouseExcelService {
 
             cellIndex = 0;
 
-            // 物品类型
-            string goodsTypeStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(goodsTypeStr)) {
-                throw new ValidationException($"第{rowIndex}行数据 物品类型 不能为空，导入失败！");
-            }
-
-            LogisticsGoodsType goodsType = LogisticsGoodsType.GetByName(goodsTypeStr.Trim());
-            if (goodsType == LogisticsGoodsType.None) {
-                throw new ValidationException($"第{rowIndex}行数据 物品类型 数据有误，导入失败！");
-            }
-
-            logisticsGoods.Type = goodsType;
-
             // 扩展名
             string name = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) {
@@ -161,7 +148,20 @@ public class LogisticsGoodsWarehouseExcelService {
                 throw new ValidationException($"第{rowIndex}行数据 扩展名 {name} 太长，超过200长度，导入失败！");
             }
 
-            logisticsGoods.Name = name.Trim();
+            logisticsGoods.Name = name.Trim();            
+
+            // 物品类型
+            string goodsTypeStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(goodsTypeStr)) {
+                throw new ValidationException($"第{rowIndex}行数据 物品类型 不能为空，导入失败！");
+            }
+
+            LogisticsGoodsType goodsType = LogisticsGoodsType.GetByName(goodsTypeStr.Trim());
+            if (goodsType == LogisticsGoodsType.None) {
+                throw new ValidationException($"第{rowIndex}行数据 物品类型 数据有误，导入失败！");
+            }
+
+            logisticsGoods.Type = goodsType;
 
             // 品牌
             string brandName = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;

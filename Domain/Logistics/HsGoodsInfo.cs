@@ -13,6 +13,7 @@ public class HsGoodsInfo : Entity
 {
     /// <summary>
     /// 物品类型，非空
+    /// 当前这个字段基本没用起来置空None
     /// </summary>
     [Required(ErrorMessage = "物品类型不能为空！")]
     [JsonProperty("goodsType")]

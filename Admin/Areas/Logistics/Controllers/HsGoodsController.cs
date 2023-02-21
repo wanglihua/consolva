@@ -98,7 +98,20 @@ public class HsGoodsController : Controller {
         }
 
         HsGoodsDetailModel model = new HsGoodsDetailModel();
-        model.HsGoods = hsGoods;
+
+        model.HsGoodsId = hsGoods.Id;
+        model.CnHsCode = hsGoods.CnHsCode;
+        model.CnHsName = hsGoods.CnHsName;
+        model.EnHsCode = hsGoods.EnHsCode;
+        model.EnHsName = hsGoods.EnHsName;
+        model.Elem01 = hsGoods.Elem01;
+        model.Elem02 = hsGoods.Elem02;
+        model.Elem03 = hsGoods.Elem03;
+        model.Elem04 = hsGoods.Elem04;
+        model.Elem05 = hsGoods.Elem05;
+        model.Elem06 = hsGoods.Elem06;
+        model.Elem07 = hsGoods.Elem07;
+        model.Elem08 = hsGoods.Elem08;
 
         return View("HsGoodsDetail", model);
     }
@@ -106,17 +119,14 @@ public class HsGoodsController : Controller {
     [HttpPost]
     [Route("/admin/hs/goods/save")]
     [Transactional]
-    public IActionResult Save(HsGoodsDetailModel model) {
-        if (!ModelState.IsValid) {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
+    public IActionResult Save(HsGoodsSaveModel model) {
+        ValidationUtil.Validate<HsGoodsSaveModelValidator, HsGoodsSaveModel>(model);
 
         UserInfo loginUser = loginUserService.GetLoginUser();
 
-        HsGoodsInfo hsGoodsFromUi = model.HsGoods;
-        int hsGoodsIdFromUi = hsGoodsFromUi.Id;
+        int hsGoodsId = model.HsGoodsId;
 
-        bool isCreate = hsGoodsIdFromUi == 0;
+        bool isCreate = hsGoodsId == 0;
 
         HsGoodsInfo? hsGoods;
 
@@ -124,21 +134,21 @@ public class HsGoodsController : Controller {
             hsGoods = new HsGoodsInfo();
             hsGoods.AddUser = loginUser;
         } else {
-            hsGoods = session.Get<HsGoodsInfo>(hsGoodsIdFromUi);
+            hsGoods = session.Get<HsGoodsInfo>(hsGoodsId);
         }
 
-        hsGoods.CnHsCode = hsGoodsFromUi.CnHsCode;
-        hsGoods.CnHsName = hsGoodsFromUi.CnHsName;
-        hsGoods.EnHsCode = hsGoodsFromUi.EnHsCode;
-        hsGoods.EnHsName = hsGoodsFromUi.EnHsName;
-        hsGoods.Elem01 = hsGoodsFromUi.Elem01;
-        hsGoods.Elem02 = hsGoodsFromUi.Elem02;
-        hsGoods.Elem03 = hsGoodsFromUi.Elem03;
-        hsGoods.Elem04 = hsGoodsFromUi.Elem04;
-        hsGoods.Elem05 = hsGoodsFromUi.Elem05;
-        hsGoods.Elem06 = hsGoodsFromUi.Elem06;
-        hsGoods.Elem07 = hsGoodsFromUi.Elem07;
-        hsGoods.Elem08 = hsGoodsFromUi.Elem08;
+        hsGoods.CnHsCode = model.CnHsCode;
+        hsGoods.CnHsName = model.CnHsName;
+        hsGoods.EnHsCode = model.EnHsCode;
+        hsGoods.EnHsName = model.EnHsName;
+        hsGoods.Elem01 = model.Elem01 ?? string.Empty; // 这里的 ?? 必须要加上
+        hsGoods.Elem02 = model.Elem02 ?? string.Empty;
+        hsGoods.Elem03 = model.Elem03 ?? string.Empty;
+        hsGoods.Elem04 = model.Elem04 ?? string.Empty;
+        hsGoods.Elem05 = model.Elem05 ?? string.Empty;
+        hsGoods.Elem06 = model.Elem06 ?? string.Empty;
+        hsGoods.Elem07 = model.Elem07 ?? string.Empty;
+        hsGoods.Elem08 = model.Elem08 ?? string.Empty;
 
         if (isCreate) {
             session.Save(hsGoods);
