@@ -12,6 +12,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
 using shunda.Domain.Express;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
@@ -992,6 +993,15 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 订单打包关联的 订单头程物流记录 已经不再被引用了
         if (orderPackHasOrderFirstMode == null) {
+            // 先删除关联的费用信息
+            var firstModeOrderFeeList = session.Query<LogisticsOrderFeeInfo>()
+                .Where(e => e.OrderFirstMode!.Id == orderFirstModeId)
+                .ToList();
+            foreach (var firstModeOrderFee in firstModeOrderFeeList) {
+                session.Delete(firstModeOrderFee);
+            }
+
+            // 删除订单头程物流记录
             session.Delete(orderFirstMode);
             session.Flush();
         }

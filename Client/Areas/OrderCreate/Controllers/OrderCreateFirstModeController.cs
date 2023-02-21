@@ -40,8 +40,9 @@ public class OrderCreateFirstModeController : Controller {
         int selectFirstModeId = createSelect.FirstModeId;
         Country country = createSelect.Country;
 
+        // 列表中显示时不分物品类型，显示所有物品类型的物流方式供客户选择
         var firstModeList = session.Query<LogisticsModeInfo>()
-            .Where(e => e.Country == country // todo 物品类型的问题怎么解决
+            .Where(e => e.Country == country
                         && e.Cate == LogisticsModeCate.Customer // 必须是客户端物流方式，不是内部物流方式
                         && e.Status == LogisticsModeStatus.Enabled)
             .OrderBy(e => e.Type)
