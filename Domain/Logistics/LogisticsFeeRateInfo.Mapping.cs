@@ -29,10 +29,10 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
         );
 
         Property(
-            x => x.VolumeDenominator,
+            x => x.VolumeWeightDenominator,
             map => {
                 map.Type(NHibernateUtil.Int32);
-                map.Column("volume_denominator");
+                map.Column("volume_weight_denominator");
                 map.NotNullable(false);
             }
         );

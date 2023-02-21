@@ -8,8 +8,7 @@ namespace shunda.Domain.Logistics;
 /// <summary>
 /// 物流费率
 /// </summary>
-public class LogisticsFeeRateInfo : Entity
-{
+public class LogisticsFeeRateInfo : Entity {
     /// <summary>
     /// 名称
     /// </summary>
@@ -26,7 +25,7 @@ public class LogisticsFeeRateInfo : Entity
     /// <summary>
     /// 体积重分母
     /// </summary>
-    public virtual int? VolumeDenominator { get; set; } = 5000;
+    public virtual int VolumeWeightDenominator { get; set; } = 5000;
 
     /// <summary>
     /// 是否考虑三边之和

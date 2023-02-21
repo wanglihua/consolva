@@ -3,6 +3,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using shunda.Admin.Areas.Logistics.Models.LogisticsFeeRate;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
@@ -15,21 +16,18 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 
 [LogisticsArea]
 [AdminAuth(PassRes.Logistics.LogisticsFeeRate)]
-public class LogisticsFeeRateController : Controller
-{
+public class LogisticsFeeRateController : Controller {
     private readonly LogisticsFeeRateService logisticsFeeRateService;
     private readonly ISession session;
 
-    public LogisticsFeeRateController(ISession session, LogisticsFeeRateService logisticsFeeRateService)
-    {
+    public LogisticsFeeRateController(ISession session, LogisticsFeeRateService logisticsFeeRateService) {
         this.session = session;
         this.logisticsFeeRateService = logisticsFeeRateService;
     }
 
     [HttpGet]
     [Route("/admin/logistics/fee/rate")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new LogisticsFeeRateIndexModel();
         model.StatusList = LogisticsFeeRateStatus.GetList();
 
@@ -38,8 +36,7 @@ public class LogisticsFeeRateController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/fee/rate/list")]
-    public IActionResult List(LogisticsFeeRateListQueryParam queryParam)
-    {
+    public IActionResult List(LogisticsFeeRateListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -53,8 +50,7 @@ public class LogisticsFeeRateController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<LogisticsFeeRateInfo>();
 
-        foreach (var logisticsFeeRateInfo in logisticsFeeRateList)
-        {
+        foreach (var logisticsFeeRateInfo in logisticsFeeRateList) {
             // logisticsFeeRateInfo
         }
 
@@ -65,15 +61,13 @@ public class LogisticsFeeRateController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(LogisticsFeeRateListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(LogisticsFeeRateListQueryParam queryParam) {
         var criteria = session.CreateCriteria<LogisticsFeeRateInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         var nameQuery = queryParam.NameQuery ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(nameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(nameQuery) == false) {
             nameQuery = nameQuery.Trim();
             criteria = criteria.Add(Restrictions.On<LogisticsFeeRateInfo>(e => e.Name).IsInsensitiveLike(nameQuery, MatchMode.Anywhere));
         }
@@ -86,15 +80,13 @@ public class LogisticsFeeRateController : Controller
 
     [HttpGet]
     [Route("/admin/logistics/fee/rate/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         LogisticsFeeRateInfo? logisticsFeeRate;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             logisticsFeeRate = new LogisticsFeeRateInfo();
             logisticsFeeRate.PublishRate = 1.0m;
-            logisticsFeeRate.VolumeDenominator = logisticsFeeRateService.GetVolumeDenominator(); // 取体积重分母默认值
+            logisticsFeeRate.VolumeWeightDenominator = logisticsFeeRateService.GetVolumeDenominator(); // 取体积重分母默认值
 
             logisticsFeeRate.CustomerWidthDiscount = 1.0m;
             logisticsFeeRate.CustomerLengthDiscount = 1.0m;
@@ -105,9 +97,7 @@ public class LogisticsFeeRateController : Controller
             logisticsFeeRate.ExportLengthDiscount = 1.0m;
             logisticsFeeRate.ExportHeightDiscount = 1.0m;
             logisticsFeeRate.ExportWeightDiscount = 1.0m;
-        }
-        else
-        {
+        } else {
             logisticsFeeRate = session.Get<LogisticsFeeRateInfo>(id.Value);
             if (logisticsFeeRate == null) throw new ValidationException("指定的数据项不存在！");
         }
@@ -123,16 +113,14 @@ public class LogisticsFeeRateController : Controller
     [HttpPost]
     [Route("/admin/logistics/fee/rate/save")]
     [Transactional]
-    public IActionResult Save(LogisticsFeeRateDetailModel model)
-    {
+    public IActionResult Save(LogisticsFeeRateDetailModel model) {
         var logisticsFeeRateFromUi = model.LogisticsFeeRate;
 
         // 在基本的验证通过的情况下加上额外的验证
-        if (ModelState.IsValid)
-        {
+        if (ModelState.IsValid) {
             if (logisticsFeeRateFromUi.CareVolumeWeight
-                && (logisticsFeeRateFromUi.VolumeDenominator.HasValue == false || logisticsFeeRateFromUi.VolumeDenominator.Value <= 0))
-                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeDenominator), "考虑体积重，但体积重分母 未设置 或 为0！");
+                && logisticsFeeRateFromUi.VolumeWeightDenominator <= 0)
+                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeWeightDenominator), "考虑体积重，但体积重分母 未设置 或 为0！");
 
             if (logisticsFeeRateFromUi.CareVolumeActualWeightRatio
                 && (logisticsFeeRateFromUi.MinVolumeActualWeightRatio.HasValue == false || logisticsFeeRateFromUi.MinVolumeActualWeightRatio.Value <= 0))
@@ -154,8 +142,7 @@ public class LogisticsFeeRateController : Controller
                 && (logisticsFeeRateFromUi.LengthLimit.HasValue == false || logisticsFeeRateFromUi.LengthLimit.Value <= 0))
                 ModelState.AddModelError(nameof(LogisticsFeeRateInfo.LengthLimit), "有长度限制，但限制长度 未配置 或 为0！");
 
-            if (logisticsFeeRateFromUi.CanOverLength)
-            {
+            if (logisticsFeeRateFromUi.CanOverLength) {
                 if (logisticsFeeRateFromUi.OverLengthStep.HasValue == false || logisticsFeeRateFromUi.OverLengthStep.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.OverLengthStep), "可以超长，但超长阶梯 未配置 或 为0！");
 
                 if (logisticsFeeRateFromUi.OverLengthStepFee.HasValue == false || logisticsFeeRateFromUi.OverLengthStepFee.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.OverLengthStepFee), "可以超长，但超长阶梯收费 未配置 或 为0！");
@@ -173,8 +160,7 @@ public class LogisticsFeeRateController : Controller
                 && (logisticsFeeRateFromUi.SingleWeightLimit.HasValue == false || logisticsFeeRateFromUi.SingleWeightLimit.Value <= 0))
                 ModelState.AddModelError(nameof(LogisticsFeeRateInfo.SingleWeightLimit), "单箱重量有限制，但限制重量 未配置 或 为0！");
 
-            if (logisticsFeeRateFromUi.CanSingleOverWeight)
-            {
+            if (logisticsFeeRateFromUi.CanSingleOverWeight) {
                 if (logisticsFeeRateFromUi.SingleOverWeightStep.HasValue == false || logisticsFeeRateFromUi.SingleOverWeightStep.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.SingleOverWeightStep), "允许单箱超重，但单箱超重阶梯 未设置 或 为0！");
 
                 if (logisticsFeeRateFromUi.SingleOverWeightStepFee.HasValue == false || logisticsFeeRateFromUi.SingleOverWeightStepFee.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.SingleOverWeightStepFee), "允许单箱超重，但单箱超重阶梯收费 未设置 或 为0！");
@@ -188,8 +174,7 @@ public class LogisticsFeeRateController : Controller
                 && (logisticsFeeRateFromUi.AverageWeightLimit.HasValue == false || logisticsFeeRateFromUi.AverageWeightLimit.Value <= 0))
                 ModelState.AddModelError(nameof(LogisticsFeeRateInfo.AverageWeightLimit), "平均单箱重量有限制，但限制重量 未配置 或 为0！");
 
-            if (logisticsFeeRateFromUi.CanAverageOverWeight)
-            {
+            if (logisticsFeeRateFromUi.CanAverageOverWeight) {
                 if (logisticsFeeRateFromUi.AverageOverWeightStep.HasValue == false || logisticsFeeRateFromUi.AverageOverWeightStep.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.AverageOverWeightStep), "允许平均单箱超重，但平均单箱超重阶梯 未设置 或 为0！");
 
                 if (logisticsFeeRateFromUi.AverageOverWeightStepFee.HasValue == false || logisticsFeeRateFromUi.AverageOverWeightStepFee.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.AverageOverWeightStepFee), "允许平均单箱超重，但平均单箱超重阶梯收费 未设置 或 为0！");
@@ -207,8 +192,7 @@ public class LogisticsFeeRateController : Controller
                 && (logisticsFeeRateFromUi.WeightLimit.HasValue == false || logisticsFeeRateFromUi.WeightLimit.Value <= 0))
                 ModelState.AddModelError(nameof(LogisticsFeeRateInfo.WeightLimit), "重量有限制，但限制重量 未配置 或 为0！");
 
-            if (logisticsFeeRateFromUi.CanOverWeight)
-            {
+            if (logisticsFeeRateFromUi.CanOverWeight) {
                 if (logisticsFeeRateFromUi.OverWeightStep.HasValue == false || logisticsFeeRateFromUi.OverWeightStep.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.OverWeightStep), "允许超重，但超重阶梯 未设置 或 为0！");
 
                 if (logisticsFeeRateFromUi.OverWeightStepFee.HasValue == false || logisticsFeeRateFromUi.OverWeightStepFee.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.OverWeightStepFee), "允许超重，但超重阶梯收费 未设置 或 为0！");
@@ -218,8 +202,7 @@ public class LogisticsFeeRateController : Controller
                 && (logisticsFeeRateFromUi.OverWeightCapAmount.HasValue == false || logisticsFeeRateFromUi.OverWeightCapAmount.Value <= 0))
                 ModelState.AddModelError(nameof(LogisticsFeeRateInfo.OverWeightCapAmount), "重量有费用封顶，但封顶金额 未配置 或 为0！");
 
-            if (logisticsFeeRateFromUi.HasFreePackageLimit)
-            {
+            if (logisticsFeeRateFromUi.HasFreePackageLimit) {
                 if (logisticsFeeRateFromUi.FreePackageLimit.HasValue == false || logisticsFeeRateFromUi.FreePackageLimit.Value < 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.FreePackageLimit), "包裹免费数量有限制，但免费包裹数量 未设置 或 值小于0！");
 
                 if (logisticsFeeRateFromUi.ExtraPackageFee.HasValue == false || logisticsFeeRateFromUi.ExtraPackageFee.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.ExtraPackageFee), "包裹免费数量有限制，但额外包裹收费 未设置 或 值不大于0！");
@@ -229,8 +212,7 @@ public class LogisticsFeeRateController : Controller
                 && (logisticsFeeRateFromUi.ExtraPackageFeeCapAmount.HasValue == false || logisticsFeeRateFromUi.ExtraPackageFeeCapAmount.Value <= 0))
                 ModelState.AddModelError(nameof(LogisticsFeeRateInfo.ExtraPackageFeeCapAmount), "包裹数量有费用封顶，但封顶金额 未配置 或 值不大于0！");
 
-            if (logisticsFeeRateFromUi.HasFreeStorageDayLimit)
-            {
+            if (logisticsFeeRateFromUi.HasFreeStorageDayLimit) {
                 if (logisticsFeeRateFromUi.FreeStorageDayLimit.HasValue == false || logisticsFeeRateFromUi.FreeStorageDayLimit.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.FreeStorageDayLimit), "仓储免费天数有限制，但免费仓储天数 未设置 或 为0！");
 
                 if (logisticsFeeRateFromUi.ExtraStorageDayFee.HasValue == false || logisticsFeeRateFromUi.ExtraStorageDayFee.Value <= 0) ModelState.AddModelError(nameof(LogisticsFeeRateInfo.ExtraStorageDayFee), "仓储免费天数有限制，但额外仓储收费 未设置 或 为0！");
@@ -261,7 +243,7 @@ public class LogisticsFeeRateController : Controller
         logisticsFeeRate.Status = logisticsFeeRateFromUi.Status;
 
         logisticsFeeRate.CareVolumeWeight = logisticsFeeRateFromUi.CareVolumeWeight;
-        logisticsFeeRate.VolumeDenominator = logisticsFeeRateFromUi.VolumeDenominator;
+        logisticsFeeRate.VolumeWeightDenominator = logisticsFeeRateFromUi.VolumeWeightDenominator > 0 ? logisticsFeeRateFromUi.VolumeWeightDenominator : LogisticsConfig.VolumeWeightDenominator;
         logisticsFeeRate.CareSideSum = logisticsFeeRateFromUi.CareSideSum;
         logisticsFeeRate.VolumeWeightResultType = logisticsFeeRateFromUi.VolumeWeightResultType;
         logisticsFeeRate.VolumeActualWeightMiddle = logisticsFeeRateFromUi.VolumeActualWeightMiddle;
@@ -355,10 +337,8 @@ public class LogisticsFeeRateController : Controller
     [HttpPost]
     [Route("/admin/logistics/fee/rate/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
-        foreach (var id in idList)
-        {
+    public IActionResult Delete(int[] idList) {
+        foreach (var id in idList) {
             var logisticsFeeRate = session.Get<LogisticsFeeRateInfo>(id);
 
             /* todo 启用这个检查

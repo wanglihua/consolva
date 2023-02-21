@@ -114,7 +114,7 @@ public class LogisticsFeeService {
         // 通用费率
         LogisticsFeeRateInfo feeRate = logisticsModeFeeRate.FeeRate;
 
-        if (feeRate.VolumeDenominator <= 0) {
+        if (feeRate.VolumeWeightDenominator <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
                 throw new LogisticsFeeException("物流方式不支持！SD0230");
             } else {
@@ -421,7 +421,7 @@ public class LogisticsFeeService {
             bool careSideSum = feeRate.CareSideSum;
             if (finalCareVolumeWeight) // 考虑体积重
             {
-                if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
+                if (feeRate.VolumeWeightDenominator <= 0) {
                     if (feeMessageType == FeeMessageType.Customer) {
                         throw new LogisticsFeeException("物流方式不支持！SD0250");
                     } else {
@@ -614,7 +614,7 @@ public class LogisticsFeeService {
             bool careSideSum = feeRate.CareSideSum;
             if (finalCareVolumeWeight) // 考虑体积重
             {
-                if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
+                if (feeRate.VolumeWeightDenominator <= 0) {
                     if (feeMessageType == FeeMessageType.Customer) {
                         throw new LogisticsFeeException("物流方式不支持！SD0260");
                     } else {
@@ -735,7 +735,7 @@ public class LogisticsFeeService {
             }
         }
 
-        if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
+        if (feeRate.VolumeWeightDenominator <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
                 throw new LogisticsFeeException("物流方式不支持！SD0280");
             } else {
@@ -743,7 +743,7 @@ public class LogisticsFeeService {
             }
         }
 
-        return GetSinglePackVolume(feePack, feeRate) / feeRate.VolumeDenominator.Value;
+        return GetSinglePackVolume(feePack, feeRate) / feeRate.VolumeWeightDenominator;
     }
 
     private decimal GetMultiPackVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
@@ -764,7 +764,7 @@ public class LogisticsFeeService {
             }
         }
 
-        if (feeRate.VolumeDenominator.HasValue == false || feeRate.VolumeDenominator.Value <= 0) {
+        if (feeRate.VolumeWeightDenominator <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
                 throw new LogisticsFeeException("物流方式不支持！SD0300");
             } else {
@@ -786,7 +786,7 @@ public class LogisticsFeeService {
         decimal finalHeight = feePack.Height * feeRate.CustomerHeightDiscount;
 
         decimal averageLength = (finalLength + finalWidth + finalHeight) / 3.0m;
-        return averageLength * averageLength * averageLength / feeRate.VolumeDenominator.Value;
+        return averageLength * averageLength * averageLength / feeRate.VolumeWeightDenominator;
     }
 
     private decimal GetMultiPackSideAvgVolumeWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
