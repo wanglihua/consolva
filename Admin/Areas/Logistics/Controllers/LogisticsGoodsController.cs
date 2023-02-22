@@ -330,7 +330,7 @@ public class LogisticsGoodsController : Controller {
         int hsGoodsId = model.HsGoodsId;
 
         if (model.HsGoodsAutoSelect == false && string.IsNullOrWhiteSpace(model.CnHsCode) == false) {
-            string cnHsName = model.CnHsName;
+            string cnHsName = model.CnHsName ?? string.Empty;
             int count = session.Query<HsGoodsInfo>().Where(e => e.CnHsName == cnHsName).Count();
             if (count != 0) {
                 throw new ValidationException($"{cnHsName}已经存在，请直接选择！"); // 用异常可以回滚前面的保存，事务会撤回
@@ -359,7 +359,11 @@ public class LogisticsGoodsController : Controller {
             hsGoodsId = hsGoodsInfo.Id;
         }
 
-        logisticsGoods.HsGoods = session.Load<HsGoodsInfo>(hsGoodsId);
+        if (hsGoodsId != 0) {
+            logisticsGoods.HsGoods = session.Load<HsGoodsInfo>(hsGoodsId);
+        } else {
+            logisticsGoods.HsGoods = null;
+        }
 
         session.Update(logisticsGoods);
         session.Flush();
