@@ -21,8 +21,8 @@ public class LogisticsExpressCheckinExpressSaveModel {
     [MaxLength(50, ErrorMessage = "面单客户长度不能大于50！")]
     public string BillCustomerCode { get; set; } = string.Empty;
 
-    [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
-    public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
+    // [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
+    // public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
     /// 这个是申领件的入库包裹数量

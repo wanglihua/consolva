@@ -141,7 +141,7 @@ public class ExpressCheckinController : Controller {
             int expressExistId = expressExist.Id;
 
             model.ExpressId = expressExist.Id;
-            model.GoodsType = expressExist.GoodsType;
+            // model.GoodsType = expressExist.GoodsType;
             model.BillCustomerCode = expressExist.BillCustomerCode;
             model.ExpressCompany = expressExist.ExpressCompany;
             model.PackageCount = expressExist.PackageCount;
@@ -595,23 +595,14 @@ public class ExpressCheckinController : Controller {
                 express.ExpressCompany = model.ExpressCompany;
 
                 // 物品类型
-                LogisticsGoodsType goodsType = model.GoodsType;
                 LogisticsGoodsType goodsTypeBefore = express.GoodsType;
 
-                IList<int> goodsIdList = new List<int>();
+                IList<LogisticsGoodsType> goodsTypeList = new List<LogisticsGoodsType>();
                 foreach (LogisticsExpressCheckinExpressGoodsModel goodsItem in goodsModelList) {
-                    goodsIdList.Add(goodsItem.GoodsId);
+                    goodsTypeList.Add(goodsItem.GoodsType);
                 }
 
-                IList<LogisticsGoodsInfo> goodsList = session.Query<LogisticsGoodsInfo>().Where(e => goodsIdList.Contains(e.Id)).ToList();
-                IList<LogisticsGoodsType> goodsTypeList = goodsList.Select(e => e.Type).Distinct().ToList();
-                if (goodsTypeList.Count > 1 || goodsTypeList[0] != goodsType) {
-                    throw new ValidationException($"选择的物品类型{goodsType.Name}和物品列表中的类型不匹配！");
-                }
-
-                if (goodsType == null || goodsType == LogisticsGoodsType.None) {
-                    throw new ValidationException("物品类型不能为空，请选择快递单物品类型！");
-                }
+                LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(goodsTypeList);
 
                 express.GoodsType = goodsType;
 

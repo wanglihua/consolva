@@ -46,9 +46,6 @@
                                 <td style="width: 100px" class="lbl">
                                     <label for="expressTrackingNo">
                                         快递单号
-                                        @if (Model.ExpressStatus != ExpressStatus.None) {
-                                            <span style="color: blue;">@(Model.ExpressStatus.Name)</span>
-                                        }
                                     </label>
                                 </td>
                                 <td style="width: 175px">
@@ -59,14 +56,21 @@
                                         <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All)" asp-route-id="@(Model.ExpressId)" target="_blank">@(Model.TrackingNo)</a>
                                     }
                                 </td>
-                                <td style="width: 100px;" class="lbl">物品类型</td>
+                                <td style="width: 100px;" class="lbl">状态</td>
                                 <td style="width: 180px">
+                                    @if (Model.ExpressStatus != ExpressStatus.None) {
+                                        <span>@(Model.ExpressStatus.Name)</span>
+                                    } else {
+                                        <span>未入库</span>
+                                    }
+                                    @*
                                     <select asp-for="GoodsType" class="input-sm form-control" style="margin-top: 2px;">
                                         <option value="">选择快递物品类型</option>
                                         @foreach (var goodsType in Model.GoodsTypeList) {
                                             <option value="@(goodsType.Id)">@(goodsType.Name)</option>
                                         }
                                     </select>
+                                    *@
                                 </td>
                                 <td style="width: 100px" class="lbl">
                                     <label for="expressCompany">物流公司</label>
@@ -196,9 +200,9 @@
                         <thead>
                             <tr>
                                 <th style="text-align: center; font-weight: normal;"><span style="display: block;float: left; font-weight: bold;">物品列表</span> 扩展名</th>
-                                <th style="width: 120px; text-align: center; font-weight: normal;">物品类型</th>
-                                <th style="width: 160px; text-align: center; font-weight: normal;">数量</th>
-                                <th style="width: 120px; text-align: center; font-weight: normal;">操作</th>
+                                <th style="width: 130px; text-align: center; font-weight: normal;">物品类型</th>
+                                <th style="width: 170px; text-align: center; font-weight: normal;">数量</th>
+                                <th style="width: 130px; text-align: center; font-weight: normal;">操作</th>
                             </tr>
                         </thead>
                         <tbody>

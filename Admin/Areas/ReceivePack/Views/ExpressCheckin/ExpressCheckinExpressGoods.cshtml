@@ -37,7 +37,7 @@
         </select>
     </td>
     <td style="text-align: center;">
-        <select id="@(goodsTypeFieldName)" name="@(goodsTypeFieldName)" class="select2" style="width: 120px;">
+        <select id="@(goodsTypeFieldName)" name="@(goodsTypeFieldName)" class="input-sm form-control" style="width: 120px;">
             @foreach (var goodsType in Model.GoodsTypeList) {
                 if (goodsType == Model.GoodsType) {
                     <option value="@(goodsType.Id)" selected="selected">@(goodsType.Name)</option>
