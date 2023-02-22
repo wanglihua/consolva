@@ -104,6 +104,9 @@ public class Program {
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+        // 支持跨域
+        // services.AddCors();
+
         // 添加 Core 项目中的 service
         services.AddCoreServices();
 
@@ -138,6 +141,9 @@ public class Program {
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        // 支持跨域
+        // app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(o => true).AllowCredentials());
 
         app.UseMiddleware<SessionIdMiddleware>();
         app.UseMiddleware<RequestLogMiddleware>(); // 还是放在有了 sessionId 后放心点
