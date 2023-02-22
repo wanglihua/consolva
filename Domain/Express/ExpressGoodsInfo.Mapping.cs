@@ -5,10 +5,8 @@ using shunda.Domain.Logistics;
 
 namespace shunda.Domain.Express;
 
-public class ExpressGoodsInfoMapping : EntityMapping<ExpressGoodsInfo>
-{
-    public ExpressGoodsInfoMapping()
-    {
+public class ExpressGoodsInfoMapping : EntityMapping<ExpressGoodsInfo> {
+    public ExpressGoodsInfoMapping() {
         Table("tbl_express_goods");
 
         ManyToOne(
@@ -34,6 +32,15 @@ public class ExpressGoodsInfoMapping : EntityMapping<ExpressGoodsInfo>
         );
 
         Property(
+            x => x.GoodsType,
+            map => {
+                map.Type<LogisticsGoodsTypeHibernateType>();
+                map.Column("goods_type_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Quantity,
             map => {
                 map.Type(NHibernateUtil.Int32);
@@ -50,6 +57,5 @@ public class ExpressGoodsInfoMapping : EntityMapping<ExpressGoodsInfo>
                 map.NotNullable(true);
             }
         );
-
     }
 }

@@ -24,6 +24,9 @@ public class ExpressGoodsInfo : Entity
     [JsonProperty("goods")]
     public virtual LogisticsGoodsInfo Goods { get; set; } = new ();
 
+    [JsonProperty("goodsType")]
+    public virtual LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
+
     /// <summary>
     /// 数量，非空
     /// </summary>
