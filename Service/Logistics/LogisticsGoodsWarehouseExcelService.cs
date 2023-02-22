@@ -148,7 +148,7 @@ public class LogisticsGoodsWarehouseExcelService {
                 throw new ValidationException($"第{rowIndex}行数据 扩展名 {name} 太长，超过200长度，导入失败！");
             }
 
-            logisticsGoods.Name = name.Trim();            
+            logisticsGoods.Name = name.Trim();
 
             // 物品类型
             string goodsTypeStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
@@ -191,14 +191,15 @@ public class LogisticsGoodsWarehouseExcelService {
         IList<LogisticsGoodsInfo> logisticsGoodsListExist = session.Query<LogisticsGoodsInfo>()
             .Where(e => goodsNameList.Contains(e.Name))
             .ToList();
-        IDictionary<string, int> logisticsGoodsMapExist = logisticsGoodsListExist.ToDictionary(e => e.Name, e => e.Id);
 
         logisticsGoodsRowNum = 1;
         foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList) // 这里logisticsGoodsList还是保持了导入顺序
         {
             string name = logisticsGoods.Name;
-            if (logisticsGoodsMapExist.ContainsKey(name)) {
-                throw new ValidationException($"导入数据中，第{logisticsGoodsRowNum}行 扩展名 {name} 数据库中已存在！");
+            var goodsType = logisticsGoods.Type;
+            var logisticsGoodsExist = logisticsGoodsListExist.Where(e => e.Name == name && e.Type == goodsType).Take(1).SingleOrDefault();
+            if (logisticsGoodsExist != null) {
+                throw new ValidationException($"导入数据中，第{logisticsGoodsRowNum}行 扩展名 {name}，物品类型 {goodsType.Name} 数据库中已存在！");
             }
 
             logisticsGoodsRowNum = logisticsGoodsRowNum + 1;
