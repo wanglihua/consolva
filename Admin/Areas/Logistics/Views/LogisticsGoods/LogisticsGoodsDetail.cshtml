@@ -116,7 +116,7 @@
                                         @if (Model.IsViewOnly) {
                                             <input asp-for="LogisticsGoods.Name" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="LogisticsGoods.Name" type="text" class="input-sm form-control"/>
+                                            <input asp-for="LogisticsGoods.Name" type="text" class="input-sm form-control" required="required" maxlength="200"/>
                                         }
 
                                     </div>
@@ -134,7 +134,7 @@
                                         @if (Model.IsViewOnly) {
                                             <input asp-for="LogisticsGoods.BrandName" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="LogisticsGoods.BrandName" type="text" class="input-sm form-control"/>
+                                            <input asp-for="LogisticsGoods.BrandName" type="text" class="input-sm form-control" maxlength="200"/>
                                         }
                                     </div>
                                 </div>
@@ -370,7 +370,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="CnHsCode" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="CnHsCode" type="text" class="input-sm form-control"/>
+                                            <input asp-for="CnHsCode" type="text" class="input-sm form-control" maxlength="100"/>
                                         }
 
                                     </div>
@@ -384,7 +384,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="CnHsName" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="CnHsName" type="text" class="input-sm form-control"/>
+                                            <input asp-for="CnHsName" type="text" class="input-sm form-control" maxlength="200"/>
                                         }
 
                                     </div>
@@ -398,7 +398,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="EnHsCode" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="EnHsCode" type="text" class="input-sm form-control"/>
+                                            <input asp-for="EnHsCode" type="text" class="input-sm form-control" maxlength="100"/>
                                         }
 
                                     </div>
@@ -412,7 +412,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <input asp-for="EnHsName" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="EnHsName" type="text" class="input-sm form-control"/>
+                                            <input asp-for="EnHsName" type="text" class="input-sm form-control" maxlength="200"/>
                                         }
 
                                     </div>
@@ -426,7 +426,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem01" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem01" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem01" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -440,7 +440,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem02" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem02" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem02" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -454,7 +454,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem03" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem03" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem03" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -468,7 +468,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem04" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem04" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem04" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -482,7 +482,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem05" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem05" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem05" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -496,7 +496,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem06" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem06" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem06" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -510,7 +510,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem07" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem07" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem07" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -524,7 +524,7 @@
                                         @if (Model.IsViewOnly || autoSelectHsGoods) {
                                             <textarea asp-for="Elem08" rows="2" class="input-sm form-control" disabled="disabled"></textarea>
                                         } else {
-                                            <textarea asp-for="Elem08" rows="2" class="input-sm form-control"></textarea>
+                                            <textarea asp-for="Elem08" rows="2" class="input-sm form-control" maxlength="300"></textarea>
                                         }
 
                                     </div>
@@ -564,9 +564,9 @@
                                                 foreach (LogisticsGoodsLogInfo log in Model.LogList) {
                                                     <tr>
                                                         <td style="text-align: center;">@(order++)</td>
-                                                        <td style="text-align: center;">@log.User?.UserName</td>
+                                                        <td style="text-align: center;">@log.User.UserName</td>
                                                         <td style="text-align: center;">@log.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
-                                                        <td style="text-align: center;">@log.Type?.Name</td>
+                                                        <td style="text-align: center;">@log.Type.Name</td>
                                                         <td class="break-word">
                                                             <span>
                                                                 @log.Description
@@ -806,91 +806,7 @@
 
     function saveLogisticsGoods() {
         var form = $("#logisticsGoodsDetailForm");
-        var valid = validate(form,
-            {
-                'LogisticsGoods.Name': {
-                    required: true,
-                    maxlength: 200
-                },
-                'LogisticsGoods.TypeId': {
-                    required: true,
-                    digits: true
-                },
-                'LogisticsGoods.HasBrand': {
-                    required: true
-                },
-                'LogisticsGoods.BrandName': {
-                    maxlength: 200
-                },
-                'LogisticsGoods.HasBattery': {
-                    required: true
-                },
-                'LogisticsGoods.HasBamboo': {
-                    required: true
-                },
-                'LogisticsGoods.HasWoodPackage': {
-                    required: true
-                },
-                'LogisticsGoods.IsForbidden': {
-                    required: true
-                },
-                'LogisticsGoods.AddUserId': {
-                    required: true,
-                    digits: true
-                },
-                'LogisticsGoods.StatusId': {
-                    required: true,
-                    digits: true
-                },
-                'CnHsCode': {
-                    required: true,
-                    maxlength: 100
-                },
-                'CnHsName': {
-                    required: true,
-                    maxlength: 200
-                },
-                'EnHsCode': {
-                    required: true,
-                    maxlength: 100
-                },
-                'EnHsName': {
-                    required: true,
-                    maxlength: 200
-                },
-                'Elem01': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem02': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem03': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem04': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem05': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem06': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem07': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem08': {
-                    required: false,
-                    maxlength: 300
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");
@@ -900,6 +816,8 @@
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
+                    hideMask();
+
                     if (data.success === false) {
                         $.msg.error(data.message);
                         return;
@@ -915,8 +833,6 @@
                         },
                         2000
                     );
-
-                    hideMask();
                 }
             });
         }
@@ -924,91 +840,7 @@
 
     function saveAndConfirmLogisticsGoods() {
         var form = $("#logisticsGoodsDetailForm");
-        var valid = validate(form,
-            {
-                'LogisticsGoods.Name': {
-                    required: true,
-                    maxlength: 200
-                },
-                'LogisticsGoods.TypeId': {
-                    required: true,
-                    digits: true
-                },
-                'LogisticsGoods.HasBrand': {
-                    required: true
-                },
-                'LogisticsGoods.BrandName': {
-                    maxlength: 200
-                },
-                'LogisticsGoods.HasBattery': {
-                    required: true
-                },
-                'LogisticsGoods.HasBamboo': {
-                    required: true
-                },
-                'LogisticsGoods.HasWoodPackage': {
-                    required: true
-                },
-                'LogisticsGoods.IsForbidden': {
-                    required: true
-                },
-                'LogisticsGoods.AddUserId': {
-                    required: true,
-                    digits: true
-                },
-                'LogisticsGoods.StatusId': {
-                    required: true,
-                    digits: true
-                },
-                'CnHsCode': {
-                    required: true,
-                    maxlength: 100
-                },
-                'CnHsName': {
-                    required: true,
-                    maxlength: 200
-                },
-                'EnHsCode': {
-                    required: true,
-                    maxlength: 100
-                },
-                'EnHsName': {
-                    required: true,
-                    maxlength: 200
-                },
-                'Elem01': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem02': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem03': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem04': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem05': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem06': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem07': {
-                    required: false,
-                    maxlength: 300
-                },
-                'Elem08': {
-                    required: false,
-                    maxlength: 300
-                }
-            });
+        var valid = validate(form);
 
         if (valid) {
             showMask("提交中...");
@@ -1018,6 +850,8 @@
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
+                    hideMask();
+
                     if (data.success === false) {
                         $.msg.error(data.message);
                         return;
@@ -1035,8 +869,6 @@
                             1000
                         );
                     }
-
-                    hideMask();
                 }
             });
         }
