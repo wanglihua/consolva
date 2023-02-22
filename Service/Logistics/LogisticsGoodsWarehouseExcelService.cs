@@ -195,11 +195,14 @@ public class LogisticsGoodsWarehouseExcelService {
         logisticsGoodsRowNum = 1;
         foreach (LogisticsGoodsInfo logisticsGoods in logisticsGoodsList) // 这里logisticsGoodsList还是保持了导入顺序
         {
-            string name = logisticsGoods.Name;
+            string goodsName = logisticsGoods.Name;
             var goodsType = logisticsGoods.Type;
-            var logisticsGoodsExist = logisticsGoodsListExist.Where(e => e.Name == name && e.Type == goodsType).Take(1).SingleOrDefault();
+            var logisticsGoodsExist = logisticsGoodsListExist
+                .Where(e => e.Name == goodsName && e.Type == goodsType)
+                .Take(1)
+                .SingleOrDefault();
             if (logisticsGoodsExist != null) {
-                throw new ValidationException($"导入数据中，第{logisticsGoodsRowNum}行 扩展名 {name}，物品类型 {goodsType.Name} 数据库中已存在！");
+                throw new ValidationException($"导入数据中，第{logisticsGoodsRowNum}行 扩展名 {goodsName}，物品类型 {goodsType.Name} 数据库中已存在！");
             }
 
             logisticsGoodsRowNum = logisticsGoodsRowNum + 1;

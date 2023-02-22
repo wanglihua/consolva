@@ -296,17 +296,38 @@ public class LogisticsGoodsController : Controller {
 
         LogisticsGoodsInfo? logisticsGoods = null;
 
+        string goodsName = model.Name.Trim();
+        LogisticsGoodsType goodsType = model.Type;
+
         if (isCreate) {
             logisticsGoods = new LogisticsGoodsInfo();
             logisticsGoods.Status = LogisticsGoodsStatus.NotConfirmed;
             logisticsGoods.AddUser = loginUser;
+
+            // 检查物品名称和类型重复
+            var goodsExist = session.Query<LogisticsGoodsInfo>()
+                .Where(e => e.Name == goodsName && e.Type == goodsType)
+                .Take(1)
+                .SingleOrDefault();
+            if (goodsExist != null) {
+                throw new ValidationException($"扩展名 {goodsName}，物品类型 {goodsType.Name} 数据库中已存在！");
+            }
         } else {
             logisticsGoods = session.Get<LogisticsGoodsInfo>(logisticsGoodsId);
+
+            // 检查物品名称和类型重复
+            var goodsExist = session.Query<LogisticsGoodsInfo>()
+                .Where(e => e.Name == goodsName && e.Type == goodsType && e.Id != logisticsGoodsId)
+                .Take(1)
+                .SingleOrDefault();
+            if (goodsExist != null) {
+                throw new ValidationException($"扩展名 {goodsName}，物品类型 {goodsType.Name} 数据库中已存在！");
+            }
         }
 
         logisticsGoods.Cate = LogisticsGoodsCate.None;
-        logisticsGoods.Name = model.Name.Trim();
-        logisticsGoods.Type = model.Type;
+        logisticsGoods.Name = goodsName;
+        logisticsGoods.Type = goodsType;
         logisticsGoods.BrandName = model.BrandName ?? string.Empty;
         logisticsGoods.CreateExpressTrackingNo = model.CreateExpressTrackingNo;
 
