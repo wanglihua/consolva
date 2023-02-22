@@ -89,7 +89,7 @@ public class ExpressCheckinDetailController : Controller {
             packageCount = sizeWeightList.Sum(e => e.PackageCount);
         }
 
-        totalVolumeWeight = totalVolume / LogisticsConfig.VolumeWeightDenominator;
+        totalVolumeWeight = totalVolume / LogisticsConfig.VolumeWeightDenominator; // 这里的体积重分母，只能用系统默认的了
         totalVolume = totalVolume / 100_00_00; // 转成立方米
 
         var sizeWeightItemList = sizeWeightList
@@ -99,7 +99,7 @@ public class ExpressCheckinDetailController : Controller {
                 Length = e.Length.ToString("#0.00"),
                 Width = e.Width.ToString("#0.00"),
                 Height = e.Height.ToString("#0.00"),
-                VolumeWeight = (e.Length * e.Width * e.Height / LogisticsConfig.VolumeWeightDenominator).ToString("#0.000"),
+                VolumeWeight = (e.Length * e.Width * e.Height / LogisticsConfig.VolumeWeightDenominator).ToString("#0.000"), // 这里的体积重分母，只能用系统默认的了
                 ActualWeight = e.Weight.ToString("#0.000"),
                 PackageCount = e.PackageCount,
             })

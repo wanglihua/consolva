@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NHibernate;
 using NHibernate.Linq;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailOrderPack;
 using shunda.Admin.Services;
@@ -48,6 +49,11 @@ public class LogisticsOrderDetailOrderPackListViewComponent : ViewComponent {
         IList<LogisticsOrderPackInfo> orderPackList = session.Query<LogisticsOrderPackInfo>()
             .Where(e => e.Order.Id == orderId)
             .ToList();
+
+        // 这个循环里面，很多的 order first mode 都是相同的，所以也不大会影响性能
+        foreach (var orderPack in orderPackList) {
+            NHibernateUtil.Initialize(orderPack.OrderFirstMode);
+        }
 
         var orderPackExpressList = session.Query<LogisticsOrderPackExpressInfo>()
             .Fetch(e => e.Express)

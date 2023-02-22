@@ -292,6 +292,9 @@ public class LogisticsOrderPackService {
         }
 
         var orderPackList = session.Query<LogisticsOrderPackInfo>().Where(e => e.Order.Id == orderId).ToList();
+        foreach (var orderPack in orderPackList) {
+            NHibernateUtil.Initialize(orderPack.OrderFirstMode); // 很多 order first mode 都是重复的，循环不会有性能问题
+        }
 
         var orderPackData = session.Query<LogisticsOrderPackDataInfo>().Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
         if (orderPackData == null) {
@@ -301,6 +304,7 @@ public class LogisticsOrderPackService {
         }
 
         decimal totalActualWeight = 0;
+        decimal totalVolumeWeight = 0;
         decimal totalVolume = 0;
         decimal maxSideLength = 0;
         decimal maxVolumeSinglePack = 0;
@@ -320,6 +324,7 @@ public class LogisticsOrderPackService {
             }
 
             totalVolume += singleVolume * orderPack.PackageCount;
+            totalVolumeWeight += singleVolume / orderPack.OrderFirstMode.VolumeWeightDenominator;
 
             if (orderPack.Weight > maxWeightSinglePack) {
                 maxWeightSinglePack = orderPack.Weight;
@@ -328,7 +333,6 @@ public class LogisticsOrderPackService {
             totalPackageCount += orderPack.PackageCount;
         }
 
-        decimal totalVolumeWeight = totalVolume / LogisticsConfig.VolumeWeightDenominator;
         totalVolume = totalVolume / 100_00_00; // 单位转成立方米
         maxVolumeSinglePack = maxVolumeSinglePack / 100_00_00; // 单位转成立方米
 

@@ -56,7 +56,7 @@ public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
 
     /// <summary>
     /// 体积重分母，非空
-    /// 使用时判断是否 > 0, 如果不是就用 LogisticsConfig.VolumeWeightDenominator 中的值
+    /// 存储时判断是否 > 0, 如果不是就用 LogisticsConfig.VolumeWeightDenominator 中的值
     /// </summary>
     public virtual int VolumeWeightDenominator { get; set; }
 

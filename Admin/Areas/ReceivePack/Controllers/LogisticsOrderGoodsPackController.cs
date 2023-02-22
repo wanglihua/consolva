@@ -7,6 +7,7 @@ using NHibernate.SqlCommand;
 using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
@@ -739,6 +740,20 @@ public class LogisticsOrderGoodsPackController : Controller {
             .SingleOrDefault();
 
         if (orderFirstMode == null) {
+            // 去体积重分母
+            var goodsType = param.GoodsType;
+            var feeRate = session.Query<LogisticsModeFeeRateInfo>()
+                .Where(e => e.Mode.Id == firstModeId
+                            && e.GoodsType == goodsType)
+                .Take(1)
+                .SingleOrDefault();
+            if (feeRate == null || feeRate.FeeRate == null) {
+                throw new ValidationException($"物流方式{firstMode.Name}物品类型{goodsType.Name}对应的通用费率不存在！");
+            }
+
+            int volumeWeightDenominator = feeRate.FeeRate.VolumeWeightDenominator;
+            volumeWeightDenominator = volumeWeightDenominator > 0 ? volumeWeightDenominator : LogisticsConfig.VolumeWeightDenominator;
+
             orderFirstMode = new LogisticsOrderFirstModeInfo {
                 Order = order,
                 OrderCode = order.Code,
@@ -746,6 +761,7 @@ public class LogisticsOrderGoodsPackController : Controller {
                 FirstMode = firstMode,
                 FirstType = firstMode.Type,
                 Channel = firstMode.Channel,
+                VolumeWeightDenominator = volumeWeightDenominator,
             };
 
             session.Save(orderFirstMode);

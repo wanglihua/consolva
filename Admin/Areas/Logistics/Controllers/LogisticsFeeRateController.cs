@@ -86,7 +86,7 @@ public class LogisticsFeeRateController : Controller {
         if (id == null || id.Value == 0) {
             logisticsFeeRate = new LogisticsFeeRateInfo();
             logisticsFeeRate.PublishRate = 1.0m;
-            logisticsFeeRate.VolumeWeightDenominator = logisticsFeeRateService.GetVolumeDenominator(); // 取体积重分母默认值
+            logisticsFeeRate.VolumeWeightDenominator = LogisticsConfig.VolumeWeightDenominator; // 取体积重分母默认值
 
             logisticsFeeRate.CustomerWidthDiscount = 1.0m;
             logisticsFeeRate.CustomerLengthDiscount = 1.0m;

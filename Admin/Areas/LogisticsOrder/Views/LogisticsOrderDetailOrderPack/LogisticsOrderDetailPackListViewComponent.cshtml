@@ -68,7 +68,7 @@
                                     </div>
                                 }
                             </td>
-                            <td style="text-align: center;">@(orderPack.Length * orderPack.Width * orderPack.Height / LogisticsConfig.VolumeWeightDenominator).ToString("#0.000")&nbsp;Kg</td>
+                            <td style="text-align: center;">@(orderPack.Length * orderPack.Width * orderPack.Height / orderPack.OrderFirstMode.VolumeWeightDenominator).ToString("#0.000")&nbsp;Kg</td>
                             <td style="text-align: center;">@orderPack.Weight.ToString("#0.000")&nbsp;Kg</td>
                             <td style="text-align: center;">@orderPack.PackageCount</td>
                             <td style="text-align: center;" class="break-word">
@@ -94,7 +94,7 @@
                         </td>
                         <td style="text-align: center;">
                             <div>总体积重：</div>
-                            <div>@(orderFirstMode.OrderPackListCache.Sum(e => (e.Length * e.Width * e.Height / LogisticsConfig.VolumeWeightDenominator)).ToString("#0.000"))&nbsp;Kg</div>
+                            <div>@(orderFirstMode.OrderPackListCache.Sum(e => (e.Length * e.Width * e.Height / e.OrderFirstMode.VolumeWeightDenominator)).ToString("#0.000"))&nbsp;Kg</div>
                         </td>
                         <td style="text-align: center;">
                             <div>总实际重：</div>

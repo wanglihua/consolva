@@ -10,8 +10,7 @@ namespace shunda.Domain.Express;
 /// <summary>
 /// 快递单尺寸重量
 /// </summary>
-public class ExpressSizeWeightInfo : Entity
-{
+public class ExpressSizeWeightInfo : Entity {
     /// <summary>
     /// 快递单，可空
     /// </summary>
@@ -109,26 +108,22 @@ public class ExpressSizeWeightInfo : Entity
     /// <summary>
     /// 单箱体积
     /// </summary>
-    public virtual decimal GetVolumeCache()
-    {
+    public virtual decimal GetVolumeCache() {
         return decimal.Round(Length * Width * Height / 100_00_00, 6, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>
     /// 单箱体积重
     /// </summary>
-    public virtual decimal GetVolumeWeightCache()
-    {
-        return decimal.Round(Length * Width * Height / LogisticsConfig.VolumeWeightDenominator, 3, MidpointRounding.AwayFromZero);
+    public virtual decimal GetVolumeWeightCache() {
+        return decimal.Round(Length * Width * Height / LogisticsConfig.VolumeWeightDenominator, 3, MidpointRounding.AwayFromZero); // 这里的体积重分母，只能用系统默认的了
     }
 
     /// <summary>
     /// 体积重实际重比值
     /// </summary>
-    public virtual decimal? GetVolumeWeightActualWeightRatioCache()
-    {
-        if (Weight == 0)
-        {
+    public virtual decimal? GetVolumeWeightActualWeightRatioCache() {
+        if (Weight == 0) {
             return null;
         }
 

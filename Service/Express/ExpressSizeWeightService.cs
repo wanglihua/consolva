@@ -54,7 +54,7 @@ public class ExpressSizeWeightService {
             return 0;
         }
 
-        return sizeWeightList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount) / LogisticsConfig.VolumeWeightDenominator;
+        return sizeWeightList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount) / LogisticsConfig.VolumeWeightDenominator; // 这里只能使用默认的体积重分母了
     }
 
     /// <summary>
