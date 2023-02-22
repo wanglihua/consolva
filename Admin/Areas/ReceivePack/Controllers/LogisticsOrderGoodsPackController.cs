@@ -322,6 +322,7 @@ public class LogisticsOrderGoodsPackController : Controller {
                 .Take(1)
                 .SingleOrDefault();
 
+            int packDelayMintes = 15; // 就是 15 分钟
             if (orderPackConfig != null) {
                 sortType = orderPackConfig.SortType;
 
@@ -329,6 +330,12 @@ public class LogisticsOrderGoodsPackController : Controller {
                     displayType = LogisticsOrderPackDisplayType.NotOthers;
                 } else {
                     displayType = orderPackConfig.DisplayType;
+                }
+
+                packDelayMintes = orderPackConfig.PackDelayMinutes;
+                if (packDelayMintes < 0) {
+                    // 这个不判断，即使小于0，也不影响逻辑的
+                    packDelayMintes = 0;
                 }
 
                 model.TrackingNoManualInputEnabled = orderPackConfig.TrackingNoManualInputEnabled;
@@ -369,7 +376,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             }
 
             // 空运设置 客户【提交打包】后，15分钟 可以进 打包池
-            DateTime fifteenMinutesBefore = DateTime.Now.AddMinutes(-15);
+            DateTime fifteenMinutesBefore = DateTime.Now.AddMinutes(-packDelayMintes);
             criteria = criteria.Add(Restrictions.Or(
                 Restrictions.IsNotNull($"{nameof(LogisticsOrderInfo.PackSchedules)}.{nameof(LogisticsOrderPackScheduleInfo.User)}"), // 已排班的订单不受这个时间限制
                 Restrictions.Where<LogisticsOrderInfo>(e => e.SubmitPackTime <= fifteenMinutesBefore)
