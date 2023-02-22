@@ -236,6 +236,7 @@ public class LogisticsGoodsController : Controller {
         model.TypeList = LogisticsGoodsType.GetInnerList();
         model.StatusList = LogisticsGoodsStatus.GetList();
 
+        model.LogisticsGoodsId = logisticsGoods.Id;
         model.Name = logisticsGoods.Name;
         model.Type = logisticsGoods.Type;
         model.BrandName = logisticsGoods.BrandName;
