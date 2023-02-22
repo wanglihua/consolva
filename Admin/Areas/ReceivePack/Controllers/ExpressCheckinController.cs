@@ -129,11 +129,11 @@ public class ExpressCheckinController : Controller {
             .Take(1)
             .SingleOrDefault();
 
-        LogisticsExpressCheckinExpressDetailModel model = new LogisticsExpressCheckinExpressDetailModel();
-
-        model.WarehouseId = warehouseId;
-        model.Warehouse = session.Get<WarehouseInfo>(warehouseId);
-        model.TrackingNo = trackingNo;
+        LogisticsExpressCheckinExpressDetailModel model = new LogisticsExpressCheckinExpressDetailModel {
+            WarehouseId = warehouseId,
+            Warehouse = session.Get<WarehouseInfo>(warehouseId),
+            TrackingNo = trackingNo
+        };
 
         int? expressExistShelfId = null;
         StorageLocInfo? storageLocExist = null;
@@ -202,14 +202,16 @@ public class ExpressCheckinController : Controller {
             IList<LogisticsExpressCheckinExpressGoodsModel> goodsModelList = new List<LogisticsExpressCheckinExpressGoodsModel>();
 
             foreach (ExpressGoodsInfo expressGoods in expressGoodsList) {
-                LogisticsExpressCheckinExpressGoodsModel goodsModel = new LogisticsExpressCheckinExpressGoodsModel();
-                goodsModel.ExpressGoodsId = expressGoods.Id;
-                goodsModel.UiIndex = expressGoods.Id.ToString();
-                goodsModel.GoodsId = expressGoods.Goods.Id;
-                goodsModel.GoodsName = expressGoods.Goods.Name;
-                goodsModel.Quantity = expressGoods.Quantity;
-                goodsModel.Unit = expressGoods.Unit;
-                goodsModel.UnitList = GoodsUnit.GetList();
+                LogisticsExpressCheckinExpressGoodsModel goodsModel = new LogisticsExpressCheckinExpressGoodsModel {
+                    ExpressGoodsId = expressGoods.Id,
+                    UiIndex = expressGoods.Id.ToString(),
+                    GoodsId = expressGoods.Goods.Id,
+                    GoodsName = expressGoods.Goods.Name,
+                    GoodsType = expressGoods.GoodsType,
+                    Quantity = expressGoods.Quantity,
+                    Unit = expressGoods.Unit,
+                    UnitList = GoodsUnit.GetList()
+                };
 
                 goodsModelList.Add(goodsModel);
             }
@@ -244,16 +246,16 @@ public class ExpressCheckinController : Controller {
 
             IList<LogisticsExpressCheckinSizeWeightChildItem> childItemList = new List<LogisticsExpressCheckinSizeWeightChildItem>();
             foreach (ExpressSizeWeightInfo expressChild in expressChildList) {
-                LogisticsExpressCheckinSizeWeightChildItem childItem = new LogisticsExpressCheckinSizeWeightChildItem();
-
-                childItem.ExpressChildId = expressChild.Id;
-                childItem.ParentTrackingNo = trackingNo;
-                childItem.TrackingNo = expressChild.TrackingNoSub.Replace(trackingNo + "-", "");
-                childItem.Length = expressChild.Length;
-                childItem.Width = expressChild.Width;
-                childItem.Height = expressChild.Height;
-                childItem.Weight = expressChild.Weight;
-                childItem.PackageCount = expressChild.PackageCount;
+                LogisticsExpressCheckinSizeWeightChildItem childItem = new LogisticsExpressCheckinSizeWeightChildItem {
+                    ExpressChildId = expressChild.Id,
+                    ParentTrackingNo = trackingNo,
+                    TrackingNo = expressChild.TrackingNoSub.Replace(trackingNo + "-", ""),
+                    Length = expressChild.Length,
+                    Width = expressChild.Width,
+                    Height = expressChild.Height,
+                    Weight = expressChild.Weight,
+                    PackageCount = expressChild.PackageCount
+                };
 
                 childItemList.Add(childItem);
             }
@@ -790,6 +792,7 @@ public class ExpressCheckinController : Controller {
                     }
 
                     expressGoods.Goods = session.Get<LogisticsGoodsInfo>(goodsModel.GoodsId); // 前面验证是否存在时，做了数据加载，这里一般就是从缓存中取得了
+                    expressGoods.GoodsType = goodsModel.GoodsType;
                     expressGoods.Quantity = goodsModel.Quantity;
                     expressGoods.Unit = goodsModel.Unit ?? string.Empty;
 

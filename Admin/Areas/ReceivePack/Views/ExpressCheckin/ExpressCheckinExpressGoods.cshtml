@@ -9,19 +9,16 @@
     Layout = null;
 
     string goodsIndexValue = $"{Model.UiIndex}";
-    if (Model.ExpressGoodsId != 0)
-    {
+    if (Model.ExpressGoodsId != 0) {
         goodsIndexValue = $"{Model.ExpressGoodsId}";
     }
     string goodsIndexFieldName = $"{nameof(LogisticsExpressCheckinExpressDetailModel.GoodsList)}.Index";
-
     string entryIdFieldName = $"{nameof(LogisticsExpressCheckinExpressDetailModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.ExpressGoodsId)}";
-
     string goodsIdFieldName = $"{nameof(LogisticsExpressCheckinExpressDetailModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.GoodsId)}";
+    string goodsTypeFieldName = $"{nameof(LogisticsExpressCheckinExpressDetailModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.GoodsType)}";
 
     int qunatity = 1;
-    if (Model.Quantity != 0)
-    {
+    if (Model.Quantity != 0) {
         qunatity = Model.Quantity;
     }
     string quantityFieldName = $"{nameof(LogisticsExpressCheckinExpressDetailModel.GoodsList)}[{goodsIndexValue}].{nameof(LogisticsExpressCheckinExpressGoodsModel.Quantity)}";
@@ -34,25 +31,31 @@
         <input id="@goodsIndexFieldName" name="@goodsIndexFieldName" value="@goodsIndexValue" type="hidden"/>
         <input id="@entryIdFieldName" name="@entryIdFieldName" value="@Model.ExpressGoodsId " type="hidden"/>
         <select id="goodsId_@Model.UiIndex" name="@goodsIdFieldName" class="select2" style="width: 380px;">
-            @if (Model.GoodsId != 0)
-            {
+            @if (Model.GoodsId != 0) {
                 <option value="@(Model.GoodsId)">@(Model.GoodsName)</option>
             }
         </select>
     </td>
     <td style="text-align: center;">
+        <select id="@(goodsTypeFieldName)" name="@(goodsTypeFieldName)" class="select2" style="width: 120px;">
+            @foreach (var goodsType in Model.GoodsTypeList) {
+                if (goodsType == Model.GoodsType) {
+                    <option value="@(goodsType.Id)" selected="selected">@(goodsType.Name)</option>
+                } else {
+                    <option value="@(goodsType.Id)">@(goodsType.Name)</option>
+                }
+            }
+        </select>
+    </td>
+    <td style="text-align: center;">
         <div class="input-group" style="margin: 0 auto;">
-            <input id="@quantityFieldName" name="@quantityFieldName" type="number" value="@(qunatity)" class="input-sm form-control" style="display: inline-block; width: 80px;text-align: center;">
-            <select id="@unitFieldName" name="@unitFieldName" class="input-group-addon" style="display: inline-block; width: 80px; height:28px;padding: 4px 0;">
+            <input id="@quantityFieldName" name="@quantityFieldName" type="number" value="@(qunatity)" class="input-sm form-control" style="display: inline-block; width: 60px;text-align: center;">
+            <select id="@unitFieldName" name="@unitFieldName" class="input-group-addon" style="display: inline-block; width: 75px; height:28px;padding: 4px 0;">
                 <option value="">选择单位</option>
-                @foreach (var unit in Model.UnitList)
-                {
-                    @if (string.IsNullOrWhiteSpace(Model.Unit) == false && Model.Unit == unit)
-                    {
+                @foreach (var unit in Model.UnitList) {
+                    @if (string.IsNullOrWhiteSpace(Model.Unit) == false && Model.Unit == unit) {
                         <option value="@unit" selected="selected">&nbsp;&nbsp; @unit</option>
-                    }
-                    else
-                    {
+                    } else {
                         <option value="@unit">&nbsp;&nbsp; @unit</option>
                     }
                 }

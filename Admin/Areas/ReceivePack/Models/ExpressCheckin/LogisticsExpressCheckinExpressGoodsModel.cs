@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 
-public class LogisticsExpressCheckinExpressGoodsModel
-{
+public class LogisticsExpressCheckinExpressGoodsModel {
     public string UiIndex { get; set; } = string.Empty;
 
     /// <summary>
@@ -16,6 +17,9 @@ public class LogisticsExpressCheckinExpressGoodsModel
     /// </summary>
     // [Required(ErrorMessage = "物品扩展名不能为空！")] 放到 controller 里面去判断了
     public int GoodsId { get; set; }
+
+    [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
+    public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
     /// 物品名称
@@ -33,4 +37,7 @@ public class LogisticsExpressCheckinExpressGoodsModel
 
     [BindNever]
     public IList<string> UnitList { get; set; } = new List<string>();
+
+    [BindNever]
+    public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = LogisticsGoodsType.GetInnerList();
 }
