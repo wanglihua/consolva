@@ -14,16 +14,19 @@ public abstract class CodeTypeBase
     /// 名称
     /// </summary>
     [JsonProperty("name")]
-    public string Name { get; protected set; }
+    public string Name { get; protected set; } = string.Empty;
 
     /// <summary>
     /// 描述
     /// </summary>
     // [JsonProperty("description")]
     [JsonIgnore]
-    public string Description { get; protected set; }
+    public string Description { get; protected set; } = string.Empty;
 
-    public CodeTypeBase(int id, string name, string description)
+    protected CodeTypeBase() {
+    }
+
+    protected CodeTypeBase(int id, string name, string description)
     {
         Id = id;
         Name = name;
