@@ -1,0 +1,181 @@
+using shunda.Core;
+using shunda.Core.Hibernate;
+using shunda.Core.Util;
+using shunda.Core.Web;
+using shunda.Domain.Logistics;
+using shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry;
+using Microsoft.AspNetCore.Mvc;
+using NHibernate;
+using NHibernate.Criterion;
+using NHibernate.SqlCommand;
+using NLog;
+using ISession = NHibernate.ISession;
+
+namespace shunda.Admin.Areas.Logistics.Controllers;
+
+/// <summary>
+/// 快递具体费率明细 控制器
+/// </summary>
+[LogisticsArea]
+// [LogisticsAuth(PassRes.XXX.LogisticsFeeRateExpressEntry)]
+public class LogisticsFeeRateExpressEntryController : Controller {
+    private static Logger log = LogManager.GetCurrentClassLogger();
+
+    private readonly ISession session;
+
+    public LogisticsFeeRateExpressEntryController(ISession session) {
+        this.session = session;
+    }
+
+    [HttpGet]
+    [Route("/admin/logistics/logistics/fee/rate/express/entry")]
+    public IActionResult Index() {
+        LogisticsFeeRateExpressEntryIndexModel model = new LogisticsFeeRateExpressEntryIndexModel();
+
+
+        return View("LogisticsFeeRateExpressEntryIndex", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/logistics/fee/rate/express/entry/list")]
+    public IActionResult List(LogisticsFeeRateExpressEntryListQueryParam queryParam) {
+        int totalCount = GetQueryOver(queryParam)
+            // .Select(Projections.Count<LogisticsFeeRateExpressEntryInfo>(e => logisticsFeeRateExpressEntryAlias!.Id))
+            .Select(Projections.RowCount())
+            .SingleOrDefault<int>();
+
+        ListPager listPager = new ListPager(queryParam, totalCount);
+
+        var listQuery = GetQueryOver(queryParam);
+        if (listPager.IsAscending) {
+            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
+        } else {
+            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
+        }
+
+        listQuery = listQuery.ThenByAlias(() => logisticsFeeRateExpressEntryAlias!.Id).Desc;
+            
+        IList<LogisticsFeeRateExpressEntryInfo> logisticsFeeRateExpressEntryList = listQuery
+            .Skip(listPager.Skip())
+            .Take(listPager.Take())
+            .List<LogisticsFeeRateExpressEntryInfo>();
+
+        /*
+        foreach (LogisticsFeeRateExpressEntryInfo logisticsFeeRateExpressEntry in logisticsFeeRateExpressEntryList) {
+        }
+        */
+
+        LogisticsFeeRateExpressEntryListModel model = new LogisticsFeeRateExpressEntryListModel(listPager);
+        model.LogisticsFeeRateExpressEntryList = logisticsFeeRateExpressEntryList;
+        
+        model.LogisticsFeeRateExpressEntryAlias = nameof(logisticsFeeRateExpressEntryAlias);
+        model.FeeRateExpressAlias = nameof(feeRateExpressAlias);        
+
+        return View("LogisticsFeeRateExpressEntryList", model);
+    }
+
+    private LogisticsFeeRateExpressEntryInfo? logisticsFeeRateExpressEntryAlias = null;
+    private LogisticsFeeRateExpressInfo? feeRateExpressAlias = null;
+
+    [NonAction]
+    private IQueryOver<LogisticsFeeRateExpressEntryInfo, LogisticsFeeRateExpressEntryInfo> GetQueryOver(LogisticsFeeRateExpressEntryListQueryParam queryParam) {
+        var query = session.QueryOver<LogisticsFeeRateExpressEntryInfo>(() => logisticsFeeRateExpressEntryAlias!)
+            .JoinAlias(() => logisticsFeeRateExpressEntryAlias!.FeeRateExpress, () => feeRateExpressAlias);
+
+        return query;
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/logistics/fee/rate/express/entry/detail")]
+    public IActionResult Detail(IdParam param) {
+        if (!ModelState.IsValid) {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
+        }
+
+        var id = param.Id;
+
+        LogisticsFeeRateExpressEntryInfo? logisticsFeeRateExpressEntry;
+
+        if (id <= 0) {
+            logisticsFeeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
+        } else {
+            logisticsFeeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(id);
+            if (logisticsFeeRateExpressEntry == null) {
+                throw new ValidationException($"指定的 快递具体费率明细#{id} 不存在！");
+            }
+        }
+
+        LogisticsFeeRateExpressEntryDetailModel model = new LogisticsFeeRateExpressEntryDetailModel();
+        model.LogisticsFeeRateExpressEntryId = logisticsFeeRateExpressEntry.Id;
+
+        model.FeeRateExpressId = logisticsFeeRateExpressEntry.FeeRateExpress?.Id ?? 0;
+        model.BeginWeight = logisticsFeeRateExpressEntry.BeginWeight;
+        model.EndWeight = logisticsFeeRateExpressEntry.EndWeight;
+        model.FeeByKilogram = logisticsFeeRateExpressEntry.FeeByKilogram;
+
+
+        return View("LogisticsFeeRateExpressEntryDetail", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/logistics/fee/rate/express/entry/save")]
+    [Transactional]
+    public IActionResult Save(LogisticsFeeRateExpressEntrySaveModel model) {
+        ValidationUtil.Validate<LogisticsFeeRateExpressEntrySaveModelValidator, LogisticsFeeRateExpressEntrySaveModel>(model);
+
+        int logisticsFeeRateExpressEntryId = model.LogisticsFeeRateExpressEntryId;
+
+        bool isCreate = logisticsFeeRateExpressEntryId <= 0;
+
+        LogisticsFeeRateExpressEntryInfo logisticsFeeRateExpressEntry;
+
+        if (isCreate) {
+            logisticsFeeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
+        } else {
+            logisticsFeeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(logisticsFeeRateExpressEntryId);
+            if (logisticsFeeRateExpressEntry == null){
+                throw new ValidationException($"指定的 快递具体费率明细#{logisticsFeeRateExpressEntryId} 不存在！");
+            }
+        }
+
+        LogisticsFeeRateExpressInfo feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(model.FeeRateExpressId);
+        logisticsFeeRateExpressEntry.FeeRateExpress = feeRateExpress;
+        logisticsFeeRateExpressEntry.BeginWeight = model.BeginWeight;
+        logisticsFeeRateExpressEntry.EndWeight = model.EndWeight;
+        logisticsFeeRateExpressEntry.FeeByKilogram = model.FeeByKilogram;
+
+        if (isCreate) {
+            session.Save(logisticsFeeRateExpressEntry);
+        } else {
+            session.Update(logisticsFeeRateExpressEntry);
+        }
+
+        session.Flush();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "保存成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/logistics/fee/rate/express/entry/delete")]
+    [Transactional]
+    public IActionResult Delete(IdListParam param) {
+        param.Validate("请选择要删除的快递具体费率明细！");
+
+        var idList = param.IdList;
+
+        foreach (int id in idList) {
+            LogisticsFeeRateExpressEntryInfo logisticsFeeRateExpressEntry = session.Load<LogisticsFeeRateExpressEntryInfo>(id);
+            session.Delete(logisticsFeeRateExpressEntry);
+        }
+
+        session.Flush();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "删除成功！",
+        });
+    }
+}
