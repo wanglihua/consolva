@@ -55,7 +55,7 @@ public class HomeController : Controller {
     [NoLoginRequired] // 里面会自动登录
     [HttpPost]
     [Route("/client/header/data")]
-    [Transactional] // login的时候需要事务
+    // [Transactional]  WechatAppLoginService.Login() 里面有事务还有互斥锁，这里事务不能加
     public IActionResult ClientHeaderData([FromBody] HomeClientHeaderDataParam param) {
         if (loginCustomerService.IsLogined == false) {
             // 这时才是需要验证这个参数
@@ -93,7 +93,7 @@ public class HomeController : Controller {
     [NoLoginRequired] // 里面会自动登录
     [HttpPost]
     [Route("/client/home/data")]
-    [Transactional] // login的时候需要事务
+    // [Transactional]  WechatAppLoginService.Login() 里面有事务还有互斥锁，这里事务不能加
     public IActionResult ClientHomeData([FromBody] HomeClientHomeDataParam param) {
         if (loginCustomerService.IsLogined == false) {
             // 这时才是需要验证这个参数

@@ -32,7 +32,7 @@ public class WechatAppLoginController : Controller {
 
     [HttpPost]
     [Route("/client/wechat/app/login")]
-    [Transactional]
+    // [Transactional]  WechatAppLoginService.Login() 里面有事务还有互斥锁，这里事务不能加
     public IActionResult Login([FromBody] WechatAppLoginParam param) {
         ValidationUtil.Validate<WechatAppLoginParamValidator, WechatAppLoginParam>(param);
 

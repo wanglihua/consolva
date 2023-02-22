@@ -1,4 +1,5 @@
 using NHibernate.Criterion;
+using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Wechat;
@@ -30,6 +31,8 @@ public class WechatAppLoginService {
         this.wechatOfficialAccountFollowerService = wechatOfficialAccountFollowerService;
     }
 
+    private static readonly object lockObj = new object();
+
     /// <summary>
     /// 微信小程序登录
     /// </summary>
@@ -40,55 +43,61 @@ public class WechatAppLoginService {
         string wechatAppOpenId = result.OpenId;
         string wechatUnionId = result.UnionId;
 
-        ICriterion criterion = Restrictions.Where<CustomerInfo>(e => e.WechatAppOpenId == wechatAppOpenId);
-        if (string.IsNullOrWhiteSpace(wechatUnionId) == false) // wechatUnionId 非空时才能带上这个查询 
-        {
-            criterion = Restrictions.Or(criterion, Restrictions.Where<CustomerInfo>(e => e.WechatUnionId == wechatUnionId));
-        }
+        // 主要是防止新的用户的重复创建
+        lock (lockObj) {
+            // 事物应该放在锁定区域里面
+            Transactional.Wrap(session, () => {
+                ICriterion criterion = Restrictions.Where<CustomerInfo>(e => e.WechatAppOpenId == wechatAppOpenId);
+                if (string.IsNullOrWhiteSpace(wechatUnionId) == false) // wechatUnionId 非空时才能带上这个查询 
+                {
+                    criterion = Restrictions.Or(criterion, Restrictions.Where<CustomerInfo>(e => e.WechatUnionId == wechatUnionId));
+                }
 
-        var customer = session.QueryOver<CustomerInfo>()
-            .Where(criterion)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (customer != null) {
-            bool shouldUpdateCustomer = false;
-
-            // 这里可能是更新由关注公众号创建的客户的信息，也可能原来没有union id的更新 union_id，这种可能性很小s
-            if (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId) {
-                customer.WechatAppOpenId = wechatAppOpenId;
-                customer.WechatUnionId = wechatUnionId;
-
-                shouldUpdateCustomer = true;
-            }
-
-            // 可能的更新微信公众号 open id
-            if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId)) {
-                var follower = session.Query<WechatOfficialAccountFollowerInfo>()
-                    .Where(e => e.UnionId == wechatUnionId)
+                var customer = session.QueryOver<CustomerInfo>()
+                    .Where(criterion)
                     .Take(1)
                     .SingleOrDefault();
 
-                if (follower != null) {
-                    customer.WechatOfficialAccountOpenId = follower.OpenId;
-                    customer.WechatOfficialAccountFollowStatus = follower.FollowStatus;
-                    customer.WechatOfficialAccountFollowTime = follower.FollowTime;
-                    customer.WechatOfficialAccountUnfollowTime = follower.UnfollowTime;
+                if (customer != null) {
+                    bool shouldUpdateCustomer = false;
 
-                    shouldUpdateCustomer = true;
+                    // 这里可能是更新由关注公众号创建的客户的信息，也可能原来没有union id的更新 union_id，这种可能性很小s
+                    if (customer.WechatAppOpenId != wechatAppOpenId || customer.WechatUnionId != wechatUnionId) {
+                        customer.WechatAppOpenId = wechatAppOpenId;
+                        customer.WechatUnionId = wechatUnionId;
+
+                        shouldUpdateCustomer = true;
+                    }
+
+                    // 可能的更新微信公众号 open id
+                    if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId)) {
+                        var follower = session.Query<WechatOfficialAccountFollowerInfo>()
+                            .Where(e => e.UnionId == wechatUnionId)
+                            .Take(1)
+                            .SingleOrDefault();
+
+                        if (follower != null) {
+                            customer.WechatOfficialAccountOpenId = follower.OpenId;
+                            customer.WechatOfficialAccountFollowStatus = follower.FollowStatus;
+                            customer.WechatOfficialAccountFollowTime = follower.FollowTime;
+                            customer.WechatOfficialAccountUnfollowTime = follower.UnfollowTime;
+
+                            shouldUpdateCustomer = true;
+                        }
+                    }
+
+                    if (shouldUpdateCustomer == true) {
+                        session.Update(customer);
+                        session.Flush();
+                    }
                 }
-            }
 
-            if (shouldUpdateCustomer == true) {
-                session.Update(customer);
-                session.Flush();
-            }
+                if (customer == null) {
+                    customer = customerService.CreateCustomerByWechatApp(wechatAppOpenId, wechatUnionId);
+                }
+
+                loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, request);
+            });
         }
-
-        if (customer == null) {
-            customer = customerService.CreateCustomerByWechatApp(wechatAppOpenId, wechatUnionId);
-        }
-
-        loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, request);
     }
 }
