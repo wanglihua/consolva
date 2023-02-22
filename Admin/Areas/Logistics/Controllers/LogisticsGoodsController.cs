@@ -309,6 +309,8 @@ public class LogisticsGoodsController : Controller {
         logisticsGoods.BrandName = model.BrandName ?? string.Empty;
         logisticsGoods.CreateExpressTrackingNo = model.CreateExpressTrackingNo;
 
+        logisticsGoods.UpdateUser = loginUser;
+
         if (isCreate) {
             session.Save(logisticsGoods);
             session.Flush();
@@ -326,7 +328,7 @@ public class LogisticsGoodsController : Controller {
 
         int hsGoodsId = model.HsGoodsId;
 
-        if (model.HsGoodsAutoSelect == false) {
+        if (model.HsGoodsAutoSelect == false && string.IsNullOrWhiteSpace(model.CnHsCode) == false) {
             string cnHsName = model.CnHsName;
             int count = session.Query<HsGoodsInfo>().Where(e => e.CnHsName == cnHsName).Count();
             if (count != 0) {
@@ -335,10 +337,10 @@ public class LogisticsGoodsController : Controller {
 
             HsGoodsInfo hsGoodsInfo = new HsGoodsInfo();
 
-            hsGoodsInfo.CnHsCode = model.CnHsCode;
-            hsGoodsInfo.CnHsName = model.CnHsName;
-            hsGoodsInfo.EnHsCode = model.EnHsCode;
-            hsGoodsInfo.EnHsName = model.EnHsName;
+            hsGoodsInfo.CnHsCode = model.CnHsCode ?? string.Empty;
+            hsGoodsInfo.CnHsName = model.CnHsName ?? string.Empty;
+            hsGoodsInfo.EnHsCode = model.EnHsCode ?? string.Empty;
+            hsGoodsInfo.EnHsName = model.EnHsName ?? string.Empty;
             hsGoodsInfo.Elem01 = model.Elem01 ?? string.Empty;
             hsGoodsInfo.Elem02 = model.Elem02 ?? string.Empty;
             hsGoodsInfo.Elem03 = model.Elem03 ?? string.Empty;

@@ -45,7 +45,7 @@ public class LogisticsGoodsSaveModel {
     [Required(ErrorMessage = "状态不能为空！")]
     [JsonProperty("status")]
     [ModelBinder(typeof(LogisticsGoodsStatusModelBinder))]
-    public virtual LogisticsGoodsStatus Status { get; set; } = LogisticsGoodsStatus.None;    
+    public virtual LogisticsGoodsStatus Status { get; set; } = LogisticsGoodsStatus.None;
 
     /// <summary>
     /// 新添加照片列表
@@ -63,19 +63,19 @@ public class LogisticsGoodsSaveModel {
 
     //[Required(ErrorMessage = "中国海关编码不能为空！")]
     [MaxLength(100, ErrorMessage = "中国海关编码长度不能大于100！")]
-    public string CnHsCode { get; set; } = string.Empty;
+    public string? CnHsCode { get; set; } = string.Empty;
 
     //[Required(ErrorMessage = "中国海关申报名不能为空！")]
     [MaxLength(200, ErrorMessage = "中国海关申报名长度不能大于200！")]
-    public string CnHsName { get; set; } = string.Empty;
+    public string? CnHsName { get; set; } = string.Empty;
 
     //[Required(ErrorMessage = "英文海关编码不能为空！")]
     [MaxLength(100, ErrorMessage = "英文海关编码长度不能大于100！")]
-    public string EnHsCode { get; set; } = string.Empty;
+    public string? EnHsCode { get; set; } = string.Empty;
 
     //[Required(ErrorMessage = "英文海关申报名不能为空！")]
     [MaxLength(200, ErrorMessage = "英文海关申报名长度不能大于200！")]
-    public string EnHsName { get; set; } = string.Empty;
+    public string? EnHsName { get; set; } = string.Empty;
 
     [MaxLength(300, ErrorMessage = "要素1长度不能大于300！")]
     public string? Elem01 { get; set; }
