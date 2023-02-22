@@ -143,7 +143,7 @@ public class Program {
         app.UseRouting();
 
         // 支持跨域
-        // app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(o => true).AllowCredentials());
+        // app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
         app.UseMiddleware<SessionIdMiddleware>();
         app.UseMiddleware<RequestLogMiddleware>(); // 还是放在有了 sessionId 后放心点
