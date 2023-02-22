@@ -69,7 +69,9 @@ public class LogisticsOrderCreateSelectExpressService {
 
         // 检查物品价格设置
         foreach (var express in expressList) {
-            throw new ValidationException($"快递单号 {express.TrackingNo} 货品总值为空，不能转运，请点击货品总值修改！");
+            if (express.GoodsValue <= 0) {
+                throw new ValidationException($"快递单号 {express.TrackingNo} 货品总值为空，不能转运，请点击货品总值修改！");
+            }
         }
 
         var createSelectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
