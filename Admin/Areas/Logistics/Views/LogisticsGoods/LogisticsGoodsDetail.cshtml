@@ -17,8 +17,8 @@
     <li class="parent" data-menu="goods-menu">物品管理</li>
 
     @if (Model.IsViewOnly) {
-        <li class="active" data-menu="goods-logistics-goods@(Model.LogisticsGoods.Type.Id)-index-menu">
-            <a href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })">@(Model.LogisticsGoods.Type.Name)清单</a>
+        <li class="active" data-menu="goods-logistics-goods@(Model.Type.Id)-index-menu">
+            <a href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.Type.Id })">@(Model.Type.Name)清单</a>
         </li>
         <li>物品详细</li>
     } else {
@@ -56,21 +56,21 @@
         </button>
 
 
-        @if (Model.LogisticsGoods.Status != LogisticsGoodsStatus.Confirmed) {
+        @if (Model.Status != LogisticsGoodsStatus.Confirmed) {
             <button type="button" class="btn btn-pink btn-sm" onclick="saveAndConfirmLogisticsGoods();">
                 <i class="ace-icon fa fa-hand-paper-o"></i>
                 保存并确认
             </button>
         }
     } else {
-        <a class="btn btn-pink btn-sm" target="_blank" href="@Url.Action("Detail", "LogisticsGoods", new { id = Model.LogisticsGoods.Id, statusId = (Model.LogisticsGoods.Status?.Id ?? 0) })">
+        <a class="btn btn-pink btn-sm" target="_blank" href="@Url.Action("Detail", "LogisticsGoods", new { id = Model.LogisticsGoodsId, statusId = (Model.Status?.Id ?? 0) })">
             <i class="ace-icon fa fa-pencil"></i>
             编辑
         </a>
     }
 
     @if (Model.IsViewOnly) {
-        <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })">
+        <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "LogisticsGoods", new { typeId = Model.Type.Id })">
             <i class="ace-icon fa fa-arrow-left"></i>
             返回
         </a>
@@ -87,7 +87,7 @@
     <div class="widget-body">
         <div class="widget-main">
             <form id="logisticsGoodsDetailForm" class="form-horizontal" role="form">
-                <input asp-for="LogisticsGoods.Id" type="hidden"/>
+                <input asp-for="LogisticsGoodsId" type="hidden"/>
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="detailSubTitle">扩展名信息</div>
@@ -95,10 +95,10 @@
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="LogisticsGoods.Type" class="col-xs-4 control-label">物品类型</label>
+                                    <label asp-for="Type" class="col-xs-4 control-label">物品类型</label>
                                     <div class="col-xs-8">
-                                        <input id="goodsTypeValue" type="hidden" asp-for="LogisticsGoods.Type"/>
-                                        <select id="goodsType" asp-for="LogisticsGoods.Type" class="input-sm form-control" disabled="disabled">
+                                        <input id="goodsTypeValue" type="hidden" asp-for="Type"/>
+                                        <select id="goodsType" asp-for="Type" class="input-sm form-control" disabled="disabled">
                                             @foreach (LogisticsGoodsType goodsType in Model.TypeList) {
                                                 <option value="@(goodsType.Id)">@(goodsType.Name)</option>
                                             }
@@ -111,12 +111,12 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="LogisticsGoods.Name" class="col-xs-4 control-label">扩展名</label>
+                                    <label asp-for="Name" class="col-xs-4 control-label">扩展名</label>
                                     <div class="col-xs-8">
                                         @if (Model.IsViewOnly) {
-                                            <input asp-for="LogisticsGoods.Name" type="text" class="input-sm form-control" disabled="disabled"/>
+                                            <input asp-for="Name" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="LogisticsGoods.Name" type="text" class="input-sm form-control" required="required" maxlength="200"/>
+                                            <input asp-for="Name" type="text" class="input-sm form-control" required="required" maxlength="200"/>
                                         }
 
                                     </div>
@@ -129,12 +129,12 @@
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="LogisticsGoods.BrandName" class="col-xs-4 control-label">品牌名</label>
+                                    <label asp-for="BrandName" class="col-xs-4 control-label">品牌名</label>
                                     <div class="col-xs-8">
                                         @if (Model.IsViewOnly) {
-                                            <input asp-for="LogisticsGoods.BrandName" type="text" class="input-sm form-control" disabled="disabled"/>
+                                            <input asp-for="BrandName" type="text" class="input-sm form-control" disabled="disabled"/>
                                         } else {
-                                            <input asp-for="LogisticsGoods.BrandName" type="text" class="input-sm form-control" maxlength="200"/>
+                                            <input asp-for="BrandName" type="text" class="input-sm form-control" maxlength="200"/>
                                         }
                                     </div>
                                 </div>
@@ -146,9 +146,9 @@
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="LogisticsGoods.CreateExpressTrackingNo" class="col-xs-4 control-label">创建单号</label>
+                                    <label asp-for="CreateExpressTrackingNo" class="col-xs-4 control-label">创建单号</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="LogisticsGoods.CreateExpressTrackingNo" type="text" class="input-sm form-control"/>
+                                        <input asp-for="CreateExpressTrackingNo" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +157,7 @@
                                 <div class="form-group">
                                     <label for="addUser" class="col-xs-4 control-label">添加人员</label>
                                     <div class="col-xs-8">
-                                        <input id="addUser" type="text" class="input-sm form-control" disabled="disabled" value="@(Model.LogisticsGoods.AddUser.UserName)"/>
+                                        <input id="addUser" type="text" class="input-sm form-control" disabled="disabled" value="@(Model.AddUser?.UserName)"/>
                                     </div>
                                 </div>
                             </div>
@@ -166,10 +166,10 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="LogisticsGoods.Status" class="col-xs-4 control-label">状态</label>
+                                    <label asp-for="Status" class="col-xs-4 control-label">状态</label>
                                     <div class="col-xs-8">
 
-                                        <select asp-for="LogisticsGoods.Status" class="input-sm form-control" disabled="disabled">
+                                        <select asp-for="Status" class="input-sm form-control" disabled="disabled">
                                             @foreach (LogisticsGoodsStatus goodsStatus in Model.StatusList) {
                                                 <option value="@(goodsStatus.Id)">@(goodsStatus.Name)</option>
                                             }
@@ -214,8 +214,8 @@
                         <div class="row">
                             <label class="col-xs-2 control-label">创建单号图片</label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.CreateExpressPhotoListCache != null && Model.LogisticsGoods.CreateExpressPhotoListCache.Count != 0) {
-                                    foreach (ExpressPhotoInfo expressPhoto in Model.LogisticsGoods.CreateExpressPhotoListCache) {
+                                @if (Model.CreateExpressPhotoListCache != null && Model.CreateExpressPhotoListCache.Count != 0) {
+                                    foreach (ExpressPhotoInfo expressPhoto in Model.CreateExpressPhotoListCache) {
                                         <a href="@(expressPhoto.BigImageFullUrlCache)" target="_blank">
                                             <img src="@(expressPhoto.SmallImageFullUrlCache)" alt=""/>
                                         </a>
@@ -228,8 +228,8 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0) {
-                                    int orderId = Model.LogisticsGoods.FirstOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
+                                @if (Model.FirstOrderExpressPhotoListCache != null && Model.FirstOrderExpressPhotoListCache.Count != 0) {
+                                    int orderId = Model.FirstOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
                                         <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(orderId)" target="_blank">订单1</a>
                                         <span>图片</span>
@@ -239,8 +239,8 @@
                                 }
                             </label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.FirstOrderExpressPhotoListCache != null && Model.LogisticsGoods.FirstOrderExpressPhotoListCache.Count != 0) {
-                                    foreach (var expressPhoto in Model.LogisticsGoods.FirstOrderExpressPhotoListCache) {
+                                @if (Model.FirstOrderExpressPhotoListCache != null && Model.FirstOrderExpressPhotoListCache.Count != 0) {
+                                    foreach (var expressPhoto in Model.FirstOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
                                                 <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index"  asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
@@ -260,8 +260,8 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0) {
-                                    int orderId = Model.LogisticsGoods.SecondOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
+                                @if (Model.SecondOrderExpressPhotoListCache != null && Model.SecondOrderExpressPhotoListCache.Count != 0) {
+                                    int orderId = Model.SecondOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
                                         <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(orderId)" target="_blank">订单2</a>
                                         <span>图片</span>
@@ -271,8 +271,8 @@
                                 }
                             </label>
                             <div class="col-xs-10" style="margin-bottom: 2px;">
-                                @if (Model.LogisticsGoods.SecondOrderExpressPhotoListCache != null && Model.LogisticsGoods.SecondOrderExpressPhotoListCache.Count != 0) {
-                                    foreach (var expressPhoto in Model.LogisticsGoods.SecondOrderExpressPhotoListCache) {
+                                @if (Model.SecondOrderExpressPhotoListCache != null && Model.SecondOrderExpressPhotoListCache.Count != 0) {
+                                    foreach (var expressPhoto in Model.SecondOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
                                                 <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
@@ -292,8 +292,8 @@
 
                         <div class="row">
                             <label class="col-xs-2 control-label">
-                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0) {
-                                    int orderId = Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
+                                @if (Model.ThirdOrderExpressPhotoListCache != null && Model.ThirdOrderExpressPhotoListCache.Count != 0) {
+                                    int orderId = Model.ThirdOrderExpressPhotoListCache.FirstOrDefault()?.Order?.Id ?? 0;
                                     <span>
                                         <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(orderId)" target="_blank">订单3</a>
                                         <span>图片</span>
@@ -303,8 +303,8 @@
                                 }
                             </label>
                             <div class="col-xs-10">
-                                @if (Model.LogisticsGoods.ThirdOrderExpressPhotoListCache != null && Model.LogisticsGoods.ThirdOrderExpressPhotoListCache.Count != 0) {
-                                    foreach (var expressPhoto in Model.LogisticsGoods.ThirdOrderExpressPhotoListCache) {
+                                @if (Model.ThirdOrderExpressPhotoListCache != null && Model.ThirdOrderExpressPhotoListCache.Count != 0) {
+                                    foreach (var expressPhoto in Model.ThirdOrderExpressPhotoListCache) {
                                         <div style="display: inline-block;">
                                             <div>
                                                 <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressPhoto.Express?.Id ?? 0)" target="_blank">@(expressPhoto.TrackingNo)</a>
@@ -674,7 +674,7 @@
     }
 
     function deleteLogisticsGoods() {
-        var idList = [@(Model.LogisticsGoods.Id)];
+        var idList = [@(Model.LogisticsGoodsId)];
 
         $.msg.confirm("确认要删除吗？",
             function() {
@@ -691,7 +691,7 @@
                         }
 
                         $.msg.show(data.message);
-                        window.location.href = "@Url.Action("Index", "LogisticsGoods", new { typeId = Model.LogisticsGoods.Type.Id })";
+                        window.location.href = "@Url.Action("Index", "LogisticsGoods", new { typeId = Model.Type.Id })";
                     }
                 });
             }

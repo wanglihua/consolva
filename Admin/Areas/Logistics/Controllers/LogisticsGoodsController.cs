@@ -3,8 +3,6 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 using NHibernate.SqlCommand;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Logistics.Models.LogisticsGoods;
 using shunda.Admin.Services;
 using shunda.Core;
@@ -13,9 +11,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
-using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
-using shunda.Service;
 using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
@@ -240,7 +236,13 @@ public class LogisticsGoodsController : Controller {
         model.TypeList = LogisticsGoodsType.GetInnerList();
         model.StatusList = LogisticsGoodsStatus.GetList();
 
-        model.LogisticsGoods = logisticsGoods;
+        model.Name = logisticsGoods.Name;
+        model.Type = logisticsGoods.Type;
+        model.BrandName = logisticsGoods.BrandName;
+        model.CreateExpressTrackingNo = logisticsGoods.CreateExpressTrackingNo;
+        model.Status = logisticsGoods.Status;
+
+        model.AddUser = logisticsGoods.AddUser;
 
         HsGoodsInfo? hsGoods = logisticsGoods.HsGoods;
 
@@ -265,12 +267,12 @@ public class LogisticsGoodsController : Controller {
     [HttpPost]
     [Route("/admin/logistics/goods/save")]
     [Transactional]
-    public IActionResult Save(LogisticsGoodsDetailModel model) {
+    public IActionResult Save(LogisticsGoodsSaveModel model) {
         if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
-        bool isCreate = model.LogisticsGoods.Id == 0;
+        bool isCreate = model.LogisticsGoodsId == 0;
 
         LogisticsGoodsInfo logisticsGoods = SaveInternal(model);
 
@@ -283,12 +285,11 @@ public class LogisticsGoodsController : Controller {
     }
 
     [NonAction]
-    private LogisticsGoodsInfo SaveInternal(LogisticsGoodsDetailModel model) {
+    private LogisticsGoodsInfo SaveInternal(LogisticsGoodsSaveModel model) {
         int loginUserId = loginUserService.GetLoginUserId();
         var loginUser = loginUserService.GetLoginUser();
 
-        LogisticsGoodsInfo logisticsGoodsFromUi = model.LogisticsGoods;
-        int logisticsGoodsId = logisticsGoodsFromUi.Id;
+        int logisticsGoodsId = model.LogisticsGoodsId;
 
         bool isCreate = logisticsGoodsId == 0;
 
@@ -302,11 +303,11 @@ public class LogisticsGoodsController : Controller {
             logisticsGoods = session.Get<LogisticsGoodsInfo>(logisticsGoodsId);
         }
 
-        logisticsGoods.Cate = logisticsGoodsFromUi.Cate;
-        logisticsGoods.Name = logisticsGoodsFromUi.Name.Trim();
-        logisticsGoods.Type = logisticsGoodsFromUi.Type;
-        logisticsGoods.BrandName = logisticsGoodsFromUi.BrandName ?? string.Empty;
-        logisticsGoods.CreateExpressTrackingNo = logisticsGoodsFromUi.CreateExpressTrackingNo;
+        logisticsGoods.Cate = LogisticsGoodsCate.None;
+        logisticsGoods.Name = model.Name.Trim();
+        logisticsGoods.Type = model.Type;
+        logisticsGoods.BrandName = model.BrandName ?? string.Empty;
+        logisticsGoods.CreateExpressTrackingNo = model.CreateExpressTrackingNo;
 
         if (isCreate) {
             session.Save(logisticsGoods);
@@ -399,7 +400,7 @@ public class LogisticsGoodsController : Controller {
         int loginUserId = loginUserService.GetLoginUserId();
         var loginUser = loginUserService.GetLoginUser();
 
-        bool isCreate = model.LogisticsGoods.Id == 0;
+        bool isCreate = model.LogisticsGoodsId == 0;
 
         LogisticsGoodsInfo logisticsGoods = SaveInternal(model);
 
