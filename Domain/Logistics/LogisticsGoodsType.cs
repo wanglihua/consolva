@@ -4,6 +4,7 @@ namespace shunda.Domain.Logistics;
 
 /// <summary>
 /// 物品类型
+/// 这里的id排序，正好是从低到高的排序，如果有物品类型混合时，以最高的物品类型为准
 /// </summary>
 public class LogisticsGoodsType : CodeTypeBase
 {
@@ -25,19 +26,19 @@ public class LogisticsGoodsType : CodeTypeBase
     public static readonly LogisticsGoodsType Brand = new LogisticsGoodsType(2000, "牌", "品牌类", "【牌】", "品牌类");
 
     /// <summary>
-    /// 液体粉末
-    /// </summary>
-    public static readonly LogisticsGoodsType LiquidPowder = new LogisticsGoodsType(3000, "液", "液体粉末", "【液】", "液体粉末");
-
-    /// <summary>
     /// 食品类
     /// </summary>
-    public static readonly LogisticsGoodsType Food = new LogisticsGoodsType(4000, "食", "食品药品", "【食】", "食品药品");
+    public static readonly LogisticsGoodsType Food = new LogisticsGoodsType(3000, "食", "食品药品", "【食】", "食品药品");
 
     /// <summary>
     /// 含电类
     /// </summary>
-    public static readonly LogisticsGoodsType Electric = new LogisticsGoodsType(5000, "电", "含电类", "【电】", "含电类");
+    public static readonly LogisticsGoodsType Electric = new LogisticsGoodsType(4000, "电", "含电类", "【电】", "含电类");
+
+    /// <summary>
+    /// 液体粉末
+    /// </summary>
+    public static readonly LogisticsGoodsType LiquidPowder = new LogisticsGoodsType(5000, "液", "液体粉末", "【液】", "液体粉末");    
 
     /// <summary>
     /// 禁止类
@@ -52,17 +53,17 @@ public class LogisticsGoodsType : CodeTypeBase
     private static readonly IReadOnlyList<LogisticsGoodsType> codeTypeListCustomer = new List<LogisticsGoodsType>() {
         Common,
         Brand,
-        LiquidPowder,
         Food,
         Electric,
+        LiquidPowder,
     };
 
     private static readonly IReadOnlyList<LogisticsGoodsType> codeTypeListInner = new List<LogisticsGoodsType>() {
         Common,
         Brand,
-        LiquidPowder,
         Food,
         Electric,
+        LiquidPowder,
         Forbidden,
     };
 
