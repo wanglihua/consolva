@@ -86,6 +86,30 @@ page {
     flex: 1 !important;
 }
 
+.item-goods-type1000 {
+    color: #009900 !important;
+}
+
+.item-goods-type2000 {
+    color: #009999 !important;
+}
+
+.item-goods-type3000 {
+    color: #999900 !important;
+}
+
+.item-goods-type4000 {
+    color: #000099 !important;
+}
+
+.item-goods-type5000 {
+    color: #990099 !important;
+}
+
+.item-goods-type6000 {
+    color: red !important;
+}
+
 .item-button {
     width: 180rpx !important;
     color: #646566 !important;

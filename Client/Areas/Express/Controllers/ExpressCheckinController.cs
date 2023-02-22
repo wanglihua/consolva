@@ -137,6 +137,7 @@ public class ExpressCheckinController : Controller {
                 TrackingNo = express.TrackingNo,
                 ExpressCompany = express.ExpressCompany,
                 GoodsType = express.GoodsType.Name,
+                GoodsTypeId = express.GoodsType.Id,
                 GoodsValue = express.GoodsValue.ToString("#0.00"),
                 Forbidden = express.GoodsType == LogisticsGoodsType.Forbidden,
                 CheckinTrackingNo = express.CheckinTrackingNo,

@@ -85,8 +85,8 @@ public class LogisticsOrderCreateSelectExpressService {
                 .Take(1)
                 .SingleOrDefault();
 
-            if (createSelectExpress == null) // 当前不是待建单的才需要保存
-            {
+            // 当前不是待建单的才需要保存
+            if (createSelectExpress == null) {
                 createSelectExpress = new LogisticsOrderCreateSelectExpressInfo {
                     ExpressId = expressId,
                     CustomerId = customerId,
