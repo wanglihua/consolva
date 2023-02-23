@@ -134,7 +134,10 @@
         $.ajax({
             url: '@Url.Action("Detail", "LogisticsFeeRateExpressEntry")',
             type: "POST",
-            data: { "id": id },
+            data: { 
+                "@(nameof(LogisticsFeeRateExpressEntryDetailParam.Id))": id,
+                "@(nameof(LogisticsFeeRateExpressEntryDetailParam.FeeRateExpressId))": "@(Model.FeeRateExpress.Id)",
+            },
             success: function(data) {
                 hideMask();
                 if (data.success === false) {

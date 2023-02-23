@@ -94,10 +94,6 @@ public class LogisticsFeeRateExpressEntryController : Controller {
     [HttpPost]
     [Route("/admin/logistics/logistics/fee/rate/express/entry/detail")]
     public IActionResult Detail(LogisticsFeeRateExpressEntryDetailParam param) {
-        if (!ModelState.IsValid) {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
-
         var id = param.Id;
 
         LogisticsFeeRateExpressEntryInfo? feeRateExpressEntry;
@@ -107,12 +103,13 @@ public class LogisticsFeeRateExpressEntryController : Controller {
         if (id <= 0) {
             feeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
 
-            var feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(model.FeeRateExpressId);
+            var feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(param.FeeRateExpressId);
             if (feeRateExpress == null) {
                 throw new ValidationException($"指定的快递费率#{model.FeeRateExpressId}不存在！");
             }
 
             feeRateExpressEntry.FeeRateExpress = feeRateExpress;
+            feeRateExpressEntry.FeeByKilogram = true;
         } else {
             feeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(id);
             if (feeRateExpressEntry == null) {
