@@ -56,7 +56,7 @@
                             <label for="logisticsFeeRateExpressEntryCheck_@(entry.Id)"></label><input id="logisticsFeeRateExpressEntryCheck_@(entry.Id)" type="checkbox" class="ace" value="@entry.Id" /><span class="lbl"></span>
                         </div>
                     </td>
-                    <td style="text-align: center;">@(itemIndex++)</td>
+                    <td style="text-align: center;">@(++itemIndex)</td>
                     <td style="text-align: center;">
                         <div>
                             @ListDataUtil.Render(entry.BeginWeight)
