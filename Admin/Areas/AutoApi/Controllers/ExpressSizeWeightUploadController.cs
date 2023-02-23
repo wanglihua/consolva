@@ -1,10 +1,12 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NLog;
 using shunda.Admin.Areas.AutoApi.Models.AutoMeasureData;
 using shunda.Admin.Areas.AutoApi.Models.ExpressSizeWeightUpload;
 using shunda.Core;
 using shunda.Core.Hibernate;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
@@ -31,40 +33,78 @@ public class ExpressSizeWeightUploadController : Controller {
 
     [HttpPost]
     [Route("/admin/auto/api/express/size/weight/upload")]
-    public IActionResult Upload(ExpressSizeWeightUploadParam param) {
+    public IActionResult Upload() {
         try {
             Transactional.Wrap(session, () => {
-                string trackingNo = param.OrderNo;
-                decimal length = param.Length;
-                decimal width = param.Width;
-                decimal height = param.Height;
-                decimal weight = param.Weight;
+                StreamReader reader = new StreamReader(Request.Body);
+                string requestBody = reader.ReadToEnd();
+                var param = JsonConvert.DeserializeObject<ExpressSizeWeightUploadParam>(requestBody);
+
+                if (param == null || param.Data == null) {
+                    throw new ValidationException("尺寸重量上传数据解析异常！");
+                }
+
+                var data = param.Data;
+                string trackingNo = data.TrackingNumber;
 
                 if (string.IsNullOrWhiteSpace(trackingNo) == true) {
                     throw new ValidationException("上传尺寸重量数据快递单号不能为空！");
                 }
 
+                if (decimal.TryParse(data.Length, out decimal length) == false) {
+                    throw new ValidationException("上传尺寸重量数据长度数据格式不正确！");
+                }
+
                 if (length < 0) {
-                    throw new ValidationException("上传尺寸重量数据长度不能为空！");
+                    throw new ValidationException("上传尺寸重量数据长度不能为负！");
+                }
+
+                if (decimal.TryParse(data.Width, out decimal width) == false) {
+                    throw new ValidationException("上传尺寸重量数据宽度数据格式不正确！");
                 }
 
                 if (width < 0) {
-                    throw new ValidationException("上传尺寸重量数据宽度不能为空！");
+                    throw new ValidationException("上传尺寸重量数据宽度不能为负！");
+                }
+
+                if (decimal.TryParse(data.Height, out decimal height) == false) {
+                    throw new ValidationException("上传尺寸重量数据高度数据格式不正确！");
                 }
 
                 if (height < 0) {
-                    throw new ValidationException("上传尺寸重量数据高度不能为空！");
+                    throw new ValidationException("上传尺寸重量数据高度不能为负！");
+                }
+
+                if (decimal.TryParse(data.Weight, out decimal weight) == false) {
+                    throw new ValidationException("上传尺寸重量数据重量数据格式不正确！");
                 }
 
                 if (weight < 0) {
-                    throw new ValidationException("上传尺寸重量数据重量不能为空！");
+                    throw new ValidationException("上传尺寸重量数据重量不能为负！");
                 }
 
+                string appKey = param.AppKey;
+
+                AutoMeasureMachineInfo? autoMeasureMachine = session
+                    .Query<AutoMeasureMachineInfo>()
+                    .Where(e => e.AppKey == appKey)
+                    .Take(1)
+                    .SingleOrDefault();
+                string secret = autoMeasureMachine?.Secret ?? string.Empty;
+                string timestamp = param.TimeStamp;
+                string dataQuery = $"height={height}&length={length}&tracking_number={trackingNo}&weight={weight}&width={width}";
+                string signCal = Md5Util.Encrypt(Md5Util.Encrypt(appKey + dataQuery + timestamp) + Md5Util.Encrypt(secret + dataQuery + timestamp));
+
+                if (signCal != param.Sign) {
+                    log.Error($"上传尺寸重量数据签名错误, request body: {requestBody}");
+                    log.Error($"上传尺寸重量数据签名错误, secret: {secret}");
+                    throw new ValidationException("上传尺寸重量数据签名错误！");
+                }
 
                 // 获取母单号
                 string trackingNoMain = trackingNo.Trim();
 
-                int indexOfMinus = trackingNo.IndexOf("-");
+                int indexOfMinus = trackingNo.IndexOf("-", StringComparison.InvariantCulture);
                 if (indexOfMinus != -1) {
                     trackingNoMain = trackingNo.Substring(0, indexOfMinus);
                 }
@@ -257,12 +297,18 @@ public class ExpressSizeWeightUploadController : Controller {
             log.Error(exp);
 
             return Json(new ExpressSizeWeightUploadResult {
-                Result = false,
+                Flag = "failure",
+                Code = "S01",
+                Message = exp.Message,
+                Data = false,
             });
         }
 
         return Json(new ExpressSizeWeightUploadResult {
-            Result = true,
+            Flag = "success",
+            Code = string.Empty,
+            Message = string.Empty,
+            Data = true,
         });
     }
 }
