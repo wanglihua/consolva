@@ -43,6 +43,16 @@
                     <b class="arrow"></b>
                 </li>
             }
+            
+            @if (Model.HasPassRes(PassRes.Setting.AutoMeasureMachine)) {
+                <li id="settings-auto-measure-machine-index-menu">
+                    <a asp-area="Setting" asp-controller="AutoMeasureMachine" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        自动秤设备
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }            
         </ul>
     </li>
 }

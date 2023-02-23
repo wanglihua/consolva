@@ -17,31 +17,25 @@
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 130px; text-align: center;">
                 <div>
                     <a field="@(nameof(AutoMeasureMachineInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">名称</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(nameof(AutoMeasureMachineInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">描述</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(nameof(AutoMeasureMachineInfo.Warehouse)).@(nameof(AutoMeasureMachineInfo.Warehouse.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">仓库</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 150px; text-align: center;">
                 <div>
                     <a field="@(nameof(AutoMeasureMachineInfo.AppKey))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">app key</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 150px; text-align: center;">
                 <div>
                     <a field="@(nameof(AutoMeasureMachineInfo.Secret))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">secret</a>
                 </div>
@@ -79,11 +73,6 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(autoMeasureMachine.Description)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
                             @ListDataUtil.Render(autoMeasureMachine.Warehouse?.Name)
                         </div>
                     </td>
@@ -113,7 +102,7 @@
             }
         } else {
             <tr>
-                <td colspan="11">
+                <td colspan="10">
                     暂时没有数据！
                 </td>
             </tr>
