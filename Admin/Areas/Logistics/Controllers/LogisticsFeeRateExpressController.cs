@@ -44,7 +44,6 @@ public class LogisticsFeeRateExpressController : Controller {
             model.StartPrice = feeRate.StartPrice;
             model.StepWeight = feeRate.StepWeight;
             model.StepPrice = feeRate.StepPrice;
-            model.FeeByKilogram = feeRate.FeeByKilogram;
             model.StartFreeMinWeight = feeRate.StartFreeMinWeight;
             model.WeightBreakStart = feeRate.WeightBreakStart;
             model.WeightBreakDiscount = feeRate.WeightBreakDiscount;
@@ -86,7 +85,6 @@ public class LogisticsFeeRateExpressController : Controller {
         feeRate.StartPrice = model.StartPrice;
         feeRate.StepWeight = model.StepWeight;
         feeRate.StepPrice = model.StepPrice;
-        feeRate.FeeByKilogram = model.FeeByKilogram ?? false;
         feeRate.StartFreeMinWeight = model.StartFreeMinWeight;
         feeRate.WeightBreakStart = model.WeightBreakStart;
         feeRate.WeightBreakDiscount = model.WeightBreakDiscount;

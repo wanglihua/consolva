@@ -51,9 +51,4 @@ public class LogisticsFeeRateExpressInfo : Entity {
     /// 重量满减优惠重量
     /// </summary>
     public virtual decimal? WeightBreakDiscount { get; set; }
-
-    /// <summary>
-    /// 是否按公斤计费
-    /// </summary>
-    public virtual bool FeeByKilogram { get; set; } = false;
 }

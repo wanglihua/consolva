@@ -34,12 +34,6 @@ public class LogisticsFeeRateExpressSaveModel {
     public decimal? StepPrice { get; set; }
 
     /// <summary>
-    /// 是否按公斤计费
-    /// </summary>
-    [Required(ErrorMessage = "是否按公斤计费不能为空！")]
-    public bool? FeeByKilogram { get; set; }
-
-    /// <summary>
     /// 首重免费最小总重
     /// </summary>
     public decimal? StartFreeMinWeight { get; set; }
