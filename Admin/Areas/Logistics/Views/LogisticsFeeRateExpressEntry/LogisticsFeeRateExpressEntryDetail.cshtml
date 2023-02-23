@@ -21,8 +21,10 @@
                             <div class="form-group">
                                 <label asp-for="BeginWeight" class="col-xs-2 control-label">开始重量</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="BeginWeight" type="number" required="required" number="true" class="input-sm form-control" autocomplete="off"/>
-
+                                    <div class="input-group">
+                                        <input asp-for="BeginWeight" type="number" required="required" number="true" class="input-sm form-control" autocomplete="off"/>
+                                        <span class="input-group-addon">KG</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -35,8 +37,10 @@
                             <div class="form-group">
                                 <label asp-for="EndWeight" class="col-xs-2 control-label">结束重量</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="EndWeight" type="number" required="required" number="true" class="input-sm form-control" autocomplete="off"/>
-
+                                    <div class="input-group">
+                                        <input asp-for="EndWeight" type="number" required="required" number="true" class="input-sm form-control" autocomplete="off"/>
+                                        <span class="input-group-addon">KG</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
