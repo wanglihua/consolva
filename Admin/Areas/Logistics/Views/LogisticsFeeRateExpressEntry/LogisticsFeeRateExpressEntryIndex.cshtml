@@ -4,37 +4,44 @@
 @model LogisticsFeeRateExpressEntryIndexModel
 @using shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry
 @{
-    ViewData[ViewDataKey.Title] = "快递具体费率明细";
+    ViewData[ViewDataKey.Title] = Model.LogisticsMode.Code + " " + Model.LogisticsMode.Name + " 快递具体费率明细";
     Layout = "_AdminLayout";
 }
 
-@*
-
-        <li id="logistics-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">物流设置</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="logistics-logistics-fee-rate-express-entry-menu">
-                    <a asp-area="Logistics" asp-controller="LogisticsFeeRateExpressEntry" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>快递具体费率明细
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
-
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流设置</li>
-    <li class="active" data-menu="logistics-logistics-fee-rate-express-entry-menu">@(ViewData[ViewDataKey.Title])</li>
+    <li class="active" data-menu="logistics-logistics-mode-index-menu">
+        <a asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">物流列表</a>
+    </li>
+
+    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner) {
+        <li>
+            <a asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">内部物流列表</a>
+        </li>
+    }
+
+    <li>
+        @(ViewData[ViewDataKey.Title])
+    </li>
 }
+
+<div class="gridToolBar clearfix">
+
+    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Customer) {
+        <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">
+            <i class="ace-icon fa fa-arrow-left"></i>
+            返回
+        </a>
+    }
+
+    @if (Model.LogisticsMode.Cate == LogisticsModeCate.Inner) {
+        <a type="button" class="btn btn-info btn-sm" asp-controller="LogisticsModeInner" asp-action="Index" asp-route-countryId="@(Model.LogisticsMode.Country.Id)">
+            <i class="ace-icon fa fa-arrow-left"></i>
+            返回
+        </a>
+    }
+
+</div>
 
 <div class="gridToolBar clearfix">
     <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsFeeRateExpressEntryList(0)">

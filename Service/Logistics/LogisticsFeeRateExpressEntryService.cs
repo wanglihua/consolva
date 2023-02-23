@@ -3,7 +3,7 @@ using shunda.Domain;
 using NLog;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service;
+namespace shunda.Service.Logistics;
 
 /// <summary>
 /// 快递具体费率明细 服务类

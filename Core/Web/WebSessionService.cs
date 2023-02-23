@@ -16,8 +16,7 @@ namespace shunda.Core.Web;
 /// 这个一定要设置成是 Scoped
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class WebSessionService
-{
+public class WebSessionService {
     private static readonly string SESSION_ID_SALT = "E9ADB9C0D30208FEA38B359924D5D58D";
 
     /// <summary>
@@ -25,12 +24,10 @@ public class WebSessionService
     /// </summary>
     public string SessionId { get; private set; } = string.Empty;
 
-    public void SetSessionId(string sessionIdOrigin, HttpRequest request)
-    {
+    public void SetSessionId(string sessionIdOrigin, HttpRequest request) {
         // 把原始的 session id 加密
         string userAgent = string.Empty;
-        if (request.Headers.ContainsKey(HeaderNames.UserAgent) && request.Headers[HeaderNames.UserAgent].Count != 0)
-        {
+        if (request.Headers.ContainsKey(HeaderNames.UserAgent) && request.Headers[HeaderNames.UserAgent].Count != 0) {
             userAgent = request.Headers[HeaderNames.UserAgent][0];
         }
 
@@ -42,8 +39,7 @@ public class WebSessionService
     /// 生成一个原始的，存储在客户的的 session id
     /// </summary>
     /// <returns>客户端原始 session id</returns>
-    public static string NewSessionId()
-    {
+    public static string NewSessionId() {
         return DateTime.Now.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N");
     }
 
@@ -54,15 +50,12 @@ public class WebSessionService
     /// </summary>
     /// <param name="sessionId">客户端原始 session id</param>
     /// <returns></returns>
-    public bool IsValiadSessionId(string sessionId)
-    {
-        if (string.IsNullOrWhiteSpace(sessionId))
-        {
+    public bool IsValiadSessionId(string sessionId) {
+        if (string.IsNullOrWhiteSpace(sessionId)) {
             return false;
         }
 
-        if (sessionId.Length < SESSION_ID_LENGTH)
-        {
+        if (sessionId.Length < SESSION_ID_LENGTH) {
             return false;
         }
 
@@ -74,25 +67,23 @@ public class WebSessionService
     /// </summary>
     /// <param name="request"></param>
     /// <returns>客户端原始 session id</returns>
-    public string GetSessionIdFromRequest(HttpRequest request)
-    {
+    public string GetSessionIdFromRequest(HttpRequest request) {
         // 先从 cookie 中获取
         string sessionId = request.Cookies[WebSessionConfig.SessionIdCookieKey] ?? string.Empty;
 
-        if (string.IsNullOrWhiteSpace(sessionId) == false && sessionId.Contains(","))
-        {
+        if (string.IsNullOrWhiteSpace(sessionId) == false && sessionId.Contains(",")) {
             // 发现有一个key有两个值的情况
-
-            sessionId = sessionId.Split(",", StringSplitOptions.RemoveEmptyEntries)
-                .ToList()
-                .MaxBy(e => e) ?? string.Empty;
+            var sessionIdList = sessionId.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList();
+            if (sessionIdList.Count == 0) {
+                sessionId = string.Empty;
+            } else {
+                sessionId = sessionIdList.Max(e => e) ?? string.Empty;
+            }
         }
 
         // 如果没有获取到，就试图从 header 中获取
-        if (string.IsNullOrWhiteSpace(sessionId))
-        {
-            if (request.Headers.ContainsKey(WebSessionConfig.SessionIdHeaderKey) && request.Headers[WebSessionConfig.SessionIdHeaderKey].Count != 0)
-            {
+        if (string.IsNullOrWhiteSpace(sessionId)) {
+            if (request.Headers.ContainsKey(WebSessionConfig.SessionIdHeaderKey) && request.Headers[WebSessionConfig.SessionIdHeaderKey].Count != 0) {
                 sessionId = request.Headers[WebSessionConfig.SessionIdHeaderKey][0];
             }
         }
@@ -107,8 +98,7 @@ public class WebSessionService
     /// <param name="request"></param>
     /// <param name="response"></param>
     /// <param name="sessionId">客户端原始 session id</param>
-    public void PutSessionIdToResponse(HttpRequest request, HttpResponse response, string sessionId)
-    {
+    public void PutSessionIdToResponse(HttpRequest request, HttpResponse response, string sessionId) {
 #if DEBUG
         // 放到 cookie 中
         response.Cookies.Append(WebSessionConfig.SessionIdCookieKey, sessionId, new CookieOptions() {
@@ -141,8 +131,7 @@ public class WebSessionService
     /// <param name="request"></param>
     /// <param name="response"></param>
     /// <returns></returns>
-    public string PutNewSessionIdToResponse(HttpRequest request, HttpResponse response)
-    {
+    public string PutNewSessionIdToResponse(HttpRequest request, HttpResponse response) {
         string sessionId = NewSessionId();
         SetSessionId(sessionId, request);
         PutSessionIdToResponse(request, response, sessionId);

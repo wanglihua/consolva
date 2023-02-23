@@ -9,6 +9,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Logistics.Controllers;
@@ -17,7 +18,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 /// 快递具体费率明细 控制器
 /// </summary>
 [LogisticsArea]
-// [LogisticsAuth(PassRes.XXX.LogisticsFeeRateExpressEntry)]
+[AdminAuth(PassRes.Logistics.LogisticsModeList)]
 public class LogisticsFeeRateExpressEntryController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
@@ -28,9 +29,17 @@ public class LogisticsFeeRateExpressEntryController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/logistics/fee/rate/express/entry")]
-    public IActionResult Index() {
-        LogisticsFeeRateExpressEntryIndexModel model = new LogisticsFeeRateExpressEntryIndexModel();
+    [Route("/admin/logistics/logistics/fee/rate/express/entry/{feeRateExpressId:int}")]
+    public IActionResult Index(int feeRateExpressId) {
+        var feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(feeRateExpressId);
+        if (feeRateExpress == null) {
+            throw new ValidationException($"指定的快递具体费率#{feeRateExpressId}不存在！");
+        }
+
+        NHibernateUtil.Initialize(feeRateExpress.LogisticsMode);
+
+        LogisticsFeeRateExpressEntryIndexModel model = new LogisticsFeeRateExpressEntryIndexModel {
+        };
 
 
         return View("LogisticsFeeRateExpressEntryIndex", model);
@@ -54,7 +63,7 @@ public class LogisticsFeeRateExpressEntryController : Controller {
         }
 
         listQuery = listQuery.ThenByAlias(() => logisticsFeeRateExpressEntryAlias!.Id).Desc;
-            
+
         IList<LogisticsFeeRateExpressEntryInfo> logisticsFeeRateExpressEntryList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -67,9 +76,9 @@ public class LogisticsFeeRateExpressEntryController : Controller {
 
         LogisticsFeeRateExpressEntryListModel model = new LogisticsFeeRateExpressEntryListModel(listPager);
         model.LogisticsFeeRateExpressEntryList = logisticsFeeRateExpressEntryList;
-        
+
         model.LogisticsFeeRateExpressEntryAlias = nameof(logisticsFeeRateExpressEntryAlias);
-        model.FeeRateExpressAlias = nameof(feeRateExpressAlias);        
+        model.FeeRateExpressAlias = nameof(feeRateExpressAlias);
 
         return View("LogisticsFeeRateExpressEntryList", model);
     }
@@ -133,7 +142,7 @@ public class LogisticsFeeRateExpressEntryController : Controller {
             logisticsFeeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
         } else {
             logisticsFeeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(logisticsFeeRateExpressEntryId);
-            if (logisticsFeeRateExpressEntry == null){
+            if (logisticsFeeRateExpressEntry == null) {
                 throw new ValidationException($"指定的 快递具体费率明细#{logisticsFeeRateExpressEntryId} 不存在！");
             }
         }
