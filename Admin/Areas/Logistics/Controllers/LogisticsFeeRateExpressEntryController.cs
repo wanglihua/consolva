@@ -49,6 +49,12 @@ public class LogisticsFeeRateExpressEntryController : Controller {
     [HttpPost]
     [Route("/admin/logistics/logistics/fee/rate/express/entry/list")]
     public IActionResult List(LogisticsFeeRateExpressEntryListQueryParam queryParam) {
+        int feeRateExpressId = queryParam.FeeRateExpressId;
+        var feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(feeRateExpressId);
+        if (feeRateExpress == null) {
+            throw new ValidationException($"指定的快递费率#{feeRateExpressId}不存在！");
+        }
+
         var listQuery = GetQueryOver(queryParam);
 
 
@@ -79,12 +85,15 @@ public class LogisticsFeeRateExpressEntryController : Controller {
         var query = session.QueryOver<LogisticsFeeRateExpressEntryInfo>(() => logisticsFeeRateExpressEntryAlias!)
             .JoinAlias(() => logisticsFeeRateExpressEntryAlias!.FeeRateExpress, () => feeRateExpressAlias);
 
+        int feeRateExpressId = queryParam.FeeRateExpressId;
+        query = query.Where(e => e.FeeRateExpress.Id == feeRateExpressId);
+
         return query;
     }
 
     [HttpPost]
     [Route("/admin/logistics/logistics/fee/rate/express/entry/detail")]
-    public IActionResult Detail(IdParam param) {
+    public IActionResult Detail(LogisticsFeeRateExpressEntryDetailParam param) {
         if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
@@ -93,8 +102,17 @@ public class LogisticsFeeRateExpressEntryController : Controller {
 
         LogisticsFeeRateExpressEntryInfo? feeRateExpressEntry;
 
+        LogisticsFeeRateExpressEntryDetailModel model = new LogisticsFeeRateExpressEntryDetailModel();
+
         if (id <= 0) {
             feeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
+
+            var feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(model.FeeRateExpressId);
+            if (feeRateExpress == null) {
+                throw new ValidationException($"指定的快递费率#{model.FeeRateExpressId}不存在！");
+            }
+
+            feeRateExpressEntry.FeeRateExpress = feeRateExpress;
         } else {
             feeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(id);
             if (feeRateExpressEntry == null) {
@@ -102,10 +120,10 @@ public class LogisticsFeeRateExpressEntryController : Controller {
             }
         }
 
-        LogisticsFeeRateExpressEntryDetailModel model = new LogisticsFeeRateExpressEntryDetailModel();
+
         model.FeeRateExpressEntryId = feeRateExpressEntry.Id;
 
-        model.FeeRateExpressId = feeRateExpressEntry.FeeRateExpress?.Id ?? 0;
+        model.FeeRateExpressId = feeRateExpressEntry.FeeRateExpress.Id;
         model.BeginWeight = feeRateExpressEntry.BeginWeight;
         model.EndWeight = feeRateExpressEntry.EndWeight;
         model.FeeByKilogram = feeRateExpressEntry.FeeByKilogram;
@@ -128,6 +146,13 @@ public class LogisticsFeeRateExpressEntryController : Controller {
 
         if (isCreate) {
             logisticsFeeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
+
+            LogisticsFeeRateExpressInfo feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(model.FeeRateExpressId);
+            if (feeRateExpress == null) {
+                throw new ValidationException($"指定的快递费率#{model.FeeRateExpressId}不存在！");
+            }
+
+            logisticsFeeRateExpressEntry.FeeRateExpress = feeRateExpress;
         } else {
             logisticsFeeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(logisticsFeeRateExpressEntryId);
             if (logisticsFeeRateExpressEntry == null) {
@@ -135,8 +160,6 @@ public class LogisticsFeeRateExpressEntryController : Controller {
             }
         }
 
-        LogisticsFeeRateExpressInfo feeRateExpress = session.Get<LogisticsFeeRateExpressInfo>(model.FeeRateExpressId);
-        logisticsFeeRateExpressEntry.FeeRateExpress = feeRateExpress;
         logisticsFeeRateExpressEntry.BeginWeight = model.BeginWeight;
         logisticsFeeRateExpressEntry.EndWeight = model.EndWeight;
         logisticsFeeRateExpressEntry.FeeByKilogram = model.FeeByKilogram;

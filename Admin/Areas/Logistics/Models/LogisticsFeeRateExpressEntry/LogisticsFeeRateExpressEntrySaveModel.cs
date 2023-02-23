@@ -1,5 +1,3 @@
-using shunda.Domain.Logistics;
-
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry;
 
 public class LogisticsFeeRateExpressEntrySaveModel {

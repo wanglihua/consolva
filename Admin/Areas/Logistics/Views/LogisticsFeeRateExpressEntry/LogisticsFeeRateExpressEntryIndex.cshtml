@@ -105,6 +105,7 @@
             url: "@Url.Action("List", "LogisticsFeeRateExpressEntry")",
             type: "POST",
             data: {
+                "@(nameof(LogisticsFeeRateExpressEntryListQueryParam.FeeRateExpressId))": "@(Model.FeeRateExpress.Id)",
                 "@(nameof(LogisticsFeeRateExpressEntryListQueryParam.PageIndex))": pageIndex,
                 "@(nameof(LogisticsFeeRateExpressEntryListQueryParam.SortField))": sortField,
                 "@(nameof(LogisticsFeeRateExpressEntryListQueryParam.SortDir))": sortDir

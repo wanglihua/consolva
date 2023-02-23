@@ -17,36 +17,30 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.FeeRateExpressAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.FeeRateExpress.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">快递具体费率</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.BeginWeight))">开始重量</a>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.BeginWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">开始重量</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.EndWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">结束重量</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.EndWeight))">结束重量</a>
                 </div>
             </th>
 
             <th style="width: 180px; text-align: center;">
                 <div>
-                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.FeeByKilogram))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">是否按公斤计费</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.FeeByKilogram))">是否按公斤计费</a>
                 </div>
             </th>
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">创建时间</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.CreateTime))">创建时间</a>
                 </div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">修改时间</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.UpdateTime))">修改时间</a>
                 </div>
             </th>
             <th></th>
@@ -62,13 +56,7 @@
                             <label for="logisticsFeeRateExpressEntryCheck_@(entry.Id)"></label><input id="logisticsFeeRateExpressEntryCheck_@(entry.Id)" type="checkbox" class="ace" value="@entry.Id" /><span class="lbl"></span>
                         </div>
                     </td>
-                    <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
-
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(entry.FeeRateExpress?.Id)
-                        </div>
-                    </td>
+                    <td style="text-align: center;">@(itemIndex++)</td>
                     <td style="text-align: center;">
                         <div>
                             @ListDataUtil.Render(entry.BeginWeight)
@@ -100,7 +88,7 @@
             }
         } else {
             <tr>
-                <td colspan="9">
+                <td colspan="8">
                     暂时没有数据！
                 </td>
             </tr>

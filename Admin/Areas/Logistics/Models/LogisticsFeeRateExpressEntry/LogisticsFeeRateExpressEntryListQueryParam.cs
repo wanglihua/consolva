@@ -1,8 +1,7 @@
 using shunda.Core;
-using shunda.Domain.Logistics;
-using Microsoft.AspNetCore.Mvc;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry;
 
 public class LogisticsFeeRateExpressEntryListQueryParam : ListQueryParam {
+    public int FeeRateExpressId { get; set; }
 }
