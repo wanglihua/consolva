@@ -8,8 +8,7 @@ namespace shunda.Domain.Storage;
 /// <summary>
 /// 仓库
 /// </summary>
-public class WarehouseInfo : Entity
-{
+public class WarehouseInfo : Entity {
     /// <summary>
     /// 编码
     /// </summary>
@@ -38,9 +37,19 @@ public class WarehouseInfo : Entity
     [MaxLength(500, ErrorMessage = "地址长度不能大于500！")]
     public virtual string Address { get; set; } = string.Empty;
 
-    // [DisplayName("地址描述")]
-    // [MaxLength(5000, ErrorMessage = "地址长度不能大于5000！")]
-    // public virtual string AddressDescription { get; set; }
+    /// <summary>
+    /// 联系电话
+    /// </summary>
+    [Required(ErrorMessage = "联系电话不能为空！")]
+    [MaxLength(500, ErrorMessage = "联系电话长度不能大于30！")]
+    public virtual string Phone { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 邮编
+    /// </summary>
+    [Required(ErrorMessage = "邮编不能为空！")]
+    [MaxLength(500, ErrorMessage = "邮编长度不能大于30！")]
+    public virtual string Zipcode { get; set; } = string.Empty;
 
     /// <summary>
     /// 外部状态

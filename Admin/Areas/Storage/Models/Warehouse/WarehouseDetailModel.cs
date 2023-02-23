@@ -5,7 +5,7 @@ namespace shunda.Admin.Areas.Storage.Models.Warehouse;
 
 public class WarehouseDetailModel
 {
-    public WarehouseWithAddressDescriptionInfo Warehouse { get; set; } = new();
+    public WarehouseInfo Warehouse { get; set; } = new();
 
     [BindNever]
     public IList<WarehouseStatus> WarehouseStatusList { get; set; } = new List<WarehouseStatus>();

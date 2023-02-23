@@ -92,12 +92,12 @@ public class WarehouseController : Controller {
     [HttpGet]
     [Route("/admin/warehouse/detail/{id:int?}")]
     public IActionResult Detail(int? id) {
-        WarehouseWithAddressDescriptionInfo? warehouse;
+        WarehouseInfo? warehouse;
 
         if (id == null || id.Value == 0) {
-            warehouse = new WarehouseWithAddressDescriptionInfo();
+            warehouse = new WarehouseInfo();
         } else {
-            warehouse = session.Get<WarehouseWithAddressDescriptionInfo>(id.Value);
+            warehouse = session.Get<WarehouseInfo>(id.Value);
             if (warehouse == null) throw new ValidationException("指定的数据项不存在！");
         }
 
@@ -122,18 +122,17 @@ public class WarehouseController : Controller {
 
         var isCreate = warehouseId == 0;
 
-        WarehouseWithAddressDescriptionInfo? warehouse;
+        WarehouseInfo? warehouse;
 
         if (isCreate)
-            warehouse = new WarehouseWithAddressDescriptionInfo();
+            warehouse = new WarehouseInfo();
         else
-            warehouse = session.Get<WarehouseWithAddressDescriptionInfo>(warehouseId);
+            warehouse = session.Get<WarehouseInfo>(warehouseId);
 
         warehouse.Code = warehouseFromUi.Code;
         warehouse.Name = warehouseFromUi.Name;
         warehouse.Description = warehouseFromUi.Description;
         warehouse.Address = warehouseFromUi.Address;
-        warehouse.AddressDescription = warehouseFromUi.AddressDescription;
         warehouse.OuterStatus = warehouseFromUi.OuterStatus;
         warehouse.InnerStatus = warehouseFromUi.InnerStatus;
         warehouse.OrderNum = warehouseFromUi.OrderNum;
