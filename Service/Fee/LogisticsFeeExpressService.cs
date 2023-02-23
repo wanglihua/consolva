@@ -100,7 +100,13 @@ public class LogisticsFeeExpressService {
         }
 
         // 按公斤计费，这个逻辑暂且放在 重量满减 后面
-        if (feeRateExpress.FeeByKilogram == true) {
+        int feeRateExpressId = feeRateExpress.Id;
+        var feeRateExpressEntry = session.Query<LogisticsFeeRateExpressEntryInfo>()
+            .Where(e => e.FeeRateExpress.Id == feeRateExpressId && e.BeginWeight <= totalWeightKg && e.EndWeight > totalWeightKg)
+            .OrderBy(e => e.BeginWeight)
+            .Take(1)
+            .SingleOrDefault();
+        if (feeRateExpressEntry != null && feeRateExpressEntry.FeeByKilogram == true) {
             decimal totalWeightKgWholeNumber = Math.Floor(totalWeightKg);
             if (totalWeightKg - totalWeightKgWholeNumber > 0) {
                 totalWeightKg = totalWeightKgWholeNumber + 1; // 不满一公斤按一公斤计算
