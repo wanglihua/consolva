@@ -42,7 +42,7 @@
             }
 
             <li class="@(activeClass)">
-                <a asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(country.Id)">@country.Name</a>
+                <a asp-area="Logistics" asp-controller="LogisticsMode" asp-action="Index" asp-route-countryId="@(country.Id)">@country.Name</a>
             </li>
         }
     </ul>

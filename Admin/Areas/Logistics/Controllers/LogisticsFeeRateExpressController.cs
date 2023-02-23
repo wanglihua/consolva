@@ -37,6 +37,7 @@ public class LogisticsFeeRateExpressController : Controller {
         var model = new LogisticsFeeRateExpressIndexModel();
         model.LogisticsModeId = logisticsModeId;
         model.LogisticsMode = logisticsMode;
+        model.FeeRateExpress = feeRate;
 
         if (feeRate != null) {
             model.StartWeight = feeRate.StartWeight;

@@ -39,8 +39,9 @@ public class LogisticsFeeRateExpressEntryController : Controller {
         NHibernateUtil.Initialize(feeRateExpress.LogisticsMode);
 
         LogisticsFeeRateExpressEntryIndexModel model = new LogisticsFeeRateExpressEntryIndexModel {
+            FeeRateExpress = feeRateExpress,
+            LogisticsMode = feeRateExpress.LogisticsMode,
         };
-
 
         return View("LogisticsFeeRateExpressEntryIndex", model);
     }

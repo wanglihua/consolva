@@ -42,6 +42,19 @@
 
 </div>
 
+<div style="margin-bottom: 18px;">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a asp-area="Logistics" asp-controller="LogisticsFeeRateExpress" asp-action="Index" asp-route-logisticsModeId="@(Model.LogisticsMode.Id)">基本费率</a>
+        </li>
+        @if(Model.FeeRateExpress != null) {
+            <li>
+                <a asp-area="Logistics" asp-controller="LogisticsFeeRateExpressEntry" asp-action="Index" asp-route-feeRateExpressId="@(Model.FeeRateExpress.Id)">明细费率</a>
+            </li>
+        }
+    </ul>
+</div>
+
 <div class="gridToolBar clearfix">
     <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsFeeRateExpress();">
         <i class="ace-icon fa fa-floppy-o"></i>

@@ -6,4 +6,7 @@ namespace shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpress;
 public class LogisticsFeeRateExpressIndexModel : LogisticsFeeRateExpressSaveModel {
     [BindNever]
     public LogisticsModeInfo LogisticsMode { get; set; } = new();
+
+    [BindNever]
+    public LogisticsFeeRateExpressInfo? FeeRateExpress { get; set; }
 }
