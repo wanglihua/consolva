@@ -6,7 +6,7 @@ public class LogisticsFeeRateExpressEntrySaveModel {
     /// <summary>
     /// Id
     /// </summary>
-    public int LogisticsFeeRateExpressEntryId { get; set; }
+    public int FeeRateExpressEntryId { get; set; }
 
     /// <summary>
     /// 快递具体费率，非空

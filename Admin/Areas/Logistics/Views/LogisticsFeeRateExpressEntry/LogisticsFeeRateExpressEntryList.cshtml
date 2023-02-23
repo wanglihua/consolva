@@ -5,8 +5,6 @@
 @using shunda.Domain.Logistics
 @model shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry.LogisticsFeeRateExpressEntryListModel
 
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsFeeRateExpressEntryList" }))
-
 <table id="tblLogisticsFeeRateExpressEntryList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
@@ -25,76 +23,76 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.LogisticsFeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.BeginWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">开始重量</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.BeginWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">开始重量</a>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.LogisticsFeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.EndWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">结束重量</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.EndWeight))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">结束重量</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 180px; text-align: center;">
                 <div>
-                    <a field="@(Model.LogisticsFeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.FeeByKilogram))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">是否按公斤计费</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.FeeByKilogram))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">是否按公斤计费</a>
                 </div>
             </th>
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.LogisticsFeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">创建时间</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">创建时间</a>
                 </div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.LogisticsFeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">修改时间</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsFeeRateExpressEntryList">修改时间</a>
                 </div>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (Model.LogisticsFeeRateExpressEntryList.Count != 0) {
+        @if (Model.EntryList.Count != 0) {
             int itemIndex = 0;
-            foreach (LogisticsFeeRateExpressEntryInfo logisticsFeeRateExpressEntry in Model.LogisticsFeeRateExpressEntryList) {
-                <tr ondblclick="showLogisticsFeeRateExpressEntryDetail(@(logisticsFeeRateExpressEntry.Id));">
+            foreach (LogisticsFeeRateExpressEntryInfo entry in Model.EntryList) {
+                <tr ondblclick="showLogisticsFeeRateExpressEntryDetail(@(entry.Id));">
                     <td style="text-align: center;">
                         <div>
-                            <label for="logisticsFeeRateExpressEntryCheck_@(logisticsFeeRateExpressEntry.Id)"></label><input id="logisticsFeeRateExpressEntryCheck_@(logisticsFeeRateExpressEntry.Id)" type="checkbox" class="ace" value="@logisticsFeeRateExpressEntry.Id" /><span class="lbl"></span>
+                            <label for="logisticsFeeRateExpressEntryCheck_@(entry.Id)"></label><input id="logisticsFeeRateExpressEntryCheck_@(entry.Id)" type="checkbox" class="ace" value="@entry.Id" /><span class="lbl"></span>
                         </div>
                     </td>
                     <td style="text-align: center;">@(Model.ItemBegin + itemIndex++)</td>
 
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(logisticsFeeRateExpressEntry.FeeRateExpress?.Id)
+                            @ListDataUtil.Render(entry.FeeRateExpress?.Id)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(logisticsFeeRateExpressEntry.BeginWeight)
+                            @ListDataUtil.Render(entry.BeginWeight)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(logisticsFeeRateExpressEntry.EndWeight)
+                            @ListDataUtil.Render(entry.EndWeight)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(logisticsFeeRateExpressEntry.FeeByKilogram)
+                            @ListDataUtil.Render(entry.FeeByKilogram)
                         </div>
                     </td>
 
                     <td style="text-align: center;">
                         <div>
-                            @logisticsFeeRateExpressEntry.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                            @entry.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @logisticsFeeRateExpressEntry.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                            @entry.UpdateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
                     <td></td>
@@ -109,5 +107,3 @@
         }
     </tbody>
 </table>
-
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsFeeRateExpressEntryList" }))

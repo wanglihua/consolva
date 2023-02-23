@@ -1,16 +1,15 @@
-using shunda.Core;
-using shunda.Domain.Logistics;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Logistics;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry;
 
-public class LogisticsFeeRateExpressEntryListModel : ListModel {
-    public LogisticsFeeRateExpressEntryListModel(ListPager listPager) : base(listPager) {
-    }
-
-    public string LogisticsFeeRateExpressEntryAlias = string.Empty;
-    public string FeeRateExpressAlias { get; set; } = string.Empty;    
+public class LogisticsFeeRateExpressEntryListModel {
+    [BindNever]
+    public string FeeRateExpressEntryAlias { get; set; } = string.Empty;
 
     [BindNever]
-    public IList<LogisticsFeeRateExpressEntryInfo> LogisticsFeeRateExpressEntryList { get; set; } = new List<LogisticsFeeRateExpressEntryInfo>();
+    public string FeeRateExpressAlias { get; set; } = string.Empty;
+
+    [BindNever]
+    public IList<LogisticsFeeRateExpressEntryInfo> EntryList { get; set; } = new List<LogisticsFeeRateExpressEntryInfo>();
 }

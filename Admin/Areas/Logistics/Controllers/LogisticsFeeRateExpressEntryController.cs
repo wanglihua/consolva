@@ -49,25 +49,12 @@ public class LogisticsFeeRateExpressEntryController : Controller {
     [HttpPost]
     [Route("/admin/logistics/logistics/fee/rate/express/entry/list")]
     public IActionResult List(LogisticsFeeRateExpressEntryListQueryParam queryParam) {
-        int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<LogisticsFeeRateExpressEntryInfo>(e => logisticsFeeRateExpressEntryAlias!.Id))
-            .Select(Projections.RowCount())
-            .SingleOrDefault<int>();
-
-        ListPager listPager = new ListPager(queryParam, totalCount);
-
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending) {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        } else {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
+
 
         listQuery = listQuery.ThenByAlias(() => logisticsFeeRateExpressEntryAlias!.Id).Desc;
 
-        IList<LogisticsFeeRateExpressEntryInfo> logisticsFeeRateExpressEntryList = listQuery
-            .Skip(listPager.Skip())
-            .Take(listPager.Take())
+        IList<LogisticsFeeRateExpressEntryInfo> entryList = listQuery
             .List<LogisticsFeeRateExpressEntryInfo>();
 
         /*
@@ -75,11 +62,11 @@ public class LogisticsFeeRateExpressEntryController : Controller {
         }
         */
 
-        LogisticsFeeRateExpressEntryListModel model = new LogisticsFeeRateExpressEntryListModel(listPager);
-        model.LogisticsFeeRateExpressEntryList = logisticsFeeRateExpressEntryList;
-
-        model.LogisticsFeeRateExpressEntryAlias = nameof(logisticsFeeRateExpressEntryAlias);
-        model.FeeRateExpressAlias = nameof(feeRateExpressAlias);
+        LogisticsFeeRateExpressEntryListModel model = new LogisticsFeeRateExpressEntryListModel {
+            EntryList = entryList,
+            FeeRateExpressEntryAlias = nameof(logisticsFeeRateExpressEntryAlias),
+            FeeRateExpressAlias = nameof(feeRateExpressAlias)
+        };
 
         return View("LogisticsFeeRateExpressEntryList", model);
     }
@@ -104,24 +91,24 @@ public class LogisticsFeeRateExpressEntryController : Controller {
 
         var id = param.Id;
 
-        LogisticsFeeRateExpressEntryInfo? logisticsFeeRateExpressEntry;
+        LogisticsFeeRateExpressEntryInfo? feeRateExpressEntry;
 
         if (id <= 0) {
-            logisticsFeeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
+            feeRateExpressEntry = new LogisticsFeeRateExpressEntryInfo();
         } else {
-            logisticsFeeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(id);
-            if (logisticsFeeRateExpressEntry == null) {
+            feeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(id);
+            if (feeRateExpressEntry == null) {
                 throw new ValidationException($"指定的 快递具体费率明细#{id} 不存在！");
             }
         }
 
         LogisticsFeeRateExpressEntryDetailModel model = new LogisticsFeeRateExpressEntryDetailModel();
-        model.LogisticsFeeRateExpressEntryId = logisticsFeeRateExpressEntry.Id;
+        model.FeeRateExpressEntryId = feeRateExpressEntry.Id;
 
-        model.FeeRateExpressId = logisticsFeeRateExpressEntry.FeeRateExpress?.Id ?? 0;
-        model.BeginWeight = logisticsFeeRateExpressEntry.BeginWeight;
-        model.EndWeight = logisticsFeeRateExpressEntry.EndWeight;
-        model.FeeByKilogram = logisticsFeeRateExpressEntry.FeeByKilogram;
+        model.FeeRateExpressId = feeRateExpressEntry.FeeRateExpress?.Id ?? 0;
+        model.BeginWeight = feeRateExpressEntry.BeginWeight;
+        model.EndWeight = feeRateExpressEntry.EndWeight;
+        model.FeeByKilogram = feeRateExpressEntry.FeeByKilogram;
 
 
         return View("LogisticsFeeRateExpressEntryDetail", model);
@@ -133,7 +120,7 @@ public class LogisticsFeeRateExpressEntryController : Controller {
     public IActionResult Save(LogisticsFeeRateExpressEntrySaveModel model) {
         ValidationUtil.Validate<LogisticsFeeRateExpressEntrySaveModelValidator, LogisticsFeeRateExpressEntrySaveModel>(model);
 
-        int logisticsFeeRateExpressEntryId = model.LogisticsFeeRateExpressEntryId;
+        int logisticsFeeRateExpressEntryId = model.FeeRateExpressEntryId;
 
         bool isCreate = logisticsFeeRateExpressEntryId <= 0;
 
