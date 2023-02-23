@@ -16,6 +16,7 @@ public partial class PassRes {
             new PassResInfo { Id = ExchangeRate, Name = "汇率设置", CateIdForCache = CateId },
             new PassResInfo { Id = ClientAgreement, Name = "客户端协议", CateIdForCache = CateId },
             new PassResInfo { Id = ClientInstruction, Name = "客户端文本菜单", CateIdForCache = CateId },
+            new PassResInfo { Id = AutoMeasureMachine, Name = "自动秤设备", CateIdForCache = CateId },
         };
 
         /// <summary>
@@ -37,5 +38,10 @@ public partial class PassRes {
         /// 客户端文本菜单
         /// </summary>
         public const int ClientInstruction = CateId + 06000;
+
+        /// <summary>
+        /// 自动秤设备
+        /// </summary>
+        public const int AutoMeasureMachine = CateId + 08000;
     }
 }

@@ -1,0 +1,165 @@
+@using shunda.Admin.Areas.Setting.Models.AutoMeasureMachine
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Setting.Models.AutoMeasureMachine.AutoMeasureMachineIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "自动秤设备";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-auto-measure-machine-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadAutoMeasureMachineList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showAutoMeasureMachineDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteAutoMeasureMachine()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="autoMeasureMachineList" data-page-index="0" data-sort-field="@(nameof(AutoMeasureMachineInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="autoMeasureMachineDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadAutoMeasureMachineList();
+    });
+
+    function sortAutoMeasureMachineList(sortField, sortDir) {
+        var list = $('#autoMeasureMachineList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadAutoMeasureMachineList();
+    }
+
+    function loadAutoMeasureMachineList(pageIndex) {
+        var list = $('#autoMeasureMachineList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "AutoMeasureMachine")",
+            type: "POST",
+            data: {
+                '@(nameof(AutoMeasureMachineListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(AutoMeasureMachineListQueryParam.SortField))': sortField,
+                '@(nameof(AutoMeasureMachineListQueryParam.SortDir))': sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#autoMeasureMachineList').html(data);
+
+                initListTable("#tblAutoMeasureMachineList");
+            }
+        });
+    }
+
+    function showAutoMeasureMachineDetail(id) {
+        $("#autoMeasureMachineDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#autoMeasureMachineDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "AutoMeasureMachine")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#autoMeasureMachineDetailDialogWrapper").html(data);
+                $("#autoMeasureMachineDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveAutoMeasureMachine() {
+        var form = $("#autoMeasureMachineDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "AutoMeasureMachine")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#autoMeasureMachineDetailDialog').modal('hide');
+                    loadAutoMeasureMachineList();
+                }
+            });
+        }
+    }
+
+    function deleteAutoMeasureMachine() {
+        var idList = getSelectIdList('#tblAutoMeasureMachineList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "AutoMeasureMachine")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        } else {
+                            $.msg.show(data.message);
+                        }
+
+                        loadAutoMeasureMachineList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

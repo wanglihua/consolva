@@ -1,0 +1,124 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@model shunda.Admin.Areas.Setting.Models.AutoMeasureMachine.AutoMeasureMachineListModel
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAutoMeasureMachineList" })
+
+<table id="tblAutoMeasureMachineList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="autoMeasureMachineCheckAll"></label><input id="autoMeasureMachineCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(AutoMeasureMachineInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">名称</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(AutoMeasureMachineInfo.Description))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">描述</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(AutoMeasureMachineInfo.Warehouse)).@(nameof(AutoMeasureMachineInfo.Warehouse.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">仓库</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(AutoMeasureMachineInfo.AppKey))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">app key</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(AutoMeasureMachineInfo.Secret))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">secret</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(AutoMeasureMachineInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(AutoMeasureMachineInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAutoMeasureMachineList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AutoMeasureMachineList != null && Model.AutoMeasureMachineList.Count != 0) {
+            int order = 1;
+            foreach (AutoMeasureMachineInfo autoMeasureMachine in Model.AutoMeasureMachineList) {
+                <tr ondblclick="showAutoMeasureMachineDetail(@(autoMeasureMachine.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="autoMeasureMachineCheck_@(autoMeasureMachine.Id)"></label><input id="autoMeasureMachineCheck_@(autoMeasureMachine.Id)" type="checkbox" class="ace" value="@autoMeasureMachine.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(autoMeasureMachine.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(autoMeasureMachine.Description)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(autoMeasureMachine.Warehouse?.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(autoMeasureMachine.AppKey)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(autoMeasureMachine.Secret)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @autoMeasureMachine.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @autoMeasureMachine.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAutoMeasureMachineList" })
