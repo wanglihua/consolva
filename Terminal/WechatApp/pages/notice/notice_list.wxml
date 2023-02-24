@@ -1,0 +1,5 @@
+<!--pages/notice/notice_list.wxml-->
+
+<view style="margin: 20px;">
+    <web-view src="https://mp.weixin.qq.com/s/EoH13QISXHHapIqhgmdPXQ"></web-view>
+</view>

@@ -53,7 +53,9 @@
         "pages/order/order_list_pay",
         "pages/order/order_list_wait_transport",
         "pages/order/order_list_transporting",
-        "pages/order/order_list_delivered"
+        "pages/order/order_list_delivered",
+        "pages/notice/notice_list",
+        "pages/notice/notice_detail"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",
