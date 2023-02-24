@@ -661,11 +661,20 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-3">
                                                 <div class="form-group">
-                                                    <label for="express_goods_@(expressGoods.Id)_goods_name" class="col-xs-2 control-label">物品名称</label>
-                                                    <div class="col-xs-10">
+                                                    <label for="express_goods_@(expressGoods.Id)_goods_name" class="col-xs-4 control-label">物品名称</label>
+                                                    <div class="col-xs-8">
                                                         <input id="express_goods_@(expressGoods.Id)_goods_name" value="@(expressGoods.Goods.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-3">
+                                                <div class="form-group">
+                                                    <label for="express_goods_@(expressGoods.Id)_goods_type" class="col-xs-4 control-label">物品类型</label>
+                                                    <div class="col-xs-8">
+                                                        <input id="express_goods_@(expressGoods.Id)_goods_type" value="@(expressGoods.GoodsType.Name)" type="text" disabled="disabled" class="input-sm form-control"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -706,7 +715,7 @@
                         <div id="panelPack" style="display: none;">
 
                             <div id="packListWrapper">
-                                @await Component.InvokeAsync("LogisticsOrderDetailOrderPackList", new { orderId = Model.Order.Id }) )
+                                @(await Component.InvokeAsync("LogisticsOrderDetailOrderPackList", new { orderId = Model.Order.Id }))
                             </div>
 
                             <script type="text/javascript">

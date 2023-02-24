@@ -35,20 +35,22 @@
         <van-cell title="客服备注" value="{{ orderDetail.order.serviceRemark }}" border="{{ false }}" custom-class="item"/>
         <view class="item-last-vspace"/>
 
-        <van-cell title="物流信息" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-        <block wx:if="{{ orderDetail.firstMode.firstModeList.length === 1 }}">
-            <van-cell title="物流类型" value="{{ orderDetail.firstMode.firstModeList[0].modeType }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item"/>
-        </block>
-        <block wx:else>
-            <block wx:for="{{ orderDetail.firstMode.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
-                <van-cell title="物流类型{{ index + 1 }}" value="{{ firstMode.modeType }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
+        <block wx:if="{{ orderDetail.firstMode.firstModeList.length > 0 }}">
+            <van-cell title="物流信息" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+            <block wx:if="{{ orderDetail.firstMode.firstModeList.length === 1 }}">
+                <van-cell title="物流类型" value="{{ orderDetail.firstMode.firstModeList[0].modeType }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item"/>
             </block>
+            <block wx:else>
+                <block wx:for="{{ orderDetail.firstMode.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
+                    <van-cell title="物流类型{{ index + 1 }}" value="{{ firstMode.modeType }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
+                </block>
+            </block>
+            <view class="item-last-vspace"/>
         </block>
-        <view class="item-last-vspace"/>
 
         <van-cell title="收货地址" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <van-cell title="收货人" value="{{ orderDetail.receiveAddress.firstName }} {{ orderDetail.receiveAddress.lastName }}" border="{{ false }}" custom-class="item"/>
@@ -63,11 +65,8 @@
         <van-cell title="发货地址" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
         <van-cell title="发货人" value="{{ orderDetail.sendAddress.name }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="手机" value="{{ orderDetail.sendAddress.mobile }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="省" value="{{ orderDetail.sendAddress.province }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="城市" value="{{ orderDetail.sendAddress.city }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="县区" value="{{ orderDetail.sendAddress.area }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="街道" value="{{ orderDetail.sendAddress.street }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="地址" value="{{ orderDetail.sendAddress.address }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="省市区域" value="{{ orderDetail.sendAddress.province }}{{ orderDetail.sendAddress.city }}{{ orderDetail.sendAddress.area }}{{ orderDetail.sendAddress.street }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="详细地址" value="{{ orderDetail.sendAddress.address }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="邮编" value="{{ orderDetail.sendAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
         <view class="item-last-vspace"/>
     </van-cell-group>
