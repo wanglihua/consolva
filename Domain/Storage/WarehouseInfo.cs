@@ -31,6 +31,13 @@ public class WarehouseInfo : Entity {
     public virtual string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// 省市县区
+    /// </summary>
+    [Required(ErrorMessage = "省市县区不能为空！")]
+    [MaxLength(500, ErrorMessage = "省市县区长度不能大于300！")]
+    public virtual string Area { get; set; } = string.Empty;
+
+    /// <summary>
     /// 地址
     /// </summary>
     [Required(ErrorMessage = "地址不能为空！")]

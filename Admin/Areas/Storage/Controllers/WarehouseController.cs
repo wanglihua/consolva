@@ -132,6 +132,7 @@ public class WarehouseController : Controller {
         warehouse.Code = warehouseFromUi.Code;
         warehouse.Name = warehouseFromUi.Name;
         warehouse.Description = warehouseFromUi.Description;
+        warehouse.Area = warehouseFromUi.Area;
         warehouse.Address = warehouseFromUi.Address;
         warehouse.Phone = warehouseFromUi.Phone;
         warehouse.Zipcode = warehouseFromUi.Zipcode;

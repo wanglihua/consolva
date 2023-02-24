@@ -40,6 +40,16 @@ public class WarehouseInfoMapping : EntityMapping<WarehouseInfo> {
         );
 
         Property(
+            x => x.Area,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("area");
+                map.Length(300);
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.Address,
             map => {
                 map.Type(NHibernateUtil.String);
