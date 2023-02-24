@@ -1,4 +1,3 @@
-@using shunda.Domain
 @model shunda.Admin.Areas.Setting.Models.ClientNotice.ClientNoticeDetailModel
 @{
     Layout = null;
@@ -34,6 +33,7 @@
                                 <label asp-for="Url" class="col-xs-2 control-label">URL</label>
                                 <div class="col-xs-10">
                                     <input asp-for="Url" type="text" required="required" maxlength="500" class="input-sm form-control" autocomplete="off"/>
+                                    <div class="help-block">请务必填写与微信小程序关联的微信公众号文章链接</div>
                                 </div>
                             </div>
                         </div>
