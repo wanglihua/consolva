@@ -14,36 +14,77 @@ Page({
                 address: address,
             });
         });
+    },
+
+    onCustomerCodeClick(e) {
+        const that = this;
+        wx.setClipboardData({
+            data: that.data.address.customerCode,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
+    onPhoneClick(e) {
+        const that = this;
+        wx.setClipboardData({
+            data: that.data.address.phone,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
+    onAreaClick(e) {
+        const that = this;
+        wx.setClipboardData({
+            data: that.data.address.area,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
+    onAddressClick(e) {
+        const that = this;
+        wx.setClipboardData({
+            data: that.data.address.address,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
+    onZipcodeClick(e) {
+        const that = this;
+        wx.setClipboardData({
+            data: that.data.address.zipcode,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
+    onFullAddressCopyClick(e) {
+        const that = this;
+        wx.setClipboardData({
+            data: that.data.address.fullAddress,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
     }
 })
-
-// /client/warehouse/address/detail
-
-/*
-
-using Newtonsoft.Json;
-
-namespace shunda.Client.Areas.Instruction.Models.WarehouseAddress;
-
-public class WarehouseAddressDetailModel {
-    [JsonProperty("customerCode")]
-    public string CustomerCode { get; set; } = string.Empty;
-
-    [JsonProperty("area")]
-    public string Area { get; set; } = string.Empty;
-
-    [JsonProperty("address")]
-    public string Address { get; set; } = string.Empty;
-
-    [JsonProperty("phone")]
-    public string Phone { get; set; } = string.Empty;
-
-    [JsonProperty("zipcode")]
-    public string Zipcode { get; set; } = string.Empty;
-
-    [JsonProperty("fullAddress")]
-    public string FullAddress { get; set; } = string.Empty;
-}
-
-
- */
