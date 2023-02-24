@@ -3,14 +3,14 @@
 @model shunda.Admin.Areas.Setting.Models.ClientAgreement.ClientAgreementDetailModel
 
 @{
-    ViewData[ViewDataKey.Title] = "客户端协议详细";
+    ViewData[ViewDataKey.Title] = "客户端下单协议详细";
     Layout = "_AdminLayout";
 }
 
 @section Breadcrumb {
     <li class="parent" data-menu="settings-menu">系统设置</li>
     <li class="active" data-menu="settings-client-agreement-index-menu">
-        <a href="@Url.Action("Index", "ClientAgreement")">客户端协议</a>
+        <a href="@Url.Action("Index", "ClientAgreement")">客户端下单协议</a>
     </li>
     <li>@(ViewData[ViewDataKey.Title])</li>
 }

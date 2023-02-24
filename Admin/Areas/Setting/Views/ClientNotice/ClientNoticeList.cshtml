@@ -1,0 +1,113 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model shunda.Admin.Areas.Setting.Models.ClientNotice.ClientNoticeListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientNoticeList" }))
+
+<table id="tblClientNoticeList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="clientNoticeCheckAll"></label><input id="clientNoticeCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 320px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientNoticeAlias).@(nameof(ClientNoticeInfo.Title))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientNoticeList">标题</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.EditorUserAlias).@(nameof(ClientNoticeInfo.EditorUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientNoticeList">编辑</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientNoticeAlias).@(nameof(ClientNoticeInfo.ListTop))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientNoticeList">是否置顶</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientNoticeAlias).@(nameof(ClientNoticeInfo.Important))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientNoticeList">重要公告</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientNoticeAlias).@(nameof(ClientNoticeInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientNoticeList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientNoticeAlias).@(nameof(ClientNoticeInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientNoticeList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ClientNoticeList.Count != 0) {
+            int order = 1;
+            foreach (ClientNoticeInfo clientNotice in Model.ClientNoticeList) {
+                <tr ondblclick="showClientNoticeDetail(@(clientNotice.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="clientNoticeCheck_@(clientNotice.Id)"></label><input id="clientNoticeCheck_@(clientNotice.Id)" type="checkbox" class="ace" value="@clientNotice.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + order++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(clientNotice.Title)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(clientNotice.EditorUser.UserName)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(clientNotice.ListTop)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(clientNotice.Important)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @clientNotice.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @clientNotice.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="9">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientNoticeList" }))

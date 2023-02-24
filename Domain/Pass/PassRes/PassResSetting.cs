@@ -13,6 +13,7 @@ public partial class PassRes {
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "系统配置" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
+            new PassResInfo { Id = ClientNotice, Name = "客户端公告", CateIdForCache = CateId },
             new PassResInfo { Id = ExchangeRate, Name = "汇率设置", CateIdForCache = CateId },
             new PassResInfo { Id = ClientAgreement, Name = "客户端协议", CateIdForCache = CateId },
             new PassResInfo { Id = ClientInstruction, Name = "客户端文本菜单", CateIdForCache = CateId },
@@ -25,23 +26,28 @@ public partial class PassRes {
         public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
 
         /// <summary>
+        /// 客户端公告
+        /// </summary>
+        public const int ClientNotice = CateId + 02000;        
+
+        /// <summary>
         /// 汇率设置
         /// </summary>
-        public const int ExchangeRate = CateId + 02000;
+        public const int ExchangeRate = CateId + 04000;
 
         /// <summary>
         /// 客户端协议
         /// </summary>
-        public const int ClientAgreement = CateId + 04000;
+        public const int ClientAgreement = CateId + 06000;
 
         /// <summary>
         /// 客户端文本菜单
         /// </summary>
-        public const int ClientInstruction = CateId + 06000;
+        public const int ClientInstruction = CateId + 08000;
 
         /// <summary>
         /// 自动秤设备
         /// </summary>
-        public const int AutoMeasureMachine = CateId + 08000;
+        public const int AutoMeasureMachine = CateId + 10000;
     }
 }

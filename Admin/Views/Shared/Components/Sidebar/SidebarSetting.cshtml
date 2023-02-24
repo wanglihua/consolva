@@ -14,6 +14,16 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
+            @if (Model.HasPassRes(PassRes.Setting.ClientNotice)) {
+                <li id="settings-client-notice-menu">
+                    <a asp-area="Setting" asp-controller="ClientNotice" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        客户端公告
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
             @if (Model.HasPassRes(PassRes.Setting.ExchangeRate)) {
                 <li id="settings-exchange-rate-index-menu">
                     <a asp-area="Setting" asp-controller="ExchangeRate" asp-action="Index">
@@ -28,7 +38,7 @@
                 <li id="settings-client-agreement-index-menu">
                     <a asp-area="Setting" asp-controller="ClientAgreement" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        客户端协议
+                        客户端下单协议
                     </a>
                     <b class="arrow"></b>
                 </li>
@@ -43,7 +53,7 @@
                     <b class="arrow"></b>
                 </li>
             }
-            
+
             @if (Model.HasPassRes(PassRes.Setting.AutoMeasureMachine)) {
                 <li id="settings-auto-measure-machine-index-menu">
                     <a asp-area="Setting" asp-controller="AutoMeasureMachine" asp-action="Index">
@@ -52,7 +62,7 @@
                     </a>
                     <b class="arrow"></b>
                 </li>
-            }            
+            }
         </ul>
     </li>
 }

@@ -1,0 +1,198 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model ClientNoticeIndexModel
+@using shunda.Admin.Areas.Setting.Models.ClientNotice
+@{
+    ViewData[ViewDataKey.Title] = "客户端公告";
+    Layout = "_AdminLayout";
+}
+
+@*
+
+        <li id="settings-menu">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-copy"></i>
+                <span class="menu-text">系统设置</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+
+                <li id="settings-client-notice-menu">
+                    <a asp-area="Setting" asp-controller="ClientNotice" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>客户端公告
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+
+*@
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-client-notice-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadClientNoticeList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showClientNoticeDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteClientNotice()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+@*
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadClientNoticeList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+*@
+
+<div id="clientNoticeList" data-page-index="0" data-sort-field="@(nameof(ClientNoticeInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="clientNoticeDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadClientNoticeList();
+    });
+
+    function sortClientNoticeList(sortField, sortDir) {
+        var list = $('#clientNoticeList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadClientNoticeList();
+    }
+
+    function loadClientNoticeList(pageIndex) {
+        var list = $('#clientNoticeList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "ClientNotice")",
+            type: "POST",
+            data: {
+                "@(nameof(ClientNoticeListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ClientNoticeListQueryParam.SortField))": sortField,
+                "@(nameof(ClientNoticeListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#clientNoticeList').html(data);
+
+                initListTable("#tblClientNoticeList");
+            }
+        });
+    }
+
+    function showClientNoticeDetail(id) {
+        $("#clientNoticeDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#clientNoticeDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "ClientNotice")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#clientNoticeDetailDialogWrapper").html(data);
+                $("#clientNoticeDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveClientNotice() {
+        var form = $("#clientNoticeDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ClientNotice")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#clientNoticeDetailDialog').modal('hide');
+                    loadClientNoticeList();
+                }
+            });
+        }
+    }
+
+    function deleteClientNotice() {
+        var idList = getSelectIdList('#tblClientNoticeList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "ClientNotice")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadClientNoticeList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
