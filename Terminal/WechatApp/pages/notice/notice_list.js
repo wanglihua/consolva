@@ -7,4 +7,7 @@ Page({
     onLoad(options) {
 
     },
+
+    onReachBottom() {
+    },    
 })

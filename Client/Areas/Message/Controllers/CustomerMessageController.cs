@@ -9,16 +9,14 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Message.Controllers;
 
-public class CustomerMessageController : Controller
-{
+public class CustomerMessageController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly CustomerMessageClientViewRecordService customerMessageClientViewRecordService;
 
     public CustomerMessageController(ISession session,
         LoginCustomerService loginCustomerService,
-        CustomerMessageClientViewRecordService customerMessageClientViewRecordService)
-    {
+        CustomerMessageClientViewRecordService customerMessageClientViewRecordService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.customerMessageClientViewRecordService = customerMessageClientViewRecordService;
@@ -27,14 +25,12 @@ public class CustomerMessageController : Controller
     [HttpPost]
     [Route("/client/customer/message/list")]
     [Transactional]
-    public IActionResult List([FromBody] CustomerMessageListParam param)
-    {
+    public IActionResult List([FromBody] CustomerMessageListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         var listQuery = GetListQuery(param);
 
-        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE)
-        {
+        if (param.LastId != ClientListLastIdModel.LAST_ID_NOT_SET_VALUE) {
             // 跟降序排序匹配
             int lastIdQuery = param.LastId;
             listQuery = listQuery.Where(e => e.Id < lastIdQuery); // 降序排序id大的会被先取得
@@ -57,8 +53,8 @@ public class CustomerMessageController : Controller
 
         int msgCount = GetListQuery(param).Count();
 
-        if (param.LastId == ClientListLastIdModel.LAST_ID_NOT_SET_VALUE) // 只需要这个时候设置就可以了，就是界面打开第一次加载列表的时候
-        {
+        // 只需要这个时候设置就可以了，就是界面打开第一次加载列表的时候
+        if (param.LastId == ClientListLastIdModel.LAST_ID_NOT_SET_VALUE) {
             customerMessageClientViewRecordService.RecordView(loginCustomerId, msgList.FirstOrDefault()?.Id ?? 0);
         }
 
@@ -74,8 +70,7 @@ public class CustomerMessageController : Controller
     }
 
     [NonAction]
-    private IQueryable<CustomerMessageInfo> GetListQuery(CustomerMessageListParam param)
-    {
+    private IQueryable<CustomerMessageInfo> GetListQuery(CustomerMessageListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         return session.Query<CustomerMessageInfo>()
