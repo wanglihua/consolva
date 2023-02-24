@@ -27,6 +27,7 @@
 /Terminal/bin/
 /Terminal/obj/
 /Terminal/logs/
+/Terminal/WechatApp/.idea
 
 /Test/bin/
 /Test/obj/
