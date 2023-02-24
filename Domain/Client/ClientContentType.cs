@@ -54,6 +54,11 @@ public class ClientContentType : CodeTypeBase {
     public static readonly ClientContentType WarehouseAddress = new ClientContentType(9000, "仓库地址", "仓库地址");
 
     /// <summary>
+    /// 公告通知
+    /// </summary>
+    public static readonly ClientContentType Notice = new ClientContentType(10000, "公告通知", "公告通知");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly ClientContentType None = new ClientContentType(0, "", "");
@@ -68,6 +73,7 @@ public class ClientContentType : CodeTypeBase {
         TransportLimit,
         CustomerPromotion,
         WarehouseAddress,
+        Notice,
     };
 
     private static readonly IDictionary<int, ClientContentType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
