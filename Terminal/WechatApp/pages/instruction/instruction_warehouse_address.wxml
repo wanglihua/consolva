@@ -11,7 +11,7 @@
                 </view>
             </view>
         </van-cell>
-        <van-cell title="收件人手机" value="{{ address.phone }}" border="{{ false }}" custom-class="item" clickable="{{ true }}" bind:click="onPhoneClick">
+        <van-cell title="收件手机" value="{{ address.phone }}" border="{{ false }}" custom-class="item" clickable="{{ true }}" bind:click="onPhoneClick">
             <view slot="right-icon">
                 <view style="margin-left: 5px;">
                     <van-button type="info" size="mini" plain block round bind:click="onPhoneClick">复制</van-button>
