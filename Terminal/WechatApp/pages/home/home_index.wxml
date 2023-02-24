@@ -36,6 +36,7 @@
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}">
             <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="/pages/freight_estimate/freight_estimate_goods"/>
+            <van-grid-item icon-prefix="iconfont" icon="warehouse-address" icon-class="home-grid-icon" text="仓库地址" url="/pages/instruction/instruction_warehouse_address"/>
             <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" text="运费说明" badge="{{ homeData.freightDescBadge }}" url="/pages/instruction/instruction_freight_desc"/>
             <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text="下单流程" badge="{{ homeData.orderProcessBadge }}" url="/pages/instruction/instruction_order_process"/>
             <van-grid-item icon-prefix="iconfont" icon="transport-limit" icon-class="home-grid-icon" text="运输时效" badge="{{ homeData.transportLimitBadge }}" url="/pages/instruction/instruction_transport_limit"/>
