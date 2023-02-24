@@ -6,6 +6,7 @@ using shunda.Core.Web;
 using shunda.Domain.Client;
 using shunda.Domain.Storage;
 using shunda.Service.Client;
+using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Instruction.Controllers;
@@ -14,14 +15,17 @@ namespace shunda.Client.Areas.Instruction.Controllers;
 public class WarehouseAddressController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly CustomerCodeService customerCodeService;
     private readonly CustomerClientContentViewRecordService customerClientContentViewRecordService;
 
     public WarehouseAddressController(ISession session,
         LoginCustomerService loginCustomerService,
+        CustomerCodeService customerCodeService,
         CustomerClientContentViewRecordService customerClientContentViewRecordService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.customerCodeService = customerCodeService;
         this.customerClientContentViewRecordService = customerClientContentViewRecordService;
     }
 
@@ -40,13 +44,35 @@ public class WarehouseAddressController : Controller {
         }
 
         // 地址各个部分设置检查
+        if (string.IsNullOrWhiteSpace(warehouse.Area)) {
+            throw new ValidationException("仓库省市县区信息未设置，请联系管理员！");
+        }
+
+        if (string.IsNullOrWhiteSpace(warehouse.Address)) {
+            throw new ValidationException("仓库省详细地址信息未设置，请联系管理员！");
+        }
+
+        if (string.IsNullOrWhiteSpace(warehouse.Phone)) {
+            throw new ValidationException("仓库联系电话信息未设置，请联系管理员！");
+        }
+
+        if (string.IsNullOrWhiteSpace(warehouse.Zipcode)) {
+            throw new ValidationException("仓库邮编信息未设置，请联系管理员！");
+        }
 
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.WarehouseAddress);
+
+        string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = new WarehouseAddressDetailModel {
+                CustomerCode = customerCode,
+                Area = warehouse.Area,
+                Address = warehouse.Address,
+                Phone = warehouse.Phone,
+                Zipcode = warehouse.Zipcode,
             }
         });
     }
