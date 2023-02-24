@@ -65,6 +65,27 @@
                                 <label asp-for="Warehouse.Address" class="col-xs-2 control-label">地址</label>
                                 <div class="col-xs-10">
                                     <textarea asp-for="Warehouse.Address" rows="2" class="input-sm form-control"  required="required" maxlength="500"></textarea>
+                                    <div class="help-block" style="color: #990000;">这个地址会被用于客户填写快递单的收件地址</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.Phone" class="col-xs-2 control-label">联系电话</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Warehouse.Phone" type="text" class="input-sm form-control" required="required" maxlength="30"/>
+                                    <div class="help-block" style="color: #990000;">这个联系电话会被用于客户填写快递单的收件联系电话</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Warehouse.Zipcode" class="col-xs-2 control-label">邮编</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Warehouse.Zipcode" type="text" class="input-sm form-control" required="required" maxlength="10"/>
+                                    <div class="help-block" style="color: #990000;">这个邮编会被用于客户填写快递单的收件邮编</div>
                                 </div>
                             </div>
                         </div>
@@ -74,14 +95,10 @@
                                 <label asp-for="Warehouse.OuterStatus" class="col-xs-2 control-label">对外状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Warehouse.OuterStatus" class="input-sm form-control">
-                                        @foreach (var warehouseStatus in Model.WarehouseStatusList)
-                                        {
-                                            if (Model.Warehouse.OuterStatus == warehouseStatus)
-                                            {
+                                        @foreach (var warehouseStatus in Model.WarehouseStatusList) {
+                                            if (Model.Warehouse.OuterStatus == warehouseStatus) {
                                                 <option value="@warehouseStatus.Id" selected="selected">@warehouseStatus.Name</option>
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <option value="@warehouseStatus.Id">@warehouseStatus.Name</option>
                                             }
                                         }
@@ -95,14 +112,10 @@
                                 <label asp-for="Warehouse.InnerStatus" class="col-xs-2 control-label">对内状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="Warehouse.InnerStatus" class="input-sm form-control">
-                                        @foreach (var warehouseStatus in Model.WarehouseStatusList)
-                                        {
-                                            if (Model.Warehouse.InnerStatus == warehouseStatus)
-                                            {
+                                        @foreach (var warehouseStatus in Model.WarehouseStatusList) {
+                                            if (Model.Warehouse.InnerStatus == warehouseStatus) {
                                                 <option value="@warehouseStatus.Id" selected="selected">@warehouseStatus.Name</option>
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <option value="@warehouseStatus.Id">@warehouseStatus.Name</option>
                                             }
                                         }
@@ -129,9 +142,6 @@
 <script type="text/javascript">
 
     function saveWarehouse() {
-        var addressDescription = CKEDITOR.instances.addressDescription.getData();
-        $("#addressDescription").val(addressDescription);
-
         var form = $("#warehouseDetailForm");
         var valid = validate(form);
 
@@ -164,21 +174,4 @@
         window.location.href = url;
     }
 
-</script>
-
-<script type="text/javascript">
-    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
-        CKEDITOR.tools.enableHtml5Elements(document);
-    }
-
-    CKEDITOR.config.height = 250;
-    CKEDITOR.config.width = 'auto';
-
-    var initCkEditor = (function () {
-        return function () {
-            CKEDITOR.replace('addressDescription');
-        };
-    })();
-
-    initCkEditor();
 </script>
