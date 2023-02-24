@@ -56,7 +56,7 @@
     </thead>
     <tbody>
         @if (Model.ClientNoticeList.Count != 0) {
-            int order = 1;
+            int index = 0;
             foreach (ClientNoticeInfo clientNotice in Model.ClientNoticeList) {
                 <tr ondblclick="showClientNoticeDetail(@(clientNotice.Id));">
                     <td style="text-align: center;">
@@ -64,7 +64,7 @@
                             <label for="clientNoticeCheck_@(clientNotice.Id)"></label><input id="clientNoticeCheck_@(clientNotice.Id)" type="checkbox" class="ace" value="@clientNotice.Id" /><span class="lbl"></span>
                         </div>
                     </td>
-                    <td style="text-align: center;">@(Model.ItemBegin + order++)</td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
 
                     <td style="text-align: center;">
                         <div>

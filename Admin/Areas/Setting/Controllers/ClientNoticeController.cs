@@ -1,15 +1,16 @@
+using Microsoft.AspNetCore.Mvc;
+using NHibernate;
+using NHibernate.Criterion;
+using NLog;
+using shunda.Admin.Areas.Setting.Models.ClientNotice;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Client;
-using shunda.Admin.Areas.Setting.Models.ClientNotice;
-using Microsoft.AspNetCore.Mvc;
-using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.SqlCommand;
-using NLog;
 using shunda.Domain.Pass;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Setting.Controllers;
@@ -18,14 +19,19 @@ namespace shunda.Admin.Areas.Setting.Controllers;
 /// 客户端公告 控制器
 /// </summary>
 [SettingArea]
-// [SettingAuth(PassRes.XXX.ClientNotice)]
+[AdminAuth(PassRes.Setting.ClientNotice)]
 public class ClientNoticeController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly LoginUserService loginUserService;
 
-    public ClientNoticeController(ISession session) {
+    public ClientNoticeController(
+        ISession session,
+        LoginUserService loginUserService
+    ) {
         this.session = session;
+        this.loginUserService = loginUserService;
     }
 
     [HttpGet]
@@ -55,7 +61,7 @@ public class ClientNoticeController : Controller {
         }
 
         listQuery = listQuery.ThenByAlias(() => clientNoticeAlias!.Id).Desc;
-            
+
         IList<ClientNoticeInfo> clientNoticeList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -68,9 +74,9 @@ public class ClientNoticeController : Controller {
 
         ClientNoticeListModel model = new ClientNoticeListModel(listPager);
         model.ClientNoticeList = clientNoticeList;
-        
+
         model.ClientNoticeAlias = nameof(clientNoticeAlias);
-        model.EditorUserAlias = nameof(editorUserAlias);        
+        model.EditorUserAlias = nameof(editorUserAlias);
 
         return View("ClientNoticeList", model);
     }
@@ -107,7 +113,6 @@ public class ClientNoticeController : Controller {
 
         model.Title = clientNotice.Title;
         model.Url = clientNotice.Url;
-        model.EditorUserId = clientNotice.EditorUser?.Id ?? 0;
         model.ListTop = clientNotice.ListTop;
         model.Important = clientNotice.Important;
 
@@ -131,12 +136,13 @@ public class ClientNoticeController : Controller {
             clientNotice = new ClientNoticeInfo();
         } else {
             clientNotice = session.Get<ClientNoticeInfo>(clientNoticeId);
-            if (clientNotice == null){
+            if (clientNotice == null) {
                 throw new ValidationException($"指定的 客户端公告#{clientNoticeId} 不存在！");
             }
         }
 
-        UserInfo editorUser = session.Get<UserInfo>(model.EditorUserId);
+        var editorUser = loginUserService.GetLoginUser();
+        
         clientNotice.Title = model.Title;
         clientNotice.Url = model.Url;
         clientNotice.EditorUser = editorUser;

@@ -9,5 +9,6 @@ public class ClientNoticeSaveModelValidator : AbstractValidator<ClientNoticeSave
 
         RuleFor(e => e.Url).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("URL不能为空！");
         RuleFor(e => e.Url).MaximumLength(500).WithMessage("URL长度不能大于500！");
+        RuleFor(e => e.Url).Must(p => p.StartsWith("https://mp.weixin.qq.com/")).WithMessage("URL不是微信公众号文章链接！");
     }
 }

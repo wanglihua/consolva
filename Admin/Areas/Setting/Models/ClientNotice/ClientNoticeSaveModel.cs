@@ -19,11 +19,6 @@ public class ClientNoticeSaveModel {
     public string Url { get; set; } = string.Empty;
 
     /// <summary>
-    /// 编辑者，非空
-    /// </summary>
-    public int EditorUserId { get; set; } = 0;
-
-    /// <summary>
     /// 是否置顶，非空
     /// </summary>
     public bool ListTop { get; set; } = false;
@@ -32,5 +27,4 @@ public class ClientNoticeSaveModel {
     /// 是否重要公告，非空
     /// </summary>
     public bool Important { get; set; } = false;
-
 }
