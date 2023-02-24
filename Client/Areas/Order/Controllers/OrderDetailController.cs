@@ -19,14 +19,18 @@ public class OrderDetailController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressSizeWeightService expressSizeWeightService;
+    private readonly ExpressService expressService;
 
     public OrderDetailController(
         ISession session,
         LoginCustomerService loginCustomerService,
-        ExpressSizeWeightService expressSizeWeightService) {
+        ExpressSizeWeightService expressSizeWeightService,
+        ExpressService expressService
+    ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressSizeWeightService = expressSizeWeightService;
+        this.expressService = expressService;
     }
 
     [HttpPost]
@@ -49,7 +53,7 @@ public class OrderDetailController : Controller {
             .Where(e => e.Order.Id == orderId)
             .ToList();
 
-        IList<ExpressInfo> expressList = session.Query<ExpressInfo>().Where(e => e.Order!.Id == orderId).ToList();
+        var expressList = expressService.GetExpressListForOrderDetail(orderId);
 
         IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
         IList<ExpressSizeWeightInfo> sizeWeightList = session.Query<ExpressSizeWeightInfo>()
@@ -192,6 +196,8 @@ public class OrderDetailController : Controller {
             Address = orderSendAddress.Address,
             Zipcode = orderSendAddress.Zipcode,
         };
+
+        // 订单商品
 
         // 订单详细数据
         var model = new OrderDetailModel {

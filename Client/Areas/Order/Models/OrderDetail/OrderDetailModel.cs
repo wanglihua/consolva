@@ -14,4 +14,7 @@ public class OrderDetailModel {
 
     [JsonProperty("sendAddress")]
     public OrderDetailSendAddressItem SendAddress { get; set; } = new OrderDetailSendAddressItem();
+
+    [JsonProperty("expressList")]
+    public IList<OrderDetailExpressItem> ExpressList { get; set; } = new List<OrderDetailExpressItem>();
 }
