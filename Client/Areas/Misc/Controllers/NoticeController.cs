@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Misc.Models.Notice;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Client;
 using shunda.Service.Client;
@@ -26,6 +27,7 @@ public class NoticeController : Controller {
 
     [HttpPost]
     [Route("/client/notice/list")]
+    [Transactional]
     public IActionResult List([FromBody] NoticeListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
@@ -38,7 +40,8 @@ public class NoticeController : Controller {
         }
 
         var noticeList = listQuery
-            .OrderByDescending(e => e.Id)
+            .OrderByDescending(e => e.ListTop)
+            .ThenByDescending(e => e.Id)
             .Take(15)
             .ToList();
 
