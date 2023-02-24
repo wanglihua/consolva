@@ -51,6 +51,7 @@ public class NoticeController : Controller {
                 Title = e.Title,
                 Url = e.Url,
                 Date = e.UpdateTime.ToString("yyyy-MM-dd"),
+                ListTop = e.ListTop,
                 Important = e.Important,
             })
             .ToList();

@@ -1,1 +1,8 @@
 /* pages/notice/notice_list.wxss */
+
+.item-notice-title {
+}
+
+.item-notice-title-important {
+    color: red !important;
+}

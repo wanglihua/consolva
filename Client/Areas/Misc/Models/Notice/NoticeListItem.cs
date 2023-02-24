@@ -15,6 +15,9 @@ public class NoticeListItem {
     [JsonProperty("date")]
     public string Date { get; set; } = string.Empty;
 
+    [JsonProperty("listTop")]
+    public bool ListTop { get; set; }
+
     [JsonProperty("important")]
     public bool Important { get; set; }
 }

@@ -9,10 +9,10 @@
     <block wx:else>
         <van-cell-group custom-class="items">
             <block wx:for="{{ noticeList }}" wx:key="id" wx:for-item="notice" wx:for-index="index">
-                <van-cell title="{{ index + 1 }}、{{ notice.title }}({{ notice.date }})"
+                <van-cell title="{{ index + 1 }}、{{ notice.top }}{{ notice.title }}({{ notice.date }})"
                           url="/pages/notice/notice_detail?url={{ notice.url }}"
                           is-link
-                          title-class="item-title-long" value-class="item-value-short"/>
+                          title-class="{{ notice.titleClass }}"/>
             </block>
         </van-cell-group>
     </block>
