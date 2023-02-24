@@ -14,7 +14,6 @@ Page({
             expressGoodsList: [],
             expressSizeWeightList: [],
         },
-        pageTitle: "申领件认领",
         btnClaimDisabled: false,
         btnClaimText: "认领",
     },

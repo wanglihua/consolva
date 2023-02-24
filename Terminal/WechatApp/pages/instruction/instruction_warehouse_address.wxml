@@ -1,4 +1,50 @@
 <!--pages/instruction/instruction_warehouse_address.wxml-->
 <header/>
 <view class="container">
+    <van-cell-group title="仓库地址"/>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="收件人" value="{{ address.customerCode }}" border="{{ false }}" custom-class="item">
+            <view slot="right-icon">
+                <view style="margin-left: 5px;">
+                    <van-button type="info" size="mini" plain block round>复制</van-button>
+                </view>
+            </view>
+        </van-cell>
+        <van-cell title="收件人手机" value="{{ address.phone }}" border="{{ false }}" custom-class="item">
+            <view slot="right-icon">
+                <view style="margin-left: 5px;">
+                    <van-button type="info" size="mini" plain block round>复制</van-button>
+                </view>
+            </view>
+        </van-cell>
+        <van-cell title="省市县区" value="{{ address.area }}" border="{{ false }}" custom-class="item">
+            <view slot="right-icon">
+                <view style="margin-left: 5px;">
+                    <van-button type="info" size="mini" plain block round>复制</van-button>
+                </view>
+            </view>
+        </van-cell>
+        <van-cell title="详细地址" value="{{ address.address }}" border="{{ false }}" custom-class="item">
+            <view slot="right-icon">
+                <view style="margin-left: 5px;">
+                    <van-button type="info" size="mini" plain block round>复制</van-button>
+                </view>
+            </view>
+        </van-cell>
+        <van-cell title="邮编" value="{{ address.zipcode }}" border="{{ false }}" custom-class="item">
+            <view slot="right-icon">
+                <view style="margin-left: 5px;">
+                    <van-button type="info" size="mini" plain block round>复制</van-button>
+                </view>
+            </view>
+        </van-cell>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="info" class-prefix="iconfont" icon="copy" block>复制仓库完整地址</van-button>
+        </van-cell>
+    </van-cell-group>
 </view>

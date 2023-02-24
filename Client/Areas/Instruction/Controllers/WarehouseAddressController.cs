@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Instruction.Models.WarehouseAddress;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Client;
 using shunda.Domain.Storage;
@@ -31,6 +32,7 @@ public class WarehouseAddressController : Controller {
 
     [HttpPost]
     [Route("/client/warehouse/address/detail")]
+    [Transactional]
     public IActionResult Detail() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
