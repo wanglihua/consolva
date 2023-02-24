@@ -198,6 +198,36 @@ public class OrderDetailController : Controller {
         };
 
         // 订单商品
+        var expressItemList = new List<OrderDetailExpressItem>();
+
+        foreach (var express in expressList) {
+            var expressItem = new OrderDetailExpressItem {
+                Id = express.Id,
+                TrackingNo = express.TrackingNo,
+                CheckinTrackingNo = express.CheckinTrackingNo,
+                GoodsType = express.GoodsType.Name,
+                Status = express.Status.Name,
+                CheckinTime = express.AddTime.ToString("yyyy-MM-dd HH:mm"),
+                GoodsValue = express.GoodsValue.ToString("#0.00"),
+            };
+
+            var expressGoodsItemList = new List<OrderDetailExpressGoodsItem>();
+            foreach (var expressGoods in express.ExpressGoodsListCache) {
+                var expressGoodsItem = new OrderDetailExpressGoodsItem {
+                    Id = expressGoods.Id,
+                    GoodsName = expressGoods.Goods.Name,
+                    GoodsType = expressGoods.GoodsType.Name,
+                    Quantity = expressGoods.Quantity,
+                    Unit = expressGoods.Unit,
+                };
+
+                expressGoodsItemList.Add(expressGoodsItem);
+            }
+
+            expressItem.ExpressGoodsList = expressGoodsItemList;
+
+            expressItemList.Add(expressItem);
+        }
 
         // 订单详细数据
         var model = new OrderDetailModel {
@@ -207,6 +237,7 @@ public class OrderDetailController : Controller {
             },
             ReceiveAddress = receiveAddressItem,
             SendAddress = sendAddressItem,
+            ExpressList = expressItemList,
         };
 
         return Json(new JsonResultData {
