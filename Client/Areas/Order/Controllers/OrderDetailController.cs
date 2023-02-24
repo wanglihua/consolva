@@ -79,9 +79,9 @@ public class OrderDetailController : Controller {
             .OrderBy(e => e.Id)
             .ToList();
 
-        string customerRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Customer));
-        string warehouseRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Warehouse));
-        string serviceRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Service));
+        string customerRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Customer).Select(e => e.Content));
+        string warehouseRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Warehouse).Select(e => e.Content));
+        string serviceRemark = string.Join(",", orderRemarkList.Where(e => e.Type == LogisticsOrderRemarkType.Service).Select(e => e.Content));
 
         // 订单基本信息
         var orderDetailItem = new OrderDetailOrderItem {
@@ -153,7 +153,7 @@ public class OrderDetailController : Controller {
         }
 
         string receiveAddressDetail = orderReceiveAddress.Address;
-        if(string.IsNullOrWhiteSpace(orderReceiveAddress.UnitLoc) == false) {
+        if (string.IsNullOrWhiteSpace(orderReceiveAddress.UnitLoc) == false) {
             receiveAddressDetail = $"{orderReceiveAddress.UnitLoc}, {receiveAddressDetail}";
         }
 
