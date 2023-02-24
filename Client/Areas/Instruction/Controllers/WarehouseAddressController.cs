@@ -47,7 +47,7 @@ public class WarehouseAddressController : Controller {
 
         // 地址各个部分设置检查
         if (string.IsNullOrWhiteSpace(warehouse.Area)) {
-            throw new ValidationException("仓库省市县区信息未设置，请联系管理员！");
+            throw new ValidationException("仓库省市街道信息未设置，请联系管理员！");
         }
 
         if (string.IsNullOrWhiteSpace(warehouse.Address)) {
@@ -66,7 +66,7 @@ public class WarehouseAddressController : Controller {
 
         string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
 
-        string fullAddress = $"{customerCode} {warehouse.Phone}, {warehouse.Area} {warehouse.Address} {warehouse.Zipcode}";
+        string fullAddress = $"{customerCode} {warehouse.Phone}, {warehouse.Area} {warehouse.Address}({customerCode}) {warehouse.Zipcode}";
 
         return Json(new JsonResultData {
             Success = true,
@@ -74,7 +74,7 @@ public class WarehouseAddressController : Controller {
             Data = new WarehouseAddressDetailModel {
                 CustomerCode = customerCode,
                 Area = warehouse.Area,
-                Address = warehouse.Address,
+                Address = $"{warehouse.Address}({customerCode})",
                 Phone = warehouse.Phone,
                 Zipcode = warehouse.Zipcode,
                 FullAddress = fullAddress,

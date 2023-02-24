@@ -18,7 +18,7 @@
                 </view>
             </view>
         </van-cell>
-        <van-cell title="省市县区" value="{{ address.area }}" border="{{ false }}" custom-class="item" clickable="{{ true }}" bind:click="onAreaClick">
+        <van-cell title="省市街道" value="{{ address.area }}" border="{{ false }}" custom-class="item" clickable="{{ true }}" bind:click="onAreaClick">
             <view slot="right-icon">
                 <view style="margin-left: 5px;">
                     <van-button type="info" size="mini" plain block round bind:click="onAreaClick">复制</van-button>
