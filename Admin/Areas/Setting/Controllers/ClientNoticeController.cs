@@ -149,6 +149,9 @@ public class ClientNoticeController : Controller {
         clientNotice.ListTop = model.ListTop;
         clientNotice.Important = model.Important;
 
+        // 每次更新时候都会更新这个时间，哪怕一点内容也没改，也就同时会更新 update time
+        clientNotice.EditTime = DateTime.Now;
+
         if (isCreate) {
             session.Save(clientNotice);
         } else {

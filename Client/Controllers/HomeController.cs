@@ -116,6 +116,7 @@ public class HomeController : Controller {
             OrderTransportingBadge = homeData.OrderTransportingCount > 0 ? homeData.OrderTransportingCount.ToString() : string.Empty,
             OrderDeliveredBadge = homeData.OrderDeliveredCount > 0 ? homeData.OrderDeliveredCount.ToString() : string.Empty,
             NewMessageBadge = homeData.NewMessageCount > 0 ? homeData.NewMessageCount.ToString() : string.Empty,
+            NewNoticeBadge = homeData.NewNoticeCount > 0 ? homeData.NewNoticeCount.ToString() : string.Empty,
             CouponBatchPickBadge = homeData.HasCouponBatchPick ? "抢" : string.Empty,
             UseAgreementBadge = homeData.UseAgreementHasNew ? " " : string.Empty,
             InsuranceClauseBadge = homeData.InsuranceClauseHasNew ? " " : string.Empty,

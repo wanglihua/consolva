@@ -33,6 +33,9 @@ public class HomeClientHomeDataModel {
     [JsonProperty("newMessageBadge")]
     public string NewMessageBadge { get; set; } = string.Empty;
 
+    [JsonProperty("newNoticeBadge")]
+    public string NewNoticeBadge { get; set; } = string.Empty;
+
     [JsonProperty("couponBatchPickBadge")]
     public string CouponBatchPickBadge { get; set; } = string.Empty;
 

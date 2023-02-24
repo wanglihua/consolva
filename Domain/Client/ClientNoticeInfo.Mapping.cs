@@ -56,5 +56,13 @@ public class ClientNoticeInfoMapping : EntityMapping<ClientNoticeInfo> {
             }
         );
 
+        Property(
+            x => x.EditTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("edit_time");
+                map.NotNullable(true);
+            }
+        );
     }
 }

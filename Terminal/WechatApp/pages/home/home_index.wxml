@@ -17,8 +17,8 @@
 
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}">
-            <van-grid-item icon-prefix="iconfont" icon="notice" icon-class="home-grid-icon" text="公告" badge="3" url="/pages/notice/notice_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" badge="{{ homeData.newMessageCount }}" url="/pages/message/message_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="notice" icon-class="home-grid-icon" text="公告" badge="{{ homeData.newNoticeBadge }}" url="/pages/notice/notice_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" badge="{{ homeData.newMessageBadge }}" url="/pages/message/message_list"/>
             <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="/pages/message/message_customize"/>
             <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="/pages/customer/customer_address/customer_address_receive/customer_address_receive_list"/>
             <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text="推广返利" url=""/>

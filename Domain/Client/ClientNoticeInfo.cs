@@ -33,6 +33,11 @@ public class ClientNoticeInfo : Entity {
     /// </summary>
     public virtual bool Important { get; set; } = false;
 
+    /// <summary>
+    /// 编辑时间，非空
+    /// </summary>
+    public virtual DateTime EditTime { get; set; }
+
     public override void Validate() {
         ValidationUtil.ValidateEntity<ClientNoticeInfoValidator, ClientNoticeInfo>(this);
     }

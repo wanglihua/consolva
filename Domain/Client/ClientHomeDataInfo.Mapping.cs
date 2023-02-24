@@ -106,6 +106,15 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
         );
 
         Property(
+            x => x.NewNoticeCount,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("new_notice_count");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.HasCouponBatchPick,
             map => {
                 map.Type(NHibernateUtil.Boolean);

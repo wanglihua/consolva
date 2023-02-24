@@ -42,6 +42,9 @@ public class ClientHomeDataInfo {
     [JsonProperty("newMessageCount")]
     public virtual int NewMessageCount { get; set; }
 
+    [JsonProperty("newNoticeCount")]
+    public virtual int NewNoticeCount { get; set; }
+
     /// <summary>
     /// 是否有可抢的优惠券批次
     /// </summary>
