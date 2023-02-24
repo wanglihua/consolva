@@ -17,4 +17,7 @@ public class WarehouseAddressDetailModel {
 
     [JsonProperty("zipcode")]
     public string Zipcode { get; set; } = string.Empty;
+
+    [JsonProperty("fullAddress")]
+    public string FullAddress { get; set; } = string.Empty;
 }

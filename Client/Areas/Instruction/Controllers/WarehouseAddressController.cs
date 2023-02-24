@@ -64,6 +64,8 @@ public class WarehouseAddressController : Controller {
 
         string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
 
+        string fullAddress = $"{customerCode} {warehouse.Phone}, {warehouse.Area} {warehouse.Address} {warehouse.Zipcode}";
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
@@ -73,6 +75,7 @@ public class WarehouseAddressController : Controller {
                 Address = warehouse.Address,
                 Phone = warehouse.Phone,
                 Zipcode = warehouse.Zipcode,
+                FullAddress = fullAddress,
             }
         });
     }
