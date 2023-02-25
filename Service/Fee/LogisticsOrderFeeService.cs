@@ -275,10 +275,11 @@ public class LogisticsOrderFeeService {
                 Country = order.Country,
                 OrderFirstMode = orderFirstMode,
                 LogisticsMode = orderFirstMode.FirstMode,
+                GoodsType = orderFirstMode.GoodsType,
                 Address = customerReceiveAddressService.GetFullAddress(orderReceiveAddress),
                 Zipcode = orderReceiveAddress.Zipcode,
                 OrderGoodsValue = order.GoodsValue,
-                GoodsType = orderFirstMode.GoodsType,
+
                 FeePackList = orderFirstModeOrderPackList.Select(e => new LogisticsFeePack {
                     Length = e.Length,
                     Width = e.Width,

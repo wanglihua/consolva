@@ -258,6 +258,8 @@ public class OrderDetailController : Controller {
             MaxVolumeSinglePack = orderPackData?.MaxVolumeSinglePack.ToString("#0.000000") ?? string.Empty,
             MaxWeightSinglePack = orderPackData?.MaxWeightSinglePack.ToString("#0.000") ?? string.Empty,
         };
+        
+        // 订单费用
 
         // 订单详细数据
         var model = new OrderDetailModel {
