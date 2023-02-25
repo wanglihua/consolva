@@ -798,7 +798,7 @@ public class ExpressCheckinController : Controller {
                     string logDesc = storageLoc.GetFullName();
                     if (expressExpect != null) {
                         string expectCustomerCode = customerCodeService.GetCustomerCode(expressExpect.Customer.Id);
-                        logDesc += $"，面单客户按预报客户：{expectCustomerCode}";
+                        logDesc += $"，面单客户按预报客户：{expectCustomerCode}, 预报时间 {expressExpect.CreateTime:yyyy-MM-dd HH:mm}";
                     }
 
                     expressLogService.UserLog(express.Id, ExpressLogType.Checkin, logDesc, loginUserId);
@@ -806,7 +806,7 @@ public class ExpressCheckinController : Controller {
                     string logDesc = storageLoc.GetFullName() + " " + string.Join(";", editDescList);
                     if (expressExpect != null) {
                         string expectCustomerCode = customerCodeService.GetCustomerCode(expressExpect.Customer.Id);
-                        logDesc += $"，面单客户按预报客户：{expectCustomerCode}";
+                        logDesc += $"，面单客户按预报客户：{expectCustomerCode}, 预报时间 {expressExpect.CreateTime:yyyy-MM-dd HH:mm}";
                     }
 
                     expressLogService.UserLog(express.Id, ExpressLogType.CheckinEdit, logDesc, loginUserId);
