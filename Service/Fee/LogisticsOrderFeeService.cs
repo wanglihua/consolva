@@ -234,7 +234,7 @@ public class LogisticsOrderFeeService {
         var orderFirstModeListFromPack = orderPackList
             .Select(e => e.OrderFirstMode)
             .Distinct()
-            .OrderBy(e => e.GoodsType)
+            .OrderBy(e => e.GoodsType.Id)
             .ThenBy(e => e.Id)
             .ToList();
 

@@ -229,6 +229,18 @@ public class OrderDetailController : Controller {
             expressItemList.Add(expressItem);
         }
 
+        // 订单打包
+        var orderPackList = session.Query<LogisticsOrderPackInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.OrderFirstMode.Id)
+            .ThenBy(e => e.Id)
+            .ToList();
+
+        // 这个循环里面，很多的 order first mode 都是相同的，所以也不大会影响性能
+        foreach (var orderPack in orderPackList) {
+            NHibernateUtil.Initialize(orderPack.OrderFirstMode);
+        }
+
         // 订单详细数据
         var model = new OrderDetailModel {
             Order = orderDetailItem,
