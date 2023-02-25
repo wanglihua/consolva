@@ -1,6 +1,6 @@
 namespace shunda.Core.CodeType;
 
-public abstract class StringCodeTypeBase {
+public abstract class StringCodeTypeBase : IComparable {
     /// <summary>
     /// 编码
     /// </summary>
@@ -28,6 +28,19 @@ public abstract class StringCodeTypeBase {
     /// <returns>string</returns>
     public override string ToString() {
         return Code;
+    }
+
+    public virtual int CompareTo(object? obj) {
+        if (obj == null) {
+            return 1;
+        }
+
+        var codeType = obj as StringCodeTypeBase;
+        if (codeType == null) {
+            return 1;
+        }
+
+        return String.Compare(this.Code, codeType.Code, StringComparison.Ordinal);
     }
 
     /// <summary>

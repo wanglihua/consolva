@@ -2,8 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Core.CodeType;
 
-public abstract class CodeTypeBase
-{
+public abstract class CodeTypeBase : IComparable {
     /// <summary>
     /// 编码
     /// </summary>
@@ -26,8 +25,7 @@ public abstract class CodeTypeBase
     protected CodeTypeBase() {
     }
 
-    protected CodeTypeBase(int id, string name, string description)
-    {
+    protected CodeTypeBase(int id, string name, string description) {
         Id = id;
         Name = name;
         Description = description;
@@ -37,9 +35,21 @@ public abstract class CodeTypeBase
     /// 字符串表示, 这个的实现方式很重要
     /// </summary>
     /// <returns>string</returns>
-    public override string ToString()
-    {
+    public override string ToString() {
         return Id.ToString();
+    }
+
+    public virtual int CompareTo(object? obj) {
+        if (obj == null) {
+            return 1;
+        }
+
+        var codeType = obj as CodeTypeBase;
+        if (codeType == null) {
+            return 1;
+        }
+
+        return this.Id - codeType.Id;
     }
 
     /// <summary>
@@ -48,8 +58,7 @@ public abstract class CodeTypeBase
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns></returns>
-    public new bool Equals(object x, object y)
-    {
+    public new bool Equals(object x, object y) {
         if (x == null && y == null) // 两个同时为 null
         {
             return true;
@@ -60,13 +69,11 @@ public abstract class CodeTypeBase
             return false;
         }
 
-        if (x is CodeTypeBase == false)
-        {
+        if (x is CodeTypeBase == false) {
             return false;
         }
 
-        if (y is CodeTypeBase == false)
-        {
+        if (y is CodeTypeBase == false) {
             return false;
         }
 
