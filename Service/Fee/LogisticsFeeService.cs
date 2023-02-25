@@ -240,6 +240,8 @@ public class LogisticsFeeService {
             feeCalculateLogService.AddLog($"单箱超重费用 {singleOverWeightFee}");
         }
 
+        /*
+         这个费用不用计算了
         // 平均单箱超重费用
         decimal averageOverWeightFee = GetAverageOverWeightFee(feePackList, feeRate, feeMessageType);
 
@@ -259,7 +261,10 @@ public class LogisticsFeeService {
 
             feeCalculateLogService.AddLog($"平均单箱超重费用 {averageOverWeightFee}");
         }
+        */
 
+        /*
+         这个费用不用计算了
         // 超重费用
         decimal overWeightFee = GetOverWeightFee(feePackList, feeRate, feeMessageType);
 
@@ -279,6 +284,7 @@ public class LogisticsFeeService {
 
             feeCalculateLogService.AddLog($"超重费用 {overWeightFee}");
         }
+        */
 
         // 额外包裹数量，调用 GetExtraPackageCountFee()，这里的额外包裹数量是快递单号的数量
 

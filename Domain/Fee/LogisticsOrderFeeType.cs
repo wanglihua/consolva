@@ -6,7 +6,7 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     /// <summary>
     /// 初始费
     /// </summary>
-    public static readonly LogisticsOrderFeeType InitFee = new LogisticsOrderFeeType(1000, "初始费", "初始费");
+    public static readonly LogisticsOrderFeeType InitFee = new LogisticsOrderFeeType(1000, "基础费用", "基础费用");
 
     /// <summary>
     /// 超长费
@@ -20,18 +20,20 @@ public class LogisticsOrderFeeType : CodeTypeBase {
 
     /// <summary>
     /// 平均单箱超重费
+    /// 已基本不用
     /// </summary>
     public static readonly LogisticsOrderFeeType AverageExtraWeightFee = new LogisticsOrderFeeType(4000, "平均单箱超重费", "平均单箱超重费");
 
     /// <summary>
     /// 超重费
+    /// 已基本不用
     /// </summary>
     public static readonly LogisticsOrderFeeType ExtraWeightFee = new LogisticsOrderFeeType(5000, "独立报关费", "独立报关费"); // 超重费
 
     /// <summary>
     /// 额外包裹费
     /// </summary>
-    public static readonly LogisticsOrderFeeType ExtraPackageFee = new LogisticsOrderFeeType(6000, "额外包裹费", "额外包裹费");
+    public static readonly LogisticsOrderFeeType ExtraPackageFee = new LogisticsOrderFeeType(6000, "合箱打包费", "额外包裹费");
 
     /// <summary>
     /// 中国仓额外仓储费
