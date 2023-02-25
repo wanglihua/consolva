@@ -116,14 +116,14 @@ public class OrderDetailController : Controller {
         };
 
         // 物流信息
-        var firstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+        var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Where(e => e.Order.Id == orderId)
             .OrderBy(e => e.FirstMode.Id)
             .ThenBy(e => e.GoodsType)
             .ThenBy(e => e.Id)
             .ToList();
 
-        var firstModeItemList = firstModeList
+        var orderFirstModeItemList = orderFirstModeList
             .Select(e => new OrderDetailFirstModeListItem {
                 Id = e.Id,
                 ModeName = e.FirstMode.Name,
@@ -258,14 +258,70 @@ public class OrderDetailController : Controller {
             MaxVolumeSinglePack = orderPackData?.MaxVolumeSinglePack.ToString("#0.000000") ?? string.Empty,
             MaxWeightSinglePack = orderPackData?.MaxWeightSinglePack.ToString("#0.000") ?? string.Empty,
         };
-        
+
         // 订单费用
+        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        foreach (var orderFee in orderFeeList) {
+            NHibernateUtil.Initialize(orderFee.OrderFirstMode);
+            if (orderFee.OrderFirstMode != null) {
+                NHibernateUtil.Initialize(orderFee.OrderFirstMode.FirstMode);
+            }
+        }
+
+        IList<OrderDetailFeeFirstModeItem> orderFeeFirstModeList = new List<OrderDetailFeeFirstModeItem>();
+        foreach (var orderFirstMode in orderFirstModeList) {
+            int orderFirstModeId = orderFirstMode.Id;
+            var orderFirstModeFeeList = orderFeeList
+                .Where(e => e.OrderFirstMode!.Id == orderFirstModeId)
+                .OrderBy(e => e.Id)
+                .ToList();
+
+            var orderFirstModeFeeItemList = orderFirstModeFeeList
+                .Select(e => new OrderDetailFeeListItem {
+                    FeeType = e.Type.Name,
+                    Amount = e.Fee.ToString("#0.00"),
+                })
+                .ToList();
+
+            var orderFirstModeItem = new OrderDetailFeeFirstModeItem {
+                FirstModeName = orderFirstMode.FirstMode.Name,
+                GoodsType = orderFirstMode.GoodsType.Name,
+                FeeList = orderFirstModeFeeItemList,
+            };
+
+            orderFeeFirstModeList.Add(orderFirstModeItem);
+        }
+
+        var otherFeeTypeList = LogisticsOrderFeeType.GetOtherFeeTypeList();
+        var orderOtherFeeList = orderFeeList
+            .Where(e => otherFeeTypeList.Contains(e.Type))
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        var orderOtherFeeItemList = orderOtherFeeList
+            .Select(e => new OrderDetailFeeListItem {
+                FeeType = e.Type.Name,
+                Amount = e.Fee.ToString("#0.00"),
+            })
+            .ToList();
+
+        var feeItem = new OrderDetailFeeItem {
+            FirstModeList = orderFeeFirstModeList,
+            OtherFeeList = orderOtherFeeItemList,
+
+            TotalAmount = orderDetailItem.OrderAmount,
+            ArearsAmount = orderDetailItem.ArearsAmount,
+        };
 
         // 订单详细数据
         var model = new OrderDetailModel {
             Order = orderDetailItem,
             FirstMode = new OrderDetailFirstModeItem {
-                FirstModeList = firstModeItemList,
+                FirstModeList = orderFirstModeItemList,
             },
             ReceiveAddress = receiveAddressItem,
             SendAddress = sendAddressItem,
@@ -273,6 +329,8 @@ public class OrderDetailController : Controller {
             OrderPackList = orderPackItemList,
             HasOrderPackData = orderPackData != null,
             OrderPackData = orderPackDataItem,
+            HasOrderFee = orderFeeList.Count > 0,
+            Fee = feeItem,
         };
 
         return Json(new JsonResultData {

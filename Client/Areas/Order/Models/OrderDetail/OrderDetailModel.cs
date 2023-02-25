@@ -29,4 +29,7 @@ public class OrderDetailModel {
 
     [JsonProperty("hasOrderFee")]
     public bool HasOrderFee { get; set; }
+
+    [JsonProperty("fee")]
+    public OrderDetailFeeItem Fee { get; set; } = new();
 }

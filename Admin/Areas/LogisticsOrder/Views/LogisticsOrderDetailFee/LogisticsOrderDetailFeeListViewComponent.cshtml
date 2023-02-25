@@ -84,8 +84,8 @@
         }
     }
 
-    var otherOrderFeeTypeList = LogisticsOrderFeeType.GetOtherFeeTypeList();
-    var otherOrderFeeList = Model.OrderFeeList.Where(e => otherOrderFeeTypeList.Contains(e.Type)).OrderBy(e => e.Id).ToList();
+    var otherFeeTypeList = LogisticsOrderFeeType.GetOtherFeeTypeList();
+    var otherOrderFeeList = Model.OrderFeeList.Where(e => otherFeeTypeList.Contains(e.Type)).OrderBy(e => e.Id).ToList();
 
     <table id="tblLogisticsOrderFeeListSecondLogistics" class="data-list-table table table-striped table-bordered table-hover">
         <caption style="padding: 8px; font-weight: bold; color: #2a62bc;">其他费用</caption>
