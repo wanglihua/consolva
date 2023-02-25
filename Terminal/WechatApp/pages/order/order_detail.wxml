@@ -112,13 +112,14 @@
             <van-cell title="订单打包" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
             <block wx:for="{{ orderDetail.orderPackList }}" wx:key="id" wx:for-item="orderPack" wx:for-index="index">
                 <view>
-                    <van-cell title="打包#{{ index + 1 }}" border="{{ true }}" custom-class="item"/>
+                    <van-cell title="打包#{{ index + 1 }}" border="{{ true }}" title-class="order-pack-item-subtitle" custom-class="item"/>
                     <van-cell title="物流名称" value="{{ orderPack.firstModeName }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物品类型" value="{{ orderPack.goodsType }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="包裹数量" value="{{ orderPack.packageCount }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="单箱尺寸" value="{{ orderPack.singleSize }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="单箱体积" value="{{ orderPack.singleVolume }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="单箱重量" value="{{ orderPack.singleWeight }}" border="{{ false }}" custom-class="item"/>
+                    <view class="item-last-vspace"/>
                 </view>
             </block>
         </block>
