@@ -112,6 +112,7 @@ public class HomeController : Controller {
             ExpressCheckinBadge = homeData.ExpressCheckinCount > 0 ? homeData.ExpressCheckinCount.ToString() : string.Empty,
             ExpressReturnBadge = homeData.ExpressReturnCount > 0 ? homeData.ExpressReturnCount.ToString() : string.Empty,
             OrderSubmittedBadge = homeData.OrderSubmittedCount > 0 ? homeData.OrderSubmittedCount.ToString() : string.Empty,
+            OrderPayBadge = homeData.OrderPayCount > 0 ? homeData.OrderPayCount.ToString() : string.Empty,
             OrderWaitingTransportBadge = homeData.OrderWaitingTransportCount > 0 ? homeData.OrderWaitingTransportCount.ToString() : string.Empty,
             OrderTransportingBadge = homeData.OrderTransportingCount > 0 ? homeData.OrderTransportingCount.ToString() : string.Empty,
             OrderDeliveredBadge = homeData.OrderDeliveredCount > 0 ? homeData.OrderDeliveredCount.ToString() : string.Empty,
