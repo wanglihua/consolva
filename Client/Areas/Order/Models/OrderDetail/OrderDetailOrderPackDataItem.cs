@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Order.Models.OrderDetail;
 
-public class OrderDetailOrderPackData {
+public class OrderDetailOrderPackDataItem {
     [JsonProperty("totalActualWeight")]
     public string TotalActualWeight { get; set; } = string.Empty;
 
@@ -13,7 +13,7 @@ public class OrderDetailOrderPackData {
     public string TotalVolume { get; set; } = string.Empty;
 
     [JsonProperty("totalPackageCount")]
-    public int TotalPackageCount { get; set; }
+    public string TotalPackageCount { get; set; } = string.Empty;
 
     [JsonProperty("maxSideLength")]
     public string MaxSideLength { get; set; } = string.Empty;

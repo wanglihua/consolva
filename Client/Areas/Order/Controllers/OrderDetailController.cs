@@ -48,21 +48,12 @@ public class OrderDetailController : Controller {
             throw new ValidationException($"订单{order.Code}不属于当前登录客户！");
         }
 
-        IList<LogisticsOrderPackDataInfo> orderPackDataList = session.Query<LogisticsOrderPackDataInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .ToList();
-
         var expressList = expressService.GetExpressListForOrderDetail(orderId);
 
         IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
         IList<ExpressSizeWeightInfo> sizeWeightList = session.Query<ExpressSizeWeightInfo>()
             .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
-
-        var orderPackData = orderPackDataList
-            .Where(e => e.Order.Id == orderId)
-            .Take(1)
-            .SingleOrDefault();
 
         int checkinPackageCount = expressSizeWeightService.GetTotalPackageCount(sizeWeightList);
         if (checkinPackageCount == 0) {
@@ -102,13 +93,6 @@ public class OrderDetailController : Controller {
             CheckinTotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(sizeWeightList).ToString("#0.000"),
             CheckinTotalActualWeight = expressSizeWeightService.GetTotalActualWeight(sizeWeightList).ToString("#0.000"),
             CheckinMaxSideLength = expressSizeWeightService.GetMaxSizeLength(sizeWeightList).ToString("#0.0"),
-
-            HasPackedSizeWeightData = orderPackData != null,
-            PackedTotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
-            PackedTotalVolume = orderPackData?.TotalVolume.ToString("#0.000000") ?? string.Empty,
-            PackedTotalVolumeWeight = orderPackData?.TotalVolumeWeight.ToString("#0.000000") ?? string.Empty,
-            PackedTotalActualWeight = orderPackData?.TotalActualWeight.ToString("#0.000000") ?? string.Empty,
-            PackedMaxSideLength = orderPackData?.MaxSideLength.ToString("#0.0") ?? string.Empty,
 
             FirstModeType = order.FirstModeType.Name,
             FirstModeName = order.FirstMode.Name,
@@ -238,7 +222,39 @@ public class OrderDetailController : Controller {
         // 这个循环里面，很多的 order first mode 都是相同的，所以也不大会影响性能
         foreach (var orderPack in orderPackList) {
             NHibernateUtil.Initialize(orderPack.OrderFirstMode);
+            NHibernateUtil.Initialize(orderPack.OrderFirstMode.FirstMode);
         }
+
+        var orderPackItemList = new List<OrderDetailOrderPackItem>();
+        foreach (var orderPack in orderPackList) {
+            var orderPackItem = new OrderDetailOrderPackItem {
+                Id = orderPack.Id,
+                FirstModeName = orderPack.OrderFirstMode.FirstMode.Name,
+                GoodsType = orderPack.GoodsType.Name,
+                SingleSize = $"{orderPack.Length}×{orderPack.Width}×{orderPack.Height}",
+                SingleVolume = ((orderPack.Length * orderPack.Width * orderPack.Height) / 100_00_00).ToString("#0.000000"),
+                SingleWeight = orderPack.Weight.ToString("#0.000"),
+                PackageCount = orderPack.PackageCount,
+            };
+
+            orderPackItemList.Add(orderPackItem);
+        }
+
+        // 打包汇总数据
+        var orderPackData = session.Query<LogisticsOrderPackDataInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .Take(1)
+            .SingleOrDefault();
+
+        var orderPackDataItem = new OrderDetailOrderPackDataItem {
+            TotalActualWeight = orderPackData?.TotalActualWeight.ToString("#0.000") ?? string.Empty,
+            TotalVolumeWeight = orderPackData?.TotalVolumeWeight.ToString("#0.000") ?? string.Empty,
+            TotalVolume = orderPackData?.TotalVolume.ToString("#0.000000") ?? string.Empty,
+            TotalPackageCount = orderPackData?.TotalPackageCount.ToString() ?? string.Empty,
+            MaxSideLength = orderPackData?.MaxSideLength.ToString("#0.0") ?? string.Empty,
+            MaxVolumeSinglePack = orderPackData?.MaxVolumeSinglePack.ToString("#0.000000") ?? string.Empty,
+            MaxWeightSinglePack = orderPackData?.MaxWeightSinglePack.ToString("#0.000") ?? string.Empty,
+        };
 
         // 订单详细数据
         var model = new OrderDetailModel {
@@ -249,6 +265,9 @@ public class OrderDetailController : Controller {
             ReceiveAddress = receiveAddressItem,
             SendAddress = sendAddressItem,
             ExpressList = expressItemList,
+            OrderPackList = orderPackItemList,
+            HasOrderPackData = orderPackData != null,
+            OrderPackData = orderPackDataItem,
         };
 
         return Json(new JsonResultData {

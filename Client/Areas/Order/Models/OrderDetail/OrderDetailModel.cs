@@ -17,4 +17,13 @@ public class OrderDetailModel {
 
     [JsonProperty("expressList")]
     public IList<OrderDetailExpressItem> ExpressList { get; set; } = new List<OrderDetailExpressItem>();
+
+    [JsonProperty("orderPackList")]
+    public IList<OrderDetailOrderPackItem> OrderPackList { get; set; } = new List<OrderDetailOrderPackItem>();
+
+    [JsonProperty("hasOrderPackData")]
+    public bool HasOrderPackData { get; set; }
+
+    [JsonProperty("orderPackData")]
+    public OrderDetailOrderPackDataItem OrderPackData { get; set; } = new();
 }

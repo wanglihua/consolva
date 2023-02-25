@@ -46,28 +46,6 @@ public class OrderDetailOrderItem {
 
     #endregion
 
-    #region packed size weight data
-
-    [JsonProperty("hasPackedSizeWeightData")]
-    public bool HasPackedSizeWeightData { get; set; }
-
-    [JsonProperty("packedTotalPackageCount")]
-    public string PackedTotalPackageCount { get; set; } = string.Empty;
-
-    [JsonProperty("packedTotalVolume")]
-    public string PackedTotalVolume { get; set; } = string.Empty;
-
-    [JsonProperty("packedTotalVolumeWeight")]
-    public string PackedTotalVolumeWeight { get; set; } = string.Empty;
-
-    [JsonProperty("packedTotalActualWeight")]
-    public string PackedTotalActualWeight { get; set; } = string.Empty;
-
-    [JsonProperty("packedMaxSideLength")]
-    public string PackedMaxSideLength { get; set; } = string.Empty;
-
-    #endregion
-
     [JsonProperty("firstModeType")]
     public string FirstModeType { get; set; } = string.Empty;
 

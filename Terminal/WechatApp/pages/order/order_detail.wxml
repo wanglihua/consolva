@@ -22,10 +22,10 @@
             <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
             <van-cell title="入库总重量" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
         </block>
-        <block wx:if="{{ orderDetail.order.hasPacked === true }}">
-            <van-cell title="打包包裹数" value="{{ orderDetail.order.packedTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
-            <van-cell title="打包总体积" value="{{ orderDetail.order.packedTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-            <van-cell title="打包总重量" value="{{ orderDetail.order.packedTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+        <block wx:if="{{ orderDetail.order.hasPacked === true && orderDetail.hasOrderPackData === true }}">
+            <van-cell title="打包包裹数" value="{{ orderDetail.orderPackData.totalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
+            <van-cell title="打包总体积" value="{{ orderDetail.orderPackData.totalVolume }} CBM" border="{{ false }}" custom-class="item"/>
+            <van-cell title="打包总重量" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
         </block>
         <van-cell title="保险类型" value="{{ orderDetail.order.insurance }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="GST申报" value="{{ orderDetail.order.gst }}" border="{{ false }}" custom-class="item"/>
@@ -74,7 +74,7 @@
         <block wx:if="{{ orderDetail.expressList.length > 0 }}">
             <block wx:for="{{ orderDetail.expressList }}" wx:key="id" wx:for-item="express" wx:for-index="expressIndex">
                 <view>
-                    <van-cell title="快递单序号" value="#{{ expressIndex + 1 }}" border="{{ false }}" custom-class="express-item"/>
+                    <van-cell title="快递单#{{ expressIndex + 1 }}" border="{{ true }}" custom-class="express-item"/>
                     <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="express-item"/>
                     <van-cell title="入库跟踪号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="express-item"/>
                     <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="express-item"/>
@@ -86,7 +86,7 @@
 
                 <block wx:for="{{ express.expressGoodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="expressGoodsIndex">
                     <view>
-                        <van-cell title="物品序号" value="#{{ expressGoodsIndex + 1 }}" border="{{ false }}" custom-class="express-goods-item"/>
+                        <van-cell title="物品#{{ expressGoodsIndex + 1 }}" border="{{ true }}" custom-class="express-goods-item"/>
                         <van-cell title="物品名称" value="{{ expressGoods.goodsName }}" border="{{ false }}" custom-class="express-goods-item"/>
                         <van-cell title="物品类型" value="{{ expressGoods.goodsType }}" border="{{ false }}" custom-class="express-goods-item"/>
                         <van-cell title="数量" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}" custom-class="express-goods-item"/>
