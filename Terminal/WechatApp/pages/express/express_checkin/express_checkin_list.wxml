@@ -13,6 +13,35 @@
         <van-empty description="暂时没有数据项！" />
     </block>
     <block wx:else>
+        <block wx:if="{{ expressGoodsValueCount > 0 }}">
+            <block wx:for="{{ expressGoodsValueList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
+                <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
+                    <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}(缺货值)" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header-goods-value" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
+                    <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item"/>
+                    <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>-->
+                    <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="物品类型" value="{{ express.goodsType }}" value-class="item-goods-type{{ express.goodsTypeId }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="货品总值" value="{{ express.goodsValue }} RMB" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item"/>
+                    <block wx:if="{{ express.customerRemark && express.customerRemark !== '' }}">
+                        <van-cell title="客户备注" value="{{express.customerRemark}}" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <block wx:if="{{ express.warehouseRemark && express.warehouseRemark !== '' }}">
+                        <van-cell title="仓库备注" value="{{express.warehouseRemark}}" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <block wx:if="{{ express.serviceRemark && express.serviceRemark !== '' }}">
+                        <van-cell title="客服备注" value="{{express.serviceRemark}}" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <van-cell title="物品" value="共 {{ express.goodsCount }} 项" border="{{ false }}" custom-class="item"/>
+                    <block wx:for="{{ express.goodsList }}" wx:key="id" wx:for-item="goods" wx:for-index="goodsIndex">
+                        <van-cell value="{{ goods.goodsName }} {{ goods.quantity }} {{ goods.unit }}" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <view class="item-last-vspace"/>
+                    <van-cell title="操作" value="{{express.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ express }}" custom-class="item-footer" value-class="item-footer-value"/>
+                </van-cell-group>
+            </block>
+        </block>
+        
         <block wx:if="{{ expressWaitOrderCount > 0 }}">
             <block wx:for="{{ expressWaitOrderList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                 <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">

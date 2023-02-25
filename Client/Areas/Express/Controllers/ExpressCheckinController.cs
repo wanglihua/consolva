@@ -103,7 +103,8 @@ public class ExpressCheckinController : Controller {
             .Where(e => expressIdList.Contains(e.Express!.Id))
             .ToList();
 
-        // 构建两个列表
+        // 构建三个列表
+        IList<ExpressCheckinListItem> expressGoodsValueList = new List<ExpressCheckinListItem>(); // 需要添加货值的快递单列表
         IList<ExpressCheckinListItem> expressWaitOrderList = new List<ExpressCheckinListItem>();
         IList<ExpressCheckinListItem> expressCheckinList = new List<ExpressCheckinListItem>();
 
@@ -162,7 +163,10 @@ public class ExpressCheckinController : Controller {
                 item.GoodsCount = goodsList.Count;
             }
 
-            if (selectedExpressIdMap.ContainsKey(expressId)) {
+            if (express.GoodsValue <= 0) {
+                item.WaitOrder = false;
+                expressGoodsValueList.Add(item);
+            } else if (selectedExpressIdMap.ContainsKey(expressId)) {
                 item.WaitOrder = true;
                 expressWaitOrderList.Add(item);
             } else {
@@ -172,8 +176,10 @@ public class ExpressCheckinController : Controller {
         }
 
         return new ExpressCheckinListModel {
+            ExpressGoodsValueList = expressGoodsValueList,
             ExpressWaitOrderList = expressWaitOrderList,
             ExpressCheckinList = expressCheckinList,
+            ExpressGoodsValueCount = expressGoodsValueList.Count,
             ExpressWaitOrderCount = expressWaitOrderList.Count,
             ExpressCheckinCount = expressCheckinList.Count,
             ExpressWaitOrderTotalCount = expressWaitOrderTotalCount,

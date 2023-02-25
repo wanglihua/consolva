@@ -6,8 +6,10 @@ Page({
     data: {
         query: '',
 
+        expressGoodsValueList: [],
         expressWaitOrderList: [],
         expressCheckinList: [],
+        expressGoodsValueCount: 0,
         expressWaitOrderCount: 0,
         expressCheckinCount: 0,
         expressTotalCount: 0,
@@ -31,11 +33,23 @@ Page({
     },
 
     setupListData(resData) {
+        const expressGoodsValueList = resData.expressGoodsValueList;
         const expressWaitOrderList = resData.expressWaitOrderList;
         const expressCheckinList = resData.expressCheckinList;
+        const expressGoodsValueCount = resData.expressGoodsValueCount;
         const expressWaitOrderCount = resData.expressWaitOrderCount;
         const expressCheckinCount = resData.expressCheckinCount;
         const expressTotalCount = resData.expressTotalCount;
+
+        for (const express of expressGoodsValueList) {
+            express.actions = "转运，查看详细，修改货值等";
+
+            if (express.forbidden === true) {
+                express.headerValueClass = 'item-header-value-forbidden';
+            } else {
+                express.headerValueClass = 'item-header-value';
+            }
+        }        
 
         for (const express of expressWaitOrderList) {
             express.actions = "转运，查看详细，修改货值等";
@@ -58,8 +72,10 @@ Page({
         }
 
         this.setData({
+            expressGoodsValueList: expressGoodsValueList,
             expressWaitOrderList: expressWaitOrderList,
             expressCheckinList: expressCheckinList,
+            expressGoodsValueCount: expressGoodsValueCount,
             expressWaitOrderCount: expressWaitOrderCount,
             expressCheckinCount: expressCheckinCount,
             expressTotalCount: expressTotalCount,

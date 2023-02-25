@@ -2,13 +2,24 @@ using Newtonsoft.Json;
 
 namespace shunda.Client.Areas.Express.Models.ExpressCheckin;
 
-public class ExpressCheckinListModel
-{
+public class ExpressCheckinListModel {
+    /// <summary>
+    /// 需要添加货值的快递单列表
+    /// </summary>
+    [JsonProperty("expressGoodsValueList")]
+    public IList<ExpressCheckinListItem> ExpressGoodsValueList { get; set; } = new List<ExpressCheckinListItem>();
+
     [JsonProperty("expressWaitOrderList")]
-    public IList<ExpressCheckinListItem> ExpressWaitOrderList = new List<ExpressCheckinListItem>();
+    public IList<ExpressCheckinListItem> ExpressWaitOrderList { get; set; } = new List<ExpressCheckinListItem>();
 
     [JsonProperty("expressCheckinList")]
-    public IList<ExpressCheckinListItem> ExpressCheckinList = new List<ExpressCheckinListItem>();
+    public IList<ExpressCheckinListItem> ExpressCheckinList { get; set; } = new List<ExpressCheckinListItem>();
+
+    /// <summary>
+    /// 需要添加货值的快递单数量
+    /// </summary>
+    [JsonProperty("expressGoodsValueCount")]
+    public int ExpressGoodsValueCount { get; set; }
 
     [JsonProperty("expressWaitOrderCount")]
     public int ExpressWaitOrderCount { get; set; }
@@ -20,7 +31,7 @@ public class ExpressCheckinListModel
     public int ExpressWaitOrderTotalCount { get; set; }
 
     [JsonProperty("expressCheckinTotalCount")]
-    public int ExpressCheckinTotalCount { get; set; }    
+    public int ExpressCheckinTotalCount { get; set; }
 
     [JsonProperty("expressTotalCount")]
     public int ExpressTotalCount { get; set; }
