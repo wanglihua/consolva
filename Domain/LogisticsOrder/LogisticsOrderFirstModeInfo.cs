@@ -8,6 +8,7 @@ namespace shunda.Domain.LogisticsOrder;
 
 /// <summary>
 /// 物流订单头程
+/// 一个物流方式方式，如果一个订单打包时取有多个物品类型的话，会有多条记录
 /// </summary>
 public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
     /// <summary>

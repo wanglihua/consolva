@@ -740,15 +740,16 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException($"物流方式{firstMode.Name}不支持物品类型{param.GoodsType.Name}！");
         }
 
+        var goodsType = param.GoodsType;
         var orderFirstMode = session.Query<LogisticsOrderFirstModeInfo>()
             .Where(e => e.Order.Id == orderId
-                        && e.FirstMode.Id == firstModeId)
+                        && e.FirstMode.Id == firstModeId
+                        && e.GoodsType == goodsType) // 一个物流方式中如果打包时取了多个物品类型的话，会有多个记录
             .Take(1)
             .SingleOrDefault();
 
         if (orderFirstMode == null) {
-            // 去体积重分母
-            var goodsType = param.GoodsType;
+            // 取体积重分母
             var feeRate = session.Query<LogisticsModeFeeRateInfo>()
                 .Where(e => e.Mode.Id == firstModeId
                             && e.GoodsType == goodsType)
@@ -764,7 +765,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderFirstMode = new LogisticsOrderFirstModeInfo {
                 Order = order,
                 OrderCode = order.Code,
-                GoodsType = param.GoodsType,
+                GoodsType = goodsType,
                 FirstMode = firstMode,
                 FirstType = firstMode.Type,
                 Channel = firstMode.Channel,

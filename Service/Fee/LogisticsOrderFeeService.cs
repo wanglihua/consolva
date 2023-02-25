@@ -222,7 +222,8 @@ public class LogisticsOrderFeeService {
         var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Fetch(e => e.FirstMode)
             .Where(e => e.Order.Id == orderId)
-            .OrderBy(e => e.GoodsType)
+            .OrderBy(e => e.FirstMode.Id)
+            .ThenBy(e => e.GoodsType)
             .ThenBy(e => e.Id)
             .ToList();
 
@@ -266,9 +267,8 @@ public class LogisticsOrderFeeService {
         foreach (var orderFirstMode in orderFirstModeList) {
             int orderFirstModeId = orderFirstMode.Id;
             var orderFirstModeOrderPackList = orderPackList
-                .Where(e => e.OrderFirstMode.Id == orderFirstModeId)
-                .OrderBy(e => e.GoodsType)
-                .ThenBy(e => e.Id)
+                .Where(e => e.OrderFirstMode.Id == orderFirstModeId) // 这里不按物品类型过滤也是可以的，因为一个 orderFirstModeId 肯定只针对一个物品类型了 
+                .OrderBy(e => e.Id)
                 .ToList();
 
             feeDataList.Add(new LogisticsFeeData {

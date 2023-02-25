@@ -118,13 +118,16 @@ public class OrderDetailController : Controller {
         // 物流信息
         var firstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Where(e => e.Order.Id == orderId)
-            .OrderBy(e => e.Id)
+            .OrderBy(e => e.FirstMode.Id)
+            .ThenBy(e => e.GoodsType)
+            .ThenBy(e => e.Id)
             .ToList();
 
         var firstModeItemList = firstModeList
             .Select(e => new OrderDetailFirstModeListItem {
                 Id = e.Id,
                 ModeName = e.FirstMode.Name,
+                GoodsType = e.GoodsType.Name,
                 ModeType = e.FirstMode.Type.Name,
                 Channel = e.FirstMode.Channel.Name,
             })

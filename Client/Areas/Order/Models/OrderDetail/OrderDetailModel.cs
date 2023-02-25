@@ -26,4 +26,7 @@ public class OrderDetailModel {
 
     [JsonProperty("orderPackData")]
     public OrderDetailOrderPackDataItem OrderPackData { get; set; } = new();
+
+    [JsonProperty("hasOrderFee")]
+    public bool HasOrderFee { get; set; }
 }
