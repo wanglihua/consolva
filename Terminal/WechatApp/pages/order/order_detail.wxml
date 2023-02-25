@@ -17,7 +17,7 @@
             <van-cell title="订单货值" value="¥ {{ orderDetail.order.goodsValue }}" border="{{ false }}" custom-class="item"/>
             <block wx:if="{{ orderDetail.order.hasPacked === true }}">
                 <van-cell title="物流费用" value="¥ {{ orderDetail.order.orderAmount }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arearsAmount }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arrearsAmount }}" border="{{ false }}" custom-class="item"/>
             </block>
             <block wx:if="{{ orderDetail.order.hasCheckinSizeWeightData === true }}">
                 <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
@@ -114,7 +114,7 @@
             <van-cell title="订单打包" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
             <block wx:for="{{ orderDetail.orderPackList }}" wx:key="id" wx:for-item="orderPack" wx:for-index="index">
                 <view>
-                    <van-cell title="打包#{{ index + 1 }}" border="{{ true }}" title-class="order-pack-item-subtitle" custom-class="item"/>
+                    <van-cell title="打包#{{ index + 1 }}" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
                     <van-cell title="物流名称" value="{{ orderPack.firstModeName }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物品类型" value="{{ orderPack.goodsType }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="包裹数量" value="{{ orderPack.packageCount }}" border="{{ false }}" custom-class="item"/>
@@ -127,7 +127,7 @@
 
             <block wx:if="{{ orderDetail.orderPackData }}">
                 <view>
-                    <van-cell title="打包汇总" border="{{ true }}" title-class="order-pack-item-subtitle" custom-class="item"/>
+                    <van-cell title="打包汇总" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
                     <van-cell title="包裹数量" value="{{ orderDetail.orderPackData.totalPackageCount }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="总实际重" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
                     <van-cell title="总体积重" value="{{ orderDetail.orderPackData.totalVolumeWeight }} KG" border="{{ false }}" custom-class="item"/>
@@ -138,6 +138,36 @@
         </block>
 
         <!-- 订单费用 -->
+        <block wx:if="{{ orderDetail.fee }}">
+            <van-cell title="订单费用" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+            <block wx:if="{{ orderDetail.fee.firstModeList && orderDetail.fee.firstModeList.length > 0 }}">
+                <block wx:for="{{ orderDetail.fee.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="firstModeIndex">
+                    <van-cell title="{{ firstMode.firstModeName }}({{ firstMode.goodsType }})" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
+                    <block wx:if="{{ firstMode.feeList && firstMode.feeList.length > 0 }}">
+                        <block wx:for="{{ firstMode.feeList }}" wx:key="id" wx:for-item="fee" wx:for-index="feeIndex">
+                            <van-cell title="{{ fee.feeType }}" value="{{ fee.amount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                        </block>
+                        <view class="item-last-vspace"/>
+                    </block>
+                </block>
+            </block>
+
+            <block wx:if="{{ orderDetail.fee.otherFeeList && orderDetail.fee.otherFeeList.length > 0 }}">
+                <van-cell title="其他费用" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
+                <block wx:for="{{ orderDetail.fee.otherFeeList }}" wx:key="id" wx:for-item="fee" wx:for-index="feeIndex">
+                    <van-cell title="{{ fee.feeType }}" value="{{ fee.amount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                </block>
+                <view class="item-last-vspace"/>
+            </block>
+
+            <block>
+                <van-cell title="费用合计" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
+                <van-cell title="总计费用" value="{{ orderDetail.fee.totalAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                <van-cell title="已付费用" value="{{ orderDetail.fee.paidAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                <van-cell title="欠费总额" value="{{ orderDetail.fee.arrearsAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                <view class="item-last-vspace"/>
+            </block>
+        </block>
 
         <!-- 订单图片 -->
 

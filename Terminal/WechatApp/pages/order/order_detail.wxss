@@ -21,6 +21,6 @@
     background-color: #FFEFC1;
 }
 
-.order-pack-item-subtitle {
+.item-subtitle {
     font-weight: bold;
 }

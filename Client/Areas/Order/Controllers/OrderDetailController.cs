@@ -85,7 +85,8 @@ public class OrderDetailController : Controller {
             HasPacked = order.OrderStatus.HasPacked(),
             GoodsValue = order.GoodsValue.ToString("#0.00"),
             OrderAmount = order.OrderAmount.ToString("#0.00"),
-            ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
+            PaidAmount = order.PaidAmount.ToString("#0.00"),
+            ArrearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
 
             HasCheckinSizeWeightData = sizeWeightList.Count != 0,
             CheckinTotalPackageCount = checkinPackageCount.ToString(),
@@ -276,12 +277,14 @@ public class OrderDetailController : Controller {
         foreach (var orderFirstMode in orderFirstModeList) {
             int orderFirstModeId = orderFirstMode.Id;
             var orderFirstModeFeeList = orderFeeList
-                .Where(e => e.OrderFirstMode!.Id == orderFirstModeId)
+                .Where(e => e.OrderFirstMode != null
+                            && e.OrderFirstMode.Id == orderFirstModeId)
                 .OrderBy(e => e.Id)
                 .ToList();
 
             var orderFirstModeFeeItemList = orderFirstModeFeeList
                 .Select(e => new OrderDetailFeeListItem {
+                    Id = e.Id,
                     FeeType = e.Type.Name,
                     Amount = e.Fee.ToString("#0.00"),
                 })
@@ -304,6 +307,7 @@ public class OrderDetailController : Controller {
 
         var orderOtherFeeItemList = orderOtherFeeList
             .Select(e => new OrderDetailFeeListItem {
+                Id = e.Id,
                 FeeType = e.Type.Name,
                 Amount = e.Fee.ToString("#0.00"),
             })
@@ -314,7 +318,8 @@ public class OrderDetailController : Controller {
             OtherFeeList = orderOtherFeeItemList,
 
             TotalAmount = orderDetailItem.OrderAmount,
-            ArearsAmount = orderDetailItem.ArearsAmount,
+            PaidAmount = orderDetailItem.PaidAmount,
+            ArrearsAmount = orderDetailItem.ArrearsAmount,
         };
 
         // 订单详细数据

@@ -76,7 +76,7 @@ public class LogisticsOrderClientListService {
                 OrderStatus = order.OrderStatus.Name,
                 GoodsValue = order.GoodsValue.ToString("#0.00"),
                 OrderAmount = order.OrderAmount.ToString("#0.00"),
-                ArearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
+                ArrearsAmount = order.ArrearsAmountFormula.ToString("#0.00"),
 
                 CheckinTotalPackageCount = checkinPackageCount.ToString(),
                 CheckinTotalVolume = expressSizeWeightService.GetTotalVolume(sizeWeightListOfOrder).ToString("#0.000000"),
