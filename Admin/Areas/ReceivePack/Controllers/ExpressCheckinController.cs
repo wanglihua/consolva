@@ -564,6 +564,7 @@ public class ExpressCheckinController : Controller {
                 }
 
                 if (expressExpect != null) {
+                    express.GoodsValue = expressExpect.GoodsValue;
                     express.ClaimTime = now;
                     express.Status = ExpressStatus.Checkin;
                     express.Customer = expressExpect.Customer;

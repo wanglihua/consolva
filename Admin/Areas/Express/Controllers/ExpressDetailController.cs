@@ -112,6 +112,7 @@ public class ExpressDetailController : Controller {
             orderPhoto.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(orderPhoto, OssSiteLocType.China);
         }
 
+        // 订单日志
         model.ExpressLogList = session.Query<ExpressLogInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .OrderByDescending(e => e.Id)
