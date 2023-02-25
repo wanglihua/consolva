@@ -1,1 +1,22 @@
 /* pages/order/order_detail.wxss */
+.express-item {
+    padding-bottom: 0 !important;
+    background-color: #E1E0F1 !important;
+}
+
+.express-item-last-vspace {
+    padding: 5px 0;
+    width: 100%;
+    background-color: #E1E0F1;
+}
+
+.express-goods-item {
+    padding-bottom: 0 !important;
+    background-color: #FFEFC1 !important;
+}
+
+.express-goods-item-last-vspace {
+    padding: 5px 0;
+    width: 100%;
+    background-color: #FFEFC1;
+}

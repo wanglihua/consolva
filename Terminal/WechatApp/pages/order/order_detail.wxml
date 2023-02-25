@@ -69,5 +69,31 @@
         <van-cell title="详细地址" value="{{ orderDetail.sendAddress.address }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="邮编" value="{{ orderDetail.sendAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
         <view class="item-last-vspace"/>
+
+        <van-cell title="订单商品" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+        <block wx:if="{{ orderDetail.expressList.length > 0 }}">
+            <block wx:for="{{ orderDetail.expressList }}" wx:key="id" wx:for-item="express" wx:for-index="expressIndex">
+                <view>
+                    <van-cell title="快递单序号" value="#{{ expressIndex + 1 }}" border="{{ false }}" custom-class="express-item"/>
+                    <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="express-item"/>
+                    <van-cell title="入库跟踪号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="express-item"/>
+                    <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="express-item"/>
+                    <van-cell title="状态" value="{{ express.status }}" border="{{ false }}" custom-class="express-item"/>
+                    <van-cell title="入库时间" value="{{ express.checkinTime }}" border="{{ false }}" custom-class="express-item"/>
+                    <van-cell title="货品总值" value="{{ express.goodsValue }} RMB" border="{{ false }}" custom-class="express-item"/>
+                    <view class="express-item-last-vspace"/>
+                </view>
+
+                <block wx:for="{{ express.expressGoodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="expressGoodsIndex">
+                    <view>
+                        <van-cell title="物品序号" value="#{{ expressGoodsIndex + 1 }}" border="{{ false }}" custom-class="express-goods-item"/>
+                        <van-cell title="物品名称" value="{{ expressGoods.goodsName }}" border="{{ false }}" custom-class="express-goods-item"/>
+                        <van-cell title="物品类型" value="{{ expressGoods.goodsType }}" border="{{ false }}" custom-class="express-goods-item"/>
+                        <van-cell title="数量" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}" custom-class="express-goods-item"/>
+                        <view class="express-goods-item-last-vspace"/>
+                    </view>
+                </block>
+            </block>
+        </block>
     </van-cell-group>
 </view>
