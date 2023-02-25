@@ -32,7 +32,7 @@
     </van-cell-group>
 
     <van-cell-group custom-class="items">
-        <van-cell title="尺寸/体积重/实际重" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
+        <van-cell title="入库尺寸/体积重/实际重" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
         <block wx:if="{{ express.sizeWeightList && express.sizeWeightList.length !== 0 }}">
             <block wx:for="{{ express.sizeWeightList }}" wx:key="id" wx:for-item="sizeWeight" wx:for-index="index">
                 <van-cell title="{{ index + 1 }}、单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}CM，单箱体积重：{{ sizeWeight.volumeWeight }}KG，单箱实际重：{{ sizeWeight.actualWeight }}KG，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}" custom-class="item" />
