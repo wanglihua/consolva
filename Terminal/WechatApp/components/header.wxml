@@ -17,7 +17,7 @@
     </view>
     <view slot="right">
         <view style="margin-right: -5px;">
-            {{ customerCode }}
+            舜达{{ customerCode }}
         </view>
     </view>
 </van-nav-bar>

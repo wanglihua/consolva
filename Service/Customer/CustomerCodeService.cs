@@ -130,7 +130,8 @@ public class CustomerCodeService {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
 
-        return $"SDQQ{customer.CheckinCode.ToUpper()}";
+        // return $"SDQQ{customer.CheckinCode.ToUpper()}";
+        return customer.CheckinCode.ToUpper();
     }
 
     public string GetCustomerCodeWithNum(int customerId) {
@@ -143,7 +144,8 @@ public class CustomerCodeService {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
 
-        return $"SDQQ{customer.CheckinCode.ToUpper()}{customerId:#000}";
+        // return $"SDQQ{customer.CheckinCode.ToUpper()}{customerId:#000}";
+        return $"{customer.CheckinCode.ToUpper()}{customerId:#000}";
     }
 
     public string GetGuestCode(int guestId) {

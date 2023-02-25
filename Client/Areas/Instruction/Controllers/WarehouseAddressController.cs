@@ -66,7 +66,7 @@ public class WarehouseAddressController : Controller {
 
         string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
 
-        string fullAddress = $"{customerCode} {warehouse.Phone}, {warehouse.Area}{warehouse.Address}({customerCode}) {warehouse.Zipcode}";
+        string fullAddress = $"{customerCode} {warehouse.Phone}, {warehouse.Area}{warehouse.Address}{customerCode}室 {warehouse.Zipcode}";
 
         return Json(new JsonResultData {
             Success = true,
@@ -74,7 +74,7 @@ public class WarehouseAddressController : Controller {
             Data = new WarehouseAddressDetailModel {
                 CustomerCode = customerCode,
                 Area = warehouse.Area,
-                Address = $"{warehouse.Address}({customerCode})",
+                Address = $"{warehouse.Address}{customerCode}室",
                 Phone = warehouse.Phone,
                 Zipcode = warehouse.Zipcode,
                 FullAddress = fullAddress,
