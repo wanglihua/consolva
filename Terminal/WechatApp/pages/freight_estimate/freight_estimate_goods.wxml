@@ -26,18 +26,18 @@
             <van-cell title="箱型{{ index + 1 }}(单位：CM, KG)" border="{{ false }}" custom-class="sub-item-header" title-class="sub-item-header-title"/>
             <van-row>
                 <van-col span="12">
-                    <van-field label="长度" placeholder="单件长度" value="{{ goods.length }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsLengthInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                    <van-field label="长度CM" placeholder="单件长度" value="{{ goods.length }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsLengthInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
                 </van-col>
                 <van-col span="12">
-                    <van-field label="宽度" placeholder="单件宽度" value="{{ goods.width }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsWidthInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                    <van-field label="宽度CM" placeholder="单件宽度" value="{{ goods.width }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsWidthInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
                 </van-col>
             </van-row>
             <van-row>
                 <van-col span="12">
-                    <van-field label="高度" placeholder="单件高度" value="{{ goods.height }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsHeightInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                    <van-field label="高度CM" placeholder="单件高度" value="{{ goods.height }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsHeightInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
                 </van-col>
                 <van-col span="12">
-                    <van-field label="重量" placeholder="单件重量" value="{{ goods.weight }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsWeightInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
+                    <van-field label="重量KG" placeholder="单件重量" value="{{ goods.weight }}" border="{{ false }}" type="number" input-align="right" bind:input="onGoodsWeightInput" data-item="{{ goods }}" custom-style="padding-bottom: 0;"/>
                 </van-col>
             </van-row>
             <van-row>

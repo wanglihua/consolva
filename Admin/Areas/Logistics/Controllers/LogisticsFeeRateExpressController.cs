@@ -100,7 +100,8 @@ public class LogisticsFeeRateExpressController : Controller {
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "保存成功！" },
-            { "id", feeRate.Id }
+            { "id", feeRate.Id },
+            { "create", isCreate }
         });
     }
 }

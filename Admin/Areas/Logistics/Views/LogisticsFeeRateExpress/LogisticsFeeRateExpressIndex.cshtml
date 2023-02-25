@@ -188,8 +188,11 @@
                         return;
                     }
 
-                    $("#LogisticsFeeRateExpress_Id").val(data.id);
                     $.msg.show(data.message);
+                    
+                    if (data.create === true) {
+                        setTimeout("window.location.reload()", 1000);
+                    }
                 }
             });
         }
