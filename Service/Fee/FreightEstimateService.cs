@@ -135,6 +135,7 @@ public class FreightEstimateService {
         }
 
         return new LogisticsFeeData {
+            Country = freightEstimateSelect.Country,
             LogisticsMode = firstMode,
             OrderGoodsValue = freightEstimateSelect.GoodsValue,
             GoodsType = freightEstimateSelect.GoodsType,
