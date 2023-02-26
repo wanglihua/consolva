@@ -102,7 +102,7 @@ public class WxPayData {
             throw new WxPayException("将空的xml串转换为WxPayData不合法!");
         }
 
-        SafeXmlDocument xmlDoc = new SafeXmlDocument();
+        XmlDocument xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
         XmlNode xmlNode = xmlDoc.FirstChild!; //获取到根节点<xml>
         XmlNodeList nodes = xmlNode.ChildNodes;

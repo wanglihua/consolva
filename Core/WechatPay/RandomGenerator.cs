@@ -4,10 +4,10 @@ namespace shunda.Core.WechatPay;
 
 public class RandomGenerator {
     private readonly RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create();
-    
+
     public int Next(int minValue, int maxExclusiveValue) {
         if (minValue >= maxExclusiveValue) {
-            throw new ArgumentOutOfRangeException("minValue must be lower than maxExclusiveValue");
+            throw new ArgumentOutOfRangeException(nameof(maxExclusiveValue), "minValue must be lower than maxExclusiveValue");
         }
 
         long diff = (long)maxExclusiveValue - minValue;
