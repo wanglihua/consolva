@@ -19,6 +19,9 @@ public class ExpressClaimListItem
     [JsonProperty("goodsType")]
     public string GoodsType { get; set; } = string.Empty;
 
+    [JsonProperty("goodsTypeId")]
+    public int GoodsTypeId { get; set; }
+
     [JsonProperty("addDate")]
     public string AddDate { get; set; } = string.Empty;
 

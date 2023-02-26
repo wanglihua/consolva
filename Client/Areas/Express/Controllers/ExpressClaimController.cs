@@ -68,6 +68,7 @@ public class ExpressClaimController : Controller {
                 TrackingNo = expressTrackingNoService.GetHiddenTrackingNo(express.TrackingNo),
                 CheckinTrackingNo = express.CheckinTrackingNo,
                 GoodsType = express.GoodsType.Name,
+                GoodsTypeId = express.GoodsType.Id,
                 AddDate = express.AddTime.ToString("yyyy-MM-dd"),
                 ExpressCompany = express.ExpressCompany,
                 WarehouseRemark = warehouseRemark,
