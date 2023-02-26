@@ -5,8 +5,10 @@ using System.Text;
 using NLog;
 using shunda.Core.Config;
 
-namespace shunda.Core.WechatPay;
+// todo 改造这里，去掉编译警告
+#pragma warning disable SYSLIB0014
 
+namespace shunda.Core.WechatPay;
 
 /// <summary>
 /// http连接基础类，负责底层的http通信
@@ -16,19 +18,16 @@ public class HttpService {
 
     private static string USER_AGENT = string.Format("WXPaySDK/{3} ({0}) .net/{1} {2}", Environment.OSVersion, Environment.Version, WechatPayConfig.MchId, typeof(HttpService).Assembly.GetName().Version);
 
-    public static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) {
+    public static bool CheckValidationResult(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors errors) {
         //直接确认，否则打不开
         return true;
     }
 
     public static string Post(string xml, string url, bool isUseCert, int timeout, string appPath = "") {
-        GC.Collect(); //垃圾回收，回收没有正常关闭的http连接
-
         string result = ""; //返回结果
 
-        HttpWebRequest request = null;
-        HttpWebResponse response = null;
-        Stream reqStream = null;
+        HttpWebRequest? request = null;
+        HttpWebResponse? response = null;
 
         try {
             //设置最大连接数
@@ -65,7 +64,7 @@ public class HttpService {
             }
 
             //往服务器写入数据
-            reqStream = request.GetRequestStream();
+            var reqStream = request.GetRequestStream();
             reqStream.Write(data, 0, data.Length);
             reqStream.Close();
 
@@ -76,22 +75,6 @@ public class HttpService {
             StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             result = sr.ReadToEnd().Trim();
             sr.Close();
-        }
-        catch (ThreadAbortException e) {
-            log.Error(e);
-            log.Error("HttpService", "Thread - caught ThreadAbortException - resetting.");
-            log.Error("Exception message: {0}", e.Message);
-            Thread.ResetAbort();
-        }
-        catch (WebException e) {
-            log.Error(e);
-            log.Error("HttpService", e.ToString());
-            if (e.Status == WebExceptionStatus.ProtocolError) {
-                log.Error("HttpService", "StatusCode : " + ((HttpWebResponse)e.Response).StatusCode);
-                log.Error("HttpService", "StatusDescription : " + ((HttpWebResponse)e.Response).StatusDescription);
-            }
-
-            throw new WxPayException(e.ToString());
         }
         catch (Exception e) {
             log.Error(e);
@@ -118,11 +101,10 @@ public class HttpService {
     /// <param name="url">请求的url地址</param>
     /// <returns>http GET成功后返回的数据，失败抛WebException异常</returns>
     public static string Get(string url) {
-        GC.Collect();
         string result = "";
 
-        HttpWebRequest request = null;
-        HttpWebResponse response = null;
+        HttpWebRequest? request = null;
+        HttpWebResponse? response = null;
 
         //请求url以获取数据
         try {
@@ -148,22 +130,6 @@ public class HttpService {
             StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
             result = sr.ReadToEnd().Trim();
             sr.Close();
-        }
-        catch (ThreadAbortException e) {
-            log.Error(e);
-            log.Error("HttpService", "Thread - caught ThreadAbortException - resetting.");
-            log.Error("Exception message: {0}", e.Message);
-            Thread.ResetAbort();
-        }
-        catch (WebException e) {
-            log.Error(e);
-            log.Error("HttpService", e.ToString());
-            if (e.Status == WebExceptionStatus.ProtocolError) {
-                log.Error("HttpService", "StatusCode : " + ((HttpWebResponse)e.Response).StatusCode);
-                log.Error("HttpService", "StatusDescription : " + ((HttpWebResponse)e.Response).StatusDescription);
-            }
-
-            throw new WxPayException(e.ToString());
         }
         catch (Exception e) {
             log.Error(e);

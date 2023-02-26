@@ -301,20 +301,27 @@ public class WxPayApi {
         //检测必填参数
         if (!data.IsSet("out_trade_no")) {
             throw new WxPayException("缺少统一支付接口必填参数out_trade_no！");
-        } else if (!data.IsSet("body")) {
+        }
+
+        if (!data.IsSet("body")) {
             throw new WxPayException("缺少统一支付接口必填参数body！");
-        } else if (!data.IsSet("total_fee")) {
+        }
+
+        if (!data.IsSet("total_fee")) {
             throw new WxPayException("缺少统一支付接口必填参数total_fee！");
-        } else if (!data.IsSet("trade_type")) {
+        }
+
+        if (!data.IsSet("trade_type")) {
             throw new WxPayException("缺少统一支付接口必填参数trade_type！");
         }
 
         //关联参数
-        if (data.GetValue("trade_type").ToString() == "JSAPI" && !data.IsSet("openid")) {
+        string tradeType = data.GetValue("trade_type")?.ToString() ?? string.Empty; 
+        if (tradeType == "JSAPI" && !data.IsSet("openid")) {
             throw new WxPayException("统一支付接口中，缺少必填参数openid！trade_type为JSAPI时，openid为必填参数！");
         }
 
-        if (data.GetValue("trade_type").ToString() == "NATIVE" && !data.IsSet("product_id")) {
+        if (tradeType == "NATIVE" && !data.IsSet("product_id")) {
             throw new WxPayException("统一支付接口中，缺少必填参数product_id！trade_type为NATIVE时，product_id为必填参数！");
         }
 
@@ -429,7 +436,7 @@ public class WxPayApi {
         */
     public static string GenerateOutTradeNo() {
         var ran = new Random();
-        return string.Format("{0}{1}{2}", WechatPayConfig.MchId, DateTime.Now.ToString("yyyyMMddHHmmss"), ran.Next(999));
+        return $"{WechatPayConfig.MchId}{DateTime.Now.ToString("yyyyMMddHHmmss")}{ran.Next(999)}";
     }
 
     /**

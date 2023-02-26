@@ -63,7 +63,7 @@ public class WxPayData {
     public string ToXml() {
         //数据为空时不能转化为xml格式
         if (0 == values.Count) {
-            log.Error(this.GetType().ToString(), "WxPayData数据为空!");
+            log.Error("WxPayData数据为空!");
             throw new WxPayException("WxPayData数据为空!");
         }
 
@@ -71,7 +71,7 @@ public class WxPayData {
         foreach (KeyValuePair<string, object> pair in values) {
             //字段值不能为null，会影响后续流程
             if (pair.Value == null) {
-                log.Error(this.GetType().ToString(), "WxPayData内部含有值为null的字段!");
+                log.Error("WxPayData内部含有值为null的字段!");
                 throw new WxPayException("WxPayData内部含有值为null的字段!");
             }
 
@@ -81,7 +81,7 @@ public class WxPayData {
                 xml += "<" + pair.Key + ">" + "<![CDATA[" + pair.Value + "]]></" + pair.Key + ">";
             } else //除了string和int类型不能含有其他数据类型
             {
-                log.Error(this.GetType().ToString(), "WxPayData字段数据类型错误!");
+                log.Error("WxPayData字段数据类型错误!");
                 throw new WxPayException("WxPayData字段数据类型错误!");
             }
         }
@@ -98,13 +98,13 @@ public class WxPayData {
     /// <exception cref="WxPayException">WxPayException</exception>
     public SortedDictionary<string, object> FromXml(string xml) {
         if (string.IsNullOrEmpty(xml)) {
-            log.Error(this.GetType().ToString(), "将空的xml串转换为WxPayData不合法!");
+            log.Error("将空的xml串转换为WxPayData不合法!");
             throw new WxPayException("将空的xml串转换为WxPayData不合法!");
         }
 
         SafeXmlDocument xmlDoc = new SafeXmlDocument();
         xmlDoc.LoadXml(xml);
-        XmlNode xmlNode = xmlDoc.FirstChild; //获取到根节点<xml>
+        XmlNode xmlNode = xmlDoc.FirstChild!; //获取到根节点<xml>
         XmlNodeList nodes = xmlNode.ChildNodes;
         foreach (XmlNode xn in nodes) {
             XmlElement xe = (XmlElement)xn;
@@ -137,7 +137,7 @@ public class WxPayData {
         string buff = "";
         foreach (KeyValuePair<string, object> pair in values) {
             if (pair.Value == null) {
-                log.Error(this.GetType().ToString(), "WxPayData内部含有值为null的字段!");
+                log.Error("WxPayData内部含有值为null的字段!");
                 throw new WxPayException("WxPayData内部含有值为null的字段!");
             }
 
@@ -159,7 +159,7 @@ public class WxPayData {
         string str = "";
         foreach (KeyValuePair<string, object> pair in values) {
             if (pair.Value == null) {
-                log.Error(this.GetType().ToString(), "WxPayData内部含有值为null的字段!");
+                log.Error("WxPayData内部含有值为null的字段!");
                 throw new WxPayException("WxPayData内部含有值为null的字段!");
             }
 
@@ -168,7 +168,7 @@ public class WxPayData {
         }
 
         str = HttpUtility.HtmlEncode(str);
-        log.Debug(this.GetType().ToString(), "Print in Web Page : " + str);
+        log.Debug("Print in Web Page : " + str);
         return str;
     }
 
@@ -216,28 +216,28 @@ public class WxPayData {
     /// <exception cref="WxPayException"></exception>
     public bool CheckSign(string signType) {
         //如果没有设置签名，则跳过检测
-        if (!IsSet("sign")) {
-            log.Error(this.GetType().ToString(), "WxPayData签名存在但不合法!");
-            throw new WxPayException("WxPayData签名存在但不合法!");
+        if (IsSet("sign") == false) {
+            log.Error("WxPayData签名不存在!");
+            throw new WxPayException("WxPayData签名不存在!");
         }
 
         //如果设置了签名但是签名为空，则抛异常
-        else if (GetValue("sign") == null || GetValue("sign").ToString() == "") {
-            log.Error(this.GetType().ToString(), "WxPayData签名存在但不合法!");
+        object? signObj = GetValue("sign");
+
+        string sign = signObj?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(sign)) {
+            log.Error("WxPayData签名存在但不合法!");
             throw new WxPayException("WxPayData签名存在但不合法!");
         }
-
-        //获取接收到的签名
-        string returnSign = GetValue("sign").ToString();
 
         //在本地计算新的签名
         string calSign = MakeSign(signType);
 
-        if (calSign == returnSign) {
+        if (calSign == sign) {
             return true;
         }
 
-        log.Error(this.GetType().ToString(), "WxPayData签名验证错误!");
+        log.Error("WxPayData签名验证错误!");
         throw new WxPayException("WxPayData签名验证错误!");
     }
 
