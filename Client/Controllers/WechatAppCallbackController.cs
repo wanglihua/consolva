@@ -80,9 +80,11 @@ public class WechatAppCallbackController : Controller {
             log.Error($"query, key: {query.Key}, value: {string.Join(",", query.Value)}");
         }
 
+        /*
         foreach (var form in Request.Form) {
             log.Error($"form, key: {form.Key}, value: {string.Join(",", form.Value)}");
         }
+        */
 
         StreamReader streamReader = new StreamReader(Request.Body);
         string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();

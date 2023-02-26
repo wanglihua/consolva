@@ -1,11 +1,16 @@
 <!--components/chat_icon.wxml-->
 <block wx:if="{{ showChatIcon }}">
     <view class="chatIcon">
+        <!--
         <van-button type="info" round plain class-prefix="iconfont" icon="customer-service" size="small" bind:click="onChatIconClick">
             <text>客服</text>
             <block wx:if="{{ chatIconMessageCount > 0 }}">
                 <text class="chatIconMessageCount">{{chatIconMessageCount}}</text>
             </block>
+        </van-button>
+        -->
+        <van-button open-type="contact" type="info" round plain class-prefix="iconfont" icon="customer-service" size="small">
+            <text>客服</text>
         </van-button>
     </view>
 </block>

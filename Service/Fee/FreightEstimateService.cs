@@ -83,7 +83,7 @@ public class FreightEstimateService {
             Title = "GST费用",
             Fee = gstFee,
             GoodsType = LogisticsGoodsType.None,
-            EntryType = LogisticsFeeResultEntryType.Gst,
+            EntryType = LogisticsFeeResultEntryType.Single,
             FeeType = LogisticsOrderFeeType.GstFee
         });
 

@@ -1,7 +1,5 @@
 namespace shunda.Service.Fee;
 
-// todo 这里为什么没有 保险费用类型
-
 /// <summary>
 /// 费用计算结果明细类型
 /// </summary>
@@ -10,11 +8,6 @@ public enum LogisticsFeeResultEntryType {
     /// 单笔费用
     /// </summary>
     Single,
-
-    /// <summary>
-    /// GST 费用
-    /// </summary>
-    Gst,
 
     /// <summary>
     /// 小计费用
