@@ -164,13 +164,13 @@ public class ExpressCheckinController : Controller {
             }
 
             if (express.GoodsValue <= 0) {
-                item.WaitOrder = false;
+                item.Cate = "GoodsValue";
                 expressGoodsValueList.Add(item);
             } else if (selectedExpressIdMap.ContainsKey(expressId)) {
-                item.WaitOrder = true;
+                item.Cate = "WaitOrder";
                 expressWaitOrderList.Add(item);
             } else {
-                item.WaitOrder = false;
+                item.Cate = "Checkin";
                 expressCheckinList.Add(item);
             }
         }

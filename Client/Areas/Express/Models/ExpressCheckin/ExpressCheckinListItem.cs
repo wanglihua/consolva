@@ -51,6 +51,9 @@ public class ExpressCheckinListItem {
     [JsonProperty("goodsCount")]
     public int GoodsCount { get; set; }
 
-    [JsonProperty("waitOrder")]
-    public bool WaitOrder { get; set; } = false;
+    /// <summary>
+    /// 可能得三个值 GoodsValue, WaitOrder, Checkin
+    /// </summary>
+    [JsonProperty("cate")]
+    public string Cate { get; set; } = string.Empty;
 }

@@ -49,7 +49,7 @@ Page({
             } else {
                 express.headerValueClass = 'item-header-value';
             }
-        }        
+        }
 
         for (const express of expressWaitOrderList) {
             express.actions = "转运，查看详细，修改货值等";
@@ -102,7 +102,7 @@ Page({
         const actionSheetActions = [];
 
         if (currentExpress.forbidden === false) {
-            if (currentExpress.waitOrder === true) {
+            if (currentExpress.cate === "WaitOrder") {
                 actionSheetActions.push({
                     action: "removeFromOrder",
                     name: '暂不转运',
@@ -119,7 +119,9 @@ Page({
                         className: 'iconfont iconfont-remove-from-order',
                     });
                 }
-            } else {
+            }
+
+            if (currentExpress.cate === "Checkin") {
                 actionSheetActions.push({
                     action: "addToOrder",
                     name: '我要转运',
@@ -151,7 +153,7 @@ Page({
             className: 'iconfont iconfont-edit',
         });
 
-        if (currentExpress.waitOrder === true) {
+        if (currentExpress.cate === "WaitOrder") {
             actionSheetActions.push({
                 action: "applyReturn",
                 name: '申请退运',
@@ -159,7 +161,9 @@ Page({
                 className: 'iconfont iconfont-express-return',
                 disabled: true,
             });
-        } else {
+        }
+
+        if (currentExpress.cate === "Checkin") {
             actionSheetActions.push({
                 action: "applyReturn",
                 name: '申请退运',
