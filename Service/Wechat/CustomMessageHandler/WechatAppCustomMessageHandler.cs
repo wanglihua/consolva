@@ -10,10 +10,6 @@ using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MessageHandlers;
 using Senparc.Weixin.Tencent;
-using shunda.Domain.Customer;
-using shunda.Domain.Wechat;
-using shunda.Service.Customer;
-using shunda.Service.Pass;
 
 namespace shunda.Service.Wechat.CustomMessageHandler;
 
@@ -27,11 +23,6 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
 
     private readonly ISession session;
 
-    private readonly WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService;
-    private readonly WechatOfficialAccountReplyService wechatOfficialAccountReplyService;
-    private readonly WechatOfficialAccountReplyKeywordService wechatOfficialAccountReplyKeywordService;
-    private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;
-
     /// <summary>
     /// 模板消息集合（Key：checkCode，Value：OpenId）
     /// </summary>
@@ -40,13 +31,6 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
     public WechatAppCustomMessageHandler(ISession session, XDocument document, PostModel postModel, int maxRecordCount = 0)
         : base(document, postModel, maxRecordCount) {
         this.session = session;
-        this.wechatOfficialAccountFollowerService = new WechatOfficialAccountFollowerService(session,
-            new CustomerService(session, new CustomerCheckinCodeService(session), new PasswordService()),
-            new CustomerPromotionService(session)
-        );
-        this.wechatOfficialAccountReplyService = new WechatOfficialAccountReplyService(session);
-        this.wechatOfficialAccountReplyKeywordService = new WechatOfficialAccountReplyKeywordService(session);
-        this.wechatOfficialAccountAccessTokenService = new WechatOfficialAccountAccessTokenService(session);
 
         this.OmitRepeatedMessage = true;
     }
@@ -78,6 +62,10 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
                 return null;
             }
 
+            // 用于调试
+            log.Error("msgXml:");
+            log.Error(msgXml);
+
             decryptDoc = XDocument.Parse(msgXml); //完成解密
         }
 
@@ -98,50 +86,16 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
         }
     }
 
-    private void SaveMessageRequest(string openId, string messageContent) {
-        var customer = session.Query<CustomerInfo>()
-            .Where(e => e.WechatOfficialAccountOpenId == openId)
-            .Take(1)
-            .SingleOrDefault();
-
-        WechatOfficialAccountMessageInfo message = new WechatOfficialAccountMessageInfo {
-            Direction = WechatOfficialAccountMessageDirection.CustomerToUser,
-            OpenId = openId,
-            Customer = customer,
-            Message = messageContent,
-            Status = WechatOfficialAccountMessageStatus.NotReply,
-        };
-
-        session.Save(message);
-        session.Flush();
-    }
-
     /// <summary>
     /// 处理文字请求
     /// </summary>
     /// <param name="requestMessage">请求消息</param>
     /// <returns></returns>
     public override IResponseMessageBase OnTextRequest(RequestMessageText requestMessage) {
-        string messageContent = requestMessage.Content;
-
-        string openId = requestMessage.FromUserName;
-        SaveMessageRequest(openId, messageContent);
-
-        // 自动回复
-        string responseMessageText = wechatOfficialAccountReplyKeywordService.GetKeywordReply(messageContent);
-
-        if (string.IsNullOrWhiteSpace(responseMessageText)) {
-            responseMessageText = wechatOfficialAccountReplyService.GetReply(WechatOfficialAccountReplyType.TextMessageReply);
-        }
-
-        ResponseMessageText responseMessage = CreateResponseMessage<ResponseMessageText>();
-        responseMessage.Content = responseMessageText;
-        return responseMessage;
+        return new ResponseMessageNoResponse();
     }
 
     public override IResponseMessageBase OnShortVideoRequest(RequestMessageShortVideo requestMessage) {
-        string openId = requestMessage.FromUserName;
-        SaveMessageRequest(openId, "你有一个短视频信息");
         return new ResponseMessageNoResponse();
     }
 
@@ -149,8 +103,6 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
     /// 处理图片请求
     /// </summary>
     public override IResponseMessageBase OnImageRequest(RequestMessageImage requestMessage) {
-        string openId = requestMessage.FromUserName;
-        SaveMessageRequest(openId, "你有一个图片信息");
         return new ResponseMessageNoResponse();
     }
 
@@ -158,8 +110,6 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
     /// 处理语音请求
     /// </summary>
     public override IResponseMessageBase OnVoiceRequest(RequestMessageVoice requestMessage) {
-        string openId = requestMessage.FromUserName;
-        SaveMessageRequest(openId, "你有一个语音信息");
         return new ResponseMessageNoResponse();
     }
 
@@ -167,8 +117,6 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
     /// 处理视频请求
     /// </summary>
     public override IResponseMessageBase OnVideoRequest(RequestMessageVideo requestMessage) {
-        string openId = requestMessage.FromUserName;
-        SaveMessageRequest(openId, "你有一个视频信息");
         return new ResponseMessageNoResponse();
     }
 
@@ -176,23 +124,11 @@ public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessag
     /// 处理链接消息请求
     /// </summary>
     public override IResponseMessageBase OnLinkRequest(RequestMessageLink requestMessage) {
-        string openId = requestMessage.FromUserName;
-        SaveMessageRequest(openId, "你有一个链接信息");
         return new ResponseMessageNoResponse();
     }
 
     public override IResponseMessageBase OnFileRequest(RequestMessageFile requestMessage) {
-        string openId = requestMessage.FromUserName;
-        SaveMessageRequest(openId, "你有一个文件信息");
         return new ResponseMessageNoResponse();
-    }
-
-    /// <summary>
-    /// 处理事件请求（这个方法一般不用重写，这里仅作为示例出现。除非需要在判断具体Event类型以外对Event信息进行统一操作
-    /// </summary>
-    public override IResponseMessageBase OnEventRequest(IRequestMessageEventBase requestMessage) {
-        var eventResponseMessage = base.OnEventRequest(requestMessage); //对于Event下属分类的重写方法，见：CustomerMessageHandler_Events.cs
-        return eventResponseMessage;
     }
 
     public override IResponseMessageBase DefaultResponseMessage(IRequestMessageBase requestMessage) {
