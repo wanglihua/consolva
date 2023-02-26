@@ -79,7 +79,7 @@ public class HttpService {
         catch (Exception e) {
             log.Error(e);
             log.Error("HttpService", e.ToString());
-            throw new WxPayException(e.ToString());
+            throw new WechatPayException(e.ToString());
         }
         finally {
             //关闭连接和流
@@ -134,7 +134,7 @@ public class HttpService {
         catch (Exception e) {
             log.Error(e);
             log.Error("HttpService", e.ToString());
-            throw new WxPayException(e.ToString());
+            throw new WechatPayException(e.ToString());
         }
         finally {
             //关闭连接和流

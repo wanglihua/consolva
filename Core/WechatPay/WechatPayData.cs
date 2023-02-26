@@ -13,7 +13,7 @@ namespace shunda.Core.WechatPay;
 /// 这样设计的好处是可扩展性强，用户可随意对协议进行更改而不用重新设计数据结构，
 /// 还可以随意组合出不同的协议数据包，不用为每个协议设计一个数据包结构
 /// </summary>
-public class WxPayData {
+public class WechatPayData {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public const string SIGN_TYPE_MD5 = "MD5";
@@ -59,12 +59,12 @@ public class WxPayData {
     /// 将Dictionary转成xml
     /// </summary>
     /// <returns>经转换得到的xml串</returns>
-    /// <exception cref="WxPayException">WxPayException</exception>
+    /// <exception cref="WechatPayException">WxPayException</exception>
     public string ToXml() {
         //数据为空时不能转化为xml格式
         if (0 == values.Count) {
             log.Error("WxPayData数据为空!");
-            throw new WxPayException("WxPayData数据为空!");
+            throw new WechatPayException("WxPayData数据为空!");
         }
 
         string xml = "<xml>";
@@ -72,17 +72,17 @@ public class WxPayData {
             //字段值不能为null，会影响后续流程
             if (pair.Value == null) {
                 log.Error("WxPayData内部含有值为null的字段!");
-                throw new WxPayException("WxPayData内部含有值为null的字段!");
+                throw new WechatPayException("WxPayData内部含有值为null的字段!");
             }
 
-            if (pair.Value.GetType() == typeof(int)) {
+            if (pair.Value is int) {
                 xml += "<" + pair.Key + ">" + pair.Value + "</" + pair.Key + ">";
-            } else if (pair.Value.GetType() == typeof(string)) {
+            } else if (pair.Value is string) {
                 xml += "<" + pair.Key + ">" + "<![CDATA[" + pair.Value + "]]></" + pair.Key + ">";
             } else //除了string和int类型不能含有其他数据类型
             {
                 log.Error("WxPayData字段数据类型错误!");
-                throw new WxPayException("WxPayData字段数据类型错误!");
+                throw new WechatPayException("WxPayData字段数据类型错误!");
             }
         }
 
@@ -95,11 +95,11 @@ public class WxPayData {
     /// </summary>
     /// <param name="xml">待转换的xml串</param>
     /// <returns>经转换得到的Dictionary</returns>
-    /// <exception cref="WxPayException">WxPayException</exception>
+    /// <exception cref="WechatPayException">WxPayException</exception>
     public SortedDictionary<string, object> FromXml(string xml) {
         if (string.IsNullOrEmpty(xml)) {
             log.Error("将空的xml串转换为WxPayData不合法!");
-            throw new WxPayException("将空的xml串转换为WxPayData不合法!");
+            throw new WechatPayException("将空的xml串转换为WxPayData不合法!");
         }
 
         XmlDocument xmlDoc = new XmlDocument();
@@ -116,13 +116,13 @@ public class WxPayData {
             if (values["return_code"].ToString() != "SUCCESS") {
                 // return values;
                 log.Error(xml);
-                throw new WxPayException("数据返回代码 return_code 不是 SUCCESS！" + xml);
+                throw new WechatPayException("数据返回代码 return_code 不是 SUCCESS！" + xml);
             }
 
             CheckSign(); //验证签名,不通过会抛异常
         }
-        catch (WxPayException ex) {
-            throw new WxPayException(ex.Message);
+        catch (WechatPayException ex) {
+            throw new WechatPayException(ex.Message);
         }
 
         return values;
@@ -132,13 +132,13 @@ public class WxPayData {
     /// Dictionary格式转化成url参数格式
     /// </summary>
     /// <returns>url格式串, 该串不包含sign字段值</returns>
-    /// <exception cref="WxPayException"></exception>
+    /// <exception cref="WechatPayException"></exception>
     public string ToUrl() {
         string buff = "";
         foreach (KeyValuePair<string, object> pair in values) {
             if (pair.Value == null) {
                 log.Error("WxPayData内部含有值为null的字段!");
-                throw new WxPayException("WxPayData内部含有值为null的字段!");
+                throw new WechatPayException("WxPayData内部含有值为null的字段!");
             }
 
             if (pair.Key != "sign" && pair.Value.ToString() != "") {
@@ -154,13 +154,13 @@ public class WxPayData {
     /// values格式化成能在Web页面上显示的结果（因为web页面上不能直接输出xml格式的字符串）
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="WxPayException"></exception>
+    /// <exception cref="WechatPayException"></exception>
     public string ToPrintStr() {
         string str = "";
         foreach (KeyValuePair<string, object> pair in values) {
             if (pair.Value == null) {
                 log.Error("WxPayData内部含有值为null的字段!");
-                throw new WxPayException("WxPayData内部含有值为null的字段!");
+                throw new WechatPayException("WxPayData内部含有值为null的字段!");
             }
 
 
@@ -177,7 +177,7 @@ public class WxPayData {
     /// </summary>
     /// <param name="signType">签名, sign字段不参加签名</param>
     /// <returns></returns>
-    /// <exception cref="WxPayException"></exception>
+    /// <exception cref="WechatPayException"></exception>
     public string MakeSign(string signType) {
         //转url格式
         string str = ToUrl();
@@ -196,7 +196,7 @@ public class WxPayData {
         } else if (signType == SIGN_TYPE_HMAC_SHA256) {
             return CalcHMACSHA256Hash(str, WechatPayConfig.Key).ToUpper();
         } else {
-            throw new WxPayException("sign_type 不合法");
+            throw new WechatPayException("sign_type 不合法");
         }
     }
 
@@ -213,12 +213,12 @@ public class WxPayData {
     /// </summary>
     /// <param name="signType"></param>
     /// <returns>正确返回true，错误抛异常</returns>
-    /// <exception cref="WxPayException"></exception>
+    /// <exception cref="WechatPayException"></exception>
     public bool CheckSign(string signType) {
         //如果没有设置签名，则跳过检测
         if (IsSet("sign") == false) {
             log.Error("WxPayData签名不存在!");
-            throw new WxPayException("WxPayData签名不存在!");
+            throw new WechatPayException("WxPayData签名不存在!");
         }
 
         //如果设置了签名但是签名为空，则抛异常
@@ -227,7 +227,7 @@ public class WxPayData {
         string sign = signObj?.ToString() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(sign)) {
             log.Error("WxPayData签名存在但不合法!");
-            throw new WxPayException("WxPayData签名存在但不合法!");
+            throw new WechatPayException("WxPayData签名存在但不合法!");
         }
 
         //在本地计算新的签名
@@ -238,7 +238,7 @@ public class WxPayData {
         }
 
         log.Error("WxPayData签名验证错误!");
-        throw new WxPayException("WxPayData签名验证错误!");
+        throw new WechatPayException("WxPayData签名验证错误!");
     }
 
     /// <summary>
