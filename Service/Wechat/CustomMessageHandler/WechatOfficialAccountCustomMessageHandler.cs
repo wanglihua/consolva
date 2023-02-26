@@ -18,12 +18,11 @@ using shunda.Service.Pass;
 namespace shunda.Service.Wechat.CustomMessageHandler;
 
 /// <summary>
-/// todo 现在公众号和小程序都在使用这个自定义消息处理器，看看是不是应该分开
 /// 自定义MessageHandler
 /// 把MessageHandler作为基类，重写对应请求的处理方法
 /// 每个回调生成这个类的一个实例
 /// </summary>
-public partial class CustomMessageHandler : MessageHandler<CustomMessageContext> {
+public partial class WechatOfficialAccountCustomMessageHandler : MessageHandler<CustomMessageContext> {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
@@ -38,7 +37,7 @@ public partial class CustomMessageHandler : MessageHandler<CustomMessageContext>
     /// </summary>
     public static Dictionary<string, string> TemplateMessageCollection = new Dictionary<string, string>();
 
-    public CustomMessageHandler(ISession session, XDocument document, PostModel postModel, int maxRecordCount = 0)
+    public WechatOfficialAccountCustomMessageHandler(ISession session, XDocument document, PostModel postModel, int maxRecordCount = 0)
         : base(document, postModel, maxRecordCount) {
         this.session = session;
         this.wechatOfficialAccountFollowerService = new WechatOfficialAccountFollowerService(session,

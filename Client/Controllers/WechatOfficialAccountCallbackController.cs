@@ -108,7 +108,7 @@ public class WechatOfficialAccountCallbackController : Controller {
             XDocument requestXmlDoc = XDocument.Parse(requestBody);
 
             MessageContextGlobalConfig.UseMessageContext = false;
-            var messageHandler = new CustomMessageHandler(session, requestXmlDoc, postModel);
+            var messageHandler = new WechatOfficialAccountCustomMessageHandler(session, requestXmlDoc, postModel);
 
             // 执行微信处理过程（关键）
             messageHandler.Execute();

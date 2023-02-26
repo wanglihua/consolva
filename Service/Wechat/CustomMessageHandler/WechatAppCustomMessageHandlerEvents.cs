@@ -10,7 +10,7 @@ namespace shunda.Service.Wechat.CustomMessageHandler;
 /// <summary>
 /// 自定义MessageHandler
 /// </summary>
-public partial class CustomMessageHandler {
+public partial class WechatAppCustomMessageHandler {
     /// <summary>
     /// 通过二维码扫描关注扫描事件
     /// </summary>
