@@ -15,7 +15,7 @@ namespace shunda.Admin.Areas.AutoApi.Controllers;
 [NoLoginRequired]
 [AutoApiArea]
 public class PhotoUploadController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly ExpressTrackingNoService expressTrackingNoService;

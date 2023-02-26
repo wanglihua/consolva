@@ -17,7 +17,7 @@ namespace shunda.Client.Controllers;
 
 [NoLoginRequired]
 public class WechatAppCallbackController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly WechatCallbackService wechatCallbackService;

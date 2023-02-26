@@ -11,7 +11,7 @@ namespace shunda.Job.Controllers;
 [NoLoginRequired]
 public class ErrorController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [Route(SiteConfig.ClientErrorHandlerUrl)]

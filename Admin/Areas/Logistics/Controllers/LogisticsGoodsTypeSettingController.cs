@@ -20,7 +20,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 // [LogisticsAuth(PassRes.XXX.LogisticsGoodsTypeSetting)]
 public class LogisticsGoodsTypeSettingController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
 

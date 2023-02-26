@@ -13,7 +13,7 @@ namespace shunda.Job.Filters;
 /// </summary>
 public class HibernateActionFilter : IActionFilter
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private ITransaction? transaction = null;

@@ -19,7 +19,7 @@ namespace shunda.Service.Wechat.CustomMessageHandler;
 /// 每个回调生成这个类的一个实例
 /// </summary>
 public partial class WechatAppCustomMessageHandler : MessageHandler<CustomMessageContext> {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
 

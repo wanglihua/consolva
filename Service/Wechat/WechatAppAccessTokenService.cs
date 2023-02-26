@@ -15,7 +15,7 @@ namespace shunda.Service.Wechat;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class WechatAppAccessTokenService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly HttpClient httpClient;

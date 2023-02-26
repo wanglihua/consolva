@@ -15,7 +15,7 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [AdminAuth(PassRes.Customer.SupperPassword)]
 public class CustomerSupperPasswordController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
     private readonly CustomerCodeService customerCodeService;
     private readonly CustomerSupperPasswordService customerSupperPasswordService;
 

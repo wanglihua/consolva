@@ -14,7 +14,7 @@ namespace shunda.Job.Jobs;
 /// </summary>
 [Service(ServiceType.Singleton)]
 public class StorageLocExpressUpdateJob : IJob {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private ISessionFactory sessionFactory;
 

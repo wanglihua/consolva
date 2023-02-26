@@ -7,7 +7,7 @@ namespace shunda.Admin.Filters;
 
 public class LoginTimeoutResetActionFilter : IActionFilter
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly LoginUserService loginUserService;
 

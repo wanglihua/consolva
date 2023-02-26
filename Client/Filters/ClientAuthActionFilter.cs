@@ -8,7 +8,7 @@ using shunda.Core.Web;
 namespace shunda.Client.Filters;
 
 public class ClientAuthActionFilter : IActionFilter {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly LoginCustomerService loginCustomerService;
 

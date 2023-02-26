@@ -1,11 +1,10 @@
-using System;
-using Core.Config;
 using NLog;
+using shunda.Core.Config;
 
 namespace shunda.Core.WechatPay;
 
 public class WxPayApi {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     /**
         * 提交被扫支付API
@@ -21,37 +20,37 @@ public class WxPayApi {
         //检测必填参数
         if (!inputObj.IsSet("body")) {
             throw new WxPayException("提交被扫支付API接口中，缺少必填参数body！");
-        } else if (!inputObj.IsSet("out_trade_no")) {
+        }
+
+        if (!inputObj.IsSet("out_trade_no")) {
             throw new WxPayException("提交被扫支付API接口中，缺少必填参数out_trade_no！");
-        } else if (!inputObj.IsSet("total_fee")) {
+        }
+
+        if (!inputObj.IsSet("total_fee")) {
             throw new WxPayException("提交被扫支付API接口中，缺少必填参数total_fee！");
-        } else if (!inputObj.IsSet("auth_code")) {
+        }
+
+        if (!inputObj.IsSet("auth_code")) {
             throw new WxPayException("提交被扫支付API接口中，缺少必填参数auth_code！");
         }
 
-        inputObj.SetValue("spbill_create_ip", WeChatConfig2.Ip); //终端ip
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
+        inputObj.SetValue("spbill_create_ip", SiteConfig.SiteIP); //终端ip
+
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
         inputObj.SetValue("nonce_str", Guid.NewGuid().ToString().Replace("-", "")); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
         string xml = inputObj.ToXml();
 
-        var start = DateTime.Now; //请求开始时间
-
-        log.Debug("WxPayApi", "MicroPay request : " + xml);
         string response = HttpService.Post(xml, url, false, timeOut); //调用HTTP通信接口以提交数据到API
-        log.Debug("WxPayApi", "MicroPay response : " + response);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds); //获得接口耗时
 
         //将xml格式的结果转换为对象以返回
         WxPayData result = new WxPayData();
         result.FromXml(response);
-
-        ReportCostTime(url, timeCost, result); //测速上报
 
         return result;
     }
@@ -71,30 +70,21 @@ public class WxPayApi {
             throw new WxPayException("订单查询接口中，out_trade_no、transaction_id至少填一个！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
-        inputObj.SetValue("nonce_str", WxPayApi.GenerateNonceStr()); //随机字符串
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
+        inputObj.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
 
-
         string xml = inputObj.ToXml();
-
-        var start = DateTime.Now;
-
-        log.Debug("WxPayApi", "OrderQuery request : " + xml);
         string response = HttpService.Post(xml, url, false, timeOut); //调用HTTP通信接口提交数据
-        log.Debug("WxPayApi", "OrderQuery response : " + response);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds); //获得接口耗时
 
         //将xml格式的数据转化为对象以返回
         WxPayData result = new WxPayData();
         result.FromXml(response);
-
-        ReportCostTime(url, timeCost, result); //测速上报
 
         return result;
     }
@@ -114,29 +104,20 @@ public class WxPayApi {
             throw new WxPayException("撤销订单API接口中，参数out_trade_no和transaction_id必须填写一个！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
         inputObj.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
+
         string xml = inputObj.ToXml();
-
-        var start = DateTime.Now; //请求开始时间
-
-        log.Debug("WxPayApi", "Reverse request : " + xml);
-
         string response = HttpService.Post(xml, url, true, timeOut);
-
-        log.Debug("WxPayApi", "Reverse response : " + response);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds);
 
         WxPayData result = new WxPayData();
         result.FromXml(response);
-
-        ReportCostTime(url, timeCost, result); //测速上报
 
         return result;
     }
@@ -154,38 +135,39 @@ public class WxPayApi {
         //检测必填参数
         if (!inputObj.IsSet("out_trade_no") && !inputObj.IsSet("transaction_id")) {
             throw new WxPayException("退款申请接口中，out_trade_no、transaction_id至少填一个！");
-        } else if (!inputObj.IsSet("out_refund_no")) {
+        }
+
+        if (!inputObj.IsSet("out_refund_no")) {
             throw new WxPayException("退款申请接口中，缺少必填参数out_refund_no！");
-        } else if (!inputObj.IsSet("total_fee")) {
+        }
+
+        if (!inputObj.IsSet("total_fee")) {
             throw new WxPayException("退款申请接口中，缺少必填参数total_fee！");
-        } else if (!inputObj.IsSet("refund_fee")) {
+        }
+
+        if (!inputObj.IsSet("refund_fee")) {
             throw new WxPayException("退款申请接口中，缺少必填参数refund_fee！");
-        } else if (!inputObj.IsSet("op_user_id")) {
+        }
+
+        if (!inputObj.IsSet("op_user_id")) {
             throw new WxPayException("退款申请接口中，缺少必填参数op_user_id！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
         inputObj.SetValue("nonce_str", Guid.NewGuid().ToString().Replace("-", "")); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
 
         string xml = inputObj.ToXml();
-        var start = DateTime.Now;
-
-        log.Debug("WxPayApi", "Refund request : " + xml);
         string response = HttpService.Post(xml, url, true, timeOut); //调用HTTP通信接口提交数据到API
-        log.Debug("WxPayApi", "Refund response : " + response);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds); //获得接口耗时
 
         //将xml格式的结果转换为对象以返回
         WxPayData result = new WxPayData();
         result.FromXml(response);
-
-        ReportCostTime(url, timeCost, result); //测速上报
 
         return result;
     }
@@ -209,29 +191,21 @@ public class WxPayApi {
             throw new WxPayException("退款查询接口中，out_refund_no、out_trade_no、transaction_id、refund_id四个参数必填一个！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
         inputObj.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
 
         string xml = inputObj.ToXml();
-
-        var start = DateTime.Now; //请求开始时间
-
-        log.Debug("WxPayApi", "RefundQuery request : " + xml);
         string response = HttpService.Post(xml, url, false, timeOut); //调用HTTP通信接口以提交数据到API
-        log.Debug("WxPayApi", "RefundQuery response : " + response);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds); //获得接口耗时
 
         //将xml格式的结果转换为对象以返回
         WxPayData result = new WxPayData();
         result.FromXml(response);
-
-        ReportCostTime(url, timeCost, result); //测速上报
 
         return result;
     }
@@ -250,9 +224,11 @@ public class WxPayApi {
             throw new WxPayException("对账单接口中，缺少必填参数bill_date！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
         inputObj.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
@@ -269,8 +245,9 @@ public class WxPayApi {
             result.FromXml(response);
         }
         //接口调用成功则返回非xml格式的数据
-        else
+        else {
             result.SetValue("result", response);
+        }
 
         return result;
     }
@@ -293,62 +270,22 @@ public class WxPayApi {
             throw new WxPayException("需要转换的URL，签名用原串，传输需URL encode！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
         inputObj.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
+
         string xml = inputObj.ToXml();
-
-        var start = DateTime.Now; //请求开始时间
-
-        log.Debug("WxPayApi", "ShortUrl request : " + xml);
         string response = HttpService.Post(xml, url, false, timeOut);
-        log.Debug("WxPayApi", "ShortUrl response : " + response);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds);
 
         WxPayData result = new WxPayData();
         result.FromXml(response);
-        ReportCostTime(url, timeCost, result); //测速上报
 
         return result;
-    }
-
-    public static WxPayData UnifiedPayOrder(WxPayData data) {
-        return UnifiedOrder(data, WxPayOrderType.Pay);
-    }
-
-    public static WxPayData UnifiedOrderCreatePayOrder(WxPayData data) {
-        return UnifiedOrder(data, WxPayOrderType.OrderCreatePay);
-    }
-
-    public static WxPayData UnifiedChargeOrder(WxPayData data) {
-        return UnifiedOrder(data, WxPayOrderType.Charge);
-    }
-
-    /// <summary>
-    /// 微信支付针对的两种系统订单
-    /// 订单支付
-    /// 会员充值
-    /// </summary>
-    private enum WxPayOrderType {
-        /// <summary>
-        /// 订单支付
-        /// </summary>
-        Pay,
-
-        /// <summary>
-        /// 会员充值
-        /// </summary>
-        Charge,
-
-        /// <summary>
-        /// 订单创建支付
-        /// </summary>
-        OrderCreatePay,
     }
 
     /**
@@ -359,7 +296,7 @@ public class WxPayApi {
         * @throws WxPayException
         * @return 成功时返回，其他抛异常
         */
-    private static WxPayData UnifiedOrder(WxPayData data, WxPayOrderType wxPayOrderType, int timeOut = 6) {
+    private static WxPayData UnifiedOrder(WxPayData data, int timeOut = 6) {
         string url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
         //检测必填参数
         if (!data.IsSet("out_trade_no")) {
@@ -383,43 +320,26 @@ public class WxPayApi {
 
         //异步通知url未设置，则使用配置文件中的url
         if (!data.IsSet("notify_url")) {
-            if (wxPayOrderType == WxPayOrderType.Pay) {
-                data.SetValue("notify_url", SiteConfig.SiteWxPayRoot + WeChatConfig1.PayNotifyUrl); //异步通知url
-            }
-
-            if (wxPayOrderType == WxPayOrderType.OrderCreatePay) {
-                data.SetValue("notify_url", SiteConfig.SiteWxPayRoot + WeChatConfig1.OrderCreatePayNotifyUrl); //异步通知url
-            }
-
-            if (wxPayOrderType == WxPayOrderType.Charge) {
-                data.SetValue("notify_url", SiteConfig.SiteWxPayRoot + WeChatConfig1.ChargeNotifyUrl); //异步通知url
-            }
+            throw new WxPayException("微信支付 notify_url 未设置！");
         }
 
-        data.SetValue("appid", WeChatConfig2.PayAppId);
-        // data.SetValue("appid", WeChatConfig.AppId);
-        data.SetValue("mch_id", WeChatConfig2.MchId); //商户号
-        data.SetValue("spbill_create_ip", WeChatConfig2.Ip); //终端ip
+        if (data.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        data.SetValue("mch_id", WechatPayConfig.MchId); //商户号
+        data.SetValue("spbill_create_ip", SiteConfig.SiteIP); //终端ip
         data.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         data.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
 
         //签名
         data.SetValue("sign", data.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256));
+
         string xml = data.ToXml();
-
-        var start = DateTime.Now;
-
-        log.Debug("WxPayApi", "UnfiedOrder request : " + xml);
         string response = HttpService.Post(xml, url, false, timeOut);
-        log.Debug("WxPayApi", "UnfiedOrder response : " + response);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds);
 
         WxPayData result = new WxPayData();
         result.FromXml(response);
-
-        ReportCostTime(url, timeCost, result); //测速上报
 
         return result;
     }
@@ -439,109 +359,23 @@ public class WxPayApi {
             throw new WxPayException("关闭订单接口中，out_trade_no必填！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
         inputObj.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
         string xml = inputObj.ToXml();
 
-        var start = DateTime.Now; //请求开始时间
-
         string response = HttpService.Post(xml, url, false, timeOut);
-
-        var end = DateTime.Now;
-        int timeCost = (int)((end - start).TotalMilliseconds);
 
         WxPayData result = new WxPayData();
         result.FromXml(response);
 
-        ReportCostTime(url, timeCost, result); //测速上报
-
         return result;
     }
-
-
-    /**
-        *
-        * 测速上报
-        * @param string interface_url 接口URL
-        * @param int timeCost 接口耗时
-        * @param WxPayData inputObj参数数组
-        */
-    private static void ReportCostTime(string interface_url, int timeCost, WxPayData inputObj) {
-        /*
-        //如果不需要进行上报
-        if (WeChatConfig.ReportLevel == 0)
-        {
-            return;
-        }
-
-        //如果仅失败上报
-        if (WeChatConfig.ReportLevel == 1 && inputObj.IsSet("return_code") && inputObj.GetValue("return_code").ToString() == "SUCCESS" &&
-            inputObj.IsSet("result_code") && inputObj.GetValue("result_code").ToString() == "SUCCESS")
-        {
-            return;
-        }
-
-        //上报逻辑
-        WxPayData data = new WxPayData();
-        data.SetValue("interface_url", interface_url);
-        data.SetValue("execute_time_", timeCost);
-        //返回状态码
-        if (inputObj.IsSet("return_code"))
-        {
-            data.SetValue("return_code", inputObj.GetValue("return_code"));
-        }
-
-        //返回信息
-        if (inputObj.IsSet("return_msg"))
-        {
-            data.SetValue("return_msg", inputObj.GetValue("return_msg"));
-        }
-
-        //业务结果
-        if (inputObj.IsSet("result_code"))
-        {
-            data.SetValue("result_code", inputObj.GetValue("result_code"));
-        }
-
-        //错误代码
-        if (inputObj.IsSet("err_code"))
-        {
-            data.SetValue("err_code", inputObj.GetValue("err_code"));
-        }
-
-        //错误代码描述
-        if (inputObj.IsSet("err_code_des"))
-        {
-            data.SetValue("err_code_des", inputObj.GetValue("err_code_des"));
-        }
-
-        //商户订单号
-        if (inputObj.IsSet("out_trade_no"))
-        {
-            data.SetValue("out_trade_no", inputObj.GetValue("out_trade_no"));
-        }
-
-        //设备号
-        if (inputObj.IsSet("device_info"))
-        {
-            data.SetValue("device_info", inputObj.GetValue("device_info"));
-        }
-
-        try
-        {
-            Report(data);
-        }
-        catch (WxPayException)
-        {
-            //不做任何处理
-        }
-        */
-    }
-
 
     /**
         *
@@ -566,29 +400,23 @@ public class WxPayApi {
             throw new WxPayException("业务结果，缺少必填参数result_code！");
         }
 
-        if (!inputObj.IsSet("user_ip")) {
-            throw new WxPayException("访问接口IP，缺少必填参数user_ip！");
-        }
-
         if (!inputObj.IsSet("execute_time_")) {
             throw new WxPayException("接口耗时，缺少必填参数execute_time_！");
         }
 
-        inputObj.SetValue("appid", WeChatConfig2.PayAppId);
-        // inputObj.SetValue("appid", WeChatConfig.AppId);
-        inputObj.SetValue("mch_id", WeChatConfig2.MchId); //商户号
-        inputObj.SetValue("user_ip", WeChatConfig2.Ip); //终端ip
+        if (inputObj.IsSet("appid") == false) {
+            throw new WxPayException("微信支付 appid 未设置！");
+        }
+
+        inputObj.SetValue("mch_id", WechatPayConfig.MchId); //商户号
+        inputObj.SetValue("user_ip", SiteConfig.SiteIP); //终端ip
         inputObj.SetValue("time", DateTime.Now.ToString("yyyyMMddHHmmss")); //商户上报时间
         inputObj.SetValue("nonce_str", GenerateNonceStr()); //随机字符串
         inputObj.SetValue("sign_type", WxPayData.SIGN_TYPE_HMAC_SHA256); //签名类型
         inputObj.SetValue("sign", inputObj.MakeSign(WxPayData.SIGN_TYPE_HMAC_SHA256)); //签名
         string xml = inputObj.ToXml();
 
-        log.Info("WxPayApi", "Report request : " + xml);
-
         string response = HttpService.Post(xml, url, false, timeOut);
-
-        log.Info("WxPayApi", "Report response : " + response);
 
         WxPayData result = new WxPayData();
         result.FromXml(response);
@@ -601,7 +429,7 @@ public class WxPayApi {
         */
     public static string GenerateOutTradeNo() {
         var ran = new Random();
-        return string.Format("{0}{1}{2}", WeChatConfig2.MchId, DateTime.Now.ToString("yyyyMMddHHmmss"), ran.Next(999));
+        return string.Format("{0}{1}{2}", WechatPayConfig.MchId, DateTime.Now.ToString("yyyyMMddHHmmss"), ran.Next(999));
     }
 
     /**

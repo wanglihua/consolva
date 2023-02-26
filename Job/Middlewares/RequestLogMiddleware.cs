@@ -7,7 +7,7 @@ namespace shunda.Job.Middlewares;
 /// </summary>
 public class RequestLogMiddleware
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly RequestDelegate next;
 

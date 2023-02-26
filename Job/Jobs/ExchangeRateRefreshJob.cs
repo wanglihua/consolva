@@ -16,7 +16,7 @@ namespace shunda.Job.Jobs;
 [Service(ServiceType.Singleton)]
 public class ExchangeRateRefreshJob : IJob
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private ISessionFactory sessionFactory;
 

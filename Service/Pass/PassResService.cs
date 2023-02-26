@@ -9,7 +9,7 @@ namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
 public class PassResService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly string PassResCachekey = "user_pass_res_dict_for_all";
     private static readonly TimeSpan PassResCacheTimeSpan = TimeSpan.FromHours(1); // 这个缓存时间是否合理

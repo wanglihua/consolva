@@ -8,7 +8,7 @@ namespace shunda.Service.LogisticsOrder;
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderCodeService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static readonly string OrderCodePrefix = "SD";
 

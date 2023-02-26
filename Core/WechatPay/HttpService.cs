@@ -3,6 +3,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using NLog;
+using shunda.Core.Config;
 
 namespace shunda.Core.WechatPay;
 
@@ -11,9 +12,9 @@ namespace shunda.Core.WechatPay;
 /// http连接基础类，负责底层的http通信
 /// </summary>
 public class HttpService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-    private static string USER_AGENT = string.Format("WXPaySDK/{3} ({0}) .net/{1} {2}", Environment.OSVersion, Environment.Version, WeChatConfig2.MchId, typeof(HttpService).Assembly.GetName().Version);
+    private static string USER_AGENT = string.Format("WXPaySDK/{3} ({0}) .net/{1} {2}", Environment.OSVersion, Environment.Version, WechatPayConfig.MchId, typeof(HttpService).Assembly.GetName().Version);
 
     public static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) {
         //直接确认，否则打不开
@@ -58,7 +59,7 @@ public class HttpService {
 
             //是否使用证书
             if (isUseCert) {
-                X509Certificate2 cert = new X509Certificate2(appPath + WeChatConfig1.SslCertPath, WeChatConfig1.SslCertPassword);
+                X509Certificate2 cert = new X509Certificate2(appPath + WechatPayConfig.SslCertPath, WechatPayConfig.SslCertPassword);
                 request.ClientCertificates.Add(cert);
                 log.Debug("WxPayApi", "PostXml used cert");
             }

@@ -17,7 +17,7 @@ namespace shunda.Service.Express;
 [Service(ServiceType.Scoped)]
 public class ExpressPhotoFileService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static readonly string ImageUploadFolder = Path.Combine("static", "upload", "images", "express");
     public static readonly string ImageUploadUrl = "/static/upload/images/express";

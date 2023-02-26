@@ -14,7 +14,7 @@ namespace shunda.Service.Message;
 [Service(ServiceType.Scoped)]
 public class WechatMessageService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;
 

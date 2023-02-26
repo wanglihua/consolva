@@ -23,7 +23,7 @@ namespace shunda.Admin.Areas.Message.Controllers;
 [AdminAuth(PassRes.CustomerMessage.MessageSetting)]
 public class CustomerMessageClientUrlController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly CustomerMessageClientUrlService customerMessageClientUrlService;

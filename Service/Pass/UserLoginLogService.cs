@@ -9,7 +9,7 @@ namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
 public class UserLoginLogService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
 

@@ -9,7 +9,7 @@ namespace shunda.Core.Quartz;
 
 public class JobFactory : IJobFactory
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private IServiceProvider serviceProvider = null;
 

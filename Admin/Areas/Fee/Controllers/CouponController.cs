@@ -23,7 +23,7 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 [FeeArea]
 [AdminAuth(PassRes.Fee.Coupon)]
 public class CouponController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly CustomerCodeService customerCodeService;

@@ -9,7 +9,7 @@ namespace shunda.Service.Logistics;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class LogisticsModeFeeRateService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
 

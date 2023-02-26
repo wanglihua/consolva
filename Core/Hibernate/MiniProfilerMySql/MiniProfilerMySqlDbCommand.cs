@@ -8,7 +8,7 @@ using StackExchange.Profiling.Data;
 namespace shunda.Core.Hibernate.MiniProfilerMySql;
 
 public class MiniProfilerMySqlDbCommand : ProfiledDbCommand {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public MySqlCommand Command { get; set; }
 

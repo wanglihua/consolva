@@ -8,7 +8,7 @@ using shunda.Job.Jobs;
 namespace shunda.Job;
 
 public class QuartzStartup {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private IServiceProvider serviceProvider;
     private IScheduler? scheduler;

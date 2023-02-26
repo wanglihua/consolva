@@ -6,7 +6,7 @@ using NLog;
 namespace shunda.Core.Hibernate;
 
 public class HibernateInterceptor : EmptyInterceptor {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly int indexInitValue = -1;
     private static readonly string createTimePropertyName = nameof(Entity.CreateTime);

@@ -9,7 +9,7 @@ namespace shunda.Service.Express;
 [Service(ServiceType.Scoped)]
 public class CheckinTrackingNoService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly object LockObject = new object();
 

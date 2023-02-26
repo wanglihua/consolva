@@ -13,7 +13,7 @@ namespace shunda.Client.Controllers;
 
 [NoLoginRequired]
 public class WechatOfficialAccountOAuthController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly WechatOfficialAccountSessionService wechatOfficialAccountSessionService;
     private readonly WechatOfficialAccountOAuthAccessTokenService wechatOfficialAccountOAuthAccessTokenService;

@@ -9,7 +9,7 @@ namespace shunda.Core.Util;
 
 public class WebUtil
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static bool IsAjaxRequest(HttpRequest request)
     {

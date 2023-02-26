@@ -12,7 +12,7 @@ namespace shunda.Job.Filters;
 
 public class ExceptionFilter : IExceptionFilter
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
 
     public ExceptionFilter()

@@ -6,7 +6,7 @@ namespace shunda.Service.Logistics;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsModeService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
 

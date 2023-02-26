@@ -17,7 +17,7 @@ namespace shunda.Service.Logistics;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsGoodsImageService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static string ImageUploadFolder = Path.Combine("static", "upload", "images", "goods");
     public static string ImageUploadUrl = "/static/upload/images/goods";

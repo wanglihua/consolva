@@ -5,7 +5,7 @@ namespace shunda.Core.Hibernate;
 
 public class Transactional
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static void Wrap(ISession session, Action action)
     {

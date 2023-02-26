@@ -7,7 +7,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Job.Controllers;
 
 public class HomeController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
     
     private readonly ISession session;
 

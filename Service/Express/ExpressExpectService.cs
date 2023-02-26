@@ -14,7 +14,7 @@ namespace shunda.Service.Express;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class ExpressExpectService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly ExpressTrackingNoService expressTrackingNoService;

@@ -20,7 +20,7 @@ namespace shunda.Admin.Areas.Express.Controllers;
 [AdminAuth(PassRes.Express.ExpressExpect)]
 public class ExpressExpectController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
     private CustomerInfo? customerAlias = null;
     private readonly CustomerCodeService customerCodeService;
 

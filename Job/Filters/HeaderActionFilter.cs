@@ -5,7 +5,7 @@ namespace shunda.Job.Filters;
 
 public class HeaderActionFilter : IActionFilter
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public void OnActionExecuting(ActionExecutingContext context)
     {

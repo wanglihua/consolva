@@ -13,7 +13,7 @@ namespace shunda.Service.Wechat;
 [Service(ServiceType.Scoped)]
 public class WechatAppAuthCodeSessionService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly HttpClient httpClient;
 

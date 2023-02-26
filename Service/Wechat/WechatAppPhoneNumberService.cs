@@ -10,7 +10,7 @@ namespace shunda.Service.Wechat;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class WechatAppPhoneNumberService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly HttpClient httpClient;
     private readonly WechatAppAccessTokenService wechatAppAccessTokenService;

@@ -17,7 +17,7 @@ namespace shunda.Admin.Areas.Wechat.Controllers;
 [AdminAuth(AdminOnly = true)]
 [WechatArea]
 public class WechatOfficialAccountFollowerController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;

@@ -17,7 +17,7 @@ namespace shunda.Admin.Services;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class LoginUserService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private static string aesKey = "1xcqLIcDQQfvksFHCNN20F2BYTsvefUH";
     private static string aesIv = "XHK4nB5iWlQhRNzu";

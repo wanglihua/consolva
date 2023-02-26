@@ -24,7 +24,7 @@ namespace shunda.Core.Web;
 ///
 /// </summary>
 public static class HtmlHelperViewExtensions {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     // 这个页面编译不成功
     public static IHtmlContent Action<TController>(this IHtmlHelper helper, Expression<Action<TController>> action, string areaName) where TController : Controller {

@@ -14,7 +14,7 @@ namespace shunda.Service;
 [Service(ServiceType.Scoped)]
 public class SiteRequestLogService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly int maxUrlLength = 500 - 10;
     private static readonly int maxIpAddressLength = 200 - 5;

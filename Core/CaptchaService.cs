@@ -11,7 +11,7 @@ namespace shunda.Core;
 [Service(ServiceType.Scoped)]
 public class CaptchaService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private const int defaultCodeLength = 4;
 

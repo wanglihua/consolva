@@ -25,7 +25,7 @@ namespace shunda.Admin.Areas.Express.Controllers;
 [ExpressArea]
 [AdminAuth(PassRes.Express.ExpressPhoto)]
 public class ExpressVideoController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly ExpressVideoService expressVideoService;

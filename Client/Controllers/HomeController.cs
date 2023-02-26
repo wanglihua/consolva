@@ -14,7 +14,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Controllers;
 
 public class HomeController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;

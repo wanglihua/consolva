@@ -11,7 +11,7 @@ namespace shunda.Service;
 [Service(ServiceType.Scoped)]
 public class LogisticsGoodsTypeSettingService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
 

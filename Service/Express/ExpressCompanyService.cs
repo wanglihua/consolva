@@ -6,7 +6,7 @@ namespace shunda.Service.Express;
 [Service(ServiceType.Scoped)]
 public class ExpressCompanyService
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public string GetExpressCompanyName(string trackingNo)
     {

@@ -24,7 +24,7 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [LogisticsArea]
 [AdminAuth(PassRes.Goods.GoodsWarehouse)]
 public class LogisticsGoodsWarehouseController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly LoginUserService loginUserService;

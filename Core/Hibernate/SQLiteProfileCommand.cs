@@ -9,7 +9,7 @@ namespace shunda.Core.Hibernate;
 
 public class SQLiteProfileCommand:DbCommand
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private SQLiteCommand innerCommand = new SQLiteCommand();
     

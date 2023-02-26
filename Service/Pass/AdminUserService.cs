@@ -8,7 +8,7 @@ namespace shunda.Service.Pass;
 
 [Service(ServiceType.Scoped)]
 public class AdminUserService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly string AdminUserIdListCacheKey = "admin_user_id_map_all";
     private static readonly TimeSpan AdminUserIdListCacheTimeSpan = TimeSpan.FromHours(1); // 这个缓存时间是否合理

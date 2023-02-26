@@ -8,7 +8,7 @@ namespace shunda.Client.Controllers;
 [NoLoginRequired]
 public class FaviconController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     // private IWebHostEnvironment webHostEnvironment;
     //

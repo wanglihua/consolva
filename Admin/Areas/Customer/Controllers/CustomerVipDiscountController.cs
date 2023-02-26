@@ -22,7 +22,7 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [CustomerArea]
 [AdminAuth(PassRes.Customer.CustomerVipDiscount)]
 public class CustomerVipDiscountController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly LoginUserService loginUserService;
     private readonly CustomerVipDiscountExcelService customerVipDiscountExcelService;

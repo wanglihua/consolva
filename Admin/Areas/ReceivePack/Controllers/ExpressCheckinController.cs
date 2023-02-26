@@ -32,7 +32,7 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 [ReceivePackArea]
 [AdminAuth(PassRes.ReceivePack.ExpressCheckin)]
 public class ExpressCheckinController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly ExpressCompanyService expressCompanyService;

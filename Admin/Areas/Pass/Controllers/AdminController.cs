@@ -17,7 +17,7 @@ namespace shunda.Admin.Areas.Pass.Controllers;
 [PassArea]
 public class AdminController : Controller
 {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
     private readonly AdminUserService adminUserService;
 
     private readonly ISession session;

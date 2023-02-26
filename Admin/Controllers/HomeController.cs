@@ -8,7 +8,7 @@ using shunda.Service;
 namespace shunda.Admin.Controllers;
 
 public class HomeController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly SidebarStateService sidebarStateService;
     private readonly LoginUserService loginUserService;

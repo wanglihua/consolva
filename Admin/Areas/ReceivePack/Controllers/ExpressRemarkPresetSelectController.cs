@@ -19,7 +19,7 @@ namespace shunda.Admin.Areas.ReceivePack.Controllers;
 [ReceivePackArea]
 [AdminAuth(PassRes.Express.ExpressRemarkPresetSelect)]
 public class ExpressRemarkPresetSelectController : Controller {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private ExpressRemarkPresetSelectInfo? expressRemarkPresetSelectAlias = null;
 

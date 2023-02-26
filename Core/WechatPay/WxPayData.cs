@@ -1,12 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Xml;
-using System.Security.Cryptography;
-using Core.Config;
-using MyLitJsonLib;
 using NLog;
+using shunda.Core.Config;
 
 namespace shunda.Core.WechatPay;
 
@@ -17,13 +14,10 @@ namespace shunda.Core.WechatPay;
 /// 还可以随意组合出不同的协议数据包，不用为每个协议设计一个数据包结构
 /// </summary>
 public class WxPayData {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public const string SIGN_TYPE_MD5 = "MD5";
     public const string SIGN_TYPE_HMAC_SHA256 = "HMAC-SHA256";
-
-    public WxPayData() {
-    }
 
     //采用排序的Dictionary的好处是方便对数据包进行签名，不用再签名之前再做一次排序
     private SortedDictionary<string, object> values = new SortedDictionary<string, object>();
@@ -42,8 +36,8 @@ public class WxPayData {
     /// </summary>
     /// <param name="key">字段名</param>
     /// <returns>key对应的字段值</returns>
-    public object GetValue(string key) {
-        values.TryGetValue(key, out object o);
+    public object? GetValue(string key) {
+        values.TryGetValue(key, out object? o);
         return o;
     }
 
@@ -53,11 +47,12 @@ public class WxPayData {
     /// <param name="key">字段名</param>
     /// <returns>若字段key已被设置，则返回true，否则返回false</returns>
     public bool IsSet(string key) {
-        values.TryGetValue(key, out object o);
-        if (null != o)
+        values.TryGetValue(key, out object? o);
+        if (null != o) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /// <summary>
@@ -156,15 +151,6 @@ public class WxPayData {
     }
 
     /// <summary>
-    /// Dictionary格式化成Json
-    /// </summary>
-    /// <returns>json串数据</returns>
-    public string ToJson() {
-        string jsonStr = JsonMapper.ToJson(values);
-        return jsonStr;
-    }
-
-    /// <summary>
     /// values格式化成能在Web页面上显示的结果（因为web页面上不能直接输出xml格式的字符串）
     /// </summary>
     /// <returns></returns>
@@ -196,7 +182,7 @@ public class WxPayData {
         //转url格式
         string str = ToUrl();
         //在string后加入API KEY
-        str += "&key=" + WeChatConfig2.Key;
+        str += "&key=" + WechatPayConfig.Key;
         if (signType == SIGN_TYPE_MD5) {
             var md5 = MD5.Create();
             var bs = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
@@ -208,7 +194,7 @@ public class WxPayData {
             //所有字符转为大写
             return sb.ToString().ToUpper();
         } else if (signType == SIGN_TYPE_HMAC_SHA256) {
-            return CalcHMACSHA256Hash(str, WeChatConfig2.Key).ToUpper();
+            return CalcHMACSHA256Hash(str, WechatPayConfig.Key).ToUpper();
         } else {
             throw new WxPayException("sign_type 不合法");
         }

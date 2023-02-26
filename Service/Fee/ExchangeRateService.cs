@@ -12,7 +12,7 @@ namespace shunda.Service.Fee;
 
 [Service(ServiceType.Scoped)]
 public class ExchangeRateService {
-    private static Logger log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly HttpRequestService httpRequestService;
