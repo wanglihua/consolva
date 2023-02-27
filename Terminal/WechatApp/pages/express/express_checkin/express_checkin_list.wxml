@@ -45,7 +45,7 @@
         <block wx:if="{{ expressWaitOrderCount > 0 }}">
             <block wx:for="{{ expressWaitOrderList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                 <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
-                    <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header-alt" title-class="item-header-title" value-class="{{ express.headerValueClass }}" />
+                    <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}(已选择)" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header-alt" title-class="item-header-title" value-class="{{ express.headerValueClass }}" />
                     <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item" />
                     <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item"/>-->
                     <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item" />
