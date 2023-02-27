@@ -43,8 +43,8 @@ public class CustomerChargeInfo : Entity
     /// <summary>
     /// 支付订单编号，非空
     /// </summary>
-    [Required(ErrorMessage = "支付订单编号不能为空！")]
-    [MaxLength(50, ErrorMessage = "支付订单编号长度不能大于50！")]
+    [Required(ErrorMessage = "支付单号不能为空！")]
+    [MaxLength(50, ErrorMessage = "支付单号编号长度不能大于50！")]
     [JsonProperty("outTradeNo")]
     public virtual string OutTradeNo { get; set; } = string.Empty;
 

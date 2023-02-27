@@ -37,10 +37,10 @@ public class LogisticsOrderPayInfo : Entity
     public virtual PayType PayType { get; set; } = PayType.None;
 
     /// <summary>
-    /// 支付订单编号
+    /// 支付单号
     /// </summary>
-    [Required(ErrorMessage = "支付订单编号不能为空！")]
-    [MaxLength(25, ErrorMessage = "支付订单编号长度不能大于25！")]
+    [Required(ErrorMessage = "支付单号不能为空！")]
+    [MaxLength(25, ErrorMessage = "支付单号长度不能大于50！")]
     public virtual string OutTradeNo { get; set; } = string.Empty;
 
     /// <summary>

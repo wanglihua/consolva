@@ -38,9 +38,11 @@ public class WechatAppChargeWechatPayController : Controller {
         });
     }
 
+    private const string NOTIFY_URL = "/client/wechat/app/charge/wechat/pay/notify";
+
     [NoLoginRequired]
     [HttpPost]
-    [Route("/client/wechat/app/charge/wechat/pay/notify")]
+    [Route(NOTIFY_URL)]
     [Transactional]
     public IActionResult Notify() {
         return Json(new JsonResultData {
