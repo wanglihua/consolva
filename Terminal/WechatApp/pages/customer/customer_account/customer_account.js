@@ -56,11 +56,10 @@ Page({
             amountInputErrorMsg: "",
         });
 
+        const that = this;
         app.post("/client/wechat/app/charge/wechat/pay/create", {
             amount: chargeAmountNum
         }, function (res) {
-            console.log(res);
-            
             wx.requestPayment({
                 'timeStamp': res.data.timeStamp,
                 'nonceStr': res.data.nonceStr,
@@ -68,17 +67,19 @@ Page({
                 'signType': res.data.signType,
                 'paySign': res.data.paySign,
                 'success': function (res) {
-                    this.setData({
+                    that.setData({
                         chargeAmount: '',
                     });
-                    this.loadCustomerAccount();
+                    that.loadCustomerAccount();
                 },
                 'fail': function (res) {
-                    wx.showModal({
-                        title: '错误',
-                        content: res.errMsg,
-                        showCancel: false
-                    });
+                    if (res.errMsg !== "requestPayment:fail cancel") {
+                        wx.showModal({
+                            title: '错误',
+                            content: res.errMsg,
+                            showCancel: false
+                        });
+                    }
                 }
             });
         });
