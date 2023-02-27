@@ -40,9 +40,6 @@ public class WechatAppChargeWechatPayController : Controller {
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         WechatPayData data = wechatPayChargeService.Create(loginCustomerId, param.Amount, NOTIFY_URL);
-        
-        log.Error("data.ToXml()");
-        log.Error(data.ToXml());
 
         return Json(new JsonResultData {
             Success = true,
@@ -64,12 +61,30 @@ public class WechatAppChargeWechatPayController : Controller {
     [Route(NOTIFY_URL)]
     [Transactional]
     public IActionResult Notify() {
-        StreamReader streamReader = new StreamReader(Request.Body);
-        string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
-        WechatPayData requestData = new WechatPayData();
-        requestData.FromXml(requestBody);
+        try {
+            StreamReader streamReader = new StreamReader(Request.Body);
+            string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
 
-        string xml = wechatPayChargeService.Notify(requestData);
-        return Content(xml, "text/xml", Encoding.UTF8);
+            log.Error("requestBody:");
+            log.Error(requestBody);
+
+            WechatPayData requestData = new WechatPayData();
+            requestData.FromXml(requestBody);
+
+            string xml = wechatPayChargeService.Notify(requestData);
+
+            log.Error("xml:");
+            log.Error(xml);
+            return Content(xml, "text/xml", Encoding.UTF8);
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+
+            WechatPayData data = new WechatPayData();
+            data.SetValue("return_code", "FAIL");
+            data.SetValue("return_msg", exp.Message);
+
+            return Content(data.ToXml(), "text/xml", Encoding.UTF8);
+        }
     }
 }
