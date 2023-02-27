@@ -302,6 +302,14 @@ public class CouponBatchService {
         session.Save(coupon);
         session.Flush();
 
+        // 记录日志
+        var couponLog = new CouponLogInfo {
+            Coupon = coupon,
+            Type = CouponLogType.Pick,
+            Description = string.Empty,
+        };
+        session.Save(couponLog);
+
         coupon.Code = couponCodeService.Generate(batchId, batch.Type, coupon.Id);
         session.Update(coupon);
         session.Flush();

@@ -6,6 +6,7 @@ using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Fee.Models.Coupon;
+using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
@@ -26,15 +27,19 @@ public class CouponController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
     private readonly CouponBatchService couponBatchService;
     private readonly CouponCodeService couponCodeService;
 
     public CouponController(ISession session,
+        LoginUserService loginUserService,
         CustomerCodeService customerCodeService,
         CouponBatchService couponBatchService,
-        CouponCodeService couponCodeService) {
+        CouponCodeService couponCodeService
+    ) {
         this.session = session;
+        this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
         this.couponBatchService = couponBatchService;
         this.couponCodeService = couponCodeService;
@@ -174,6 +179,9 @@ public class CouponController : Controller {
             throw new ValidationException("发放数量应该大于0！");
         }
 
+        var loginUser = loginUserService.GetLoginUser();
+        string loginUserName = loginUser.UserName;
+
         // 检查批次总数量是否已经达到，这里发放时不再做其他判断
         int batchPickedCount = session.Query<CouponInfo>()
             .Where(e => e.Batch.Id == batchId)
@@ -195,7 +203,7 @@ public class CouponController : Controller {
             var now = DateTime.Now;
             var coupon = new CouponInfo();
             coupon.Batch = batch;
-            coupon.Code = string.Empty; // 后面会做修正
+            coupon.Code = Guid.NewGuid().ToString("N"); // 后面会做修正
             coupon.Customer = customer;
             coupon.PickTime = now;
             coupon.GetMethod = CouponGetMethod.Grant;
@@ -216,6 +224,17 @@ public class CouponController : Controller {
 
         session.Flush();
 
+        foreach (var coupon in couponList) {
+            // 记录日志
+            var couponLog = new CouponLogInfo {
+                Coupon = coupon,
+                Type = CouponLogType.Grant,
+                Description = $"用户{loginUserName}",
+            };
+            session.Save(couponLog);
+        }
+
+        session.Flush();
 
         // 更新批次已领取总数量
         couponBatchService.SumAndSaveBatchTotalPicked(batchId);
@@ -229,6 +248,8 @@ public class CouponController : Controller {
                 session.Flush();
             }
         }
+
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,
@@ -262,6 +283,9 @@ public class CouponController : Controller {
         if (batch == null) {
             throw new ValidationException($"指定的优惠券批次#{batchId}不存在！");
         }
+
+        var loginUser = loginUserService.GetLoginUser();
+        string loginUserName = loginUser.UserName;
 
         IList<CouponImportItem> importItemList = new List<CouponImportItem>();
 
@@ -371,6 +395,18 @@ public class CouponController : Controller {
 
             session.Flush();
 
+            foreach (var coupon in couponList) {
+                // 记录日志
+                var couponLog = new CouponLogInfo {
+                    Coupon = coupon,
+                    Type = CouponLogType.Grant,
+                    Description = $"用户{loginUserName}",
+                };
+                session.Save(couponLog);
+            }
+
+            session.Flush();
+
             // 更新批次已领取总数量
             couponBatchService.SumAndSaveBatchTotalPicked(batchId);
 
@@ -384,6 +420,8 @@ public class CouponController : Controller {
                 }
             }
         });
+
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,

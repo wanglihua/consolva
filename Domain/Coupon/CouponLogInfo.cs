@@ -21,11 +21,13 @@ public class CouponLogInfo : Entity {
 
     /// <summary>
     /// 操作客户，可空
+    /// 暂时没用起来
     /// </summary>
     public virtual CustomerInfo? Customer { get; set; } = null;
 
     /// <summary>
     /// 操作用户，可空
+    /// 暂时没用起来
     /// </summary>
     public virtual UserInfo? User { get; set; } = null;
 

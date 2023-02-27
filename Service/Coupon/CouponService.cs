@@ -185,6 +185,15 @@ public class CouponService {
         coupon.UseTime = now;
 
         session.Update(coupon);
+
+        // 记录日志
+        var couponLog = new CouponLogInfo {
+            Coupon = coupon,
+            Type = CouponLogType.Use,
+            Description = $"订单{order.Code}，实扣{actualDiscountAmount}"
+        };
+        session.Save(couponLog);
+
         session.Flush();
     }
 
@@ -205,11 +214,18 @@ public class CouponService {
     /// </summary>
     /// <param name="orderId"></param>
     public void setCouponNotUsed(int orderId) {
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
         var orderCouponList = session.Query<CouponInfo>() // 一般也就只有一张
             .Fetch(e => e.Batch)
             .Where(e => e.Order!.Id == orderId)
             .ToList();
         foreach (var coupon in orderCouponList) {
+            var actualDiscountAmountBefore = coupon.ActualDiscountAmount;
+
             coupon.Order = null;
             coupon.ActualDiscountAmount = 0;
             if (coupon.Batch.Status == CouponBatchStatus.Expire) {
@@ -221,6 +237,14 @@ public class CouponService {
             coupon.UseTime = null;
 
             session.Update(coupon);
+
+            // 记录日志
+            var couponLog = new CouponLogInfo {
+                Coupon = coupon,
+                Type = CouponLogType.Back,
+                Description = $"订单{order.Code}，原实扣{actualDiscountAmountBefore}"
+            };
+            session.Save(couponLog);
         }
 
         session.Flush();
