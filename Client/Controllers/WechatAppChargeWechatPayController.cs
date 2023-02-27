@@ -65,16 +65,11 @@ public class WechatAppChargeWechatPayController : Controller {
             StreamReader streamReader = new StreamReader(Request.Body);
             string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
 
-            log.Error("requestBody:");
-            log.Error(requestBody);
-
             WechatPayData requestData = new WechatPayData();
             requestData.FromXml(requestBody);
 
             string xml = wechatPayChargeService.Notify(requestData);
 
-            log.Error("xml:");
-            log.Error(xml);
             return Content(xml, "text/xml", Encoding.UTF8);
         }
         catch (Exception exp) {
