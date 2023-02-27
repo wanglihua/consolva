@@ -9,7 +9,7 @@ Page({
         totalGoodsValue: '',
         firstMode: {},
         receiveAddress: {},
-        sendAddress: {},
+        // sendAddress: {},
         insurance: {},
         gst: {},
     },
@@ -28,7 +28,7 @@ Page({
                 totalGoodsValue: res.data.totalGoodsValue,
                 firstMode: res.data.firstMode,
                 receiveAddress: res.data.receiveAddress,
-                sendAddress: res.data.sendAddress,
+                // sendAddress: res.data.sendAddress,
                 insurance: res.data.insurance,
                 gst: res.data.gst,
             });

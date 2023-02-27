@@ -46,7 +46,12 @@
         <van-cell title="类型" value="{{ firstMode.type }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="名称" value="{{ firstMode.name }}" border="{{ false }}" custom-class="item"/>
         <block wx:if="{{ firstMode.description && firstMode.description !== '' }}">
-            <van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>
+            <block wx:if="{{ firstMode.description.length <= 20 }}">
+                <van-cell title="描述" value="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>
+            </block>
+            <block wx:else>
+                <van-cell title="描述" label="{{ firstMode.description }}" border="{{ false }}" custom-class="item"/>
+            </block>
         </block>
         <view class="item-last-vspace"/>
     </van-cell-group>
@@ -60,6 +65,7 @@
         <view class="item-last-vspace"/>
     </van-cell-group>
 
+    <!--
     <van-cell-group custom-class="items">
         <van-cell title="发货地址" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
         <van-cell title="收货人" value="{{ sendAddress.name }}" border="{{ false }}" custom-class="item"/>
@@ -69,11 +75,17 @@
         <van-cell title="邮编" value="{{ sendAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
         <view class="item-last-vspace"/>
     </van-cell-group>
+    -->
 
     <van-cell-group custom-class="items">
         <van-cell title="保险和GST" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
         <van-cell title="保险方案" value="{{ insurance.name }}" border="{{ false }}" custom-class="item"/>
-        <van-cell title="GST方案" value="{{ gst.name }}" border="{{ false }}" custom-class="item"/>
+        <block wx:if="{{ gst.name.length <= 20 }}">
+            <van-cell title="GST方案" value="{{ gst.name }}" border="{{ false }}" custom-class="item"/>
+        </block>
+        <block wx:else>
+            <van-cell title="GST方案" label="{{ gst.name }}" border="{{ false }}" custom-class="item"/>
+        </block>
         <view class="item-last-vspace"/>
     </van-cell-group>
 

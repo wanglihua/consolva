@@ -99,8 +99,12 @@ Page({
     },
 
     gotoPre() {
+        // wx.redirectTo({
+        //     url: "./order_create_send_address",
+        // });
+
         wx.redirectTo({
-            url: "./order_create_send_address",
+            url: "./order_create_receive_address",
         });
     },
 

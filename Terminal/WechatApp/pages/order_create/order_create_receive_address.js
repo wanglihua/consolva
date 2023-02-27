@@ -68,8 +68,14 @@ Page({
     },
 
     gotoNext() {
+        /*
         wx.redirectTo({
             url: "./order_create_send_address",
         });
+        */
+
+       wx.redirectTo({
+            url: "./order_create_insurance",
+        });     
     }
 })

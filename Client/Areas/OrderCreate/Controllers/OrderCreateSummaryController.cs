@@ -199,6 +199,7 @@ public class OrderCreateSummaryController : Controller {
             FullAddress = customerReceiveAddressService.GetFullAddress(receiveAddress),
         };
 
+        /*
         int sendAddressId = createSelect.AddressSendId;
         var sendAddress = session.Get<CustomerSendAddressInfo>(sendAddressId);
         if (sendAddress == null) {
@@ -217,6 +218,7 @@ public class OrderCreateSummaryController : Controller {
             Address = sendAddress.Address,
             Zipcode = sendAddress.Zipcode,
         };
+        */
 
         // 保险和GST
         int insuranceId = createSelect.InsuranceId;
@@ -257,7 +259,7 @@ public class OrderCreateSummaryController : Controller {
                 TotalPackageCount = totalPackageCount,
                 TotalGoodsValue = totalGoodsValue.ToString("#0.00"),
                 ReceiveAddress = receiveAddressItem,
-                SendAddress = sendAddressItem,
+                // SendAddress = sendAddressItem,
                 FirstMode = firstModeItem,
                 Insurance = insuranceItem,
                 Gst = gstItem,

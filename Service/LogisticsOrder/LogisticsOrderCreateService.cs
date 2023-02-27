@@ -83,6 +83,7 @@ public class LogisticsOrderCreateService {
             throw new ValidationException("订单创建选择物流方式收货地址国家不一致，数据有问题，请重新选择！");
         }
 
+        /*
         int addressSendId = createSelect.AddressSendId;
         CustomerSendAddressInfo addressSend = session.Get<CustomerSendAddressInfo>(addressSendId);
         if (addressSend == null) {
@@ -98,6 +99,7 @@ public class LogisticsOrderCreateService {
         if (receiverNameToCompare == senderNameToCompare) {
             throw new ValidationException("因海关要求，收货人与发货人，姓名不可以相同，请在【我的地址】修改！");
         }
+        */
 
         // 保险和GST
         var insurance = session.Get<LogisticsInsuranceInfo>(createSelect.InsuranceId);
@@ -222,6 +224,9 @@ public class LogisticsOrderCreateService {
 
         session.Save(orderReceiveAddress);
 
+        session.Flush();
+
+        /*
         var orderSendAddress = new LogisticsOrderSendAddressInfo {
             Order = order,
             Country = addressSend.Country,
@@ -240,6 +245,7 @@ public class LogisticsOrderCreateService {
         session.Save(orderSendAddress);
 
         session.Flush();
+        */
 
         // 订单快递单关联，当订单作废，或者作废订单恢复的时候，这个关联就是必需的了
         foreach (var express in expressList) {
