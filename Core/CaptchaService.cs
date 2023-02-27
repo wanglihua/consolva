@@ -136,6 +136,9 @@ public class CaptchaService
             return false;
         }
 
+        // 去掉空格换行等等的
+        code = code.Replace(" ", string.Empty).Replace("\t", string.Empty).Replace("\n", string.Empty).Replace("\r", string.Empty);
+
         code = code.ToUpper(); // 比较时，忽略大小写
         
         CSRedisClient redisClient = RedisClientUtil.GetRedisClient();
