@@ -38,10 +38,10 @@ public class LogisticsFeeRateExpressEntryInfoMapping : EntityMapping<LogisticsFe
         );
 
         Property(
-            x => x.FeeByKilogram,
+            x => x.FeePerKilogram,
             map => {
-                map.Type(NHibernateUtil.Boolean);
-                map.Column("fee_by_kilogram");
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("fee_per_kilogram");
                 map.NotNullable(true);
             }
         );

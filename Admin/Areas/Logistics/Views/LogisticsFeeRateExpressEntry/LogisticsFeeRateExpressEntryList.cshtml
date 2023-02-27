@@ -10,7 +10,7 @@
         <tr>
             <th style="width: 40px; text-align: center;">
                 <div>
-                    <label for="logisticsFeeRateExpressEntryCheckAll"></label><input id="logisticsFeeRateExpressEntryCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                    <label for="logisticsFeeRateExpressEntryCheckAll"></label><input id="logisticsFeeRateExpressEntryCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
                 </div>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
@@ -29,7 +29,7 @@
 
             <th style="width: 180px; text-align: center;">
                 <div>
-                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.FeeByKilogram))">是否按公斤计费</a>
+                    <a field="@(Model.FeeRateExpressEntryAlias).@(nameof(LogisticsFeeRateExpressEntryInfo.FeePerKilogram))">每公斤费率</a>
                 </div>
             </th>
 
@@ -53,7 +53,7 @@
                 <tr ondblclick="showLogisticsFeeRateExpressEntryDetail(@(entry.Id));">
                     <td style="text-align: center;">
                         <div>
-                            <label for="logisticsFeeRateExpressEntryCheck_@(entry.Id)"></label><input id="logisticsFeeRateExpressEntryCheck_@(entry.Id)" type="checkbox" class="ace" value="@entry.Id" /><span class="lbl"></span>
+                            <label for="logisticsFeeRateExpressEntryCheck_@(entry.Id)"></label><input id="logisticsFeeRateExpressEntryCheck_@(entry.Id)" type="checkbox" class="ace" value="@entry.Id"/><span class="lbl"></span>
                         </div>
                     </td>
                     <td style="text-align: center;">@(++itemIndex)</td>
@@ -69,7 +69,7 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(entry.FeeByKilogram)
+                            @ListDataUtil.Render(entry.FeePerKilogram) RMB/KG
                         </div>
                     </td>
 

@@ -22,8 +22,8 @@ public class LogisticsFeeRateExpressEntrySaveModel {
     public decimal EndWeight { get; set; } = 0m;
 
     /// <summary>
-    /// 是否按公斤计费，非空
+    /// 每公斤费率，非空
     /// </summary>
-    public bool FeeByKilogram { get; set; } = false;
+    public decimal FeePerKilogram { get; set; }
 
 }

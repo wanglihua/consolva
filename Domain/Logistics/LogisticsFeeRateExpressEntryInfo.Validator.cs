@@ -13,6 +13,6 @@ public class LogisticsFeeRateExpressEntryInfoValidator : AbstractValidator<Logis
 
         RuleFor(e => e.EndWeight).Must(p => p > 0).WithMessage("结束重量不能为空！");
 
-        RuleFor(e => e.FeeByKilogram).NotNull().NotEmpty().WithMessage("是否按公斤计费不能为空！");
+        RuleFor(e => e.FeePerKilogram).Must(p => p > 0).WithMessage("每公斤费率不能为空！");
     }
 }

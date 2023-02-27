@@ -52,6 +52,40 @@ public class LogisticsFeeExpressService {
             startPrice = feeRateExpress.StartPrice.Value;
         }
 
+        // 重量满减
+        if ((feeRateExpress.WeightBreakStart != null && feeRateExpress.WeightBreakStart.Value > 0)
+            && (feeRateExpress.WeightBreakDiscount != null && feeRateExpress.WeightBreakDiscount.Value > 0)) {
+            decimal weightBreakStart = feeRateExpress.WeightBreakStart.Value;
+            decimal weightBreakDiscount = feeRateExpress.WeightBreakDiscount.Value;
+
+            if (totalWeightKg >= weightBreakStart) {
+                totalWeightKg = totalWeightKg - weightBreakDiscount;
+            }
+
+            if (totalWeightKg < 0) // 一般不会发生
+            {
+                totalWeightKg = 0;
+            }
+        }
+
+        // 按公斤计费，这个逻辑暂且放在 重量满减 后面
+        int feeRateExpressId = feeRateExpress.Id;
+        var feeRateExpressEntry = session.Query<LogisticsFeeRateExpressEntryInfo>()
+            .Where(e => e.FeeRateExpress.Id == feeRateExpressId && e.BeginWeight <= totalWeightKg && e.EndWeight > totalWeightKg)
+            .OrderBy(e => e.BeginWeight)
+            .Take(1)
+            .SingleOrDefault();
+
+        // 满足按公斤计费的，按公斤计费后返回
+        if (feeRateExpressEntry != null && feeRateExpressEntry.FeePerKilogram > 0) {
+            decimal totalWeightKgWholeNumber = Math.Floor(totalWeightKg);
+            if (totalWeightKg - totalWeightKgWholeNumber > 0) {
+                totalWeightKg = totalWeightKgWholeNumber + 1; // 不满一公斤按一公斤计算
+            }
+
+            return totalWeightKg * feeRateExpressEntry.FeePerKilogram;
+        }
+
         // 首重免费
         if (feeRateExpress.StartFreeMinWeight != null // 不为空
             && feeRateExpress.StartFreeMinWeight.Value > 0 // 不为零 和 负值，正确的正值
@@ -80,36 +114,6 @@ public class LogisticsFeeExpressService {
                 throw new LogisticsFeeException("物流方式不支持当前物品重量！SD0080");
             } else {
                 throw new LogisticsFeeException($"跨国快递物流方式{logisticsMode.Name}费率设置有问题，其中续重阶梯为0！");
-            }
-        }
-
-        // 重量满减
-        if ((feeRateExpress.WeightBreakStart != null && feeRateExpress.WeightBreakStart.Value > 0)
-            && (feeRateExpress.WeightBreakDiscount != null && feeRateExpress.WeightBreakDiscount.Value > 0)) {
-            decimal weightBreakStart = feeRateExpress.WeightBreakStart.Value;
-            decimal weightBreakDiscount = feeRateExpress.WeightBreakDiscount.Value;
-
-            if (totalWeightKg >= weightBreakStart) {
-                totalWeightKg = totalWeightKg - weightBreakDiscount;
-            }
-
-            if (totalWeightKg < 0) // 一般不会发生
-            {
-                totalWeightKg = 0;
-            }
-        }
-
-        // 按公斤计费，这个逻辑暂且放在 重量满减 后面
-        int feeRateExpressId = feeRateExpress.Id;
-        var feeRateExpressEntry = session.Query<LogisticsFeeRateExpressEntryInfo>()
-            .Where(e => e.FeeRateExpress.Id == feeRateExpressId && e.BeginWeight <= totalWeightKg && e.EndWeight > totalWeightKg)
-            .OrderBy(e => e.BeginWeight)
-            .Take(1)
-            .SingleOrDefault();
-        if (feeRateExpressEntry != null && feeRateExpressEntry.FeeByKilogram == true) {
-            decimal totalWeightKgWholeNumber = Math.Floor(totalWeightKg);
-            if (totalWeightKg - totalWeightKgWholeNumber > 0) {
-                totalWeightKg = totalWeightKgWholeNumber + 1; // 不满一公斤按一公斤计算
             }
         }
 

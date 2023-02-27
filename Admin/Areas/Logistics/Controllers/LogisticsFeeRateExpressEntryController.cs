@@ -1,14 +1,12 @@
+using Microsoft.AspNetCore.Mvc;
+using NHibernate;
+using NLog;
+using shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Logistics;
-using shunda.Admin.Areas.Logistics.Models.LogisticsFeeRateExpressEntry;
-using Microsoft.AspNetCore.Mvc;
-using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.SqlCommand;
-using NLog;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
@@ -109,7 +107,6 @@ public class LogisticsFeeRateExpressEntryController : Controller {
             }
 
             feeRateExpressEntry.FeeRateExpress = feeRateExpress;
-            feeRateExpressEntry.FeeByKilogram = true;
         } else {
             feeRateExpressEntry = session.Get<LogisticsFeeRateExpressEntryInfo>(id);
             if (feeRateExpressEntry == null) {
@@ -123,8 +120,7 @@ public class LogisticsFeeRateExpressEntryController : Controller {
         model.FeeRateExpressId = feeRateExpressEntry.FeeRateExpress.Id;
         model.BeginWeight = feeRateExpressEntry.BeginWeight;
         model.EndWeight = feeRateExpressEntry.EndWeight;
-        model.FeeByKilogram = feeRateExpressEntry.FeeByKilogram;
-
+        model.FeePerKilogram = feeRateExpressEntry.FeePerKilogram;
 
         return View("LogisticsFeeRateExpressEntryDetail", model);
     }
@@ -159,7 +155,7 @@ public class LogisticsFeeRateExpressEntryController : Controller {
 
         logisticsFeeRateExpressEntry.BeginWeight = model.BeginWeight;
         logisticsFeeRateExpressEntry.EndWeight = model.EndWeight;
-        logisticsFeeRateExpressEntry.FeeByKilogram = model.FeeByKilogram;
+        logisticsFeeRateExpressEntry.FeePerKilogram = model.FeePerKilogram;
 
         if (isCreate) {
             session.Save(logisticsFeeRateExpressEntry);

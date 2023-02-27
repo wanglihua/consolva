@@ -51,13 +51,13 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="FeeByKilogram" class="col-xs-2 control-label">按公斤计费</label>
+                                <label asp-for="FeePerKilogram" class="col-xs-2 control-label">每公斤费率</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="FeeByKilogram" required="required" class="input-sm form-control">
-                                        <option value="@(true.ToString())">是，按公斤向上取整计费</option>
-                                        <option value="@(false.ToString())">否，不按公斤向上取整计费</option>
-                                    </select>
-                                    <div class="help-block">如果不是整数的公斤，就向上取整，如7.1公斤的取8公斤计算。</div>
+                                    <div class="input-group">
+                                        <input asp-for="FeePerKilogram" type="number" required="required" number="true" class="input-sm form-control" autocomplete="off"/>
+                                        <span class="input-group-addon">RMB/KG</span>
+                                    </div>
+                                    <div class="help-block">计算时，重量如果不是整数的公斤，就向上取整，如7.1公斤的取8公斤计算。</div>
                                 </div>
                             </div>
                         </div>

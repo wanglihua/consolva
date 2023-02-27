@@ -23,11 +23,12 @@ public class LogisticsFeeRateExpressEntryInfo : Entity {
     public virtual decimal EndWeight { get; set; } = 0m;
 
     /// <summary>
-    /// 是否按公斤计费，非空
+    /// 每公斤费率，非空
+    /// 这里不到一公斤也算一公斤，按整数重量计算费用
     /// </summary>
-    public virtual bool FeeByKilogram { get; set; } = false;
+    public virtual decimal FeePerKilogram { get; set; }
 
     public override void Validate() {
-        ValidationUtil.ValidateEntity<LogisticsFeeRateExpressEntryInfoValidator,  LogisticsFeeRateExpressEntryInfo>(this);
+        ValidationUtil.ValidateEntity<LogisticsFeeRateExpressEntryInfoValidator, LogisticsFeeRateExpressEntryInfo>(this);
     }
 }
