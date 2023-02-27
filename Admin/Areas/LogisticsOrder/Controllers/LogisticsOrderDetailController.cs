@@ -73,6 +73,7 @@ public class LogisticsOrderDetailController : Controller {
             throw new ValidationException("订单收货地址缺失！");
         }
 
+        /*
         // 发货地址
         var sendAddress = session.Query<LogisticsOrderSendAddressInfo>()
             .Fetch(e => e.Province)
@@ -85,6 +86,7 @@ public class LogisticsOrderDetailController : Controller {
         if (sendAddress == null) {
             throw new ValidationException("订单发货地址缺失！");
         }
+        */
 
         // 订单商品
         var expressList = expressService.GetExpressListForOrderDetail(orderId);
@@ -109,7 +111,7 @@ public class LogisticsOrderDetailController : Controller {
             MenuType = menuType,
             Order = order,
             ReceiveAddress = receiveAddress,
-            SendAddress = sendAddress,
+            // SendAddress = sendAddress,
             ExpressList = expressList,
             OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,

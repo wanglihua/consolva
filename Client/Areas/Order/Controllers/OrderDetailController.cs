@@ -159,6 +159,7 @@ public class OrderDetailController : Controller {
             Zipcode = orderReceiveAddress.Zipcode,
         };
 
+        /*
         // 发货地址
         var orderSendAddress = session.Query<LogisticsOrderSendAddressInfo>()
             .Where(e => e.Order.Id == orderId)
@@ -183,6 +184,7 @@ public class OrderDetailController : Controller {
             Address = orderSendAddress.Address,
             Zipcode = orderSendAddress.Zipcode,
         };
+        */
 
         // 订单商品
         var expressItemList = new List<OrderDetailExpressItem>();
@@ -329,7 +331,7 @@ public class OrderDetailController : Controller {
                 FirstModeList = orderFirstModeItemList,
             },
             ReceiveAddress = receiveAddressItem,
-            SendAddress = sendAddressItem,
+            // SendAddress = sendAddressItem,
             ExpressList = expressItemList,
             OrderPackList = orderPackItemList,
             HasOrderPackData = orderPackData != null,

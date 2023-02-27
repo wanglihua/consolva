@@ -15,8 +15,8 @@ public class LogisticsOrderDetailIndexModel {
     [BindNever]
     public LogisticsOrderReceiveAddressInfo ReceiveAddress { get; set; } = new();
 
-    [BindNever]
-    public LogisticsOrderSendAddressInfo SendAddress { get; set; } = new();
+    // [BindNever]
+    // public LogisticsOrderSendAddressInfo SendAddress { get; set; } = new();
 
     [BindNever]
     public IList<ExpressInfo> ExpressList { get; set; } = new List<ExpressInfo>();

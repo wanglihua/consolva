@@ -72,6 +72,7 @@
         </block>
 
         <!-- 发货地址 -->
+        <!--
         <block wx:if="{{ orderDetail.sendAddress }}">
             <van-cell title="发货地址" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
             <van-cell title="发货人" value="{{ orderDetail.sendAddress.name }}" border="{{ false }}" custom-class="item"/>
@@ -81,6 +82,7 @@
             <van-cell title="邮编" value="{{ orderDetail.sendAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
             <view class="item-last-vspace"/>
         </block>
+        -->
 
         <!-- 订单商品 -->
         <block wx:if="{{ orderDetail.expressList && orderDetail.expressList.length > 0 }}">
