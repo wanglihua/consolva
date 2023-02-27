@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.WechatAppOrderWechatPay;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using ISession = NHibernate.ISession;
 
@@ -21,7 +22,9 @@ public class WechatAppOrderWechatPayController : Controller {
     [HttpPost]
     [Route("/client/wechat/app/order/wechat/pay/create")]
     public IActionResult Create([FromBody] WechatAppOrderWechatPayCreateParam param) {
-        // todo validator
+        ValidationUtil.Validate<WechatAppOrderWechatPayCreateParamValidator, WechatAppOrderWechatPayCreateParam>(param);
+        
+        
 
         return Json(new JsonResultData {
             Success = true,
