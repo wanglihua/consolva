@@ -59,20 +59,15 @@ Page({
         app.post("/client/wechat/app/charge/wechat/pay/create", {
             amount: chargeAmountNum
         }, function (res) {
-            wx.requestpayment({
-                'timestamp': res.data.timestamp,
-                'noncestr': res.data.noncestr,
+            console.log(res);
+            
+            wx.requestPayment({
+                'timeStamp': res.data.timeStamp,
+                'nonceStr': res.data.nonceStr,
                 'package': res.data.package,
-                'signtype': res.data.signtype,
-                'paysign': res.data.paysign,
+                'signType': res.data.signType,
+                'paySign': res.data.paySign,
                 'success': function (res) {
-                    // 充值完成后
-                    wx.showModal({
-                        title: '成功',
-                        content: res,
-                        showCancel: false
-                    });
-
                     this.setData({
                         chargeAmount: '',
                     });
@@ -81,7 +76,7 @@ Page({
                 'fail': function (res) {
                     wx.showModal({
                         title: '错误',
-                        content: res,
+                        content: res.errMsg,
                         showCancel: false
                     });
                 }

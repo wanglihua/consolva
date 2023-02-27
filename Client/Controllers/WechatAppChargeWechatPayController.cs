@@ -40,16 +40,19 @@ public class WechatAppChargeWechatPayController : Controller {
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         WechatPayData data = wechatPayChargeService.Create(loginCustomerId, param.Amount, NOTIFY_URL);
+        
+        log.Error("data.ToXml()");
+        log.Error(data.ToXml());
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
             Data = new WechatAppChargeWechatPayCreateModel {
-                TimeStamp = data.GetValue("TimeStamp")?.ToString() ?? string.Empty,
-                NonceStr = data.GetValue("noncestr")?.ToString() ?? string.Empty,
+                TimeStamp = data.GetValue("timeStamp")?.ToString() ?? string.Empty,
+                NonceStr = data.GetValue("nonceStr")?.ToString() ?? string.Empty,
                 Package = data.GetValue("package")?.ToString() ?? string.Empty,
-                SignType = data.GetValue("signtype")?.ToString() ?? string.Empty,
-                PaySign = data.GetValue("paysign")?.ToString() ?? string.Empty,
+                SignType = data.GetValue("signType")?.ToString() ?? string.Empty,
+                PaySign = data.GetValue("paySign")?.ToString() ?? string.Empty,
             }
         });
     }
