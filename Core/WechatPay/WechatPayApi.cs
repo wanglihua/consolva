@@ -296,7 +296,7 @@ public class WechatPayApi {
         * @throws WxPayException
         * @return 成功时返回，其他抛异常
         */
-    private static WechatPayData UnifiedOrder(WechatPayData data, int timeOut = 6) {
+    public static WechatPayData UnifiedOrder(WechatPayData data, int timeOut = 6) {
         string url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
         //检测必填参数
         if (!data.IsSet("out_trade_no")) {

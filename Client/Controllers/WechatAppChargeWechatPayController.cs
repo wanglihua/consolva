@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.WechatAppChargeWechatPay;
@@ -5,6 +6,8 @@ using shunda.Client.Services;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Core.WechatPay;
+using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Controllers;
@@ -17,13 +20,16 @@ public class WechatAppChargeWechatPayController : Controller {
 
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
+    private readonly WechatPayChargeService wechatPayChargeService;
 
     public WechatAppChargeWechatPayController(
         ISession session,
-        LoginCustomerService loginCustomerService
+        LoginCustomerService loginCustomerService,
+        WechatPayChargeService wechatPayChargeService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
+        this.wechatPayChargeService = wechatPayChargeService;
     }
 
     [HttpPost]
@@ -32,9 +38,14 @@ public class WechatAppChargeWechatPayController : Controller {
     public IActionResult Create([FromBody] WechatAppChargeWechatPayCreateParam param) {
         ValidationUtil.Validate<WechatAppChargeWechatPayCreateParamValidator, WechatAppChargeWechatPayCreateParam>(param);
 
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        WechatPayData data = wechatPayChargeService.Create(loginCustomerId, param.Amount, NOTIFY_URL);
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = new WechatAppChargeWechatPayCreateModel {
+            }
         });
     }
 
@@ -45,9 +56,12 @@ public class WechatAppChargeWechatPayController : Controller {
     [Route(NOTIFY_URL)]
     [Transactional]
     public IActionResult Notify() {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        StreamReader streamReader = new StreamReader(Request.Body);
+        string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
+        WechatPayData requestData = new WechatPayData();
+        requestData.FromXml(requestBody);
+
+        string xml = wechatPayChargeService.Notify(requestData);
+        return Content(xml, "text/xml", Encoding.UTF8);
     }
 }
