@@ -63,16 +63,16 @@ public class WechatPayData {
     public string ToXml() {
         //数据为空时不能转化为xml格式
         if (0 == values.Count) {
-            log.Error("WxPayData数据为空!");
-            throw new WechatPayException("WxPayData数据为空!");
+            log.Error("WechatPayData数据为空!");
+            throw new WechatPayException("WechatPayData数据为空!");
         }
 
         string xml = "<xml>";
         foreach (KeyValuePair<string, object> pair in values) {
             //字段值不能为null，会影响后续流程
             if (pair.Value == null) {
-                log.Error("WxPayData内部含有值为null的字段!");
-                throw new WechatPayException("WxPayData内部含有值为null的字段!");
+                log.Error("WechatPayData内部含有值为null的字段!");
+                throw new WechatPayException("WechatPayData内部含有值为null的字段!");
             }
 
             if (pair.Value is int) {
@@ -81,8 +81,8 @@ public class WechatPayData {
                 xml += "<" + pair.Key + ">" + "<![CDATA[" + pair.Value + "]]></" + pair.Key + ">";
             } else //除了string和int类型不能含有其他数据类型
             {
-                log.Error("WxPayData字段数据类型错误!");
-                throw new WechatPayException("WxPayData字段数据类型错误!");
+                log.Error("WechatPayData字段数据类型错误!");
+                throw new WechatPayException("WechatPayData字段数据类型错误!");
             }
         }
 
@@ -91,15 +91,15 @@ public class WechatPayData {
     }
 
     /// <summary>
-    /// 将xml转为WxPayData对象并返回对象内部的数据
+    /// 将xml转为WechatPayData对象并返回对象内部的数据
     /// </summary>
     /// <param name="xml">待转换的xml串</param>
     /// <returns>经转换得到的Dictionary</returns>
     /// <exception cref="WechatPayException">WxPayException</exception>
     public SortedDictionary<string, object> FromXml(string xml) {
         if (string.IsNullOrEmpty(xml)) {
-            log.Error("将空的xml串转换为WxPayData不合法!");
-            throw new WechatPayException("将空的xml串转换为WxPayData不合法!");
+            log.Error("将空的xml串转换为WechatPayData不合法!");
+            throw new WechatPayException("将空的xml串转换为WechatPayData不合法!");
         }
 
         XmlDocument xmlDoc = new XmlDocument();
@@ -108,7 +108,7 @@ public class WechatPayData {
         XmlNodeList nodes = xmlNode.ChildNodes;
         foreach (XmlNode xn in nodes) {
             XmlElement xe = (XmlElement)xn;
-            values[xe.Name] = xe.InnerText; //获取xml的键值对到WxPayData内部的数据中
+            values[xe.Name] = xe.InnerText; //获取xml的键值对到WechatPayData内部的数据中
         }
 
         try {
@@ -137,8 +137,8 @@ public class WechatPayData {
         string buff = "";
         foreach (KeyValuePair<string, object> pair in values) {
             if (pair.Value == null) {
-                log.Error("WxPayData内部含有值为null的字段!");
-                throw new WechatPayException("WxPayData内部含有值为null的字段!");
+                log.Error("WechatPayData内部含有值为null的字段!");
+                throw new WechatPayException("WechatPayData内部含有值为null的字段!");
             }
 
             if (pair.Key != "sign" && pair.Value.ToString() != "") {
@@ -159,8 +159,8 @@ public class WechatPayData {
         string str = "";
         foreach (KeyValuePair<string, object> pair in values) {
             if (pair.Value == null) {
-                log.Error("WxPayData内部含有值为null的字段!");
-                throw new WechatPayException("WxPayData内部含有值为null的字段!");
+                log.Error("WechatPayData内部含有值为null的字段!");
+                throw new WechatPayException("WechatPayData内部含有值为null的字段!");
             }
 
 
@@ -217,8 +217,8 @@ public class WechatPayData {
     public bool CheckSign(string signType) {
         //如果没有设置签名，则跳过检测
         if (IsSet("sign") == false) {
-            log.Error("WxPayData签名不存在!");
-            throw new WechatPayException("WxPayData签名不存在!");
+            log.Error("WechatPayData签名不存在!");
+            throw new WechatPayException("WechatPayData签名不存在!");
         }
 
         //如果设置了签名但是签名为空，则抛异常
@@ -226,8 +226,8 @@ public class WechatPayData {
 
         string sign = signObj?.ToString() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(sign)) {
-            log.Error("WxPayData签名存在但不合法!");
-            throw new WechatPayException("WxPayData签名存在但不合法!");
+            log.Error("WechatPayData签名存在但不合法!");
+            throw new WechatPayException("WechatPayData签名存在但不合法!");
         }
 
         //在本地计算新的签名
@@ -237,8 +237,8 @@ public class WechatPayData {
             return true;
         }
 
-        log.Error("WxPayData签名验证错误!");
-        throw new WechatPayException("WxPayData签名验证错误!");
+        log.Error("WechatPayData签名验证错误!");
+        throw new WechatPayException("WechatPayData签名验证错误!");
     }
 
     /// <summary>

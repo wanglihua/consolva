@@ -62,10 +62,11 @@ public class WechatPayChargeService {
 
 
         WechatPayData initData = new WechatPayData();
+        initData.SetValue("appid", WechatAppConfig.AppId);
         initData.SetValue("body", subject); //商品描述
         initData.SetValue("attach", itemBody); //附加数据
         initData.SetValue("out_trade_no", outTradeNo);
-        initData.SetValue("total_fee", amount); //总金额
+        initData.SetValue("total_fee", (int)(amount * 100)); //总金额
         initData.SetValue("time_start", DateTime.Now.ToString("yyyyMMddHHmmss")); //交易起始时间
         initData.SetValue("time_expire", DateTime.Now.AddMinutes(30).ToString("yyyyMMddHHmmss")); //交易结束时间
         initData.SetValue("goods_tag", "customer charge"); //商品标记

@@ -10,7 +10,7 @@ public class WechatPayApi {
         * 提交被扫支付API
         * 收银员使用扫码设备读取微信用户刷卡授权码以后，二维码或条码信息传送至商户收银台，
         * 由商户收银台或者商户后台调用该接口发起支付。
-        * @param WxPayData inputObj 提交给被扫支付API的参数
+        * @param WechatPayData inputObj 提交给被扫支付API的参数
         * @param int timeOut 超时时间
         * @throws WxPayException
         * @return 成功时返回调用结果，其他抛异常
@@ -58,7 +58,7 @@ public class WechatPayApi {
     /**
         *
         * 查询订单
-        * @param WxPayData inputObj 提交给查询订单API的参数
+        * @param WechatPayData inputObj 提交给查询订单API的参数
         * @param int timeOut 超时时间
         * @throws WxPayException
         * @return 成功时返回订单查询结果，其他抛异常
@@ -92,7 +92,7 @@ public class WechatPayApi {
     /**
         *
         * 撤销订单API接口
-        * @param WxPayData inputObj 提交给撤销订单API接口的参数，out_trade_no和transaction_id必填一个
+        * @param WechatPayData inputObj 提交给撤销订单API接口的参数，out_trade_no和transaction_id必填一个
         * @param int timeOut 接口超时时间
         * @throws WxPayException
         * @return 成功时返回API调用结果，其他抛异常
@@ -125,7 +125,7 @@ public class WechatPayApi {
     /**
         *
         * 申请退款
-        * @param WxPayData inputObj 提交给申请退款API的参数
+        * @param WechatPayData inputObj 提交给申请退款API的参数
         * @param int timeOut 超时时间
         * @throws WxPayException
         * @return 成功时返回接口调用结果，其他抛异常
@@ -178,7 +178,7 @@ public class WechatPayApi {
         * 提交退款申请后，通过该接口查询退款状态。退款有一定延时，
         * 用零钱支付的退款20分钟内到账，银行卡支付的退款3个工作日后重新查询退款状态。
         * out_refund_no、out_trade_no、transaction_id、refund_id四个参数必填一个
-        * @param WxPayData inputObj 提交给查询退款API的参数
+        * @param WechatPayData inputObj 提交给查询退款API的参数
         * @param int timeOut 接口超时时间
         * @throws WxPayException
         * @return 成功时返回，其他抛异常
@@ -212,7 +212,7 @@ public class WechatPayApi {
 
     /**
         * 下载对账单
-        * @param WxPayData inputObj 提交给下载对账单API的参数
+        * @param WechatPayData inputObj 提交给下载对账单API的参数
         * @param int timeOut 接口超时时间
         * @throws WxPayException
         * @return 成功时返回，其他抛异常
@@ -258,7 +258,7 @@ public class WechatPayApi {
         * 转换短链接
         * 该接口主要用于扫码原生支付模式一中的二维码链接转成短链接(weixin://wxpay/s/XXXXXX)，
         * 减小二维码数据量，提升扫描速度和精确度。
-        * @param WxPayData inputObj 提交给转换短连接API的参数
+        * @param WechatPayData inputObj 提交给转换短连接API的参数
         * @param int timeOut 接口超时时间
         * @throws WxPayException
         * @return 成功时返回，其他抛异常
@@ -354,7 +354,7 @@ public class WechatPayApi {
     /**
         *
         * 关闭订单
-        * @param WxPayData inputObj 提交给关闭订单API的参数
+        * @param WechatPayData inputObj 提交给关闭订单API的参数
         * @param int timeOut 接口超时时间
         * @throws WxPayException
         * @return 成功时返回，其他抛异常
@@ -387,7 +387,7 @@ public class WechatPayApi {
     /**
         *
         * 测速上报接口实现
-        * @param WxPayData inputObj 提交给测速上报接口的参数
+        * @param WechatPayData inputObj 提交给测速上报接口的参数
         * @param int timeOut 测速上报接口超时时间
         * @throws WxPayException
         * @return 成功时返回测速上报接口返回的结果，其他抛异常
