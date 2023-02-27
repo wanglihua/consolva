@@ -1,7 +1,5 @@
 using shunda.Core;
 using shunda.Core.Util;
-using shunda.Domain.Customer;
-using shunda.Domain.Pass;
 
 namespace shunda.Domain.Coupon;
 
@@ -18,18 +16,6 @@ public class CouponLogInfo : Entity {
     /// 类型，非空
     /// </summary>
     public virtual CouponLogType Type { get; set; } = CouponLogType.None;
-
-    /// <summary>
-    /// 操作客户，可空
-    /// 暂时没用起来
-    /// </summary>
-    public virtual CustomerInfo? Customer { get; set; } = null;
-
-    /// <summary>
-    /// 操作用户，可空
-    /// 暂时没用起来
-    /// </summary>
-    public virtual UserInfo? User { get; set; } = null;
 
     /// <summary>
     /// 描述，非空
