@@ -16,6 +16,6 @@ public class PayService {
             outTradeNoSequence = (outTradeNoSequence + 1) % 100000;
         }
 
-        return $"{DateTime.Now: yyyyMMddHHmmssfff}{outTradeNoSequence:00000}";
+        return $"{DateTime.Now:yyyyMMddHHmmssfff}{outTradeNoSequence:00000}";
     }
 }
