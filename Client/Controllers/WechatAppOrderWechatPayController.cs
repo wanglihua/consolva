@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.WechatAppOrderWechatPay;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using ISession = NHibernate.ISession;
@@ -21,6 +22,7 @@ public class WechatAppOrderWechatPayController : Controller {
 
     [HttpPost]
     [Route("/client/wechat/app/order/wechat/pay/create")]
+    [Transactional]
     public IActionResult Create([FromBody] WechatAppOrderWechatPayCreateParam param) {
         ValidationUtil.Validate<WechatAppOrderWechatPayCreateParamValidator, WechatAppOrderWechatPayCreateParam>(param);
         
@@ -32,8 +34,10 @@ public class WechatAppOrderWechatPayController : Controller {
         });
     }
 
+    [NoLoginRequired]
     [HttpPost]
     [Route("/client/wechat/app/order/wechat/pay/notify")]
+    [Transactional]
     public IActionResult Notify() {
         return Json(new JsonResultData {
             Success = true,
