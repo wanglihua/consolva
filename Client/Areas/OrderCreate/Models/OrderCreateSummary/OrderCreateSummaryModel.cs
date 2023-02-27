@@ -18,8 +18,8 @@ public class OrderCreateSummaryModel {
     [JsonProperty("receiveAddress")]
     public OrderCreateSummaryReceiveAddressItem ReceiveAddress { get; set; } = new();
 
-    [JsonProperty("sendAddress")]
-    public OrderCreateSummarySendAddressItem SendAddress { get; set; } = new();
+    // [JsonProperty("sendAddress")]
+    // public OrderCreateSummarySendAddressItem SendAddress { get; set; } = new();
 
     [JsonProperty("firstMode")]
     public OrderCreateSummaryFirstModeItem FirstMode { get; set; } = new();

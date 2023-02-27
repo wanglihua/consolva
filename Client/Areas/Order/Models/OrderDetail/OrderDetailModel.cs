@@ -9,11 +9,11 @@ public class OrderDetailModel {
     [JsonProperty("firstMode")]
     public OrderDetailFirstModeItem FirstMode { get; set; } = new OrderDetailFirstModeItem();
 
-    // [JsonProperty("receiveAddress")]
-    // public OrderDetailReceiveAddressItem ReceiveAddress { get; set; } = new OrderDetailReceiveAddressItem();
+    [JsonProperty("receiveAddress")]
+    public OrderDetailReceiveAddressItem ReceiveAddress { get; set; } = new OrderDetailReceiveAddressItem();
 
-    [JsonProperty("sendAddress")]
-    public OrderDetailSendAddressItem SendAddress { get; set; } = new OrderDetailSendAddressItem();
+    // [JsonProperty("sendAddress")]
+    // public OrderDetailSendAddressItem SendAddress { get; set; } = new OrderDetailSendAddressItem();
 
     [JsonProperty("expressList")]
     public IList<OrderDetailExpressItem> ExpressList { get; set; } = new List<OrderDetailExpressItem>();
