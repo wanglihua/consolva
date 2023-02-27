@@ -56,14 +56,37 @@ Page({
             amountInputErrorMsg: "",
         });
 
-        // todo 充值逻辑
+        app.post("/client/wechat/app/charge/wechat/pay/create", {
+            amount: chargeAmountNum
+        }, function (res) {
+            wx.requestpayment({
+                'timestamp': res.data.timestamp,
+                'noncestr': res.data.noncestr,
+                'package': res.data.package,
+                'signtype': res.data.signtype,
+                'paysign': res.data.paysign,
+                'success': function (res) {
+                    // 充值完成后
+                    wx.showModal({
+                        title: '成功',
+                        content: res,
+                        showCancel: false
+                    });
 
-
-        // 充值完成后
-        this.setData({
-            chargeAmount: '',
+                    this.setData({
+                        chargeAmount: '',
+                    });
+                    this.loadCustomerAccount();
+                },
+                'fail': function (res) {
+                    wx.showModal({
+                        title: '错误',
+                        content: res,
+                        showCancel: false
+                    });
+                }
+            });
         });
-        this.loadCustomerAccount();
     },
 
     onBackClick(e) {
