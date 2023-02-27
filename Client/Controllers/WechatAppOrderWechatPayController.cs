@@ -6,6 +6,9 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Controllers;
 
+/// <summary>
+/// 订单支付
+/// </summary>
 public class WechatAppOrderWechatPayController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
