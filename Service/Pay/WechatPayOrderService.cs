@@ -163,7 +163,7 @@ public class WechatPayOrderService {
         decimal payAmount = ((decimal)payAmountInt) / 100m;
 
         if (orderPay.Status == PayStatus.NotPaid) {
-            // 标记订单为已支付
+            // 标记订单支付为已支付
             orderPay.Amount = payAmount;
             orderPay.Status = PayStatus.Paid;
             session.Update(orderPay);

@@ -35,6 +35,10 @@ public class ExpressLogService {
         Log(expressId: expressId, type: type, description: string.Empty, userId: 0, customerId: customerId);
     }
 
+    public void Log(int expressId, ExpressLogType type, string description) {
+        Log(expressId: expressId, trackingNo: "", type: type, description: description, userId: 0, customerId: 0);
+    }
+
     public void Log(string trackingNo, ExpressLogType type, string description) {
         Log(expressId: 0, trackingNo: trackingNo, type: type, description: description, userId: 0, customerId: 0);
     }

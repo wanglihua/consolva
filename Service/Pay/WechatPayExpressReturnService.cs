@@ -1,11 +1,13 @@
 using NHibernate;
 using NLog;
+using Senparc.CO2NET.Cache;
 using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Core.WechatPay;
 using shunda.Domain.Express;
 using shunda.Domain.Fee;
+using shunda.Service.Express;
 using shunda.Service.Logistics;
 
 namespace shunda.Service.Pay;
@@ -17,15 +19,18 @@ public class WechatPayExpressReturnService {
     private readonly ISession session;
     private readonly PayService payService;
     private readonly ExpressReturnFeeRateService expressReturnFeeRateService;
+    private readonly ExpressLogService expressLogService;
 
     public WechatPayExpressReturnService(
         ISession session,
         PayService payService,
-        ExpressReturnFeeRateService expressReturnFeeRateService
+        ExpressReturnFeeRateService expressReturnFeeRateService,
+        ExpressLogService expressLogService
     ) {
         this.session = session;
         this.payService = payService;
         this.expressReturnFeeRateService = expressReturnFeeRateService;
+        this.expressLogService = expressLogService;
     }
 
     /// <summary>
@@ -129,5 +134,74 @@ public class WechatPayExpressReturnService {
     /// 订单支付回调
     /// </summary>
     public void Notify(WechatPayData requestData) {
+        string outTradeNo = requestData.GetValue("out_trade_no")?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(outTradeNo)) {
+            throw new WechatPayException("回调数据异常，out_trade_no 未设置！");
+        }
+
+        var expressReturnPay = session.Query<ExpressReturnPayInfo>()
+            .Where(e => e.OutTradeNo == outTradeNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (expressReturnPay == null) {
+            throw new WechatPayException($"out_trade_no 本地系统快递单号退运支付记录中不存在。out_trade_no：{outTradeNo}");
+        }
+
+        NHibernateUtil.Initialize(expressReturnPay.Express);
+
+        // 实际支付金额
+        string totalFeeValue = requestData.GetValue("total_fee")?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(totalFeeValue)) {
+            throw new WechatPayException("回调数据异常，total_fee 未设置！");
+        }
+
+        if (int.TryParse(totalFeeValue, out int payAmountInt) == false) {
+            throw new WechatPayException("回调数据异常，total_fee 格式错误！");
+        }
+
+        // 分转成元
+        decimal payAmount = ((decimal)payAmountInt) / 100m;
+
+        if (expressReturnPay.Status == PayStatus.NotPaid) {
+            // 标记快递单退运种支付为已支付
+            expressReturnPay.Amount = payAmount;
+            expressReturnPay.Status = PayStatus.Paid;
+            session.Update(expressReturnPay);
+            session.Flush();
+
+            NHibernateUtil.Initialize(expressReturnPay.Express);
+
+            var express = expressReturnPay.Express;
+            int expressId = express.Id;
+
+            // 修改快递单状态
+            if (express.Status == ExpressStatus.Checkin) {
+                express.Status = ExpressStatus.WaitReturn;
+                session.Update(express);
+
+                // 退运记录
+                var expressReturn = new ExpressReturnInfo {
+                    Express = express,
+                    TrackingNo = express.TrackingNo,
+                    CheckinTrackingNo = express.CheckinTrackingNo,
+                    ExpressCompany = express.ExpressCompany,
+                    GoodsType = express.GoodsType,
+                    AddTime = express.AddTime,
+                    AddUser = express.AddUser,
+                    Warehouse = express.Warehouse,
+                    Customer = express.Customer!,
+                    Status = ExpressStatus.WaitReturn,
+                };
+
+                session.Save(expressReturn);
+
+                session.Flush();
+            }
+
+            // 快递单日志
+            expressLogService.Log(expressId, ExpressLogType.ReturnPay, string.Empty);
+        }
+
+        session.Flush();
     }
 }

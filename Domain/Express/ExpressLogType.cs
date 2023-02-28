@@ -118,6 +118,11 @@ public class ExpressLogType : CodeTypeBase {
     public static readonly ExpressLogType ReturnApply = new ExpressLogType(22000, "退运申请", "退运申请");
 
     /// <summary>
+    /// 退运支付
+    /// </summary>
+    public static readonly ExpressLogType ReturnPay = new ExpressLogType(22100, "退运", "退运支付");
+
+    /// <summary>
     /// 取消退运
     /// </summary>
     public static readonly ExpressLogType CancelReturn = new ExpressLogType(23000, "取消退运", "取消退运");
@@ -156,7 +161,6 @@ public class ExpressLogType : CodeTypeBase {
     /// 取消打包
     /// </summary>
     public static readonly ExpressLogType RemovePack = new ExpressLogType(30000, "取消打包", "取消打包");
-
 
     /// <summary>
     /// 装箱
@@ -236,6 +240,7 @@ public class ExpressLogType : CodeTypeBase {
         SubOffShelf,
         OffShelf,
         ReturnApply,
+        ReturnPay,
         CancelReturn,
         MarkReturned,
         SubPacking,
