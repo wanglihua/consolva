@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.OrderCreate.Models.OrderCreateRepackType;
 using shunda.Client.Services;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Logistics;
@@ -41,6 +42,11 @@ public class OrderCreateRepackTypeController : Controller {
             selectRepackTypeId = 0;
         }
 
+        // 如果前面没选择的，就默认选择排序的第一个
+        if (selectRepackTypeId == 0) {
+            selectRepackTypeId = repackTypeList.First().Type.Id;
+        }
+
         string remark = createSelect?.Remark ?? string.Empty;
 
         var repackTypeItemList = repackTypeList
@@ -64,6 +70,7 @@ public class OrderCreateRepackTypeController : Controller {
 
     [HttpPost]
     [Route("/client/order/create/repack/type/save")]
+    [Transactional]
     public IActionResult Save([FromBody] OrderCreateRepackTypeSaveParam param) {
         ValidationUtil.Validate<OrderCreateRepackTypeSaveParamValidator, OrderCreateRepackTypeSaveParam>(param);
 

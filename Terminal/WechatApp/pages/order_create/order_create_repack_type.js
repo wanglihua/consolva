@@ -38,14 +38,8 @@ Page({
             });
 
             that.setData({
-                repackTypeId: repackTypeId,
+                selectRepackTypeId: repackTypeId,
             });
-        });
-    },
-
-    onRemarkInput(e) {
-        this.setData({
-            remark: e.detail,
         });
     },
 

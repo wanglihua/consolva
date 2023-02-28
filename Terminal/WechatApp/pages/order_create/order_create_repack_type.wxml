@@ -3,6 +3,26 @@
 <view class="container">
     <van-cell-group title="打包方式-订单创建"/>
 
+    <block wx:for="{{ repackTypeList }}" wx:key="id" wx:for-item="repackType" wx:for-index="index">
+        <van-cell-group custom-class="items">
+            <block wx:if="{{ repackType.id === selectRepackTypeId }}">
+                <van-cell title="{{ index + 1 }}、{{ repackType.title }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
+                    <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onRepackTypeButtonClick" data-item="{{ repackType }}">已选择</van-button>
+                </van-cell>
+            </block>
+            <block wx:else>
+                <van-cell title="{{ index + 1 }}、{{ repackType.title }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
+                    <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onRepackTypeButtonClick" data-item="{{ repackType }}">选择</van-button>
+                </van-cell>
+            </block>
+            <van-cell label="{{ repackType.description }}" border="{{ false }}" custom-class="item"/>
+            <view class="item-last-vspace"/>
+        </van-cell-group>
+    </block>
+
+    <van-cell label="备注" border="{{ true }}"/>
+    <van-field model:value="{{ remark }}" type="textarea" autosize="{{ {minHeight:60, maxHeight:120 } }}" placeholder="备注(选填)" border="{{ false }}"/>    
+
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
             <van-row gutter="20">
