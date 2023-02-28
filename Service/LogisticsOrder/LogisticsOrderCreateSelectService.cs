@@ -1,4 +1,3 @@
-using System.Data.Entity;
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
@@ -213,6 +212,27 @@ public class LogisticsOrderCreateSelectService {
         } else {
             createSelect.GstId = gstId;
             createSelect.Valid = false;
+            session.Update(createSelect);
+        }
+
+        session.Flush();
+    }
+
+    public void SaveRepackTypeAndRemark(int customerId, LogisticsRepackType repackType, string remark) {
+        var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
+        if (createSelect == null) {
+            createSelect = new LogisticsOrderCreateSelectInfo {
+                CustomerId = customerId,
+                RepackType = repackType,
+                Remark = remark,
+                Valid = false,
+            };
+
+            session.Save(createSelect);
+        } else {
+            createSelect.RepackType = repackType;
+            createSelect.Remark = remark;
+
             session.Update(createSelect);
         }
 
