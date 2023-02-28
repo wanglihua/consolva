@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Models.WechatAppChargeWechatPay;
+namespace shunda.Service.Pay; 
 
-public class WechatAppChargeWechatPayCreateModel {
+public class WechatPayCreateResultData {
     [JsonProperty("timeStamp")]
     public string TimeStamp { get; set; } = string.Empty;
 

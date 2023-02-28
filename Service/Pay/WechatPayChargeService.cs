@@ -37,7 +37,7 @@ public class WechatPayChargeService {
     /// <param name="notifyUrl">回调URL，没有域名部分，比如 /client/wechat/app/charge/wechat/pay/notify</param>
     /// <returns></returns>
     /// <exception cref="ValidationException"></exception>
-    public WechatPayData Create(int customerId, decimal amount, string notifyUrl) {
+    public WechatPayCreateResultData Create(int customerId, decimal amount, string notifyUrl) {
         CustomerInfo customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) {
             throw new ValidationException($"指定的客户#{customerId}不存在，请确认客户已登录！");
@@ -64,9 +64,10 @@ public class WechatPayChargeService {
         // 商品描述
         string itemBody = subject + "_" + amount.ToString("0.00");
 
+        string appId = WechatAppConfig.AppId;
 
         WechatPayData initData = new WechatPayData();
-        initData.SetValue("appid", WechatAppConfig.AppId);
+        initData.SetValue("appid", appId);
         initData.SetValue("body", subject); //商品描述
         initData.SetValue("attach", itemBody); //附加数据
         initData.SetValue("out_trade_no", outTradeNo);
@@ -86,15 +87,27 @@ public class WechatPayChargeService {
             throw new WechatPayException("wechat pay UnifiedOrder response error!");
         }
 
-        WechatPayData unifiedData = new WechatPayData();
-        unifiedData.SetValue("appId", result.GetValue("appid") ?? string.Empty);
-        unifiedData.SetValue("timeStamp", WechatPayApi.GenerateTimeStamp());
-        unifiedData.SetValue("nonceStr", WechatPayApi.GenerateNonceStr());
-        unifiedData.SetValue("package", "prepay_id=" + result.GetValue("prepay_id"));
-        unifiedData.SetValue("signType", WechatPayData.SIGN_TYPE_HMAC_SHA256);
-        unifiedData.SetValue("paySign", unifiedData.MakeSign(WechatPayData.SIGN_TYPE_HMAC_SHA256));
+        string timeStamp = WechatPayApi.GenerateTimeStamp();
+        string nonceStr = WechatPayApi.GenerateNonceStr();
+        string package = "prepay_id=" + result.GetValue("prepay_id");
+        string signType = WechatPayData.SIGN_TYPE_HMAC_SHA256;
 
-        return unifiedData;
+        WechatPayData unifiedData = new WechatPayData();
+        unifiedData.SetValue("appId", appId);
+        unifiedData.SetValue("timeStamp", timeStamp);
+        unifiedData.SetValue("nonceStr", nonceStr);
+        unifiedData.SetValue("package", package);
+        unifiedData.SetValue("signType", signType);
+
+        string paySign = unifiedData.MakeSign(WechatPayData.SIGN_TYPE_HMAC_SHA256);
+
+        return new WechatPayCreateResultData {
+            TimeStamp = timeStamp,
+            NonceStr = nonceStr,
+            Package = package,
+            SignType = signType,
+            PaySign = paySign,
+        };
     }
 
     /// <summary>
@@ -126,15 +139,6 @@ public class WechatPayChargeService {
 
         // 分转成元
         decimal payAmount = ((decimal)payAmountInt) / 100m;
-
-        //调统一下单接口，获得下单结果
-        // string openid = requestData.GetValue("openid")?.ToString() ?? string.Empty;
-        // WechatPayData unifiedOrderResult = UnifiedOrder(openid, customerCharge.Id); // 会员充值_customerId
-
-        //若下单失败，则立即返回结果给微信支付后台
-        // if (!unifiedOrderResult.IsSet("appid") || !unifiedOrderResult.IsSet("mch_id") || !unifiedOrderResult.IsSet("prepay_id")) {
-        //     throw new WechatPayException("统一下单失败, appid 或 mch_id 或 prepay_id 未设置！");
-        // }
 
         // 如果支付记录是【还没】支付的，就先做本地费数据处理；
         // 如果支付记录是【已经】支付的，就直接返回success

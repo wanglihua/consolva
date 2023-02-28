@@ -39,18 +39,12 @@ public class WechatAppChargeWechatPayController : Controller {
         ValidationUtil.Validate<WechatAppChargeWechatPayCreateParamValidator, WechatAppChargeWechatPayCreateParam>(param);
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-        WechatPayData data = wechatPayChargeService.Create(loginCustomerId, param.Amount, NOTIFY_URL);
+        WechatPayCreateResultData data = wechatPayChargeService.Create(loginCustomerId, param.Amount, NOTIFY_URL);
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = new WechatAppChargeWechatPayCreateModel {
-                TimeStamp = data.GetValue("timeStamp")?.ToString() ?? string.Empty,
-                NonceStr = data.GetValue("nonceStr")?.ToString() ?? string.Empty,
-                Package = data.GetValue("package")?.ToString() ?? string.Empty,
-                SignType = data.GetValue("signType")?.ToString() ?? string.Empty,
-                PaySign = data.GetValue("paySign")?.ToString() ?? string.Empty,
-            }
+            Data = data,
         });
     }
 
