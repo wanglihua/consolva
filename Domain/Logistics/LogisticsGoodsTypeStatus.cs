@@ -2,62 +2,53 @@ using shunda.Core.CodeType;
 
 namespace shunda.Domain.Logistics;
 
-public class LogisticsGoodsTypeStatus : CodeTypeBase
-{
+public class LogisticsRepackTypeStatus : CodeTypeBase {
     /// <summary>
     /// 启用, 1000
     /// </summary>
-    public static readonly LogisticsGoodsTypeStatus Enabled = new LogisticsGoodsTypeStatus(1000, "启用", "启用");
+    public static readonly LogisticsRepackTypeStatus Enabled = new LogisticsRepackTypeStatus(1000, "启用", "启用");
 
     /// <summary>
     /// 停用, 2000
     /// </summary>
-    public static readonly LogisticsGoodsTypeStatus Disabled = new LogisticsGoodsTypeStatus(2000, "停用", "停用");
+    public static readonly LogisticsRepackTypeStatus Disabled = new LogisticsRepackTypeStatus(2000, "停用", "停用");
 
     /// <summary>
     /// None
     /// </summary>
-    public static readonly LogisticsGoodsTypeStatus None = new LogisticsGoodsTypeStatus(0, "", "");
+    public static readonly LogisticsRepackTypeStatus None = new LogisticsRepackTypeStatus(0, "", "");
 
-    private static readonly IReadOnlyList<LogisticsGoodsTypeStatus> codeTypeList = new List<LogisticsGoodsTypeStatus>() {
+    private static readonly IReadOnlyList<LogisticsRepackTypeStatus> codeTypeList = new List<LogisticsRepackTypeStatus>() {
         Enabled,
         Disabled,
     };
 
-    private static readonly Dictionary<int, LogisticsGoodsTypeStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
+    private static readonly Dictionary<int, LogisticsRepackTypeStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static LogisticsGoodsTypeStatus GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out LogisticsGoodsTypeStatus? codeType))
-        {
+    public static LogisticsRepackTypeStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out LogisticsRepackTypeStatus? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<LogisticsGoodsTypeStatus> GetList()
-    {
+    public static IList<LogisticsRepackTypeStatus> GetList() {
         return codeTypeList.ToList();
     }
 
-    private LogisticsGoodsTypeStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private LogisticsRepackTypeStatus(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class LogisticsGoodsTypeStatusHibernateType : CodeHibernateTypeBase<LogisticsGoodsTypeStatus>
-{
-    protected override LogisticsGoodsTypeStatus GetCodeTypeById(int id)
-    {
-        return LogisticsGoodsTypeStatus.GetById(id);
+public class LogisticsRepackTypeStatusHibernateType : CodeHibernateTypeBase<LogisticsRepackTypeStatus> {
+    protected override LogisticsRepackTypeStatus GetCodeTypeById(int id) {
+        return LogisticsRepackTypeStatus.GetById(id);
     }
 }
 
-public class LogisticsGoodsTypeStatusModelBinder : CodeTypeModelBinderBase<LogisticsGoodsTypeStatus>
-{
-    protected override LogisticsGoodsTypeStatus GetCodeTypeById(int id)
-    {
-        return LogisticsGoodsTypeStatus.GetById(id);
+public class LogisticsRepackTypeStatusModelBinder : CodeTypeModelBinderBase<LogisticsRepackTypeStatus> {
+    protected override LogisticsRepackTypeStatus GetCodeTypeById(int id) {
+        return LogisticsRepackTypeStatus.GetById(id);
     }
 }
