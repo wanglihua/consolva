@@ -9,7 +9,7 @@
     <block wx:else>
         <block wx:for="{{ entryList }}" wx:key="id" wx:for-item="entry" wx:for-index="index">
             <van-cell-group custom-class="items">
-                <van-cell title="{{ index + 1 }}、{{ entry.amount }}" value="{{ entry.createTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+                <van-cell title="{{ index + 1 }}、{{ entry.amount }}" value="{{ entry.createTime }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-short" value-class="item-header-value-long"/>
                 <van-cell title="{{ entry.changeTypeName }}{{ entry.amount }}元，变动前余额 {{ entry.amountBefore }}元，变动后余额 {{ entry.amountAfter}}元，{{ entry.description }}" border="{{ false }}" custom-class="item"/>
                 <view class="item-last-vspace"/>
             </van-cell-group>

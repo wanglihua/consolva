@@ -77,6 +77,11 @@ page {
     flex: 3 !important;
 }
 
+.item-header-title-short {
+    color: white !important;
+    flex: 1 !important;
+}
+
 .item-header-title-selected {
     color: rgb(231, 174, 0) !important;
 }
@@ -84,6 +89,11 @@ page {
 .item-header-value {
     color: white !important;
     flex: 1 !important;
+}
+
+.item-header-value-long {
+    color: white !important;
+    flex: 3 !important;
 }
 
 .item-goods-type1000 {
