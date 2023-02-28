@@ -1,0 +1,119 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model LogisticsRepackTypeSettingIndexModel
+@using shunda.Admin.Areas.Logistics.Models.LogisticsRepackTypeSetting
+@{
+    ViewData[ViewDataKey.Title] = "打包类型设置";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-menu">物流设置</li>
+    <li class="active" data-menu="logistics-logistics-repack-type-setting-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div id="logisticsRepackTypeSettingList" data-page-index="0" data-sort-field="@(nameof(LogisticsRepackTypeSettingInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsRepackTypeSettingDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsRepackTypeSettingList();
+    });
+
+    function sortLogisticsRepackTypeSettingList(sortField, sortDir) {
+        var list = $('#logisticsRepackTypeSettingList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsRepackTypeSettingList();
+    }
+
+    function loadLogisticsRepackTypeSettingList(pageIndex) {
+        var list = $('#logisticsRepackTypeSettingList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsRepackTypeSetting")",
+            type: "POST",
+            data: {
+                "@(nameof(LogisticsRepackTypeSettingListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(LogisticsRepackTypeSettingListQueryParam.SortField))": sortField,
+                "@(nameof(LogisticsRepackTypeSettingListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsRepackTypeSettingList').html(data);
+
+                initListTable("#tblLogisticsRepackTypeSettingList");
+            }
+        });
+    }
+
+    function showLogisticsRepackTypeSettingDetail(id) {
+        $("#logisticsRepackTypeSettingDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsRepackTypeSettingDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "LogisticsRepackTypeSetting")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsRepackTypeSettingDetailDialogWrapper").html(data);
+                $("#logisticsRepackTypeSettingDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveLogisticsRepackTypeSetting() {
+        var form = $("#logisticsRepackTypeSettingDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsRepackTypeSetting")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#logisticsRepackTypeSettingDetailDialog').modal('hide');
+                    loadLogisticsRepackTypeSettingList();
+                }
+            });
+        }
+    }
+
+</script>

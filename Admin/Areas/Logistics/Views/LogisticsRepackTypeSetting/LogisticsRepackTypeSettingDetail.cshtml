@@ -1,0 +1,109 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Domain
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsRepackTypeSetting.LogisticsRepackTypeSettingDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsRepackTypeSettingDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">打包类型设置详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsRepackTypeSettingDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="LogisticsRepackTypeSettingId" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Type" class="col-xs-2 control-label">打包类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Type" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(LogisticsRepackType type in Model.TypeList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Title" class="col-xs-2 control-label">标题</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Title" type="text" required="required" maxlength="100" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Description" class="col-xs-2 control-label">描述</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Description" type="text" required="required" maxlength="300" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="OrderNum" class="col-xs-2 control-label">排序</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="OrderNum" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Status" class="col-xs-2 control-label">状态</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Status" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(LogisticsRepackTypeStatus type in Model.StatusList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsRepackTypeSetting();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

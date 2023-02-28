@@ -18,6 +18,7 @@ public partial class PassRes {
             new PassResInfo { Id = Insurance, Name = "保险", CateIdForCache = CateId },
             new PassResInfo { Id = Gst, Name = "GST", CateIdForCache = CateId },
             new PassResInfo { Id = ExpressReturnFeeRate, Name = "退运费率", CateIdForCache = CateId },
+            new PassResInfo { Id = LogisticsRepackTypeSetting, Name = "打包方式设置", CateIdForCache = CateId },
         };
 
         /// <summary>
@@ -49,5 +50,10 @@ public partial class PassRes {
         /// 退运费率
         /// </summary>
         public const int ExpressReturnFeeRate = CateId + 10000;
+
+        /// <summary>
+        /// 打包方式设置
+        /// </summary>
+        public const int LogisticsRepackTypeSetting = CateId + 12000;
     }
 }
