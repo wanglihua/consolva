@@ -92,6 +92,7 @@ public class WechatPayChargeService {
         string package = "prepay_id=" + result.GetValue("prepay_id");
         string signType = WechatPayData.SIGN_TYPE_HMAC_SHA256;
 
+        // 利用 WechatPayData 做签名
         WechatPayData unifiedData = new WechatPayData();
         unifiedData.SetValue("appId", appId);
         unifiedData.SetValue("timeStamp", timeStamp);
@@ -124,7 +125,7 @@ public class WechatPayChargeService {
             .Take(1)
             .SingleOrDefault();
         if (customerCharge == null) {
-            throw new WechatPayException($"out_trade_no 本地系统中不存在。out_trade_no：{outTradeNo}");
+            throw new WechatPayException($"out_trade_no 本地系统客户充值支付记录中不存在。out_trade_no：{outTradeNo}");
         }
 
         // 实际支付金额
@@ -140,8 +141,6 @@ public class WechatPayChargeService {
         // 分转成元
         decimal payAmount = ((decimal)payAmountInt) / 100m;
 
-        // 如果支付记录是【还没】支付的，就先做本地费数据处理；
-        // 如果支付记录是【已经】支付的，就直接返回success
         if (customerCharge.Status == CustomerChargeStatus.New) {
             // 完成充值
             customerChargeService.CompleteCharge(customerCharge, payAmount, CustomerChargeType.Wechat);

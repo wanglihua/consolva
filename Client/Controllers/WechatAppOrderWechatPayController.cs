@@ -35,9 +35,11 @@ public class WechatAppOrderWechatPayController : Controller {
         });
     }
 
+    private const string NOTIFY_URL = "/client/wechat/app/order/wechat/pay/notify";
+
     [NoLoginRequired]
     [HttpPost]
-    [Route("/client/wechat/app/order/wechat/pay/notify")]
+    [Route(NOTIFY_URL)]
     [Transactional]
     public IActionResult Notify() {
         try {

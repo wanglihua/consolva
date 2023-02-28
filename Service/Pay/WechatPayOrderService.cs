@@ -6,6 +6,9 @@ using shunda.Core.Service;
 using shunda.Core.WechatPay;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Customer;
+using shunda.Service.Fee;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Pay;
@@ -16,13 +19,22 @@ public class WechatPayOrderService {
 
     private readonly ISession session;
     private readonly PayService payService;
+    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly LogisticsOrderActionService logisticsOrderActionService;
+    private readonly CustomerScoreService customerScoreService;
 
     public WechatPayOrderService(
         ISession session,
-        PayService payService
+        PayService payService,
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
+        LogisticsOrderActionService logisticsOrderActionService,
+        CustomerScoreService customerScoreService
     ) {
         this.session = session;
         this.payService = payService;
+        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
+        this.logisticsOrderActionService = logisticsOrderActionService;
+        this.customerScoreService = customerScoreService;
     }
 
     /// <summary>
@@ -92,6 +104,7 @@ public class WechatPayOrderService {
         string package = "prepay_id=" + result.GetValue("prepay_id");
         string signType = WechatPayData.SIGN_TYPE_HMAC_SHA256;
 
+        // 利用 WechatPayData 做签名
         WechatPayData unifiedData = new WechatPayData();
         unifiedData.SetValue("appId", appId);
         unifiedData.SetValue("timeStamp", timeStamp);
@@ -114,107 +127,52 @@ public class WechatPayOrderService {
     /// 订单支付回调
     /// </summary>
     public void Notify(WechatPayData requestData) {
-        
-    }
-}
-
-/*
- 
-
-    WxPayData unifiedOrderResult = null;
-    LogisticsOrderInfo order = null;
-
-    ITransaction transaction = null;
-    try
-    {
-        transaction = session.BeginTransaction();
-
-        WxPayData notifyData = GetNotifyData(request);
-
-        //检查openid和product_id是否返回
-        // if (!notifyData.IsSet("openid") || !notifyData.IsSet("product_id"))
-        if (!notifyData.IsSet("openid"))
-        {
-            throw new WxPayException("回调数据异常，openid 未设置！ ");
+        string outTradeNo = requestData.GetValue("out_trade_no")?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(outTradeNo)) {
+            throw new WechatPayException("回调数据异常，out_trade_no 未设置！");
         }
 
-        string outTradeNo = notifyData.GetValue("out_trade_no").ToString();
-        IList<LogisticsOrderPayInfo> orderPayList = session.Query<LogisticsOrderPayInfo>().Where(e => e.OutTradeNo == outTradeNo).ToList();
-        if (orderPayList.Count != 1)
-        {
-            throw new WxPayException($"out_trade_no 本地系统中不存在或有多个。out_trade_no：{outTradeNo}");
+        var orderPay = session.Query<LogisticsOrderPayInfo>()
+            .Where(e => e.OutTradeNo == outTradeNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (orderPay == null) {
+            throw new WechatPayException($"out_trade_no 本地系统订单支付记录中不存在。out_trade_no：{outTradeNo}");
         }
 
-        LogisticsOrderPayInfo orderPay = orderPayList[0];
-        order = orderPay.Order;
+        NHibernateUtil.Initialize(orderPay.Order);
+
+        var order = orderPay.Order;
+        int orderId = order.Id;
 
         // 实际支付金额
-        decimal payAmount = ((decimal)int.Parse(notifyData.GetValue("total_fee").ToString())) / 100m;
-
-        //调统一下单接口，获得下单结果
-        string openid = notifyData.GetValue("openid").ToString();
-        // string productId = notifyData.GetValue("product_id").ToString();
-        unifiedOrderResult = UnifiedOrder(openid, order.Id, payAmount);
-
-        //若下单失败，则立即返回结果给微信支付后台
-        if (!unifiedOrderResult.IsSet("appid") || !unifiedOrderResult.IsSet("mch_id") || !unifiedOrderResult.IsSet("prepay_id"))
-        {
-            throw new WxPayException("统一下单失败, appid 或 mch_id 或 prepay_id 未设置！");
+        string totalFeeValue = requestData.GetValue("total_fee")?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(totalFeeValue)) {
+            throw new WechatPayException("回调数据异常，total_fee 未设置！");
         }
 
-        // 如果支付记录是【还没】支付的，就先做本地费数据处理；
-        // 如果支付记录是【已经】支付的，就直接返回success
-        if (orderPay.Status == LogisticsOrderPayStatus.NotPaid)
-        {
+        if (int.TryParse(totalFeeValue, out int payAmountInt) == false) {
+            throw new WechatPayException("回调数据异常，total_fee 格式错误！");
+        }
+
+        // 分转成元
+        decimal payAmount = ((decimal)payAmountInt) / 100m;
+
+        if (orderPay.Status == PayStatus.NotPaid) {
             // 标记订单为已支付
             orderPay.Amount = payAmount;
-            orderPay.Status = LogisticsOrderPayStatus.Paid;
+            orderPay.Status = PayStatus.Paid;
             session.Update(orderPay);
             session.Flush();
 
+            // 合计标记支付状态
+            logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
-            // 设置支付类型，合计标记支付状态
-            logisticsOrderFeeService.SetPayTypeSumFeeUpdatePayStatus(order, PayType.Wechat);
-
-            logisticsOrderActionService.NewAction(order, LogisticsOrderActionType.Pay, $"金额：{payAmount.ToString("#0.00")}, 微信单号：{orderPay.OutTradeNo}");
+            // 订单日志
+            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, $"金额：{payAmount:#0.00)}, 微信单号：{orderPay.OutTradeNo}");
 
             // 会员积分
             customerScoreService.AddScore(orderPay.Id);
         }
-
-        transaction.Commit();
     }
-    catch (Exception exp)
-    {
-        log.Error(exp);
-
-        transaction?.Rollback();
-
-        throw; // 重新抛出异常
-    }
-
-    // 支付成功后提交打包
-    try
-    {
-        transaction = session.BeginTransaction();
-
-        if (order.Cate == LogisticsOrderCate.Sea
-            && order.OrderStatus == LogisticsOrderStatus.CnAllCheckin
-            && order.FeeMethod == LogisticsOrderFeeMethod.Express
-            && order.ArrearsAmountNative <= 0)
-        {
-            logisticsOrderService.SubmitPackWhenPaid(order?.Id ?? 0);
-        }
-
-        transaction.Commit();
-    }
-    catch (Exception exp)
-    {
-        transaction?.Rollback();
-
-        log.Error(exp);
-
-        // 这里不重新抛出异常
-    }
-
-*/
+}
