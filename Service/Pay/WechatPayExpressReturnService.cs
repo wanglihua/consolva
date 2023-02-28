@@ -124,4 +124,10 @@ public class WechatPayExpressReturnService {
             PaySign = paySign,
         };
     }
+
+    /// <summary>
+    /// 订单支付回调
+    /// </summary>
+    public void Notify(WechatPayData requestData) {
+    }
 }
