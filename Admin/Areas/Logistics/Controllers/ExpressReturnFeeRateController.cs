@@ -4,35 +4,32 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
-using shunda.Domain.Logistics;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Logistics.Controllers;
 
 [LogisticsArea]
 [AdminAuth(PassRes.Logistics.ExpressReturnFeeRate)]
-public class ExpressReturnFeeRateController : Controller
-{
+public class ExpressReturnFeeRateController : Controller {
     private readonly ISession session;
+    private readonly ExpressReturnFeeRateService expressReturnFeeRateService;
 
-    public ExpressReturnFeeRateController(ISession session)
-    {
+    public ExpressReturnFeeRateController(
+        ISession session,
+        ExpressReturnFeeRateService expressReturnFeeRateService
+    ) {
         this.session = session;
+        this.expressReturnFeeRateService = expressReturnFeeRateService;
     }
 
     [HttpGet]
     [Route("/admin/express/return/fee/rate")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new ExpressReturnFeeRateIndexModel();
 
-        var expressReturnFeeRate = session.Query<ExpressReturnFeeRateInfo>()
-            .OrderBy(e => e.Id)
-            .Take(1)
-            .SingleOrDefault();
-
-        model.FeePerExpress = expressReturnFeeRate?.FeePerExpress ?? 0;
+        model.FeePerExpress = expressReturnFeeRateService.GetFeeRate();
 
         return View("ExpressReturnFeeRateIndex", model);
     }
@@ -40,21 +37,12 @@ public class ExpressReturnFeeRateController : Controller
     [HttpPost]
     [Route("/admin/express/return/fee/rate/save")]
     [Transactional]
-    public IActionResult Save(ExpressReturnFeeRateIndexModel model)
-    {
-        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+    public IActionResult Save(ExpressReturnFeeRateIndexModel model) {
+        if (!ModelState.IsValid) {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
 
-        var expressReturnFeeRate = session.Query<ExpressReturnFeeRateInfo>()
-            .OrderBy(e => e.Id)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (expressReturnFeeRate == null) expressReturnFeeRate = new ExpressReturnFeeRateInfo();
-
-        expressReturnFeeRate.FeePerExpress = model.FeePerExpress;
-
-        session.SaveOrUpdate(expressReturnFeeRate);
-        session.Flush();
+        expressReturnFeeRateService.SaveFeeRate(model.FeePerExpress);
 
         return Json(new Dictionary<string, object> {
             { "success", true },
