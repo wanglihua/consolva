@@ -110,7 +110,7 @@ Page({
 
     gotoNext() {
         wx.redirectTo({
-            url: "./order_create_summary",
+            url: "./order_create_repack_type",
         });
     }
 })

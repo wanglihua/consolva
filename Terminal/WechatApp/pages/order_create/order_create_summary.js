@@ -45,7 +45,7 @@ Page({
 
     gotoPre() {
         wx.redirectTo({
-            url: "./order_create_insurance",
+            url: "./order_create_repack_type",
         });
     },
 
