@@ -68,9 +68,13 @@ public class WechatAppChargeWechatPayController : Controller {
             WechatPayData requestData = new WechatPayData();
             requestData.FromXml(requestBody);
 
-            string xml = wechatPayChargeService.Notify(requestData);
+            wechatPayChargeService.Notify(requestData);
 
-            return Content(xml, "text/xml", Encoding.UTF8);
+            WechatPayData data = new WechatPayData();
+            data.SetValue("return_code", "SUCCESS");
+            data.SetValue("return_msg", "OK");
+
+            return Content(data.ToXml(), "text/xml", Encoding.UTF8);
         }
         catch (Exception exp) {
             log.Error(exp);

@@ -46,7 +46,7 @@ public class WechatPayChargeService {
         string outTradeNo = payService.GenerateOutTradeNo();
         // log.Error("outTradeNo:");
         // log.Error(outTradeNo);
-        
+
         CustomerChargeInfo customerCharge = new CustomerChargeInfo {
             ChargeType = CustomerChargeType.Wechat,
             Customer = customer,
@@ -99,72 +99,48 @@ public class WechatPayChargeService {
 
     /// <summary>
     /// 充值支付回调
-    /// <returns>处理后的需要返回给微信的xml</returns>
     /// </summary>
-    public string Notify(WechatPayData requestData) {
-        try {
-            string outTradeNo = requestData.GetValue("out_trade_no")?.ToString() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(outTradeNo)) {
-                throw new WechatPayException("回调数据异常，out_trade_no 未设置！");
-            }
-
-            var customerCharge = session.Query<CustomerChargeInfo>()
-                .Where(e => e.OutTradeNo == outTradeNo)
-                .Take(1)
-                .SingleOrDefault();
-            if (customerCharge == null) {
-                throw new WechatPayException($"out_trade_no 本地系统中不存在。out_trade_no：{outTradeNo}");
-            }
-
-            // 实际支付金额
-            string totalFeeValue = requestData.GetValue("total_fee")?.ToString() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(totalFeeValue)) {
-                throw new WechatPayException("回调数据异常，total_fee 未设置！");
-            }
-
-            if (int.TryParse(totalFeeValue, out int payAmountInt) == false) {
-                throw new WechatPayException("回调数据异常，total_fee 格式错误！");
-            }
-
-            // 分转成元
-            decimal payAmount = ((decimal)payAmountInt) / 100m;
-
-            //调统一下单接口，获得下单结果
-            // string openid = requestData.GetValue("openid")?.ToString() ?? string.Empty;
-            // WechatPayData unifiedOrderResult = UnifiedOrder(openid, customerCharge.Id); // 会员充值_customerId
-
-            //若下单失败，则立即返回结果给微信支付后台
-            // if (!unifiedOrderResult.IsSet("appid") || !unifiedOrderResult.IsSet("mch_id") || !unifiedOrderResult.IsSet("prepay_id")) {
-            //     throw new WechatPayException("统一下单失败, appid 或 mch_id 或 prepay_id 未设置！");
-            // }
-
-            // 如果支付记录是【还没】支付的，就先做本地费数据处理；
-            // 如果支付记录是【已经】支付的，就直接返回success
-            if (customerCharge.Status == CustomerChargeStatus.New) {
-                // 完成充值
-                customerChargeService.CompleteCharge(customerCharge, payAmount, CustomerChargeType.Wechat);
-            }
-
-            //统一下单成功,则返回成功结果给微信支付后台
-            WechatPayData data = new WechatPayData();
-            data.SetValue("return_code", "SUCCESS");
-            data.SetValue("return_msg", "OK");
-            // data.SetValue("err_code_des", "OK");
-            data.SetValue("appid", WechatAppConfig.AppId);
-            data.SetValue("mch_id", WechatPayConfig.MchId);
-            data.SetValue("nonce_str", WechatPayApi.GenerateNonceStr());
-            data.SetValue("sign", data.MakeSign(WechatPayData.SIGN_TYPE_HMAC_SHA256));
-
-            return data.ToXml();
+    public void Notify(WechatPayData requestData) {
+        string outTradeNo = requestData.GetValue("out_trade_no")?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(outTradeNo)) {
+            throw new WechatPayException("回调数据异常，out_trade_no 未设置！");
         }
-        catch (Exception exp) {
-            log.Error(exp);
 
-            WechatPayData data = new WechatPayData();
-            data.SetValue("return_code", "FAIL");
-            data.SetValue("return_msg", exp.Message);
+        var customerCharge = session.Query<CustomerChargeInfo>()
+            .Where(e => e.OutTradeNo == outTradeNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (customerCharge == null) {
+            throw new WechatPayException($"out_trade_no 本地系统中不存在。out_trade_no：{outTradeNo}");
+        }
 
-            return data.ToXml();
+        // 实际支付金额
+        string totalFeeValue = requestData.GetValue("total_fee")?.ToString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(totalFeeValue)) {
+            throw new WechatPayException("回调数据异常，total_fee 未设置！");
+        }
+
+        if (int.TryParse(totalFeeValue, out int payAmountInt) == false) {
+            throw new WechatPayException("回调数据异常，total_fee 格式错误！");
+        }
+
+        // 分转成元
+        decimal payAmount = ((decimal)payAmountInt) / 100m;
+
+        //调统一下单接口，获得下单结果
+        // string openid = requestData.GetValue("openid")?.ToString() ?? string.Empty;
+        // WechatPayData unifiedOrderResult = UnifiedOrder(openid, customerCharge.Id); // 会员充值_customerId
+
+        //若下单失败，则立即返回结果给微信支付后台
+        // if (!unifiedOrderResult.IsSet("appid") || !unifiedOrderResult.IsSet("mch_id") || !unifiedOrderResult.IsSet("prepay_id")) {
+        //     throw new WechatPayException("统一下单失败, appid 或 mch_id 或 prepay_id 未设置！");
+        // }
+
+        // 如果支付记录是【还没】支付的，就先做本地费数据处理；
+        // 如果支付记录是【已经】支付的，就直接返回success
+        if (customerCharge.Status == CustomerChargeStatus.New) {
+            // 完成充值
+            customerChargeService.CompleteCharge(customerCharge, payAmount, CustomerChargeType.Wechat);
         }
     }
 }
