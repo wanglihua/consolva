@@ -20,7 +20,8 @@
         </van-cell-group>
     </block>
 
-    <van-cell label="备注" border="{{ true }}"/>
+    <van-divider hairline custom-style="margin-top: 20px; margin-bottom:0;" />
+    <van-cell-group title="备注"/>
     <van-field model:value="{{ remark }}" type="textarea" autosize="{{ {minHeight:60, maxHeight:120 } }}" placeholder="备注(选填)" border="{{ false }}"/>    
 
     <view class="bottom-btn-panel">
