@@ -23,12 +23,74 @@ Page({
         });
     },
 
-    onPreButtonClick(e) {
+    onRepackTypeButtonClick(e) {
+        const repackType = e.currentTarget.dataset.item;
+        const repackTypeId = repackType.id;
+        const remark = this.data.remark;
 
+        const that = this;
+        app.post("/client/order/create/repack/type/save", {
+            repackTypeId: repackTypeId,
+            remark: remark,
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            that.setData({
+                repackTypeId: repackTypeId,
+            });
+        });
+    },
+
+    onRemarkInput(e) {
+        this.setData({
+            remark: e.detail,
+        });
+    },
+
+    onPreButtonClick(e) {
+        const repackTypeId = this.data.selectRepackTypeId;
+        const remark = this.data.remark;
+
+        const that = this;
+        app.post("/client/order/create/repack/type/save", {
+            repackTypeId: repackTypeId,
+            remark: remark,
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            that.gotoPre();
+        });
     },
 
     onNextButtonClick(e) {
+        const selectRepackTypeId = this.data.selectRepackTypeId;
+        if (selectRepackTypeId === 0) {
+            wx.showModal({
+                title: '错误',
+                content: "请选择打包方式！",
+                showCancel: false
+            });
+            return;
+        }
 
+        const repackTypeId = this.data.selectRepackTypeId;
+        const remark = this.data.remark;
+
+        const that = this;
+        app.post("/client/order/create/repack/type/save", {
+            repackTypeId: repackTypeId,
+            remark: remark,
+        }, function (res) {
+            wx.showToast({
+                title: res.message,
+            });
+
+            that.gotoNext();
+        });
     },
 
     gotoPre() {
