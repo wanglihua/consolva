@@ -96,6 +96,24 @@ public class LogisticsOrderCreateSelectInfoMapping : ClassMapping<LogisticsOrder
         );
 
         Property(
+            x => x.RepackType,
+            map => {
+                map.Type<LogisticsRepackTypeHibernateType>();
+                map.Column("repack_type_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.Remark,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("remark");
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.CouponId,
             map => {
                 map.Type(NHibernateUtil.Int32);

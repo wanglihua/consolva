@@ -69,6 +69,18 @@ public class LogisticsOrderCreateSelectInfo {
     public virtual int GstId { get; set; } = 0;
 
     /// <summary>
+    /// 打包方式，非空
+    /// </summary>
+    [JsonProperty("repackType")]
+    public virtual LogisticsRepackType RepackType { get; set; } = LogisticsRepackType.None;
+
+    /// <summary>
+    /// 备注，非空
+    /// </summary>
+    [JsonProperty("remark")]
+    public virtual string Remark { get; set; } = string.Empty;
+
+    /// <summary>
     /// 优惠券id，非空
     /// 这个基本上不用了，优惠券在支付时指定好了。
     /// 创建时不计算订单金额的话，创建时指定优惠券就没有任何意义
