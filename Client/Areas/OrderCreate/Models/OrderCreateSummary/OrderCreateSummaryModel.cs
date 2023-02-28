@@ -29,4 +29,10 @@ public class OrderCreateSummaryModel {
 
     [JsonProperty("gst")]
     public OrderCreateSummaryGstItem Gst { get; set; } = new();
+
+    [JsonProperty("repackType")]
+    public OrderCreateSummaryRepackTypeItem RepackType { get; set; } = new();
+
+    [JsonProperty("remark")]
+    public string Remark { get; set; } = string.Empty;
 }

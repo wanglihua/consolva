@@ -243,6 +243,19 @@ public class OrderCreateSummaryController : Controller {
             Name = gst.Name,
         };
 
+        int repackTypeId = createSelect.RepackType.Id;
+        var repackTypeSetting = session.Query<LogisticsRepackTypeSettingInfo>()
+            .Where(e => e.Type.Id == repackTypeId)
+            .Take(1)
+            .SingleOrDefault();
+
+        var repackTypeItem = new OrderCreateSummaryRepackTypeItem {
+            Title = repackTypeSetting?.Title ?? string.Empty,
+            Description = repackTypeSetting?.Description ?? string.Empty,
+        };
+
+        string remark = createSelect.Remark;
+
         // 保存 valid
         createSelect.Valid = true;
         session.Update(createSelect);
@@ -263,6 +276,8 @@ public class OrderCreateSummaryController : Controller {
                 FirstMode = firstModeItem,
                 Insurance = insuranceItem,
                 Gst = gstItem,
+                RepackType = repackTypeItem,
+                Remark = remark,
             },
         });
     }
