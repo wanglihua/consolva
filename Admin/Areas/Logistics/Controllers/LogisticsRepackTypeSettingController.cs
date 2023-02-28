@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
-using NHibernate.Criterion;
 using NLog;
 using shunda.Admin.Areas.Logistics.Models.LogisticsRepackTypeSetting;
 using shunda.Core;
@@ -29,11 +28,33 @@ public class LogisticsRepackTypeSettingController : Controller {
 
     [HttpGet]
     [Route("/admin/logistics/logistics/repack/type/setting")]
+    [Transactional]
     public IActionResult Index() {
         LogisticsRepackTypeSettingIndexModel model = new LogisticsRepackTypeSettingIndexModel();
 
-        model.TypeList = LogisticsRepackType.GetList();
+        var repackTypeList = LogisticsRepackType.GetList();
+
+        model.TypeList = repackTypeList;
         model.StatusList = LogisticsRepackTypeStatus.GetList();
+
+        var settingList = session.Query<LogisticsRepackTypeSettingInfo>().ToList();
+
+        foreach (var repackType in repackTypeList) {
+            var setting = settingList.Where(e => e.Type == repackType).Take(1).SingleOrDefault();
+            if (setting == null) {
+                setting = new LogisticsRepackTypeSettingInfo {
+                    Type = repackType,
+                    Title = repackType.Name,
+                    Description = repackType.Description,
+                    OrderNum = repackType.Id,
+                    Status = LogisticsRepackTypeStatus.Enabled,
+                };
+
+                session.Save(setting);
+            }
+        }
+
+        session.Flush();
 
         return View("LogisticsRepackTypeSettingIndex", model);
     }
@@ -41,25 +62,11 @@ public class LogisticsRepackTypeSettingController : Controller {
     [HttpPost]
     [Route("/admin/logistics/logistics/repack/type/setting/list")]
     public IActionResult List(LogisticsRepackTypeSettingListQueryParam queryParam) {
-        int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<LogisticsRepackTypeSettingInfo>(e => logisticsRepackTypeSettingAlias!.Id))
-            .Select(Projections.RowCount())
-            .SingleOrDefault<int>();
-
-        ListPager listPager = new ListPager(queryParam, totalCount);
-
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending) {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        } else {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
-
+        listQuery = listQuery.OrderBy(e => e.OrderNum).Asc;
         listQuery = listQuery.ThenByAlias(() => logisticsRepackTypeSettingAlias!.Id).Desc;
 
         IList<LogisticsRepackTypeSettingInfo> logisticsRepackTypeSettingList = listQuery
-            .Skip(listPager.Skip())
-            .Take(listPager.Take())
             .List<LogisticsRepackTypeSettingInfo>();
 
         /*
@@ -67,10 +74,10 @@ public class LogisticsRepackTypeSettingController : Controller {
         }
         */
 
-        LogisticsRepackTypeSettingListModel model = new LogisticsRepackTypeSettingListModel(listPager);
-        model.LogisticsRepackTypeSettingList = logisticsRepackTypeSettingList;
-
-        model.LogisticsRepackTypeSettingAlias = nameof(logisticsRepackTypeSettingAlias);
+        LogisticsRepackTypeSettingListModel model = new LogisticsRepackTypeSettingListModel {
+            LogisticsRepackTypeSettingList = logisticsRepackTypeSettingList,
+            LogisticsRepackTypeSettingAlias = nameof(logisticsRepackTypeSettingAlias),
+        };
 
         return View("LogisticsRepackTypeSettingList", model);
     }
@@ -116,7 +123,7 @@ public class LogisticsRepackTypeSettingController : Controller {
         ValidationUtil.Validate<LogisticsRepackTypeSettingSaveModelValidator, LogisticsRepackTypeSettingSaveModel>(model);
 
         int settingId = model.LogisticsRepackTypeSettingId;
-        
+
         var setting = session.Get<LogisticsRepackTypeSettingInfo>(settingId);
         if (setting == null) {
             throw new ValidationException($"指定的 打包类型设置#{settingId} 不存在！");

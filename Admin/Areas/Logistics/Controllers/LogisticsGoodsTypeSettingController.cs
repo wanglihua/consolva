@@ -1,14 +1,13 @@
+using Microsoft.AspNetCore.Mvc;
+using NHibernate;
+using NLog;
+using shunda.Admin.Areas.Logistics.Models.LogisticsGoodsTypeSetting;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Logistics;
-using shunda.Admin.Areas.Logistics.Models.LogisticsGoodsTypeSetting;
-using Microsoft.AspNetCore.Mvc;
-using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.SqlCommand;
-using NLog;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Logistics.Controllers;
@@ -17,22 +16,20 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 /// 物品类型介绍 控制器
 /// </summary>
 [LogisticsArea]
-// [LogisticsAuth(PassRes.XXX.LogisticsGoodsTypeSetting)]
-public class LogisticsGoodsTypeSettingController : Controller
-{
+[AdminAuth(PassRes.Goods.GoodsTrade, PassRes.Goods.GoodsListByType)]
+public class LogisticsGoodsTypeSettingController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
 
-    public LogisticsGoodsTypeSettingController(ISession session)
-    {
+    public LogisticsGoodsTypeSettingController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/logistics/logistics/goods/type/setting")]
-    public IActionResult Index()
-    {
+    [Transactional]
+    public IActionResult Index() {
         LogisticsGoodsTypeSettingIndexModel model = new LogisticsGoodsTypeSettingIndexModel();
 
         var goodsTypeList = LogisticsGoodsType.GetInnerList();
@@ -42,16 +39,15 @@ public class LogisticsGoodsTypeSettingController : Controller
 
         var settingList = session.Query<LogisticsGoodsTypeSettingInfo>().ToList();
 
-        foreach (LogisticsGoodsType goodsType in goodsTypeList)
-        {
+        foreach (LogisticsGoodsType goodsType in goodsTypeList) {
             var setting = settingList.Where(e => e.Type == goodsType).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new LogisticsGoodsTypeSettingInfo();
-                setting.Type = goodsType;
-                setting.Description = string.Empty;
-                setting.SampleGoods = string.Empty;
-                setting.Status = LogisticsGoodsTypeStatus.Enabled;
+            if (setting == null) {
+                setting = new LogisticsGoodsTypeSettingInfo {
+                    Type = goodsType,
+                    Description = string.Empty,
+                    SampleGoods = string.Empty,
+                    Status = LogisticsGoodsTypeStatus.Enabled,
+                };
 
                 session.Save(setting);
             }
@@ -64,30 +60,14 @@ public class LogisticsGoodsTypeSettingController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/logistics/goods/type/setting/list")]
-    public IActionResult List(LogisticsGoodsTypeSettingListQueryParam queryParam)
-    {
-        int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<LogisticsGoodsTypeSettingInfo>(e => logisticsGoodsTypeSettingAlias!.Id))
-            .Select(Projections.RowCount())
-            .SingleOrDefault<int>();
-
-        ListPager listPager = new ListPager(queryParam, totalCount);
-
+    public IActionResult List(LogisticsGoodsTypeSettingListQueryParam queryParam) {
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending)
-        {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        }
-        else
-        {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
+        listQuery = listQuery.OrderBy(e => e.Id).Asc;
+
 
         listQuery = listQuery.ThenByAlias(() => logisticsGoodsTypeSettingAlias!.Id).Desc;
 
         IList<LogisticsGoodsTypeSettingInfo> logisticsGoodsTypeSettingList = listQuery
-            .Skip(listPager.Skip())
-            .Take(listPager.Take())
             .List<LogisticsGoodsTypeSettingInfo>();
 
         /*
@@ -96,10 +76,10 @@ public class LogisticsGoodsTypeSettingController : Controller
         }
         */
 
-        LogisticsGoodsTypeSettingListModel model = new LogisticsGoodsTypeSettingListModel(listPager);
-        model.LogisticsGoodsTypeSettingList = logisticsGoodsTypeSettingList;
-
-        model.LogisticsGoodsTypeSettingAlias = nameof(logisticsGoodsTypeSettingAlias);
+        LogisticsGoodsTypeSettingListModel model = new LogisticsGoodsTypeSettingListModel {
+            LogisticsGoodsTypeSettingList = logisticsGoodsTypeSettingList,
+            LogisticsGoodsTypeSettingAlias = nameof(logisticsGoodsTypeSettingAlias),
+        };
 
         return View("LogisticsGoodsTypeSettingList", model);
     }
@@ -107,8 +87,7 @@ public class LogisticsGoodsTypeSettingController : Controller
     private LogisticsGoodsTypeSettingInfo? logisticsGoodsTypeSettingAlias = null;
 
     [NonAction]
-    private IQueryOver<LogisticsGoodsTypeSettingInfo, LogisticsGoodsTypeSettingInfo> GetQueryOver(LogisticsGoodsTypeSettingListQueryParam queryParam)
-    {
+    private IQueryOver<LogisticsGoodsTypeSettingInfo, LogisticsGoodsTypeSettingInfo> GetQueryOver(LogisticsGoodsTypeSettingListQueryParam queryParam) {
         var query = session.QueryOver<LogisticsGoodsTypeSettingInfo>(() => logisticsGoodsTypeSettingAlias!);
 
         return query;
@@ -116,10 +95,8 @@ public class LogisticsGoodsTypeSettingController : Controller
 
     [HttpPost]
     [Route("/admin/logistics/logistics/goods/type/setting/detail")]
-    public IActionResult Detail(IdParam param)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Detail(IdParam param) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -127,15 +104,11 @@ public class LogisticsGoodsTypeSettingController : Controller
 
         LogisticsGoodsTypeSettingInfo? logisticsGoodsTypeSetting;
 
-        if (id <= 0)
-        {
+        if (id <= 0) {
             logisticsGoodsTypeSetting = new LogisticsGoodsTypeSettingInfo();
-        }
-        else
-        {
+        } else {
             logisticsGoodsTypeSetting = session.Get<LogisticsGoodsTypeSettingInfo>(id);
-            if (logisticsGoodsTypeSetting == null)
-            {
+            if (logisticsGoodsTypeSetting == null) {
                 throw new ValidationException($"指定的 物品类型介绍#{id} 不存在！");
             }
         }
@@ -157,18 +130,15 @@ public class LogisticsGoodsTypeSettingController : Controller
     [HttpPost]
     [Route("/admin/logistics/logistics/goods/type/setting/save")]
     [Transactional]
-    public IActionResult Save(LogisticsGoodsTypeSettingSaveModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(LogisticsGoodsTypeSettingSaveModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
         int logisticsGoodsTypeSettingId = model.LogisticsGoodsTypeSettingId;
 
         LogisticsGoodsTypeSettingInfo logisticsGoodsTypeSetting = session.Get<LogisticsGoodsTypeSettingInfo>(logisticsGoodsTypeSettingId);
-        if (logisticsGoodsTypeSetting == null)
-        {
+        if (logisticsGoodsTypeSetting == null) {
             throw new ValidationException($"指定的 物品类型介绍#{logisticsGoodsTypeSettingId} 不存在！");
         }
 
