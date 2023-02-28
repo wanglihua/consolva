@@ -34,7 +34,7 @@ public class WechatPayChargeService {
     /// </summary>
     /// <param name="customerId"></param>
     /// <param name="amount"></param>
-    /// <param name="notifyUrl">回调URL，没有域名部分，比如 /client/wechat/app/charge/wechat/pay/notify </param>
+    /// <param name="notifyUrl">回调URL，没有域名部分，比如 /client/wechat/app/charge/wechat/pay/notify</param>
     /// <returns></returns>
     /// <exception cref="ValidationException"></exception>
     public WechatPayData Create(int customerId, decimal amount, string notifyUrl) {
@@ -47,12 +47,13 @@ public class WechatPayChargeService {
         // log.Error("outTradeNo:");
         // log.Error(outTradeNo);
         
-        CustomerChargeInfo customerCharge = new CustomerChargeInfo();
-        customerCharge.ChargeType = CustomerChargeType.Wechat;
-        customerCharge.Customer = customer;
-        customerCharge.OutTradeNo = outTradeNo;
-        customerCharge.Amount = amount;
-        customerCharge.Status = CustomerChargeStatus.New;
+        CustomerChargeInfo customerCharge = new CustomerChargeInfo {
+            ChargeType = CustomerChargeType.Wechat,
+            Customer = customer,
+            OutTradeNo = outTradeNo,
+            Amount = amount,
+            Status = CustomerChargeStatus.New
+        };
 
         session.Save(customerCharge);
         session.Flush();
