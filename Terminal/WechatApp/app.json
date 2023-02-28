@@ -33,6 +33,7 @@
         "pages/order_create/order_create_send_address",
         "pages/order_create/order_create_receive_address",
         "pages/order_create/order_create_insurance",
+        "pages/order_create/order_create_repack_type",
         "pages/order_create/order_create_summary",
         "pages/order_create/order_create_agreement",
         "pages/freight_estimate/freight_estimate_goods",
