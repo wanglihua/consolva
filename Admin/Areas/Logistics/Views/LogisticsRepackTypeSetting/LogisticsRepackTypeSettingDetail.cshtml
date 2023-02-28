@@ -22,9 +22,10 @@
                             <div class="form-group">
                                 <label asp-for="Type" class="col-xs-2 control-label">打包类型</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="Type" required="required" digits="true" class="input-sm form-control">
+                                    <input type="hidden" asp-for="Type" />
+                                    <select asp-for="Type" required="required" digits="true" class="input-sm form-control" disabled="disabled">
                                         <option value=""></option>
-                                        @foreach(LogisticsRepackType type in Model.TypeList) {
+                                        @foreach (LogisticsRepackType type in Model.TypeList) {
                                             <option value="@(type.Id)">@(type.Name)</option>
                                         }
                                     </select>
@@ -53,7 +54,7 @@
                             <div class="form-group">
                                 <label asp-for="Description" class="col-xs-2 control-label">描述</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Description" type="text" required="required" maxlength="300" class="input-sm form-control" autocomplete="off"/>
+                                    <textarea asp-for="Description" rows="3" required="required" maxlength="300" class="input-sm form-control" autocomplete="off"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +83,7 @@
                                 <div class="col-xs-10">
                                     <select asp-for="Status" required="required" digits="true" class="input-sm form-control">
                                         <option value=""></option>
-                                        @foreach(LogisticsRepackTypeStatus type in Model.StatusList) {
+                                        @foreach (LogisticsRepackTypeStatus type in Model.StatusList) {
                                             <option value="@(type.Id)">@(type.Name)</option>
                                         }
                                     </select>

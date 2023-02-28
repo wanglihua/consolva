@@ -56,7 +56,7 @@ public class LogisticsRepackTypeSettingController : Controller {
         }
 
         listQuery = listQuery.ThenByAlias(() => logisticsRepackTypeSettingAlias!.Id).Desc;
-            
+
         IList<LogisticsRepackTypeSettingInfo> logisticsRepackTypeSettingList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -69,8 +69,8 @@ public class LogisticsRepackTypeSettingController : Controller {
 
         LogisticsRepackTypeSettingListModel model = new LogisticsRepackTypeSettingListModel(listPager);
         model.LogisticsRepackTypeSettingList = logisticsRepackTypeSettingList;
-        
-        model.LogisticsRepackTypeSettingAlias = nameof(logisticsRepackTypeSettingAlias);        
+
+        model.LogisticsRepackTypeSettingAlias = nameof(logisticsRepackTypeSettingAlias);
 
         return View("LogisticsRepackTypeSettingList", model);
     }
@@ -89,15 +89,9 @@ public class LogisticsRepackTypeSettingController : Controller {
     public IActionResult Detail(IdParam param) {
         var id = param.Id;
 
-        LogisticsRepackTypeSettingInfo? logisticsRepackTypeSetting;
-
-        if (id <= 0) {
-            logisticsRepackTypeSetting = new LogisticsRepackTypeSettingInfo();
-        } else {
-            logisticsRepackTypeSetting = session.Get<LogisticsRepackTypeSettingInfo>(id);
-            if (logisticsRepackTypeSetting == null) {
-                throw new ValidationException($"指定的 打包类型设置#{id} 不存在！");
-            }
+        var logisticsRepackTypeSetting = session.Get<LogisticsRepackTypeSettingInfo>(id);
+        if (logisticsRepackTypeSetting == null) {
+            throw new ValidationException($"指定的 打包类型设置#{id} 不存在！");
         }
 
         LogisticsRepackTypeSettingDetailModel model = new LogisticsRepackTypeSettingDetailModel();
@@ -121,59 +115,25 @@ public class LogisticsRepackTypeSettingController : Controller {
     public IActionResult Save(LogisticsRepackTypeSettingSaveModel model) {
         ValidationUtil.Validate<LogisticsRepackTypeSettingSaveModelValidator, LogisticsRepackTypeSettingSaveModel>(model);
 
-        int logisticsRepackTypeSettingId = model.LogisticsRepackTypeSettingId;
-
-        bool isCreate = logisticsRepackTypeSettingId <= 0;
-
-        LogisticsRepackTypeSettingInfo logisticsRepackTypeSetting;
-
-        if (isCreate) {
-            logisticsRepackTypeSetting = new LogisticsRepackTypeSettingInfo();
-        } else {
-            logisticsRepackTypeSetting = session.Get<LogisticsRepackTypeSettingInfo>(logisticsRepackTypeSettingId);
-            if (logisticsRepackTypeSetting == null){
-                throw new ValidationException($"指定的 打包类型设置#{logisticsRepackTypeSettingId} 不存在！");
-            }
+        int settingId = model.LogisticsRepackTypeSettingId;
+        
+        var setting = session.Get<LogisticsRepackTypeSettingInfo>(settingId);
+        if (setting == null) {
+            throw new ValidationException($"指定的 打包类型设置#{settingId} 不存在！");
         }
 
-        logisticsRepackTypeSetting.Type = model.Type;
-        logisticsRepackTypeSetting.Title = model.Title;
-        logisticsRepackTypeSetting.Description = model.Description;
-        logisticsRepackTypeSetting.OrderNum = model.OrderNum;
-        logisticsRepackTypeSetting.Status = model.Status;
+        // setting.Type = model.Type;
+        setting.Title = model.Title;
+        setting.Description = model.Description;
+        setting.OrderNum = model.OrderNum;
+        setting.Status = model.Status;
 
-        if (isCreate) {
-            session.Save(logisticsRepackTypeSetting);
-        } else {
-            session.Update(logisticsRepackTypeSetting);
-        }
-
+        session.Update(setting);
         session.Flush();
 
         return Json(new JsonResultData {
             Success = true,
             Message = "保存成功！",
-        });
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/logistics/repack/type/setting/delete")]
-    [Transactional]
-    public IActionResult Delete(IdListParam param) {
-        param.Validate("请选择要删除的打包类型设置！");
-
-        var idList = param.IdList;
-
-        foreach (int id in idList) {
-            LogisticsRepackTypeSettingInfo logisticsRepackTypeSetting = session.Load<LogisticsRepackTypeSettingInfo>(id);
-            session.Delete(logisticsRepackTypeSetting);
-        }
-
-        session.Flush();
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "删除成功！",
         });
     }
 }
