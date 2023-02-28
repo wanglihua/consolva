@@ -38,7 +38,7 @@ public class WechatPayOrderService {
     }
 
     /// <summary>
-    /// 创建订单支付
+    /// 创建订单支付，调用之前确认订单是当前登录用户的
     /// 在数据库创建本地支付记录
     /// 在微信端创建 unified order
     /// </summary>
@@ -56,12 +56,14 @@ public class WechatPayOrderService {
 
         string outTradeNo = payService.GenerateOutTradeNo();
 
-        LogisticsOrderPayInfo logisticsOrderPay = new LogisticsOrderPayInfo {
+        decimal amount = order.ArrearsAmountFormula;
+
+        var logisticsOrderPay = new LogisticsOrderPayInfo {
             Order = order,
             Customer = order.Customer,
             PayType = PayType.Wechat,
             OutTradeNo = outTradeNo,
-            Amount = order.ArrearsAmountFormula,
+            Amount = amount,
             Status = PayStatus.NotPaid
         };
 
@@ -69,13 +71,13 @@ public class WechatPayOrderService {
         session.Flush();
 
         // 订单名称
-        string subject = "订单" + order.Code + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
-
-        // 付款金额，单位是分
-        int totalAmount = (int)(order.ArrearsAmountFormula * 100);
+        string subject = "订单" + order.Code + "_" + logisticsOrderPay.Id;
 
         // 商品描述
-        string itemBody = subject + "物流" + order.FirstMode.Name;
+        string itemBody = "订单" + order.Code + "_" + logisticsOrderPay.Id;
+
+        // 付款金额，单位是分
+        int totalAmount = (int)(amount * 100);
 
         string appId = WechatAppConfig.AppId;
 
@@ -94,7 +96,9 @@ public class WechatPayOrderService {
         initData.SetValue("openid", openId);
 
         initData.SetValue("notify_url", SiteConfig.SiteRoot + notifyUrl);
+
         WechatPayData result = WechatPayApi.UnifiedOrder(initData);
+
         if (!result.IsSet("appid") || !result.IsSet("prepay_id") || string.IsNullOrWhiteSpace(result.GetValue("prepay_id")?.ToString())) {
             throw new WechatPayException("wechat pay UnifiedOrder response error!");
         }

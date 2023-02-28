@@ -27,7 +27,12 @@ public class ExpressReturnFeeRateService {
             throw new ValidationException("快递单退运费率未设置，请联系管理员！");
         }
 
-        return expressReturnFeeRate.FeePerExpress;
+        decimal feePerExpress = expressReturnFeeRate.FeePerExpress;
+        if (feePerExpress < 0) {
+            feePerExpress = 0;
+        }
+
+        return feePerExpress;
     }
 
     /// <summary>

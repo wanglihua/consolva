@@ -47,7 +47,7 @@ public class WechatPayChargeService {
         // log.Error("outTradeNo:");
         // log.Error(outTradeNo);
 
-        CustomerChargeInfo customerCharge = new CustomerChargeInfo {
+        var customerCharge = new CustomerChargeInfo {
             ChargeType = CustomerChargeType.Wechat,
             Customer = customer,
             OutTradeNo = outTradeNo,
@@ -62,7 +62,7 @@ public class WechatPayChargeService {
         string subject = "会员充值_" + customerId + "_" + customerCharge.Id;
 
         // 商品描述
-        string itemBody = subject + "_" + amount.ToString("0.00");
+        string itemBody = "会员充值_" + customerId + "_" + customerCharge.Id;
 
         string appId = WechatAppConfig.AppId;
 
@@ -83,6 +83,7 @@ public class WechatPayChargeService {
         initData.SetValue("notify_url", SiteConfig.SiteRoot + notifyUrl);
 
         WechatPayData result = WechatPayApi.UnifiedOrder(initData);
+
         if (!result.IsSet("appid") || !result.IsSet("prepay_id") || string.IsNullOrWhiteSpace(result.GetValue("prepay_id")?.ToString())) {
             throw new WechatPayException("wechat pay UnifiedOrder response error!");
         }
