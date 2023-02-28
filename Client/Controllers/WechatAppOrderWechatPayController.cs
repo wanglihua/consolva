@@ -2,10 +2,14 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.WechatAppOrderWechatPay;
+using shunda.Client.Services;
+using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Core.WechatPay;
+using shunda.Domain.LogisticsOrder;
+using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Controllers;
@@ -17,9 +21,17 @@ public class WechatAppOrderWechatPayController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly LoginCustomerService loginCustomerService;
+    private readonly WechatPayOrderService wechatPayOrderService;
 
-    public WechatAppOrderWechatPayController(ISession session) {
+    public WechatAppOrderWechatPayController(
+        ISession session,
+        LoginCustomerService loginCustomerService,
+        WechatPayOrderService wechatPayOrderService
+    ) {
         this.session = session;
+        this.loginCustomerService = loginCustomerService;
+        this.wechatPayOrderService = wechatPayOrderService;
     }
 
     [HttpPost]
@@ -28,10 +40,26 @@ public class WechatAppOrderWechatPayController : Controller {
     public IActionResult Create([FromBody] WechatAppOrderWechatPayCreateParam param) {
         ValidationUtil.Validate<WechatAppOrderWechatPayCreateParamValidator, WechatAppOrderWechatPayCreateParam>(param);
 
+        int orderId = param.OrderId;
+
+        // 判断订单是不是当前登录用户的
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        if (order.Customer.Id != loginCustomerId) {
+            throw new ValidationException($"指定的订单{order.Code}不属于当前登录客户#{loginCustomerId}！");
+        }
+
+        WechatPayCreateResultData data = wechatPayOrderService.Create(orderId, NOTIFY_URL);
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = data,
         });
     }
 
@@ -48,9 +76,9 @@ public class WechatAppOrderWechatPayController : Controller {
 
             WechatPayData requestData = new WechatPayData();
             requestData.FromXml(requestBody);
-            
-            // notify
-            
+
+            wechatPayOrderService.Notify(requestData);
+
             WechatPayData data = new WechatPayData();
             data.SetValue("return_code", "SUCCESS");
             data.SetValue("return_msg", "OK");
