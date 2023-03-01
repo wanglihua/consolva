@@ -161,11 +161,12 @@ public class ExpressReturnController : Controller {
     }
 
     /// <summary>
-    /// todo 这里只做申请就可以退运，还没有集成退运支付
+    /// 这里实际只做数据检查，不做退运的实际操作。
+    /// 实际退运操作在付款成功后完成。
     /// </summary>
     [HttpPost]
     [Route("/client/express/return/apply")]
-    [Transactional]
+    // [Transactional]
     public IActionResult Apply([FromBody] IdParam param) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(ModelState));
@@ -187,6 +188,8 @@ public class ExpressReturnController : Controller {
             throw new ValidationException("指定的快递单号{express.TrackingNo}不是已入库状态！");
         }
 
+        /*
+        这些操作在支付成功后完成
         var expressReturn = session.Query<ExpressReturnInfo>()
             .Where(e => e.Express.Id == expressId)
             .Take(1)
@@ -223,10 +226,11 @@ public class ExpressReturnController : Controller {
 
         session.Save(expressReturn);
         session.Flush();
+        */
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "退运申请成功！",
+            Message = "操作成功！",
         });
     }
 }
