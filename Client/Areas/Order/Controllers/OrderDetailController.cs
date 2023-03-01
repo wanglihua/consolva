@@ -7,6 +7,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Fee;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Express;
 using ISession = NHibernate.ISession;
@@ -66,7 +67,11 @@ public class OrderDetailController : Controller {
         NHibernateUtil.Initialize(order.Gst);
         string gst = order.Gst.Name;
 
-        var repackType = order.RepackType.Name;
+        LogisticsRepackType repackType = order.RepackType;
+        var repackTypeSetting = session.Query<LogisticsRepackTypeSettingInfo>()
+            .Where(e => e.Type == repackType)
+            .Take(1)
+            .SingleOrDefault();
 
         var orderRemarkList = session.Query<LogisticsOrderRemarkInfo>()
             .Where(e => e.Order.Id == orderId)
@@ -109,7 +114,9 @@ public class OrderDetailController : Controller {
 
             Insurance = insurance,
             Gst = gst,
-            RepackType = repackType,
+
+            RepackTypeTitle = repackTypeSetting?.Title ?? string.Empty,
+            RepackTypeDesc = repackTypeSetting?.Description ?? string.Empty,
 
             CustomerRemark = customerRemark,
             WarehouseRemark = warehouseRemark,

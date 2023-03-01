@@ -31,7 +31,8 @@
             </block>
             <van-cell title="保险类型" value="{{ orderDetail.order.insurance }}" border="{{ false }}" custom-class="item"/>
             <van-cell title="GST申报" value="{{ orderDetail.order.gst }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="打包方式" value="{{ orderDetail.order.repackType }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="打包方式" value="{{ orderDetail.order.repackTypeTitle }}" border="{{ false }}" custom-class="item"/>
+            <van-cell label="{{ orderDetail.order.repackTypeDesc }}" border="{{ false }}" custom-class="item-repack-type-desc"/>
             <van-cell title="客户备注" value="{{ orderDetail.order.customerRemark }}" border="{{ false }}" custom-class="item"/>
             <van-cell title="仓库备注" value="{{ orderDetail.order.warehouseRemark }}" border="{{ false }}" custom-class="item"/>
             <van-cell title="客服备注" value="{{ orderDetail.order.serviceRemark }}" border="{{ false }}" custom-class="item"/>

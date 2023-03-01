@@ -24,3 +24,8 @@
 .item-subtitle {
     font-weight: bold;
 }
+
+.item-repack-type-desc {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}

@@ -85,8 +85,11 @@ public class OrderDetailOrderItem {
     [JsonProperty("gst")]
     public string Gst { get; set; } = string.Empty;
 
-    [JsonProperty("repackType")]
-    public string RepackType { get; set; } = string.Empty;
+    [JsonProperty("repackTypeTitle")]
+    public string RepackTypeTitle { get; set; } = string.Empty;
+
+    [JsonProperty("repackTypeDesc")]
+    public string RepackTypeDesc { get; set; } = string.Empty;
 
     [JsonProperty("customerRemark")]
     public string CustomerRemark { get; set; } = string.Empty;
