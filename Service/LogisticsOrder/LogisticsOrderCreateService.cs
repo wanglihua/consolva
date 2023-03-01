@@ -174,7 +174,8 @@ public class LogisticsOrderCreateService {
         string customerCode = customerCodeService.GetCustomerCode(customerId);
         LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(expressList.Select(e => e.GoodsType).Distinct().ToList());
         var orderStorageLoc = logisticsOrderStorageLocService.GetOrderStorageLoc(expressList);
-        var goodsValue = expressList.Sum(e => e.GoodsValue);
+        decimal goodsValue = expressList.Sum(e => e.GoodsValue);
+        LogisticsRepackType repackType = createSelect.RepackType;
 
         var order = new LogisticsOrderInfo {
             Code = orderCode,
@@ -195,7 +196,7 @@ public class LogisticsOrderCreateService {
             GoodsValue = goodsValue,
             OrderAmount = 0m, // 打包时更新这个值
             PaidAmount = 0m,
-            RepackType = LogisticsRepackType.None, // 当前打包时不关注这个值
+            RepackType = repackType,
             StorageLoc = orderStorageLoc.FirstStorageLoc,
             StorageLocCount = orderStorageLoc.StorageLocCount,
             PickupCode = string.Empty, // 这个应该没用起来
@@ -225,6 +226,18 @@ public class LogisticsOrderCreateService {
         session.Save(orderReceiveAddress);
 
         session.Flush();
+
+        // 订单客户备注
+        if (string.IsNullOrWhiteSpace(createSelect.Remark) == false) {
+            var orderRemark = new LogisticsOrderRemarkInfo {
+                Order = order,
+                Type = LogisticsOrderRemarkType.Customer,
+                Content = createSelect.Remark,
+            };
+
+            session.Save(orderRemark);
+            session.Flush();
+        }
 
         /*
         var orderSendAddress = new LogisticsOrderSendAddressInfo {
