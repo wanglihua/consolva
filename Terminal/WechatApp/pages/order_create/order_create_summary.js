@@ -12,6 +12,8 @@ Page({
         // sendAddress: {},
         insurance: {},
         gst: {},
+        repackType: {},
+        remark: "",
     },
 
     onLoad(options) {
@@ -31,6 +33,8 @@ Page({
                 // sendAddress: res.data.sendAddress,
                 insurance: res.data.insurance,
                 gst: res.data.gst,
+                repackType: res.data.repackType,
+                remark: res.data.remark,
             });
         })
     },

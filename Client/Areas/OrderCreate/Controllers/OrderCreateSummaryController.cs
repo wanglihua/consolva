@@ -243,9 +243,9 @@ public class OrderCreateSummaryController : Controller {
             Name = gst.Name,
         };
 
-        int repackTypeId = createSelect.RepackType.Id;
+        LogisticsRepackType repackType = LogisticsRepackType.GetById(createSelect.RepackType.Id);
         var repackTypeSetting = session.Query<LogisticsRepackTypeSettingInfo>()
-            .Where(e => e.Type.Id == repackTypeId)
+            .Where(e => e.Type == repackType)
             .Take(1)
             .SingleOrDefault();
 

@@ -89,6 +89,18 @@
         <view class="item-last-vspace"/>
     </van-cell-group>
 
+    <van-cell-group custom-class="items">
+        <van-cell title="打包方式和备注" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
+        <van-cell title="打包方式" value="{{ repackType.title }}" label="{{ repackType.description }}" border="{{ false }}" custom-class="item"/>
+        <block wx:if="{{ remark.length <= 20 }}">
+            <van-cell title="备注" value="{{ remark }}" border="{{ false }}" custom-class="item"/>
+        </block>
+        <block wx:else>
+            <van-cell title="备注" label="{{ remark }}" border="{{ false }}" custom-class="item"/>
+        </block>
+        <view class="item-last-vspace"/>
+    </van-cell-group>    
+
     <view class="bottom-btn-panel">
         <view class="bottom-btn-panel-inner">
             <van-row gutter="20">
