@@ -28,6 +28,12 @@ public class LogisticsOrderGoodsPackOrderModel {
     public bool IsOrderPackComplete { get; set; }
 
     /// <summary>
+    /// 打包方式标题
+    /// </summary>
+    [BindNever]
+    public string RepackTypeTitle { get; set; } = string.Empty;
+
+    /// <summary>
     /// 打包排班打包工
     /// </summary>
     [BindNever]

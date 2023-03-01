@@ -88,24 +88,16 @@
                                 }
                             </td>
                             <td class="lbl" style="width: 70px;">
-                                头程类型
-                            </td>
-                            <td style="width: 145px;">
-                                @(Model.Order.FirstModeType.Name)
-                            </td>
-                            @*
-                            <td style="width: 70px;" class="lbl">
                                 打包方式
                             </td>
-                            <td style="width: 259px; font-size: 10px;" class="break-word">
-                                @(Model.Order.RepackType?.Name)
+                            <td style="width: 145px;" class="break-word">
+                                @(Model.RepackTypeTitle)
                             </td>
-                            *@
                             <td style="width: 70px;" class="lbl">
                                 头程物流
                             </td>
                             <td style="width: 259px; font-size: 10px;" class="break-word" colspan="3">
-                                <span style="font-size: 10px;">@(Model.Order.FirstMode.Name)</span>
+                                <span style="font-size: 10px;">@(Model.Order.FirstMode.Name)(@(Model.Order.FirstModeType.Name))</span>
                             </td>
                         </tr>
                         <tr>

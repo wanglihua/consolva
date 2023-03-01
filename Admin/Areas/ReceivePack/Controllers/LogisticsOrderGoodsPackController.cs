@@ -503,6 +503,13 @@ public class LogisticsOrderGoodsPackController : Controller {
 
             model.IsOrderPackComplete = logisticsOrder.OrderStatus == LogisticsOrderStatus.Packed;
 
+            LogisticsRepackType repackType = logisticsOrder.RepackType;
+            var repackTypeSetting = session.Query<LogisticsRepackTypeSettingInfo>()
+                .Where(e => e.Type == repackType)
+                .Take(1)
+                .SingleOrDefault();
+            model.RepackTypeTitle = repackTypeSetting?.Title ?? string.Empty;
+
             {
                 var orderPackSchedule = session.Query<LogisticsOrderPackScheduleInfo>()
                     .Fetch(e => e.User)
