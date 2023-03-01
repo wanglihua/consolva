@@ -87,7 +87,9 @@ Page({
         }
 
         if (action === "pay") {
-            // todo 引导到支付界面
+            wx.redirectTo({
+                url: "./order_pay_type?orderId=" + orderId,
+            });
         }
 
         this.setData({

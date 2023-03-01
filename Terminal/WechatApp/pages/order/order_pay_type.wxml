@@ -1,6 +1,26 @@
 <!--pages/order/order_pay_type.wxml-->
 <header/>
 <view class="container">
+    <van-cell-group title="订单支付费用"/>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="订单编号" value="{{ orderCode }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="订单费用" value="{{ totalAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        <van-cell title="已支付" value="{{ paidAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        <van-cell title="欠费金额" value="{{ arrearsAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
     <van-cell-group title="订单支付方式"/>
+    <van-cell-group custom-class="items">
+        <van-cell title="余额支付" is-link link-type="navigateTo" size="large" url="">
+            <van-icon slot="icon" class-prefix="iconfont" name="account" class="cell-left-icon"/>
+        </van-cell>
+
+        <van-cell title="微信支付" is-link size="large" bind:click="onWechatPayClick">
+            <van-icon slot="icon" class-prefix="iconfont" name="wechat-pay" class="cell-left-icon"/>
+        </van-cell>
+    </van-cell-group>
+
 </view>
 
