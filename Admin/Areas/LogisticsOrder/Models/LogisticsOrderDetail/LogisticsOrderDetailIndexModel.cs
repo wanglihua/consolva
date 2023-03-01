@@ -13,6 +13,9 @@ public class LogisticsOrderDetailIndexModel {
     public LogisticsOrderInfo Order { get; set; } = new();
 
     [BindNever]
+    public string RepackTypeTitle { get; set; } = string.Empty;
+
+    [BindNever]
     public LogisticsOrderReceiveAddressInfo ReceiveAddress { get; set; } = new();
 
     // [BindNever]

@@ -239,7 +239,7 @@
                                     <div class="form-group">
                                         <label asp-for="Order.RepackType" class="col-xs-4 control-label">打包方式</label>
                                         <div class="col-xs-8">
-                                            <input asp-for="Order.RepackType" type="text" disabled="disabled" class="input-sm form-control" value="@Model.Order.RepackType.Name"/>
+                                            <input asp-for="Order.RepackType" type="text" disabled="disabled" class="input-sm form-control" value="@(Model.RepackTypeTitle)"/>
                                         </div>
                                     </div>
                                 </div>
@@ -261,8 +261,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                @* todo 代支付链接和二维码 补上 *@
 
                             </div>
                         </div>
@@ -701,7 +699,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 @* 打包明细 *@
                 <div class="row">
                     <div class="col-xs-12">
@@ -725,7 +723,7 @@
                                 function loadOrderPackList() {
                                     showMask("数据加载中，请稍候");
                                     $.ajax({
-                                        url: "@Url.Action("List", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder"})",
+                                        url: "@Url.Action("List", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder" })",
                                         type: "POST",
                                         data: {
                                             "orderId": "@(Model.Order.Id)"
@@ -749,7 +747,7 @@
                                     showMask("加载中...");
                             
                                     $.ajax({
-                                        url: "@Url.Action("ShowDetail", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder"})",
+                                        url: "@Url.Action("ShowDetail", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder" })",
                                         type: "POST",
                                         data: { "orderPackId": id },
                                         success: function(data) {
@@ -774,7 +772,7 @@
                                         showMask("提交中...");
                                         
                                         $.ajax({
-                                           url: "@Url.Action("SavePack", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder"})",
+                                           url: "@Url.Action("SavePack", "LogisticsOrderDetailOrderPack", new { Area = "LogisticsOrder" })",
                                             type: "POST",
                                             data: form.serialize(),
                                             success: function(data) {
@@ -996,7 +994,7 @@
                             </div>
 
                             <div id="orderFeeListWrapper">
-                                @(await Component.InvokeAsync("LogisticsOrderDetailFeeList", new { orderId = Model.Order.Id}) ) 
+                                @(await Component.InvokeAsync("LogisticsOrderDetailFeeList", new { orderId = Model.Order.Id }))
                             </div>
                         </div>
                     </div>

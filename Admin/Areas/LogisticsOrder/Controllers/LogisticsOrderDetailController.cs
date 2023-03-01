@@ -6,6 +6,7 @@ using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Web;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
@@ -107,9 +108,21 @@ public class LogisticsOrderDetailController : Controller {
             .OrderByDescending(e => e.Id)
             .ToList();
 
+        LogisticsRepackType repackType = order.RepackType;
+        var repackTypeSetting = session.Query<LogisticsRepackTypeSettingInfo>()
+            .Where(e => e.Type == repackType)
+            .Take(1)
+            .SingleOrDefault();
+
+        string repackTypeTitle = repackType.Name;
+        if (repackTypeSetting != null) {
+            repackTypeTitle = repackTypeSetting.Title;
+        }
+
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             Order = order,
+            RepackTypeTitle = repackTypeTitle,
             ReceiveAddress = receiveAddress,
             // SendAddress = sendAddress,
             ExpressList = expressList,
