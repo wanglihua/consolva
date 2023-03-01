@@ -1,0 +1,6 @@
+<!--pages/order/order_pay_type.wxml-->
+<header/>
+<view class="container">
+    <van-cell-group title="订单支付方式"/>
+</view>
+

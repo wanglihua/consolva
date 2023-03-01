@@ -55,6 +55,7 @@
         "pages/order/order_list_wait_transport",
         "pages/order/order_list_transporting",
         "pages/order/order_list_delivered",
+        "pages/order/order_pay_type",
         "pages/notice/notice_list",
         "pages/notice/notice_detail"
     ],
