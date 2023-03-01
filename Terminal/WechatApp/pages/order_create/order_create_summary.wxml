@@ -91,7 +91,8 @@
 
     <van-cell-group custom-class="items">
         <van-cell title="打包方式和备注" border="{{ false }}" custom-class="item-header" title-class="item-header-title"/>
-        <van-cell title="打包方式" value="{{ repackType.title }}" label="{{ repackType.description }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="打包方式" value="{{ repackType.title }}" border="{{ false }}" custom-class="item"/>
+        <van-cell label="{{ repackType.description }}" border="{{ false }}" custom-class="item-repack-type-desc"/>
         <block wx:if="{{ remark.length <= 20 }}">
             <van-cell title="备注" value="{{ remark }}" border="{{ false }}" custom-class="item"/>
         </block>

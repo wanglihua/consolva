@@ -73,7 +73,7 @@
             <view style="width: 100%; padding-bottom: 30rpx; border-top: 1px solid #ebedf0; background-color: white; position: fixed; left: 0; bottom: 0; z-index: 88;">
                 <view style="padding: 10rpx 40rpx;">
                     <view style="padding: 4rpx; text-align: right;">
-                        <text style="color: #646566; font-size: 12px;">已选择{{ expressWaitOrderCount }}个快递单</text>
+                        <text style="color: red; font-size: 12px;">已选择 {{ expressWaitOrderCount }} 个快递单</text>
                     </view>
                     <van-button type="info" class-prefix="iconfont" icon="create-order" block bind:click="onCreateOrderClick">
                         创建转运单
