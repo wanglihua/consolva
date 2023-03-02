@@ -20,4 +20,7 @@ public class OrderPayCustomerAccountDetailModel {
 
     [JsonProperty("actualPayAmount")]
     public string ActualPayAmount { get; set; } = string.Empty;
+
+    [JsonProperty("hasAccountToPay")]
+    public bool HasAccountToPay { get; set; }
 }

@@ -52,6 +52,11 @@ public class WechatPayOrderService {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
+        decimal arrearsAmount = order.ArrearsAmountFormula;
+        if (arrearsAmount <= 0) {
+            throw new ValidationException("订单没有欠费，无需支付！");
+        }
+
         NHibernateUtil.Initialize(order.Customer);
 
         string outTradeNo = payService.GenerateOutTradeNo();
