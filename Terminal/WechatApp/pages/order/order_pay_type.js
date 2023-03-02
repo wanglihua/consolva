@@ -18,7 +18,6 @@ Page({
         app.post("/client/order/pay/type/list", {
             orderId: orderId,
         }, function (res) {
-
             that.setData({
                 orderId: orderId,
                 orderCode: res.data.orderCode,

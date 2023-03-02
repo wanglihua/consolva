@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.Order.Models.OrderPayCustomerAccount;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -65,9 +66,10 @@ public class OrderPayCustomerAccountController : Controller {
 
         decimal customerAccount = loginCustomer.Account;
 
-        if (customerAccount <= 0) {
-            throw new ValidationException("当前客户账户没有余额，不能支付！");
-        }
+        // 这里不提示
+        // if (customerAccount <= 0) {
+        //     throw new ValidationException("当前客户账户没有余额，不能支付！");
+        // }
 
         decimal actualPayAmount = arrearsAmount;
         if (customerAccount < arrearsAmount) {
@@ -98,6 +100,7 @@ public class OrderPayCustomerAccountController : Controller {
 
     [HttpPost]
     [Route("/client/order/pay/customer/account/pay")]
+    [Transactional]
     public IActionResult Pay([FromBody] OrderPayCustomerAccountPayParam param) {
         ValidationUtil.Validate<OrderPayCustomerAccountPayParamValidator, OrderPayCustomerAccountPayParam>(param);
 

@@ -1,2 +1,23 @@
 <!--pages/order/order_pay_customer_account.wxml-->
+<header/>
+
+<view class="container">
+    <van-cell-group title="订单余额支付"/>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="订单编号" value="{{ orderCode }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="订单费用" value="{{ totalAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        <van-cell title="已支付" value="{{ paidAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        <van-cell title="欠费金额" value="{{ arrearsAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        <van-cell title="实付金额" value="{{ actualPayAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group custom-class="detail-buttons" border="{{false}}">
+        <van-cell border="{{false}}">
+            <van-button type="info" class-prefix="iconfont" icon="account" block bind:click="onPayClick" disabled="{{ hasAccountToPay === false }}">马上支付</van-button>
+        </van-cell>
+    </van-cell-group>
+
+</view>
 

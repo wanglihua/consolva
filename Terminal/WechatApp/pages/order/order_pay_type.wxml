@@ -13,7 +13,7 @@
 
     <van-cell-group title="订单支付方式"/>
     <van-cell-group custom-class="items">
-        <van-cell title="余额支付" is-link link-type="navigateTo" size="large" url="">
+        <van-cell title="余额支付" is-link link-type="navigateTo" size="large" url="./order_pay_customer_account?orderId={{ orderId }}">
             <van-icon slot="icon" class-prefix="iconfont" name="account" class="cell-left-icon"/>
         </van-cell>
 
