@@ -237,7 +237,7 @@ public class LogisticsOrderCreateService {
 
             session.Save(orderRemark);
 
-            // 一定要清空原来的备注，防止下一个订单中
+            // 一定要清空原来的备注，防止下一个订单中被不小心带进去
             createSelect.Remark = string.Empty;
             session.Update(createSelect);
 
