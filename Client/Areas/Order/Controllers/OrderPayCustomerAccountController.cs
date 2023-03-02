@@ -64,7 +64,9 @@ public class OrderPayCustomerAccountController : Controller {
 
     [HttpPost]
     [Route("/client/order/pay/customer/account/pay")]
-    public IActionResult Pay() {
+    public IActionResult Pay([FromBody] OrderPayCustomerAccountPayParam param) {
+        ValidationUtil.Validate<OrderPayCustomerAccountPayParamValidator, OrderPayCustomerAccountPayParam>(param);
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
