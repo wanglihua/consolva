@@ -171,7 +171,7 @@ public class OrderPayCustomerAccountController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "订单支付成功！",
+            Message = "支付成功！",
         });
     }
 }
