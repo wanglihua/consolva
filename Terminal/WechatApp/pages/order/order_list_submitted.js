@@ -88,6 +88,15 @@ Page({
 
         if (action === "cancel") {
             wx.showModal({
+                title: '订单取消',
+                content: '暂时不能自主操作取消订单，若确实需要取消订单，请联系客服处理！',
+                showCancel: false,
+            });
+        }
+
+        /* 暂时只能联系客服取消订单
+        if (action === "cancel") {
+            wx.showModal({
                 title: '订单取消确认',
                 content: '确实要取消订单 ' + orderCode + ' 吗？',
                 success(res) {
@@ -109,6 +118,7 @@ Page({
                 }
             });
         }
+         */
 
         this.setData({
             showActionSheet: false,

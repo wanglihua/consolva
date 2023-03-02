@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Client.Areas.Order.Models.OrderAction;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.LogisticsOrder;
@@ -24,7 +26,11 @@ public class OrderActionController : Controller {
 
     [HttpPost]
     [Route("/client/order/action/cancel")]
-    public IActionResult Cancel(int orderId) {
+    public IActionResult Cancel([FromBody] OrderActionCancelParam param) {
+        ValidationUtil.Validate<OrderActionCancelParamValidator, OrderActionCancelParam>(param);
+
+        int orderId = param.OrderId;
+
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");

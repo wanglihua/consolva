@@ -57,6 +57,11 @@ public class LogisticsOrderService {
             if (order.PaidAmount > 0) {
                 throw new ValidationException("订单已有支付金额，不能取消订单！");
             }
+
+            // 只能一个小时后客户才能取消
+            if (order.CreateTime.AddHours(1) > DateTime.Now) {
+                throw new ValidationException("订单取消，客户只能在订单创建一个小时后操作！");
+            }
         } else {
             var orderStausListAdminCanCancel = LogisticsOrderStatus.GetAdminCanCancelStatusList();
             if (orderStausListAdminCanCancel.Contains(order.OrderStatus) == false) {
