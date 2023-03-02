@@ -9,8 +9,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
-public class CustomerScoreService
-{
+public class CustomerScoreService {
     private readonly ISession session;
 
     // private readonly CustomerService customerService;
@@ -42,42 +41,38 @@ public class CustomerScoreService
     /// 添加支付产生积分
     /// 同时添加  集运消费积分 和 会员推广积分
     /// </summary>
-    /// <param name="logisticsOrderPayId">对应的集运订单支付Id</param>
-    public void AddScore(int logisticsOrderPayId)
-    {
-        /*
-
-        LogisticsOrderPayInfo? orderPay = session.Get<LogisticsOrderPayInfo>(logisticsOrderPayId);
-        if (orderPay == null)
-        {
+    /// <param name="orderPayId">对应的集运订单支付Id</param>
+    public void AddScore(int orderPayId) {
+        var orderPay = session.Get<LogisticsOrderPayInfo>(orderPayId);
+        if (orderPay == null) {
             throw new ValidationException("指定的集运订单支付不存在！");
         }
 
         NHibernateUtil.Initialize(orderPay.Order);
 
-        LogisticsOrderCate orderCate = orderPay.Order.Cate;
-
-        CustomerScoreRuleInfo logisticsConsumeRule = session.Query<CustomerScoreRuleInfo>()
-            .Where(e => e.OrderCate == orderCate && e.Type == CustomerScoreType.LogisticsConsume)
+        // todo 重命名
+        var logisticsConsumeRule = session.Query<CustomerScoreRuleInfo>()
+            .Where(e => e.Type == CustomerScoreType.LogisticsConsume)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
 
-        if (logisticsConsumeRule == null)
-        {
-            throw new Exception("集运消费积分规则未设置！");
+        if (logisticsConsumeRule == null) {
+            // throw new Exception("集运消费积分规则未设置！");
+            return;
         }
 
-        if (logisticsConsumeRule.Amount <= 0)
-        {
-            throw new Exception("集运消费积分规则，集运消费金额设置小于等于零，不符合要求！");
+        if (logisticsConsumeRule.Amount <= 0) {
+            // throw new Exception("集运消费积分规则，集运消费金额设置小于等于零，不符合要求！");
+            return;
         }
 
-        if (logisticsConsumeRule.Score <= 0)
-        {
-            throw new Exception("集运消费积分规则，产生积分设置小于等于零，不符合要求！");
+        if (logisticsConsumeRule.Score <= 0) {
+            // throw new Exception("集运消费积分规则，产生积分设置小于等于零，不符合要求！");
+            return;
         }
-
+        /*
+         
         CustomerScoreRuleInfo? promotionRule = session.Query<CustomerScoreRuleInfo>()
             // .Where(e => e.OrderCate == orderCate && e.Type == CustomerScoreType.Promotion)
             .Where(e => e.Type == CustomerScoreType.Promotion) // 推广积分现在还是不按订单区分的
@@ -335,26 +330,21 @@ public class CustomerScoreService
     /// <param name="score">积分</param>
     /// <param name="description">描述</param>
     /// <returns>余额</returns>
-    public decimal ScoreToAccount(int customerId, decimal score, string description = "")
-    {
+    public decimal ScoreToAccount(int customerId, decimal score, string description = "") {
         var customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
+        if (customer == null) {
             throw new ValidationException("指定的会员不存在！");
         }
 
-        if (score <= 0)
-        {
+        if (score <= 0) {
             throw new ValidationException("需要兑换余额的积分应该大于0！");
         }
 
-        if (customer.ValidScore <= 0)
-        {
+        if (customer.ValidScore <= 0) {
             throw new ValidationException("会员当前没有可用剩余积分，操作失败！");
         }
 
-        if (customer.ValidScore < score)
-        {
+        if (customer.ValidScore < score) {
             throw new ValidationException("会员积分少于需要兑换余额的剩余积分，操作失败！");
         }
 
@@ -364,18 +354,15 @@ public class CustomerScoreService
             .Take(1)
             .SingleOrDefault();
 
-        if (scoreToBalanceRule == null)
-        {
+        if (scoreToBalanceRule == null) {
             throw new Exception("积分兑换余额规则未设置！");
         }
 
-        if (scoreToBalanceRule.Score <= 0)
-        {
+        if (scoreToBalanceRule.Score <= 0) {
             throw new Exception("积分兑换余额规则，兑换积分设置小于等于零，不符合要求！");
         }
 
-        if (scoreToBalanceRule.Amount <= 0)
-        {
+        if (scoreToBalanceRule.Amount <= 0) {
             throw new Exception("积分兑换余额规则，兑换金额设置小于等于零，不符合要求！");
         }
 
