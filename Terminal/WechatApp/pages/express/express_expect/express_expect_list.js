@@ -52,7 +52,7 @@ Page({
     onAddExpressExpectClick() {
         wx.navigateTo({
             url: './express_expect_add',
-        })
+        });
     },
     onSearch(e) {
         this.setData({

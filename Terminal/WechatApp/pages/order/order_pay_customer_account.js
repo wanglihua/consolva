@@ -36,14 +36,15 @@ Page({
         app.post("/client/order/pay/customer/account/pay", {
             orderId: orderId,
         }, function (res) {
-            wx.showToast({
-                title: res.message,
-                mask: true,
-                success: function () {
+            wx.showModal({
+                title: '成功',
+                content: res.message,
+                showCancel: false,
+                success: function (result) {
                     wx.redirectTo({
                         url: "/pages/order/order_detail?id=" + orderId,
                     });
-                },
+                }
             });
         });
     },
