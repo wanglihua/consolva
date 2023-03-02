@@ -236,6 +236,11 @@ public class LogisticsOrderCreateService {
             };
 
             session.Save(orderRemark);
+
+            // 一定要清空原来的备注，防止下一个订单中
+            createSelect.Remark = string.Empty;
+            session.Update(createSelect);
+
             session.Flush();
         }
 
