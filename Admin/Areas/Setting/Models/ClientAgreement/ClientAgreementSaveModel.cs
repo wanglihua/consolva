@@ -29,7 +29,6 @@ public class ClientAgreementSaveModel {
     /// 国家，非空
     /// </summary>
     [Required(ErrorMessage = "国家不能为空！")]
-    [MaxLength(50, ErrorMessage = "国家长度不能大于50！")]
     [JsonProperty("country")]
     [ModelBinder(typeof(CountryModelBinder))]
     public Country Country { get; set; } = Country.None;

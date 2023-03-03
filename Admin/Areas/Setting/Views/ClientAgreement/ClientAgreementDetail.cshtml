@@ -145,6 +145,7 @@
                 success: function(data) {
                     if (data.success === false) {
                         $.msg.error(data.message);
+                        hideMask();
                         return;
                     }
 
