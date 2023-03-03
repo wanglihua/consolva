@@ -25,7 +25,7 @@ public class FreightDescController : Controller {
     }
 
     /// <summary>
-    /// 这个接口已经不用了
+    /// 这个接口已经不用了，就用来保存查看记录
     /// </summary>
     [HttpPost]
     [Route("/client/freight/desc/detail")]
