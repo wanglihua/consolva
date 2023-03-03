@@ -17,6 +17,15 @@ public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInf
                 map.NotNullable(true);
             }
         );
+        
+        Property(
+            x => x.Content,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("content");
+                map.NotNullable(true);
+            }
+        );        
 
         Property(
             x => x.CalcBaseType,

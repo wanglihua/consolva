@@ -16,6 +16,13 @@ public class LogisticsInsuranceInfo : Entity {
     public virtual string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// 保险条款
+    /// </summary>
+    [Required(ErrorMessage = "保险条款不能为空！")]
+    [MaxLength(800, ErrorMessage = "保险条款长度不能大于800！")]
+    public virtual string Content { get; set; } = string.Empty;
+
+    /// <summary>
     /// 费用类型
     /// </summary>
     [Required(ErrorMessage = "费用类型不能为空！")]

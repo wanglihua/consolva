@@ -93,7 +93,7 @@ public class OrderCreateInsuranceController : Controller {
             throw new ValidationException("保险方案Id不能为空！");
         }
 
-        var insurance = session.Get<LogisticsInsuranceWithContentInfo>(insuranceId);
+        var insurance = session.Get<LogisticsInsuranceInfo>(insuranceId);
         if (insurance == null) {
             throw new ValidationException($"指定的保险方案#{insuranceId}不存在！");
         }
