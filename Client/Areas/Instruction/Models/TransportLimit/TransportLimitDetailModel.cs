@@ -1,11 +1,11 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Instruction.Models.TransportLimit; 
+namespace shunda.Client.Areas.Instruction.Models.TransportLimit;
 
 public class TransportLimitDetailModel {
     [JsonProperty("title")]
     public string Title { get; set; } = string.Empty;
 
-    [JsonProperty("content")]
-    public string Content { get; set; } = string.Empty;
+    [JsonProperty("url")]
+    public string Url { get; set; } = string.Empty;
 }

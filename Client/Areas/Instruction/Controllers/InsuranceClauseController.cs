@@ -36,7 +36,7 @@ public class InsuranceClauseController : Controller {
             .SingleOrDefault();
 
         string title = instruction?.Title ?? string.Empty;
-        string content = instruction?.Content ?? string.Empty;
+        string url = instruction?.Url ?? string.Empty;
 
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.InsuranceClause);
 
@@ -45,7 +45,7 @@ public class InsuranceClauseController : Controller {
             Message = "操作成功！",
             Data = new InsuranceClauseDetailModel {
                 Title = title,
-                Content = content,
+                Url = url,
             },
         });
     }

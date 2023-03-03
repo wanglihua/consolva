@@ -36,7 +36,7 @@ public class UseAgreementController : Controller {
             .SingleOrDefault();
 
         string title = instruction?.Title ?? string.Empty;
-        string content = instruction?.Content ?? string.Empty;
+        string url = instruction?.Url ?? string.Empty;
 
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.UseAgreement);
 
@@ -45,7 +45,7 @@ public class UseAgreementController : Controller {
             Message = "操作成功！",
             Data = new UseAgreementDetailModel {
                 Title = title,
-                Content = content,
+                Url = url,
             },
         });
     }

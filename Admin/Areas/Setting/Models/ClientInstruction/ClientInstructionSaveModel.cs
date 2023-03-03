@@ -20,8 +20,9 @@ public class ClientInstructionSaveModel {
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 内容
+    /// URL
     /// </summary>
-    [Required(ErrorMessage = "内容不能为空！")]
-    public string Content { get; set; } = string.Empty;
+    [Required(ErrorMessage = "URL不能为空！")]
+    [MaxLength(500, ErrorMessage = "URL长度不能大于500！")]
+    public string Url { get; set; } = string.Empty;
 }

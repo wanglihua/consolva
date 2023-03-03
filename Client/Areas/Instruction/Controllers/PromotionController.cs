@@ -36,7 +36,7 @@ public class PromotionController : Controller {
             .SingleOrDefault();
 
         string title = instruction?.Title ?? string.Empty;
-        string content = instruction?.Content ?? string.Empty;
+        string url = instruction?.Url ?? string.Empty;
         
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.Promotion);
 
@@ -45,7 +45,7 @@ public class PromotionController : Controller {
             Message = "操作成功！",
             Data = new PromotionDetailModel {
                 Title = title,
-                Content = content,
+                Url = url,
             },
         });
     }

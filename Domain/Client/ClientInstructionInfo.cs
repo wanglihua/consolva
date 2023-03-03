@@ -24,10 +24,11 @@ public class ClientInstructionInfo : Entity {
     public virtual string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 内容
+    /// URL
     /// </summary>
-    [DisplayName("内容")]
-    public virtual string Content { get; set; } = string.Empty;
+    [Required(ErrorMessage = "URL不能为空！")]
+    [MaxLength(500, ErrorMessage = "URL长度不能大于500！")]
+    public virtual string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// 添加人

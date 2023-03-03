@@ -36,7 +36,7 @@ public class StorageInstructionController : Controller {
             .SingleOrDefault();
 
         string title = instruction?.Title ?? string.Empty;
-        string content = instruction?.Content ?? string.Empty;
+        string content = instruction?.Url ?? string.Empty;
 
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.StorageInstruction);
 
@@ -45,7 +45,7 @@ public class StorageInstructionController : Controller {
             Message = "操作成功！",
             Data = new StorageInstructionDetailModel {
                 Title = title,
-                Content = content,
+                Url = content,
             },
         });
     }

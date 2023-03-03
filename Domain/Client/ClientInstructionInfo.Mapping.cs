@@ -28,10 +28,10 @@ public class ClientInstructionInfoMapping : EntityMapping<ClientInstructionInfo>
         );
 
         Property(
-            x => x.Content,
+            x => x.Url,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("content");
+                map.Column("url");
                 map.NotNullable(true);
             }
         );

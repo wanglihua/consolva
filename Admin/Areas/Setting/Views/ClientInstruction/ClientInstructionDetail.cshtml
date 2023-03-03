@@ -32,7 +32,7 @@
             <div class="widget-main">
                 <form id="clientInstructionDetailForm" class="form-horizontal" role="form">
                     <input asp-for="Id" type="hidden"/>
-                    
+
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="form-group">
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="form-group">
@@ -58,11 +58,10 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label for="content" class="col-xs-2 control-label">内容</label>
+                                <label asp-for="Url" class="col-xs-2 control-label">URL</label>
                                 <div class="col-xs-10">
-                                    <textarea id="content" asp-for="Content" class="input-sm form-control"></textarea>
-
-                                    <div class="help-block">{auto_copy_begin_1}, {auto_copy_end_1}, ... , {auto_copy_begin_8}, {auto_copy_end_8} 从这里复制放入地址描述，不要应用任何文本格式。</div>
+                                    <input asp-for="Url" type="text" required="required" maxlength="500" class="input-sm form-control" autocomplete="off"/>
+                                    <div class="help-block">请务必填写与微信小程序关联的微信公众号文章链接</div>
                                 </div>
                             </div>
                         </div>
@@ -78,9 +77,6 @@
 
     function saveClientInstruction() {
         
-        var content = CKEDITOR.instances.content.getData();
-        $("#content").val(content);        
-        
         var form = $("#clientInstructionDetailForm");
         var valid = validate(form,
             {
@@ -88,8 +84,8 @@
                     required: true,
                     maxlength: 200
                 },
-                'Content': {
-                    required: false
+                'Url': {
+                    required: true
                 }
             });
 
@@ -118,26 +114,9 @@
     }
 
     function showClientInstructionDetail(id) {
-        var url = "@Url.Action("Detail", "ClientInstruction", new {id = 88888})";
+        var url = "@Url.Action("Detail", "ClientInstruction", new { id = 88888 })";
         url = url.replace("88888", id);
         window.location.href = url;
     }
 
-</script>
-
-<script type="text/javascript">
-    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
-        CKEDITOR.tools.enableHtml5Elements(document);
-    }
-
-    CKEDITOR.config.height = 520;
-    CKEDITOR.config.width = 'auto';
-
-    var initCkEditor = (function () {
-        return function () {
-            CKEDITOR.replace('content');
-        };
-    })();
-
-    initCkEditor();
 </script>

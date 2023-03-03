@@ -44,7 +44,7 @@ public class ClientInstructionController : Controller {
                 clientInstruction = new ClientInstructionInfo {
                     Type = type,
                     Title = type.Name,
-                    Content = string.Empty,
+                    Url = string.Empty,
                     Creator = loginUser
                 };
 
@@ -107,7 +107,7 @@ public class ClientInstructionController : Controller {
             Id = clientInstruction.Id,
             Type = clientInstruction.Type,
             Title = clientInstruction.Title,
-            Content = clientInstruction.Content,
+            Url = clientInstruction.Url,
         };
 
         return View("ClientInstructionDetail", model);
@@ -129,7 +129,7 @@ public class ClientInstructionController : Controller {
         }
 
         clientInstruction.Title = model.Title;
-        clientInstruction.Content = model.Content;
+        clientInstruction.Url = model.Url;
         clientInstruction.PublishTime = DateTime.Now;
 
         clientInstruction.Creator = session.Load<UserInfo>(loginUserService.GetLoginUserId());

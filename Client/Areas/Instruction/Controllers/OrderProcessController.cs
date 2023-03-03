@@ -36,7 +36,7 @@ public class OrderProcessController : Controller {
             .SingleOrDefault();
 
         string title = instruction?.Title ?? string.Empty;
-        string content = instruction?.Content ?? string.Empty;
+        string url = instruction?.Url ?? string.Empty;
 
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.OrderProcess);
 
@@ -45,7 +45,7 @@ public class OrderProcessController : Controller {
             Message = "操作成功！",
             Data = new OrderProcessDetailModel {
                 Title = title,
-                Content = content,
+                Url = url,
             }
         });
     }
