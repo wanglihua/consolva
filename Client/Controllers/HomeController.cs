@@ -127,6 +127,13 @@ public class HomeController : Controller {
             StorageInstructionBadge = homeData.StorageInstructionHasNew ? " " : string.Empty,
             TransportLimitBadge = homeData.TransportLimitHasNew ? " " : string.Empty,
             HasFollowed = homeData.HasFollowed,
+            UseAgreementUrl = homeData.UseAgreementUrl,
+            InsuranceClauseUrl = homeData.InsuranceClauseUrl,
+            FreightDescUrl = homeData.FreightDescUrl,
+            OrderProcessUrl = homeData.OrderProcessUrl,
+            PromotionUrl = homeData.PromotionUrl,
+            StorageInstructionUrl = homeData.StorageInstructionUrl,
+            TransportLimitUrl = homeData.TransportLimitUrl,
         };
 
         return Json(new JsonResultData {

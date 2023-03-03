@@ -75,7 +75,29 @@ public class ClientHomeDataInfo {
     /// <summary>
     /// 是否已经关注公众号
     /// </summary>
+    [JsonProperty("hasFollowed")]
     public virtual bool HasFollowed { get; set; }
+
+    [JsonProperty("useAgreementUrl")]
+    public virtual string UseAgreementUrl { get; set; } = string.Empty;
+
+    [JsonProperty("insuranceClauseUrl")]
+    public virtual string InsuranceClauseUrl { get; set; } = string.Empty;
+
+    [JsonProperty("freightDescUrl")]
+    public virtual string FreightDescUrl { get; set; } = string.Empty;
+
+    [JsonProperty("orderProcessUrl")]
+    public virtual string OrderProcessUrl { get; set; } = string.Empty;
+
+    [JsonProperty("promotionUrl")]
+    public virtual string PromotionUrl { get; set; } = string.Empty;
+
+    [JsonProperty("storageInstructionUrl")]
+    public virtual string StorageInstructionUrl { get; set; } = string.Empty;
+
+    [JsonProperty("transportLimitUrl")]
+    public virtual string TransportLimitUrl { get; set; } = string.Empty;
 
     #region override
 

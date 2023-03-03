@@ -62,4 +62,25 @@ public class HomeClientHomeDataModel {
 
     [JsonProperty("hasFollowed")]
     public bool HasFollowed { get; set; }
+
+    [JsonProperty("useAgreementUrl")]
+    public string UseAgreementUrl { get; set; } = string.Empty;
+
+    [JsonProperty("insuranceClauseUrl")]
+    public string InsuranceClauseUrl { get; set; } = string.Empty;
+
+    [JsonProperty("freightDescUrl")]
+    public string FreightDescUrl { get; set; } = string.Empty;
+
+    [JsonProperty("orderProcessUrl")]
+    public string OrderProcessUrl { get; set; } = string.Empty;
+
+    [JsonProperty("promotionUrl")]
+    public string PromotionUrl { get; set; } = string.Empty;
+
+    [JsonProperty("storageInstructionUrl")]
+    public string StorageInstructionUrl { get; set; } = string.Empty;
+
+    [JsonProperty("transportLimitUrl")]
+    public string TransportLimitUrl { get; set; } = string.Empty;
 }

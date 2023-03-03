@@ -194,5 +194,68 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
                 map.NotNullable(true);
             }
         );
+
+        Property(
+            x => x.UseAgreementUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("use_agreement_url");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.InsuranceClauseUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("insurance_clause_url");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.FreightDescUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("freight_desc_url");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderProcessUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("order_process_url");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.PromotionUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("promotion_url");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.StorageInstructionUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("storage_instruction_url");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.TransportLimitUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("transport_limit_url");
+                map.NotNullable(true);
+            }
+        );
     }
 }
