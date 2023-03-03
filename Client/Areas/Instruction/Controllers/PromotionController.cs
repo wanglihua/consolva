@@ -24,6 +24,9 @@ public class PromotionController : Controller {
         this.customerClientContentViewRecordService = customerClientContentViewRecordService;
     }
 
+    /// <summary>
+    /// 这个接口已经不用了
+    /// </summary>
     [HttpPost]
     [Route("/client/promotion/detail")]
     [Transactional]
@@ -37,7 +40,7 @@ public class PromotionController : Controller {
 
         string title = instruction?.Title ?? string.Empty;
         string url = instruction?.Url ?? string.Empty;
-        
+
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.Promotion);
 
         return Json(new JsonResultData {

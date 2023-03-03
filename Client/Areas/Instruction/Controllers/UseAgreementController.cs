@@ -24,6 +24,9 @@ public class UseAgreementController : Controller {
         this.customerClientContentViewRecordService = customerClientContentViewRecordService;
     }
 
+    /// <summary>
+    /// 这个接口已经不用了
+    /// </summary>
     [HttpPost]
     [Route("/client/use/agreement/detail")]
     [Transactional]

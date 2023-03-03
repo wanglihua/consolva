@@ -24,6 +24,9 @@ public class StorageInstructionController : Controller {
         this.customerClientContentViewRecordService = customerClientContentViewRecordService;
     }
 
+    /// <summary>
+    /// 这个接口已经不用了
+    /// </summary>
     [HttpPost]
     [Route("/client/storage/instruction/detail")]
     [Transactional]
