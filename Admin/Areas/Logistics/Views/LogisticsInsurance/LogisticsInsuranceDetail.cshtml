@@ -48,8 +48,7 @@
                                 <label asp-for="LogisticsInsurance.CalcBaseType" class="col-xs-2 control-label">计算基数</label>
                                 <div class="col-xs-10">
                                     <select asp-for="LogisticsInsurance.CalcBaseType" required="required" class="input-sm form-control">
-                                        @foreach (var baseType in Model.FeeCalcBaseTypeList)
-                                        {
+                                        @foreach (var baseType in Model.FeeCalcBaseTypeList) {
                                             <option value="@baseType.Id">@baseType.Name</option>
                                         }
                                     </select>
@@ -62,8 +61,7 @@
                                 <label asp-for="LogisticsInsurance.Type" class="col-xs-2 control-label">费用类型</label>
                                 <div class="col-xs-10">
                                     <select asp-for="LogisticsInsurance.Type" required="required" class="input-sm form-control">
-                                        @foreach (var logisticsInsuranceType in Model.LogisticsInsuranceTypeList)
-                                        {
+                                        @foreach (var logisticsInsuranceType in Model.LogisticsInsuranceTypeList) {
                                             <option value="@logisticsInsuranceType.Id">@logisticsInsuranceType.Name</option>
                                         }
                                     </select>
@@ -94,8 +92,7 @@
                                 <label asp-for="LogisticsInsurance.Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
                                     <select asp-for="LogisticsInsurance.Status" required="required" class="input-sm form-control">
-                                        @foreach (var logisticsInsuranceStatus in Model.LogisticsInsuranceStatusList)
-                                        {
+                                        @foreach (var logisticsInsuranceStatus in Model.LogisticsInsuranceStatusList) {
                                             <option value="@logisticsInsuranceStatus.Id">@logisticsInsuranceStatus.Name</option>
                                         }
                                     </select>
@@ -107,7 +104,7 @@
                             <div class="form-group">
                                 <label asp-for="LogisticsInsurance.Content" class="col-xs-2 control-label">保险条款</label>
                                 <div class="col-xs-10">
-                                    <textarea id="content" asp-for="LogisticsInsurance.Content" rows="10" maxlength="100000" class="input-sm form-control"></textarea>
+                                    <textarea id="content" asp-for="LogisticsInsurance.Content" rows="5" maxlength="800" class="input-sm form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -122,10 +119,6 @@
 <script type="text/javascript">
 
     function saveLogisticsInsurance() {
-
-        var content = CKEDITOR.instances.content.getData();
-        $("#content").val(content);
-
         var form = $("#logisticsInsuranceDetailForm");
         var valid = validate(form);
 
@@ -157,21 +150,4 @@
         url = url.replace("88888", id);
         window.location.href = url;
     }
-</script>
-
-<script type="text/javascript">
-    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
-        CKEDITOR.tools.enableHtml5Elements(document);
-    }
-
-    CKEDITOR.config.height = 520;
-    CKEDITOR.config.width = 'auto';
-
-    var initCkEditor = (function () {
-        return function () {
-            CKEDITOR.replace('content');
-        };
-    })();
-
-    initCkEditor();
 </script>

@@ -6,7 +6,6 @@ namespace shunda.Domain.Logistics;
 public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInfo> {
     public LogisticsInsuranceInfoMapping() {
         Table("tbl_logistics_insurance");
-        Mutable(false);
 
         Property(
             x => x.Name,
@@ -17,7 +16,7 @@ public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInf
                 map.NotNullable(true);
             }
         );
-        
+
         Property(
             x => x.Content,
             map => {
@@ -25,7 +24,7 @@ public class LogisticsInsuranceInfoMapping : EntityMapping<LogisticsInsuranceInf
                 map.Column("content");
                 map.NotNullable(true);
             }
-        );        
+        );
 
         Property(
             x => x.CalcBaseType,
