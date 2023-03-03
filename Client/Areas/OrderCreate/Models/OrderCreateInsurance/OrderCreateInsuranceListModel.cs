@@ -8,4 +8,7 @@ public class OrderCreateInsuranceListModel {
 
     [JsonProperty("selectInsuranceId")]
     public int SelectInsuranceId { get; set; }
+
+    [JsonProperty("insuranceClauseUrl")]
+    public string InsuranceClauseUrl { get; set; } = string.Empty;
 }

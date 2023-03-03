@@ -17,6 +17,7 @@ public class LogisticsInsuranceInfo : Entity {
 
     /// <summary>
     /// 保险条款
+    /// 原来是保险条款，现在改成了保险简短描述，条款放到了公众号文章中
     /// </summary>
     [Required(ErrorMessage = "保险条款不能为空！")]
     [MaxLength(800, ErrorMessage = "保险条款长度不能大于800！")]

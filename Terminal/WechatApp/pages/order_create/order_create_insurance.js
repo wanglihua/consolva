@@ -5,8 +5,7 @@ Page({
     data: {
         insuranceList: [],
         selectInsuranceId: 0,
-
-        detailInsurance: {},
+        insuranceClauseUrl: "",
     },
 
     onLoad(options) {
@@ -19,6 +18,7 @@ Page({
             that.setData({
                 insuranceList: res.data.insuranceList,
                 selectInsuranceId: res.data.selectInsuranceId,
+                insuranceClauseUrl: res.data.insuranceClauseUrl,
             });
         })
     },
@@ -40,43 +40,6 @@ Page({
             });
 
             that.gotoNext();
-        });
-    },
-
-    onViewDetailClick(e) {
-        const insurance = e.currentTarget.dataset.item;
-        const insuranceId = insurance.id;
-
-        const insuranceList = this.data.insuranceList;
-        for (const insurance of insuranceList) {
-            insurance.showDetail = false;
-        }
-
-        const that = this;
-        app.post("/client/order/create/insurance/detail", {
-            id: insuranceId,
-        }, function (res) {
-            for (const insurance of insuranceList) {
-                if (insurance.id === insuranceId) {
-                    insurance.showDetail = true;
-                }
-            }
-
-            that.setData({
-                insuranceList: insuranceList,
-                detailInsurance: res.data,
-            });
-        });
-    },
-
-    onDetailClose(e) {
-        const insuranceList = this.data.insuranceList;
-        for (const insurance of insuranceList) {
-            insurance.showDetail = false;
-        }
-
-        this.setData({
-            insuranceList: insuranceList,
         });
     },
 

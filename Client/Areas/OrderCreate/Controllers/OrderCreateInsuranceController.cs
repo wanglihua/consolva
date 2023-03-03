@@ -5,6 +5,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Client;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.LogisticsOrder;
@@ -46,8 +47,14 @@ public class OrderCreateInsuranceController : Controller {
             .Select(e => new OrderCreateInsuranceListItem {
                 Id = e.Id,
                 Name = e.Name,
+                Content = e.Content,
             })
             .ToList();
+
+        var insuranceClause = session.Query<ClientInstructionInfo>()
+            .Where(e => e.Type == ClientInstructionType.InsuranceClause)
+            .Take(1)
+            .SingleOrDefault();
 
         return Json(new JsonResultData {
             Success = true,
@@ -55,6 +62,7 @@ public class OrderCreateInsuranceController : Controller {
             Data = new OrderCreateInsuranceListModel {
                 InsuranceList = insuranceItemList,
                 SelectInsuranceId = selectInsuranceId,
+                InsuranceClauseUrl = insuranceClause?.Url ?? string.Empty,
             }
         });
     }
@@ -81,6 +89,10 @@ public class OrderCreateInsuranceController : Controller {
         });
     }
 
+    /// <summary>
+    /// 这个基本上不用了
+    /// </summary>
+    /// <param name="param"></param>
     [HttpPost]
     [Route("/client/order/create/insurance/detail")]
     public IActionResult Detail([FromBody] IdParam param) {

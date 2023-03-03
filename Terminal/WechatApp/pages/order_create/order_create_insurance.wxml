@@ -1,10 +1,10 @@
 <!--pages/order_create/order_create_insurance.wxml-->
-<header />
+<header/>
 <view class="container">
-    <van-cell-group title="保险方案-订单创建" />
+    <van-cell-group title="保险方案-订单创建"/>
 
     <block wx:if="{{ !insuranceList || insuranceList.length === 0 }}">
-        <van-empty description="您暂时还没有{{ country }}的收货地址！" />
+        <van-empty description="暂时还没有保险条款设置，请联系管理员！"/>
     </block>
     <block wx:else>
         <block wx:for="{{ insuranceList }}" wx:key="id" wx:for-item="insurance" wx:for-index="index">
@@ -19,21 +19,16 @@
                         <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onInsuranceButtonClick" data-item="{{ insurance }}">选择</van-button>
                     </van-cell>
                 </block>
-                <van-cell title="{{ insurance.name }}" border="{{ false }}" custom-class="item">
-                    <van-button slot="right-icon" type="default" size="mini" plain block custom-class="item-button-mini" bind:click="onViewDetailClick" data-item="{{ insurance }}">
-                        <van-icon class-prefix="iconfont" name="view-detail" />
-                        查看详细
-                    </van-button>
+                <van-cell label="{{ insurance.content }}" border="{{ false }}" custom-class="item">
                 </van-cell>
-                <view class="item-last-vspace" />
+                <view class="item-last-vspace"/>
             </van-cell-group>
-
-            <van-popup show="{{ insurance.showDetail }}" closeable position="bottom" custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;" bind:close="onDetailClose">
-                <view style="padding: 20rpx 20rpx 80rpx 20rpx;">
-                    <rich-text nodes="{{ detailInsurance.content }}"></rich-text>
-                </view>
-            </van-popup>
         </block>
+
+        <van-cell-group title="保险条款详情"/>
+        <van-cell title="查看保险条款详情" is-link link-type="navigateTo" size="large" url="./order_create_web_view?url={{ insuranceClauseUrl }}&title=保险条款详情">
+            <van-icon slot="icon" class-prefix="iconfont" name="insurance-clause" class="cell-left-icon"/>
+        </van-cell>
     </block>
 
     <view class="bottom-btn-panel">
@@ -41,14 +36,14 @@
             <van-row gutter="20">
                 <van-col span="12">
                     <van-button type="default" size="small" plain block bind:click="onPreButtonClick">
-                        <van-icon class-prefix="iconfont" name="pre-step" />
+                        <van-icon class-prefix="iconfont" name="pre-step"/>
                         上一步
                     </van-button>
                 </van-col>
                 <van-col span="12">
                     <van-button type="default" size="small" plain block bind:click="onNextButtonClick">
                         下一步
-                        <van-icon class-prefix="iconfont" name="next-step" />
+                        <van-icon class-prefix="iconfont" name="next-step"/>
                     </van-button>
                 </van-col>
             </van-row>
