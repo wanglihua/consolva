@@ -28,7 +28,7 @@
             <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="/pages/customer/customer_score/customer_score"/>
             <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="/pages/customer/customer_pay/customer_pay"/>
             <van-grid-item icon-prefix="iconfont" icon="profile" icon-class="home-grid-icon" text="个人中心" url=""/>
-            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" text="使用协议" badge="{{ homeData.useAgreementBadge }}" url="/pages/instruction/instruction_use_agreement?url={{ homeData.promotionUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" text="使用协议" badge="{{ homeData.useAgreementBadge }}" url="/pages/instruction/instruction_use_agreement?url={{ homeData.useAgreementUrl }}"/>
             <van-grid-item icon-prefix="iconfont" icon="insurance-clause" icon-class="home-grid-icon" text="保险条款" badge="{{ homeData.insuranceClauseBadge }}" url="/pages/instruction/instruction_insurance_clause?url={{ homeData.insuranceClauseUrl }}"/>
         </van-grid>
     </view>
