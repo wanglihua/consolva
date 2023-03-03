@@ -1,0 +1,5 @@
+<!--pages/order_create/order_create_web_view.wxml-->
+<header/>
+<view class="container">
+    <web-view src="{{ url }}"/>
+</view>

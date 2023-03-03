@@ -36,6 +36,7 @@
         "pages/order_create/order_create_repack_type",
         "pages/order_create/order_create_summary",
         "pages/order_create/order_create_agreement",
+        "pages/order_create/order_create_web_view",
         "pages/freight_estimate/freight_estimate_goods",
         "pages/freight_estimate/freight_estimate_country",
         "pages/freight_estimate/freight_estimate_first_mode",
