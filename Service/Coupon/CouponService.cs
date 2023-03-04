@@ -342,8 +342,8 @@ public class CouponService {
     /// 计算优惠券折扣
     /// </summary>
     /// <param name="couponId">优惠券</param>
-    /// <param name="logisticsFee">物流费用，现在假设是 头程费用 + 二程费用</param>
-    public CouponDiscountResult CalculateCouponDiscount(int couponId, decimal logisticsFee) {
+    /// <param name="orderAmount">物流费用，现在假设是 原订单总费用</param>
+    public CouponDiscountResult CalculateCouponDiscount(int couponId, decimal orderAmount) {
         var coupon = session.Get<CouponInfo>(couponId);
         if (coupon == null) {
             throw new ValidationException($"指定的优惠券{couponId}不存在！");
@@ -363,7 +363,7 @@ public class CouponService {
                 throw new ValidationException($"优惠券批次#{batchId}未关联抵扣券规则！");
             }
 
-            decimal discount = couponRuleDeductService.GetDiscount(rule, logisticsFee);
+            decimal discount = couponRuleDeductService.GetDiscount(rule, orderAmount);
 
             return new CouponDiscountResult() {
                 Success = true,
@@ -383,7 +383,7 @@ public class CouponService {
                 throw new ValidationException($"优惠券批次#{batchId}未关联折扣券规则！");
             }
 
-            decimal discount = couponRuleDiscountService.GetDiscount(rule, logisticsFee);
+            decimal discount = couponRuleDiscountService.GetDiscount(rule, orderAmount);
 
             return new CouponDiscountResult() {
                 Success = true,
@@ -403,7 +403,7 @@ public class CouponService {
                 throw new ValidationException($"优惠券批次#{batchId}未关联满减券规则！");
             }
 
-            decimal discount = couponRulePriceBreakService.GetDiscount(rule, logisticsFee);
+            decimal discount = couponRulePriceBreakService.GetDiscount(rule, orderAmount);
             if (discount <= 0) {
                 return new CouponDiscountResult() {
                     Success = false,
