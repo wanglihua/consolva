@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Client.Areas.Order.Models.OrderPay;
+using shunda.Client.Areas.Order.Models.OrderPayType;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -12,12 +12,12 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Order.Controllers;
 
 [OrderArea]
-public class OrderPayController : Controller {
+public class OrderPayTypeController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
 
-    public OrderPayController(
+    public OrderPayTypeController(
         ISession session,
         LoginCustomerService loginCustomerService,
         LogisticsOrderPaySumService logisticsOrderPaySumService

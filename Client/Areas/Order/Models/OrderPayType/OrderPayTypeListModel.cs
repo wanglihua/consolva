@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Order.Models.OrderPay;
+namespace shunda.Client.Areas.Order.Models.OrderPayType;
 
 public class OrderPayTypeListModel {
     [JsonProperty("orderId")]
