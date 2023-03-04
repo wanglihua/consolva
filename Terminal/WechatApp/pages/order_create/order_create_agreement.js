@@ -20,7 +20,6 @@ Page({
             const agreementList = res.data.agreementList;
             for (const agreement of agreementList) {
                 agreement.checked = false;
-                agreement.showDetail = false;
             }
 
             that.setData({
@@ -59,38 +58,9 @@ Page({
 
     onAgreementTitleTap(e) {
         const agreement = e.currentTarget.dataset.item;
-        const agreementId = agreement.id;
 
-        const agreementList = this.data.agreementList;
-        for (const agreement of agreementList) {
-            agreement.showDetail = false;
-        }
-
-        const that = this;
-        app.postWithoutLoading("/client/order/create/agreement/detail", {
-            id: agreementId,
-        }, function (res) {
-            for (const agreement of agreementList) {
-                if (agreement.id === agreementId) {
-                    agreement.showDetail = true;
-                }
-            }
-
-            that.setData({
-                agreementList: agreementList,
-                detailAgreement: res.data,
-            });
-        });
-    },
-
-    onDetailClose(e) {
-        const agreementList = this.data.agreementList;
-        for (const agreement of agreementList) {
-            agreement.showDetail = false;
-        }
-
-        this.setData({
-            agreementList: agreementList,
+        wx.navigateTo({
+            url: "./order_create_web_view?url=" + agreement.url + "&title=" + agreement.title,
         });
     },
 

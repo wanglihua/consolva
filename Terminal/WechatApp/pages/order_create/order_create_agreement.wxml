@@ -10,11 +10,6 @@
                     <view style="display: inline-block;">
                         <van-checkbox value="{{ agreement.checked }}" shape="square" bind:change="onAgreementCheckboxChange" data-item="{{ agreement }}"/>
                     </view>
-                    <!--
-                    <view style="font-size: 12px; display: inline" bind:tap="onAgreementReadTap" data-item="{{ agreement }}">
-                        我已阅读👉
-                    </view>
-                    -->
                     <view style="color: #131293; font-size: 12px; display: inline" bind:tap="onAgreementTitleTap" data-item="{{ agreement }}">{{ agreement.title }}</view>
                 </view>
             </van-cell>

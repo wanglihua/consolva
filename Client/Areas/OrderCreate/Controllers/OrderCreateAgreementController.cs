@@ -45,6 +45,7 @@ public class OrderCreateAgreementController : Controller {
             .Select(e => new OrderCreateAgreementListItem {
                 Id = e.Id,
                 Title = e.Title,
+                Url = e.Url,
             })
             .ToList();
 
@@ -57,6 +58,10 @@ public class OrderCreateAgreementController : Controller {
         });
     }
 
+    /// <summary>
+    /// 这个基本上已经不用了
+    /// Url， list 的时候已经直接返回
+    /// </summary>
     [HttpPost]
     [Route("/client/order/create/agreement/detail")]
     public IActionResult Detail([FromBody] IdParam param) {
