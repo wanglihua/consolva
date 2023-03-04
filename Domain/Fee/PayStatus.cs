@@ -5,22 +5,21 @@ namespace shunda.Domain.Fee;
 /// <summary>
 /// 物流订单支付状态
 /// </summary>
-public class PayStatus : CodeTypeBase
-{
+public class PayStatus : CodeTypeBase {
     /// <summary>
     /// 未支付, 1000
     /// </summary>
     public static readonly PayStatus NotPaid = new PayStatus(1000, "未支付", "未支付");
 
     /// <summary>
+    /// 部分支付, 1500
+    /// </summary>
+    public static readonly PayStatus PartPaid = new PayStatus(1500, "部分支付", "部分支付");
+
+    /// <summary>
     /// 已支付, 2000
     /// </summary>
     public static readonly PayStatus Paid = new PayStatus(2000, "已支付", "已支付");
-
-    /// <summary>
-    /// 部分支付, 3000
-    /// </summary>
-    public static readonly PayStatus PartPaid = new PayStatus(3000, "部分支付", "部分支付");
 
     /// <summary>
     /// 已退款, 4000
@@ -47,38 +46,30 @@ public class PayStatus : CodeTypeBase
 
     private static readonly Dictionary<int, PayStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static PayStatus GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out PayStatus? codeType))
-        {
+    public static PayStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out PayStatus? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<PayStatus> GetList()
-    {
+    public static IList<PayStatus> GetList() {
         return codeTypeList.ToList();
     }
 
-    private PayStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private PayStatus(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class PayStatusHibernateType : CodeHibernateTypeBase<PayStatus>
-{
-    protected override PayStatus GetCodeTypeById(int id)
-    {
+public class PayStatusHibernateType : CodeHibernateTypeBase<PayStatus> {
+    protected override PayStatus GetCodeTypeById(int id) {
         return PayStatus.GetById(id);
     }
 }
 
-public class PayStatusModelBinder : CodeTypeModelBinderBase<PayStatus>
-{
-    protected override PayStatus GetCodeTypeById(int id)
-    {
+public class PayStatusModelBinder : CodeTypeModelBinderBase<PayStatus> {
+    protected override PayStatus GetCodeTypeById(int id) {
         return PayStatus.GetById(id);
     }
 }
