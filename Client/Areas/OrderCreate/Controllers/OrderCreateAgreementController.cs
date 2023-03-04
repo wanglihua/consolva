@@ -76,7 +76,7 @@ public class OrderCreateAgreementController : Controller {
             Data = new OrderCreateAgreementDetailModel {
                 Id = clientAgreement.Id,
                 Title = clientAgreement.Title,
-                Content = clientAgreement.Content,
+                Url = clientAgreement.Url,
             }
         });
     }
