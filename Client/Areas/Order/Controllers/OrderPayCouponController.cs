@@ -3,12 +3,12 @@ using NHibernate.Linq;
 using shunda.Client.Areas.Order.Models.OrderPayCoupon;
 using shunda.Client.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
-using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;
@@ -18,24 +18,19 @@ public class OrderPayCouponController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly CouponService couponService;
-    private readonly CouponBatchService couponBatchService;
-    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
 
     public OrderPayCouponController(ISession session,
         LoginCustomerService loginCustomerService,
-        CouponService couponService,
-        CouponBatchService couponBatchService,
-        LogisticsOrderPaySumService logisticsOrderPaySumService
+        CouponService couponService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.couponService = couponService;
-        this.couponBatchService = couponBatchService;
-        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
     }
 
     [HttpPost]
     [Route("/client/order/pay/coupon/has")]
+    [Transactional] // 调用的方式里面有操作数据库的
     public IActionResult Has([FromBody] OrderPayCouponHasParam param) {
         ValidationUtil.Validate<OrderPayCouponHasParamValidator, OrderPayCouponHasParam>(param);
 
@@ -55,6 +50,7 @@ public class OrderPayCouponController : Controller {
 
     [HttpPost]
     [Route("/client/order/pay/coupon/list")]
+    [Transactional] // 有可能得更新操作
     public IActionResult List([FromBody] OrderPayCouponListParam param) {
         ValidationUtil.Validate<OrderPayCouponListParamValidator, OrderPayCouponListParam>(param);
 

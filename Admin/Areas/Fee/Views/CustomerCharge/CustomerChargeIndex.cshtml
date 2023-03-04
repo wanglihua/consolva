@@ -27,7 +27,7 @@
             手工充值
         </button>
 
-        <button id="btnImportSea" class="btn btn-success btn-sm">
+        <button id="btnImport" class="btn btn-success btn-sm">
             <i class="ace-icon fa fa-plus"></i>
             导入充值
         </button>
@@ -206,19 +206,18 @@
 
 
     $(function(){
-        initUploaderSea();
-        initUploaderAir();
+        initUploader();
     });
 
-    function initUploaderSea() {
+    function initUploader() {
 
-        var url = '@Url.Action("ImportSea", "CustomerCharge")';
+        var url = '@Url.Action("Import", "CustomerCharge")';
 
         var uploader = new plupload.Uploader({
             runtimes: 'html5,flash,html4',
             multi_selection: false,
 
-            browse_button: 'btnImportSea',
+            browse_button: 'btnImport',
             file_data_name: "excelFile",
             url: url,
             max_file_size: '10000kb',
@@ -251,48 +250,5 @@
         });
 
         uploader.init();
-    }  
-    
-    function initUploaderAir() {
-
-        var url = '@Url.Action("ImportAir", "CustomerCharge")';
-
-        var uploader = new plupload.Uploader({
-            runtimes: 'html5,flash,html4',
-            multi_selection: false,
-
-            browse_button: 'btnImportAir',
-            file_data_name: "excelFile",
-            url: url,
-            max_file_size: '10000kb',
-
-            filters: [
-                {title: "Excel文件", extensions: "xlsx"}
-            ],
-
-            flash_swf_url: '/plupload/js/Moxie.swf',
-
-            init: {
-                FilesAdded: function () {
-                    showMask("上传中，请稍候...");
-                    uploader.start();
-                },
-                FileUploaded: function (up, file, response) {
-                    hideMask();
-                    var result = JSON.parse(response.response);
-                    if (result.success !== true) {
-                        $.msg.error(result.message);
-                        return;
-                    }
-                    loadCustomerChargeList();
-                    $.msg.show(result.message);
-                },
-                Error: function (up, err) {
-                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
-                }
-            }
-        });
-
-        uploader.init();
-    }      
+    }    
 </script>
