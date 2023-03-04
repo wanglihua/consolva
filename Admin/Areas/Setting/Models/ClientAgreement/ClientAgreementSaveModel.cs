@@ -19,11 +19,11 @@ public class ClientAgreementSaveModel {
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 内容，非空
+    /// URL，非空
     /// </summary>
-    [Required(ErrorMessage = "内容不能为空！")]
-    [JsonProperty("content")]
-    public string Content { get; set; } = string.Empty;
+    [Required(ErrorMessage = "URL不能为空！")]
+    [JsonProperty("url")]
+    public string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// 国家，非空

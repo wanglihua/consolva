@@ -20,11 +20,12 @@ public class ClientAgreementInfo : Entity {
     public virtual string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 内容，非空
+    /// URL，非空
     /// </summary>
-    [Required(ErrorMessage = "内容不能为空！")]
-    [JsonProperty("content")]
-    public virtual string Content { get; set; } = string.Empty;
+    [Required(ErrorMessage = "URL不能为空！")]
+    [MaxLength(500, ErrorMessage = "URL长度不能大于5s00！")]
+    [JsonProperty("url")]
+    public virtual string Url { get; set; } = string.Empty;
 
     /// <summary>
     /// 国家，非空

@@ -62,7 +62,7 @@ public class ClientAgreementController : Controller {
     [NonAction]
     private ICriteria GetListCriteria(ClientAgreementListQueryParam queryParam) {
         string? titleQuery = queryParam.TitleQuery;
-        string? contentQuery = queryParam.ContentQuery;
+        string? urlQuery = queryParam.UrlQuery;
         string? countryQuery = queryParam.CountryQuery;
 
         ICriteria criteria = session.CreateCriteria<ClientAgreementInfo>();
@@ -74,9 +74,9 @@ public class ClientAgreementController : Controller {
             criteria = criteria.Add(Restrictions.On<ClientAgreementInfo>(e => e.Title).IsInsensitiveLike(titleQuery, MatchMode.Anywhere));
         }
 
-        if (string.IsNullOrWhiteSpace(contentQuery) == false) {
-            contentQuery = contentQuery.Trim();
-            criteria = criteria.Add(Restrictions.On<ClientAgreementInfo>(e => e.Content).IsInsensitiveLike(contentQuery, MatchMode.Anywhere));
+        if (string.IsNullOrWhiteSpace(urlQuery) == false) {
+            urlQuery = urlQuery.Trim();
+            criteria = criteria.Add(Restrictions.On<ClientAgreementInfo>(e => e.Url).IsInsensitiveLike(urlQuery, MatchMode.Anywhere));
         }
 
         if (string.IsNullOrWhiteSpace(countryQuery) == false) {
@@ -107,7 +107,7 @@ public class ClientAgreementController : Controller {
         ClientAgreementDetailModel model = new ClientAgreementDetailModel {
             Id = clientAgreement.Id,
             Title = clientAgreement.Title,
-            Content = clientAgreement.Content,
+            Url = clientAgreement.Url,
             Country = clientAgreement.Country,
             Status = clientAgreement.Status,
             OrderNum = clientAgreement.OrderNum,
@@ -141,7 +141,7 @@ public class ClientAgreementController : Controller {
         }
 
         clientAgreement.Title = model.Title;
-        clientAgreement.Content = model.Content;
+        clientAgreement.Url = model.Url;
         clientAgreement.Country = model.Country;
         clientAgreement.OrderNum = model.OrderNum;
 
