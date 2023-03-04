@@ -1,4 +1,4 @@
-<!--pages/instruction/instruction_transport_limit.wxml-->
+<!--pages/instruction/instruction_goods_type.wxml-->
 <header/>
 <view class="container">
     <web-view src="{{ url }}"/>

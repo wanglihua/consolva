@@ -125,7 +125,7 @@ public class HomeController : Controller {
             OrderProcessBadge = homeData.OrderProcessHasNew ? " " : string.Empty,
             PromotionBadge = homeData.PromotionHasNew ? " " : string.Empty,
             StorageInstructionBadge = homeData.StorageInstructionHasNew ? " " : string.Empty,
-            TransportLimitBadge = homeData.TransportLimitHasNew ? " " : string.Empty,
+            GoodsTypeBadge = homeData.GoodsTypeHasNew ? " " : string.Empty,
             HasFollowed = homeData.HasFollowed,
             UseAgreementUrl = homeData.UseAgreementUrl,
             InsuranceClauseUrl = homeData.InsuranceClauseUrl,
@@ -133,7 +133,7 @@ public class HomeController : Controller {
             OrderProcessUrl = homeData.OrderProcessUrl,
             PromotionUrl = homeData.PromotionUrl,
             StorageInstructionUrl = homeData.StorageInstructionUrl,
-            TransportLimitUrl = homeData.TransportLimitUrl,
+            GoodsTypeUrl = homeData.GoodsTypeUrl,
         };
 
         return Json(new JsonResultData {

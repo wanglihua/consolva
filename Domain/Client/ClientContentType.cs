@@ -40,11 +40,8 @@ public class ClientContentType : CodeTypeBase {
 
     /// <summary>
     /// 物品分类
-    /// 运输时效
-    /// 原来是运输时效，现在改成是物品分类了
-    /// 其他的都没变，就改了个中文名称，还有客户端显示的图标和文字
     /// </summary>
-    public static readonly ClientContentType TransportLimit = new ClientContentType(7000, "物品分类", "物品分类");
+    public static readonly ClientContentType GoodsType = new ClientContentType(7000, "物品分类", "物品分类");
 
     /// <summary>
     /// 客户推广
@@ -73,7 +70,7 @@ public class ClientContentType : CodeTypeBase {
         OrderProcess,
         Promotion,
         StorageInstruction,
-        TransportLimit,
+        GoodsType,
         CustomerPromotion,
         WarehouseAddress,
         Notice,

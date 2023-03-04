@@ -1,4 +1,4 @@
-// pages/instruction/instruction_transport_limit.js
+// pages/instruction/instruction_goods_type.js
 const app = getApp();
 
 Page({
@@ -12,7 +12,7 @@ Page({
         });
 
         const that = this;
-        app.post("/client/transport/limit/detail", {}, function (res) {
+        app.post("/client/goods/type/detail", {}, function (res) {
             that.setData({
                 title: res.data.title,
                 content: res.data.content,

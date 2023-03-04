@@ -38,11 +38,8 @@ public class ClientInstructionType : CodeTypeBase {
 
     /// <summary>
     /// 物品分类
-    /// 运输时效
-    /// 原来是运输时效，现在改成是物品分类了
-    /// 其他的都没变，就改了个中文名称，还有客户端显示的图标和文字
     /// </summary>
-    public static readonly ClientInstructionType TransportLimit = new ClientInstructionType(7000, "物品分类", "物品分类");
+    public static readonly ClientInstructionType GoodsType = new ClientInstructionType(7000, "物品分类", "物品分类");
 
     /// <summary>
     /// None
@@ -56,7 +53,7 @@ public class ClientInstructionType : CodeTypeBase {
         OrderProcess,
         Promotion,
         StorageInstruction,
-        TransportLimit,
+        GoodsType,
     };
 
     private static readonly IDictionary<int, ClientInstructionType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
@@ -87,4 +84,4 @@ public class ClientInstructionTypeModelBinder : CodeTypeModelBinderBase<ClientIn
     protected override ClientInstructionType GetCodeTypeById(int id) {
         return ClientInstructionType.GetById(id);
     }
-}
+} 

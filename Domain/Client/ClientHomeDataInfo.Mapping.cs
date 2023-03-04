@@ -178,10 +178,10 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
         );
 
         Property(
-            x => x.TransportLimitHasNew,
+            x => x.GoodsTypeHasNew,
             map => {
                 map.Type(NHibernateUtil.Boolean);
-                map.Column("transport_limit_has_new");
+                map.Column("goods_type_has_new");
                 map.NotNullable(true);
             }
         );
@@ -250,10 +250,10 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
         );
 
         Property(
-            x => x.TransportLimitUrl,
+            x => x.GoodsTypeUrl,
             map => {
                 map.Type(NHibernateUtil.String);
-                map.Column("transport_limit_url");
+                map.Column("goods_type_url");
                 map.NotNullable(true);
             }
         );

@@ -47,7 +47,7 @@
         "pages/instruction/instruction_order_process",
         "pages/instruction/instruction_promotion",
         "pages/instruction/instruction_storage",
-        "pages/instruction/instruction_transport_limit",
+        "pages/instruction/instruction_goods_type",
         "pages/instruction/instruction_use_agreement",
         "pages/instruction/instruction_warehouse_address",
         "pages/order/order_detail",

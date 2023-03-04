@@ -39,7 +39,7 @@
             <van-grid-item icon-prefix="iconfont" icon="warehouse-address" icon-class="home-grid-icon" text="仓库地址" url="/pages/instruction/instruction_warehouse_address"/>
             <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" text="运费说明" badge="{{ homeData.freightDescBadge }}" url="/pages/instruction/instruction_freight_desc?url={{ homeData.freightDescUrl }}"/>
             <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text="下单流程" badge="{{ homeData.orderProcessBadge }}" url="/pages/instruction/instruction_order_process?url={{ homeData.orderProcessUrl }}"/>
-            <van-grid-item icon-prefix="iconfont" icon="goods-type" icon-class="home-grid-icon" text="物品分类" badge="{{ homeData.transportLimitBadge }}" url="/pages/instruction/instruction_transport_limit?url={{ homeData.transportLimitUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="goods-type" icon-class="home-grid-icon" text="物品分类" badge="{{ homeData.goodsTypeBadge }}" url="/pages/instruction/instruction_goods_type?url={{ homeData.goodsTypeUrl }}"/>
             <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text="仓储说明" badge="{{ homeData.storageInstructionBadge }}" url="/pages/instruction/instruction_storage?url={{ homeData.storageInstructionUrl }}"/>
         </van-grid>
     </view>

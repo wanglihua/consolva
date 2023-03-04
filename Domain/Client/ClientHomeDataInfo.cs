@@ -69,8 +69,8 @@ public class ClientHomeDataInfo {
     [JsonProperty("storageInstructionHasNew")]
     public virtual bool StorageInstructionHasNew { get; set; }
 
-    [JsonProperty("transportLimitHasNew")]
-    public virtual bool TransportLimitHasNew { get; set; }
+    [JsonProperty("goodsTypeHasNew")]
+    public virtual bool GoodsTypeHasNew { get; set; }
 
     /// <summary>
     /// 是否已经关注公众号
@@ -96,8 +96,8 @@ public class ClientHomeDataInfo {
     [JsonProperty("storageInstructionUrl")]
     public virtual string StorageInstructionUrl { get; set; } = string.Empty;
 
-    [JsonProperty("transportLimitUrl")]
-    public virtual string TransportLimitUrl { get; set; } = string.Empty;
+    [JsonProperty("goodsTypeUrl")]
+    public virtual string GoodsTypeUrl { get; set; } = string.Empty;
 
     #region override
 

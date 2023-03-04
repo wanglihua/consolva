@@ -57,8 +57,8 @@ public class HomeClientHomeDataModel {
     [JsonProperty("storageInstructionBadge")]
     public string StorageInstructionBadge { get; set; } = string.Empty;
 
-    [JsonProperty("transportLimitBadge")]
-    public string TransportLimitBadge { get; set; } = string.Empty;
+    [JsonProperty("goodsTypeBadge")]
+    public string GoodsTypeBadge { get; set; } = string.Empty;
 
     [JsonProperty("hasFollowed")]
     public bool HasFollowed { get; set; }
@@ -81,6 +81,6 @@ public class HomeClientHomeDataModel {
     [JsonProperty("storageInstructionUrl")]
     public string StorageInstructionUrl { get; set; } = string.Empty;
 
-    [JsonProperty("transportLimitUrl")]
-    public string TransportLimitUrl { get; set; } = string.Empty;
+    [JsonProperty("goodsTypeUrl")]
+    public string GoodsTypeUrl { get; set; } = string.Empty;
 }
