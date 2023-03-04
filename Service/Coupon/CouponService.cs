@@ -134,6 +134,30 @@ public class CouponService {
         }
     }
 
+    /// <summary>
+    /// 支付时查询有没可用的优惠券
+    /// </summary>
+    /// <param name="customerId">登录客户</param>
+    /// <param name="orderId">订单，这个参数当前还没用起来</param>
+    /// <returns></returns>
+    public bool HasCouponWhenPay(int customerId, int orderId) {
+        couponBatchService.CheckAndSetExpire();
+
+        var coupon = session.Query<CouponInfo>()
+            .Where(e => e.Customer.Id == customerId
+                        && e.Status == CouponStatus.Pick)
+            .Take(1)
+            .SingleOrDefault();
+
+        return coupon != null;
+    }
+
+    /// <summary>
+    /// 支付时检查优惠券合法性
+    /// </summary>
+    /// <param name="couponId"></param>
+    /// <param name="orderId"></param>
+    /// <param name="customerId"></param>
     public void CheckCouponValidWhenPay(int couponId, int orderId, int customerId) {
         var coupon = session.Get<CouponInfo>(couponId);
         if (coupon == null) {
@@ -145,6 +169,10 @@ public class CouponService {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        if (order.Customer.Id != customerId) {
+            throw new ValidationException($"指定的订单#{orderId}不属于会员#{customerId}！");
         }
 
         // 是不是当前会员的
@@ -164,10 +192,6 @@ public class CouponService {
         var today = DateTime.Today;
         if ((coupon.Order?.Id ?? 0) != orderId && coupon.Batch.Expire < today) {
             throw new ValidationException($"优惠券{coupon.Code}已过期！");
-        }
-
-        if ((order.Customer?.Id ?? 0) != customerId) {
-            throw new ValidationException($"指定的订单#{orderId}不属于会员#{customerId}！");
         }
     }
 

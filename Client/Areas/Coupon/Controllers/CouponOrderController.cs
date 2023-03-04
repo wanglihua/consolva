@@ -13,7 +13,7 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Coupon.Controllers;
 
-// 这个控制器后来基本没用起来
+// 这个控制器后来基本没用起来，本来是预想订单下单的时候使用
 [CouponArea]
 public class CouponOrderController : Controller {
     private readonly ISession session;

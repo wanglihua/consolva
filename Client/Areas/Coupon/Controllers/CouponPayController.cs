@@ -16,6 +16,9 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Coupon.Controllers;
 
+/// <summary>
+/// 这个基本没用起来，后面删除掉
+/// </summary>
 [CouponArea]
 public class CouponPayController : Controller {
     private readonly ISession session;
