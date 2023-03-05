@@ -329,10 +329,10 @@ public class CouponService {
             throw new ValidationException($"订单#{orderId}不属于当前登录用户！");
         }
 
-        CouponInfo? selectCoupon = null;
+        CouponInfo? coupon = null;
         if (couponId != 0) {
-            selectCoupon = session.Get<CouponInfo>(couponId);
-            if (selectCoupon == null) {
+            coupon = session.Get<CouponInfo>(couponId);
+            if (coupon == null) {
                 throw new ValidationException($"指定的优惠券#{couponId}不存在！");
             }
 
@@ -345,22 +345,25 @@ public class CouponService {
             .Take(1)
             .SingleOrDefault();
 
-        if ((selectCoupon?.Id ?? 0) == (orderCoupon?.Id ?? 0)) {
+        if ((coupon?.Id ?? 0) == (orderCoupon?.Id ?? 0)) {
             // 如果当前的选择就是原来的，那就什么都不用做
             return;
         }
 
+        // decimal totalAmount = order.OrderAmount; 不能把优惠费用计算在内
         var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
             .Where(e => e.Order.Id == orderId)
             .ToList();
 
         decimal orderAmount = 0.0m;
         foreach (var fee in orderFeeList) {
-            orderAmount += fee.Fee;
+            if (fee.Type != LogisticsOrderFeeType.CouponDiscountFee) {
+                orderAmount += fee.Fee;
+            }
         }
 
         decimal couponDiscount = 0m;
-        if (selectCoupon != null) {
+        if (coupon != null) {
             var couponDiscountResult = CalculateCouponDiscount(couponId, orderAmount);
             if (couponDiscountResult.Success == false) {
                 throw new ValidationException(couponDiscountResult.Message);
@@ -375,7 +378,7 @@ public class CouponService {
         }
 
         // 把新的设置上
-        if (selectCoupon != null) {
+        if (coupon != null) {
             SetCouponUsed(couponId, order, couponDiscount);
         }
 
@@ -384,7 +387,7 @@ public class CouponService {
             couponBatchService.SumAndSaveBatchTotalUsed(orderCouponBatchId);
         }
 
-        var couponBatchId = selectCoupon?.Batch.Id ?? 0;
+        var couponBatchId = coupon?.Batch.Id ?? 0;
         if (couponBatchId != 0) {
             couponBatchService.SumAndSaveBatchTotalUsed(couponBatchId);
         }
@@ -402,7 +405,7 @@ public class CouponService {
 
         session.Flush();
 
-        if (selectCoupon != null) {
+        if (coupon != null) {
             // 插入新的优惠券费用
             var couponFee = new LogisticsOrderFeeInfo();
             couponFee.Customer = order.Customer;
@@ -410,7 +413,7 @@ public class CouponService {
             couponFee.OrderCode = order.Code;
             couponFee.GoodsType = LogisticsGoodsType.None;
             couponFee.Type = LogisticsOrderFeeType.CouponDiscountFee;
-            couponFee.Description = "优惠券实扣," + (selectCoupon.Code);
+            couponFee.Description = "优惠券实扣," + (coupon.Code);
             couponFee.Fee = -couponDiscount;
 
             session.Save(couponFee);

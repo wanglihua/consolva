@@ -69,7 +69,17 @@ public class WechatPayOrderService {
 
         NHibernateUtil.Initialize(order.Customer);
 
-        decimal totalAmount = order.OrderAmount;
+        // decimal totalAmount = order.OrderAmount; 不能把优惠费用计算在内
+        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
+        decimal totalAmount = 0.0m;
+        foreach (var fee in orderFeeList) {
+            if (fee.Type != LogisticsOrderFeeType.CouponDiscountFee) {
+                totalAmount += fee.Fee;
+            }
+        }
 
         decimal discountAmount = 0;
         if (coupon != null) {
