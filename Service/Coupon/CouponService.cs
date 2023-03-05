@@ -46,7 +46,7 @@ public class CouponService {
 
         var coupon = session.Query<CouponInfo>()
             .Where(e => e.Customer.Id == customerId
-                        && e.Status == CouponStatus.Pick)
+                        && (e.Status == CouponStatus.Pick || e.Order!.Id == orderId))
             .Take(1)
             .SingleOrDefault();
 
@@ -334,7 +334,6 @@ public class CouponService {
     /// <param name="orderId"></param>
     /// <param name="couponId"></param>
     public void SaveToOrder(int customerId, int orderId, int couponId) {
-
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -368,7 +367,7 @@ public class CouponService {
         var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
             .Where(e => e.Order.Id == orderId)
             .ToList();
-        
+
         decimal orderAmount = 0.0m;
         foreach (var fee in orderFeeList) {
             orderAmount += fee.Fee;
@@ -433,6 +432,6 @@ public class CouponService {
         }
 
         // 更新订单总费用和支付状态
-        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);        
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
     }
 }

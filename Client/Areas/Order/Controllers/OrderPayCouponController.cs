@@ -50,7 +50,7 @@ public class OrderPayCouponController : Controller {
 
     [HttpPost]
     [Route("/client/order/pay/coupon/list")]
-    [Transactional] // 有可能得更新操作
+    [Transactional] // 有可能的更新操作
     public IActionResult List([FromBody] OrderPayCouponListParam param) {
         ValidationUtil.Validate<OrderPayCouponListParamValidator, OrderPayCouponListParam>(param);
 
@@ -113,6 +113,7 @@ public class OrderPayCouponController : Controller {
             Success = true,
             Message = "操作成功！",
             Data = new OrderPayCouponListModel {
+                CouponCount = couponItemList.Count,
                 CouponList = couponItemList,
                 CouponId = orderCouponId,
             },

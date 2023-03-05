@@ -5,6 +5,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Coupon;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
@@ -34,9 +35,18 @@ public class OrderPayTypeController : Controller {
         ValidationUtil.Validate<OrderPayTypeListParamValidator, OrderPayTypeListParam>(param);
 
         int orderId = param.OrderId;
+        int couponId = param.CouponId;
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        CouponInfo? coupon = null;
+        if (couponId > 0) {
+            coupon = session.Get<CouponInfo>(couponId);
+            if (coupon == null) {
+                throw new ValidationException($"指定的优惠券{couponId}不存在！");
+            }
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
@@ -46,6 +56,8 @@ public class OrderPayTypeController : Controller {
         }
 
         logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
+
+        // todo 计算优惠券折扣价格
 
         return Json(new JsonResultData {
             Success = true,
