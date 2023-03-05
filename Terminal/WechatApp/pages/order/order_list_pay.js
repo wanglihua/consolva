@@ -87,8 +87,19 @@ Page({
         }
 
         if (action === "pay") {
-            wx.redirectTo({
-                url: "./order_pay_type?orderId=" + orderId,
+            app.post("/client/order/pay/coupon/has", {
+                orderId: orderId,
+            }, function (res) {
+                const hasCoupon = res.data.hasCoupon;
+                if(hasCoupon === true) {
+                    wx.redirectTo({
+                        url: "./order_pay_coupon?orderId=" + orderId,
+                    });
+                } else {
+                    wx.redirectTo({
+                        url: "./order_pay_type?orderId=" + orderId,
+                    });
+                }
             });
         }
 
