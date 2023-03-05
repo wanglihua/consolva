@@ -7,6 +7,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Coupon;
 using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
@@ -17,15 +18,18 @@ public class OrderPayTypeController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly CouponService couponService;
 
     public OrderPayTypeController(
         ISession session,
         LoginCustomerService loginCustomerService,
-        LogisticsOrderPaySumService logisticsOrderPaySumService
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
+        CouponService couponService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
+        this.couponService = couponService;
     }
 
     [HttpPost]
@@ -57,7 +61,27 @@ public class OrderPayTypeController : Controller {
 
         logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
-        // todo 计算优惠券折扣价格
+        decimal totalAmount = order.OrderAmount;
+
+        decimal discountAmount = 0;
+        string discountAmountStr = string.Empty;
+        if (coupon != null) {
+            var discountResult = couponService.CalculateCouponDiscount(couponId, totalAmount);
+            if (discountResult.Success == false) {
+                discountAmount = 0;
+                discountAmountStr = discountResult.Message;
+            } else {
+                discountAmount = discountResult.Discount;
+                discountAmountStr = discountAmount.ToString("#0.00");
+            }
+        }
+
+        decimal paidAmount = order.PaidAmount;
+        decimal arrearsAmount = totalAmount - discountAmount - paidAmount;
+
+        if (arrearsAmount < 0) {
+            arrearsAmount = 0;
+        }
 
         return Json(new JsonResultData {
             Success = true,
@@ -65,9 +89,10 @@ public class OrderPayTypeController : Controller {
             Data = new OrderPayTypeListModel {
                 OrderId = order.Id,
                 OrderCode = order.Code,
-                TotalAmount = order.OrderAmount.ToString("#0.00"),
-                PaidAmount = order.PaidAmount.ToString("#0.00"),
-                ArrearsAmount = (order.OrderAmount - order.PaidAmount).ToString("#0.00"), // 这里不能用 ArrearsAmountFormula
+                TotalAmount = totalAmount.ToString("#0.00"),
+                DiscountAmount = discountAmountStr,
+                PaidAmount = paidAmount.ToString("#0.00"),
+                ArrearsAmount = arrearsAmount.ToString("#0.00"),
             }
         });
     }

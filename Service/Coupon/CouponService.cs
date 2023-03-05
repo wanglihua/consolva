@@ -212,7 +212,7 @@ public class CouponService {
 
         private decimal discount;
 
-        [JsonIgnore]
+        [JsonProperty("discount")]
         public decimal Discount {
             get { return discount; }
             set {
@@ -221,20 +221,6 @@ public class CouponService {
                 }
 
                 discount = value;
-            }
-        }
-
-        [JsonIgnore]
-        public bool AirOrderSummary { get; set; } = false;
-
-        [JsonProperty("discount")]
-        protected string DiscountStr {
-            get {
-                if (AirOrderSummary) {
-                    return "计费后计算";
-                }
-
-                return discount.ToString("0.00");
             }
         }
     }

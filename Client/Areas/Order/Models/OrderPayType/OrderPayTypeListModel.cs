@@ -12,6 +12,9 @@ public class OrderPayTypeListModel {
     [JsonProperty("totalAmount")]
     public string TotalAmount { get; set; } = string.Empty;
 
+    [JsonProperty("discountAmount")]
+    public string DiscountAmount { get; set; } = string.Empty;
+
     [JsonProperty("paidAmount")]
     public string PaidAmount { get; set; } = string.Empty;
 
