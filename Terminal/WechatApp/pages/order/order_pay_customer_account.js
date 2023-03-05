@@ -4,6 +4,7 @@ const app = getApp();
 Page({
     data: {
         orderId: 0,
+        couponId: 0,
         orderCode: "",
         totalAmount: "",
         paidAmount: "",
@@ -14,13 +15,19 @@ Page({
 
     onLoad(options) {
         const orderId = options.orderId;
+        const couponId = options.couponId;
+
+        this.setData({
+            orderId: orderId,
+            couponId: couponId,
+        });
 
         const that = this;
         app.post("/client/order/pay/customer/account/detail", {
             orderId: orderId,
+            couponId: couponId,
         }, function (res) {
             that.setData({
-                orderId: orderId,
                 orderCode: res.data.orderCode,
                 totalAmount: res.data.totalAmount,
                 paidAmount: res.data.paidAmount,
@@ -33,8 +40,11 @@ Page({
 
     onPayClick(e) {
         const orderId = this.data.orderId;
+        const couponId = this.data.couponId;
+
         app.post("/client/order/pay/customer/account/pay", {
             orderId: orderId,
+            couponId: couponId,
         }, function (res) {
             wx.showModal({
                 title: '成功',

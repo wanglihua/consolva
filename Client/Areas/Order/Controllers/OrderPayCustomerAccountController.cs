@@ -5,9 +5,11 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Coupon;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Coupon;
 using shunda.Service.Customer;
 using shunda.Service.Fee;
 using shunda.Service.LogisticsOrder;
@@ -23,6 +25,7 @@ public class OrderPayCustomerAccountController : Controller {
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly CustomerScoreService customerScoreService;
     private readonly CustomerAccountService customerAccountService;
+    private readonly CouponService couponService;
 
     public OrderPayCustomerAccountController(
         ISession session,
@@ -30,7 +33,8 @@ public class OrderPayCustomerAccountController : Controller {
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService,
-        CustomerAccountService customerAccountService
+        CustomerAccountService customerAccountService,
+        CouponService couponService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
@@ -38,6 +42,7 @@ public class OrderPayCustomerAccountController : Controller {
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.customerScoreService = customerScoreService;
         this.customerAccountService = customerAccountService;
+        this.couponService = couponService;
     }
 
     [HttpPost]
@@ -46,9 +51,19 @@ public class OrderPayCustomerAccountController : Controller {
         ValidationUtil.Validate<OrderPayCustomerAccountDetailParamValidator, OrderPayCustomerAccountDetailParam>(param);
 
         int orderId = param.OrderId;
+        int couponId = param.CouponId;
+
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        CouponInfo? coupon = null;
+        if (couponId > 0) {
+            coupon = session.Get<CouponInfo>(couponId);
+            if (coupon == null) {
+                throw new ValidationException($"指定的优惠券{couponId}不存在！");
+            }
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
@@ -58,10 +73,28 @@ public class OrderPayCustomerAccountController : Controller {
             throw new ValidationException($"指定的订单{order.Code}不属于当前登录客户#{loginCustomerId}！");
         }
 
-        decimal arrearsAmount = (order.OrderAmount - order.PaidAmount);
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
-        if (arrearsAmount <= 0) {
-            throw new ValidationException("订单没有欠费。无需支付！");
+        decimal totalAmount = order.OrderAmount;
+
+        decimal discountAmount = 0;
+        string discountAmountStr = string.Empty;
+        if (coupon != null) {
+            var discountResult = couponService.CalculateCouponDiscount(couponId, totalAmount);
+            if (discountResult.Success == false) {
+                discountAmount = 0;
+                discountAmountStr = discountResult.Message;
+            } else {
+                discountAmount = discountResult.Discount;
+                discountAmountStr = discountAmount.ToString("#0.00");
+            }
+        }
+
+        decimal paidAmount = order.PaidAmount;
+        decimal arrearsAmount = totalAmount - discountAmount - paidAmount;
+
+        if (arrearsAmount < 0) {
+            arrearsAmount = 0;
         }
 
         decimal customerAccount = loginCustomer.Account;
@@ -76,7 +109,7 @@ public class OrderPayCustomerAccountController : Controller {
             actualPayAmount = customerAccount;
         }
 
-        // 这个判断一般是不会成立的s
+        // 这个判断一般是不会成立的
         if (actualPayAmount < 0) {
             actualPayAmount = 0;
         }
@@ -89,9 +122,11 @@ public class OrderPayCustomerAccountController : Controller {
             Data = new OrderPayCustomerAccountDetailModel {
                 OrderId = order.Id,
                 OrderCode = order.Code,
-                TotalAmount = order.OrderAmount.ToString("#0.00"),
-                PaidAmount = order.PaidAmount.ToString("#0.00"),
-                ArrearsAmount = arrearsAmount.ToString("#0.00"), // 这里不能用 ArrearsAmountFormula
+                TotalAmount = totalAmount.ToString("#0.00"),
+                HasCoupon = coupon != null,
+                DiscountAmount = discountAmountStr,
+                PaidAmount = paidAmount.ToString("#0.00"),
+                ArrearsAmount = arrearsAmount.ToString("#0.00"),
                 ActualPayAmount = actualPayAmount.ToString("#0.00"),
                 HasAccountToPay = hasAccountToPay,
             },
@@ -105,9 +140,19 @@ public class OrderPayCustomerAccountController : Controller {
         ValidationUtil.Validate<OrderPayCustomerAccountPayParamValidator, OrderPayCustomerAccountPayParam>(param);
 
         int orderId = param.OrderId;
+        int couponId = param.CouponId;
+
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        CouponInfo? coupon = null;
+        if (couponId > 0) {
+            coupon = session.Get<CouponInfo>(couponId);
+            if (coupon == null) {
+                throw new ValidationException($"指定的优惠券{couponId}不存在！");
+            }
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
@@ -117,17 +162,26 @@ public class OrderPayCustomerAccountController : Controller {
             throw new ValidationException($"指定的订单{order.Code}不属于当前登录客户#{loginCustomerId}！");
         }
 
-        decimal arrearsAmount = (order.OrderAmount - order.PaidAmount);
+        decimal totalAmount = order.OrderAmount;
 
-        if (arrearsAmount <= 0) {
-            throw new ValidationException("订单没有欠费。无需支付！");
+        decimal discountAmount = 0;
+        if (coupon != null) {
+            var discountResult = couponService.CalculateCouponDiscount(couponId, totalAmount);
+            if (discountResult.Success == false) {
+                discountAmount = 0;
+            } else {
+                discountAmount = discountResult.Discount;
+            }
+        }
+
+        decimal paidAmount = order.PaidAmount;
+        decimal arrearsAmount = totalAmount - discountAmount - paidAmount;
+
+        if (arrearsAmount < 0) {
+            arrearsAmount = 0;
         }
 
         decimal customerAccount = loginCustomer.Account;
-
-        if (customerAccount <= 0) {
-            throw new ValidationException("当前客户账户没有余额，不能支付！");
-        }
 
         decimal actualPayAmount = arrearsAmount;
         if (customerAccount < arrearsAmount) {
@@ -135,7 +189,7 @@ public class OrderPayCustomerAccountController : Controller {
         }
 
         // 这个判断一般是不会成立的
-        if (customerAccount < 0) {
+        if (actualPayAmount < 0) {
             actualPayAmount = 0;
         }
 
@@ -146,7 +200,7 @@ public class OrderPayCustomerAccountController : Controller {
             OutTradeNo = string.Empty, // 非空，其实生成一个也可以的
             Customer = order.Customer,
             PayType = PayType.Balance,
-            Amount = actualPayAmount,
+            Amount = actualPayAmount, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。
             Status = PayStatus.Paid
         };
 
@@ -163,11 +217,10 @@ public class OrderPayCustomerAccountController : Controller {
 
         PayStatus payStatusAfter = order.PayStatus;
 
-        int orderPayId = orderPay.Id;
-
         customerAccountService.Change(CustomerAccountChangeType.Pay, loginCustomer.Id, -actualPayAmount, $"余额支付订单：{order.Code}");
 
         // 会员积分
+        int orderPayId = orderPay.Id;
         customerScoreService.AddScore(orderPayId);
 
         logisticsOrderActionService.NewActionCustomer(orderId, LogisticsOrderActionType.Pay, payStatusBefore, payStatusAfter, $"余额支付，金额：{actualPayAmount:#0.00)}", loginCustomerId);

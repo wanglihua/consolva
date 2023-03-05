@@ -12,6 +12,12 @@ public class OrderPayCustomerAccountDetailModel {
     [JsonProperty("totalAmount")]
     public string TotalAmount { get; set; } = string.Empty;
 
+    [JsonProperty("hasCoupon")]
+    public bool HasCoupon { get; set; }
+
+    [JsonProperty("discountAmount")]
+    public string DiscountAmount { get; set; } = string.Empty;
+
     [JsonProperty("paidAmount")]
     public string PaidAmount { get; set; } = string.Empty;
 

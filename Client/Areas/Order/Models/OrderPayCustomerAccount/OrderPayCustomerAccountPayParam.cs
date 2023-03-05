@@ -6,6 +6,9 @@ namespace shunda.Client.Areas.Order.Models.OrderPayCustomerAccount;
 public class OrderPayCustomerAccountPayParam {
     [JsonProperty("orderId")]
     public int OrderId { get; set; }
+
+    [JsonProperty("couponId")]
+    public int CouponId { get; set; }
 }
 
 public class OrderPayCustomerAccountPayParamValidator : AbstractValidator<OrderPayCustomerAccountPayParam> {

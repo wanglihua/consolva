@@ -32,7 +32,6 @@ Page({
             couponId: couponId,
         }, function (res) {
             that.setData({
-                orderId: orderId,
                 orderCode: res.data.orderCode,
                 totalAmount: res.data.totalAmount,
                 hasCoupon: res.data.hasCoupon,
