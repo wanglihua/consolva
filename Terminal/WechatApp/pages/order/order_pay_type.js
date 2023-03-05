@@ -5,26 +5,36 @@ Page({
 
     data: {
         orderId: 0,
+        couponId: 0,
         orderCode: "",
         totalAmount: "",
+        discountAmount: "",
         paidAmount: "",
         arrearsAmount: ""
     },
 
     onLoad(options) {
         const orderId = options.orderId;
+        let couponId = 0;
+        if (options.couponId) {
+            couponId = options.couponId;
+        }
+
         this.setData({
             orderId: orderId,
+            couponId: couponId,
         });
 
         const that = this;
         app.post("/client/order/pay/type/list", {
             orderId: orderId,
+            couponId: couponId,
         }, function (res) {
             that.setData({
                 orderId: orderId,
                 orderCode: res.data.orderCode,
                 totalAmount: res.data.totalAmount,
+                discountAmount: res.data.discountAmount,
                 paidAmount: res.data.paidAmount,
                 arrearsAmount: res.data.arrearsAmount,
             });
@@ -33,9 +43,12 @@ Page({
 
     onWechatPayClick(e) {
         const orderId = this.data.orderId;
+        const couponId = this.data.couponId;
 
+        // 优惠券在这个请求里面保存到订单
         app.post("/client/wechat/app/order/wechat/pay/create", {
             orderId: orderId,
+            couponId: couponId,
         }, function (res) {
             wx.requestPayment({
                 'timeStamp': res.data.timeStamp,

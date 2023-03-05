@@ -1,7 +1,7 @@
 <!--pages/order/order_pay_coupon.wxml-->
 <header/>
 <view class="container">
-    <van-cell-group title="优惠券"/>
+    <van-cell-group title="订单支付优惠券"/>
     <block wx:if="{{ couponCount === 0 }}">
         <van-empty description="您当前没有可用的优惠券！"/>
     </block>
@@ -11,12 +11,12 @@
 
                 <block wx:if="{{ couponId === coupon.id }}">
                     <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
-                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onCouponButtonClick" data-item="{{ coupon }}">已选择</van-button>
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onCouponButtonClick" data-item="{{ coupon }}">使用优惠</van-button>
                     </van-cell>
                 </block>
                 <block wx:else>
                     <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
-                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onCouponButtonClick" data-item="{{ coupon }}">选择</van-button>
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onCouponButtonClick" data-item="{{ coupon }}">使用优惠</van-button>
                     </van-cell>
                 </block>
 

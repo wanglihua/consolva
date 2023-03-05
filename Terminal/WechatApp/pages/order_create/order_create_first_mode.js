@@ -38,7 +38,7 @@ Page({
             });
 
             that.gotoNext();
-        })
+        });
     },
 
     onPreButtonClick(e) {

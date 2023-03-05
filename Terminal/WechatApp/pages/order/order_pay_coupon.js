@@ -28,6 +28,13 @@ Page({
     },
 
     onCouponButtonClick(e) {
-        
+        const coupon = e.currentTarget.dataset.item;
+        const couponId = coupon.id;
+
+        const orderId = this.data.orderId;
+
+        wx.navigateTo({
+            url: "./order_pay_type?orderId=" + orderId + "&couponId=" + couponId,
+        });
     }
 })
