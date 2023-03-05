@@ -8,7 +8,18 @@
     <block wx:else>
         <block wx:for="{{ couponList }}" wx:key="id" wx:for-item="coupon" wx:for-index="index">
             <van-cell-group custom-class="items">
-                <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" value="{{ coupon.type }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+
+                <block wx:if="{{ couponId === coupon.id }}">
+                    <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button-selected" bind:click="onCouponButtonClick" data-item="{{ coupon }}">已选择</van-button>
+                    </van-cell>
+                </block>
+                <block wx:else>
+                    <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title">
+                        <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onCouponButtonClick" data-item="{{ coupon }}">选择</van-button>
+                    </van-cell>
+                </block>
+
                 <van-cell title="编号" value="{{ coupon.code }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="类型" value="{{ coupon.type }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="有效期" value="{{ coupon.expire }}" border="{{ false }}" custom-class="item"/>

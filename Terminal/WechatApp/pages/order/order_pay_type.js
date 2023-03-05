@@ -13,6 +13,9 @@ Page({
 
     onLoad(options) {
         const orderId = options.orderId;
+        this.setData({
+            orderId: orderId,
+        });
 
         const that = this;
         app.post("/client/order/pay/type/list", {

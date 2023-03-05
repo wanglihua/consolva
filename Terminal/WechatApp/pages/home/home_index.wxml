@@ -23,7 +23,7 @@
             <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="/pages/customer/customer_address/customer_address_receive/customer_address_receive_list"/>
             <!--<van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text="推广返利" url=""/>-->
             <van-grid-item icon-prefix="iconfont" icon="promotion" icon-class="home-grid-icon" text="优惠活动" badge="{{ homeData.promotionBadge }}" url="/pages/instruction/instruction_promotion?url={{ homeData.promotionUrl }}"/>
-            <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" badge="{{ homeData.CouponBatchPickBadge }}" url="/pages/coupon/coupon_mine"/>
+            <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" badge="{{ homeData.couponBatchPickBadge }}" url="/pages/coupon/coupon_mine"/>
             <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额" url="/pages/customer/customer_account/customer_account"/>
             <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="/pages/customer/customer_score/customer_score"/>
             <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="/pages/customer/customer_pay/customer_pay"/>
