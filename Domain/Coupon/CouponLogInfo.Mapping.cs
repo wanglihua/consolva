@@ -4,7 +4,7 @@ using shunda.Core;
 
 namespace shunda.Domain.Coupon;
 
-public class CouponLogInfoMapping : EntityMapping<CouponLogInfo> {
+public class CouponLogInfoMapping : EntityNoUpdateMapping<CouponLogInfo> {
     public CouponLogInfoMapping() {
         Table("tbl_coupon_log");
 

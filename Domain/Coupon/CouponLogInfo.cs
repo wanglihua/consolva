@@ -6,7 +6,7 @@ namespace shunda.Domain.Coupon;
 /// <summary>
 /// 优惠券
 /// </summary>
-public class CouponLogInfo : Entity {
+public class CouponLogInfo : EntityNoUpdate {
     /// <summary>
     /// 优惠券，非空
     /// </summary>

@@ -3,7 +3,6 @@
         "pages/home/home_index",
         "pages/coupon/coupon_mine",
         "pages/coupon/coupon_pick",
-        "pages/coupon/coupon_order",
         "pages/customer/customer_account/customer_account",
         "pages/customer/customer_account/customer_account_entry",
         "pages/customer/customer_address/customer_address_receive/customer_address_receive_list",
