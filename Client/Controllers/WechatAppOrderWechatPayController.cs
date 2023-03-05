@@ -41,6 +41,7 @@ public class WechatAppOrderWechatPayController : Controller {
         ValidationUtil.Validate<WechatAppOrderWechatPayCreateParamValidator, WechatAppOrderWechatPayCreateParam>(param);
 
         int orderId = param.OrderId;
+        int couponId = param.CouponId;
 
         // 判断订单是不是当前登录用户的
         var order = session.Get<LogisticsOrderInfo>(orderId);
@@ -54,7 +55,7 @@ public class WechatAppOrderWechatPayController : Controller {
             throw new ValidationException($"指定的订单{order.Code}不属于当前登录客户#{loginCustomerId}！");
         }
 
-        WechatPayCreateResultData data = wechatPayOrderService.Create(orderId, NOTIFY_URL);
+        WechatPayCreateResultData data = wechatPayOrderService.Create(customerId: loginCustomerId, orderId: orderId, couponId: couponId, NOTIFY_URL);
 
         return Json(new JsonResultData {
             Success = true,

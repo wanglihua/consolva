@@ -8,6 +8,7 @@ using shunda.Core.Web;
 using shunda.Domain.Coupon;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
 using shunda.Service.Customer;
@@ -171,6 +172,9 @@ public class OrderPayCustomerAccountController : Controller {
                 discountAmount = 0;
             } else {
                 discountAmount = discountResult.Discount;
+
+                // 保存优惠券到订单，并生成响应的订单费用，负的费用
+                couponService.SaveToOrder(customerId: loginCustomerId, orderId: orderId, couponId: couponId);
             }
         }
 

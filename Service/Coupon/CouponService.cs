@@ -314,7 +314,7 @@ public class CouponService {
     }
 
     /// <summary>
-    /// 保存优惠券到订单
+    /// 保存优惠券到订单，并生成响应的订单费用，负的费用
     /// </summary>
     /// <param name="customerId"></param>
     /// <param name="orderId"></param>
@@ -418,6 +418,7 @@ public class CouponService {
         }
 
         // 更新订单总费用和支付状态
+        // 当前方法的调用者，一般也会在调用后调用 这个 SumFeeAndUpdatePayStatus(), 会有可能得重复调用
         logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
     }
 }

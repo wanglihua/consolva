@@ -6,6 +6,9 @@ namespace shunda.Client.Models.WechatAppOrderWechatPay;
 public class WechatAppOrderWechatPayCreateParam {
     [JsonProperty("orderId")]
     public int OrderId { get; set; }
+
+    [JsonProperty("couponId")]
+    public int CouponId { get; set; }
 }
 
 public class WechatAppOrderWechatPayCreateParamValidator : AbstractValidator<WechatAppOrderWechatPayCreateParam> {

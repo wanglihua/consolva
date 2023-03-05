@@ -51,27 +51,40 @@ Page({
             orderId: orderId,
             couponId: couponId,
         }, function (res) {
-            wx.requestPayment({
-                'timeStamp': res.data.timeStamp,
-                'nonceStr': res.data.nonceStr,
-                'package': res.data.package,
-                'signType': res.data.signType,
-                'paySign': res.data.paySign,
-                'success': function (res) {
-                    wx.redirectTo({
-                        url: "/pages/order/order_detail?id=" + orderId,
-                    });
-                },
-                'fail': function (res) {
-                    if (res.errMsg !== "requestPayment:fail cancel") {
-                        wx.showModal({
-                            title: '错误',
-                            content: res.errMsg,
-                            showCancel: false
+            if (res.needPay === false) {
+                wx.showModal({
+                    title: '成功',
+                    content: "订单已支付成功，无需继续微信支付！",
+                    showCancel: false,
+                    success: function (res) {
+                        wx.redirectTo({
+                            url: "/pages/order/order_detail?id=" + orderId,
                         });
                     }
-                }
-            });
+                });
+            } else {
+                wx.requestPayment({
+                    'timeStamp': res.data.timeStamp,
+                    'nonceStr': res.data.nonceStr,
+                    'package': res.data.package,
+                    'signType': res.data.signType,
+                    'paySign': res.data.paySign,
+                    'success': function (res) {
+                        wx.redirectTo({
+                            url: "/pages/order/order_detail?id=" + orderId,
+                        });
+                    },
+                    'fail': function (res) {
+                        if (res.errMsg !== "requestPayment:fail cancel") {
+                            wx.showModal({
+                                title: '错误',
+                                content: res.errMsg,
+                                showCancel: false
+                            });
+                        }
+                    }
+                });
+            }
         });
     },
 })
