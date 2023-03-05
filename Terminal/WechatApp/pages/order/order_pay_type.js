@@ -8,6 +8,7 @@ Page({
         couponId: 0,
         orderCode: "",
         totalAmount: "",
+        hasCoupon: false,
         discountAmount: "",
         paidAmount: "",
         arrearsAmount: ""
@@ -34,6 +35,7 @@ Page({
                 orderId: orderId,
                 orderCode: res.data.orderCode,
                 totalAmount: res.data.totalAmount,
+                hasCoupon: res.data.hasCoupon,
                 discountAmount: res.data.discountAmount,
                 paidAmount: res.data.paidAmount,
                 arrearsAmount: res.data.arrearsAmount,

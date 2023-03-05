@@ -90,6 +90,7 @@ public class OrderPayTypeController : Controller {
                 OrderId = order.Id,
                 OrderCode = order.Code,
                 TotalAmount = totalAmount.ToString("#0.00"),
+                HasCoupon = coupon != null,
                 DiscountAmount = discountAmountStr,
                 PaidAmount = paidAmount.ToString("#0.00"),
                 ArrearsAmount = arrearsAmount.ToString("#0.00"),

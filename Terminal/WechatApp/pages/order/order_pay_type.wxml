@@ -6,6 +6,11 @@
     <van-cell-group custom-class="items">
         <van-cell title="订单编号" value="{{ orderCode }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="订单费用" value="{{ totalAmount }} RMB" border="{{ false }}" custom-class="item"/>
+
+        <block wx:if="{{ hasCoupon }}">
+            <van-cell title="优惠折扣" value="{{ discountAmount }} RMB" border="{{ false }}" custom-class="item"/>
+        </block>
+
         <van-cell title="已支付" value="{{ paidAmount }} RMB" border="{{ false }}" custom-class="item"/>
         <van-cell title="欠费金额" value="{{ arrearsAmount }} RMB" border="{{ false }}" custom-class="item"/>
         <view class="item-last-vspace"/>
@@ -13,7 +18,7 @@
 
     <van-cell-group title="订单支付方式"/>
     <van-cell-group custom-class="items">
-        <van-cell title="余额支付" is-link link-type="navigateTo" size="large" url="./order_pay_customer_account?orderId={{ orderId }}">
+        <van-cell title="余额支付" is-link link-type="navigateTo" size="large" url="./order_pay_customer_account?orderId={{ orderId }}&couponId={{ couponId }}">
             <van-icon slot="icon" class-prefix="iconfont" name="account" class="cell-left-icon"/>
         </van-cell>
 
