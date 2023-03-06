@@ -42,6 +42,11 @@ public class ClientInstructionType : CodeTypeBase {
     public static readonly ClientInstructionType GoodsType = new ClientInstructionType(7000, "物品分类", "物品分类");
 
     /// <summary>
+    /// 关注公众号
+    /// </summary>
+    public static readonly ClientInstructionType FollowTip = new ClientInstructionType(8000, "关注公众号", "关注公众号");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly ClientInstructionType None = new ClientInstructionType(0, "", "");
@@ -54,6 +59,7 @@ public class ClientInstructionType : CodeTypeBase {
         Promotion,
         StorageInstruction,
         GoodsType,
+        FollowTip,
     };
 
     private static readonly IDictionary<int, ClientInstructionType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
@@ -84,4 +90,4 @@ public class ClientInstructionTypeModelBinder : CodeTypeModelBinderBase<ClientIn
     protected override ClientInstructionType GetCodeTypeById(int id) {
         return ClientInstructionType.GetById(id);
     }
-} 
+}
