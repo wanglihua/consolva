@@ -99,6 +99,9 @@ public class ClientHomeDataInfo {
     [JsonProperty("goodsTypeUrl")]
     public virtual string GoodsTypeUrl { get; set; } = string.Empty;
 
+    [JsonProperty("followTipUrl")]
+    public virtual string FollowTipUrl { get; set; } = string.Empty;
+
     #region override
 
     public override bool Equals(object? obj) {

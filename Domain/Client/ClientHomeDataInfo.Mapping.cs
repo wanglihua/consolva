@@ -257,5 +257,14 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
                 map.NotNullable(true);
             }
         );
+
+        Property(
+            x => x.FollowTipUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("follow_tip_url");
+                map.NotNullable(true);
+            }
+        );
     }
 }
