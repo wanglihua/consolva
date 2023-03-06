@@ -43,6 +43,12 @@
         </van-grid>
     </view>
 
+    <van-tabbar active="{{ 0 }}" placeholder="{{ true }}" bind:change="onTabbarChange">
+        <van-tabbar-item icon="wap-home-o">首页</van-tabbar-item>
+        <van-tabbar-item icon="sign">包裹</van-tabbar-item>
+        <van-tabbar-item icon="contact">我的</van-tabbar-item>
+    </van-tabbar>
+
     <van-popup show="{{ showFollowPopup }}" custom-style="width: 90%;" closeable bind:close="onFollowPopupClose">
         <view style="margin: 30px 10px 10px 10px;">
             <view style="padding: 5px;">

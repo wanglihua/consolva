@@ -44,6 +44,26 @@ Page({
         );
     },
 
+    onTabbarChange(e) {
+        if (e.detail === 0) {
+            wx.redirectTo({
+                url: "./home_index",
+            });
+        }
+
+        if (e.detail === 1) {
+            wx.redirectTo({
+                url: "./home_package",
+            });
+        }
+
+        if (e.detail === 2) {
+            wx.redirectTo({
+                url: "./home_personal",
+            });
+        }
+    },
+
     onFollowPopupClose(e) {
         this.setData({
             showFollowPopup: false,

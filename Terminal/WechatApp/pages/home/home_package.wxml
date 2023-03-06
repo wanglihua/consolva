@@ -1,0 +1,51 @@
+<header/>
+<view class="container">
+    <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
+        <van-grid border="{{false}}">
+            <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="申领件" badge="{{ homeData.expressClaimBadge }}" url="/pages/express/express_claim/express_claim_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="预报池" badge="{{ homeData.expressExpectBadge }}" url="/pages/express/express_expect/express_expect_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="{{ homeData.expressCheckinBadge }}" url="/pages/express/express_checkin/express_checkin_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="pack-list" icon-class="home-grid-icon" text="待打包" badge="{{ homeData.orderSubmittedBadge }}" url="/pages/order/order_list_submitted"/>
+            <van-grid-item icon-prefix="iconfont" icon="pay-list" icon-class="home-grid-icon" text="待支付" badge="{{ homeData.orderPayBadge }}" url="/pages/order/order_list_pay"/>
+            <van-grid-item icon-prefix="iconfont" icon="waiting-transport" icon-class="home-grid-icon" text="待转运" badge="{{ homeData.orderWaitingTransportBadge }}" url="/pages/order/order_list_wait_transport"/>
+            <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon" text="转运中" badge="{{ homeData.orderTransportingBadge }}" url="/pages/order/order_list_transporting"/>
+            <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" text="已交付" badge="{{ homeData.orderDeliveredBadge }}" url="/pages/order/order_list_delivered"/>
+            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text="退运池" badge="{{ homeData.expressReturnBadge }}" url="/pages/express/express_return/express_return_list"/>
+        </van-grid>
+    </view>
+
+    <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
+        <van-grid border="{{false}}">
+            <van-grid-item icon-prefix="iconfont" icon="notice" icon-class="home-grid-icon" text="公告" badge="{{ homeData.newNoticeBadge }}" url="/pages/notice/notice_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" badge="{{ homeData.newMessageBadge }}" url="/pages/message/message_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="/pages/message/message_customize"/>
+            <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="我的地址" url="/pages/customer/customer_address/customer_address_receive/customer_address_receive_list"/>
+            <!--<van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text="推广返利" url=""/>-->
+            <van-grid-item icon-prefix="iconfont" icon="promotion" icon-class="home-grid-icon" text="优惠活动" badge="{{ homeData.promotionBadge }}" url="/pages/instruction/instruction_promotion?url={{ homeData.promotionUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" badge="{{ homeData.couponBatchPickBadge }}" url="/pages/coupon/coupon_mine"/>
+            <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额" url="/pages/customer/customer_account/customer_account"/>
+            <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="积分" url="/pages/customer/customer_score/customer_score"/>
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="/pages/customer/customer_pay/customer_pay"/>
+            <van-grid-item icon-prefix="iconfont" icon="profile" icon-class="home-grid-icon" text="个人中心" url=""/>
+            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" text="使用协议" badge="{{ homeData.useAgreementBadge }}" url="/pages/instruction/instruction_use_agreement?url={{ homeData.useAgreementUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="insurance-clause" icon-class="home-grid-icon" text="保险条款" badge="{{ homeData.insuranceClauseBadge }}" url="/pages/instruction/instruction_insurance_clause?url={{ homeData.insuranceClauseUrl }}"/>
+        </van-grid>
+    </view>
+
+    <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
+        <van-grid border="{{false}}">
+            <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="/pages/freight_estimate/freight_estimate_goods"/>
+            <van-grid-item icon-prefix="iconfont" icon="warehouse-address" icon-class="home-grid-icon" text="仓库地址" url="/pages/instruction/instruction_warehouse_address"/>
+            <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" text="运费说明" badge="{{ homeData.freightDescBadge }}" url="/pages/instruction/instruction_freight_desc?url={{ homeData.freightDescUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text="下单流程" badge="{{ homeData.orderProcessBadge }}" url="/pages/instruction/instruction_order_process?url={{ homeData.orderProcessUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="goods-type" icon-class="home-grid-icon" text="物品分类" badge="{{ homeData.goodsTypeBadge }}" url="/pages/instruction/instruction_goods_type?url={{ homeData.goodsTypeUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text="仓储说明" badge="{{ homeData.storageInstructionBadge }}" url="/pages/instruction/instruction_storage?url={{ homeData.storageInstructionUrl }}"/>
+        </van-grid>
+    </view>
+
+    <van-tabbar active="{{ 1 }}" placeholder="{{ true }}" bind:change="onTabbarChange">
+        <van-tabbar-item icon="wap-home-o">首页</van-tabbar-item>
+        <van-tabbar-item icon="sign">包裹</van-tabbar-item>
+        <van-tabbar-item icon="contact">我的</van-tabbar-item>
+    </van-tabbar>
+</view>
