@@ -1,6 +1,9 @@
 {
     "pages": [
         "pages/home/home_index",
+        "pages/home/home_package",
+        "pages/home/home_personal",
+        "pages/home/home_web_view",
         "pages/coupon/coupon_mine",
         "pages/coupon/coupon_pick",
         "pages/customer/customer_account/customer_account",
@@ -58,8 +61,7 @@
         "pages/order/order_pay_type",
         "pages/order/order_pay_customer_account",
         "pages/notice/notice_list",
-        "pages/notice/notice_detail",
-        "pages/home/home_web_view"
+        "pages/notice/notice_detail"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",
