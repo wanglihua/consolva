@@ -22,6 +22,7 @@ Page({
             that.setData({
                 id: id,
                 trackingNo: res.data.trackingNo,
+                goodsValue: res.data.goodsValue,
                 description: res.data.description,
             });
         });

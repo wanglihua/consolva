@@ -103,7 +103,7 @@ public class ExpressExpectService {
         expressExpectInDb.GoodsValue = goodsValue;
         expressExpectInDb.Description = description;
         expressExpectInDb.LastEditTime = DateTime.Now;
-        expressExpectInDb.Status = ExpressExpectStatus.Create;
+        expressExpectInDb.Status = ExpressExpectStatus.Create; // 后面可能会被修改
 
         var express = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == trackingNo)
@@ -229,6 +229,12 @@ public class ExpressExpectService {
             }
         }
 
+        expressExpect.TrackingNo = trackingNo;
+        expressExpect.GoodsValue = goodsValue;
+        expressExpect.Description = description;
+        expressExpect.LastEditTime = DateTime.Now;
+        expressExpect.Status = ExpressExpectStatus.Create; // 后面可能会被修改
+
         bool claim = false;
 
         var express = session.Query<ExpressInfo>()
@@ -268,12 +274,6 @@ public class ExpressExpectService {
                 claim = true;
             }
         }
-
-        expressExpect.TrackingNo = trackingNo;
-        expressExpect.GoodsValue = goodsValue;
-        expressExpect.Description = description;
-        expressExpect.LastEditTime = DateTime.Now;
-        expressExpect.Status = ExpressExpectStatus.Create;
 
         session.Update(expressExpect);
         session.Flush();

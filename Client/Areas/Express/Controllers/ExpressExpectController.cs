@@ -122,6 +122,7 @@ public class ExpressExpectController : Controller {
             Data = new ExpressExpectDetailModel() {
                 Id = expressExpect.Id,
                 TrackingNo = expressExpect.TrackingNo,
+                GoodsValue = expressExpect.GoodsValue.ToString("#0.00"),
                 Description = expressExpect.Description,
             },
         });
