@@ -136,7 +136,12 @@ public class LogisticsOrderClientListService {
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.Pay) {
-            query = query.Where(e => (e.PayStatus != PayStatus.Paid || e.ArrearsAmountFormula > 0) && e.OrderStatus != LogisticsOrderStatus.Canceled);
+            var orderStatusListMayPay = new List<LogisticsOrderStatus> {
+                LogisticsOrderStatus.Packed, // 一般也就这个状态
+                LogisticsOrderStatus.WaitTransfer,
+                LogisticsOrderStatus.Transferred,
+            };
+            query = query.Where(e => (e.PayStatus != PayStatus.Paid || e.ArrearsAmountFormula > 0) && orderStatusListMayPay.Contains(e.OrderStatus));
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.WaitingTransport) {

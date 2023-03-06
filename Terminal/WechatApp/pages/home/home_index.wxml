@@ -33,6 +33,8 @@
         </van-grid>
     </view>
 
+    <official-account></official-account>
+
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}">
             <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="/pages/freight_estimate/freight_estimate_goods"/>
