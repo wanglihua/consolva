@@ -41,23 +41,36 @@ Page({
             goodsValue: this.data.goodsValue,
             description: this.data.description,
         }, function (res) {
-            wx.showToast({
-                title: res.message,
-            });
-
-            setTimeout(function () {
-                const pages = getCurrentPages();
-                wx.navigateBack({
-                    complete: function (e) {
-                        if (pages.length >= 2) {
-                            const prevPage = pages[pages.length - 2];
-                            if (prevPage.loadExpressExpectList) {
-                                prevPage.loadExpressExpectList();
-                            }
-                        }
+            if (res.data.claim === true) {
+                wx.showModal({
+                    title: '成功',
+                    content: res.message,
+                    showCancel: false,
+                    success: function (res) {
+                        wx.navigateTo({
+                            url: "/pages/express/express_checkin/express_checkin_list",
+                        });
                     }
                 });
-            }, 1000);
+            } else {
+                wx.showToast({
+                    title: res.message,
+                });
+
+                setTimeout(function () {
+                    const pages = getCurrentPages();
+                    wx.navigateBack({
+                        complete: function (e) {
+                            if (pages.length >= 2) {
+                                const prevPage = pages[pages.length - 2];
+                                if (prevPage.loadExpressExpectList) {
+                                    prevPage.loadExpressExpectList();
+                                }
+                            }
+                        }
+                    });
+                }, 1000);
+            }
         });
     },
 
