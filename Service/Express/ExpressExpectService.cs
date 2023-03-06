@@ -48,7 +48,11 @@ public class ExpressExpectService {
         }
     }
 
-    public void Add(AddParam param) {
+    /// <summary>
+    /// 添加快递单号预报
+    /// </summary>
+    /// <returns>是否通过添加预报成功认领</returns>
+    public bool Add(AddParam param) {
         ValidationUtil.Validate<AddParamValidator, AddParam>(param);
 
         int customerId = param.CustomerId;
@@ -70,6 +74,8 @@ public class ExpressExpectService {
         if (customer == null) {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
+
+        bool claim = false;
 
         var expressExpectInDb = session.Query<ExpressExpectInfo>()
             .Where(e => e.TrackingNo == trackingNo)
@@ -132,6 +138,8 @@ public class ExpressExpectService {
                 expressLogService.CustomerLog(express.Id, ExpressLogType.Checkin, "添加预报认领", customerId);
 
                 // todo a customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
+
+                claim = true;
             }
         }
 
@@ -142,6 +150,8 @@ public class ExpressExpectService {
         }
 
         session.Flush();
+
+        return claim;
     }
 
     public class EditParam {
@@ -172,7 +182,8 @@ public class ExpressExpectService {
     /// <summary>
     /// 编辑快递单号预报
     /// </summary>
-    public void Edit(EditParam param) {
+    /// <returns>是否通过编辑预报成功认领</returns>
+    public bool Edit(EditParam param) {
         ValidationUtil.Validate<EditParamValidator, EditParam>(param);
 
         int expressExpectId = param.ExpressExpectId;
@@ -190,11 +201,11 @@ public class ExpressExpectService {
         if (string.IsNullOrWhiteSpace(description)) {
             description = string.Empty;
         }
-        
+
         var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
-        }        
+        }
 
         var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
         if (expressExpect == null) {
@@ -217,6 +228,8 @@ public class ExpressExpectService {
                 throw new ValidationException($"定的快递单号预报 {trackingNo} 别的会员已经添加，请检查是否录入有误！");
             }
         }
+
+        bool claim = false;
 
         var express = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == trackingNo)
@@ -248,9 +261,11 @@ public class ExpressExpectService {
                 session.Flush(); // 这时是不是应该返回一个结果
 
                 // 认领日志
-                expressLogService.CustomerLog(express.Id, ExpressLogType.Checkin, "添加预报认领", customerId);
+                expressLogService.CustomerLog(express.Id, ExpressLogType.Checkin, "编辑预报认领", customerId);
 
                 // todo a customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
+
+                claim = true;
             }
         }
 
@@ -262,6 +277,8 @@ public class ExpressExpectService {
 
         session.Update(expressExpect);
         session.Flush();
+
+        return claim;
     }
 
     /// <summary>

@@ -130,8 +130,8 @@ public class ExpressExpectController : Controller {
     [HttpPost]
     [Route("/client/express/expect/add/save")]
     [Transactional]
-    public IActionResult AddSave([FromBody] ExpressExpectAddModel model) {
-        ValidationUtil.Validate<ExpressExpectAddModelValidator, ExpressExpectAddModel>(model);
+    public IActionResult AddSave([FromBody] ExpressExpectAddParam model) {
+        ValidationUtil.Validate<ExpressExpectAddParamValidator, ExpressExpectAddParam>(model);
 
         if (decimal.TryParse(model.GoodsValue.Trim(), out decimal goodsValue) == false) {
             throw new ValidationException("货品总值输入格式不对！");
@@ -139,24 +139,32 @@ public class ExpressExpectController : Controller {
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        expressExpectService.Add(new ExpressExpectService.AddParam {
+        bool claim = expressExpectService.Add(new ExpressExpectService.AddParam {
             CustomerId = loginCustomerId,
             TrackingNo = model.TrackingNo,
             GoodsValue = goodsValue,
             Description = model.Description ?? string.Empty,
         });
 
+        string message = "添加保存成功！";
+        if (claim) {
+            message = "预报添加成功，并已成功认领对应快递单号！";
+        }
+
         return Json(new JsonResultData {
             Success = true,
-            Message = "添加保存成功！",
+            Message = message,
+            Data = new ExpressExpectAddModel {
+                Claim = claim,
+            },
         });
     }
 
     [HttpPost]
     [Route("/client/express/expect/edit/save")]
     [Transactional]
-    public IActionResult EditSave([FromBody] ExpressExpectEditModel model) {
-        ValidationUtil.Validate<ExpressExpectEditModelValidator, ExpressExpectEditModel>(model);
+    public IActionResult EditSave([FromBody] ExpressExpectEditParam model) {
+        ValidationUtil.Validate<ExpressExpectEditParamValidator, ExpressExpectEditParam>(model);
 
         if (decimal.TryParse(model.GoodsValue.Trim(), out decimal goodsValue) == false) {
             throw new ValidationException("货品总值输入格式不对！");
@@ -164,7 +172,7 @@ public class ExpressExpectController : Controller {
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
-        expressExpectService.Edit(new ExpressExpectService.EditParam {
+        bool claim = expressExpectService.Edit(new ExpressExpectService.EditParam {
             ExpressExpectId = model.Id,
             CustomerId = loginCustomerId,
             TrackingNo = model.TrackingNo,
@@ -172,9 +180,17 @@ public class ExpressExpectController : Controller {
             Description = model.Description ?? string.Empty,
         });
 
+        string message = "编辑保存成功！";
+        if (claim) {
+            message = "预报编辑成功，并已成功认领对应快递单号！";
+        }
+
         return Json(new JsonResultData {
             Success = true,
-            Message = "编辑保存成功！",
+            Message = message,
+            Data = new ExpressExpectEditModel {
+                Claim = claim,
+            },
         });
     }
 
