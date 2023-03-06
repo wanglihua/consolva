@@ -1,0 +1,4 @@
+<header/>
+<view class="container">
+    <web-view src="{{ url }}"/>
+</view>
