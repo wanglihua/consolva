@@ -18,10 +18,15 @@ public class ExpressExpectService {
 
     private readonly ISession session;
     private readonly ExpressTrackingNoService expressTrackingNoService;
+    private readonly ExpressLogService expressLogService;
 
-    public ExpressExpectService(ISession session, ExpressTrackingNoService expressTrackingNoService) {
+    public ExpressExpectService(ISession session,
+        ExpressTrackingNoService expressTrackingNoService,
+        ExpressLogService expressLogService
+    ) {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
+        this.expressLogService = expressLogService;
     }
 
     public class AddParam {
@@ -81,21 +86,6 @@ public class ExpressExpectService {
             throw new ValidationException($"指定的快递单号预报 {trackingNo} 已经存在，不能重复添加！");
         }
 
-        var express = session.Query<ExpressInfo>()
-            .Where(e => e.TrackingNo == trackingNo)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (express != null) {
-            // 被他人认领
-            if (express.Customer!.Id == customerId) {
-                throw new ValidationException("预告快递单号对应的快递单已存在且已被他人认领，请检查是否录入有误！");
-            }
-
-            // 自己认领的
-            throw new ValidationException("预告快递单号对应的快递单已存在且已被本人认领，请检查是否录入有误！");
-        }
-
         bool create = false;
         if (expressExpectInDb == null) {
             create = true;
@@ -108,6 +98,42 @@ public class ExpressExpectService {
         expressExpectInDb.Description = description;
         expressExpectInDb.LastEditTime = DateTime.Now;
         expressExpectInDb.Status = ExpressExpectStatus.Create;
+
+        var express = session.Query<ExpressInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (express != null) {
+            // 已认领
+            if (express.Customer != null && ExpressStatus.IsPacked(express.Status)) {
+                // 被他人认领
+                if (express.Customer!.Id != customerId) {
+                    throw new ValidationException("预告快递单号对应的快递单已存在且已被他人认领，请检查是否录入有误！");
+                }
+
+                // 自己认领的
+                throw new ValidationException("预告快递单号对应的快递单已存在且已被本人认领，请检查是否录入有误！");
+            } else {
+                // 未认领，做实际认领
+
+                expressExpectInDb.Status = ExpressExpectStatus.Checkin;
+
+                // express
+                express.GoodsValue = expressExpectInDb.GoodsValue;
+                express.ClaimTime = DateTime.Now;
+                express.Status = ExpressStatus.Checkin;
+                express.Customer = customer;
+
+                session.Update(express);
+                session.Flush(); // 这时是不是应该返回一个结果
+
+                // 认领日志
+                expressLogService.CustomerLog(express.Id, ExpressLogType.Checkin, "添加预报认领", customerId);
+
+                // todo a customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
+            }
+        }
 
         if (create) {
             session.Save(expressExpectInDb);
@@ -164,6 +190,11 @@ public class ExpressExpectService {
         if (string.IsNullOrWhiteSpace(description)) {
             description = string.Empty;
         }
+        
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }        
 
         var expressExpect = session.Get<ExpressExpectInfo>(expressExpectId);
         if (expressExpect == null) {
@@ -174,15 +205,15 @@ public class ExpressExpectService {
             throw new ValidationException($"指定的快递单号预告 #{expressExpectId} 不属于当前会员 #{customerId} ！");
         }
 
-        var expressExpectInDb = session.Query<ExpressExpectInfo>()
+        var expressExpectPre = session.Query<ExpressExpectInfo>()
             .Where(e => e.TrackingNo == trackingNo)
             .Take(1)
             .SingleOrDefault();
 
         // 已经存在
-        if (expressExpectInDb != null) {
+        if (expressExpectPre != null) {
             // 不是本人的
-            if (expressExpectInDb.Customer.Id != customerId) {
+            if (expressExpectPre.Customer.Id != customerId) {
                 throw new ValidationException($"定的快递单号预报 {trackingNo} 别的会员已经添加，请检查是否录入有误！");
             }
         }
@@ -193,13 +224,34 @@ public class ExpressExpectService {
             .SingleOrDefault();
 
         if (express != null) {
-            // 被他人认领
-            if (express.Customer!.Id == customerId) {
-                throw new ValidationException("预告快递单号对应的快递单已存在且已被他人认领，请检查是否录入有误！");
-            }
+            // 已认领
+            if (express.Customer != null && ExpressStatus.IsPacked(express.Status)) {
+                // 被他人认领
+                if (express.Customer!.Id != customerId) {
+                    throw new ValidationException("预告快递单号对应的快递单已存在且已被他人认领，请检查是否录入有误！");
+                }
 
-            // 自己认领的
-            throw new ValidationException("预告快递单号对应的快递单已存在且已被本人认领，请检查是否录入有误！");
+                // 自己认领的
+                throw new ValidationException("预告快递单号对应的快递单已存在且已被本人认领，请检查是否录入有误！");
+            } else {
+                // 未认领，做实际认领
+
+                expressExpect.Status = ExpressExpectStatus.Checkin;
+
+                // express
+                express.GoodsValue = expressExpect.GoodsValue;
+                express.ClaimTime = DateTime.Now;
+                express.Status = ExpressStatus.Checkin;
+                express.Customer = customer;
+
+                session.Update(express);
+                session.Flush(); // 这时是不是应该返回一个结果
+
+                // 认领日志
+                expressLogService.CustomerLog(express.Id, ExpressLogType.Checkin, "添加预报认领", customerId);
+
+                // todo a customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
+            }
         }
 
         expressExpect.TrackingNo = trackingNo;
