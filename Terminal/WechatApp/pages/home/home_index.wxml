@@ -46,7 +46,7 @@
     <van-popup show="{{ showFollowPopup }}" custom-style="width: 90%;" closeable bind:close="onFollowPopupClose">
         <view style="margin: 30px 10px 10px 10px;">
             <view style="padding: 5px;">
-                <van-cell title="关注公众号保持跟踪最新信息" link-type="navigateTo" border="{{ false }}" title-class="follow-title" url="./home_web_view?url={{ homeData.followTipUrl }}&title=关注公众号">
+                <van-cell title="关注公众号跟踪最新讯息" link-type="navigateTo" border="{{ false }}" title-class="follow-title" url="./home_web_view?url={{ homeData.followTipUrl }}&title=关注公众号">
                     <van-button slot="right-icon" type="primary" size="small" plain block custom-class="item-button">立即关注</van-button>
                 </van-cell>
             </view>
