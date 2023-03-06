@@ -1,4 +1,4 @@
-// 这个是新建项目的时候自带的，暂时就放在这里
+// 这个方法s是新建项目的时候自带的，暂时就放在这里
 const formatTime = date => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1

@@ -1,5 +1,3 @@
-// pages/customer/customer_pay/customer_pay.js
-
 const app = getApp();
 const util = app.require('utils/util.js');
 

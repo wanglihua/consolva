@@ -1,4 +1,3 @@
-<!--pages/order/order_pay_coupon.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="订单支付优惠券"/>

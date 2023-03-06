@@ -1,4 +1,3 @@
-// pages/order_create/order_create_repack_type.js
 const app = getApp();
 
 Page({

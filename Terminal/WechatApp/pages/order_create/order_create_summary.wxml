@@ -1,4 +1,3 @@
-<!--pages/order_create/order_create_summary.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="订单汇总"/>

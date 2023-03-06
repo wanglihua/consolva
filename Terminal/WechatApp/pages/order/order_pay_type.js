@@ -1,4 +1,3 @@
-// pages/order/order_pay_type.js
 const app = getApp();
 
 Page({

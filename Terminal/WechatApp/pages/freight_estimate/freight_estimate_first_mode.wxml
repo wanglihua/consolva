@@ -1,4 +1,3 @@
-<!--pages/freight_estimate/freight_estimate_first_mode.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="物流方式-运费预估"/>

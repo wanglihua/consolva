@@ -1,4 +1,3 @@
-// pages/order_create/order_create_web_view.js
 Page({
     data: {
         url: ""

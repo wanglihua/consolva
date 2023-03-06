@@ -1,4 +1,3 @@
-<!--pages/freight_estimate/freight_estimate_summary.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="预估汇总"/>

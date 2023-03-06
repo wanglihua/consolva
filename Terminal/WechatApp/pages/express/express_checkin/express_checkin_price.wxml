@@ -1,4 +1,3 @@
-<!--pages/express/express_checkin/express_checkin_price.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="修改物品总货值"/>

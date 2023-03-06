@@ -1,4 +1,3 @@
-<!--pages/express/express_checkin/express_checkin_detail.wxml-->
 <header />
 <view class="container">
     <van-cell-group title="已入库快递单详细" />

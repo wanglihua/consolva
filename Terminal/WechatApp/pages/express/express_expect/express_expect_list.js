@@ -1,4 +1,3 @@
-// pages/express/express_expect/express_expect_list/express_expect_list.js
 const app = getApp();
 
 Page({

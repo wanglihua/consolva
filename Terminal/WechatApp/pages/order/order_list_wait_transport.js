@@ -1,5 +1,3 @@
-// pages/order/order_wait_transport.js
-
 const app = getApp();
 const util = app.require('utils/util.js');
 

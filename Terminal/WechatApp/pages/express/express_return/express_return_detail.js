@@ -1,4 +1,3 @@
-// pages/express/express_return/express_return_detail.js
 Page({
 
     /**

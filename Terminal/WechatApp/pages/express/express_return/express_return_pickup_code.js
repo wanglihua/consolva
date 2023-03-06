@@ -1,4 +1,3 @@
-// pages/express/express_return/express_return_pickup_code.js
 Page({
 
     /**

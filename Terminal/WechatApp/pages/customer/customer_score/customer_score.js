@@ -1,5 +1,3 @@
-// pages/customer/customer_score/customer_score/customer_score.js
-
 const app = getApp();
 
 Page({

@@ -1,4 +1,3 @@
-/* components/chat_icon.wxss */
 .chatIcon {
     position: fixed;
     z-index: 999999;

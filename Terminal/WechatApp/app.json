@@ -58,7 +58,8 @@
         "pages/order/order_pay_type",
         "pages/order/order_pay_customer_account",
         "pages/notice/notice_list",
-        "pages/notice/notice_detail"
+        "pages/notice/notice_detail",
+        "pages/home/home_web_view"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",

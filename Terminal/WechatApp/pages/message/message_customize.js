@@ -1,4 +1,3 @@
-// pages/message/message_customize/message_customize.js
 const app = getApp();
 
 Page({

@@ -1,4 +1,3 @@
-<!--pages/express/express_checkin/express_checkin_list/express_checkin_list.wxml-->
 <header />
 <van-sticky offset-top="{{ 46 }}">
     <view class="container-top" style="background-color: white;">

@@ -1,4 +1,3 @@
-// components/chat_icon.js
 const app = getApp();
 const util = app.require('utils/util.js');
 

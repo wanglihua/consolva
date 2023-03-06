@@ -1,4 +1,3 @@
-<!--pages/instruction/instruction_promotion.wxml-->
 <header/>
 <view class="container">
     <web-view src="{{ url }}"/>

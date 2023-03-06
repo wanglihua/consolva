@@ -1,4 +1,3 @@
-<!--pages/express/express_claim/express_claim_detail/express_claim_detail.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="申领件详细"/>

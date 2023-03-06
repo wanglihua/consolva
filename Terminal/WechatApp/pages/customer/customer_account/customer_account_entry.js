@@ -1,5 +1,3 @@
-// pages/customer/customer_account/customer_account_entry/customer_account_entry.js
-
 const app = getApp();
 const util = app.require('utils/util.js');
 

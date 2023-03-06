@@ -1,5 +1,3 @@
-// pages/express/express_claim/express_claim_list/express_claim_list.js
-
 const app = getApp();
 const util = app.require('utils/util.js');
 

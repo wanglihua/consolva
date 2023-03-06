@@ -1,5 +1,3 @@
-// pages/express/express_claim/express_claim_detail/express_claim_detail.js
-
 const app = getApp();
 
 Page({

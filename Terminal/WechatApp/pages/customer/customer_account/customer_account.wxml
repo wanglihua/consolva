@@ -1,4 +1,3 @@
-<!--pages/customer/customer_account/customer_account/customer_account.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="余额">

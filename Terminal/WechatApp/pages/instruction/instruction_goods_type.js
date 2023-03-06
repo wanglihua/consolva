@@ -1,4 +1,3 @@
-// pages/instruction/instruction_goods_type.js
 const app = getApp();
 
 Page({

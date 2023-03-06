@@ -1,4 +1,3 @@
-<!--components/header.wxml-->
 <van-nav-bar custom-style="z-index:99;"
              safe-area-inset-top="{{ false }}"
              fixed="{{ true }}"

@@ -1,4 +1,3 @@
-<!--pages/notice/notice_list.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="公告列表"/>

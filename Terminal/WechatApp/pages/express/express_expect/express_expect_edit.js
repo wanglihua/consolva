@@ -1,5 +1,3 @@
-// pages/express/express_expect/express_expect_edit/express_expect_edit.js
-
 const app = getApp();
 
 Page({

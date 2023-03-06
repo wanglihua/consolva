@@ -1,4 +1,3 @@
-// pages/express/express_claim/express_claim_pick/express_claim_pick.js
 const app = getApp();
 
 Page({

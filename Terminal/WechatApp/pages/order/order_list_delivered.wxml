@@ -1,4 +1,3 @@
-<!--pages/order/order_list_delivered.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="已交付"/>

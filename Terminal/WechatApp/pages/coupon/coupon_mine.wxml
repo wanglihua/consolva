@@ -1,4 +1,3 @@
-<!--pages/coupon/coupon_mine/coupon_mine.wxml-->
 <header/>
 <view class="container">
     <block wx:if="{{ hasBatchToPick === true }}">

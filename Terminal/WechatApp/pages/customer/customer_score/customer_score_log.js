@@ -1,5 +1,3 @@
-// pages/customer/customer_score/customer_score_log/customer_score_log.js
-
 const app = getApp();
 const util = app.require('utils/util.js');
 

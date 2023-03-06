@@ -1,5 +1,3 @@
-// pages/order/order_list_submitted.js
-
 const app = getApp();
 const util = app.require('utils/util.js');
 

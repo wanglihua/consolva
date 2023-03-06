@@ -1,4 +1,3 @@
-// pages/order/order_pay_customer_account.js
 const app = getApp();
 
 Page({

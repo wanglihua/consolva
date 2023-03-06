@@ -1,4 +1,3 @@
-<!--pages/express/express_claim/express_claim_list/express_claim_list.wxml-->
 <header />
 <van-sticky offset-top="{{ 46 }}">
     <view class="container-top" style="background-color: white;">

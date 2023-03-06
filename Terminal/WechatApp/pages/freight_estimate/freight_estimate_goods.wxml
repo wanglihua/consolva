@@ -1,4 +1,3 @@
-<!--pages/freight_estimate/freight_estimate_goods.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="录入物品信息"/>

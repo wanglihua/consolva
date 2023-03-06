@@ -1,4 +1,3 @@
-<!--pages/express/express_expect/express_expect_edit/express_expect_edit.wxml-->
 <header/>
 <view class="container">
     <van-cell-group title="编辑快递单号预报">

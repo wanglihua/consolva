@@ -1,2 +1,1 @@
-<!--pages/notice/notice_detail.wxml-->
 <web-view src="{{ url }}" />

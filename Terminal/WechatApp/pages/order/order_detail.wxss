@@ -1,4 +1,3 @@
-/* pages/order/order_detail.wxss */
 .express-item {
     padding-bottom: 0 !important;
     background-color: #E1E0F1 !important;
