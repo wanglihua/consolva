@@ -134,6 +134,7 @@ public class HomeController : Controller {
             PromotionUrl = homeData.PromotionUrl,
             StorageInstructionUrl = homeData.StorageInstructionUrl,
             GoodsTypeUrl = homeData.GoodsTypeUrl,
+            FollowTipUrl = homeData.FollowTipUrl,
         };
 
         return Json(new JsonResultData {

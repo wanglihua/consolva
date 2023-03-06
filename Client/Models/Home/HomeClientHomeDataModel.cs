@@ -83,4 +83,7 @@ public class HomeClientHomeDataModel {
 
     [JsonProperty("goodsTypeUrl")]
     public string GoodsTypeUrl { get; set; } = string.Empty;
+
+    [JsonProperty("followTipUrl")]
+    public string FollowTipUrl { get; set; } = string.Empty;
 }

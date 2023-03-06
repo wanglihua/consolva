@@ -32,8 +32,6 @@
         </van-grid>
     </view>
 
-    <official-account></official-account>
-
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}">
             <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费预估" url="/pages/freight_estimate/freight_estimate_goods"/>
@@ -44,4 +42,16 @@
             <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text="仓储说明" badge="{{ homeData.storageInstructionBadge }}" url="/pages/instruction/instruction_storage?url={{ homeData.storageInstructionUrl }}"/>
         </van-grid>
     </view>
+
+    <van-popup show="{{ showFollowPopup }}" custom-style="width: 90%;" closeable bind:close="onFollowPopupClose">
+        <view style="margin: 30px 10px 10px 10px;">
+            <view style="padding: 5px;">
+                <van-cell title="关注公众号保持获取最新信息" is-link link-type="navigateTo" border="{{ false }}" title-class="follow-title" url="./home_web_view?url={{ homeData.followTipUrl }}&title=关注公众号"/>
+            </view>
+            <view style="padding: 5px;">
+                <official-account></official-account>
+            </view>
+        </view>
+    </van-popup>
+
 </view>

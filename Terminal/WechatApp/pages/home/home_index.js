@@ -4,6 +4,7 @@ Page({
     id: "index",
     data: {
         homeData: {},
+        showFollowPopup: false,
     },
     onLoad() {
         const nowMilliSeconds = new Date().getTime();
@@ -31,9 +32,21 @@ Page({
                     homeData: res.data.homeData,
                 });
 
+                if (res.data.homeData.hasFollowed === false) {
+                    that.setData({
+                        showFollowPopup: true,
+                    });
+                }
+
                 // 存储的是登录时间毫秒值
                 wx.setStorageSync('client-login-time', new Date().getTime());
             }
         );
-    }
+    },
+
+    onFollowPopupClose(e) {
+        this.setData({
+            showFollowPopup: false,
+        });
+    },
 })
