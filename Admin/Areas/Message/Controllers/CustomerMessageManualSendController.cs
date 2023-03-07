@@ -327,7 +327,7 @@ public class CustomerMessageManualSendController : Controller
                 {
                     CustomerMessageInfo customerMessage = new CustomerMessageInfo();
                     customerMessage.SendType = CustomerMessageSendType.Manual;
-                    customerMessage.Type = CustomerMessageType.AllMember;
+                    customerMessage.Type = CustomerMessageType.AllCustomer;
                     customerMessage.Customer = session.Load<CustomerInfo>(customer.Id);
                     customerMessage.Content = model.RemarkMessage;
                     customerMessage.SmsSend = model.SendBySms;

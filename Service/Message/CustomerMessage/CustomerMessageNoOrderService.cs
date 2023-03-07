@@ -29,7 +29,7 @@ public class CustomerMessageNoOrderService
         this.customerCodeService = customerCodeService;
     }
 
-    private static CustomerMessageType messageType => CustomerMessageType.NoOrder;
+    private static CustomerMessageType messageType => CustomerMessageType.CustomerNoOrder;
 
     private string? GetMessageUrl()
     {
