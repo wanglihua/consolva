@@ -15,8 +15,7 @@ namespace shunda.Admin.Areas.Message.Controllers;
 
 [MessageArea]
 [AdminAuth(PassRes.CustomerMessage.MessageSetting)]
-public class CustomerMessageCycleTimingSendSettingController : Controller
-{
+public class CustomerMessageCycleTimingSendSettingController : Controller {
     private readonly ISession session;
     private readonly CustomerMessageCycleTimingSendSettingService customerMessageCycleTimingSendSettingService;
     private readonly CustomerMessageCommonService customerMessageCommonService;
@@ -24,8 +23,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
     public CustomerMessageCycleTimingSendSettingController(
         ISession session,
         CustomerMessageCycleTimingSendSettingService customerMessageCycleTimingSendSettingService,
-        CustomerMessageCommonService customerMessageCommonService)
-    {
+        CustomerMessageCommonService customerMessageCommonService) {
         this.session = session;
         this.customerMessageCycleTimingSendSettingService = customerMessageCycleTimingSendSettingService;
         this.customerMessageCommonService = customerMessageCommonService;
@@ -33,8 +31,8 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
     [HttpGet]
     [Route("/admin/customer/message/cycle/timing/send/setting")]
-    public IActionResult Index()
-    {
+    [Transactional]
+    public IActionResult Index() {
         customerMessageCycleTimingSendSettingService.InitSettings();
 
         CustomerMessageCycleTimingSendSettingIndexModel model = new CustomerMessageCycleTimingSendSettingIndexModel();
@@ -44,8 +42,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
     [HttpPost]
     [Route("/admin/customer/message/cycle/timing/send/setting/list")]
-    public IActionResult List(CustomerMessageCycleTimingSendSettingListQueryParam queryParam)
-    {
+    public IActionResult List(CustomerMessageCycleTimingSendSettingListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -59,8 +56,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<CustomerMessageCycleTimingSendSettingInfo>();
 
-        foreach (CustomerMessageCycleTimingSendSettingInfo customerMessageCycleTimingSendSettingInfo in customerMessageCycleTimingSendSettingList)
-        {
+        foreach (CustomerMessageCycleTimingSendSettingInfo customerMessageCycleTimingSendSettingInfo in customerMessageCycleTimingSendSettingList) {
             // customerMessageCycleTimingSendSettingInfo
         }
 
@@ -71,8 +67,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CustomerMessageCycleTimingSendSettingListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(CustomerMessageCycleTimingSendSettingListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<CustomerMessageCycleTimingSendSettingInfo>();
 
         criteria = criteria.SetReadOnly(true);
@@ -82,13 +77,11 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
     [HttpPost]
     [Route("/admin/customer/message/cycle/timing/send/setting/detail")]
-    public IActionResult Detail(int id)
-    {
+    public IActionResult Detail(int id) {
         session.DefaultReadOnly = true;
 
         CustomerMessageCycleTimingSendSettingInfo setting = session.Get<CustomerMessageCycleTimingSendSettingInfo>(id);
-        if (setting == null)
-        {
+        if (setting == null) {
             throw new ValidationException("指定的数据项不存在！");
         }
 
@@ -117,8 +110,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
         // 发送周期列表
         IList<int> intervalWeeksList = new List<int>();
-        for (int i = 1; i <= 20; i++)
-        {
+        for (int i = 1; i <= 20; i++) {
             intervalWeeksList.Add(i);
         }
 
@@ -126,8 +118,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
         // 发送周期列表
         IList<int> intervalDaysList = new List<int>();
-        for (int i = 1; i <= 20; i++)
-        {
+        for (int i = 1; i <= 20; i++) {
             intervalDaysList.Add(i);
         }
 
@@ -135,8 +126,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
         // 发送天列表
         IList<int> sendWeekdayList = new List<int>();
-        for (int i = 0; i < 7; i++)
-        {
+        for (int i = 0; i < 7; i++) {
             sendWeekdayList.Add(i);
         }
 
@@ -144,8 +134,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
         // 发送小时列表
         IList<int> sendHourList = new List<int>();
-        for (int i = 0; i < 24; i++)
-        {
+        for (int i = 0; i < 24; i++) {
             sendHourList.Add(i);
         }
 
@@ -157,10 +146,8 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
     [HttpPost]
     [Route("/admin/customer/message/cycle/timing/send/setting/save")]
     [Transactional]
-    public IActionResult Save(CustomerMessageCycleTimingSendSettingSaveModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(CustomerMessageCycleTimingSendSettingSaveModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
@@ -168,8 +155,7 @@ public class CustomerMessageCycleTimingSendSettingController : Controller
 
         CustomerMessageCycleTimingSendSettingInfo setting = session.Get<CustomerMessageCycleTimingSendSettingInfo>(settingId);
 
-        if (setting == null)
-        {
+        if (setting == null) {
             throw new ValidationException("配置信息不存在！");
         }
 

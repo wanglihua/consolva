@@ -15,8 +15,7 @@ namespace shunda.Admin.Areas.Message.Controllers;
 
 [MessageArea]
 [AdminAuth(PassRes.CustomerMessage.MessageSetting)]
-public class CustomerMessageRealTimeSendSettingController : Controller
-{
+public class CustomerMessageRealTimeSendSettingController : Controller {
     private readonly ISession session;
     private readonly CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService;
     private readonly CustomerMessageCommonService customerMessageCommonService;
@@ -24,8 +23,7 @@ public class CustomerMessageRealTimeSendSettingController : Controller
     public CustomerMessageRealTimeSendSettingController(
         ISession session,
         CustomerMessageRealTimeSendSettingService customerMessageRealTimeSendSettingService,
-        CustomerMessageCommonService customerMessageCommonService)
-    {
+        CustomerMessageCommonService customerMessageCommonService) {
         this.session = session;
         this.customerMessageRealTimeSendSettingService = customerMessageRealTimeSendSettingService;
         this.customerMessageCommonService = customerMessageCommonService;
@@ -33,8 +31,8 @@ public class CustomerMessageRealTimeSendSettingController : Controller
 
     [HttpGet]
     [Route("/admin/customer/message/real/time/send/setting")]
-    public IActionResult Index()
-    {
+    [Transactional]
+    public IActionResult Index() {
         CustomerMessageRealTimeSendSettingIndexModel model = new CustomerMessageRealTimeSendSettingIndexModel();
 
         customerMessageRealTimeSendSettingService.InitSetting();
@@ -44,8 +42,7 @@ public class CustomerMessageRealTimeSendSettingController : Controller
 
     [HttpPost]
     [Route("/admin/customer/message/real/time/send/setting/list")]
-    public IActionResult List(CustomerMessageRealTimeSendSettingListQueryParam queryParam)
-    {
+    public IActionResult List(CustomerMessageRealTimeSendSettingListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -59,8 +56,7 @@ public class CustomerMessageRealTimeSendSettingController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<CustomerMessageRealTimeSendSettingInfo>();
 
-        foreach (CustomerMessageRealTimeSendSettingInfo customerMessageRealTimeSendSettingInfo in customerMessageRealTimeSendSettingList)
-        {
+        foreach (CustomerMessageRealTimeSendSettingInfo customerMessageRealTimeSendSettingInfo in customerMessageRealTimeSendSettingList) {
             // customerMessageRealTimeSendSettingInfo
         }
 
@@ -71,14 +67,12 @@ public class CustomerMessageRealTimeSendSettingController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CustomerMessageRealTimeSendSettingListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(CustomerMessageRealTimeSendSettingListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<CustomerMessageRealTimeSendSettingInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(queryParam.TypeNameQuery) == false)
-        {
+        if (string.IsNullOrWhiteSpace(queryParam.TypeNameQuery) == false) {
             string typeNameQuery = queryParam.TypeNameQuery.Trim();
             IList<CustomerMessageType> typeList = CustomerMessageType.GetList()
                 .Where(e => e.Name.Contains(typeNameQuery))
@@ -92,13 +86,11 @@ public class CustomerMessageRealTimeSendSettingController : Controller
 
     [HttpPost]
     [Route("/admin/customer/message/real/time/send/setting/detail")]
-    public IActionResult Detail(int id)
-    {
+    public IActionResult Detail(int id) {
         session.DefaultReadOnly = true;
 
         CustomerMessageRealTimeSendSettingInfo setting = session.Get<CustomerMessageRealTimeSendSettingInfo>(id);
-        if (setting == null)
-        {
+        if (setting == null) {
             throw new ValidationException("指定的数据项不存在！");
         }
 
@@ -126,18 +118,15 @@ public class CustomerMessageRealTimeSendSettingController : Controller
     [HttpPost]
     [Route("/admin/customer/message/real/time/send/setting/save")]
     [Transactional]
-    public IActionResult Save(CustomerMessageRealTimeSendSettingSaveModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(CustomerMessageRealTimeSendSettingSaveModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
         }
 
         int settingId = model.SettingId;
 
         CustomerMessageRealTimeSendSettingInfo setting = session.Get<CustomerMessageRealTimeSendSettingInfo>(settingId);
-        if (setting == null)
-        {
+        if (setting == null) {
             throw new ValidationException("配置信息不存在！");
         }
 
