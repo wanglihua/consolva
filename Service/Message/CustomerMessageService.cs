@@ -23,6 +23,7 @@ using shunda.Domain.Pass;
 namespace shunda.Service.Message;
 
     [Service(ServiceType.Scoped)]
+    [Obsolete]
     public class CustomerMessageService
     {
         /// <summary>

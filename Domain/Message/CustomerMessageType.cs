@@ -4,7 +4,6 @@ namespace shunda.Domain.Message;
 
 /// <summary>
 /// 客户消息类型
-/// todo 把这里面的拼音改成英文的，id 数字调整
 /// </summary>
 public class CustomerMessageType : CodeTypeBase {
     /// <summary>

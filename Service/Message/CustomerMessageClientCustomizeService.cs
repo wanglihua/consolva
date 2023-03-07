@@ -10,21 +10,18 @@ namespace shunda.Service.Message;
 /// todo d 改成redis缓存
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class CustomerMessageClientCustomizeService
-{
+public class CustomerMessageClientCustomizeService {
     private readonly ISession session;
     private readonly IMemoryCache memoryCache;
 
     private readonly TimeSpan CACHE_TIME_SPAN = TimeSpan.FromMinutes(10);
 
-    public CustomerMessageClientCustomizeService(ISession session, IMemoryCache memoryCache)
-    {
+    public CustomerMessageClientCustomizeService(ISession session, IMemoryCache memoryCache) {
         this.session = session;
         this.memoryCache = memoryCache;
     }
 
-    private string GetCacheKey(int customerId, CustomerMessageType messageType)
-    {
+    private string GetCacheKey(int customerId, CustomerMessageType messageType) {
         return $"{customerId}_{messageType.Id}";
     }
 
@@ -34,12 +31,10 @@ public class CustomerMessageClientCustomizeService
     /// <param name="customerId"></param>
     /// <param name="messageType"></param>
     /// <returns></returns>
-    public bool ShouldSend(int customerId, CustomerMessageType messageType)
-    {
+    public bool ShouldSend(int customerId, CustomerMessageType messageType) {
         string cacheKey = GetCacheKey(customerId, messageType);
 
-        if (memoryCache.TryGetValue(cacheKey, out bool shouldSend))
-        {
+        if (memoryCache.TryGetValue(cacheKey, out bool shouldSend)) {
             return shouldSend;
         }
 
@@ -48,12 +43,9 @@ public class CustomerMessageClientCustomizeService
             .Take(1)
             .SingleOrDefault();
 
-        if (clientCustomize == null)
-        {
+        if (clientCustomize == null) {
             shouldSend = true;
-        }
-        else
-        {
+        } else {
             shouldSend = clientCustomize.Send;
         }
 
@@ -69,14 +61,12 @@ public class CustomerMessageClientCustomizeService
     /// <param name="messageType"></param>
     /// <param name="shouldSend"></param>
     /// <returns>生效时间，单位分钟</returns>
-    public int Save(int customerId, CustomerMessageType messageType, bool shouldSend)
-    {
+    public int Save(int customerId, CustomerMessageType messageType, bool shouldSend) {
         var clientCustomize = session.Query<CustomerMessageClientCustomizeInfo>()
             .Where(e => e.CustomerId == customerId && e.MessageType == messageType)
             .Take(1)
             .SingleOrDefault();
-        if (clientCustomize == null)
-        {
+        if (clientCustomize == null) {
             clientCustomize = new CustomerMessageClientCustomizeInfo() {
                 CustomerId = customerId,
                 MessageType = messageType,

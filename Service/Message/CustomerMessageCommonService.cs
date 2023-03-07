@@ -14,8 +14,7 @@ namespace shunda.Service.Message;
 /// 客户消息共用处理
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class CustomerMessageCommonService
-{
+public class CustomerMessageCommonService {
     public static readonly string ShundaSecretary = "舜达小秘";
 
     public static readonly string PhotoRobot = "舜达智能拍照机器人";
@@ -30,8 +29,7 @@ public class CustomerMessageCommonService
         IMemoryCache memoryCache,
         SmsService smsService,
         WechatMessageService wechatMessageService,
-        CustomerMessageClientCustomizeService customerMessageClientCustomizeService)
-    {
+        CustomerMessageClientCustomizeService customerMessageClientCustomizeService) {
         this.session = session;
         this.memoryCache = memoryCache;
         this.smsService = smsService;
@@ -41,20 +39,17 @@ public class CustomerMessageCommonService
 
     private static readonly string MESSAGE_SETTING_CACHE_KEY = "CUSTOMER_MESSAGE_SETTING_";
 
-    public CustomerMessageRealTimeSendSettingInfo GetCustomerMessageRealTimeSendSetting(CustomerMessageType messageType)
-    {
+    public CustomerMessageRealTimeSendSettingInfo GetCustomerMessageRealTimeSendSetting(CustomerMessageType messageType) {
         string cacheKey = MESSAGE_SETTING_CACHE_KEY + messageType.Id;
 
-        if (memoryCache.TryGetValue(cacheKey, out CustomerMessageRealTimeSendSettingInfo? setting) == false)
-        {
+        if (memoryCache.TryGetValue(cacheKey, out CustomerMessageRealTimeSendSettingInfo? setting) == false) {
             setting = session
                 .Query<CustomerMessageRealTimeSendSettingInfo>()
                 .Where(e => e.Type == messageType)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (setting == null)
-            {
+            if (setting == null) {
                 // throw new Exception("指定的消息发送配置不存在！");
                 setting = new CustomerMessageRealTimeSendSettingInfo() {
                     // 这样，新添加一个消息类型的时候，设置条目数据库还没生成，也不会在这里报错
@@ -68,20 +63,17 @@ public class CustomerMessageCommonService
         return setting!;
     }
 
-    public CustomerMessageCycleTimingSendSettingInfo GetCustomerMessageCycleTimingSendSetting(CustomerMessageType messageType)
-    {
+    public CustomerMessageCycleTimingSendSettingInfo GetCustomerMessageCycleTimingSendSetting(CustomerMessageType messageType) {
         string cacheKey = MESSAGE_SETTING_CACHE_KEY + messageType.Id;
 
-        if (memoryCache.TryGetValue(cacheKey, out CustomerMessageCycleTimingSendSettingInfo? setting))
-        {
+        if (memoryCache.TryGetValue(cacheKey, out CustomerMessageCycleTimingSendSettingInfo? setting)) {
             setting = session
                 .Query<CustomerMessageCycleTimingSendSettingInfo>()
                 .Where(e => e.Type == messageType)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (setting == null)
-            {
+            if (setting == null) {
                 // throw new Exception("指定的消息发送配置不存在！");
                 setting = new CustomerMessageCycleTimingSendSettingInfo() {
                     // 这样，新添加一个消息类型的时候，设置条目数据库还没生成，也不会在这里报错
@@ -95,17 +87,14 @@ public class CustomerMessageCommonService
         return setting!;
     }
 
-    public void MakeSettingCacheInvalid()
-    {
+    public void MakeSettingCacheInvalid() {
         var messageTypeList = CustomerMessageType.GetList();
-        foreach (var messageType in messageTypeList)
-        {
+        foreach (var messageType in messageTypeList) {
             memoryCache.Remove(MESSAGE_SETTING_CACHE_KEY + messageType.Id);
         }
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting, string sender)
-    {
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting, string sender) {
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
         customerMessage.SendType = sendType;
         customerMessage.Type = setting.Type;
@@ -113,12 +102,9 @@ public class CustomerMessageCommonService
 
         // 其实可以合成一句 customerMessage.Order = order;
 
-        if (order != null)
-        {
+        if (order != null) {
             customerMessage.Order = order;
-        }
-        else
-        {
+        } else {
             customerMessage.Order = null;
         }
 
@@ -135,8 +121,7 @@ public class CustomerMessageCommonService
         return customerMessage.Id;
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting, string sender)
-    {
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting, string sender) {
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
         customerMessage.SendType = sendType;
         customerMessage.Type = setting.Type;
@@ -144,12 +129,9 @@ public class CustomerMessageCommonService
 
         // 其实可以合成一句 customerMessage.Order = order;
 
-        if (order != null)
-        {
+        if (order != null) {
             customerMessage.Order = order;
-        }
-        else
-        {
+        } else {
             customerMessage.Order = null;
         }
 
@@ -176,8 +158,7 @@ public class CustomerMessageCommonService
     /// <param name="remark">remark</param>
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
-    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
-    {
+    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null) {
         wechatMessageService.SendOrderNoticeTemplateMessage(customer, first, orderCode, customerCode, remark, sender, url);
     }
 
@@ -187,8 +168,7 @@ public class CustomerMessageCommonService
     /// <param name="mobile">不加国家代号的手机号码</param>
     /// <param name="message">message</param>
     /// <returns></returns>
-    public SendSmsResult SendSms(string mobile, string message)
-    {
+    public SendSmsResult SendSms(string mobile, string message) {
         return smsService.SendSms(mobile, message);
     }
 
@@ -198,8 +178,7 @@ public class CustomerMessageCommonService
     /// <param name="customerId"></param>
     /// <param name="messageType"></param>
     /// <returns></returns>
-    public bool CustomerShouldSend(int customerId, CustomerMessageType messageType)
-    {
+    public bool CustomerShouldSend(int customerId, CustomerMessageType messageType) {
         return customerMessageClientCustomizeService.ShouldSend(customerId, messageType);
     }
 }

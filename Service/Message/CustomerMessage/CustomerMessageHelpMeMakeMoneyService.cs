@@ -5,7 +5,6 @@ using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Message.CustomerMessage;
 
@@ -13,8 +12,7 @@ namespace shunda.Service.Message.CustomerMessage;
 /// 帮我赚钱提醒
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class CustomerMessageHelpMeMakeMoneyService
-{
+public class CustomerMessageHelpMeMakeMoneyService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
     private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
@@ -23,8 +21,7 @@ public class CustomerMessageHelpMeMakeMoneyService
     public CustomerMessageHelpMeMakeMoneyService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
         CustomerMessageClientUrlService customerMessageClientUrlService,
-        CustomerCodeService customerCodeService)
-    {
+        CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
         this.customerMessageClientUrlService = customerMessageClientUrlService;
@@ -33,15 +30,13 @@ public class CustomerMessageHelpMeMakeMoneyService
 
     private static CustomerMessageType messageType => CustomerMessageType.HelpMeMakeMoney;
 
-    public static void InitSetting(ISession session)
-    {
+    public static void InitSetting(ISession session) {
         var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
             .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
 
-        if (setting == null)
-        {
+        if (setting == null) {
             setting = new CustomerMessageCycleTimingSendSettingInfo();
             setting.Type = messageType;
             setting.Status = CustomerMessageSettingStatus.Disabled;
@@ -60,28 +55,24 @@ public class CustomerMessageHelpMeMakeMoneyService
             session.Save(setting);
             session.Flush();
         }
-        
+
         session.Update(setting);
         session.Flush();
     }
 
-    public void SendMessage(CustomerInfo customer)
-    {
-        if (customer == null)
-        {
+    public void SendMessage(CustomerInfo customer) {
+        if (customer == null) {
             throw new ValidationException("消息发送指定的会员不能为空！");
         }
 
-        if (customer.Status == CustomerStatus.Frozen)
-        {
+        if (customer.Status == CustomerStatus.Frozen) {
             return;
         }
 
         string customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
         CustomerMessageCycleTimingSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageCycleTimingSendSetting(messageType);
-        if (setting.Status == CustomerMessageSettingStatus.Enabled)
-        {
+        if (setting.Status == CustomerMessageSettingStatus.Enabled) {
             string message1 = setting.WechatMessageTemplate1;
             string message2 = setting.WechatMessageTemplate2;
             string message3 = setting.WechatMessageTemplate3;
@@ -89,56 +80,46 @@ public class CustomerMessageHelpMeMakeMoneyService
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
             bool clientShouldSend = true;
-            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
-            {
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
 
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 
-            if (clientShouldSend)
-            {
-                if (setting.WechatSend)
-                {
+            if (clientShouldSend) {
+                if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     // string? url = GetMessageUrl();
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
-                    if (string.IsNullOrWhiteSpace(message1) == false)
-                    {
+                    if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customerCode, message1, processUser, url);
                     }
 
-                    if (string.IsNullOrWhiteSpace(message2) == false)
-                    {
+                    if (string.IsNullOrWhiteSpace(message2) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customerCode, message2, processUser, url);
                     }
 
-                    if (string.IsNullOrWhiteSpace(message3) == false)
-                    {
+                    if (string.IsNullOrWhiteSpace(message3) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customerCode, message3, processUser, url);
                     }
                 }
 
-                if (setting.SmsSend)
-                {
+                if (setting.SmsSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(message1) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message1) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message1, messageStatus, setting, processUser);
             }
 
-            if (string.IsNullOrWhiteSpace(message2) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message2) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message2, messageStatus, setting, processUser);
             }
 
-            if (string.IsNullOrWhiteSpace(message3) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message3) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message3, messageStatus, setting, processUser);
             }
 

@@ -3,6 +3,7 @@ using Senparc.Weixin.MP.AdvancedAPIs;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
+using shunda.Domain.Wechat;
 using shunda.Service.Wechat;
 #if !DEBUG
 using shunda.Core.Config;
@@ -12,29 +13,25 @@ using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
 namespace shunda.Service.Message;
 
 [Service(ServiceType.Scoped)]
-public class WechatMessageService
-{
+public class WechatMessageService {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;
 
-    public WechatMessageService(WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService)
-    {
+    public WechatMessageService(WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService) {
         this.wechatOfficialAccountAccessTokenService = wechatOfficialAccountAccessTokenService;
     }
 
     /// <summary>
     /// 发送模板消息
     /// </summary>
-    /// <param name="openId">openId</param>
+    /// <param name="validOpenId">有效的openId，如果客户已经取消关注公众号，请将validOpenId置空。或者调用该方法前提前放弃调用。</param>
     /// <param name="templateId">模板Id</param>
     /// <param name="data"></param>
     /// <param name="url"></param>
     /// <returns>是否发送成功</returns>
-    public CustomerMessageStatus SendTemplateMessage(string openId, string templateId, object data, string? url = null)
-    {
-        if (string.IsNullOrWhiteSpace(openId) == false)
-        {
+    public CustomerMessageStatus SendTemplateMessage(string validOpenId, string templateId, object data, string? url = null) {
+        if (string.IsNullOrWhiteSpace(validOpenId) == false) {
             string accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
 
             // 这是非多线程发送
@@ -54,7 +51,7 @@ public class WechatMessageService
             // 这是多线程发送
             SendTemplateMessageThreadParam param = new SendTemplateMessageThreadParam {
                 AccessToken = accessToken,
-                OpenId = openId,
+                OpenId = validOpenId,
                 TemplateId = templateId,
                 Url = url,
                 Data = data,
@@ -70,8 +67,7 @@ public class WechatMessageService
 
     #region 多线程发送
 
-    private class SendTemplateMessageThreadParam
-    {
+    private class SendTemplateMessageThreadParam {
         public string AccessToken { get; set; } = string.Empty;
 
         public string OpenId { get; set; } = string.Empty;
@@ -83,11 +79,9 @@ public class WechatMessageService
         public object Data { get; set; } = new();
     }
 
-    private void SendTemplateMessageNewThread(object? paramObj)
-    {
+    private void SendTemplateMessageNewThread(object? paramObj) {
         SendTemplateMessageThreadParam? param = paramObj as SendTemplateMessageThreadParam;
-        if (param == null)
-        {
+        if (param == null) {
             return;
         }
 
@@ -97,17 +91,14 @@ public class WechatMessageService
         string? url = param.Url;
         object data = param.Data;
 
-        if (string.IsNullOrWhiteSpace(url))
-        {
+        if (string.IsNullOrWhiteSpace(url)) {
             url = null;
         }
 
-        try
-        {
+        try {
             TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data);
         }
-        catch (Exception exp)
-        {
+        catch (Exception exp) {
             log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
             log.Error(exp);
         }
@@ -126,11 +117,9 @@ public class WechatMessageService
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
     /// <returns>是否发送成功</returns>
-    public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null)
-    {
+    public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null) {
         string openId = customer.WechatOfficialAccountOpenId;
-        if (string.IsNullOrWhiteSpace(openId))
-        {
+        if (string.IsNullOrWhiteSpace(openId) || customer.WechatOfficialAccountFollowStatus != WechatOfficialAccountFollowStatus.Followed ) {
             return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
         }
 
@@ -171,9 +160,11 @@ public class WechatMessageService
     /// <param name="remark">remark</param>
     /// <param name="sender">sender</param>
     /// <returns>是否发送成功</returns>
-    public CustomerMessageStatus SendOrderAbnormalNoticeTemplateMessage(CustomerInfo customer, string first, string abnormalCause, string remark, string sender)
-    {
+    public CustomerMessageStatus SendOrderAbnormalNoticeTemplateMessage(CustomerInfo customer, string first, string abnormalCause, string remark, string sender) {
         string openId = customer.WechatOfficialAccountOpenId;
+        if (string.IsNullOrWhiteSpace(openId) || customer.WechatOfficialAccountFollowStatus != WechatOfficialAccountFollowStatus.Followed) {
+            return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
+        }
 #if DEBUG
         log.Trace("SendOrderAbnormalNoticeTemplateMessage: ");
         log.Trace($"openId: {openId}");
