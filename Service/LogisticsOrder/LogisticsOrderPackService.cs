@@ -1,6 +1,5 @@
 using NHibernate;
 using shunda.Core;
-using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
@@ -8,6 +7,7 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 using shunda.Service.Express;
 using shunda.Service.Fee;
+using shunda.Service.Message.CustomerMessage;
 
 namespace shunda.Service.LogisticsOrder;
 
@@ -18,18 +18,21 @@ public class LogisticsOrderPackService {
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly LogisticsOrderFeeService logisticsOrderFeeService;
+    private readonly CustomerMessagePackedService customerMessagePackedService;
 
     public LogisticsOrderPackService(ISession session,
         LogisticsOrderStorageLocService logisticsOrderStorageLocService,
         ExpressLogService expressLogService,
         LogisticsOrderActionService logisticsOrderActionService,
-        LogisticsOrderFeeService logisticsOrderFeeService
+        LogisticsOrderFeeService logisticsOrderFeeService,
+        CustomerMessagePackedService customerMessagePackedService
     ) {
         this.session = session;
         this.logisticsOrderStorageLocService = logisticsOrderStorageLocService;
         this.expressLogService = expressLogService;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.customerMessagePackedService = customerMessagePackedService;
     }
 
     /// <summary>
@@ -272,7 +275,8 @@ public class LogisticsOrderPackService {
         // 订单计费
         logisticsOrderFeeService.CalculateAndSaveFee(orderId);
 
-        // todo 发送消息
+        // 发送消息
+        customerMessagePackedService.SendMessage(order.Customer, order);
     }
 
     /// <summary>

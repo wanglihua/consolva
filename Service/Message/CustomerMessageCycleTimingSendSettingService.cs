@@ -17,6 +17,7 @@ public class CustomerMessageCycleTimingSendSettingService {
     /// </summary>
     public void InitSettings() {
         CustomerMessageHelpMeMakeMoneyService.InitSetting(session);
+        CustomerMessageNewClaimService.InitSetting(session);
         CustomerMessageNoOrderService.InitSetting(session);
 
         session.Flush();

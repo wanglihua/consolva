@@ -21,7 +21,7 @@ using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Express;
 using shunda.Service.LogisticsOrder;
-using shunda.Service.Pass;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.ReceivePack.Controllers;
@@ -37,7 +37,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderPackService logisticsOrderPackService;
-    private readonly PassResService passResService;
+    private readonly CustomerMessagePackedService customerMessagePackedService;
 
     public LogisticsOrderGoodsPackController(ISession session,
         LoginUserService loginUserService,
@@ -47,7 +47,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
         ExpressLogService expressLogService,
         LogisticsOrderPackService logisticsOrderPackService,
-        PassResService passResService
+        CustomerMessagePackedService customerMessagePackedService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -57,7 +57,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
         this.expressLogService = expressLogService;
         this.logisticsOrderPackService = logisticsOrderPackService;
-        this.passResService = passResService;
+        this.customerMessagePackedService = customerMessagePackedService;
     }
 
     [HttpGet]

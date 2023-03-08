@@ -11,6 +11,7 @@ namespace shunda.Service.Message.CustomerMessage;
 
 /// <summary>
 /// 空运包裹签收提醒
+/// todo a 还没调用
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class CustomerMessageOrderDeliveredService {

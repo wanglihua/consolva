@@ -822,11 +822,11 @@ public class ExpressCheckinController : Controller {
         {
             Transactional.Wrap(session, () => {
                 // 发送消息提醒，虽然不在同一个事务内，但也是在前面都成功的情况下才发送的
-                if (expressExpect != null) // 优先按预报的发送消息
-                {
+                if (expressExpect != null) {
+                    // 优先按预报的发送消息
                     customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
-                } else if (billCustomerId != 0) // 没预报但有面单客户ID
-                {
+                } else if (billCustomerId != 0) {
+                    // 没预报但有面单客户ID
                     CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);
                     if (billCustomer != null) {
                         customerMessageExpressCheckinService.SendMessage(billCustomer, express!);

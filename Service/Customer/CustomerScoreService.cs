@@ -4,6 +4,7 @@ using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Customer;
@@ -15,6 +16,7 @@ public class CustomerScoreService {
     // private readonly CustomerService customerService;
     // private readonly CustomerMessageService customerMessageService;
     // private readonly CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService;
+    private readonly CustomerMessageMoneyEarnedService customerMessageMoneyEarnedService;
     private readonly CustomerVipDiscountService customerVipDiscountService;
 
     private readonly CustomerAccountService customerAccountService;
@@ -24,6 +26,7 @@ public class CustomerScoreService {
             // CustomerService customerService,
             // CustomerMessageService customerMessageService,
             // CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService,
+            CustomerMessageMoneyEarnedService customerMessageMoneyEarnedService,
             CustomerVipDiscountService customerVipDiscountService,
             CustomerAccountService customerAccountService)
         // CustomerMessageClientUrlService customerMessageClientUrlService)
@@ -32,6 +35,7 @@ public class CustomerScoreService {
         // this.customerService = customerService;
         // this.customerMessageService = customerMessageService;
         // this.customerMessageWoZhuanDaoDeQianService = customerMessageWoZhuanDaoDeQianService;
+        this.customerMessageMoneyEarnedService = customerMessageMoneyEarnedService;
         this.customerVipDiscountService = customerVipDiscountService;
         this.customerAccountService = customerAccountService;
         // this.customerMessageClientUrlService = customerMessageClientUrlService;
@@ -128,8 +132,8 @@ public class CustomerScoreService {
             // customerMessageVipUpgradeParam.NextVipLevel = customerVipDiscountNextLevel?.LevelName;
             //
             // customerMessageVipUpgradeParamList.Add(customerMessageVipUpgradeParam);
-            
-                    // todo 发送可能得VIP升级信息 customerMessage
+
+            // todo 发送可能得VIP升级信息 customerMessage
         }
 
         CustomerScoreLogInfo scoreLog = new CustomerScoreLogInfo {
@@ -148,9 +152,9 @@ public class CustomerScoreService {
         session.Save(scoreLog);
         session.Flush();
 
-        if (isValidScoreLogisticsConsume) // 有效积分时才发送
-        {
-            // customerMessageWoZhuanDaoDeQianService.SendMessage(orderCustomer, orderCate, logisticsConsumeScore, 0);
+        if (isValidScoreLogisticsConsume) {
+            // 有效积分时才发送
+            customerMessageMoneyEarnedService.SendMessage(orderCustomer, logisticsConsumeScore);
         }
 
         #endregion

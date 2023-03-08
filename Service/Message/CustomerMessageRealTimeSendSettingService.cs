@@ -20,7 +20,6 @@ public class CustomerMessageRealTimeSendSettingService {
         CustomerMessageExpressCheckinService.InitSetting(session);
         CustomerMessageExpressExpectEnterService.InitSetting(session);
         CustomerMessageMoneyEarnedService.InitSetting(session);
-        CustomerMessageNewClaimService.InitSetting(session);
         CustomerMessageOrderDeliveredService.InitSetting(session);
         CustomerMessagePackedService.InitSetting(session);
         CustomerMessageTransferedService.InitSetting(session);
