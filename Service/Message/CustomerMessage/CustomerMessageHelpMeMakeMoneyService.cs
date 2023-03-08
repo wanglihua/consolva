@@ -54,9 +54,6 @@ public class CustomerMessageHelpMeMakeMoneyService {
             session.Save(setting);
             session.Flush();
         }
-
-        session.Update(setting);
-        session.Flush();
     }
 
     public void SendMessage(CustomerInfo customer) {

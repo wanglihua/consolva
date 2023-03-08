@@ -53,9 +53,6 @@ public class CustomerMessageExpressCheckinService {
             session.Save(setting);
             session.Flush();
         }
-
-        session.Update(setting);
-        session.Flush();
     }
 
     private string TransferMessage(string message, string trackingNo) {
@@ -82,8 +79,6 @@ public class CustomerMessageExpressCheckinService {
         if (customer.Status == CustomerStatus.Frozen) {
             return;
         }
-
-        
 
         CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled) {

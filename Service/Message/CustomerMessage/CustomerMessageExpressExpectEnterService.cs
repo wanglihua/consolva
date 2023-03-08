@@ -53,9 +53,6 @@ public class CustomerMessageExpressExpectEnterService {
             session.Save(setting);
             session.Flush();
         }
-
-        session.Update(setting);
-        session.Flush();
     }
 
     private string TransferMessage(string message, string trackingNo) {

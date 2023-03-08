@@ -53,9 +53,6 @@ public class CustomerMessageAccountChangeService {
             session.Save(setting);
             session.Flush();
         }
-
-        session.Update(setting);
-        session.Flush();
     }
 
     private string TransferMessage(string message, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount) {
