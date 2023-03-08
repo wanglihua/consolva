@@ -8,15 +8,16 @@ using shunda.Service.Message.CustomerMessage;
 namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
-public class CustomerAccountService
-{
+public class CustomerAccountService {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly CustomerMessageAccountChangeService customerMessageAccountChangeService;
 
-    public CustomerAccountService(ISession session, CustomerMessageAccountChangeService customerMessageAccountChangeService)
-    {
+    public CustomerAccountService(
+        ISession session,
+        CustomerMessageAccountChangeService customerMessageAccountChangeService
+    ) {
         this.session = session;
         this.customerMessageAccountChangeService = customerMessageAccountChangeService;
     }
@@ -28,16 +29,13 @@ public class CustomerAccountService
     /// <param name="customerId">客户ID</param>
     /// <param name="amount">变动金额，可以是正的，也可以是负的</param>
     /// <param name="description">描述</param>
-    public void Change(CustomerAccountChangeType changeType, int customerId, decimal amount, string description = "")
-    {
+    public void Change(CustomerAccountChangeType changeType, int customerId, decimal amount, string description = "") {
         CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
+        if (customer == null) {
             throw new ValidationException("指定的客户Id不存在！");
         }
 
-        if (description == null)
-        {
+        if (description == null) {
             throw new ValidationException("描述不能为NULL！");
         }
 
@@ -62,7 +60,7 @@ public class CustomerAccountService
         session.Save(accountEntry);
         session.Flush();
 
-        // 发送余额变动消息，区分海运和空运
+        // 发送余额变动消息
         customerMessageAccountChangeService.SendMessage(customer, changeType.Name, accountEntry.Amount, accountEntry.AccountBefore, accountEntry.AccountAfter);
     }
 
@@ -74,14 +72,13 @@ public class CustomerAccountService
 
     /// <summary>
     /// 获得会员可用代支付余额
+    /// 这个基本上没用了
     /// </summary>
     /// <param name="customerId"></param>
     /// <returns></returns>
-    public decimal GetPayForAnotherLimit(int customerId)
-    {
+    public decimal GetPayForAnotherLimit(int customerId) {
         CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null)
-        {
+        if (customer == null) {
             throw new ValidationException("指定的会员不存在！");
         }
 
@@ -92,8 +89,7 @@ public class CustomerAccountService
             .ToList();
 
         decimal accountDelta = 0m;
-        if (accountEntryList.Count != 0)
-        {
+        if (accountEntryList.Count != 0) {
             accountDelta = accountEntryList.Sum(e => e.Amount); // 这里的 Amount 可能是正的，也可能是负的 
         }
 
@@ -106,22 +102,18 @@ public class CustomerAccountService
         // 计算 30 天内的最高余额
         decimal accountMax = accountSometimeAgo;
         decimal accountThatTime = accountSometimeAgo;
-        foreach (var accountEntry in accountEntryList)
-        {
+        foreach (var accountEntry in accountEntryList) {
             accountThatTime += accountEntry.Amount;
 
-            if (accountThatTime > accountMax)
-            {
+            if (accountThatTime > accountMax) {
                 accountMax = accountThatTime;
             }
         }
 
         // 计算 30 天内的代支付额，取正数
         decimal payAnotherAmountBefore = 0m; // 取正数
-        foreach (var accountEntry in accountEntryList)
-        {
-            if (accountEntry.ChangeType == CustomerAccountChangeType.PayAnother)
-            {
+        foreach (var accountEntry in accountEntryList) {
+            if (accountEntry.ChangeType == CustomerAccountChangeType.PayAnother) {
                 payAnotherAmountBefore += Math.Abs(accountEntry.Amount); // 取正数
             }
         }
@@ -134,8 +126,7 @@ public class CustomerAccountService
             payForAnotherAmountLimit = customerAccount - PayAnotherMinRemainAccountAmount;
         }
 
-        if (payForAnotherAmountLimit < 0)
-        {
+        if (payForAnotherAmountLimit < 0) {
             payForAnotherAmountLimit = 0;
         }
 
