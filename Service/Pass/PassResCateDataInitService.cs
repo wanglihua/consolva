@@ -49,10 +49,13 @@ public class PassResCateDataInitService {
                 .SingleOrDefault();
 
             bool shouldSave = false;
+            bool isUpdate = true;
             if (cateInDb == null) {
                 shouldSave = true;
-                cateInDb = new PassResCateInfo();
-                cateInDb.Id = cate.Id;
+                isUpdate = false;
+                cateInDb = new PassResCateInfo {
+                    Id = cate.Id
+                };
             }
 
             if (cateInDb.Name != cate.Name) {
@@ -66,7 +69,11 @@ public class PassResCateDataInitService {
             }
 
             if (shouldSave) {
-                session.SaveOrUpdate(cateInDb);
+                if (isUpdate) {
+                    session.Update(cateInDb);
+                } else {
+                    session.Save(cateInDb);
+                }
             }
         }
 

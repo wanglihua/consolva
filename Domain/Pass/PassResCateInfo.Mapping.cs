@@ -4,10 +4,8 @@ using shunda.Core;
 
 namespace shunda.Domain.Pass;
 
-public class PassResCateInfoMapping : EntityNoCreateNoUpdateMapping<PassResCateInfo>
-{
-    public PassResCateInfoMapping()
-    {
+public class PassResCateInfoMapping : EntityNoCreateNoUpdateMapping<PassResCateInfo> {
+    public PassResCateInfoMapping() {
         Table("tbl_pass_res_cate");
 
         Lazy(true);
@@ -15,6 +13,15 @@ public class PassResCateInfoMapping : EntityNoCreateNoUpdateMapping<PassResCateI
         DynamicUpdate(true);
 
         Cache(x => x.Usage(CacheUsage.ReadWrite));
+
+        Id(
+            x => x.Id,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("id");
+                map.Generator(Generators.Assigned);
+            }
+        );
 
         Property(
             x => x.Name,

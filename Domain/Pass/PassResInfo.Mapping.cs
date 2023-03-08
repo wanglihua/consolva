@@ -4,11 +4,18 @@ using shunda.Core;
 
 namespace shunda.Domain.Pass;
 
-public class PassResInfoMapping : EntityNoCreateNoUpdateMapping<PassResInfo>
-{
-    public PassResInfoMapping()
-    {
+public class PassResInfoMapping : EntityNoCreateNoUpdateMapping<PassResInfo> {
+    public PassResInfoMapping() {
         Table("tbl_pass_res");
+
+        Id(
+            x => x.Id,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("id");
+                map.Generator(Generators.Assigned);
+            }
+        );
 
         ManyToOne(
             x => x.Cate,

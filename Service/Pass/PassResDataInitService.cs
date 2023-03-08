@@ -48,10 +48,13 @@ public class PassResDataInitService {
                 .SingleOrDefault();
 
             bool shouldSave = false;
+            bool isUpdate = true;
             if (passResInDb == null) {
                 shouldSave = true;
-                passResInDb = new PassResInfo();
-                passResInDb.Id = passRes.Id;
+                isUpdate = false;
+                passResInDb = new PassResInfo {
+                    Id = passRes.Id
+                };
             }
 
             if (passResInDb.Cate.Id != passRes.CateIdForCache) {
@@ -70,7 +73,11 @@ public class PassResDataInitService {
             }
 
             if (shouldSave) {
-                session.SaveOrUpdate(passResInDb);
+                if (isUpdate) {
+                    session.Update(passResInDb);
+                } else {
+                    session.Save(passResInDb);
+                }
             }
         }
 
