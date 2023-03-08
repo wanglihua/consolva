@@ -10,11 +10,10 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.Message.CustomerMessage;
 
 /// <summary>
-/// 预报货值提醒
+/// 预报到货提醒
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class CustomerMessageExpressExpectEnterService
-{
+public class CustomerMessageExpressExpectEnterService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
     private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
@@ -23,8 +22,7 @@ public class CustomerMessageExpressExpectEnterService
     public CustomerMessageExpressExpectEnterService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
         CustomerMessageClientUrlService customerMessageClientUrlService,
-        CustomerCodeService customerCodeService)
-    {
+        CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
         this.customerMessageClientUrlService = customerMessageClientUrlService;
@@ -33,27 +31,24 @@ public class CustomerMessageExpressExpectEnterService
 
     private static CustomerMessageType messageType => CustomerMessageType.ExpressExpectEnter;
 
-    public static void InitSetting(ISession session)
-    {
+    public static void InitSetting(ISession session) {
         var setting = session.Query<CustomerMessageRealTimeSendSettingInfo>()
             .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
-        if (setting == null)
-        {
-            setting = new CustomerMessageRealTimeSendSettingInfo();
-            setting.Type = messageType;
-            setting.Status = CustomerMessageSettingStatus.Disabled;
-            setting.WechatSend = true;
-            setting.SmsSend = false;
-
-            setting.WechatMessageTemplate1 = "亲，您预报的单号【{tracking_no}】已入库！";
-            setting.SmsMessageTemplate = "亲，您预报的单号【{tracking_no}】已入库！";
-            setting.Placeholders = "快递单号：{tracking_no}";
-
-            setting.ClientCustomizable = false;
-            setting.ClientTitle = messageType.Name;
-            setting.ClientDesc = messageType.Description;
+        if (setting == null) {
+            setting = new CustomerMessageRealTimeSendSettingInfo {
+                Type = messageType,
+                Status = CustomerMessageSettingStatus.Disabled,
+                WechatSend = true,
+                SmsSend = false,
+                WechatMessageTemplate1 = "亲，您预报的单号【{tracking_no}】已入库！",
+                SmsMessageTemplate = "亲，您预报的单号【{tracking_no}】已入库！",
+                Placeholders = "快递单号：{tracking_no}",
+                ClientCustomizable = false,
+                ClientTitle = messageType.Name,
+                ClientDesc = messageType.Description
+            };
 
             session.Save(setting);
             session.Flush();
@@ -63,10 +58,8 @@ public class CustomerMessageExpressExpectEnterService
         session.Flush();
     }
 
-    private string TransferMessage(string message, string trackingNo)
-    {
-        if (string.IsNullOrWhiteSpace(message))
-        {
+    private string TransferMessage(string message, string trackingNo) {
+        if (string.IsNullOrWhiteSpace(message)) {
             return message;
         }
 
@@ -75,15 +68,12 @@ public class CustomerMessageExpressExpectEnterService
         return message;
     }
 
-    public void SendMessage(CustomerInfo customer, ExpressExpectInfo expressExpect)
-    {
-        if (customer == null)
-        {
+    public void SendMessage(CustomerInfo customer, ExpressExpectInfo expressExpect) {
+        if (customer == null) {
             throw new ValidationException("消息发送指定的会员不能为空！");
         }
 
-        if (customer.Status == CustomerStatus.Frozen)
-        {
+        if (customer.Status == CustomerStatus.Frozen) {
             return;
         }
 
@@ -91,8 +81,7 @@ public class CustomerMessageExpressExpectEnterService
         string trackingNo = expressExpect.TrackingNo;
 
         CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
-        if (setting.Status == CustomerMessageSettingStatus.Enabled)
-        {
+        if (setting.Status == CustomerMessageSettingStatus.Enabled) {
             string message1 = TransferMessage(setting.WechatMessageTemplate1, trackingNo);
             string message2 = TransferMessage(setting.WechatMessageTemplate2, trackingNo);
             string message3 = TransferMessage(setting.WechatMessageTemplate3, trackingNo);
@@ -100,56 +89,45 @@ public class CustomerMessageExpressExpectEnterService
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
             bool clientShouldSend = true;
-            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
-            {
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
 
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 
-            if (clientShouldSend)
-            {
-                if (setting.WechatSend)
-                {
+            if (clientShouldSend) {
+                if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
-                    // string? url = GetMessageUrl();
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
-                    if (string.IsNullOrWhiteSpace(message1) == false)
-                    {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【预报货值】通知", customerCode, message1, processUser, url);
+                    if (string.IsNullOrWhiteSpace(message1) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【预报到货】通知", customerCode, message1, processUser, url);
                     }
 
-                    if (string.IsNullOrWhiteSpace(message2) == false)
-                    {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【预报货值】通知", customerCode, message2, processUser, url);
+                    if (string.IsNullOrWhiteSpace(message2) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【预报到货】通知", customerCode, message2, processUser, url);
                     }
 
-                    if (string.IsNullOrWhiteSpace(message3) == false)
-                    {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【预报货值】通知", customerCode, message3, processUser, url);
+                    if (string.IsNullOrWhiteSpace(message3) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【预报到货】通知", customerCode, message3, processUser, url);
                     }
                 }
 
-                if (setting.SmsSend)
-                {
+                if (setting.SmsSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(message1) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message1) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
             }
 
-            if (string.IsNullOrWhiteSpace(message2) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message2) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
             }
 
-            if (string.IsNullOrWhiteSpace(message3) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message3) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
             }
 

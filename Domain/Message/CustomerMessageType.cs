@@ -129,7 +129,7 @@ public class CustomerMessageType : CodeTypeBase {
     /// <summary>
     /// 空运包裹签收提醒
     /// </summary>
-    public static readonly CustomerMessageType OrderDeliveredAir = new CustomerMessageType(30000, "空运包裹签收提醒", "空运包裹签收提醒");
+    public static readonly CustomerMessageType OrderDelivered = new CustomerMessageType(30000, "空运包裹签收提醒", "空运包裹签收提醒");
 
     // 这里改了后，记得客户端对应的类型也更新下
 
@@ -163,7 +163,7 @@ public class CustomerMessageType : CodeTypeBase {
         OrderLongNoPay,
         ExpressNoOrder,
         CnStorageOverdue,
-        OrderDeliveredAir,
+        OrderDelivered,
     };
 
     private static readonly IDictionary<int, CustomerMessageType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

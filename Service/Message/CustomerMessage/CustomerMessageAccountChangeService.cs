@@ -12,8 +12,7 @@ namespace shunda.Service.Message.CustomerMessage;
 /// 账户余额变动提醒
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class CustomerMessageAccountChangeService
-{
+public class CustomerMessageAccountChangeService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
     private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
@@ -22,8 +21,7 @@ public class CustomerMessageAccountChangeService
     public CustomerMessageAccountChangeService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
         CustomerMessageClientUrlService customerMessageClientUrlService,
-        CustomerCodeService customerCodeService)
-    {
+        CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
         this.customerMessageClientUrlService = customerMessageClientUrlService;
@@ -32,28 +30,25 @@ public class CustomerMessageAccountChangeService
 
     private static CustomerMessageType messageType => CustomerMessageType.AccountChange;
 
-    public static void InitSetting(ISession session)
-    {
+    public static void InitSetting(ISession session) {
         var setting = session.Query<CustomerMessageRealTimeSendSettingInfo>()
             .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
-        if (setting == null)
-        {
-            setting = new CustomerMessageRealTimeSendSettingInfo();
-            setting.Type = messageType;
-            setting.Status = CustomerMessageSettingStatus.Disabled;
-            setting.WechatSend = true;
-            setting.SmsSend = false;
+        if (setting == null) {
+            setting = new CustomerMessageRealTimeSendSettingInfo {
+                Type = messageType,
+                Status = CustomerMessageSettingStatus.Disabled,
+                WechatSend = true,
+                SmsSend = false,
+                WechatMessageTemplate1 = "您好，您的账户余额有变动，变动原因：{change_reason}，变动金额{account_change_amount}，变动前余额{account_before_amount}，变动后余额{account_after_amount}！",
+                SmsMessageTemplate = "您好，您的账户余额有变动，变动原因：{change_reason}，变动金额{account_change_amount}，变动前余额{account_before_amount}，变动后余额{account_after_amount}！",
+                Placeholders = "变动原因：{change_reason}，账户余额变动金额：{account_change_amount}，账户变动前余额：{account_before_amount}，账户变动后余额：{account_after_amount}",
+                ClientCustomizable = false,
+                ClientTitle = messageType.Name,
+                ClientDesc = messageType.Description
+            };
 
-            setting.WechatMessageTemplate1 = "您好，您的账户余额有变动，变动原因：{change_reason}，变动金额{account_change_amount}，变动前余额{account_before_amount}，变动后余额{account_after_amount}！";
-            setting.SmsMessageTemplate = "您好，您的账户余额有变动，变动原因：{change_reason}，变动金额{account_change_amount}，变动前余额{account_before_amount}，变动后余额{account_after_amount}！";
-            setting.Placeholders = "变动原因：{change_reason}，账户余额变动金额：{account_change_amount}，账户变动前余额：{account_before_amount}，账户变动后余额：{account_after_amount}";
-
-
-            setting.ClientCustomizable = false;
-            setting.ClientTitle = messageType.Name;
-            setting.ClientDesc = messageType.Description;
 
             session.Save(setting);
             session.Flush();
@@ -63,10 +58,8 @@ public class CustomerMessageAccountChangeService
         session.Flush();
     }
 
-    private string TransferMessage(string message, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount)
-    {
-        if (string.IsNullOrWhiteSpace(message))
-        {
+    private string TransferMessage(string message, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount) {
+        if (string.IsNullOrWhiteSpace(message)) {
             return message;
         }
 
@@ -78,23 +71,19 @@ public class CustomerMessageAccountChangeService
         return message;
     }
 
-    public void SendMessage(CustomerInfo customer, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount)
-    {
-        if (customer == null)
-        {
+    public void SendMessage(CustomerInfo customer, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount) {
+        if (customer == null) {
             throw new ValidationException("消息发送指定的会员不能为空！");
         }
 
-        if (customer.Status == CustomerStatus.Frozen)
-        {
+        if (customer.Status == CustomerStatus.Frozen) {
             return;
         }
 
         string customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
         CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
-        if (setting.Status == CustomerMessageSettingStatus.Enabled)
-        {
+        if (setting.Status == CustomerMessageSettingStatus.Enabled) {
             string message1 = TransferMessage(setting.WechatMessageTemplate1, changeReason, accountAfterAmount, accountBeforeAmount, accountAfterAmount);
             string message2 = TransferMessage(setting.WechatMessageTemplate2, changeReason, accountAfterAmount, accountBeforeAmount, accountAfterAmount);
             string message3 = TransferMessage(setting.WechatMessageTemplate3, changeReason, accountAfterAmount, accountBeforeAmount, accountAfterAmount);
@@ -102,57 +91,46 @@ public class CustomerMessageAccountChangeService
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
             bool clientShouldSend = true;
-            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend))
-            {
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
 
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 
-            if (clientShouldSend)
-            {
-                if (setting.WechatSend)
-                {
+            if (clientShouldSend) {
+                if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
-                    // string? url = GetMessageUrl(express);
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
                     string messageTitle = "账户余额变动提醒";
 
-                    if (string.IsNullOrWhiteSpace(message1) == false)
-                    {
+                    if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message1, processUser, url);
                     }
 
-                    if (string.IsNullOrWhiteSpace(message2) == false)
-                    {
+                    if (string.IsNullOrWhiteSpace(message2) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message2, processUser, url);
                     }
 
-                    if (string.IsNullOrWhiteSpace(message3) == false)
-                    {
+                    if (string.IsNullOrWhiteSpace(message3) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message3, processUser, url);
                     }
                 }
 
-                if (setting.SmsSend)
-                {
+                if (setting.SmsSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(message1) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message1) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
             }
 
-            if (string.IsNullOrWhiteSpace(message2) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message2) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
             }
 
-            if (string.IsNullOrWhiteSpace(message3) == false)
-            {
+            if (string.IsNullOrWhiteSpace(message3) == false) {
                 customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
             }
 

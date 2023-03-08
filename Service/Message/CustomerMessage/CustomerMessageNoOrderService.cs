@@ -1,5 +1,6 @@
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
@@ -29,28 +30,23 @@ public class CustomerMessageNoOrderService {
 
     private static CustomerMessageType messageType => CustomerMessageType.CustomerNoOrder;
 
-    private string? GetMessageUrl() {
-        return null;
-    }
-
     public static void InitSetting(ISession session) {
         var setting = session.Query<CustomerMessageCycleTimingSendSettingInfo>()
             .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
         if (setting == null) {
-            setting = new CustomerMessageCycleTimingSendSettingInfo();
-            setting.Type = messageType;
-            setting.Status = CustomerMessageSettingStatus.Disabled;
-            setting.WechatSend = true;
-            setting.SmsSend = false;
-
-            setting.WechatMessageTemplate1 = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
-            setting.SmsMessageTemplate = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！";
-
-            setting.ClientCustomizable = false;
-            setting.ClientTitle = messageType.Name;
-            setting.ClientDesc = messageType.Description;
+            setting = new CustomerMessageCycleTimingSendSettingInfo {
+                Type = messageType,
+                Status = CustomerMessageSettingStatus.Disabled,
+                WechatSend = true,
+                SmsSend = false,
+                WechatMessageTemplate1 = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！",
+                SmsMessageTemplate = "嗨，老板，舜达很久没有见您下单了。下个订单，赏口饭吃呗。现在下单，不仅费用低，还有优惠活动哦！",
+                ClientCustomizable = false,
+                ClientTitle = messageType.Name,
+                ClientDesc = messageType.Description
+            };
 
             session.Save(setting);
             session.Flush();
@@ -89,7 +85,7 @@ public class CustomerMessageNoOrderService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
-                    string? url = GetMessageUrl();
+                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "下单提醒", customerCode, message1, processUser, url);

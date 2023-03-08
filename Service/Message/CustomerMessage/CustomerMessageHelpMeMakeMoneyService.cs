@@ -35,22 +35,21 @@ public class CustomerMessageHelpMeMakeMoneyService {
             .Where(e => e.Type == messageType)
             .Take(1)
             .SingleOrDefault();
-
         if (setting == null) {
-            setting = new CustomerMessageCycleTimingSendSettingInfo();
-            setting.Type = messageType;
-            setting.Status = CustomerMessageSettingStatus.Disabled;
-            setting.WechatSend = true;
-            setting.SmsSend = false;
-
-            setting.WechatMessageTemplate1 = "嗨，老板，今天舜达帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！";
-            setting.WechatMessageTemplate2 = string.Empty;
-            setting.WechatMessageTemplate3 = string.Empty;
-            setting.SmsMessageTemplate = "嗨，老板，今天舜达帮您赚钱了吗？将【帮我赚钱】里您的专属海报转发朋友圈就可以赚钱哦！";
-            setting.Placeholders = string.Empty;
-            setting.ClientCustomizable = false;
-            setting.ClientTitle = messageType.Name;
-            setting.ClientDesc = messageType.Description;
+            setting = new CustomerMessageCycleTimingSendSettingInfo {
+                Type = messageType,
+                Status = CustomerMessageSettingStatus.Disabled,
+                WechatSend = true,
+                SmsSend = false,
+                WechatMessageTemplate1 = "嗨，老板，今天舜达帮您赚钱了吗？动动手指，将【帮我赚钱】里您的专属海报转发微信朋友圈，让澳拼马不停蹄帮您赚钱哦！",
+                WechatMessageTemplate2 = string.Empty,
+                WechatMessageTemplate3 = string.Empty,
+                SmsMessageTemplate = "嗨，老板，今天舜达帮您赚钱了吗？将【帮我赚钱】里您的专属海报转发朋友圈就可以赚钱哦！",
+                Placeholders = string.Empty,
+                ClientCustomizable = false,
+                ClientTitle = messageType.Name,
+                ClientDesc = messageType.Description
+            };
 
             session.Save(setting);
             session.Flush();
@@ -89,7 +88,6 @@ public class CustomerMessageHelpMeMakeMoneyService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
-                    // string? url = GetMessageUrl();
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
