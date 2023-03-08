@@ -16,9 +16,14 @@ public class CustomerMessageRealTimeSendSettingService {
     /// 初始化设置
     /// </summary>
     public void InitSetting() {
-        CustomerMessageExpressExpectEnterService.InitSetting(session);
-        CustomerMessageExpressCheckinService.InitSetting(session);
         CustomerMessageAccountChangeService.InitSetting(session);
+        CustomerMessageExpressCheckinService.InitSetting(session);
+        CustomerMessageExpressExpectEnterService.InitSetting(session);
+        CustomerMessageMoneyEarnedService.InitSetting(session);
+        CustomerMessageNewClaimService.InitSetting(session);
+        CustomerMessageOrderDeliveredService.InitSetting(session);
+        CustomerMessagePackedService.InitSetting(session);
+        CustomerMessageTransferedService.InitSetting(session);
 
         session.Flush();
 

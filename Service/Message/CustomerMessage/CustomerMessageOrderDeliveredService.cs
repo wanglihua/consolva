@@ -40,15 +40,18 @@ public class CustomerMessageOrderDeliveredService {
             .Take(1)
             .SingleOrDefault();
         if (setting == null) {
-            setting = new CustomerMessageRealTimeSendSettingInfo();
-            setting.Type = CustomerMessageType.OrderDelivered;
-            setting.Status = CustomerMessageSettingStatus.Disabled;
-            setting.WechatSend = true;
-            setting.SmsSend = false;
-
-            setting.WechatMessageTemplate1 = "亲，您的空运订单{order_code}，显示已妥投签收，如果有问题请联系空运客服。另外，分享微信朋友圈积攒10个以上，联系空运客服可得20RMB空运优惠券！";
-            setting.SmsMessageTemplate = "亲，您的空运订单{order_code}，显示已妥投签收，如果有问题请联系空运客服。另外，分享微信朋友圈积攒10个以上，联系空运客服可得20RMB空运优惠券！";
-            setting.Placeholders = "订单编码：{order_code}";
+            setting = new CustomerMessageRealTimeSendSettingInfo {
+                Type = CustomerMessageType.OrderDelivered,
+                Status = CustomerMessageSettingStatus.Disabled,
+                WechatSend = true,
+                SmsSend = false,
+                WechatMessageTemplate1 = "亲，您的空运订单{order_code}，显示已妥投签收，如果有问题请联系空运客服。另外，分享微信朋友圈积攒10个以上，联系空运客服可得20RMB空运优惠券！",
+                SmsMessageTemplate = "亲，您的空运订单{order_code}，显示已妥投签收，如果有问题请联系空运客服。另外，分享微信朋友圈积攒10个以上，联系空运客服可得20RMB空运优惠券！",
+                Placeholders = "订单编码：{order_code}",
+                ClientCustomizable = false,
+                ClientTitle = messageType.Name,
+                ClientDesc = messageType.Description
+            };
 
             session.Save(setting);
             session.Flush();
