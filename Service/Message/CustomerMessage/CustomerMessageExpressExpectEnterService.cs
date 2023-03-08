@@ -47,8 +47,8 @@ public class CustomerMessageExpressExpectEnterService
             setting.WechatSend = true;
             setting.SmsSend = false;
 
-            setting.WechatMessageTemplate1 = "亲，您预报的单号【{tracking_no}】，已抵达国内收货仓，进入【预报池】完善货值即可立马完成入库哦！";
-            setting.SmsMessageTemplate = "亲，您预报的单号【{tracking_no}】，已抵达国内收货仓，进入【预报池】完善货值即可立马完成入库哦！";
+            setting.WechatMessageTemplate1 = "亲，您预报的单号【{tracking_no}】已入库！";
+            setting.SmsMessageTemplate = "亲，您预报的单号【{tracking_no}】已入库！";
             setting.Placeholders = "快递单号：{tracking_no}";
 
             setting.ClientCustomizable = false;

@@ -11,6 +11,7 @@ using Domain.Message;
 using Domain.Pass;
 using NHibernate;
 using Service.Customer;
+using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;

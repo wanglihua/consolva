@@ -27,11 +27,6 @@ public class CustomerMessageType : CodeTypeBase {
     public static readonly CustomerMessageType CustomerNoOrder = new CustomerMessageType(4000, "已注册未下单推送", "已注册未下单推送");
 
     /// <summary>
-    /// 定时提醒，定时提交打包提醒
-    /// </summary>
-    public static readonly CustomerMessageType TimingSubmitPack = new CustomerMessageType(5000, "定时提交打包提醒", "定时提交打包提醒");
-
-    /// <summary>
     /// 定时提醒，公共申领件处理提醒
     /// </summary>
     public static readonly CustomerMessageType NewClaim = new CustomerMessageType(6000, "公共申领件处理提醒", "公共申领件处理提醒");
@@ -47,9 +42,9 @@ public class CustomerMessageType : CodeTypeBase {
     public static readonly CustomerMessageType ExpressCheckin = new CustomerMessageType(8000, "快递单入库提醒", "快递单入库提醒");
 
     /// <summary>
-    /// 实时提醒，预报货值提醒
+    /// 实时提醒，预报快递单入库提醒
     /// </summary>
-    public static readonly CustomerMessageType ExpressExpectEnter = new CustomerMessageType(9000, "预报货值提醒", "预报货值提醒");
+    public static readonly CustomerMessageType ExpressExpectEnter = new CustomerMessageType(9000, "预报快递单入库提醒", "预报快递单入库提醒");
 
     /// <summary>
     /// 实时提醒，已打包提醒
@@ -65,11 +60,6 @@ public class CustomerMessageType : CodeTypeBase {
     /// VIP升级推送
     /// </summary>
     public static readonly CustomerMessageType VipUpgrade = new CustomerMessageType(14000, "VIP升级推送", "VIP升级推送");
-
-    /// <summary>
-    /// 收取GST推送
-    /// </summary>
-    public static readonly CustomerMessageType Gst = new CustomerMessageType(16000, "收取GST推送", "收取GST推送");
 
     /// <summary>
     /// 订单入库图片推送
@@ -153,7 +143,6 @@ public class CustomerMessageType : CodeTypeBase {
         AllCustomer,
         HelpMeMakeMoney,
         CustomerNoOrder,
-        TimingSubmitPack,
         NewClaim,
         MoneyEarned,
         ExpressCheckin,
@@ -161,7 +150,6 @@ public class CustomerMessageType : CodeTypeBase {
         Packed,
         Transfered,
         VipUpgrade,
-        Gst,
         ExpressPhotoCheckIn,
         ExpressVideoCheckIn,
         ExpressPhotoIssue,
