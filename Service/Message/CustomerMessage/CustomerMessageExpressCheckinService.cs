@@ -1,3 +1,4 @@
+using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain;
@@ -5,7 +6,6 @@ using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Message.CustomerMessage;
 
@@ -83,7 +83,7 @@ public class CustomerMessageExpressCheckinService {
             return;
         }
 
-        string customerCode = customerCodeService.GetCustomerCode(customer.Id);
+        
 
         CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled) {
@@ -103,6 +103,7 @@ public class CustomerMessageExpressCheckinService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
+                    string customerCode = customerCodeService.GetCustomerCode(customer.Id);
                     string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
