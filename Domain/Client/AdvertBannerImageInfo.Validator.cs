@@ -9,8 +9,6 @@ public class AdvertBannerImageInfoValidator : AbstractValidator<AdvertBannerImag
     public AdvertBannerImageInfoValidator() {
         RuleFor(e => e.Banner).Must(p => p != null).WithMessage("广告横幅不能为空！");
 
-        RuleFor(e => e.CountryId).Must(p => p > 0).WithMessage("国家不能为空！");
-
         RuleFor(e => e.ImageNum).Must(p => p > 0).WithMessage("图片序号不能为空！");
 
         RuleFor(e => e.StorePath).NotNull().WithMessage("存储路径不能为空！");
