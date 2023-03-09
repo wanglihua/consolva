@@ -83,7 +83,10 @@
         $.ajax({
             url: '@Url.Action("Detail", "AdvertBannerImage")',
             type: "POST",
-            data: { "id": id },
+            data: { 
+                "@(nameof(AdvertBannerImageDetailParam.Id))": id,
+                "@(nameof(AdvertBannerImageDetailParam.BannerId))": "@(Model.AdvertBanner.Id)"
+            },
             success: function(data) {
                 hideMask();
                 if (data.success === false) {

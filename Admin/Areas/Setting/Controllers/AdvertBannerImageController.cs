@@ -58,6 +58,10 @@ public class AdvertBannerImageController : Controller {
         IList<AdvertBannerImageInfo> advertBannerImageList = listQuery
             .List<AdvertBannerImageInfo>();
 
+        foreach (var bannerImage in advertBannerImageList) {
+            bannerImage.ImageFullUrlCache = advertBannerImageService.GetImageFullUrl(bannerImage);
+        }
+
         AdvertBannerImageListModel model = new AdvertBannerImageListModel {
             AdvertBannerImageList = advertBannerImageList,
             AdvertBannerImageAlias = nameof(advertBannerImageAlias),
@@ -83,23 +87,34 @@ public class AdvertBannerImageController : Controller {
 
     [HttpPost]
     [Route("/admin/setting/advert/banner/image/detail")]
-    public IActionResult Detail(IdParam param) {
-        var id = param.Id;
+    public IActionResult Detail(AdvertBannerImageDetailParam param) {
+        int id = param.Id;
+        int bannerId = param.BannerId;
 
         AdvertBannerImageInfo? advertBannerImage;
 
         if (id <= 0) {
             advertBannerImage = new AdvertBannerImageInfo();
+
+            var banner = session.Get<AdvertBannerInfo>(bannerId);
+            if (banner == null) {
+                throw new ValidationException($"指定的广告条幅#{bannerId}不存在！");
+            }
+
+            advertBannerImage.Banner = banner;
         } else {
             advertBannerImage = session.Get<AdvertBannerImageInfo>(id);
             if (advertBannerImage == null) {
                 throw new ValidationException($"指定的 广告横幅图片#{id} 不存在！");
             }
+
+            NHibernateUtil.Initialize(advertBannerImage.Banner);
         }
 
         AdvertBannerImageDetailModel model = new AdvertBannerImageDetailModel {
             AdvertBannerImageId = advertBannerImage.Id,
             BannerId = advertBannerImage.Banner.Id,
+            Banner = advertBannerImage.Banner,
             ImageNum = advertBannerImage.ImageNum,
             StorePath = advertBannerImage.StorePath,
             StoreName = advertBannerImage.StoreName,
@@ -138,7 +153,7 @@ public class AdvertBannerImageController : Controller {
             { "storePath", storePath },
             { "storeName", storeName },
         });
-    }    
+    }
 
     [HttpPost]
     [Route("/admin/setting/advert/banner/image/save")]
@@ -198,7 +213,7 @@ public class AdvertBannerImageController : Controller {
         foreach (int id in idList) {
             AdvertBannerImageInfo advertBannerImage = session.Load<AdvertBannerImageInfo>(id);
             session.Delete(advertBannerImage);
-            
+
             advertBannerImageService.DeleteImageFile(advertBannerImage);
         }
 
