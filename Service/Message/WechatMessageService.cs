@@ -119,7 +119,7 @@ public class WechatMessageService {
     /// <returns>是否发送成功</returns>
     public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null) {
         string openId = customer.WechatOfficialAccountOpenId;
-        if (string.IsNullOrWhiteSpace(openId) || customer.WechatOfficialAccountFollowStatus != WechatOfficialAccountFollowStatus.Followed ) {
+        if (string.IsNullOrWhiteSpace(openId) || customer.WechatOfficialAccountFollowStatus != WechatOfficialAccountFollowStatus.Followed) {
             return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
         }
 
@@ -136,55 +136,37 @@ public class WechatMessageService {
 
         return CustomerMessageStatus.Success;
 #else
-            DateTime processTime = DateTime.Now;
+        /*
+         
+            {{ first.DATA }}
+            订单号：{{ keyword1.DATA }}
+            订单内容：{{ keyword2.DATA }}
+            收货人：{{ keyword3.DATA }}
+            {{ remark.DATA }}
+         
+         */
+        var firstTemplateDataItem = new TemplateDataItem(first);
+        var keyword1TemplateDataItem = new TemplateDataItem(orderCode);
 
-            var data = new {
-                first = new TemplateDataItem(first),
-                keyword1 = new TemplateDataItem(orderCode),
-                keyword2 = new TemplateDataItem(customerCode),
-                keyword3 = new TemplateDataItem(processTime.ToString("yyyy-MM-dd HH:mm") + " 北京时间"),
-                keyword4 = new TemplateDataItem(sender),
-                remark = new TemplateDataItem(remark)
-            };
-
-            return SendTemplateMessage(openId, WechatOfficialAccountConfig.OrderNoticeTemplateId, data, url);
-#endif
-    }
-
-    /// <summary>
-    /// 订单处理异常通知
-    /// </summary>
-    /// <param name="customer">customer</param>
-    /// <param name="first">first</param>
-    /// <param name="abnormalCause">异常原因</param>
-    /// <param name="remark">remark</param>
-    /// <param name="sender">sender</param>
-    /// <returns>是否发送成功</returns>
-    public CustomerMessageStatus SendOrderAbnormalNoticeTemplateMessage(CustomerInfo customer, string first, string abnormalCause, string remark, string sender) {
-        string openId = customer.WechatOfficialAccountOpenId;
-        if (string.IsNullOrWhiteSpace(openId) || customer.WechatOfficialAccountFollowStatus != WechatOfficialAccountFollowStatus.Followed) {
-            return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
+        string keyword2Str = $"操作时间:北京时间{DateTime.Now:yyyy-MM-dd HH:mm}";
+        if (string.IsNullOrWhiteSpace(sender) == false) {
+            keyword2Str += $", 操作人:{sender}";
         }
-#if DEBUG
-        log.Trace("SendOrderAbnormalNoticeTemplateMessage: ");
-        log.Trace($"openId: {openId}");
-        log.Trace($"first: {first}");
-        log.Trace($"abnormalCause: {abnormalCause}");
-        log.Trace($"remark: {remark}");
-        log.Trace($"sender: {sender}");
 
-        return CustomerMessageStatus.Success;
-#else
-            DateTime abnormalTime = DateTime.Now;
+        var keyword2TemplateDataItem = new TemplateDataItem(keyword2Str);
 
-            var data = new {
-                first = new TemplateDataItem(first),
-                keyword1 = new TemplateDataItem(abnormalCause),
-                keyword2 = new TemplateDataItem(abnormalTime.ToString("yyyy-MM-dd HH:mm") + " 北京时间"),
-                remark = new TemplateDataItem(remark + "【" + sender + "】")
-            };
+        var keyword3TemplateDataItem = $"客户ID {customerCode}";
+        var remarkTemplateDataItem = new TemplateDataItem(remark, "#FF0000");
 
-            return SendTemplateMessage(openId, WechatOfficialAccountConfig.OrderAbnormalTemplateId, data);
+        var data = new {
+            first = firstTemplateDataItem,
+            keyword1 = keyword1TemplateDataItem,
+            keyword2 = keyword2TemplateDataItem,
+            keyword3 = keyword3TemplateDataItem,
+            remark = remarkTemplateDataItem
+        };
+
+        return SendTemplateMessage(openId, WechatOfficialAccountConfig.OrderNoticeTemplateId, data, url);
 #endif
     }
 }
