@@ -155,8 +155,9 @@ public class WechatMessageService {
 
         var keyword2TemplateDataItem = new TemplateDataItem(keyword2Str);
 
-        var keyword3TemplateDataItem = $"客户ID {customerCode}";
-        var remarkTemplateDataItem = new TemplateDataItem(remark, "#FF0000");
+        var keyword3TemplateDataItem = new TemplateDataItem($"客户ID {customerCode}");
+        // var remarkTemplateDataItem = new TemplateDataItem(remark, "#FF0000");
+        var remarkTemplateDataItem = new TemplateDataItem(remark);
 
         var data = new {
             first = firstTemplateDataItem,

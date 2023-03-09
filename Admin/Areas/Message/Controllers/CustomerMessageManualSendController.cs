@@ -19,8 +19,7 @@ namespace shunda.Admin.Areas.Message.Controllers;
 
 [MessageArea]
 [AdminAuth(PassRes.CustomerMessage.ManualSend)]
-public class CustomerMessageManualSendController : Controller
-{
+public class CustomerMessageManualSendController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
@@ -34,8 +33,7 @@ public class CustomerMessageManualSendController : Controller
         WechatMessageService wechatMessageService,
         SmsService smsService,
         LoginUserService loginUserService,
-        CustomerCodeService customerCodeService)
-    {
+        CustomerCodeService customerCodeService) {
         this.session = session;
         this.wechatMessageService = wechatMessageService;
         this.smsService = smsService;
@@ -46,8 +44,7 @@ public class CustomerMessageManualSendController : Controller
     [HttpGet]
     [Route("/admin/customer/message/manual/send")]
     [AdminAuth(PassRes.CustomerMessage.ManualSend)]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         CustomerMessageManualSendModel model = new CustomerMessageManualSendModel();
         return View("CustomerMessageManualSendIndex", model);
     }
@@ -55,30 +52,23 @@ public class CustomerMessageManualSendController : Controller
     [HttpPost]
     [Route("/admin/customer/message/manual/send")]
     [AdminAuth(PassRes.CustomerMessage.ManualSend)]
-    public IActionResult Send(CustomerMessageManualSendModel model)
-    {
+    public IActionResult Send(CustomerMessageManualSendModel model) {
         var loginUser = loginUserService.GetLoginUser();
         string loginUserName = loginUser.UserName;
 
 
-        if (model.SendByWechat == false && model.SendBySms == false)
-        {
+        if (model.SendByWechat == false && model.SendBySms == false) {
             throw new ValidationException("微信发送或短信发送，必须至少选择其中一项！");
         }
 
-        if (model.SendBySms == true)
-        {
+        if (model.SendBySms == true) {
             int length = StringUtil.GetStringLengthInByte(model.RemarkMessage);
-            if (length > 100)
-            {
+            if (length > 100) {
                 throw new ValidationException("短信内容，不能超过 50 个汉字， 100个英文字母！");
             }
-        }
-        else
-        {
+        } else {
             int length = StringUtil.GetStringLengthInByte(model.RemarkMessage);
-            if (length > 240)
-            {
+            if (length > 240) {
                 throw new ValidationException("微信消息内容，不能超过 120 个汉字，240个英文字母！");
             }
         }
@@ -95,38 +85,28 @@ public class CustomerMessageManualSendController : Controller
 
         string[] customerIdStrArray = customerIds.Split(' ', ',');
 
-        if (model.SendByWechat)
-        {
-            foreach (string customerIdStr in customerIdStrArray)
-            {
-                if (int.TryParse(customerIdStr, out int customerId) == false)
-                {
-                    // throw new ValidationException($"{customerIdStr} 不是正确的客户ID数字部分！");
-
-                    weiXinFailCustomerList.Add(customerIdStr);
-                    continue;
-                }
-
-                CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-                if (customer == null)
-                {
+        if (model.SendByWechat) {
+            foreach (string checkinCode in customerIdStrArray) {
+                var customer = session.Query<CustomerInfo>()
+                    .Where(e => e.CheckinCode == checkinCode)
+                    .Take(1)
+                    .SingleOrDefault();
+                if (customer == null) {
                     // throw new ValidationException($"指定的客户ID{customerId}不存在！");
 
-                    weiXinFailCustomerList.Add(customerIdStr);
+                    weiXinFailCustomerList.Add(checkinCode);
                     continue;
                 }
 
-                if (customer.Status == CustomerStatus.Frozen)
-                {
-                    weiXinFailCustomerList.Add(customerIdStr);
+                if (customer.Status == CustomerStatus.Frozen) {
+                    weiXinFailCustomerList.Add(checkinCode);
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId))
-                {
+                if (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId)) {
                     // throw new ValidationException($"指定的客户ID{customerId} open id 不存在，可能是因为没关注公众号！");
 
-                    weiXinFailCustomerList.Add(customerIdStr);
+                    weiXinFailCustomerList.Add(checkinCode);
                     continue;
                 }
 
@@ -146,25 +126,21 @@ public class CustomerMessageManualSendController : Controller
                     weiXinFailCustomerList.Add(customerIdStr); //这里后面就不放 continue，因为毕竟 open id 是存在的，万一成功了呢？这关注数据可能会有误。
                 }
                 */
-                
-                string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "手动推送", customerCode, model.RemarkMessage, loginUserName);
 
-                if (customerIdList.Contains(customer.Id) == false)
-                {
-                    weiXinSuccessCustomerList.Add(customerIdStr);
+                string customerCode = customerCodeService.GetCustomerCode(customer.Id);
+                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "手动推送", customerCode, model.RemarkMessage, loginUserName, url: "#小程序://舜达全球/LW0pntPl0yRg6oA");
+
+                if (customerIdList.Contains(customer.Id) == false) {
+                    weiXinSuccessCustomerList.Add(checkinCode);
 
                     customerIdList.Add(customer.Id);
                 }
             }
         }
 
-        if (model.SendBySms)
-        {
-            foreach (string customerIdStr in customerIdStrArray)
-            {
-                if (int.TryParse(customerIdStr, out int customerId) == false)
-                {
+        if (model.SendBySms) {
+            foreach (string customerIdStr in customerIdStrArray) {
+                if (int.TryParse(customerIdStr, out int customerId) == false) {
                     // throw new ValidationException($"{customerIdStr} 不是正确的客户ID数字部分！");
 
                     smsFailCustomerList.Add(customerIdStr);
@@ -172,21 +148,18 @@ public class CustomerMessageManualSendController : Controller
                 }
 
                 CustomerInfo customer = session.Get<CustomerInfo>(customerId);
-                if (customer == null)
-                {
+                if (customer == null) {
                     // throw new ValidationException($"指定的客户ID{customerId}不存在！");
 
                     smsFailCustomerList.Add(customerIdStr);
                     continue;
                 }
 
-                if (customer.Status == CustomerStatus.Frozen)
-                {
+                if (customer.Status == CustomerStatus.Frozen) {
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(customer.Mobile))
-                {
+                if (string.IsNullOrWhiteSpace(customer.Mobile)) {
                     // throw new ValidationException($"指定的客户ID{customerId} 手机号码 不存在！");
 
                     smsFailCustomerList.Add(customerIdStr);
@@ -194,29 +167,23 @@ public class CustomerMessageManualSendController : Controller
                 }
 
                 SendSmsResult result = smsService.SendSms(customer.Mobile, model.RemarkMessage);
-                if (customerIdList.Contains(customer.Id) == false)
-                {
+                if (customerIdList.Contains(customer.Id) == false) {
                     customerIdList.Add(customer.Id);
                 }
 
-                if (result.Code == SendSmsResult.CodeSuccess)
-                {
+                if (result.Code == SendSmsResult.CodeSuccess) {
                     smsSuccessCustomerList.Add(customerIdStr);
-                }
-                else
-                {
+                } else {
                     smsFailCustomerList.Add(customerIdStr);
                 }
             }
         }
 
         ITransaction? transaction = null;
-        try
-        {
+        try {
             transaction = session.BeginTransaction();
 
-            foreach (int customerId in customerIdList)
-            {
+            foreach (int customerId in customerIdList) {
                 CustomerMessageInfo customerMessage = new CustomerMessageInfo();
                 customerMessage.SendType = CustomerMessageSendType.Manual;
                 customerMessage.Type = CustomerMessageType.Manual;
@@ -235,8 +202,7 @@ public class CustomerMessageManualSendController : Controller
 
             transaction.Commit();
         }
-        catch (Exception exp)
-        {
+        catch (Exception exp) {
             transaction?.Rollback();
 
             log.Error(exp);
@@ -267,8 +233,7 @@ public class CustomerMessageManualSendController : Controller
     [HttpGet]
     [Route("/admin/customer/message/manual/send/all")]
     [AdminAuth(PassRes.CustomerMessage.ManualSendAll)]
-    public IActionResult SendAll()
-    {
+    public IActionResult SendAll() {
         CustomerMessageManualSendAllModel model = new CustomerMessageManualSendAllModel();
 
         return View("CustomerMessageManualSendAll", model);
@@ -277,12 +242,10 @@ public class CustomerMessageManualSendController : Controller
     [HttpPost]
     [Route("/admin/customer/message/manual/send/all")]
     [AdminAuth(PassRes.CustomerMessage.ManualSendAll)]
-    public IActionResult SendAll(CustomerMessageManualSendAllModel model)
-    {
+    public IActionResult SendAll(CustomerMessageManualSendAllModel model) {
         // 发送一条保存一条。同时这里有个数据库事务，发送一条就是一个事务。现在是整个操作是一个事务，出了状况后，保存的数据（那怕是发一条记录一条），也会被回滚。
 
-        if (model.SendByWechat == false && model.SendBySms == false)
-        {
+        if (model.SendByWechat == false && model.SendBySms == false) {
             throw new ValidationException("微信发送或短信发送，必须至少选择其中一项！");
         }
 
@@ -295,36 +258,30 @@ public class CustomerMessageManualSendController : Controller
             .OrderBy(e => e.Id)
             .ToList();
 
-        foreach (CustomerInfo customer in customerList)
-        {
-            if (customer.Status == CustomerStatus.Frozen)
-            {
+        foreach (CustomerInfo customer in customerList) {
+            if (customer.Status == CustomerStatus.Frozen) {
                 continue;
             }
 
             ITransaction? transaction = null;
 
-            try
-            {
+            try {
                 transaction = session.BeginTransaction();
 
                 bool sent = false;
 
-                if (model.SendByWechat && (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId) == false))
-                {
+                if (model.SendByWechat && (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId) == false)) {
                     sent = true;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
                     wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "手动推送", customerCode, model.RemarkMessage, loginUserName);
                 }
 
-                if (model.SendBySms && string.IsNullOrWhiteSpace(customer.Mobile) == false)
-                {
+                if (model.SendBySms && string.IsNullOrWhiteSpace(customer.Mobile) == false) {
                     sent = true;
                     smsService.SendSms(customer.Mobile, model.RemarkMessage);
                 }
 
-                if (sent == true)
-                {
+                if (sent == true) {
                     CustomerMessageInfo customerMessage = new CustomerMessageInfo();
                     customerMessage.SendType = CustomerMessageSendType.Manual;
                     customerMessage.Type = CustomerMessageType.AllCustomer;
@@ -342,12 +299,10 @@ public class CustomerMessageManualSendController : Controller
                 session.Flush();
                 transaction.Commit();
             }
-            catch (Exception exp)
-            {
+            catch (Exception exp) {
                 log.Error(exp);
 
-                if (transaction != null)
-                {
+                if (transaction != null) {
                     transaction.Rollback();
                 }
             }
