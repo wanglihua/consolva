@@ -8,29 +8,6 @@
     Layout = "_AdminLayout";
 }
 
-@*
-
-        <li id="settings-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">系统设置</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="settings-advert-banner-image-menu">
-                    <a asp-area="Setting" asp-controller="AdvertBannerImage" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>广告横幅图片
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
-
 @section Breadcrumb {
     <li class="parent" data-menu="settings-menu">系统设置</li>
     <li class="active" data-menu="settings-advert-banner-image-menu">@(ViewData[ViewDataKey.Title])</li>
@@ -94,9 +71,7 @@
             url: "@Url.Action("List", "AdvertBannerImage")",
             type: "POST",
             data: {
-                "@(nameof(AdvertBannerImageListQueryParam.PageIndex))": pageIndex,
-                "@(nameof(AdvertBannerImageListQueryParam.SortField))": sortField,
-                "@(nameof(AdvertBannerImageListQueryParam.SortDir))": sortDir
+                "@(nameof(AdvertBannerImageListQueryParam.AdvertBannerId))": "@(Model.AdvertBanner.Id)",
             },
             success: function(data) {
                 hideMask();

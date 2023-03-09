@@ -14,11 +14,6 @@ public class AdvertBannerImageSaveModel {
     public int BannerId { get; set; } = 0;
 
     /// <summary>
-    /// 国家，非空
-    /// </summary>
-    public int CountryId { get; set; } = 0;
-
-    /// <summary>
     /// 图片序号，非空
     /// </summary>
     public int ImageNum { get; set; } = 0;

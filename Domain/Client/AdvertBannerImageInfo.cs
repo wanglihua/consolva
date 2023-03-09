@@ -15,7 +15,7 @@ public class AdvertBannerImageInfo : Entity {
     /// <summary>
     /// 国家，非空
     /// </summary>
-    public virtual int CountryId { get; set; } = 0;
+    public virtual Country Country { get; set; } = Country.None;
 
     /// <summary>
     /// 图片序号，非空

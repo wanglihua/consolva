@@ -20,9 +20,9 @@ public class AdvertBannerImageInfoMapping : EntityMapping<AdvertBannerImageInfo>
         );
 
         Property(
-            x => x.CountryId,
+            x => x.Country,
             map => {
-                map.Type(NHibernateUtil.Int32);
+                map.Type<CountryHibernateType>();
                 map.Column("country_id");
                 map.NotNullable(true);
             }
@@ -63,6 +63,5 @@ public class AdvertBannerImageInfoMapping : EntityMapping<AdvertBannerImageInfo>
                 map.NotNullable(true);
             }
         );
-
     }
 }

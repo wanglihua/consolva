@@ -29,10 +29,16 @@ public class AdvertBannerImageController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/setting/advert/banner/image")]
-    public IActionResult Index() {
-        AdvertBannerImageIndexModel model = new AdvertBannerImageIndexModel();
+    [Route("/admin/setting/advert/banner/image/{bannerId:int}")]
+    public IActionResult Index(int bannerId) {
+        AdvertBannerInfo advertBanner = session.Get<AdvertBannerInfo>(bannerId);
+        if (advertBanner == null) {
+            throw new ValidationException("指定的广告横幅不存在！");
+        }
 
+        AdvertBannerImageIndexModel model = new AdvertBannerImageIndexModel {
+            AdvertBanner = advertBanner
+        };
 
         return View("AdvertBannerImageIndex", model);
     }
@@ -40,37 +46,18 @@ public class AdvertBannerImageController : Controller {
     [HttpPost]
     [Route("/admin/setting/advert/banner/image/list")]
     public IActionResult List(AdvertBannerImageListQueryParam queryParam) {
-        int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<AdvertBannerImageInfo>(e => advertBannerImageAlias!.Id))
-            .Select(Projections.RowCount())
-            .SingleOrDefault<int>();
-
-        ListPager listPager = new ListPager(queryParam, totalCount);
-
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending) {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        } else {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
 
-        listQuery = listQuery.ThenByAlias(() => advertBannerImageAlias!.Id).Desc;
+        listQuery = listQuery.OrderByAlias(() => advertBannerImageAlias!.ImageNum).Asc;
 
         IList<AdvertBannerImageInfo> advertBannerImageList = listQuery
-            .Skip(listPager.Skip())
-            .Take(listPager.Take())
             .List<AdvertBannerImageInfo>();
 
-        /*
-        foreach (AdvertBannerImageInfo advertBannerImage in advertBannerImageList) {
-        }
-        */
-
-        AdvertBannerImageListModel model = new AdvertBannerImageListModel(listPager);
-        model.AdvertBannerImageList = advertBannerImageList;
-
-        model.AdvertBannerImageAlias = nameof(advertBannerImageAlias);
-        model.BannerAlias = nameof(bannerAlias);
+        AdvertBannerImageListModel model = new AdvertBannerImageListModel {
+            AdvertBannerImageList = advertBannerImageList,
+            AdvertBannerImageAlias = nameof(advertBannerImageAlias),
+            BannerAlias = nameof(bannerAlias),
+        };
 
         return View("AdvertBannerImageList", model);
     }
@@ -82,6 +69,9 @@ public class AdvertBannerImageController : Controller {
     private IQueryOver<AdvertBannerImageInfo, AdvertBannerImageInfo> GetQueryOver(AdvertBannerImageListQueryParam queryParam) {
         var query = session.QueryOver<AdvertBannerImageInfo>(() => advertBannerImageAlias!)
             .JoinAlias(() => advertBannerImageAlias!.Banner, () => bannerAlias);
+
+        int advertBannerId = queryParam.AdvertBannerId;
+        query = query.Where(e => e.Banner.Id == advertBannerId);
 
         return query;
     }
@@ -105,13 +95,11 @@ public class AdvertBannerImageController : Controller {
         AdvertBannerImageDetailModel model = new AdvertBannerImageDetailModel();
         model.AdvertBannerImageId = advertBannerImage.Id;
 
-        model.BannerId = advertBannerImage.Banner?.Id ?? 0;
-        model.CountryId = advertBannerImage.CountryId;
+        model.BannerId = advertBannerImage.Banner.Id;
         model.ImageNum = advertBannerImage.ImageNum;
         model.StorePath = advertBannerImage.StorePath;
         model.StoreName = advertBannerImage.StoreName;
         model.LinkUrl = advertBannerImage.LinkUrl;
-
 
         return View("AdvertBannerImageDetail", model);
     }
@@ -130,6 +118,13 @@ public class AdvertBannerImageController : Controller {
 
         if (isCreate) {
             advertBannerImage = new AdvertBannerImageInfo();
+
+            var banner = session.Get<AdvertBannerInfo>(model.BannerId);
+            if (banner == null) {
+                throw new ValidationException($"指定的广告横幅#{model.BannerId}不存在！");
+            }
+
+            advertBannerImage.Banner = banner;
         } else {
             advertBannerImage = session.Get<AdvertBannerImageInfo>(advertBannerImageId);
             if (advertBannerImage == null) {
@@ -137,9 +132,6 @@ public class AdvertBannerImageController : Controller {
             }
         }
 
-        AdvertBannerInfo banner = session.Get<AdvertBannerInfo>(model.BannerId);
-        advertBannerImage.Banner = banner;
-        advertBannerImage.CountryId = model.CountryId;
         advertBannerImage.ImageNum = model.ImageNum;
         advertBannerImage.StorePath = model.StorePath;
         advertBannerImage.StoreName = model.StoreName;
