@@ -16,8 +16,8 @@ namespace shunda.Service.Client;
 public class AdvertBannerImageService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public static readonly string ImageUploadFolder = Path.Combine(SiteConfig.StaticFolder, "upload", "images", "advert", "banner");
-    public static readonly string ImageUploadUrl = "/static/upload/images/advert/banner";
+    private static readonly string ImageUploadFolder = Path.Combine(SiteConfig.StaticFolder, "upload", "images", "advert", "banner");
+    private static readonly string ImageUploadUrl = "/static/upload/images/advert/banner";
 
     private readonly ISession session;
 
@@ -48,7 +48,7 @@ public class AdvertBannerImageService {
 
         originImage.Dispose();
 
-        return Tuple.Create($"/{ImageUploadUrl}/{monthFolderName}/{newFileName}", monthFolderName, newFileName);
+        return Tuple.Create($"{ImageUploadUrl}/{monthFolderName}/{newFileName}", monthFolderName, newFileName);
     }
 
     /// <summary>
@@ -106,6 +106,6 @@ public class AdvertBannerImageService {
             storeName = storeName.Replace('\\', '/');
         }
 
-        return $"/{ImageUploadUrl}/{storePath}/{storeName}";
+        return $"{ImageUploadUrl}/{storePath}/{storeName}";
     }
 }

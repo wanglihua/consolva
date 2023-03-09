@@ -18,11 +18,11 @@
 }
 
 <div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadAdvertBannerImageList(0)">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadAdvertBannerImageList()">
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    <button type="button" class="btn btn-success btn-sm" onclick="showAdvertBannerImageDetail(0)">
+    <button type="button" class="btn btn-success btn-sm" onclick="showAdvertBannerImageDetail()">
         <i class="ace-icon fa fa-plus"></i>
         新增
     </button>
@@ -32,14 +32,7 @@
     </button>
 </div>
 
-<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-
-    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadAdvertBannerImageList(0)">
-        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
-    </button>
-</div>
-
-<div id="advertBannerImageList" data-page-index="0" data-sort-field="@(nameof(AdvertBannerImageInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+<div id="advertBannerImageList">
 </div>
 
 <div id="advertBannerImageDetailDialogWrapper"></div>
@@ -57,18 +50,7 @@
         loadAdvertBannerImageList();
     }
 
-    function loadAdvertBannerImageList(pageIndex) {
-        var list = $('#advertBannerImageList');
-
-        if (pageIndex === null || pageIndex === undefined) {
-            pageIndex = list.data("page-index");
-        } else {
-            list.data("page-index", pageIndex);
-        }
-
-        var sortField = list.data('sort-field');
-        var sortDir = list.data('sort-dir');
-
+    function loadAdvertBannerImageList() {
         showMask("数据加载中，请稍候");
 
         $.ajax({
