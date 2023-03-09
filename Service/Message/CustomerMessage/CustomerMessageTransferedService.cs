@@ -17,17 +17,14 @@ namespace shunda.Service.Message.CustomerMessage;
 public class CustomerMessageTransferedService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageTransferedService(
         ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
@@ -68,6 +65,10 @@ public class CustomerMessageTransferedService {
         return message;
     }
 
+    private string GetUrl(int orderId) {
+        return $"pages/order/order_detail?id={orderId}";
+    }
+
     /// <summary>
     /// 已转运提醒
     /// <param name="order">物流订单</param>
@@ -106,7 +107,7 @@ public class CustomerMessageTransferedService {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
+                    string url = GetUrl(order.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customerCode, message1, processUser, url);

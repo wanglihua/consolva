@@ -158,7 +158,7 @@ public class CustomerMessageCommonService {
     /// <param name="remark">remark</param>
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
-    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null) {
+    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string url = "") {
         wechatMessageService.SendOrderNoticeTemplateMessage(customer, first, orderCode, customerCode, remark, sender, url);
     }
 

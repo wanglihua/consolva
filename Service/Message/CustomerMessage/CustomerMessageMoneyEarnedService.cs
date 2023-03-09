@@ -15,18 +15,15 @@ namespace shunda.Service.Message.CustomerMessage;
 public class CustomerMessageMoneyEarnedService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageMoneyEarnedService(
         ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService
     ) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
@@ -66,6 +63,10 @@ public class CustomerMessageMoneyEarnedService {
         return message;
     }
 
+    private string GetUrl() {
+        return "pages/customer/customer_score/customer_score";
+    }
+
     /// <summary>
     /// 我赚到的钱
     /// <param name="score">积分</param>
@@ -98,7 +99,7 @@ public class CustomerMessageMoneyEarnedService {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
+                    string url = GetUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "积分变动通知", customerCode, message1, processUser, url);

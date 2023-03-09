@@ -1,7 +1,6 @@
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
-using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
@@ -15,16 +14,13 @@ namespace shunda.Service.Message.CustomerMessage;
 public class CustomerMessageHelpMeMakeMoneyService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageHelpMeMakeMoneyService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
@@ -56,6 +52,11 @@ public class CustomerMessageHelpMeMakeMoneyService {
         }
     }
 
+    private string GetUrl() {
+        // todo 这个应该改成是客户推广的页面
+        return "pages/home/home_index";
+    }
+
     public void SendMessage(CustomerInfo customer) {
         if (customer == null) {
             throw new ValidationException("消息发送指定的会员不能为空！");
@@ -85,7 +86,7 @@ public class CustomerMessageHelpMeMakeMoneyService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
-                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
+                    string url = GetUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "帮我赚钱提醒", customerCode, message1, processUser, url);

@@ -15,16 +15,13 @@ namespace shunda.Service.Message.CustomerMessage;
 public class CustomerMessageNewClaimService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageNewClaimService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
@@ -48,6 +45,10 @@ public class CustomerMessageNewClaimService {
             session.Save(setting);
             session.Flush();
         }
+    }
+
+    private string GetUrl() {
+        return "pages/express/express_claim/express_claim_list";
     }
 
     public void SendMessage(CustomerInfo customer) {
@@ -79,7 +80,7 @@ public class CustomerMessageNewClaimService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
-                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
+                    string url = GetUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "公共申领区寻宝提醒", customerCode, message1, processUser, url);

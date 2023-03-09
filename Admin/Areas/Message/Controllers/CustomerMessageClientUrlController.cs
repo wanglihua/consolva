@@ -19,6 +19,7 @@ namespace shunda.Admin.Areas.Message.Controllers;
 /// <summary>
 /// 客户消息客户端URL 控制器
 /// </summary>
+[Obsolete]
 [MessageArea]
 [AdminAuth(PassRes.CustomerMessage.MessageSetting)]
 public class CustomerMessageClientUrlController : Controller
