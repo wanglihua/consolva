@@ -7,10 +7,6 @@ using shunda.Domain.Customer;
 using shunda.Domain.Message;
 using shunda.Domain.Wechat;
 using shunda.Service.Wechat;
-#if !DEBUG
-using shunda.Core.Config;
-using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
-#endif
 
 namespace shunda.Service.Message;
 
