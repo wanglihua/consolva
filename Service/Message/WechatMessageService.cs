@@ -30,7 +30,7 @@ public class WechatMessageService {
     /// <param name="data"></param>
     /// <param name="url"></param>
     /// <returns>是否发送成功</returns>
-    public CustomerMessageStatus SendTemplateMessage(string validOpenId, string templateId, object data, string? url = null) {
+    public CustomerMessageStatus SendTemplateMessage(string validOpenId, string templateId, object data, string url = "") {
         if (string.IsNullOrWhiteSpace(validOpenId) == false) {
             string accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
 
@@ -96,7 +96,11 @@ public class WechatMessageService {
         }
 
         try {
-            TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data);
+            var miniProgram = new TemplateModel_MiniProgram {
+                appid = WechatAppConfig.AppId,
+                pagepath = url,
+            };
+            TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data, miniProgram);
         }
         catch (Exception exp) {
             log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
@@ -117,7 +121,7 @@ public class WechatMessageService {
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
     /// <returns>是否发送成功</returns>
-    public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string? url = null) {
+    public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string url = "") {
         string openId = customer.WechatOfficialAccountOpenId;
         if (string.IsNullOrWhiteSpace(openId) || customer.WechatOfficialAccountFollowStatus != WechatOfficialAccountFollowStatus.Followed) {
             return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
