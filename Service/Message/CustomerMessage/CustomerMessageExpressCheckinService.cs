@@ -16,16 +16,13 @@ namespace shunda.Service.Message.CustomerMessage;
 public class CustomerMessageExpressCheckinService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageExpressCheckinService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
@@ -65,6 +62,10 @@ public class CustomerMessageExpressCheckinService {
         return message;
     }
 
+    private string GetUrl(int expressId) {
+        return $"pages/express/express_checkin/express_checkin_detail?id={expressId}";
+    }
+
     public void SendMessage(CustomerInfo customer, ExpressInfo express) {
         if (customer == null) {
             throw new ValidationException("消息发送指定的会员不能为空！");
@@ -99,7 +100,7 @@ public class CustomerMessageExpressCheckinService {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
+                    string url = GetUrl(express.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【快递单入库】提醒", customerCode, message1, processUser, url);

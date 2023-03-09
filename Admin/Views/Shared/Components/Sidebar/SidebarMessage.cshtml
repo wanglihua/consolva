@@ -4,8 +4,7 @@
 @{
     Layout = null;
 }
-@if (Model.HasOneOfPassRes(PassRes.CustomerMessage.All))
-{
+@if (Model.HasOneOfPassRes(PassRes.CustomerMessage.All)) {
     <li id="message-menu">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-envelope"></i>
@@ -15,8 +14,7 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.ManualSend))
-            {
+            @if (Model.HasPassRes(PassRes.CustomerMessage.ManualSend)) {
                 <li id="message-manual-send-index-menu">
                     <a asp-area="Message" asp-controller="CustomerMessageManualSend" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -26,8 +24,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting))
-            {
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting)) {
                 <li id="message-customer-message-cycle-timing-send-setting-index-menu">
                     <a asp-area="Message" asp-controller="CustomerMessageCycleTimingSendSetting" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -37,8 +34,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting))
-            {
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting)) {
                 <li id="message-customer-message-real-time-send-setting-index-menu">
                     <a asp-area="Message" asp-controller="CustomerMessageRealTimeSendSetting" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -48,8 +44,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.ManualSendAll))
-            {
+            @if (Model.HasPassRes(PassRes.CustomerMessage.ManualSendAll)) {
                 <li id="message-manual-send-all-menu">
                     <a asp-area="Message" asp-controller="CustomerMessageManualSend" asp-action="SendAll">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -59,8 +54,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageView))
-            {
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageView)) {
                 <li id="message-customer-message-index-menu">
                     <a asp-area="Message" asp-controller="CustomerMessage" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -70,8 +64,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageView))
-            {
+            @if (Model.HasPassRes(PassRes.CustomerMessage.MessageView)) {
                 <li id="message-sms-send-record-index-menu">
                     <a asp-area="Message" asp-controller="SmsSendRecord" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -81,6 +74,8 @@
                 </li>
             }
 
+            @*
+            这个不用了
             @if (Model.HasPassRes(PassRes.CustomerMessage.MessageSetting))
             {
                 <li id="message-customer-message-client-url-menu">
@@ -90,6 +85,7 @@
                     <b class="arrow"></b>
                 </li>
             }
+            *@
 
         </ul>
     </li>

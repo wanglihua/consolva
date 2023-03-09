@@ -74,7 +74,7 @@ public class WechatMessageService {
 
         public string TemplateId { get; set; } = string.Empty;
 
-        public string? Url { get; set; }
+        public string Url { get; set; } = string.Empty;
 
         public object Data { get; set; } = new();
     }
@@ -88,12 +88,8 @@ public class WechatMessageService {
         string accessToken = param.AccessToken;
         string openId = param.OpenId;
         string templateId = param.TemplateId;
-        string? url = param.Url;
+        string url = param.Url;
         object data = param.Data;
-
-        if (string.IsNullOrWhiteSpace(url)) {
-            url = null;
-        }
 
         try {
             var miniProgram = new TemplateModel_MiniProgram {

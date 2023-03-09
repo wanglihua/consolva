@@ -9,6 +9,7 @@ namespace shunda.Service.Message;
 /// <summary>
 /// 客户消息客户端URL 服务类
 /// </summary>
+[Obsolete]
 [Service(ServiceType.Scoped)]
 public class CustomerMessageClientUrlService {
     private readonly ISession session;
@@ -21,6 +22,7 @@ public class CustomerMessageClientUrlService {
 
     private static string CACHE_KEY = "CUSTOMER_MESSAGE_CLIENT_URL";
 
+    [Obsolete]
     public string GetUrl(TerminalType terminalType, CustomerMessageType messageType) {
         if (memoryCache.TryGetValue(CACHE_KEY, out IList<CustomerMessageClientUrlInfo> messageUrlList) == false) {
             messageUrlList = session.Query<CustomerMessageClientUrlInfo>().ToList();

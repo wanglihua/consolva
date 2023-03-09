@@ -824,7 +824,7 @@ public class ExpressCheckinController : Controller {
                 // 发送消息提醒，虽然不在同一个事务内，但也是在前面都成功的情况下才发送的
                 if (expressExpect != null) {
                     // 优先按预报的发送消息
-                    customerMessageExpressExpectEnterService.SendMessage(expressExpect.Customer, expressExpect);
+                    customerMessageExpressExpectEnterService.SendMessage(express!.Customer, express!);
                 } else if (billCustomerId != 0) {
                     // 没预报但有面单客户ID
                     CustomerInfo billCustomer = session.Get<CustomerInfo>(billCustomerId);

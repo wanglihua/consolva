@@ -15,16 +15,13 @@ namespace shunda.Service.Message.CustomerMessage;
 public class CustomerMessageAccountChangeService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
-    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
     private readonly CustomerCodeService customerCodeService;
 
     public CustomerMessageAccountChangeService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
-        CustomerMessageClientUrlService customerMessageClientUrlService,
         CustomerCodeService customerCodeService) {
         this.session = session;
         this.customerMessageCommonService = customerMessageCommonService;
-        this.customerMessageClientUrlService = customerMessageClientUrlService;
         this.customerCodeService = customerCodeService;
     }
 
@@ -68,6 +65,10 @@ public class CustomerMessageAccountChangeService {
         return message;
     }
 
+    private string GetUrl() {
+        return "pages/customer/customer_account/customer_account";
+    }
+
     public void SendMessage(CustomerInfo customer, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount) {
         if (customer == null) {
             throw new ValidationException("消息发送指定的会员不能为空！");
@@ -97,7 +98,7 @@ public class CustomerMessageAccountChangeService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
-                    string url = customerMessageClientUrlService.GetUrl(TerminalType.WechatApp, messageType);
+                    string url = GetUrl();
                     string messageTitle = "账户余额变动提醒";
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
