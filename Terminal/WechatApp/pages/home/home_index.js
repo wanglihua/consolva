@@ -3,6 +3,7 @@ const app = getApp();
 Page({
     id: "index",
     data: {
+        topImageHeight: 0,
         homeData: {},
         showFollowPopup: false,
     },
@@ -51,6 +52,22 @@ Page({
                 url: "/pages/home/home_web_view?url=" + linkUrl,
             });
         }
+    },
+
+    onTopImageLoad(e) {
+
+        console.log(e);
+
+        const that = this;
+        let query = wx.createSelectorQuery();
+        query.select('.top-image-item').boundingClientRect(r => {
+            if (r && r.height) {
+                let height = r.height;
+                that.setData({
+                    topImageHeight: height - 5,
+                });
+            }
+        }).exec();
     },
 
     onTabbarChange(e) {
