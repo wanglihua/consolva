@@ -48,7 +48,9 @@ public class AdvertBannerImageController : Controller {
     public IActionResult List(AdvertBannerImageListQueryParam queryParam) {
         var listQuery = GetQueryOver(queryParam);
 
-        listQuery = listQuery.OrderByAlias(() => advertBannerImageAlias!.ImageNum).Asc;
+        listQuery = listQuery
+            .OrderByAlias(() => advertBannerImageAlias!.ImageNum).Asc
+            .ThenByAlias(() => advertBannerImageAlias!.Id).Asc;
 
         IList<AdvertBannerImageInfo> advertBannerImageList = listQuery
             .List<AdvertBannerImageInfo>();

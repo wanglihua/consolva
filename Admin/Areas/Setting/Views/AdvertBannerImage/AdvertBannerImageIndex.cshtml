@@ -10,7 +10,11 @@
 
 @section Breadcrumb {
     <li class="parent" data-menu="settings-menu">系统设置</li>
-    <li class="active" data-menu="settings-advert-banner-image-menu">@(ViewData[ViewDataKey.Title])</li>
+    <li class="active" data-menu="settings-advert-banner-index-menu">
+        <a href="@Url.Action("Index", "AdvertBanner")">广告横幅</a>
+    </li>
+    <li>@(Model.AdvertBanner?.Name)</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

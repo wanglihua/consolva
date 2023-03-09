@@ -37,6 +37,12 @@ public class AdvertBannerImageInfo : Entity {
     /// </summary>
     public virtual string LinkUrl { get; set; } = string.Empty;
 
+    #region Cache
+
+    public virtual string ImageFullUrlCache { get; set; } = string.Empty;
+
+    #endregion
+
     public override void Validate() {
         ValidationUtil.ValidateEntity<AdvertBannerImageInfoValidator, AdvertBannerImageInfo>(this);
     }
