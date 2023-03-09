@@ -6,8 +6,6 @@ public class AdvertBannerImageSaveModelValidator : AbstractValidator<AdvertBanne
     public AdvertBannerImageSaveModelValidator() {
         RuleFor(e => e.BannerId).Must(p => p > 0).WithMessage("广告横幅不能为空！");
 
-        RuleFor(e => e.CountryId).Must(p => p > 0).WithMessage("国家不能为空！");
-
         RuleFor(e => e.ImageNum).Must(p => p > 0).WithMessage("图片序号不能为空！");
 
         RuleFor(e => e.StorePath).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("存储路径不能为空！");
