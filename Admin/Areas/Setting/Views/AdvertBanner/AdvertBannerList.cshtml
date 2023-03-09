@@ -1,0 +1,102 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model shunda.Admin.Areas.Setting.Models.AdvertBanner.AdvertBannerListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdvertBannerList" }))
+
+<table id="tblAdvertBannerList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="advertBannerCheckAll"></label><input id="advertBannerCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerAlias).@(nameof(AdvertBannerInfo.Loc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerList">位置</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerAlias).@(nameof(AdvertBannerInfo.Name))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerList">名称</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerAlias).@(nameof(AdvertBannerInfo.ClientShow))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerList">是否客户端显示</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerAlias).@(nameof(AdvertBannerInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerAlias).@(nameof(AdvertBannerInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AdvertBannerList.Count != 0) {
+            int index = 0;
+            foreach (AdvertBannerInfo advertBanner in Model.AdvertBannerList) {
+                <tr ondblclick="showAdvertBannerDetail(@(advertBanner.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="advertBannerCheck_@(advertBanner.Id)"></label><input id="advertBannerCheck_@(advertBanner.Id)" type="checkbox" class="ace" value="@advertBanner.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBanner.Loc.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBanner.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBanner.ClientShow)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @advertBanner.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @advertBanner.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdvertBannerList" }))

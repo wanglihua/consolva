@@ -1,0 +1,194 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model AdvertBannerIndexModel
+@using shunda.Admin.Areas.Setting.Models.AdvertBanner
+@{
+    ViewData[ViewDataKey.Title] = "广告横幅";
+    Layout = "_AdminLayout";
+}
+
+@*
+
+        <li id="settings-menu">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-copy"></i>
+                <span class="menu-text">系统设置</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+
+                <li id="settings-advert-banner-menu">
+                    <a asp-area="Setting" asp-controller="AdvertBanner" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>广告横幅
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+
+*@
+
+@section Breadcrumb {
+    <li class="parent" data-menu="settings-menu">系统设置</li>
+    <li class="active" data-menu="settings-advert-banner-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadAdvertBannerList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showAdvertBannerDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteAdvertBanner()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadAdvertBannerList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="advertBannerList" data-page-index="0" data-sort-field="@(nameof(AdvertBannerInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="advertBannerDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadAdvertBannerList();
+    });
+
+    function sortAdvertBannerList(sortField, sortDir) {
+        var list = $('#advertBannerList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadAdvertBannerList();
+    }
+
+    function loadAdvertBannerList(pageIndex) {
+        var list = $('#advertBannerList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "AdvertBanner")",
+            type: "POST",
+            data: {
+                "@(nameof(AdvertBannerListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(AdvertBannerListQueryParam.SortField))": sortField,
+                "@(nameof(AdvertBannerListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#advertBannerList').html(data);
+
+                initListTable("#tblAdvertBannerList");
+            }
+        });
+    }
+
+    function showAdvertBannerDetail(id) {
+        $("#advertBannerDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#advertBannerDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "AdvertBanner")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#advertBannerDetailDialogWrapper").html(data);
+                $("#advertBannerDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveAdvertBanner() {
+        var form = $("#advertBannerDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "AdvertBanner")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#advertBannerDetailDialog').modal('hide');
+                    loadAdvertBannerList();
+                }
+            });
+        }
+    }
+
+    function deleteAdvertBanner() {
+        var idList = getSelectIdList('#tblAdvertBannerList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "AdvertBanner")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadAdvertBannerList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
