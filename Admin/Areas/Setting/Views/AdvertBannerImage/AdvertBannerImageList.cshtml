@@ -1,0 +1,135 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model shunda.Admin.Areas.Setting.Models.AdvertBannerImage.AdvertBannerImageListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdvertBannerImageList" }))
+
+<table id="tblAdvertBannerImageList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="advertBannerImageCheckAll"></label><input id="advertBannerImageCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.BannerAlias).@(nameof(AdvertBannerImageInfo.Banner.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">广告横幅</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerImageAlias).@(nameof(AdvertBannerImageInfo.CountryId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">国家</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerImageAlias).@(nameof(AdvertBannerImageInfo.ImageNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">图片序号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerImageAlias).@(nameof(AdvertBannerImageInfo.StorePath))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">存储路径</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerImageAlias).@(nameof(AdvertBannerImageInfo.StoreName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">存储名称</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerImageAlias).@(nameof(AdvertBannerImageInfo.LinkUrl))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">链接地址</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerImageAlias).@(nameof(AdvertBannerImageInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.AdvertBannerImageAlias).@(nameof(AdvertBannerImageInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortAdvertBannerImageList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AdvertBannerImageList.Count != 0) {
+            int index = 0;
+            foreach (AdvertBannerImageInfo advertBannerImage in Model.AdvertBannerImageList) {
+                <tr ondblclick="showAdvertBannerImageDetail(@(advertBannerImage.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="advertBannerImageCheck_@(advertBannerImage.Id)"></label><input id="advertBannerImageCheck_@(advertBannerImage.Id)" type="checkbox" class="ace" value="@advertBannerImage.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBannerImage.Banner?.Id)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBannerImage.CountryId)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBannerImage.ImageNum)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBannerImage.StorePath)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBannerImage.StoreName)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(advertBannerImage.LinkUrl)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @advertBannerImage.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @advertBannerImage.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadAdvertBannerImageList" }))

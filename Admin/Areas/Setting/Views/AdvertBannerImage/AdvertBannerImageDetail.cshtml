@@ -1,0 +1,112 @@
+@using shunda.Domain
+@model shunda.Admin.Areas.Setting.Models.AdvertBannerImage.AdvertBannerImageDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="advertBannerImageDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">广告横幅图片详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="advertBannerImageDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="AdvertBannerImageId" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="BannerId" class="col-xs-2 control-label">广告横幅</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="BannerId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CountryId" class="col-xs-2 control-label">国家</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CountryId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="ImageNum" class="col-xs-2 control-label">图片序号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="ImageNum" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StorePath" class="col-xs-2 control-label">存储路径</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StorePath" type="text" required="required" maxlength="255" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="StoreName" class="col-xs-2 control-label">存储名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="StoreName" type="text" required="required" maxlength="50" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="LinkUrl" class="col-xs-2 control-label">链接地址</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="LinkUrl" type="text" required="required" maxlength="300" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveAdvertBannerImage();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
