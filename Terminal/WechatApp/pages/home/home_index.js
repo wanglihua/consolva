@@ -44,6 +44,15 @@ Page({
         );
     },
 
+    onTopImageClick(e) {
+        const linkUrl = e.currentTarget.dataset.item.linkUrl;
+        if (linkUrl && linkUrl !== "") {
+            wx.navigateTo({
+                url: "/pages/home/home_web_view?url=" + linkUrl,
+            });
+        }
+    },
+
     onTabbarChange(e) {
         if (e.detail === 0) {
             wx.redirectTo({

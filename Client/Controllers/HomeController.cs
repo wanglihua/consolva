@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.Home;
 using shunda.Client.Services;
+using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
@@ -116,7 +117,7 @@ public class HomeController : Controller {
         var topImageItemList = topImageList
             .Select(e => new HomeClientImageItem() {
                 Id = e.Id,
-                ImageUrl = advertBannerImageService.GetImageFullUrl(e),
+                ImageUrl = SiteConfig.SiteUrlBase + advertBannerImageService.GetImageFullUrl(e),
                 LinkUrl = e.LinkUrl,
             })
             .ToList();
