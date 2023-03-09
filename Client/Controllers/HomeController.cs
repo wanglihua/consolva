@@ -21,18 +21,21 @@ public class HomeController : Controller {
     private readonly CustomerCodeService customerCodeService;
     private readonly WechatAppLoginService wechatAppLoginService;
     private readonly ClientHomeDataService clientHomeDataService;
+    private readonly AdvertBannerImageService advertBannerImageService;
 
     public HomeController(ISession session,
         LoginCustomerService loginCustomerService,
         CustomerCodeService customerCodeService,
         WechatAppLoginService wechatAppLoginService,
-        ClientHomeDataService clientHomeDataService
+        ClientHomeDataService clientHomeDataService,
+        AdvertBannerImageService advertBannerImageService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.customerCodeService = customerCodeService;
         this.wechatAppLoginService = wechatAppLoginService;
         this.clientHomeDataService = clientHomeDataService;
+        this.advertBannerImageService = advertBannerImageService;
     }
 
     // 这个只能通过dotnet 部署的端口号访问到
@@ -104,6 +107,20 @@ public class HomeController : Controller {
         // 这时肯定已经登录
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
+        var topImageList = session.Query<AdvertBannerImageInfo>()
+            .Where(e => e.Banner.Loc == AdvertBannerLoc.HomeTop)
+            .OrderBy(e => e.ImageNum)
+            .ThenBy(e => e.Id)
+            .ToList();
+
+        var topImageItemList = topImageList
+            .Select(e => new HomeClientImageItem() {
+                Id = e.Id,
+                ImageUrl = advertBannerImageService.GetImageFullUrl(e),
+                LinkUrl = e.LinkUrl,
+            })
+            .ToList();
+
         var homeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
 
         var model = new HomeClientHomeDataModel {
@@ -135,6 +152,7 @@ public class HomeController : Controller {
             StorageInstructionUrl = homeData.StorageInstructionUrl,
             GoodsTypeUrl = homeData.GoodsTypeUrl,
             FollowTipUrl = homeData.FollowTipUrl,
+            TopImageList = topImageItemList,
         };
 
         return Json(new JsonResultData {

@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 namespace shunda.Client.Models.Home;
 
 public class HomeClientHomeDataModel {
+    [JsonProperty("topImageList")]
+    public IList<HomeClientImageItem> TopImageList { get; set; } = new List<HomeClientImageItem>();
+
     [JsonProperty("expressClaimBadge")]
     public string ExpressClaimBadge { get; set; } = string.Empty;
 
