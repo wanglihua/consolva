@@ -128,7 +128,7 @@ public class CustomerMessageManualSendController : Controller {
                 */
 
                 string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "手动推送", customerCode, model.RemarkMessage, loginUserName, url: "#小程序://舜达全球/LW0pntPl0yRg6oA");
+                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "手动推送", customerCode, model.RemarkMessage, loginUserName, url: "pages/home/home_index");
 
                 if (customerIdList.Contains(customer.Id) == false) {
                     weiXinSuccessCustomerList.Add(checkinCode);

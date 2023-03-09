@@ -7,7 +7,7 @@
         <AssemblyName>shunda.Client</AssemblyName>
         <RootNamespace>shunda.Client</RootNamespace>
         <RazorCompileOnBuild>true</RazorCompileOnBuild>
-        <!-- 这个没发现有作用 <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>-->
+        <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
     </PropertyGroup>
 
     <ItemGroup>
