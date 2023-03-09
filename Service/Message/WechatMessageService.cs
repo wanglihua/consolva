@@ -1,5 +1,7 @@
 using NLog;
 using Senparc.Weixin.MP.AdvancedAPIs;
+using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
+using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Message;
