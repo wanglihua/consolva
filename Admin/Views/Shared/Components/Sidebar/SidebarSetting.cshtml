@@ -24,6 +24,15 @@
                 </li>
             }
 
+            @if (Model.HasPassRes(PassRes.Setting.AdvertBanner)) {
+                <li id="settings-advert-banner-menu">
+                    <a asp-area="Setting" asp-controller="AdvertBanner" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>广告横幅
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
             @if (Model.HasPassRes(PassRes.Setting.ExchangeRate)) {
                 <li id="settings-exchange-rate-index-menu">
                     <a asp-area="Setting" asp-controller="ExchangeRate" asp-action="Index">

@@ -11,7 +11,5 @@ public class AdvertBannerInfoValidator : AbstractValidator<AdvertBannerInfo> {
 
         RuleFor(e => e.Name).NotNull().WithMessage("名称不能为空！");
         RuleFor(e => e.Name).MaximumLength(200).WithMessage("名称长度不能大于200！");
-
-        RuleFor(e => e.ClientShow).NotNull().NotEmpty().WithMessage("是否客户端显示不能为空！");
     }
 }
