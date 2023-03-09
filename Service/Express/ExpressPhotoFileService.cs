@@ -216,7 +216,7 @@ public class ExpressPhotoFileService
 
             if (renderLocation == PhotoRenderLocation.App)
             {
-                return $"{SiteConfig.SiteRoot}{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{SiteConfig.SiteUrlBase}{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
             return $"{ImageUploadUrl}/{storePath}/{storeName}";
@@ -268,7 +268,7 @@ public class ExpressPhotoFileService
 
             if (renderLocation == PhotoRenderLocation.App)
             {
-                return $"{SiteConfig.SiteRoot}{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{SiteConfig.SiteUrlBase}{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
             return $"{ImageUploadUrl}/{storePath}/{storeName}";
@@ -320,7 +320,7 @@ public class ExpressPhotoFileService
 
             if (renderLocation == PhotoRenderLocation.App)
             {
-                return $"{SiteConfig.SiteRoot}{ImageUploadUrl}/{storePath}/{storeName}";
+                return $"{SiteConfig.SiteUrlBase}{ImageUploadUrl}/{storePath}/{storeName}";
             }
 
             return $"{ImageUploadUrl}/{storePath}/{storeName}";

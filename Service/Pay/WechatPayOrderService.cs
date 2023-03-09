@@ -165,7 +165,7 @@ public class WechatPayOrderService {
         string openId = order.Customer.WechatAppOpenId;
         initData.SetValue("openid", openId);
 
-        initData.SetValue("notify_url", SiteConfig.SiteRoot + notifyUrl);
+        initData.SetValue("notify_url", SiteConfig.SiteUrlBase + notifyUrl);
 
         WechatPayData result = WechatPayApi.UnifiedOrder(initData);
 

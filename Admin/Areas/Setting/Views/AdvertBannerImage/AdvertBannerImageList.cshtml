@@ -57,19 +57,7 @@
                         <div>
                             @ListDataUtil.Render(advertBannerImage.Banner?.Name)
                         </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @if (string.IsNullOrWhiteSpace(advertBannerImage.Province))
-                            {
-                                <span>全澳洲</span>
-                            }
-                            else
-                            {
-                                @ListDataUtil.Render(advertBannerImage.Province)
-                            }
-                        </div>
-                    </td>                    
+                    </td>                
                     <td style="text-align: center;">
                         <div>
                             @ListDataUtil.Render(advertBannerImage.ImageNum)
@@ -94,10 +82,22 @@
             }
         } else {
             <tr>
-                <td colspan="11">
+                <td colspan="7">
                     暂时没有数据！
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<div style="margin-top: 20px;">
+    @if (Model.AdvertBannerImageList != null && Model.AdvertBannerImageList.Count() != 0) {
+        foreach (AdvertBannerImageInfo advertBannerImage in Model.AdvertBannerImageList) {
+            <div style="margin: 5px 0;">
+                <a href="@Html.Raw(advertBannerImage.LinkUrl)" target="_blank">
+                    <img alt="" src="@(advertBannerImage.ImageFullUrlCache)"/>
+                </a>
+            </div>
+        }
+    }
+</div>

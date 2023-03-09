@@ -10,6 +10,7 @@ using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Client;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Setting.Controllers;
@@ -23,9 +24,11 @@ public class AdvertBannerImageController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly AdvertBannerImageService advertBannerImageService;
 
-    public AdvertBannerImageController(ISession session) {
+    public AdvertBannerImageController(ISession session, AdvertBannerImageService advertBannerImageService) {
         this.session = session;
+        this.advertBannerImageService = advertBannerImageService;
     }
 
     [HttpGet]
@@ -94,17 +97,48 @@ public class AdvertBannerImageController : Controller {
             }
         }
 
-        AdvertBannerImageDetailModel model = new AdvertBannerImageDetailModel();
-        model.AdvertBannerImageId = advertBannerImage.Id;
-
-        model.BannerId = advertBannerImage.Banner.Id;
-        model.ImageNum = advertBannerImage.ImageNum;
-        model.StorePath = advertBannerImage.StorePath;
-        model.StoreName = advertBannerImage.StoreName;
-        model.LinkUrl = advertBannerImage.LinkUrl;
+        AdvertBannerImageDetailModel model = new AdvertBannerImageDetailModel {
+            AdvertBannerImageId = advertBannerImage.Id,
+            BannerId = advertBannerImage.Banner.Id,
+            ImageNum = advertBannerImage.ImageNum,
+            StorePath = advertBannerImage.StorePath,
+            StoreName = advertBannerImage.StoreName,
+            LinkUrl = advertBannerImage.LinkUrl,
+            FullImageUrl = advertBannerImageService.GetImageFullUrl(advertBannerImage),
+        };
 
         return View("AdvertBannerImageDetail", model);
     }
+
+    [HttpPost]
+    [Route("/admin/advert/banner/image/upload")]
+    public IActionResult Upload(IFormFile imageFile) {
+        if (imageFile == null) {
+            throw new ValidationException("文件未能上传成功！");
+        }
+
+        string fileExt = advertBannerImageService.GetFileExt(imageFile.FileName);
+        if (fileExt.ToLower() != ".png".ToLower() && fileExt.ToLower() != ".jpg".ToLower() && fileExt.ToLower() != ".jpeg".ToLower()) {
+            return Json(new Dictionary<string, object>() {
+                { "success", false },
+                { "message", "只支持 png 和 jpg,jpeg 格式的图片文件！" },
+            });
+        }
+
+        var result = advertBannerImageService.SaveImageFile(imageFile);
+
+        string imageFileUrl = result.Item1;
+        string storePath = result.Item2;
+        string storeName = result.Item3;
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "上传成功！" },
+            { "imageFileUrl", imageFileUrl },
+            { "storePath", storePath },
+            { "storeName", storeName },
+        });
+    }    
 
     [HttpPost]
     [Route("/admin/setting/advert/banner/image/save")]
@@ -164,6 +198,8 @@ public class AdvertBannerImageController : Controller {
         foreach (int id in idList) {
             AdvertBannerImageInfo advertBannerImage = session.Load<AdvertBannerImageInfo>(id);
             session.Delete(advertBannerImage);
+            
+            advertBannerImageService.DeleteImageFile(advertBannerImage);
         }
 
         session.Flush();

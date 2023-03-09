@@ -1,5 +1,3 @@
-using shunda.Domain.Client;
-
 namespace shunda.Admin.Areas.Setting.Models.AdvertBannerImage;
 
 public class AdvertBannerImageSaveModel {
@@ -32,5 +30,4 @@ public class AdvertBannerImageSaveModel {
     /// 链接地址，非空
     /// </summary>
     public string LinkUrl { get; set; } = string.Empty;
-
 }

@@ -81,7 +81,7 @@ public class WechatOfficialAccountAutoLoginController : Controller {
         string state = (new Random()).Next(100000, 999999).ToString();
         wechatOfficialAccountSessionService.SetState(state);
 
-        string callbackUrl = $"{SiteConfig.SiteRoot}{WechatOfficialAccountOAuthController.CallbackUrl}?returnUrl={Request.GetEncodedUrl()}";
+        string callbackUrl = $"{SiteConfig.SiteUrlBase}{WechatOfficialAccountOAuthController.CallbackUrl}?returnUrl={Request.GetEncodedUrl()}";
         string authorizeUrl = OAuthApi.GetAuthorizeUrl(WechatOfficialAccountConfig.AppId, callbackUrl, state, OAuthScope.snsapi_base);
 
         return Redirect(authorizeUrl);
