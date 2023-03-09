@@ -94,7 +94,8 @@ public class WechatMessageService {
                 appid = WechatAppConfig.AppId,
                 pagepath = url,
             };
-            TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data, miniProgram);
+            // todo a 小程序发布后改回来 TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data, miniProgram);
+            TemplateApi.SendTemplateMessage(accessToken, openId, templateId, null, data, null);
         }
         catch (Exception exp) {
             log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
