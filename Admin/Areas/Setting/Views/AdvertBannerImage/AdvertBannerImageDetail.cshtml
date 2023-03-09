@@ -20,22 +20,8 @@
                             <div class="form-group">
                                 <label asp-for="BannerId" class="col-xs-2 control-label">广告横幅</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="BannerId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label asp-for="CountryId" class="col-xs-2 control-label">国家</label>
-                                <div class="col-xs-10">
-                                    <input asp-for="CountryId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
-
+                                    <input asp-for="BannerId" type="hidden"/>
+                                    <input type="text" value="@(Model.Banner?.Name)" class="input-sm form-control" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -60,32 +46,6 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="StorePath" class="col-xs-2 control-label">存储路径</label>
-                                <div class="col-xs-10">
-                                    <input asp-for="StorePath" type="text" required="required" maxlength="255" class="input-sm form-control" autocomplete="off"/>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label asp-for="StoreName" class="col-xs-2 control-label">存储名称</label>
-                                <div class="col-xs-10">
-                                    <input asp-for="StoreName" type="text" required="required" maxlength="50" class="input-sm form-control" autocomplete="off"/>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-xs-12">
-                            <div class="form-group">
                                 <label asp-for="LinkUrl" class="col-xs-2 control-label">链接地址</label>
                                 <div class="col-xs-10">
                                     <input asp-for="LinkUrl" type="text" required="required" maxlength="300" class="input-sm form-control" autocomplete="off"/>
@@ -95,9 +55,57 @@
 
                     </div>
 
+                    <div class="row" style="display: none;">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="storePath" class="col-xs-2 control-label">存储路径</label>
+                                <div class="col-xs-10">
+                                    <input id="storePath" asp-for="StorePath" type="text" required="required" maxlength="255" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="display: none;">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="storeName" class="col-xs-2 control-label">存储名称</label>
+                                <div class="col-xs-10">
+                                    <input id="storeName" asp-for="StoreName" type="text" required="required" maxlength="50" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">图片</label>
+                            <div class="col-xs-10" style="vert-align: top;">
+                                <span>&nbsp;&nbsp;</span>
+                                @{
+                                    string fullImageUrl = Model.FullImageUrl;
+                                    if (string.IsNullOrWhiteSpace(fullImageUrl)) {
+                                        fullImageUrl = "/static/images/noimg.jpg";
+                                    }
+                                }
+                                <img id="advertBannerImage" alt="" src="@(fullImageUrl)" style="max-width: 200px; max-height: 180px;"/>
+
+                                <div class="help-block">图片宽度大致适合手机宽度，高度跟宽度在界面上显示时比例协调美观即可。多张图片轮播时，各图片尺寸应该一致。</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">
+                <button id="btnUploadImage" type="button" class="btn btn-primary btn-sm">
+                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                    上传图片
+                </button>
                 <button type="button" class="btn btn-success btn-sm" onclick="saveAdvertBannerImage();">
                     <i class="ace-icon fa fa-floppy-o"></i>
                     保存
@@ -110,3 +118,58 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {
+
+        var url = '@Url.Action("Upload", "AdvertBannerImage")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnUploadImage',
+            file_data_name: "imageFile",
+            url: url,
+
+            filters: {
+                max_file_size: '1000kb',
+                mime_types: [
+                    {title: "图像文件", extensions: "jpg,jpeg,png"}
+                ]
+            },
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                        return;
+                    } 
+                    
+                    $("#storePath").val(result.storePath);
+                    $("#storeName").val(result.storeName);
+                    $("#advertBannerImage").attr("src", result.imageFileUrl);
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }
+
+</script>
