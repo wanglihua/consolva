@@ -3,7 +3,7 @@
 
     <block wx:if="{{ homeData.topImageList && homeData.topImageList.length > 0 }}">
         <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
-            <swiper indicator-dots="{{ true }}" autoplay="{{ true }}" interval="3000" circular="{{ true }}" style="">
+            <swiper indicator-dots="{{ true }}" autoplay="{{ true }}" interval="3000" circular="{{ true }}" style="height: 80px;">
                 <block wx:for="{{ homeData.topImageList }}" wx:key="id" wx:for-item="image" wx:for-index="index">
                     <swiper-item>
                         <van-image lazy-load loading="loading" fit="widthFix" width="100%" data-item="{{ image }}" src="{{ image.imageUrl }}" bind:click="onTopImageClick"/>
