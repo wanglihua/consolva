@@ -62,6 +62,11 @@ public class LogisticsModeDetailModel {
     public string? FeeCalDesc { get; set; }
 
     /// <summary>
+    /// 是否促销
+    /// </summary>
+    public bool Promotion { get; set; }
+
+    /// <summary>
     /// 收货仓库
     /// </summary>
     [Required(ErrorMessage = "收货仓库不能为空！")]

@@ -187,6 +187,8 @@ public class LogisticsModeController : Controller {
 
         model.FeeCalDesc = logisticsMode.FeeCalDesc;
 
+        model.Promotion = logisticsMode.Promotion;
+
         if (logisticsMode.Warehouse != null) {
             model.WarehouseId = logisticsMode.Warehouse.Id;
         }
@@ -226,10 +228,14 @@ public class LogisticsModeController : Controller {
         }
 
         var repackTypeIdList = model.RepackTypeIdList;
-        if (repackTypeIdList == null) repackTypeIdList = new List<int>();
+        if (repackTypeIdList == null) {
+            repackTypeIdList = new List<int>();
+        }
 
         var goodsTypeIdList = model.GoodsTypeIdList;
-        if (goodsTypeIdList == null) goodsTypeIdList = new List<int>();
+        if (goodsTypeIdList == null) {
+            goodsTypeIdList = new List<int>();
+        }
 
         var goodsTypeListAll = LogisticsGoodsType.GetCustomerList();
         IList<int> feeRateIdList = new List<int>();
@@ -281,7 +287,9 @@ public class LogisticsModeController : Controller {
         logisticsMode.Country = model.Country;
         logisticsMode.Type = model.Type;
 
-        if (model.PackSizeType == null) model.PackSizeType = LogisticsModePackSizeType.None;
+        if (model.PackSizeType == null) {
+            model.PackSizeType = LogisticsModePackSizeType.None;
+        }
 
         logisticsMode.PackSizeType = model.PackSizeType;
 
@@ -297,6 +305,8 @@ public class LogisticsModeController : Controller {
         logisticsMode.InnerStatus = model.InnerStatus;
 
         logisticsMode.FeeCalDesc = model.FeeCalDesc;
+
+        logisticsMode.Promotion = model.Promotion;
 
         if (model.WarehouseId == 0) throw new ValidationException("收货仓库不能为空！");
 

@@ -166,6 +166,18 @@
                             </div>
                         </div>
 
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Promotion" class="col-xs-2 control-label">是否促销</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Promotion" class="input-sm form-control">
+                                        <option value="@(false.ToString())">否，非促销物流</option>
+                                        <option value="@(true.ToString())">是，是促销物流</option>
+                                    </select>
+                                    <div class="help-block">促销的物流方式，不能使用优惠券</div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">

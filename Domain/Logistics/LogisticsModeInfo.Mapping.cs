@@ -5,10 +5,8 @@ using shunda.Domain.Storage;
 
 namespace shunda.Domain.Logistics;
 
-public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
-{
-    public LogisticsModeInfoMapping()
-    {
+public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo> {
+    public LogisticsModeInfoMapping() {
         Table("tbl_logistics_mode");
 
         Property(
@@ -18,7 +16,7 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
                 map.Column("country_id");
                 map.NotNullable(true);
             }
-        );        
+        );
 
         Property(
             x => x.Cate,
@@ -83,6 +81,15 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo>
                 map.Type(NHibernateUtil.String);
                 map.Column("fee_calc_desc");
                 map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.Promotion,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("promotion");
+                map.NotNullable(true);
             }
         );
 

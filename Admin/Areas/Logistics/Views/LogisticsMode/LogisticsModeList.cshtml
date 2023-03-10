@@ -40,7 +40,7 @@
 
             <th style="width: 100px;" class="center">
                 <div>
-                    <a field="@(nameof(LogisticsModeInfo.PackLabelType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">标签打印</a>
+                    <a field="@(nameof(LogisticsModeInfo.Promotion))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">是否促销</a>
                 </div>
             </th>
 
@@ -59,11 +59,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.LogisticsModeList != null && Model.LogisticsModeList.Count() != 0)
-        {
+        @if (Model.LogisticsModeList != null && Model.LogisticsModeList.Count() != 0) {
             var order = 1;
-            foreach (var logisticsMode in Model.LogisticsModeList)
-            {
+            foreach (var logisticsMode in Model.LogisticsModeList) {
                 <tr ondblclick="showLogisticsModeDetail(@(logisticsMode.Id));">
                     <td class="center">
                         <label for="logisticsModeCheck_@(logisticsMode.Id)"></label><input id="logisticsModeCheck_@(logisticsMode.Id)" type="checkbox" class="ace" value="@logisticsMode.Id"/><span class="lbl"></span>
@@ -86,8 +84,7 @@
                     </td>
 
                     <td>
-                        @foreach (var modeFeeRate in logisticsMode.ModeFeeRateListCache)
-                        {
+                        @foreach (var modeFeeRate in logisticsMode.ModeFeeRateListCache) {
                             <div>
                                 <span>@(modeFeeRate.GoodsType.Name)</span>
                                 <span>:&nbsp;</span>
@@ -98,32 +95,26 @@
 
                     <td class="center">
                         <div>
-                            <span>@logisticsMode.Warehouse?.Name</span>
+                            <span>@logisticsMode.Warehouse.Name</span>
                         </div>
                     </td>
 
 
                     <td class="center">
-                        <div style="color: blue;">
-                            @if (logisticsMode.PackLabelType == null || logisticsMode.PackLabelType == LogisticsPackLabelType.None)
-                            {
-                                <span>此处不考虑</span>
-                            }
-                            else
-                            {
-                                <span>@(logisticsMode.PackLabelType?.Name)</span>
-                            }
-                        </div>
-
+                        @if (logisticsMode.Promotion) {
+                            <span style="color: red;">是促销</span>
+                        } else {
+                            <span style="color: green;">非促销</span>
+                        }
                     </td>
 
 
                     <td class="center">
                         <div style="color: blue;">
-                            @(logisticsMode.Status?.Name)
+                            @(logisticsMode.Status.Name)
                         </div>
                         <div>
-                            @(logisticsMode.InnerStatus?.Name)
+                            @(logisticsMode.InnerStatus.Name)
                         </div>
                     </td>
                     <td class="center">
@@ -142,9 +133,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="10">
                     暂时没有数据！

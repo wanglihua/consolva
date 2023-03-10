@@ -61,6 +61,11 @@ public class LogisticsModeInfo : Entity {
     public virtual string? FeeCalDesc { get; set; } = string.Empty;
 
     /// <summary>
+    /// 是否促销
+    /// </summary>
+    public virtual bool Promotion { get; set; }
+
+    /// <summary>
     /// 收货仓库
     /// </summary>
     [BindNever]
