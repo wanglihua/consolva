@@ -17,6 +17,9 @@
             <th style="width: 280px;">
                 <a field="@(nameof(ClientAgreementInfo.Title))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientAgreementList">标题</a>
             </th>
+            <th style="width: 380px;">
+                <a field="@(nameof(ClientAgreementInfo.Url))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientAgreementList">URL</a>
+            </th>
             <th style="width: 80px; text-align: center;">
                 <a field="@(nameof(ClientAgreementInfo.Country))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientAgreementList">国家</a>
             </th>
@@ -31,12 +34,6 @@
             </th>
             <th style="width: 65px; text-align: center;">
                 <a field="@(nameof(ClientAgreementInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientAgreementList">排序</a>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <a field="@(nameof(ClientAgreementInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientAgreementList">创建时间</a>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <a field="@(nameof(ClientAgreementInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientAgreementList">修改时间</a>
             </th>
             <th></th>
         </tr>
@@ -53,6 +50,11 @@
                     <td class="break-word">
                         @clientAgreement.Title
                     </td>
+                    <td class="break-word">
+                        <a target="_blank" href="@(clientAgreement.Url)">
+                            @clientAgreement.Url
+                        </a>
+                    </td>
                     <td style="text-align: center;">
                         @clientAgreement.Country.Name
                     </td>
@@ -68,18 +70,12 @@
                     <td style="text-align: center;">
                         @(clientAgreement.OrderNum)
                     </td>
-                    <td style="text-align: center;">
-                        @(clientAgreement.CreateTime.ToString("yyyy-MM-dd HH:mm"))
-                    </td>
-                    <td style="text-align: center;">
-                        @(clientAgreement.UpdateTime.ToString("yyyy-MM-dd HH:mm"))
-                    </td>
                     <td></td>
                 </tr>
             }
         } else {
             <tr>
-                <td colspan="12">
+                <td colspan="10">
                     暂时没有数据！
                 </td>
             </tr>
