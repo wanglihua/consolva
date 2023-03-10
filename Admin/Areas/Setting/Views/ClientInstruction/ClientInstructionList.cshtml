@@ -13,20 +13,20 @@
                 <label for="clientInstructionCheckAll"></label><input id="clientInstructionCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
-            <th style="width: 120px; text-align: center;">
+            <th style="width: 100px; text-align: center;">
                 <a field="@(nameof(ClientInstructionInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientInstructionList">类型</a>
+            </th>
+            <th style="width: 180px; text-align: center;">
+                <a field="@(nameof(ClientInstructionInfo.Title))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientInstructionList">标题</a>
+            </th>
+            <th style="width: 380px; text-align: center;">
+                <a field="@(nameof(ClientInstructionInfo.Url))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientInstructionList">URL</a>
             </th>
             <th style="width: 100px; text-align: center;">
                 <a field="@(nameof(ClientInstructionInfo.Creator)).@(nameof(ClientInstructionInfo.Creator.LoginName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientInstructionList">添加人</a>
             </th>
             <th style="width: 120px; text-align: center;">
                 <a field="@(nameof(ClientInstructionInfo.PublishTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientInstructionList">发布时间</a>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <a field="@(nameof(ClientInstructionInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientInstructionList">创建时间</a>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <a field="@(nameof(ClientInstructionInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientInstructionList">修改时间</a>
             </th>
             <th></th>
         </tr>
@@ -44,16 +44,18 @@
                         @(clientInstruction.Type.Name)
                     </td>
                     <td style="text-align: center;">
+                        @(clientInstruction.Title)
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="@(clientInstruction.Url)" target="_blank">
+                            @(clientInstruction.Url)
+                        </a>
+                    </td>
+                    <td style="text-align: center;">
                         @(clientInstruction.Creator.LoginName)(@(clientInstruction.Creator.UserName))
                     </td>
                     <td style="text-align: center;">
                         @(clientInstruction.PublishTime?.ToString("yyyy-MM-dd HH:mm"))
-                    </td>
-                    <td style="text-align: center;">
-                        @(clientInstruction.CreateTime.ToString("yyyy-MM-dd HH:mm"))
-                    </td>
-                    <td style="text-align: center;">
-                        @(clientInstruction.UpdateTime.ToString("yyyy-MM-dd HH:mm"))
                     </td>
                     <td></td>
                 </tr>
