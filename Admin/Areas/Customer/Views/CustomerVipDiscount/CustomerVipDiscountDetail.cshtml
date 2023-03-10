@@ -19,23 +19,18 @@
                             <div class="form-group">
                                 <label asp-for="Rank" class="col-xs-2 control-label">客户VIP等级</label>
                                 <div class="col-xs-10">
-                                    @if (Model.IsCreate)
-                                    {
+                                    @if (Model.IsCreate) {
                                         <select asp-for="Rank" required="required" class="input-sm form-control">
                                             <option value="">客户VIP等级</option>
-                                            @foreach (var rank in Model.CustomerVipRankList)
-                                            {
+                                            @foreach (var rank in Model.CustomerVipRankList) {
                                                 <option value="@(rank.Id)">@(rank.Name)</option>
                                             }
                                         </select>
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <input type="hidden" asp-for="Rank"/>
                                         <select asp-for="Rank" required="required" class="input-sm form-control" disabled="disabled">
                                             <option value="">客户VIP等级</option>
-                                            @foreach (var rank in Model.CustomerVipRankList)
-                                            {
+                                            @foreach (var rank in Model.CustomerVipRankList) {
                                                 <option value="@(rank.Id)">@(rank.Name)</option>
                                             }
                                         </select>
@@ -61,6 +56,18 @@
                                         <input asp-for="Discount" type="number" required="required" min="0" max="100" step="1" class="input-sm form-control"/>
                                         <span class="input-group-addon">%</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CanCoupon" class="col-xs-2 control-label">优惠券</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="CanCoupon" required="required" class="input-sm form-control">
+                                        <option value="@(true.ToString())">可以使用优惠券</option>
+                                        <option value="@(false.ToString())">不能使用优惠券</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

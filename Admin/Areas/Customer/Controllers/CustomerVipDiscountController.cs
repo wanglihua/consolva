@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using shunda.Admin.Areas.Customer.Models.CustomerVipDiscount;
 using shunda.Admin.Services;
 using shunda.Core;
@@ -13,7 +11,6 @@ using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
-using shunda.Service;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
@@ -100,6 +97,7 @@ public class CustomerVipDiscountController : Controller {
         model.Rank = customerVipDiscount.Rank;
         model.Score = customerVipDiscount.Score;
         model.Discount = customerVipDiscount.Discount;
+        model.CanCoupon = customerVipDiscount.CanCoupon;
 
         model.IsCreate = isCreate;
 
@@ -109,8 +107,10 @@ public class CustomerVipDiscountController : Controller {
     [HttpPost]
     [Route("/admin/customer/vip/discount/save")]
     [Transactional]
-    public IActionResult Save(CustomerVipDiscountDetailModel model) {
-        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+    public IActionResult Save(CustomerVipDiscountSaveModel model) {
+        if (!ModelState.IsValid) {
+            throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+        }
 
         var rank = model.Rank;
 
@@ -147,6 +147,7 @@ public class CustomerVipDiscountController : Controller {
 
         customerVipDiscount.Score = model.Score;
         customerVipDiscount.Discount = model.Discount;
+        customerVipDiscount.CanCoupon = model.CanCoupon;
         customerVipDiscount.User = loginUser;
 
         if (isCreate)

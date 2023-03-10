@@ -22,6 +22,9 @@
             <th style="width: 120px; text-align: center;">
                 <a field="@(nameof(CustomerVipDiscountInfo.Discount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">折扣</a>
             </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerVipDiscountInfo.CanCoupon))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">优惠券</a>
+            </th>
             <th style="width: 100px; text-align: center;">
                 <a field="@(nameof(CustomerVipDiscountInfo.User))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerVipDiscountList">操作用户</a>
             </th>
@@ -35,28 +38,31 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.CustomerVipDiscountList != null && Model.CustomerVipDiscountList.Count() != 0)
-        {
+        @if (Model.CustomerVipDiscountList != null && Model.CustomerVipDiscountList.Count() != 0) {
             var order = 1;
-            foreach (var customerVipDiscount in Model.CustomerVipDiscountList)
-            {
+            foreach (var customerVipDiscount in Model.CustomerVipDiscountList) {
                 <tr ondblclick="showCustomerVipDiscountDetail(@(customerVipDiscount.Id));">
                     <td style="text-align: center;">
                         <label for="customerVipDiscountCheck_@(customerVipDiscount.Id)"></label><input id="customerVipDiscountCheck_@(customerVipDiscount.Id)" type="checkbox" class="ace" value="@customerVipDiscount.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
-                    <td style="text-align: center;">@customerVipDiscount.Rank?.Name</td>
+                    <td style="text-align: center;">@customerVipDiscount.Rank.Name</td>
                     <td style="text-align: center;">@customerVipDiscount.Score</td>
                     <td style="text-align: center;">@(customerVipDiscount.Discount)%</td>
-                    <td style="text-align: center;" class="break-word">@(customerVipDiscount.User?.UserName)</td>
+                    <td style="text-align: center;">
+                        @if (customerVipDiscount.CanCoupon) {
+                            <span style="color: green;">可以使用</span>
+                        } else {
+                            <span style="color: red;">不能使用</span>
+                        }
+                    </td>
+                    <td style="text-align: center;" class="break-word">@(customerVipDiscount.User.UserName)</td>
                     <td style="text-align: center;">@customerVipDiscount.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td style="text-align: center;">@customerVipDiscount.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="8">
                     暂时没有数据！

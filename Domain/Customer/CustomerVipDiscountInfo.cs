@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
 using shunda.Core;
 using shunda.Domain.Pass;
 
@@ -10,8 +11,7 @@ namespace shunda.Domain.Customer;
 /// <summary>
 /// VIP折扣设置
 /// </summary>
-public class CustomerVipDiscountInfo : Entity
-{
+public class CustomerVipDiscountInfo : Entity {
     /// <summary>
     /// 会员VIP等级
     /// </summary>
@@ -32,8 +32,13 @@ public class CustomerVipDiscountInfo : Entity
     public virtual decimal Discount { get; set; }
 
     /// <summary>
+    /// 是否可以使用优惠券
+    /// </summary>
+    public virtual bool CanCoupon { get; set; } = false;
+
+    /// <summary>
     /// 操作用户
     /// </summary>
     [BindNever]
-    public virtual UserInfo User { get; set; } = new ();
+    public virtual UserInfo User { get; set; } = new();
 }

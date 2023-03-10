@@ -37,6 +37,15 @@ public class CustomerVipDiscountInfoMapping : EntityMapping<CustomerVipDiscountI
                 map.NotNullable(true);
             }
         );
+        
+        Property(
+            x => x.CanCoupon,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("can_coupon");
+                map.NotNullable(true);
+            }
+        );        
 
         ManyToOne(
             x => x.User,
