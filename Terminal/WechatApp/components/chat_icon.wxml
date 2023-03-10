@@ -8,7 +8,12 @@
             </block>
         </van-button>
         -->
+        <!--
         <van-button open-type="contact" type="info" round plain class-prefix="iconfont" icon="customer-service" size="small">
+            <text>客服</text>
+        </van-button>
+        -->
+        <van-button type="info" round plain class-prefix="iconfont" icon="customer-service" size="small" bind:click="onChatIconClick">
             <text>客服</text>
         </van-button>
     </view>

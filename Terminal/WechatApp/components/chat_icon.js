@@ -20,6 +20,7 @@ Component({
     },
 
     methods: {
+        /*
         onChatIconClick(e) {
             // let chatIconMessageCount = this.data.chatIconMessageCount;
             // chatIconMessageCount = chatIconMessageCount + 1;
@@ -30,6 +31,14 @@ Component({
             this.setData({
                 showChatIcon: false,
                 showChatForm: true,
+            });
+        },
+        */
+        onChatIconClick(e) {
+            app.post("/client/customer/service/detail", {}, function (res) {
+                wx.navigateTo({
+                    url: "/pages/home/home_web_view?url=" + res.data.url + "&title=" + res.data.title,
+                });
             });
         },
         onChatFormClose(e) {
