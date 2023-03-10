@@ -700,25 +700,26 @@
                     </div>
                 </div>
 
+                @if (Model.Order.OrderStatus.HasPacked()) {
                 @* 打包明细 *@
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelPack').toggle();">
-                            <div style="float: left;">
-                                打包明细
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelPack').toggle();">
+                                <div style="float: left;">
+                                    打包明细
+                                </div>
+                                <div style="float: right">
+                                    显示/隐藏
+                                </div>
+                                <div style="clear: both;"></div>
                             </div>
-                            <div style="float: right">
-                                显示/隐藏
-                            </div>
-                            <div style="clear: both;"></div>
-                        </div>
-                        <div id="panelPack" style="display: none;">
+                            <div id="panelPack" style="display: none;">
 
-                            <div id="packListWrapper">
-                                @(await Component.InvokeAsync("LogisticsOrderDetailOrderPackList", new { orderId = Model.Order.Id }))
-                            </div>
+                                <div id="packListWrapper">
+                                    @(await Component.InvokeAsync("LogisticsOrderDetailOrderPackList", new { orderId = Model.Order.Id }))
+                                </div>
 
-                            <script type="text/javascript">
+                                <script type="text/javascript">
                             
                                 function loadOrderPackList() {
                                     showMask("数据加载中，请稍候");
@@ -794,151 +795,152 @@
                                 
                             </script>
 
+                            </div>
                         </div>
                     </div>
-                </div>
 
                 @* 箱号跟踪 *@
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelPackBox').toggle();">
-                            <div style="float: left;">
-                                箱号跟踪
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelPackBox').toggle();">
+                                <div style="float: left;">
+                                    箱号跟踪
+                                </div>
+                                <div style="float: right">
+                                    显示/隐藏
+                                </div>
+                                <div style="clear: both;"></div>
                             </div>
-                            <div style="float: right">
-                                显示/隐藏
-                            </div>
-                            <div style="clear: both;"></div>
-                        </div>
-                        <div id="panelPackBox" style="display: none;">
+                            <div id="panelPackBox" style="display: none;">
 
-                            <div>
-                                <table id="tblLogisticsOrderPackBoxList" class="data-list-table table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 50px; text-align: center;">序号</th>
-                                            <th style="width: 230px; text-align: center;">
-                                                箱号
-                                            </th>
-                                            <th style="width: 250px; text-align: center;">
-                                                订单打包
-                                            </th>
-                                            <th style="width: 120px; text-align: center;">
-                                                <div>
-                                                    发货状态
-                                                </div>
-                                                <div>
-                                                    发货时间
-                                                </div>
-                                            </th>
-                                            <th style="width: 120px; text-align: center;">
-                                                <div>
-                                                    交货状态
-                                                </div>
-                                                <div>
-                                                    交货时间
-                                                </div>
-                                            </th>
-                                            <th style="width: 120px; text-align: center;">
-                                                <div>
-                                                    打包工
-                                                </div>
-                                                <div>
-                                                    打包时间
-                                                </div>
-                                            </th>
-                                            <th style="width: 120px; text-align: center;">
-                                                <div>状态</div>
-                                            </th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (Model.OrderPackBoxList.Count != 0) {
-                                            int order = 1;
-                                            foreach (LogisticsOrderPackBoxInfo logisticsOrderPackBox in Model.OrderPackBoxList) {
+                                <div>
+                                    <table id="tblLogisticsOrderPackBoxList" class="data-list-table table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50px; text-align: center;">序号</th>
+                                                <th style="width: 230px; text-align: center;">
+                                                    箱号
+                                                </th>
+                                                <th style="width: 250px; text-align: center;">
+                                                    订单打包
+                                                </th>
+                                                <th style="width: 120px; text-align: center;">
+                                                    <div>
+                                                        发货状态
+                                                    </div>
+                                                    <div>
+                                                        发货时间
+                                                    </div>
+                                                </th>
+                                                <th style="width: 120px; text-align: center;">
+                                                    <div>
+                                                        交货状态
+                                                    </div>
+                                                    <div>
+                                                        交货时间
+                                                    </div>
+                                                </th>
+                                                <th style="width: 120px; text-align: center;">
+                                                    <div>
+                                                        打包工
+                                                    </div>
+                                                    <div>
+                                                        打包时间
+                                                    </div>
+                                                </th>
+                                                <th style="width: 120px; text-align: center;">
+                                                    <div>状态</div>
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.OrderPackBoxList.Count != 0) {
+                                                int order = 1;
+                                                foreach (LogisticsOrderPackBoxInfo logisticsOrderPackBox in Model.OrderPackBoxList) {
+                                                    <tr>
+                                                        <td style="text-align: center;">@(order++)</td>
+                                                        <td style="text-align: center;" class="break-word">
+                                                            <div>
+                                                                @(logisticsOrderPackBox.CodeCache)
+                                                            </div>
+                                                        </td>
+                                                        <td style="text-align: center;" class="break-word">
+                                                            @(logisticsOrderPackBox.OrderPack.Length)cm * @(logisticsOrderPackBox.OrderPack.Width)cm * @(logisticsOrderPackBox.OrderPack.Height)cm * @(logisticsOrderPackBox.OrderPack.PackageCount)箱
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <div>
+                                                                @if (logisticsOrderPackBox.Status.IsShip()) {
+                                                                    <span>已发货</span>
+                                                                } else {
+                                                                    <span>未发货</span>
+                                                                }
+                                                            </div>
+                                                            <div>
+                                                                @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderPackBox.ShipTime)
+                                                            </div>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <div>
+                                                                @if (logisticsOrderPackBox.Status.IsDeliver()) {
+                                                                    <span>已交货</span>
+                                                                } else {
+                                                                    <span>未交货</span>
+                                                                }
+                                                            </div>
+                                                            <div>
+                                                                @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderPackBox.DeliverTime)
+                                                            </div>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <div>
+                                                                @(logisticsOrderPackBox.OrderPack.PackUser.UserName)
+                                                            </div>
+                                                            <div>
+                                                                @logisticsOrderPackBox.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                                                            </div>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <div>
+                                                                @logisticsOrderPackBox.Status.Name
+                                                            </div>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                }
+                                            } else {
                                                 <tr>
-                                                    <td style="text-align: center;">@(order++)</td>
-                                                    <td style="text-align: center;" class="break-word">
-                                                        <div>
-                                                            @(logisticsOrderPackBox.CodeCache)
-                                                        </div>
+                                                    <td colspan="7">
+                                                        暂时没有数据！
                                                     </td>
-                                                    <td style="text-align: center;" class="break-word">
-                                                        @(logisticsOrderPackBox.OrderPack.Length)cm * @(logisticsOrderPackBox.OrderPack.Width)cm * @(logisticsOrderPackBox.OrderPack.Height)cm * @(logisticsOrderPackBox.OrderPack.PackageCount)箱
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        <div>
-                                                            @if (logisticsOrderPackBox.Status.IsShip()) {
-                                                                <span>已发货</span>
-                                                            } else {
-                                                                <span>未发货</span>
-                                                            }
-                                                        </div>
-                                                        <div>
-                                                            @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderPackBox.ShipTime)
-                                                        </div>
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        <div>
-                                                            @if (logisticsOrderPackBox.Status.IsDeliver()) {
-                                                                <span>已交货</span>
-                                                            } else {
-                                                                <span>未交货</span>
-                                                            }
-                                                        </div>
-                                                        <div>
-                                                            @ListDataUtil.RenderDateTimeWithDiv(logisticsOrderPackBox.DeliverTime)
-                                                        </div>
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        <div>
-                                                            @(logisticsOrderPackBox.OrderPack.PackUser.UserName)
-                                                        </div>
-                                                        <div>
-                                                            @logisticsOrderPackBox.CreateTime.ToString("yyyy-MM-dd HH:mm")
-                                                        </div>
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        <div>
-                                                            @logisticsOrderPackBox.Status.Name
-                                                        </div>
-                                                    </td>
-                                                    <td></td>
                                                 </tr>
                                             }
-                                        } else {
-                                            <tr>
-                                                <td colspan="7">
-                                                    暂时没有数据！
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelFee').toggle();">
-                            <div style="float: left;">
-                                订单费用
+                @* 订单费用 *@
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelFee').toggle();">
+                                <div style="float: left;">
+                                    订单费用
+                                </div>
+
+                                <div style="float: right">
+                                    显示/隐藏
+                                </div>
+                                <div style="clear: both;"></div>
                             </div>
+                            <div id="panelFee" style="display: none;">
 
-                            <div style="float: right">
-                                显示/隐藏
-                            </div>
-                            <div style="clear: both;"></div>
-                        </div>
-                        <div id="panelFee" style="display: none;">
-
-                            <div style="margin-top: 15px; margin-bottom: -10px; text-align: right;">
-                                <a href="javascript: reCalculateOrderFee();">重新计算费用</a>
-                                <script type="text/javascript">
+                                <div style="margin-top: 15px; margin-bottom: -10px; text-align: right;">
+                                    <a href="javascript: reCalculateOrderFee();">重新计算费用</a>
+                                    <script type="text/javascript">
 
                                     function reCalculateOrderFee() {
                                         $.msg.confirm("确认要重新计算费用吗？", function() {
@@ -991,14 +993,15 @@
                                     }
 
                                 </script>
-                            </div>
+                                </div>
 
-                            <div id="orderFeeListWrapper">
-                                @(await Component.InvokeAsync("LogisticsOrderDetailFeeList", new { orderId = Model.Order.Id }))
+                                <div id="orderFeeListWrapper">
+                                    @(await Component.InvokeAsync("LogisticsOrderDetailFeeList", new { orderId = Model.Order.Id }))
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
 
                 @* 操作记录 *@
                 <div class="row">
