@@ -52,6 +52,19 @@ public class CouponService {
             return false;
         }
 
+        // 查看订单物流方式是否都是促销物流方式
+        var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Fetch(e => e.FirstMode)
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
+        int notPromotionFirstModeCount = orderFirstModeList
+            .Where(e => e.FirstMode.Promotion == false)
+            .Count();
+        if (notPromotionFirstModeCount == 0) {
+            return false;
+        }
+
         couponBatchService.CheckAndSetExpire();
 
         var coupon = session.Query<CouponInfo>()
@@ -104,11 +117,24 @@ public class CouponService {
         if ((coupon.Order?.Id ?? 0) != orderId && coupon.Batch.Expire < today) {
             throw new ValidationException($"优惠券{coupon.Code}已过期！");
         }
-        
+
         // 检查客服所在VIP级别是否支持优惠券
         if (customerVipDiscountService.CustomerCanCoupon(customerId) == false) {
             throw new ValidationException($"客户#{customerId}VIP级别不支持使用优惠券！");
-        }        
+        }
+
+        // 查看订单物流方式是否都是促销物流方式
+        var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Fetch(e => e.FirstMode)
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
+        int notPromotionFirstModeCount = orderFirstModeList
+            .Where(e => e.FirstMode.Promotion == false)
+            .Count();
+        if (notPromotionFirstModeCount == 0) {
+            throw new ValidationException($"指定的订单#{orderId}发货渠道都是促销渠道，不能使用优惠券！");
+        }
     }
 
     public void SetCouponUsed(int couponId, LogisticsOrderInfo order, decimal actualDiscountAmount) {
@@ -118,12 +144,12 @@ public class CouponService {
         if (coupon == null) {
             throw new ValidationException($"指定的优惠券#{couponId}不存在！");
         }
-        
+
         // 检查客服所在VIP级别是否支持优惠券
         int customerId = order.Customer.Id;
         if (customerVipDiscountService.CustomerCanCoupon(customerId) == false) {
             throw new ValidationException($"客户#{customerId}VIP级别不支持使用优惠券！");
-        }        
+        }
 
         coupon.Order = order;
         coupon.ActualDiscountAmount = actualDiscountAmount;

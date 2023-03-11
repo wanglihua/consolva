@@ -114,7 +114,7 @@ public class LogisticsOrderFeeService {
 
         #region vip 和 超级 vip折扣
 
-        // todo 这里要改
+        // todo 这里要改 按物流费用计算，促销的不参与
 
         int customerId = order.Customer.Id;
 
@@ -167,6 +167,8 @@ public class LogisticsOrderFeeService {
         #endregion
 
         #region 计算优惠券实扣
+        
+        // todo 按物流费用计算，促销的不参与
 
         var coupon = session.Query<CouponInfo>()
             .Where(e => e.Order!.Id == orderId)
