@@ -62,22 +62,30 @@ public class OrderPayTypeController : Controller {
 
         logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
-        // decimal totalAmount = order.OrderAmount; 不能把优惠费用计算在内
         var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
             .Where(e => e.Order.Id == orderId)
             .ToList();
 
-        decimal totalAmount = 0.0m;
+        decimal totalAmountWithoutCouponDiscount = 0.0m;
         foreach (var fee in orderFeeList) {
+            // 不能把优惠费用计算在内
             if (fee.Type != LogisticsOrderFeeType.CouponDiscountFee) {
-                totalAmount += fee.Fee;
+                totalAmountWithoutCouponDiscount += fee.Fee;
             }
         }
+
+        decimal firstModeFee = 0.0m;
+        var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
+        foreach (var fee in orderFeeList) {
+            if (logisticsFeeTypeList.Contains(fee.Type)) {
+                firstModeFee += fee.Fee;
+            }
+        }      
 
         decimal discountAmount = 0;
         string discountAmountStr = string.Empty;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, totalAmount);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, firstModeFee);
             if (discountResult.Success == false) {
                 discountAmount = 0;
                 discountAmountStr = discountResult.Message;
@@ -88,7 +96,7 @@ public class OrderPayTypeController : Controller {
         }
 
         decimal paidAmount = order.PaidAmount;
-        decimal arrearsAmount = totalAmount - discountAmount - paidAmount;
+        decimal arrearsAmount = totalAmountWithoutCouponDiscount - discountAmount - paidAmount;
 
         if (arrearsAmount < 0) {
             arrearsAmount = 0;
@@ -100,7 +108,7 @@ public class OrderPayTypeController : Controller {
             Data = new OrderPayTypeListModel {
                 OrderId = order.Id,
                 OrderCode = order.Code,
-                TotalAmount = totalAmount.ToString("#0.00"),
+                TotalAmount = totalAmountWithoutCouponDiscount.ToString("#0.00"),
                 HasCoupon = coupon != null,
                 DiscountAmount = discountAmountStr,
                 PaidAmount = paidAmount.ToString("#0.00"),

@@ -276,8 +276,8 @@ public class CouponService {
     /// 计算优惠券折扣
     /// </summary>
     /// <param name="couponId">优惠券</param>
-    /// <param name="orderAmount">物流费用，现在假设是 原订单总费用</param>
-    public CouponDiscountResult CalculateCouponDiscount(int couponId, decimal orderAmount) {
+    /// <param name="firstModeFee">物流费用</param>
+    public CouponDiscountResult CalculateCouponDiscount(int couponId, decimal firstModeFee) {
         var coupon = session.Get<CouponInfo>(couponId);
         if (coupon == null) {
             throw new ValidationException($"指定的优惠券{couponId}不存在！");
@@ -297,7 +297,7 @@ public class CouponService {
                 throw new ValidationException($"优惠券批次#{batchId}未关联抵扣券规则！");
             }
 
-            decimal discount = couponRuleDeductService.GetDiscount(rule, orderAmount);
+            decimal discount = couponRuleDeductService.GetDiscount(rule, firstModeFee);
 
             return new CouponDiscountResult() {
                 Success = true,
@@ -317,7 +317,7 @@ public class CouponService {
                 throw new ValidationException($"优惠券批次#{batchId}未关联折扣券规则！");
             }
 
-            decimal discount = couponRuleDiscountService.GetDiscount(rule, orderAmount);
+            decimal discount = couponRuleDiscountService.GetDiscount(rule, firstModeFee);
 
             return new CouponDiscountResult() {
                 Success = true,
@@ -337,7 +337,7 @@ public class CouponService {
                 throw new ValidationException($"优惠券批次#{batchId}未关联满减券规则！");
             }
 
-            decimal discount = couponRulePriceBreakService.GetDiscount(rule, orderAmount);
+            decimal discount = couponRulePriceBreakService.GetDiscount(rule, firstModeFee);
             if (discount <= 0) {
                 return new CouponDiscountResult() {
                     Success = false,
@@ -402,16 +402,17 @@ public class CouponService {
             .Where(e => e.Order.Id == orderId)
             .ToList();
 
-        decimal orderAmount = 0.0m;
+        decimal firstModeFee = 0.0m;
+        var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
         foreach (var fee in orderFeeList) {
-            if (fee.Type != LogisticsOrderFeeType.CouponDiscountFee) {
-                orderAmount += fee.Fee;
+            if (logisticsFeeTypeList.Contains(fee.Type)) {
+                firstModeFee += fee.Fee;
             }
         }
 
         decimal couponDiscount = 0m;
         if (coupon != null) {
-            var couponDiscountResult = CalculateCouponDiscount(couponId, orderAmount);
+            var couponDiscountResult = CalculateCouponDiscount(couponId, firstModeFee);
             if (couponDiscountResult.Success == false) {
                 throw new ValidationException(couponDiscountResult.Message);
             }

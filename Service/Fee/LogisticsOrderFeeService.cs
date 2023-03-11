@@ -155,17 +155,6 @@ public class LogisticsOrderFeeService {
 
         #endregion
 
-        #region 合计考虑折扣后的物流费用
-
-        decimal totalLogisticsFee = 0m;
-        foreach (var entry in orderResultEntryList) {
-            if (entry.EntryType == LogisticsFeeResultEntryType.Single) {
-                totalLogisticsFee += entry.Fee;
-            }
-        }
-
-        #endregion
-
         #region 计算优惠券实扣
         
         // todo 按物流费用计算，促销的不参与
@@ -176,7 +165,7 @@ public class LogisticsOrderFeeService {
             .SingleOrDefault();
         if (coupon != null) {
             var couponId = coupon.Id;
-            var couponDiscountResult = couponService.CalculateCouponDiscount(couponId, totalLogisticsFee);
+            var couponDiscountResult = couponService.CalculateCouponDiscount(couponId, firstModeFee);
             if (couponDiscountResult.Success == true && couponDiscountResult.Discount > 0) {
                 decimal couponDiscount = couponDiscountResult.Discount;
 
@@ -203,7 +192,7 @@ public class LogisticsOrderFeeService {
 
         #region 计算保险费
 
-        decimal insuranceFee = logisticsFeeInsuranceService.GetInsuranceFee(order.GoodsValue, totalLogisticsFee, order.Insurance.Id);
+        decimal insuranceFee = logisticsFeeInsuranceService.GetInsuranceFee(order.GoodsValue, firstModeFee, order.Insurance.Id);
 
         orderResultEntryList.Add(new LogisticsFeeResultEntry() {
             OrderFirstMode = null,
@@ -219,7 +208,7 @@ public class LogisticsOrderFeeService {
 
         #region 计算GST
 
-        decimal gstFee = logisticsFeeGstService.GetGstFee(order.GoodsValue, totalLogisticsFee, order.Gst.Id);
+        decimal gstFee = logisticsFeeGstService.GetGstFee(order.GoodsValue, firstModeFee, order.Gst.Id);
 
         orderResultEntryList.Add(new LogisticsFeeResultEntry() {
             OrderFirstMode = null,
