@@ -11,6 +11,7 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
 
@@ -24,18 +25,21 @@ public class ExpressDetailController : Controller {
     private readonly LoginUserService loginUserService;
     private readonly CustomerCodeService customerCodeService;
     private readonly PassResService passResService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public ExpressDetailController(ISession session,
         ExpressPhotoFileService expressPhotoFileService,
         LoginUserService loginUserService,
         CustomerCodeService customerCodeService,
-        PassResService passResService
+        PassResService passResService,
+        LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.expressPhotoFileService = expressPhotoFileService;
         this.loginUserService = loginUserService;
         this.customerCodeService = customerCodeService;
         this.passResService = passResService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpGet]
@@ -158,6 +162,8 @@ public class ExpressDetailController : Controller {
             .Take(1)
             .SingleOrDefault();
         model.ExpressReturn = expressReturn ?? new ExpressReturnInfo();
+
+        model.VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         return View("ExpressDetailIndex", model);
     }

@@ -17,12 +17,17 @@ namespace shunda.Admin.Areas.Logistics.Controllers;
 [LogisticsArea]
 [AdminAuth(PassRes.Logistics.LogisticsFeeRate)]
 public class LogisticsFeeRateController : Controller {
-    private readonly LogisticsFeeRateService logisticsFeeRateService;
     private readonly ISession session;
+    private readonly LogisticsFeeRateService logisticsFeeRateService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
-    public LogisticsFeeRateController(ISession session, LogisticsFeeRateService logisticsFeeRateService) {
+    public LogisticsFeeRateController(ISession session,
+        LogisticsFeeRateService logisticsFeeRateService,
+        LogisticsModeSettingService logisticsModeSettingService
+    ) {
         this.session = session;
         this.logisticsFeeRateService = logisticsFeeRateService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpGet]
@@ -86,7 +91,7 @@ public class LogisticsFeeRateController : Controller {
         if (id == null || id.Value == 0) {
             logisticsFeeRate = new LogisticsFeeRateInfo();
             logisticsFeeRate.PublishRate = 1.0m;
-            logisticsFeeRate.VolumeWeightDenominator = LogisticsConfig.VolumeWeightDenominator; // 取体积重分母默认值
+            logisticsFeeRate.VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator; // 取体积重分母默认值
 
             logisticsFeeRate.CustomerWidthDiscount = 1.0m;
             logisticsFeeRate.CustomerLengthDiscount = 1.0m;
@@ -243,7 +248,7 @@ public class LogisticsFeeRateController : Controller {
         logisticsFeeRate.Status = logisticsFeeRateFromUi.Status;
 
         logisticsFeeRate.CareVolumeWeight = logisticsFeeRateFromUi.CareVolumeWeight;
-        logisticsFeeRate.VolumeWeightDenominator = logisticsFeeRateFromUi.VolumeWeightDenominator > 0 ? logisticsFeeRateFromUi.VolumeWeightDenominator : LogisticsConfig.VolumeWeightDenominator;
+        logisticsFeeRate.VolumeWeightDenominator = logisticsFeeRateFromUi.VolumeWeightDenominator > 0 ? logisticsFeeRateFromUi.VolumeWeightDenominator : logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
         logisticsFeeRate.CareSideSum = logisticsFeeRateFromUi.CareSideSum;
         logisticsFeeRate.VolumeWeightResultType = logisticsFeeRateFromUi.VolumeWeightResultType;
         logisticsFeeRate.VolumeActualWeightMiddle = logisticsFeeRateFromUi.VolumeActualWeightMiddle;

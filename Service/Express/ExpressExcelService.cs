@@ -3,6 +3,7 @@ using NPOI.XSSF.UserModel;
 using shunda.Core.Service;
 using shunda.Core.Util;
 using shunda.Domain.Express;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Express;
@@ -10,9 +11,11 @@ namespace shunda.Service.Express;
 [Service(ServiceType.Scoped)]
 public class ExpressExcelService {
     private readonly ISession session;
+    private readonly LogisticsModeSettingService LogisticsModeSettingService;
 
-    public ExpressExcelService(ISession session) {
+    public ExpressExcelService(ISession session, LogisticsModeSettingService LogisticsModeSettingService) {
         this.session = session;
+        this.LogisticsModeSettingService = LogisticsModeSettingService;
     }
 
     public byte[] Export(IList<ExpressInfo> expressList) {
@@ -218,6 +221,8 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("仓库备注");
 
+        decimal volumeWeightDenominator = LogisticsModeSettingService.GetSetting().VolumeWeightDenominator;
+
         foreach (ExpressInfo express in expressList) {
             row = sheet.CreateRow(rowIndex++);
             row.HeightInPoints = rowHeight;
@@ -276,7 +281,7 @@ public class ExpressExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.GetVolumeWeightCache()}")));
+            cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.GetVolumeWeightCache(volumeWeightDenominator)}")));
 
             // 实际重kg
             cell = row.CreateCell(cellIndex++);

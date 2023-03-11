@@ -170,7 +170,7 @@
                         <div>
                             <div>
                                 @{
-                                    IList<string> expressItemStrList = express.ExpressSizeWeightListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}<br/>{e.GetVolumeWeightCache()},{e.Weight}").ToList();
+                                    IList<string> expressItemStrList = express.ExpressSizeWeightListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}<br/>{e.GetVolumeWeightCache(Model.VolumeWeightDenominator)},{e.Weight}").ToList();
                                     string lwh = string.Join("<br/>", expressItemStrList);
                                     if (string.IsNullOrWhiteSpace(lwh)) {
                                         lwh = "-";

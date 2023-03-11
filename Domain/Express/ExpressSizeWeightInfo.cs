@@ -115,19 +115,19 @@ public class ExpressSizeWeightInfo : Entity {
     /// <summary>
     /// 单箱体积重
     /// </summary>
-    public virtual decimal GetVolumeWeightCache() {
-        return decimal.Round(Length * Width * Height / LogisticsConfig.VolumeWeightDenominator, 3, MidpointRounding.AwayFromZero); // 这里的体积重分母，只能用系统默认的了
+    public virtual decimal GetVolumeWeightCache(decimal volumeWeightDenominator) {
+        return decimal.Round(Length * Width * Height / volumeWeightDenominator, 3, MidpointRounding.AwayFromZero); // 这里的体积重分母，只能用系统默认的了
     }
 
     /// <summary>
     /// 体积重实际重比值
     /// </summary>
-    public virtual decimal? GetVolumeWeightActualWeightRatioCache() {
+    public virtual decimal? GetVolumeWeightActualWeightRatioCache(decimal volumeWeightDenominator) {
         if (Weight == 0) {
             return null;
         }
 
-        return GetVolumeWeightCache() / Weight;
+        return GetVolumeWeightCache(volumeWeightDenominator) / Weight;
     }
 
     /// <summary>

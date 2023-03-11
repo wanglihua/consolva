@@ -8,6 +8,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Express.Controllers;
@@ -18,15 +19,18 @@ public class ExpressClaimController : Controller {
     private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressTrackingNoService expressTrackingNoService;
     private readonly ExpressClaimService expressClaimService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public ExpressClaimController(ISession session,
         LoginCustomerService loginCustomerService,
         ExpressTrackingNoService expressTrackingNoService,
-        ExpressClaimService expressClaimService) {
+        ExpressClaimService expressClaimService,
+        LogisticsModeSettingService logisticsModeSettingService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressTrackingNoService = expressTrackingNoService;
         this.expressClaimService = expressClaimService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpPost]
@@ -192,10 +196,13 @@ public class ExpressClaimController : Controller {
         decimal totalVolumeWeight = 0;
         decimal totalActualWeight = 0;
         int totalPackageCount = 0;
+
+        decimal volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
+
         var expressSizeWeightItemList = new List<ExpressClaimDetailModel.ExpressSizeWeightItem>();
         foreach (ExpressSizeWeightInfo sizeWeight in expressSizeWeightList) {
             totalVolume += sizeWeight.GetVolumeCache();
-            totalVolumeWeight += sizeWeight.GetVolumeWeightCache();
+            totalVolumeWeight += sizeWeight.GetVolumeWeightCache(volumeWeightDenominator);
             totalActualWeight += sizeWeight.Weight;
             totalPackageCount += sizeWeight.PackageCount;
 

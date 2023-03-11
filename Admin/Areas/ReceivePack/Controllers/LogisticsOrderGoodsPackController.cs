@@ -20,8 +20,8 @@ using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using shunda.Service.LogisticsOrder;
-using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.ReceivePack.Controllers;
@@ -37,7 +37,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderPackService logisticsOrderPackService;
-    private readonly CustomerMessagePackedService customerMessagePackedService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public LogisticsOrderGoodsPackController(ISession session,
         LoginUserService loginUserService,
@@ -47,7 +47,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
         ExpressLogService expressLogService,
         LogisticsOrderPackService logisticsOrderPackService,
-        CustomerMessagePackedService customerMessagePackedService
+        LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -57,7 +57,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
         this.expressLogService = expressLogService;
         this.logisticsOrderPackService = logisticsOrderPackService;
-        this.customerMessagePackedService = customerMessagePackedService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpGet]
@@ -767,7 +767,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             }
 
             int volumeWeightDenominator = feeRate.FeeRate.VolumeWeightDenominator;
-            volumeWeightDenominator = volumeWeightDenominator > 0 ? volumeWeightDenominator : LogisticsConfig.VolumeWeightDenominator;
+            volumeWeightDenominator = volumeWeightDenominator > 0 ? volumeWeightDenominator : logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
             orderFirstMode = new LogisticsOrderFirstModeInfo {
                 Order = order,

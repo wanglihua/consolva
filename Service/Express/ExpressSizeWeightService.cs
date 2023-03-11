@@ -3,15 +3,20 @@ using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Express;
+using shunda.Service.Logistics;
 
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
 public class ExpressSizeWeightService {
     private readonly ISession session;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
-    public ExpressSizeWeightService(ISession session) {
+    public ExpressSizeWeightService(ISession session,
+        LogisticsModeSettingService logisticsModeSettingService
+    ) {
         this.session = session;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     public IList<ExpressSizeWeightInfo> GetOrderSizeWeightList(int orderId) {
@@ -54,7 +59,7 @@ public class ExpressSizeWeightService {
             return 0;
         }
 
-        return sizeWeightList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount) / LogisticsConfig.VolumeWeightDenominator; // 这里只能使用默认的体积重分母了
+        return sizeWeightList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount) / logisticsModeSettingService.GetSetting().VolumeWeightDenominator; // 这里只能使用默认的体积重分母了
     }
 
     /// <summary>

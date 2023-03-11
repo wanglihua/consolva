@@ -64,4 +64,7 @@ public class ExpressDetailIndexModel {
 
     [BindNever]
     public IList<UserTimeItem> ShipUserTimeList { get; set; } = new List<UserTimeItem>();
+
+    [BindNever]
+    public decimal VolumeWeightDenominator { get; set; }
 }

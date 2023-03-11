@@ -11,6 +11,7 @@ using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Express.Controllers;
@@ -20,14 +21,17 @@ public class ExpressCheckinDetailController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressPhotoFileService expressPhotoFileService;
+    private readonly LogisticsModeSettingService LogisticsModeSettingService;
 
     public ExpressCheckinDetailController(ISession session,
         LoginCustomerService loginCustomerService,
-        ExpressPhotoFileService expressPhotoFileService
+        ExpressPhotoFileService expressPhotoFileService,
+        LogisticsModeSettingService LogisticsModeSettingService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressPhotoFileService = expressPhotoFileService;
+        this.LogisticsModeSettingService = LogisticsModeSettingService;
     }
 
     [HttpPost]
@@ -89,7 +93,9 @@ public class ExpressCheckinDetailController : Controller {
             packageCount = sizeWeightList.Sum(e => e.PackageCount);
         }
 
-        totalVolumeWeight = totalVolume / LogisticsConfig.VolumeWeightDenominator; // 这里的体积重分母，只能用系统默认的了
+        var volumeWeightDenominator = LogisticsModeSettingService.GetSetting().VolumeWeightDenominator;
+
+        totalVolumeWeight = totalVolume / volumeWeightDenominator; // 这里的体积重分母，只能用系统默认的了
         totalVolume = totalVolume / 100_00_00; // 转成立方米
 
         var sizeWeightItemList = sizeWeightList
@@ -99,7 +105,7 @@ public class ExpressCheckinDetailController : Controller {
                 Length = e.Length.ToString("#0.00"),
                 Width = e.Width.ToString("#0.00"),
                 Height = e.Height.ToString("#0.00"),
-                VolumeWeight = (e.Length * e.Width * e.Height / LogisticsConfig.VolumeWeightDenominator).ToString("#0.000"), // 这里的体积重分母，只能用系统默认的了
+                VolumeWeight = (e.Length * e.Width * e.Height / volumeWeightDenominator).ToString("#0.000"), // 这里的体积重分母，只能用系统默认的了
                 ActualWeight = e.Weight.ToString("#0.000"),
                 PackageCount = e.PackageCount,
             })

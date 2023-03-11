@@ -9,6 +9,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
@@ -17,9 +18,14 @@ namespace shunda.Admin.Areas.Express.Controllers;
 [AdminAuth(PassRes.Express.ExpressSizeWeight)]
 public class ExpressSizeWeightController : Controller {
     private readonly ISession session;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
-    public ExpressSizeWeightController(ISession session) {
+    public ExpressSizeWeightController(
+        ISession session,
+        LogisticsModeSettingService logisticsModeSettingService
+    ) {
         this.session = session;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpGet]
@@ -70,6 +76,7 @@ public class ExpressSizeWeightController : Controller {
 
         ExpressSizeWeightListModel model = new ExpressSizeWeightListModel(listPager);
         model.ExpressSizeWeightList = expressSizeWeightList;
+        model.VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         return View("ExpressSizeWeightList", model);
     }

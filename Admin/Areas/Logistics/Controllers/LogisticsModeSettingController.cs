@@ -30,24 +30,23 @@ public class LogisticsModeSettingController : Controller {
     public IActionResult Index() {
         LogisticsModeSettingIndexModel model = new LogisticsModeSettingIndexModel();
 
-        var logisticsModeSetting = session.Query<LogisticsModeSettingInfo>()
+        var setting = session.Query<LogisticsModeSettingInfo>()
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
 
-        if (logisticsModeSetting == null) {
-            logisticsModeSetting = new LogisticsModeSettingInfo();
+        if (setting == null) {
+            setting = new LogisticsModeSettingInfo();
         }
 
-        model.LogisticsModeSettingId = logisticsModeSetting.Id;
+        model.LogisticsModeSettingId = setting.Id;
 
-        model.VolumeWeightDenominator = logisticsModeSetting.VolumeWeightDenominator;
-        model.HasFreePackageLimit = logisticsModeSetting.HasFreePackageLimit;
-        model.FreePackageLimit = logisticsModeSetting.FreePackageLimit;
-        model.ExtraPackageFee = logisticsModeSetting.ExtraPackageFee;
-        model.HasExtraPackageFeeCapAmount = logisticsModeSetting.HasExtraPackageFeeCapAmount;
-        model.ExtraPackageFeeCapAmount = logisticsModeSetting.ExtraPackageFeeCapAmount;
-
+        model.VolumeWeightDenominator = setting.VolumeWeightDenominator;
+        model.HasFreePackageLimit = setting.HasFreePackageLimit;
+        model.FreePackageLimit = setting.FreePackageLimit;
+        model.ExtraPackageFee = setting.ExtraPackageFee;
+        model.HasExtraPackageFeeCapAmount = setting.HasExtraPackageFeeCapAmount;
+        model.ExtraPackageFeeCapAmount = setting.ExtraPackageFeeCapAmount;
 
         return View("LogisticsModeSettingIndex", model);
     }

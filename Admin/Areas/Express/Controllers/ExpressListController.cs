@@ -14,6 +14,7 @@ using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Customer;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using shunda.Service.Pass;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
@@ -36,6 +37,7 @@ public class ExpressListController : Controller {
     private readonly ExpressService expressService;
     private readonly WarehouseService warehouseService;
     private readonly PassResService passResService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public ExpressListController(ISession session,
         ExpressListService expressListService,
@@ -46,7 +48,8 @@ public class ExpressListController : Controller {
         ExpressExcelService expressExcelService,
         ExpressService expressService,
         WarehouseService warehouseService,
-        PassResService passResService
+        PassResService passResService,
+        LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.expressListService = expressListService;
@@ -58,6 +61,7 @@ public class ExpressListController : Controller {
         this.expressService = expressService;
         this.warehouseService = warehouseService;
         this.passResService = passResService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpGet]
@@ -90,6 +94,7 @@ public class ExpressListController : Controller {
 
         ExpressListModel model = new ExpressListModel(listPager);
         model.ExpressList = expressList;
+        model.VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         return View("ExpressList", model);
     }

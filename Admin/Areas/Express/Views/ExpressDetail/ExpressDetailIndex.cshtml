@@ -692,7 +692,7 @@
                                                 <td style="text-align: center;">@item.Width.ToString("#0.0")</td>
                                                 <td style="text-align: center;">@item.Height.ToString("#0.0")</td>
                                                 <td style="text-align: center;">@item.GetVolumeCache().ToString("#0.000000")</td>
-                                                <td style="text-align: center;">@item.GetVolumeWeightCache().ToString("#0.000")</td>
+                                                <td style="text-align: center;">@item.GetVolumeWeightCache(Model.VolumeWeightDenominator).ToString("#0.000")</td>
                                                 <td style="text-align: center;">@item.Weight.ToString("#0.000")</td>
                                                 <td style="text-align: center;">@item.PackageCount</td>
                                                 <td></td>
