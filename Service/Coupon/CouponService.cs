@@ -21,6 +21,7 @@ public class CouponService {
     private readonly CouponRulePriceBreakService couponRulePriceBreakService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly CustomerVipDiscountService customerVipDiscountService;
+    private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
 
     public CouponService(
         ISession session,
@@ -29,7 +30,8 @@ public class CouponService {
         CouponRuleDiscountService couponRuleDiscountService,
         CouponRulePriceBreakService couponRulePriceBreakService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
-        CustomerVipDiscountService customerVipDiscountService
+        CustomerVipDiscountService customerVipDiscountService,
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService
     ) {
         this.session = session;
         this.couponBatchService = couponBatchService;
@@ -38,6 +40,7 @@ public class CouponService {
         this.couponRulePriceBreakService = couponRulePriceBreakService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.customerVipDiscountService = customerVipDiscountService;
+        this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
     }
 
     /// <summary>
@@ -397,22 +400,11 @@ public class CouponService {
             return;
         }
 
-        // decimal totalAmount = order.OrderAmount; 不能把优惠费用计算在内
-        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .ToList();
-
-        decimal firstModeFee = 0.0m;
-        var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
-        foreach (var fee in orderFeeList) {
-            if (logisticsFeeTypeList.Contains(fee.Type)) {
-                firstModeFee += fee.Fee;
-            }
-        }
+        var orderFeeSumData = logisticsOrderFeeSumService.GetSumData(orderId);
 
         decimal couponDiscount = 0m;
         if (coupon != null) {
-            var couponDiscountResult = CalculateCouponDiscount(couponId, firstModeFee);
+            var couponDiscountResult = CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
             if (couponDiscountResult.Success == false) {
                 throw new ValidationException(couponDiscountResult.Message);
             }
@@ -441,6 +433,12 @@ public class CouponService {
         }
 
         // 先把原来的优惠券费用删除掉
+
+        // 这样查询方便使用原来的查询缓存
+        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
         var couponOrderFeeList = orderFeeList
             .Where(e => e.Type == LogisticsOrderFeeType.CouponDiscountFee)
             .ToList();

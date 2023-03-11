@@ -25,6 +25,7 @@ public class WechatPayOrderService {
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly CustomerScoreService customerScoreService;
     private readonly CouponService couponService;
+    private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
 
     public WechatPayOrderService(
         ISession session,
@@ -32,7 +33,8 @@ public class WechatPayOrderService {
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService,
-        CouponService couponService
+        CouponService couponService,
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService
     ) {
         this.session = session;
         this.payService = payService;
@@ -40,6 +42,7 @@ public class WechatPayOrderService {
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.customerScoreService = customerScoreService;
         this.couponService = couponService;
+        this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
     }
 
     /// <summary>
@@ -69,29 +72,11 @@ public class WechatPayOrderService {
 
         NHibernateUtil.Initialize(order.Customer);
 
-        var orderFeeList = session.Query<LogisticsOrderFeeInfo>()
-            .Where(e => e.Order.Id == orderId)
-            .ToList();
-
-        decimal totalAmountWithoutCouponDiscount = 0.0m;
-        foreach (var fee in orderFeeList) {
-            // 不能把优惠费用计算在内
-            if (fee.Type != LogisticsOrderFeeType.CouponDiscountFee) {
-                totalAmountWithoutCouponDiscount += fee.Fee;
-            }
-        }
-
-        decimal firstModeFee = 0.0m;
-        var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
-        foreach (var fee in orderFeeList) {
-            if (logisticsFeeTypeList.Contains(fee.Type)) {
-                firstModeFee += fee.Fee;
-            }
-        }      
+        var orderFeeSumData = logisticsOrderFeeSumService.GetSumData(orderId);
 
         decimal discountAmount = 0;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, firstModeFee);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFee);
             if (discountResult.Success == false) {
                 discountAmount = 0;
             } else {
@@ -103,7 +88,7 @@ public class WechatPayOrderService {
         }
 
         decimal paidAmount = order.PaidAmount;
-        decimal arrearsAmount = totalAmountWithoutCouponDiscount - discountAmount - paidAmount;
+        decimal arrearsAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount - discountAmount - paidAmount;
 
         if (arrearsAmount < 0) {
             arrearsAmount = 0;
