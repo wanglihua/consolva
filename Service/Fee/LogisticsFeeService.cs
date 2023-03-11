@@ -40,25 +40,25 @@ public class LogisticsFeeService {
     /// <summary>
     /// 根据物流数据计算物流费用
     /// </summary>
-    /// <param name="logisticsFeeData"></param>
+    /// <param name="feeDataItem"></param>
     /// <param name="feeRateType"></param>
     /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType) {
-        return GetLogisticsFee(logisticsFeeData, feeRateType, FeeMessageType.User);
+    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeDataItem feeDataItem, LogisticsFeeRateType feeRateType) {
+        return GetLogisticsFee(feeDataItem, feeRateType, FeeMessageType.User);
     }
 
     /// <summary>
     /// 根据物流数据计算物流费用
     /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
     /// </summary>
-    /// <param name="logisticsFeeData"></param>
+    /// <param name="feeDataItem"></param>
     /// <param name="feeRateType"></param>
     /// <param name="feeMessageType"></param>
     /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeData logisticsFeeData, LogisticsFeeRateType feeRateType, FeeMessageType feeMessageType) {
-        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeData>(logisticsFeeData);
+    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeDataItem feeDataItem, LogisticsFeeRateType feeRateType, FeeMessageType feeMessageType) {
+        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeDataItem>(feeDataItem);
 
-        var logisticsMode = logisticsFeeData.LogisticsMode;
+        var logisticsMode = feeDataItem.LogisticsMode;
 
         if (logisticsMode == null) {
             if (feeMessageType == FeeMessageType.Customer) {
@@ -70,7 +70,7 @@ public class LogisticsFeeService {
 
         int logisticsModeId = logisticsMode.Id;
 
-        LogisticsGoodsType goodsType = logisticsFeeData.GoodsType;
+        LogisticsGoodsType goodsType = feeDataItem.GoodsType;
 
         if (goodsType == LogisticsGoodsType.Forbidden) {
             if (feeMessageType == FeeMessageType.Customer) {
@@ -82,7 +82,7 @@ public class LogisticsFeeService {
 
         #region 数据检查
 
-        IList<LogisticsFeePack> feePackList = logisticsFeeData.FeePackList;
+        IList<LogisticsFeePack> feePackList = feeDataItem.FeePackList;
         if (feePackList == null || feePackList.Count == 0) {
             if (feeMessageType == FeeMessageType.Customer) {
                 throw new LogisticsFeeException("未能获取物品尺寸数据！SD0140");
@@ -179,12 +179,12 @@ public class LogisticsFeeService {
         }
 
         resultEntryList.Add(new LogisticsFeeResultEntry {
-            OrderFirstMode = logisticsFeeData.OrderFirstMode,
-            LogisticsMode = logisticsFeeData.LogisticsMode,
+            OrderFirstMode = feeDataItem.OrderFirstMode,
+            LogisticsMode = feeDataItem.LogisticsMode,
             Title = LogisticsOrderFeeType.InitFee.Name,
             FeeType = LogisticsOrderFeeType.InitFee,
             Fee = initialTotalFee,
-            GoodsType = logisticsFeeData.GoodsType,
+            GoodsType = feeDataItem.GoodsType,
             EntryType = LogisticsFeeResultEntryType.Single
         });
 
@@ -208,12 +208,12 @@ public class LogisticsFeeService {
             extraTotalFee += overLengthFee;
 
             resultEntryList.Add(new LogisticsFeeResultEntry {
-                OrderFirstMode = logisticsFeeData.OrderFirstMode,
-                LogisticsMode = logisticsFeeData.LogisticsMode,
+                OrderFirstMode = feeDataItem.OrderFirstMode,
+                LogisticsMode = feeDataItem.LogisticsMode,
                 Title = LogisticsOrderFeeType.ExtraLengthFee.Name,
                 FeeType = LogisticsOrderFeeType.ExtraLengthFee,
                 Fee = overLengthFee,
-                GoodsType = logisticsFeeData.GoodsType,
+                GoodsType = feeDataItem.GoodsType,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
 
@@ -228,12 +228,12 @@ public class LogisticsFeeService {
             extraTotalFee += singleOverWeightFee;
 
             resultEntryList.Add(new LogisticsFeeResultEntry {
-                OrderFirstMode = logisticsFeeData.OrderFirstMode,
-                LogisticsMode = logisticsFeeData.LogisticsMode,
+                OrderFirstMode = feeDataItem.OrderFirstMode,
+                LogisticsMode = feeDataItem.LogisticsMode,
                 Title = LogisticsOrderFeeType.SingleExtraWeightFee.Name,
                 FeeType = LogisticsOrderFeeType.SingleExtraWeightFee,
                 Fee = singleOverWeightFee,
-                GoodsType = logisticsFeeData.GoodsType,
+                GoodsType = feeDataItem.GoodsType,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
 
@@ -288,9 +288,11 @@ public class LogisticsFeeService {
 
         // 额外包裹数量，调用 GetExtraPackageCountFee()，这里的额外包裹数量是快递单号的数量
 
+        /*
+         这个放到后面总的计算了，一个订单只计算一次 合箱打包费
         // if (logisticsFeeData.PackageCount > 0) // 这个肯定成立
         {
-            int totalPackageCount = logisticsFeeData.FeePackList.Sum(e => e.PackageCount);
+            int totalPackageCount = logisticsFeeData.FeePackList.Sum(e => e.PackageCount); 这里的计算也不对，应该是按照入库包裹数量计算的
             decimal extraPackageCountFee = GetExtraPackageCountFee(totalPackageCount, feeRate, feeMessageType);
 
             extraTotalFee += extraPackageCountFee;
@@ -307,6 +309,7 @@ public class LogisticsFeeService {
 
             feeCalculateLogService.AddLog($"额外包裹费 {extraPackageCountFee}");
         }
+        */
 
         // todo 仓储, 调用 GetExtraStorageDayFee() ，这个是不是可以用订单入库的时间 和 提交打包的时间差 来做这个计算
 
@@ -324,12 +327,12 @@ public class LogisticsFeeService {
 
         string totalFeeTitle = "物流运费小计";
         resultEntryList.Add(new LogisticsFeeResultEntry {
-            OrderFirstMode = logisticsFeeData.OrderFirstMode,
-            LogisticsMode = logisticsFeeData.LogisticsMode,
+            OrderFirstMode = feeDataItem.OrderFirstMode,
+            LogisticsMode = feeDataItem.LogisticsMode,
             Title = totalFeeTitle,
             FeeType = LogisticsOrderFeeType.None,
             Fee = totalFee,
-            GoodsType = logisticsFeeData.GoodsType,
+            GoodsType = feeDataItem.GoodsType,
             EntryType = LogisticsFeeResultEntryType.SubSum
         });
 
@@ -1318,6 +1321,7 @@ public class LogisticsFeeService {
     /// <param name="feeRate"></param>
     /// <param name="feeMessageType"></param>
     /// <returns></returns>
+    [Obsolete]
     private decimal GetExtraPackageCountFee(int packageCount, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         if (feeRate.HasFreePackageLimit) {
             if (feeRate.FreePackageLimit.HasValue == false || feeRate.FreePackageLimit.Value < 0) {
@@ -1361,11 +1365,55 @@ public class LogisticsFeeService {
         return 0m;
     }
 
+    private decimal GetExtraPackageCountFee(int packageCount, LogisticsModeSettingInfo logisticsModeSetting, FeeMessageType feeMessageType) {
+        if (logisticsModeSetting.HasFreePackageLimit) {
+            if (logisticsModeSetting.FreePackageLimit.HasValue == false || logisticsModeSetting.FreePackageLimit.Value < 0) {
+                if (feeMessageType == FeeMessageType.Customer) {
+                    throw new LogisticsFeeException("包裹数量超出物流方式限制！SD0540");
+                } else {
+                    throw new LogisticsFeeException("物流设置中包裹有免费数量限制，但免费包裹数量 未配置 或 小于0 ！");
+                }
+            }
+
+            if (logisticsModeSetting.ExtraPackageFee.HasValue == false || logisticsModeSetting.ExtraPackageFee.Value <= 0) {
+                if (feeMessageType == FeeMessageType.Customer) {
+                    throw new LogisticsFeeException("包裹数量超出物流方式限制！SD0560");
+                } else {
+                    throw new LogisticsFeeException($"物流设置中包裹有免费数量限制，但额外包裹收费 未配置 或 值不大于0 ！");
+                }
+            }
+
+            decimal extraPackageTotalFee = 0m;
+            if (packageCount > logisticsModeSetting.FreePackageLimit.Value) {
+                extraPackageTotalFee = (packageCount - logisticsModeSetting.FreePackageLimit.Value) * logisticsModeSetting.ExtraPackageFee.Value;
+
+                if (logisticsModeSetting.HasExtraPackageFeeCapAmount) {
+                    if (logisticsModeSetting.ExtraPackageFeeCapAmount.HasValue == false || logisticsModeSetting.ExtraPackageFeeCapAmount.Value <= 0) {
+                        if (feeMessageType == FeeMessageType.Customer) {
+                            throw new LogisticsFeeException("包裹数量超出物流方式限制！SD0580");
+                        } else {
+                            throw new LogisticsFeeException($"物流设置中有额外包裹数量费用封顶，但封顶金额 未配置 或 值不大于0 ！");
+                        }
+                    }
+
+                    if (extraPackageTotalFee > logisticsModeSetting.ExtraPackageFeeCapAmount.Value) {
+                        extraPackageTotalFee = logisticsModeSetting.ExtraPackageFeeCapAmount.Value;
+                    }
+                }
+            }
+
+            return extraPackageTotalFee;
+        }
+
+        return 0m;
+    }
+
     /// <summary>
     /// 计算额外仓储天数费用
     /// </summary>
     /// <param name="storageDaysCount"></param>
     /// <param name="feeRate"></param>
+    /// <param name="feeMessageType"></param>
     /// <returns></returns>
     private decimal GetExtraStorageDayFee(int storageDaysCount, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         if (feeRate.HasFreeStorageDayLimit) {

@@ -92,11 +92,6 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     public static readonly LogisticsOrderFeeType ManualAdjustFee = new LogisticsOrderFeeType(28000, "手工修正", "手工修正");
 
     /// <summary>
-    /// 其它费用
-    /// </summary>
-    public static readonly LogisticsOrderFeeType OtherFee = new LogisticsOrderFeeType(880_000, "其它费用", "其它费用");
-
-    /// <summary>
     /// None
     /// </summary>
     public static readonly LogisticsOrderFeeType None = new LogisticsOrderFeeType(0, "None", "None");
@@ -107,15 +102,14 @@ public class LogisticsOrderFeeType : CodeTypeBase {
         SingleExtraWeightFee,
         AverageExtraWeightFee,
         ExtraWeightFee,
-        ExtraPackageFee,
         ExtraStorageDayFee,
         ExpressFee,
-
-        SuperVipDiscount,
-        VipDiscount,
     };
 
     private static readonly List<LogisticsOrderFeeType> otherFeetypeList = new List<LogisticsOrderFeeType>() {
+        ExtraPackageFee,
+        SuperVipDiscount,
+        VipDiscount,
         GstFee,
         InsuranceFee,
         CouponDiscountFee,
@@ -123,7 +117,6 @@ public class LogisticsOrderFeeType : CodeTypeBase {
         ManualDecrease,
         RefundFee,
         ManualAdjustFee,
-        OtherFee,
     };
 
     private static readonly List<LogisticsOrderFeeType> feeTypeList = logisticsFeeTypeList.Concat(otherFeetypeList).ToList();

@@ -4,6 +4,7 @@ using shunda.Core.Service;
 using shunda.Core.Util;
 using shunda.Domain.Coupon;
 using shunda.Domain.Customer;
+using shunda.Domain.Express;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
@@ -52,16 +53,22 @@ public class LogisticsOrderFeeService {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
-        var feeDataList = OrderToFeeDataList(orderId);
+        var feeData = OrderToFeeDataList(orderId);
 
         #region 计费数据验证
 
-        if (feeDataList.Count == 0) {
-            throw new ValidationException("订单计费数据不能为空！");
+        if (feeData.TotalExpressPackageCount <= 0) {
+            throw new ValidationException($"订单{order.Code}快递单包裹数量不能为空！");
         }
 
-        foreach (var feeData in feeDataList) {
-            ValidationUtil.Validate<LogisticsFeeDataOrderFeeValidator, LogisticsFeeData>(feeData);
+        if (feeData.FeeDataItemList.Count == 0) {
+            throw new ValidationException("订单计费数据项列表不能为空！");
+        }
+
+        var feeDataItemList = feeData.FeeDataItemList;
+
+        foreach (var feeDataItem in feeDataItemList) {
+            ValidationUtil.Validate<LogisticsFeeDataOrderFeeValidator, LogisticsFeeDataItem>(feeDataItem);
         }
 
         #endregion
@@ -69,8 +76,8 @@ public class LogisticsOrderFeeService {
         #region 头程费用
 
         List<LogisticsFeeResultEntry> orderResultEntryList = new List<LogisticsFeeResultEntry>();
-        foreach (var feeData in feeDataList) {
-            var modeResultEntryList = logisticsFeeService.GetLogisticsFee(feeData, LogisticsFeeRateType.Inner);
+        foreach (var feeDataItem in feeDataItemList) {
+            var modeResultEntryList = logisticsFeeService.GetLogisticsFee(feeDataItem, LogisticsFeeRateType.Inner);
             orderResultEntryList.AddRange(modeResultEntryList);
         }
 
@@ -84,6 +91,8 @@ public class LogisticsOrderFeeService {
         #endregion
 
         #region vip 和 超级 vip折扣
+
+        // todo 这里要改
 
         int customerId = order.Customer.Id;
 
@@ -213,11 +222,18 @@ public class LogisticsOrderFeeService {
     /// 订单数据转计费数据
     /// </summary>
     /// <returns>计费数据列表，订单一个物流方式一个计费数据</returns>
-    private IList<LogisticsFeeData> OrderToFeeDataList(int orderId) {
+    private LogisticsFeeData OrderToFeeDataList(int orderId) {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
+
+        var expressList = session.Query<ExpressInfo>().Where(e => e.Order!.Id == orderId).ToList();
+        if (expressList.Count == 0) {
+            throw new ValidationException($"订单{order.Code}快递单列表不能为空！");
+        }
+
+        int totalExpressPackageCount = expressList.Sum(e => e.PackageCount);
 
         var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Fetch(e => e.FirstMode)
@@ -263,7 +279,7 @@ public class LogisticsOrderFeeService {
             throw new ValidationException($"订单{order.Code}收货地址国家和订单目的国家不一致，数据有问题！");
         }
 
-        var feeDataList = new List<LogisticsFeeData>();
+        var feeDataItemList = new List<LogisticsFeeDataItem>();
         foreach (var orderFirstMode in orderFirstModeList) {
             int orderFirstModeId = orderFirstMode.Id;
             var orderFirstModeOrderPackList = orderPackList
@@ -271,7 +287,7 @@ public class LogisticsOrderFeeService {
                 .OrderBy(e => e.Id)
                 .ToList();
 
-            feeDataList.Add(new LogisticsFeeData {
+            feeDataItemList.Add(new LogisticsFeeDataItem {
                 Country = order.Country,
                 OrderFirstMode = orderFirstMode,
                 LogisticsMode = orderFirstMode.FirstMode,
@@ -290,7 +306,10 @@ public class LogisticsOrderFeeService {
             });
         }
 
-        return feeDataList;
+        return new LogisticsFeeData {
+            FeeDataItemList = feeDataItemList,
+            TotalExpressPackageCount = totalExpressPackageCount,
+        };
     }
 
     /// <summary>

@@ -39,8 +39,8 @@ public class FreightEstimateService {
     public LogisticsFeeResult Calculate(int customerId) {
         IList<LogisticsFeeResultEntry> firstModeFeeEntryList = new List<LogisticsFeeResultEntry>();
 
-        LogisticsFeeData logisticsFeeData = GetLogisticsFeeData(customerId);
-        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeData>(logisticsFeeData);
+        LogisticsFeeDataItem logisticsFeeData = GetLogisticsFeeData(customerId);
+        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeDataItem>(logisticsFeeData);
 
         #region 头程
 
@@ -105,7 +105,7 @@ public class FreightEstimateService {
     /// <summary>
     /// 获取运费预估数据，同时对预估数据进行验证 
     /// </summary>
-    private LogisticsFeeData GetLogisticsFeeData(int customerId) {
+    private LogisticsFeeDataItem GetLogisticsFeeData(int customerId) {
         var freightEstimateSelect = session.Get<FreightEstimateSelectInfo>(customerId);
         if (freightEstimateSelect == null) {
             throw new ValidationException($"运费预估数据#{customerId}不存在，请填写选择数据后再预估！");
@@ -134,7 +134,7 @@ public class FreightEstimateService {
             throw new ValidationException($"收货地址#{addressReceiveId}不属于当前会员#{customerId}，预估数据存在问题！");
         }
 
-        return new LogisticsFeeData {
+        return new LogisticsFeeDataItem {
             Country = freightEstimateSelect.Country,
             LogisticsMode = firstMode,
             OrderGoodsValue = freightEstimateSelect.GoodsValue,

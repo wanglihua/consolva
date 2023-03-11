@@ -5,10 +5,16 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Fee;
 
-/// <summary>
-/// 运费计算时需要的数据
-/// </summary>
 public class LogisticsFeeData {
+    public int TotalExpressPackageCount { get; set; }
+
+    public IList<LogisticsFeeDataItem> FeeDataItemList { get; set; } = new List<LogisticsFeeDataItem>();
+}
+
+/// <summary>
+/// 运费计算时需要的数据项
+/// </summary>
+public class LogisticsFeeDataItem {
     /// <summary>
     /// 目的国家
     /// </summary>
@@ -47,7 +53,7 @@ public class LogisticsFeeData {
     public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     /// <summary>
-    /// 包裹列表
+    /// 包裹列表，这里一般是打包后的包裹列表
     /// </summary>
     public IList<LogisticsFeePack> FeePackList { get; set; } = new List<LogisticsFeePack>();
 }
@@ -84,7 +90,7 @@ public class LogisticsFeePackValidator : AbstractValidator<LogisticsFeePack> {
 /// 一般验证的时候就用这个验证器
 /// 订单计费时还需要验证字段 LogisticsOrderFirstModeInfo OrderFirstMode
 /// </summary>
-public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeData> {
+public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeDataItem> {
     public LogisticsFeeDataValidator() {
         // 已经 ValidationUtil 中全局设置
         // ClassLevelCascadeMode = CascadeMode.Stop;
