@@ -1,5 +1,3 @@
-using shunda.Domain.Logistics;
-
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsModeSetting;
 
 public class LogisticsModeSettingSaveModel {

@@ -1,35 +1,9 @@
-@using shunda.Core
 @using shunda.Core.Web
-@using shunda.Domain.Logistics
-@model LogisticsModeSettingIndexModel
-@using shunda.Admin.Areas.Logistics.Models.LogisticsModeSetting
+@model shunda.Admin.Areas.Logistics.Models.LogisticsModeSetting.LogisticsModeSettingIndexModel
 @{
     ViewData[ViewDataKey.Title] = "物流配置";
     Layout = "_AdminLayout";
 }
-
-@*
-
-        <li id="logistics-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">物流配置</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="logistics-logistics-mode-setting-menu">
-                    <a asp-area="Logistics" asp-controller="LogisticsModeSetting" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>物流配置
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
 
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-menu">物流配置</li>
@@ -37,104 +11,111 @@
 }
 
 <div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsModeSettingList(0)">
-        <i class="ace-icon fa fa-refresh"></i>
-        刷新
-    </button>
-    <button type="button" class="btn btn-success btn-sm" onclick="showLogisticsModeSettingDetail(0)">
-        <i class="ace-icon fa fa-plus"></i>
-        新增
-    </button>
-    <button type="button" class="btn btn-danger btn-sm" onclick="deleteLogisticsModeSetting()">
-        <i class="ace-icon fa fa-trash-o"></i>
-        删除
+    <button class="btn btn-success btn-sm" onclick="saveLogisticsModeSetting();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
     </button>
 </div>
 
-<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+<div class="widget-box" style="border-style: none; width: 860px;">
+    <div class="widget-body">
+        <div class="widget-main">
+            <form id="logisticsModeSettingDetailForm" class="form-horizontal" role="form">
+                <input asp-for="LogisticsModeSettingId" type="hidden"/>
 
-    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsModeSettingList(0)">
-        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
-    </button>
+                <div class="row">
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label asp-for="VolumeWeightDenominator" class="col-xs-4 control-label">默认体积重分母</label>
+                            <div class="col-xs-8">
+                                <input asp-for="VolumeWeightDenominator" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+                                <div class="help-block">计算体积重时，如果还没跟具体物流方式关联，就用这里的体积重分母计算。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label asp-for="HasFreePackageLimit" class="col-xs-4 control-label">免费数量限制</label>
+                            <div class="col-xs-8">
+                                <select asp-for="HasFreePackageLimit" required="required" class="input-sm form-control">
+                                    <option value="@(false.ToString())">否，无限制</option>
+                                    <option value="@(true.ToString())">是，有限制</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label asp-for="FreePackageLimit" class="col-xs-4 control-label">免费快递单号数量</label>
+                            <div class="col-xs-8">
+                                <div class="input-group">
+                                    <input asp-for="FreePackageLimit" type="number" min="0" step="1" class="input-sm form-control"/>
+                                    <span class="input-group-addon">个</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label asp-for="ExtraPackageFee" class="col-xs-4 control-label">额外快递单号收费</label>
+                            <div class="col-xs-8">
+                                <div class="input-group">
+                                    <input asp-for="ExtraPackageFee" type="number" min="0" step="1" class="input-sm form-control"/>
+                                    <span class="input-group-addon">RMB/个</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6" style="height: 37px;"></div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label asp-for="HasExtraPackageFeeCapAmount" class="col-xs-4 control-label">是否费用封顶</label>
+                            <div class="col-xs-8">
+                                <select asp-for="HasExtraPackageFeeCapAmount" required="required" class="input-sm form-control">
+                                    <option value="@(false.ToString())">否，无封顶</option>
+                                    <option value="@(true.ToString())">是，有封顶</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label asp-for="ExtraPackageFeeCapAmount" class="col-xs-4 control-label">封顶金额</label>
+                            <div class="col-xs-8">
+                                <div class="input-group">
+                                    <input asp-for="ExtraPackageFeeCapAmount" type="number" min="0" step="1" class="input-sm form-control"/>
+                                    <span class="input-group-addon">RMB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
 </div>
 
-<div id="logisticsModeSettingList" data-page-index="0" data-sort-field="@(nameof(LogisticsModeSettingInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
-</div>
-
-<div id="logisticsModeSettingDetailDialogWrapper"></div>
 <script type="text/javascript">
-
-    $(function() {
-        loadLogisticsModeSettingList();
-    });
-
-    function sortLogisticsModeSettingList(sortField, sortDir) {
-        var list = $('#logisticsModeSettingList');
-        list.data('sort-field', sortField);
-        list.data('sort-dir', sortDir);
-
-        loadLogisticsModeSettingList();
-    }
-
-    function loadLogisticsModeSettingList(pageIndex) {
-        var list = $('#logisticsModeSettingList');
-
-        if (pageIndex === null || pageIndex === undefined) {
-            pageIndex = list.data("page-index");
-        } else {
-            list.data("page-index", pageIndex);
-        }
-
-        var sortField = list.data('sort-field');
-        var sortDir = list.data('sort-dir');
-
-        showMask("数据加载中，请稍候");
-
-        $.ajax({
-            url: "@Url.Action("List", "LogisticsModeSetting")",
-            type: "POST",
-            data: {
-                "@(nameof(LogisticsModeSettingListQueryParam.PageIndex))": pageIndex,
-                "@(nameof(LogisticsModeSettingListQueryParam.SortField))": sortField,
-                "@(nameof(LogisticsModeSettingListQueryParam.SortDir))": sortDir
-            },
-            success: function(data) {
-                hideMask();
-
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $('#logisticsModeSettingList').html(data);
-
-                initListTable("#tblLogisticsModeSettingList");
-            }
-        });
-    }
-
-    function showLogisticsModeSettingDetail(id) {
-        $("#logisticsModeSettingDetailDialogWrapper").html("");
-
-        showMask("加载中...");
-        // $("#logisticsModeSettingDetailForm").clearValidation();
-
-        $.ajax({
-            url: '@Url.Action("Detail", "LogisticsModeSetting")',
-            type: "POST",
-            data: { "id": id },
-            success: function(data) {
-                hideMask();
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $("#logisticsModeSettingDetailDialogWrapper").html(data);
-                $("#logisticsModeSettingDetailDialog").modal(modalOptions);
-            }
-        });
-    }
 
     function saveLogisticsModeSetting() {
         var form = $("#logisticsModeSettingDetailForm");
@@ -154,41 +135,9 @@
                     }
 
                     $.msg.show(data.message);
-                    $('#logisticsModeSettingDetailDialog').modal('hide');
-                    loadLogisticsModeSettingList();
                 }
             });
         }
-    }
-
-    function deleteLogisticsModeSetting() {
-        var idList = getSelectIdList('#tblLogisticsModeSettingList');
-
-        if (idList.length === 0) {
-            $.msg.alert("请选择数据！");
-            return;
-        }
-
-        $.msg.confirm("确认要删除吗？",
-            function() {
-                showMask("提交中...");
-                $.ajax({
-                    url: '@Url.Action("Delete", "LogisticsModeSetting")',
-                    type: "POST",
-                    data: { "idList": idList },
-                    success: function(data) {
-                        hideMask();
-                        if (data.success === false) {
-                            $.msg.error(data.message);
-                            return;
-                        }
-
-                        $.msg.show(data.message);
-                        loadLogisticsModeSettingList();
-                    }
-                });
-            }
-        );
     }
 
 </script>

@@ -14,6 +14,16 @@
         </a>
         <b class="arrow"></b>
         <ul class="submenu">
+        
+            @if (Model.HasPassRes(PassRes.Logistics.LogisticsModeSetting)) {
+        
+                <li id="logistics-logistics-mode-setting-menu">
+                    <a asp-area="Logistics" asp-controller="LogisticsModeSetting" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>物流配置
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
 
             @if (Model.HasPassRes(PassRes.Logistics.LogisticsFeeRate)) {
                 <li id="logistics-logistics-fee-rate-index-menu">

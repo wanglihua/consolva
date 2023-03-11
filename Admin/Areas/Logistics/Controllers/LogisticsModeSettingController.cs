@@ -1,14 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
+using NLog;
+using shunda.Admin.Areas.Logistics.Models.LogisticsModeSetting;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Logistics;
-using shunda.Admin.Areas.Logistics.Models.LogisticsModeSetting;
-using Microsoft.AspNetCore.Mvc;
-using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.SqlCommand;
-using NLog;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
@@ -30,76 +27,18 @@ public class LogisticsModeSettingController : Controller {
 
     [HttpGet]
     [Route("/admin/logistics/logistics/mode/setting")]
-    public IActionResult Index() { 
+    public IActionResult Index() {
         LogisticsModeSettingIndexModel model = new LogisticsModeSettingIndexModel();
 
+        var logisticsModeSetting = session.Query<LogisticsModeSettingInfo>()
+            .OrderBy(e => e.Id)
+            .Take(1)
+            .SingleOrDefault();
 
-        return View("LogisticsModeSettingIndex", model);
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/logistics/mode/setting/list")]
-    public IActionResult List(LogisticsModeSettingListQueryParam queryParam) {
-        int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<LogisticsModeSettingInfo>(e => logisticsModeSettingAlias!.Id))
-            .Select(Projections.RowCount())
-            .SingleOrDefault<int>();
-
-        ListPager listPager = new ListPager(queryParam, totalCount);
-
-        var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending) {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        } else {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
-
-        listQuery = listQuery.ThenByAlias(() => logisticsModeSettingAlias!.Id).Desc;
-            
-        IList<LogisticsModeSettingInfo> logisticsModeSettingList = listQuery
-            .Skip(listPager.Skip())
-            .Take(listPager.Take())
-            .List<LogisticsModeSettingInfo>();
-
-        /*
-        foreach (LogisticsModeSettingInfo logisticsModeSetting in logisticsModeSettingList) {
-        }
-        */
-
-        LogisticsModeSettingListModel model = new LogisticsModeSettingListModel(listPager);
-        model.LogisticsModeSettingList = logisticsModeSettingList;
-        
-        model.LogisticsModeSettingAlias = nameof(logisticsModeSettingAlias);        
-
-        return View("LogisticsModeSettingList", model);
-    }
-
-    private LogisticsModeSettingInfo? logisticsModeSettingAlias = null;
-
-    [NonAction]
-    private IQueryOver<LogisticsModeSettingInfo, LogisticsModeSettingInfo> GetQueryOver(LogisticsModeSettingListQueryParam queryParam) {
-        var query = session.QueryOver<LogisticsModeSettingInfo>(() => logisticsModeSettingAlias!);
-
-        return query;
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/logistics/mode/setting/detail")]
-    public IActionResult Detail(IdParam param) {
-        var id = param.Id;
-
-        LogisticsModeSettingInfo? logisticsModeSetting;
-
-        if (id <= 0) {
+        if (logisticsModeSetting == null) {
             logisticsModeSetting = new LogisticsModeSettingInfo();
-        } else {
-            logisticsModeSetting = session.Get<LogisticsModeSettingInfo>(id);
-            if (logisticsModeSetting == null) {
-                throw new ValidationException($"指定的 物流配置#{id} 不存在！");
-            }
         }
 
-        LogisticsModeSettingDetailModel model = new LogisticsModeSettingDetailModel();
         model.LogisticsModeSettingId = logisticsModeSetting.Id;
 
         model.VolumeWeightDenominator = logisticsModeSetting.VolumeWeightDenominator;
@@ -110,7 +49,7 @@ public class LogisticsModeSettingController : Controller {
         model.ExtraPackageFeeCapAmount = logisticsModeSetting.ExtraPackageFeeCapAmount;
 
 
-        return View("LogisticsModeSettingDetail", model);
+        return View("LogisticsModeSettingIndex", model);
     }
 
     [HttpPost]
@@ -129,7 +68,7 @@ public class LogisticsModeSettingController : Controller {
             logisticsModeSetting = new LogisticsModeSettingInfo();
         } else {
             logisticsModeSetting = session.Get<LogisticsModeSettingInfo>(logisticsModeSettingId);
-            if (logisticsModeSetting == null){
+            if (logisticsModeSetting == null) {
                 throw new ValidationException($"指定的 物流配置#{logisticsModeSettingId} 不存在！");
             }
         }
@@ -152,27 +91,6 @@ public class LogisticsModeSettingController : Controller {
         return Json(new JsonResultData {
             Success = true,
             Message = "保存成功！",
-        });
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/logistics/mode/setting/delete")]
-    [Transactional]
-    public IActionResult Delete(IdListParam param) {
-        param.Validate("请选择要删除的物流配置！");
-
-        var idList = param.IdList;
-
-        foreach (int id in idList) {
-            LogisticsModeSettingInfo logisticsModeSetting = session.Load<LogisticsModeSettingInfo>(id);
-            session.Delete(logisticsModeSetting);
-        }
-
-        session.Flush();
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "删除成功！",
         });
     }
 }
