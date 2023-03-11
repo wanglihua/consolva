@@ -263,6 +263,7 @@ Page({
         }
 
         if (action === "applyReturn") {
+            /* 这个功能还需要完善
             wx.showModal({
                 title: '确认',
                 content: '【退运确认】并支付成功后，该快递将无法再次入库、转运，退运需谨慎；退运申请成功后，请及时在退运池更新快递【取件码】！',
@@ -284,7 +285,14 @@ Page({
                     }
                 }
             });
+             */
 
+            wx.showModal({
+                title: '确认',
+                content: '请联系客服处理退运！',
+                success(res) {
+                }
+            });
         }
 
         this.setData({
