@@ -14,19 +14,16 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 
 [FeeArea]
 [AdminAuth(PassRes.Fee.ManualFeeReason)]
-public class ManualFeeReasonController : Controller
-{
+public class ManualFeeReasonController : Controller {
     private readonly ISession session;
 
-    public ManualFeeReasonController(ISession session)
-    {
+    public ManualFeeReasonController(ISession session) {
         this.session = session;
     }
 
     [HttpGet]
     [Route("/admin/manual/fee/reason")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         var model = new ManualFeeReasonIndexModel();
         model.FeeTypeList = ManualFeeType.GetList();
         model.StatusList = ManualFeeReasonStatus.GetList();
@@ -36,8 +33,7 @@ public class ManualFeeReasonController : Controller
 
     [HttpPost]
     [Route("/admin/manual/fee/reason/list")]
-    public IActionResult List(ManualFeeReasonListQueryParam queryParam)
-    {
+    public IActionResult List(ManualFeeReasonListQueryParam queryParam) {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -51,8 +47,7 @@ public class ManualFeeReasonController : Controller
             .SetMaxResults(listPager.PageSize)
             .List<ManualFeeReasonInfo>();
 
-        foreach (var manualFeeReasonInfo in manualFeeReasonList)
-        {
+        foreach (var manualFeeReasonInfo in manualFeeReasonList) {
             // manualFeeReasonInfo
         }
 
@@ -63,8 +58,7 @@ public class ManualFeeReasonController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(ManualFeeReasonListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(ManualFeeReasonListQueryParam queryParam) {
         var criteria = session.CreateCriteria<ManualFeeReasonInfo>();
 
         criteria = criteria.SetReadOnly(true);
@@ -80,18 +74,14 @@ public class ManualFeeReasonController : Controller
 
     [HttpPost]
     [Route("/admin/manual/fee/reason/detail/{id:int?}")]
-    public IActionResult Detail(int? id)
-    {
+    public IActionResult Detail(int? id) {
         session.DefaultReadOnly = true;
 
         ManualFeeReasonInfo? manualFeeReason;
 
-        if (id == null || id.Value == 0)
-        {
+        if (id == null || id.Value == 0) {
             manualFeeReason = new ManualFeeReasonInfo();
-        }
-        else
-        {
+        } else {
             manualFeeReason = session.Get<ManualFeeReasonInfo>(id.Value);
             if (manualFeeReason == null) throw new ValidationException("指定的数据项不存在！");
         }
@@ -108,8 +98,7 @@ public class ManualFeeReasonController : Controller
     [HttpPost]
     [Route("/admin/manual/fee/reason/save")]
     [Transactional]
-    public IActionResult Save(ManualFeeReasonDetailModel model)
-    {
+    public IActionResult Save(ManualFeeReasonDetailModel model) {
         if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
 
         var manualFeeReasonFromUi = model.ManualFeeReason;
@@ -144,31 +133,23 @@ public class ManualFeeReasonController : Controller
     [HttpPost]
     [Route("/admin/manual/fee/reason/delete")]
     [Transactional]
-    public IActionResult Delete(int[] idList)
-    {
+    public IActionResult Delete(int[] idList) {
         IList<ManualFeeReasonInfo> feeReasonList = session.Query<ManualFeeReasonInfo>().Where(e => idList.Contains(e.Id)).ToList();
-        foreach (var feeReason in feeReasonList)
-        {
-            if (feeReason.FeeType == ManualFeeType.WriteOffFee)
-            {
-                int count = session.Query<LogisticsOrderPayInfo>().Where(e => e.WriteOffReasonId == feeReason.Id).Count();
-                if (count != 0)
-                {
+        foreach (var feeReason in feeReasonList) {
+            if (feeReason.FeeType == ManualFeeType.WriteOffFee) {
+                var orderPay = session.Query<LogisticsOrderPayInfo>().Where(e => e.WriteOffReasonId == feeReason.Id).Take(1).SingleOrDefault();
+                if (orderPay != null) {
                     throw new ValidationException($"{feeReason.FeeType.Name} {feeReason.Content} 当前被引用中, 不能删除, 可以停用!");
                 }
-            }
-            else
-            {
-                int count = session.Query<LogisticsOrderFeeInfo>().Where(e => e.ManualReason!.Id == feeReason.Id).Count();
-                if (count != 0)
-                {
+            } else {
+                var orderFee = session.Query<LogisticsOrderFeeInfo>().Where(e => e.ManualReason!.Id == feeReason.Id).Take(1).SingleOrDefault();
+                if (orderFee != null) {
                     throw new ValidationException($"{feeReason.FeeType.Name} {feeReason.Content} 当前被引用中, 不能删除, 可以停用!");
                 }
             }
         }
 
-        foreach (var id in idList)
-        {
+        foreach (var id in idList) {
             var manualFeeReason = session.Load<ManualFeeReasonInfo>(id);
             session.Delete(manualFeeReason);
         }

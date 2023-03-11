@@ -19,14 +19,13 @@ public class LogisticsOrderPaySumService {
     /// </summary>
     /// <returns>合计的费用</returns>
     private decimal SumFee(int orderId) {
-        IList<decimal> feeList = session.Query<LogisticsOrderFeeInfo>()
+        var feeList = session.Query<LogisticsOrderFeeInfo>()
             .Where(e => e.Order.Id == orderId)
-            .Select(e => e.Fee)
             .ToList();
 
         decimal totalFee = 0m;
         foreach (var fee in feeList) {
-            totalFee += fee;
+            totalFee += fee.Fee;
         }
 
         return totalFee;
@@ -37,14 +36,14 @@ public class LogisticsOrderPaySumService {
     /// </summary>
     /// <returns>已支付金额合计</returns>
     private decimal SumPay(int orderId) {
-        IList<decimal> paidList = session.Query<LogisticsOrderPayInfo>()
-            .Where(e => e.Order.Id == orderId && e.Status == PayStatus.Paid) // 一定要加上已支付状态
-            .Select(e => e.Amount)
+        var paidList = session.Query<LogisticsOrderPayInfo>()
+            .Where(e => e.Order.Id == orderId
+                        && e.Status == PayStatus.Paid) // 一定要加上已支付状态
             .ToList();
 
         decimal totalPaid = 0m;
         foreach (var paid in paidList) {
-            totalPaid += paid;
+            totalPaid += paid.Amount;
         }
 
         return totalPaid;
