@@ -13,12 +13,12 @@ public partial class PassRes {
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "系统配置" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo { Id = ClientNotice, Name = "客户端公告", CateIdForCache = CateId },
-            new PassResInfo { Id = ExchangeRate, Name = "汇率设置", CateIdForCache = CateId },
-            new PassResInfo { Id = ClientAgreement, Name = "客户端协议", CateIdForCache = CateId },
-            new PassResInfo { Id = ClientInstruction, Name = "客户端文本菜单", CateIdForCache = CateId },
-            new PassResInfo { Id = AutoMeasureMachine, Name = "自动秤设备", CateIdForCache = CateId },
-            new PassResInfo { Id = AdvertBanner, Name = "广告横幅", CateIdForCache = CateId },
+            new PassResInfo { Id = ClientNotice, Name = "客户端公告", Cate = Cate },
+            new PassResInfo { Id = ExchangeRate, Name = "汇率设置", Cate = Cate },
+            new PassResInfo { Id = ClientAgreement, Name = "客户端协议", Cate = Cate },
+            new PassResInfo { Id = ClientInstruction, Name = "客户端文本菜单", Cate = Cate },
+            new PassResInfo { Id = AutoMeasureMachine, Name = "自动秤设备", Cate = Cate },
+            new PassResInfo { Id = AdvertBanner, Name = "广告横幅", Cate = Cate },
         };
 
         /// <summary>

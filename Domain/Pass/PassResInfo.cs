@@ -31,10 +31,4 @@ public class PassResInfo : EntityNoCreateNoUpdate
     /// 序号
     /// </summary>
     public virtual int OrderNum { get; set; }
-
-    #region CacheData
-
-    public virtual int CateIdForCache { get; set; }
-
-    #endregion
 }

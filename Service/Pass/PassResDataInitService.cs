@@ -57,9 +57,9 @@ public class PassResDataInitService {
                 };
             }
 
-            if (passResInDb.Cate.Id != passRes.CateIdForCache) {
+            if (passResInDb.Cate.Id != passRes.Cate.Id) {
                 shouldSave = true;
-                passResInDb.Cate = session.Load<PassResCateInfo>(passRes.CateIdForCache);
+                passResInDb.Cate = session.Load<PassResCateInfo>(passRes.Cate.Id);
             }
 
             if (passResInDb.Name != passRes.Name) {

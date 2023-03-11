@@ -15,10 +15,10 @@ public partial class PassRes
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "物品管理" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo { Id = GoodsWarehouse, Name = "扩展名添加", CateIdForCache = CateId },
-            new PassResInfo { Id = GoodsTrade, Name = "扩展名确认", CateIdForCache = CateId },
-            new PassResInfo { Id = GoodsListByType, Name = "类型物品清单", CateIdForCache = CateId },
-            new PassResInfo { Id = HsGoods, Name = "海关物品名", CateIdForCache = CateId },
+            new PassResInfo { Id = GoodsWarehouse, Name = "扩展名添加", Cate = Cate },
+            new PassResInfo { Id = GoodsTrade, Name = "扩展名确认", Cate = Cate },
+            new PassResInfo { Id = GoodsListByType, Name = "类型物品清单", Cate = Cate },
+            new PassResInfo { Id = HsGoods, Name = "海关物品名", Cate = Cate },
         };
 
         /// <summary>

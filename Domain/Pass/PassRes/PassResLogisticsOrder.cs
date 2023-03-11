@@ -13,22 +13,22 @@ public partial class PassRes {
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "物流订单" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo { Id = OrderListActive, Name = "活动订单", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderListComplete, Name = "正常结束订单", CateIdForCache = CateId },
-            new PassResInfo { Id = ImportOrder, Name = "导入订单", CateIdForCache = CateId },
-            new PassResInfo { Id = ImportOrderCheckinExpress, Name = "导入订单时登记快递单", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderListCancel, Name = "作废订单", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderPackBox, Name = "箱号跟踪", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderAirExpress, Name = "国际单号", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderModifyReceiverAddress, Name = "修改订单收货地址", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderSetCancel, Name = "设置订单作废", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderLogisticsModeChange, Name = "修改订单物流方式", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderRollbackSubmitPack, Name = "订单取消打包提交", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderExpressEdit, Name = "订单快递单号维护", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderGoodsEdit, Name = "订单物品维护", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderPackDataModify, Name = "订单打包信息修改", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderRemarkEdit, Name = "订单备注维护", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerOrderCount, Name = "会员订单统计", CateIdForCache = CateId },
+            new PassResInfo { Id = OrderListActive, Name = "活动订单", Cate = Cate },
+            new PassResInfo { Id = OrderListComplete, Name = "正常结束订单", Cate = Cate },
+            new PassResInfo { Id = ImportOrder, Name = "导入订单", Cate = Cate },
+            new PassResInfo { Id = ImportOrderCheckinExpress, Name = "导入订单时登记快递单", Cate = Cate },
+            new PassResInfo { Id = OrderListCancel, Name = "作废订单", Cate = Cate },
+            new PassResInfo { Id = OrderPackBox, Name = "箱号跟踪", Cate = Cate },
+            new PassResInfo { Id = OrderAirExpress, Name = "国际单号", Cate = Cate },
+            new PassResInfo { Id = OrderModifyReceiverAddress, Name = "修改订单收货地址", Cate = Cate },
+            new PassResInfo { Id = OrderSetCancel, Name = "设置订单作废", Cate = Cate },
+            new PassResInfo { Id = OrderLogisticsModeChange, Name = "修改订单物流方式", Cate = Cate },
+            new PassResInfo { Id = OrderRollbackSubmitPack, Name = "订单取消打包提交", Cate = Cate },
+            new PassResInfo { Id = OrderExpressEdit, Name = "订单快递单号维护", Cate = Cate },
+            new PassResInfo { Id = OrderGoodsEdit, Name = "订单物品维护", Cate = Cate },
+            new PassResInfo { Id = OrderPackDataModify, Name = "订单打包信息修改", Cate = Cate },
+            new PassResInfo { Id = OrderRemarkEdit, Name = "订单备注维护", Cate = Cate },
+            new PassResInfo { Id = CustomerOrderCount, Name = "会员订单统计", Cate = Cate },
         };
 
         /// <summary>

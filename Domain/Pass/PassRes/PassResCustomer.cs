@@ -15,19 +15,19 @@ public partial class PassRes
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "会员管理" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo { Id = CustomerList, Name = "会员列表", CateIdForCache = CateId },
-            new PassResInfo { Id = ImportTestCustomer, Name = "测试账号导入", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerFreeze, Name = "会员冻结解冻", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerResetPassword, Name = "会员重设密码", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerCharacter, Name = "会员性质", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerPromotion, Name = "客户推广", CateIdForCache = CateId },
-            new PassResInfo { Id = SupperPassword, Name = "超级密码", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerScoreRule, Name = "积分规则", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerPromotionImage, Name = "推广图片", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerAccountEntry, Name = "账户余额变动", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerScoreLog, Name = "会员积分日志", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerVipDiscount, Name = "VIP折扣设置", CateIdForCache = CateId },
-            new PassResInfo { Id = CustomerSuperVipDiscount, Name = "超级VIP折扣", CateIdForCache = CateId },
+            new PassResInfo { Id = CustomerList, Name = "会员列表", Cate = Cate },
+            new PassResInfo { Id = ImportTestCustomer, Name = "测试账号导入", Cate = Cate },
+            new PassResInfo { Id = CustomerFreeze, Name = "会员冻结解冻", Cate = Cate },
+            new PassResInfo { Id = CustomerResetPassword, Name = "会员重设密码", Cate = Cate },
+            new PassResInfo { Id = CustomerCharacter, Name = "会员性质", Cate = Cate },
+            new PassResInfo { Id = CustomerPromotion, Name = "客户推广", Cate = Cate },
+            new PassResInfo { Id = SupperPassword, Name = "超级密码", Cate = Cate },
+            new PassResInfo { Id = CustomerScoreRule, Name = "积分规则", Cate = Cate },
+            new PassResInfo { Id = CustomerPromotionImage, Name = "推广图片", Cate = Cate },
+            new PassResInfo { Id = CustomerAccountEntry, Name = "账户余额变动", Cate = Cate },
+            new PassResInfo { Id = CustomerScoreLog, Name = "会员积分日志", Cate = Cate },
+            new PassResInfo { Id = CustomerVipDiscount, Name = "VIP折扣设置", Cate = Cate },
+            new PassResInfo { Id = CustomerSuperVipDiscount, Name = "超级VIP折扣", Cate = Cate },
         };
 
         /// <summary>

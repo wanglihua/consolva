@@ -15,14 +15,14 @@ public partial class PassRes
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "收货打包" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo { Id = ExpressCheckin, Name = "收货入库", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderPack, Name = "订单打包", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressCheckinConfig, Name = "快递单入库配置", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderPackConfig, Name = "订单打包配置", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderStorageLoc, Name = "订单仓位", CateIdForCache = CateId },
-            new PassResInfo { Id = PackReport, Name = "打包统计", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderShouldSubmitPack, Name = "催打包订单", CateIdForCache = CateId },
-            new PassResInfo { Id = OrderPackSchedule, Name = "订单打包排班", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressCheckin, Name = "收货入库", Cate = Cate },
+            new PassResInfo { Id = OrderPack, Name = "订单打包", Cate = Cate },
+            new PassResInfo { Id = ExpressCheckinConfig, Name = "快递单入库配置", Cate = Cate },
+            new PassResInfo { Id = OrderPackConfig, Name = "订单打包配置", Cate = Cate },
+            new PassResInfo { Id = OrderStorageLoc, Name = "订单仓位", Cate = Cate },
+            new PassResInfo { Id = PackReport, Name = "打包统计", Cate = Cate },
+            new PassResInfo { Id = OrderShouldSubmitPack, Name = "催打包订单", Cate = Cate },
+            new PassResInfo { Id = OrderPackSchedule, Name = "订单打包排班", Cate = Cate },
         };
 
         /// <summary>

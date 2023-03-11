@@ -13,16 +13,16 @@ public partial class PassRes {
         public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "快递管理" };
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
-            new PassResInfo { Id = ExpressList, Name = "快递列表", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressRemarkEdit, Name = "快递单备注维护", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressForceDelete, Name = "快递强制删除", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressThrowAway, Name = "快递单丢弃", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressExpect, Name = "预报单号", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressPhoto, Name = "快递单图片", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressPhotoDelete, Name = "快递单图片删除", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressReturn, Name = "退运池", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressSizeWeight, Name = "快递单尺寸重量", CateIdForCache = CateId },
-            new PassResInfo { Id = ExpressRemarkPresetSelect, Name = "快递单备注预设", CateIdForCache = CateId },
+            new PassResInfo { Id = ExpressList, Name = "快递列表", Cate = Cate },
+            new PassResInfo { Id = ExpressRemarkEdit, Name = "快递单备注维护", Cate = Cate },
+            new PassResInfo { Id = ExpressForceDelete, Name = "快递强制删除", Cate = Cate },
+            new PassResInfo { Id = ExpressThrowAway, Name = "快递单丢弃", Cate = Cate },
+            new PassResInfo { Id = ExpressExpect, Name = "预报单号", Cate = Cate },
+            new PassResInfo { Id = ExpressPhoto, Name = "快递单图片", Cate = Cate },
+            new PassResInfo { Id = ExpressPhotoDelete, Name = "快递单图片删除", Cate = Cate },
+            new PassResInfo { Id = ExpressReturn, Name = "退运池", Cate = Cate },
+            new PassResInfo { Id = ExpressSizeWeight, Name = "快递单尺寸重量", Cate = Cate },
+            new PassResInfo { Id = ExpressRemarkPresetSelect, Name = "快递单备注预设", Cate = Cate },
         };
 
         public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
