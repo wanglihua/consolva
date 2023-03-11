@@ -10,6 +10,7 @@ using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
 using shunda.Service.Customer;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Fee;
@@ -24,6 +25,7 @@ public class LogisticsOrderFeeService {
     private readonly CouponService couponService;
     private readonly LogisticsFeeInsuranceService logisticsFeeInsuranceService;
     private readonly LogisticsFeeGstService logisticsFeeGstService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public LogisticsOrderFeeService(ISession session,
         LogisticsFeeService logisticsFeeService,
@@ -32,7 +34,8 @@ public class LogisticsOrderFeeService {
         CustomerReceiveAddressService customerReceiveAddressService,
         CouponService couponService,
         LogisticsFeeInsuranceService logisticsFeeInsuranceService,
-        LogisticsFeeGstService logisticsFeeGstService
+        LogisticsFeeGstService logisticsFeeGstService,
+        LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.logisticsFeeService = logisticsFeeService;
@@ -42,6 +45,7 @@ public class LogisticsOrderFeeService {
         this.couponService = couponService;
         this.logisticsFeeInsuranceService = logisticsFeeInsuranceService;
         this.logisticsFeeGstService = logisticsFeeGstService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     /// <summary>
@@ -77,7 +81,7 @@ public class LogisticsOrderFeeService {
 
         List<LogisticsFeeResultEntry> orderResultEntryList = new List<LogisticsFeeResultEntry>();
         foreach (var feeDataItem in feeDataItemList) {
-            var modeResultEntryList = logisticsFeeService.GetLogisticsFee(feeDataItem, LogisticsFeeRateType.Inner);
+            var modeResultEntryList = logisticsFeeService.GetLogisticsFee(feeDataItem, FeeMessageType.User);
             orderResultEntryList.AddRange(modeResultEntryList);
         }
 
@@ -87,6 +91,24 @@ public class LogisticsOrderFeeService {
                 firstModeFee += entry.Fee;
             }
         }
+
+        #endregion
+
+        #region 额外包裹费
+
+        // 按入库快递单包裹总数量计算
+        var logisticsModeSetting = logisticsModeSettingService.GetSetting();
+        decimal extraPackageCountFee = logisticsFeeService.GetExtraPackageCountFee(feeData.TotalExpressPackageCount, logisticsModeSetting, FeeMessageType.User);
+
+        orderResultEntryList.Add(new LogisticsFeeResultEntry {
+            OrderFirstMode = null,
+            LogisticsMode = null,
+            Title = LogisticsOrderFeeType.ExtraPackageFee.Name,
+            FeeType = LogisticsOrderFeeType.ExtraPackageFee,
+            Fee = extraPackageCountFee,
+            GoodsType = LogisticsGoodsType.None,
+            EntryType = LogisticsFeeResultEntryType.Single
+        });
 
         #endregion
 

@@ -1,9 +1,8 @@
-using shunda.Core.Service;
-using shunda.Domain;
+using NHibernate;
 using NLog;
 using shunda.Core;
+using shunda.Core.Service;
 using shunda.Domain.Logistics;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Logistics;
 

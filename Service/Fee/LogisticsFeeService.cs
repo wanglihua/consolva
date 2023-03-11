@@ -39,23 +39,12 @@ public class LogisticsFeeService {
 
     /// <summary>
     /// 根据物流数据计算物流费用
-    /// </summary>
-    /// <param name="feeDataItem"></param>
-    /// <param name="feeRateType"></param>
-    /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeDataItem feeDataItem, LogisticsFeeRateType feeRateType) {
-        return GetLogisticsFee(feeDataItem, feeRateType, FeeMessageType.User);
-    }
-
-    /// <summary>
-    /// 根据物流数据计算物流费用
     /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
     /// </summary>
     /// <param name="feeDataItem"></param>
-    /// <param name="feeRateType"></param>
     /// <param name="feeMessageType"></param>
     /// <returns></returns>
-    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeDataItem feeDataItem, LogisticsFeeRateType feeRateType, FeeMessageType feeMessageType) {
+    public IList<LogisticsFeeResultEntry> GetLogisticsFee(LogisticsFeeDataItem feeDataItem, FeeMessageType feeMessageType) {
         ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeDataItem>(feeDataItem);
 
         var logisticsMode = feeDataItem.LogisticsMode;
@@ -1365,7 +1354,7 @@ public class LogisticsFeeService {
         return 0m;
     }
 
-    private decimal GetExtraPackageCountFee(int packageCount, LogisticsModeSettingInfo logisticsModeSetting, FeeMessageType feeMessageType) {
+    public decimal GetExtraPackageCountFee(int packageCount, LogisticsModeSettingInfo logisticsModeSetting, FeeMessageType feeMessageType) {
         if (logisticsModeSetting.HasFreePackageLimit) {
             if (logisticsModeSetting.FreePackageLimit.HasValue == false || logisticsModeSetting.FreePackageLimit.Value < 0) {
                 if (feeMessageType == FeeMessageType.Customer) {

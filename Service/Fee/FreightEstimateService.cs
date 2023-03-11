@@ -39,17 +39,19 @@ public class FreightEstimateService {
     public LogisticsFeeResult Calculate(int customerId) {
         IList<LogisticsFeeResultEntry> firstModeFeeEntryList = new List<LogisticsFeeResultEntry>();
 
-        LogisticsFeeDataItem logisticsFeeData = GetLogisticsFeeData(customerId);
-        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeDataItem>(logisticsFeeData);
+        LogisticsFeeDataItem feeDataItem = GetLogisticsFeeData(customerId);
+        ValidationUtil.Validate<LogisticsFeeDataValidator, LogisticsFeeDataItem>(feeDataItem);
 
         #region 头程
 
-        IList<LogisticsFeeResultEntry> firstLogisticsFeeResultEntryList = logisticsFeeService.GetLogisticsFee(logisticsFeeData, LogisticsFeeRateType.Customer);
+        IList<LogisticsFeeResultEntry> firstLogisticsFeeResultEntryList = logisticsFeeService.GetLogisticsFee(feeDataItem, FeeMessageType.Customer);
         foreach (var logisticsFeeResultEntry in firstLogisticsFeeResultEntryList) {
             firstModeFeeEntryList.Add(logisticsFeeResultEntry);
         }
 
         #endregion
+        
+        // 这里不用计算额外包裹费？
 
         #region 计算GST
 
@@ -74,7 +76,7 @@ public class FreightEstimateService {
         }
 
         int logisticsGstId = logisticsGst.Id;
-        decimal gstFee = logisticsFeeGstService.GetGstFee(logisticsFeeData.OrderGoodsValue, logisticsFee, logisticsGstId);
+        decimal gstFee = logisticsFeeGstService.GetGstFee(feeDataItem.OrderGoodsValue, logisticsFee, logisticsGstId);
 
         List<LogisticsFeeResultEntry> feeEntryList = new List<LogisticsFeeResultEntry>();
         feeEntryList.AddRange(firstModeFeeEntryList);
