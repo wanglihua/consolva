@@ -49,7 +49,7 @@ public class CouponMineController : Controller {
 
         int couponCount = couponItemList.Count;
 
-        var hasBatchToPick = couponBatchService.HasBatchToPick();
+        var hasBatchToPick = couponBatchService.HasBatchToPick(loginCustomerId);
 
         return Json(new JsonResultData {
             Success = true,
