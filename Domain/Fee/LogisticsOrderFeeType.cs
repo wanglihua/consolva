@@ -31,9 +31,9 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     public static readonly LogisticsOrderFeeType ExtraWeightFee = new LogisticsOrderFeeType(5000, "独立报关费", "独立报关费"); // 超重费
 
     /// <summary>
-    /// 额外包裹费
+    /// 合箱打包费
     /// </summary>
-    public static readonly LogisticsOrderFeeType ExtraPackageFee = new LogisticsOrderFeeType(6000, "合箱打包费", "额外包裹费");
+    public static readonly LogisticsOrderFeeType ExtraPackageFee = new LogisticsOrderFeeType(6000, "合箱打包费", "合箱打包费");
 
     /// <summary>
     /// 中国仓额外仓储费

@@ -1316,6 +1316,7 @@ public class LogisticsFeeService {
     /// </summary>
     /// <param name="packageCount"></param>
     /// <param name="feeRate"></param>
+    /// <param name="feeMessageType"></param>
     /// <returns></returns>
     private decimal GetExtraPackageCountFee(int packageCount, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         if (feeRate.HasFreePackageLimit) {
