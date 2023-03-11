@@ -4,6 +4,7 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Coupon;
 using shunda.Domain.Customer;
+using shunda.Service.Customer;
 
 namespace shunda.Service.Coupon;
 
@@ -14,21 +15,29 @@ public class CouponBatchService {
     private readonly CouponRuleDeductService couponRuleDeductService;
     private readonly CouponRuleDiscountService couponRuleDiscountService;
     private readonly CouponRulePriceBreakService couponRulePriceBreakService;
+    private readonly CustomerVipDiscountService customerVipDiscountService;
 
     public CouponBatchService(
         ISession session,
         CouponCodeService couponCodeService,
         CouponRuleDeductService couponRuleDeductService,
         CouponRuleDiscountService couponRuleDiscountService,
-        CouponRulePriceBreakService couponRulePriceBreakService) {
+        CouponRulePriceBreakService couponRulePriceBreakService,
+        CustomerVipDiscountService customerVipDiscountService) {
         this.session = session;
         this.couponCodeService = couponCodeService;
         this.couponRuleDeductService = couponRuleDeductService;
         this.couponRuleDiscountService = couponRuleDiscountService;
         this.couponRulePriceBreakService = couponRulePriceBreakService;
+        this.customerVipDiscountService = customerVipDiscountService;
     }
 
-    public bool HasBatchToPick() {
+    public bool HasBatchToPick(int customerId) {
+        // 检查客服所在VIP级别是否支持优惠券
+        if (customerVipDiscountService.CustomerCanCoupon(customerId) == false) {
+            return false;
+        }
+
         CheckAndSetExpire();
 
         DateTime today = DateTime.Today;
@@ -269,6 +278,11 @@ public class CouponBatchService {
         if (batch.Expire < today) {
             CheckAndSetExpire(batchId);
             throw new ValidationException($"指定的优惠券批次 {batch.Name} 已过期！");
+        }
+
+        // 检查客服所在VIP级别是否支持优惠券
+        if (customerVipDiscountService.CustomerCanCoupon(customerId) == false) {
+            throw new ValidationException($"客户#{customerId}VIP级别不支持使用优惠券！");
         }
 
         // 判断批次是否已经抢完，这是当前会员抢之前的检查和设置

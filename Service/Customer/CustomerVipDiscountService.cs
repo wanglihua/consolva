@@ -14,6 +14,31 @@ public class CustomerVipDiscountService {
     }
 
     /// <summary>
+    /// 检查客服所在VIP级别是否支持优惠券
+    /// </summary>
+    /// <param name="customerId"></param>
+    /// <returns></returns>
+    /// <exception cref="ValidationException"></exception>
+    public bool CustomerCanCoupon(int customerId) {
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        CustomerVipRank vipRank = customer.VipRank;
+        var vipDiscount = session.Query<CustomerVipDiscountInfo>()
+            .Where(e => e.Rank == vipRank)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (vipDiscount != null && vipDiscount.CanCoupon == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// 获取会员VIP折扣列表
     /// 总的数量也不多，后面的很多操作都建立在这个获取的列表之上
     /// </summary>

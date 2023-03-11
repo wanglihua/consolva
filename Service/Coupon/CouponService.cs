@@ -7,6 +7,7 @@ using shunda.Domain.Coupon;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Customer;
 using shunda.Service.Fee;
 
 namespace shunda.Service.Coupon;
@@ -19,6 +20,7 @@ public class CouponService {
     private readonly CouponRuleDiscountService couponRuleDiscountService;
     private readonly CouponRulePriceBreakService couponRulePriceBreakService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly CustomerVipDiscountService customerVipDiscountService;
 
     public CouponService(
         ISession session,
@@ -26,13 +28,16 @@ public class CouponService {
         CouponRuleDeductService couponRuleDeductService,
         CouponRuleDiscountService couponRuleDiscountService,
         CouponRulePriceBreakService couponRulePriceBreakService,
-        LogisticsOrderPaySumService logisticsOrderPaySumService) {
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
+        CustomerVipDiscountService customerVipDiscountService
+    ) {
         this.session = session;
         this.couponBatchService = couponBatchService;
         this.couponRuleDeductService = couponRuleDeductService;
         this.couponRuleDiscountService = couponRuleDiscountService;
         this.couponRulePriceBreakService = couponRulePriceBreakService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
+        this.customerVipDiscountService = customerVipDiscountService;
     }
 
     /// <summary>
@@ -42,6 +47,11 @@ public class CouponService {
     /// <param name="orderId">订单，这个参数当前还没用起来</param>
     /// <returns></returns>
     public bool HasCouponWhenPay(int customerId, int orderId) {
+        // 检查客服所在VIP级别是否支持优惠券
+        if (customerVipDiscountService.CustomerCanCoupon(customerId) == false) {
+            return false;
+        }
+
         couponBatchService.CheckAndSetExpire();
 
         var coupon = session.Query<CouponInfo>()
@@ -94,6 +104,11 @@ public class CouponService {
         if ((coupon.Order?.Id ?? 0) != orderId && coupon.Batch.Expire < today) {
             throw new ValidationException($"优惠券{coupon.Code}已过期！");
         }
+        
+        // 检查客服所在VIP级别是否支持优惠券
+        if (customerVipDiscountService.CustomerCanCoupon(customerId) == false) {
+            throw new ValidationException($"客户#{customerId}VIP级别不支持使用优惠券！");
+        }        
     }
 
     public void SetCouponUsed(int couponId, LogisticsOrderInfo order, decimal actualDiscountAmount) {
@@ -103,6 +118,12 @@ public class CouponService {
         if (coupon == null) {
             throw new ValidationException($"指定的优惠券#{couponId}不存在！");
         }
+        
+        // 检查客服所在VIP级别是否支持优惠券
+        int customerId = order.Customer.Id;
+        if (customerVipDiscountService.CustomerCanCoupon(customerId) == false) {
+            throw new ValidationException($"客户#{customerId}VIP级别不支持使用优惠券！");
+        }        
 
         coupon.Order = order;
         coupon.ActualDiscountAmount = actualDiscountAmount;
