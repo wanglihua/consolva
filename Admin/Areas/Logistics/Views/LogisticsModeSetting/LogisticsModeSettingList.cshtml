@@ -1,0 +1,135 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Logistics
+@model shunda.Admin.Areas.Logistics.Models.LogisticsModeSetting.LogisticsModeSettingListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsModeSettingList" }))
+
+<table id="tblLogisticsModeSettingList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="logisticsModeSettingCheckAll"></label><input id="logisticsModeSettingCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.VolumeWeightDenominator))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">默认体积重分母</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.HasFreePackageLimit))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">是否有免费包裹数量限制</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.FreePackageLimit))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">免费包裹数量限制</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.ExtraPackageFee))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">额外包裹收费</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.HasExtraPackageFeeCapAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">是否有额外包裹收费封顶金额</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.ExtraPackageFeeCapAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">额外包裹收费封顶金额</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.LogisticsModeSettingAlias).@(nameof(LogisticsModeSettingInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeSettingList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogisticsModeSettingList.Count != 0) {
+            int index = 0;
+            foreach (LogisticsModeSettingInfo logisticsModeSetting in Model.LogisticsModeSettingList) {
+                <tr ondblclick="showLogisticsModeSettingDetail(@(logisticsModeSetting.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="logisticsModeSettingCheck_@(logisticsModeSetting.Id)"></label><input id="logisticsModeSettingCheck_@(logisticsModeSetting.Id)" type="checkbox" class="ace" value="@logisticsModeSetting.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeSetting.VolumeWeightDenominator)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeSetting.HasFreePackageLimit)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeSetting.FreePackageLimit)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeSetting.ExtraPackageFee)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeSetting.HasExtraPackageFeeCapAmount)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(logisticsModeSetting.ExtraPackageFeeCapAmount)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsModeSetting.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @logisticsModeSetting.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="11">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadLogisticsModeSettingList" }))
