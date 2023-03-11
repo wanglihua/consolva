@@ -80,9 +80,18 @@ public class LogisticsOrderFeeService {
         #region 头程费用
 
         List<LogisticsFeeResultEntry> orderResultEntryList = new List<LogisticsFeeResultEntry>();
+        decimal firstModeFeeNoPromotion = 0m;
         foreach (var feeDataItem in feeDataItemList) {
             var modeResultEntryList = logisticsFeeService.GetLogisticsFee(feeDataItem, FeeMessageType.User);
             orderResultEntryList.AddRange(modeResultEntryList);
+
+            if (feeDataItem.LogisticsMode.Promotion == false) {
+                foreach (var modeResultEntry in modeResultEntryList) {
+                    if (modeResultEntry.EntryType == LogisticsFeeResultEntryType.Single) {
+                        firstModeFeeNoPromotion += modeResultEntry.Fee;
+                    }
+                }
+            }
         }
 
         decimal firstModeFee = 0m;
@@ -114,7 +123,7 @@ public class LogisticsOrderFeeService {
 
         #region vip 和 超级 vip折扣
 
-        // todo 这里要改 按物流费用计算，促销的不参与
+        // 按物流费用计算，促销的不参与
 
         int customerId = order.Customer.Id;
 
@@ -130,7 +139,7 @@ public class LogisticsOrderFeeService {
         }
 
         if (superVipDiscount != null) {
-            decimal discount = -firstModeFee * superVipDiscount.Discount / 100m; // 负的费用
+            decimal discount = -firstModeFeeNoPromotion * superVipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
                 OrderFirstMode = null,
                 LogisticsMode = null,
@@ -141,7 +150,7 @@ public class LogisticsOrderFeeService {
                 EntryType = LogisticsFeeResultEntryType.Single
             });
         } else if (vipDiscount != null) {
-            decimal discount = -firstModeFee * vipDiscount.Discount / 100m; // 负的费用
+            decimal discount = -firstModeFeeNoPromotion * vipDiscount.Discount / 100m; // 负的费用
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
                 OrderFirstMode = null,
                 LogisticsMode = null,
@@ -156,8 +165,8 @@ public class LogisticsOrderFeeService {
         #endregion
 
         #region 计算优惠券实扣
-        
-        // todo 按物流费用计算，促销的不参与
+
+        // 按物流费用计算，促销的不参与
 
         var coupon = session.Query<CouponInfo>()
             .Where(e => e.Order!.Id == orderId)
@@ -165,7 +174,7 @@ public class LogisticsOrderFeeService {
             .SingleOrDefault();
         if (coupon != null) {
             var couponId = coupon.Id;
-            var couponDiscountResult = couponService.CalculateCouponDiscount(couponId, firstModeFee);
+            var couponDiscountResult = couponService.CalculateCouponDiscount(couponId, firstModeFeeNoPromotion);
             if (couponDiscountResult.Success == true && couponDiscountResult.Discount > 0) {
                 decimal couponDiscount = couponDiscountResult.Discount;
 
