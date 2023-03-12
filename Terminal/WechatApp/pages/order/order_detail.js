@@ -8,6 +8,14 @@ Page({
             show: false,
             text: "显示",
         },
+        firstModeShow: {
+            show: false,
+            text: "显示",
+        },
+        receiveAddressShow: {
+            show: false,
+            text: "显示",
+        },
     },
 
     onLoad(options) {
@@ -43,9 +51,33 @@ Page({
     },
 
     onFirstModeHeaderClick(e) {
+        const firstModeShow = this.data.firstModeShow;
+        if (firstModeShow.show) {
+            firstModeShow.show = false;
+            firstModeShow.text = "显示";
+        } else {
+            firstModeShow.show = true;
+            firstModeShow.text = "隐藏";
+        }
+
+        this.setData({
+            firstModeShow: firstModeShow,
+        });
     },
 
     onReceiveAddressHeaderClick(e) {
+        const receiveAddressShow = this.data.receiveAddressShow;
+        if (receiveAddressShow.show) {
+            receiveAddressShow.show = false;
+            receiveAddressShow.text = "显示";
+        } else {
+            receiveAddressShow.show = true;
+            receiveAddressShow.text = "隐藏";
+        }
+
+        this.setData({
+            receiveAddressShow: receiveAddressShow,
+        });
     },
 
     onExpressListHeaderClick(e) {

@@ -42,19 +42,21 @@
 
         <!-- 物流信息 -->
         <block wx:if="{{ orderDetail.firstMode && orderDetail.firstMode.firstModeList && orderDetail.firstMode.firstModeList.length > 0 }}">
-            <van-cell title="物流信息" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-            <block wx:if="{{ orderDetail.firstMode.firstModeList.length === 1 }}">
-                <van-cell title="物流类型" value="{{ orderDetail.firstMode.firstModeList[0].modeType }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物品类型" value="{{ orderDetail.firstMode.firstModeList[0].goodsType }}" border="{{ false }}" custom-class="item"/>
-            </block>
-            <block wx:else>
-                <block wx:for="{{ orderDetail.firstMode.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
-                    <van-cell title="物流类型{{ index + 1 }}" value="{{ firstMode.modeType }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="物品类型{{ index + 1 }}" value="{{ firstMode.goodsType }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="物流信息" value="{{ firstModeShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onFirstModeHeaderClick"/>
+            <block wx:if="{{ firstModeShow.show }}">
+                <block wx:if="{{ orderDetail.firstMode.firstModeList.length === 1 }}">
+                    <van-cell title="物流类型" value="{{ orderDetail.firstMode.firstModeList[0].modeType }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="物品类型" value="{{ orderDetail.firstMode.firstModeList[0].goodsType }}" border="{{ false }}" custom-class="item"/>
+                </block>
+                <block wx:else>
+                    <block wx:for="{{ orderDetail.firstMode.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
+                        <van-cell title="物流类型{{ index + 1 }}" value="{{ firstMode.modeType }}" border="{{ false }}" custom-class="item"/>
+                        <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item"/>
+                        <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
+                        <van-cell title="物品类型{{ index + 1 }}" value="{{ firstMode.goodsType }}" border="{{ false }}" custom-class="item"/>
+                    </block>
                 </block>
             </block>
             <view class="item-last-vspace"/>
@@ -62,14 +64,16 @@
 
         <!-- 收货地址 -->
         <block wx:if="{{ orderDetail.receiveAddress }}">
-            <van-cell title="收货地址" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-            <van-cell title="收货人" value="{{ orderDetail.receiveAddress.firstName }} {{ orderDetail.receiveAddress.lastName }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="手机" value="{{ orderDetail.receiveAddress.mobile }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="国家" value="{{ orderDetail.receiveAddress.country }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="洲" value="{{ orderDetail.receiveAddress.state }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="城市" value="{{ orderDetail.receiveAddress.city }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="地址" value="{{ orderDetail.receiveAddress.address }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="邮编" value="{{ orderDetail.receiveAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="收货地址" value="{{ receiveAddressShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onReceiveAddressHeaderClick"/>
+            <block wx:if="{{ receiveAddressShow.show }}">
+                <van-cell title="收货人" value="{{ orderDetail.receiveAddress.firstName }} {{ orderDetail.receiveAddress.lastName }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="手机" value="{{ orderDetail.receiveAddress.mobile }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="国家" value="{{ orderDetail.receiveAddress.country }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="洲" value="{{ orderDetail.receiveAddress.state }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="城市" value="{{ orderDetail.receiveAddress.city }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="地址" value="{{ orderDetail.receiveAddress.address }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="邮编" value="{{ orderDetail.receiveAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
+            </block>
             <view class="item-last-vspace"/>
         </block>
 
@@ -111,6 +115,7 @@
                     </view>
                 </block>
             </block>
+            <view class="item-last-vspace"/>
         </block>
 
         <!-- 订单打包 -->
