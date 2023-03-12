@@ -19,7 +19,13 @@
         <block wx:for="{{expressExpectList}}" wx:key="id" wx:for-item="expressExpect" wx:for-index="index">
             <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ expressExpect }}">
                 <van-cell title="{{ index + 1 }}、{{ expressExpect.trackingNo }}" value="{{ expressExpect.status }}" border="{{ false }}" custom-class="{{ expressExpect.headerClassName }}" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="快递单号" value="{{ expressExpect.trackingNo }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ expressExpect.trackingNo }}">
+                    <view slot="right-icon">
+                        <view style="padding-left: 5px;">
+                            <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                        </view>
+                    </view>
+                </van-cell>
                 <van-cell title="货品总值" value="{{ expressExpect.goodsValue }} RMB" border="{{ false }}" custom-class="item"/>
                 <van-cell title="状态" value="{{expressExpect.status}}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="添加时间" value="{{expressExpect.addTime}}" border="{{ false }}" custom-class="item"/>

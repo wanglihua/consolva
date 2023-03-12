@@ -95,6 +95,18 @@ Page({
         this.loadExpressCheckinList();
     },
 
+    onCopyClick(e) {
+        const copyText = e.currentTarget.dataset.item;
+        wx.setClipboardData({
+            data: copyText,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
     onActionCellClick(e) {
         const currentExpress = e.currentTarget.dataset.item;
 

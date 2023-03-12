@@ -53,18 +53,33 @@ Page({
             url: './express_expect_add',
         });
     },
+
     onSearch(e) {
         this.setData({
             trackingNoQuery: e.detail,
         });
         this.loadExpressExpectList();
     },
+
     onSearchClear() {
         this.setData({
             trackingNoQuery: "",
         });
         this.loadExpressExpectList();
     },
+
+    onCopyClick(e) {
+        const copyText = e.currentTarget.dataset.item;
+        wx.setClipboardData({
+            data: copyText,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
     onActionCellClick(e) {
         const currentExpressExpect = e.currentTarget.dataset.item;
 
@@ -89,11 +104,13 @@ Page({
             showActionSheet: true
         });
     },
+
     onActionSheetCloseClick(e) {
         this.setData({
             showActionSheet: false
         });
     },
+
     onActionSheetSelect(e) {
         const expressExpectId = this.data.currentExpressExpect.id;
         const expressId = this.data.currentExpressExpect.expressId;

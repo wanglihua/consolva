@@ -4,8 +4,20 @@
 
     <van-cell-group custom-class="items">
         <van-cell title="快递单详情" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
-        <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item" />
-        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item" />
+        <van-cell title="入库单号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ express.checkinTrackingNo }}">
+            <view slot="right-icon">
+                <view style="padding-left: 5px;">
+                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                </view>
+            </view>
+        </van-cell>
+        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ express.trackingNo }}">
+            <view slot="right-icon">
+                <view style="padding-left: 5px;">
+                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                </view>
+            </view>
+        </van-cell>
         <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item" />-->
         <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item" />
         <van-cell title="货品总值" value="{{ express.goodsValue }} RMB" border="{{ false }}" custom-class="item" />

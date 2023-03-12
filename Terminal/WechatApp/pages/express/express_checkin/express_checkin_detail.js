@@ -21,6 +21,18 @@ Page({
         });
     },
 
+    onCopyClick(e) {
+        const copyText = e.currentTarget.dataset.item;
+        wx.setClipboardData({
+            data: copyText,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
+
     onSmallPhotoClick(e) {
         console.log(e);
         const photo = e.currentTarget.dataset.item;
