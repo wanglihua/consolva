@@ -4,37 +4,39 @@
     <van-cell-group custom-class="items">
         <!-- 基本信息 -->
         <block wx:if="{{ orderDetail.order }}">
-            <van-cell title="基本信息" value="" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-            <van-cell title="订单编号" value="{{ orderDetail.order.orderCode }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="订单状态" value="{{ orderDetail.order.orderStatus }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="物流类型" value="{{ orderDetail.order.firstModeType }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="创建时间" value="{{ orderDetail.order.createTime }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="打包时间" value="{{ orderDetail.order.packTime }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="转运时间" value="{{ orderDetail.order.transferTime }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="签收时间" value="{{ orderDetail.order.deliverTime }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="订单货值" value="¥ {{ orderDetail.order.goodsValue }}" border="{{ false }}" custom-class="item"/>
-            <block wx:if="{{ orderDetail.order.hasPacked === true }}">
-                <van-cell title="物流费用" value="¥ {{ orderDetail.order.orderAmount }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arrearsAmount }}" border="{{ false }}" custom-class="item"/>
+            <van-cell title="基本信息" value="{{ orderShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderHeaderClick"/>
+            <block wx:if="{{ orderShow.show }}">
+                <van-cell title="订单编号" value="{{ orderDetail.order.orderCode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单状态" value="{{ orderDetail.order.orderStatus }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物流类型" value="{{ orderDetail.order.firstModeType }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="创建时间" value="{{ orderDetail.order.createTime }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="打包时间" value="{{ orderDetail.order.packTime }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="转运时间" value="{{ orderDetail.order.transferTime }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="签收时间" value="{{ orderDetail.order.deliverTime }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单货值" value="¥ {{ orderDetail.order.goodsValue }}" border="{{ false }}" custom-class="item"/>
+                <block wx:if="{{ orderDetail.order.hasPacked === true }}">
+                    <van-cell title="物流费用" value="¥ {{ orderDetail.order.orderAmount }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arrearsAmount }}" border="{{ false }}" custom-class="item"/>
+                </block>
+                <block wx:if="{{ orderDetail.order.hasCheckinSizeWeightData === true }}">
+                    <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="入库总重量" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+                </block>
+                <block wx:if="{{ orderDetail.order.hasPacked === true && orderDetail.hasOrderPackData === true && orderDetail.orderPackData }}">
+                    <van-cell title="打包包裹数" value="{{ orderDetail.orderPackData.totalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="打包总体积" value="{{ orderDetail.orderPackData.totalVolume }} CBM" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="打包总重量" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+                </block>
+                <van-cell title="保险类型" value="{{ orderDetail.order.insurance }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="GST申报" value="{{ orderDetail.order.gst }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="打包方式" value="{{ orderDetail.order.repackTypeTitle }}" border="{{ false }}" custom-class="item"/>
+                <van-cell label="{{ orderDetail.order.repackTypeDesc }}" border="{{ false }}" custom-class="item-repack-type-desc"/>
+                <van-cell title="客户备注" value="{{ orderDetail.order.customerRemark }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="仓库备注" value="{{ orderDetail.order.warehouseRemark }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="客服备注" value="{{ orderDetail.order.serviceRemark }}" border="{{ false }}" custom-class="item"/>
             </block>
-            <block wx:if="{{ orderDetail.order.hasCheckinSizeWeightData === true }}">
-                <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
-                <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                <van-cell title="入库总重量" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
-            </block>
-            <block wx:if="{{ orderDetail.order.hasPacked === true && orderDetail.hasOrderPackData === true && orderDetail.orderPackData }}">
-                <van-cell title="打包包裹数" value="{{ orderDetail.orderPackData.totalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
-                <van-cell title="打包总体积" value="{{ orderDetail.orderPackData.totalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                <van-cell title="打包总重量" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
-            </block>
-            <van-cell title="保险类型" value="{{ orderDetail.order.insurance }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="GST申报" value="{{ orderDetail.order.gst }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="打包方式" value="{{ orderDetail.order.repackTypeTitle }}" border="{{ false }}" custom-class="item"/>
-            <van-cell label="{{ orderDetail.order.repackTypeDesc }}" border="{{ false }}" custom-class="item-repack-type-desc"/>
-            <van-cell title="客户备注" value="{{ orderDetail.order.customerRemark }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="仓库备注" value="{{ orderDetail.order.warehouseRemark }}" border="{{ false }}" custom-class="item"/>
-            <van-cell title="客服备注" value="{{ orderDetail.order.serviceRemark }}" border="{{ false }}" custom-class="item"/>
             <view class="item-last-vspace"/>
         </block>
 

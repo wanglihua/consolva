@@ -4,6 +4,10 @@ const util = app.require('utils/util.js');
 Page({
     data: {
         orderDetail: {},
+        orderShow: {
+            show: false,
+            text: "显示",
+        },
     },
 
     onLoad(options) {
@@ -21,5 +25,36 @@ Page({
                 orderDetail: orderDetail,
             });
         });
+    },
+
+    onOrderHeaderClick(e) {
+        const orderShow = this.data.orderShow;
+        if (orderShow.show) {
+            orderShow.show = false;
+            orderShow.text = "显示";
+        } else {
+            orderShow.show = true;
+            orderShow.text = "隐藏";
+        }
+
+        this.setData({
+            orderShow: orderShow,
+        });
+    },
+
+    onFirstModeHeaderClick(e) {
+    },
+
+    onReceiveAddressHeaderClick(e) {
+    },
+
+    onExpressListHeaderClick(e) {
+    },
+
+    onOrderPackListHeaderClick(e) {
+    },
+
+    onFeeHeaderClick(e) {
+
     }
 })
