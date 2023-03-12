@@ -6,7 +6,13 @@
         <block wx:if="{{ orderDetail.order }}">
             <van-cell title="基本信息" value="{{ orderShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderHeaderClick"/>
             <block wx:if="{{ orderShow.show }}">
-                <van-cell title="订单编号" value="{{ orderDetail.order.orderCode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单编号" value="{{ orderDetail.order.orderCode }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ orderDetail.order.orderCode }}">
+                    <view slot="right-icon">
+                        <view style="padding-left: 5px;">
+                            <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                        </view>
+                    </view>
+                </van-cell>
                 <van-cell title="订单状态" value="{{ orderDetail.order.orderStatus }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="物流类型" value="{{ orderDetail.order.firstModeType }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item"/>
@@ -97,8 +103,20 @@
                 <block wx:for="{{ orderDetail.expressList }}" wx:key="id" wx:for-item="express" wx:for-index="expressIndex">
                     <view>
                         <van-cell title="快递单#{{ expressIndex + 1 }}" border="{{ true }}" custom-class="express-item"/>
-                        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="express-item"/>
-                        <van-cell title="入库跟踪号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="express-item"/>
+                        <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="express-item" bind:click="onCopyClick" data-item="{{ express.trackingNo }}">
+                            <view slot="right-icon">
+                                <view style="padding-left: 5px;">
+                                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                                </view>
+                            </view>
+                        </van-cell>
+                        <van-cell title="入库跟踪号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="express-item" bind:click="onCopyClick" data-item="{{ express.checkinTrackingNo }}">
+                            <view slot="right-icon">
+                                <view style="padding-left: 5px;">
+                                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                                </view>
+                            </view>
+                        </van-cell>
                         <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="express-item"/>
                         <van-cell title="状态" value="{{ express.status }}" border="{{ false }}" custom-class="express-item"/>
                         <van-cell title="入库时间" value="{{ express.checkinTime }}" border="{{ false }}" custom-class="express-item"/>
