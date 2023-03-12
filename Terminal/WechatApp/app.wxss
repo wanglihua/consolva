@@ -38,7 +38,7 @@ page {
 .grid-text-sub {
     text-align: cener;
     display: block;
-    font-size: 8px;
+    font-size: 10px;
     color: lightgray;
 }
 
