@@ -16,7 +16,7 @@
     </block>
 
     <view style="background-color: white; margin-bottom: 20rpx; padding: 10px;">
-        <van-grid border="{{false}}" column-num="3" direction="horizontal" center="{{ false }}">
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="notice" icon-class="home-grid-icon" badge="{{ homeData.newNoticeBadge }}" url="/pages/notice/notice_list" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">公告</view>
@@ -36,7 +36,7 @@
                 </view>
             </van-grid-item>
         </van-grid>
-        <van-grid border="{{false}}" column-num="3" direction="horizontal" center="{{ false }}">
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" url="/pages/freight_estimate/freight_estimate_goods" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">运费试算</view>
@@ -59,7 +59,7 @@
     </view>
 
     <view style="background-color: white; margin-bottom: 20rpx; padding: 10px;">
-        <van-grid border="{{false}}" column-num="3" direction="horizontal" center="{{ false }}">
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" badge="{{ homeData.freightDescBadge }}" url="/pages/instruction/instruction_freight_desc?url={{ homeData.freightDescUrl }}" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">运费说明</view>
@@ -79,7 +79,7 @@
                 </view>
             </van-grid-item>
         </van-grid>
-        <van-grid border="{{false}}" column-num="3" direction="horizontal" center="{{ false }}">
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" badge="{{ homeData.storageInstructionBadge }}" url="/pages/instruction/instruction_storage?url={{ homeData.storageInstructionUrl }}" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">仓储说明</view>

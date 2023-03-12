@@ -27,16 +27,16 @@ page {
 }
 
 .grid-text {
-    margin-top: 4px !important;
+    margin-top: 6px !important;
 }
 
 .grid-text-main {
-    text-align: left;
+    text-align: center;
     display: block;
 }
 
 .grid-text-sub {
-    text-align: left;
+    text-align: cener;
     display: block;
     font-size: 8px;
     color: lightgray;
