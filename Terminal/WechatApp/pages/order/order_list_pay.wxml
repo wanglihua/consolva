@@ -8,7 +8,13 @@
         <block wx:for="{{ orderList }}" wx:key="id" wx:for-item="order" wx:for-index="index">
             <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ order }}">
                 <van-cell title="{{ index + 1 }}、{{ order.orderCode }}" value="{{ order.orderStatus }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="订单编号" value="{{ order.orderCode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单编号" value="{{ order.orderCode }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ order.orderCode }}">
+                    <view slot="right-icon">
+                        <view style="padding-left: 5px;">
+                            <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                        </view>
+                    </view>
+                </van-cell>
                 <van-cell title="订单状态" value="{{ order.orderStatus }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="物流类型" value="{{ order.firstModeType }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="物流名称" value="{{ order.firstModeName }}" border="{{ false }}" custom-class="item"/>
