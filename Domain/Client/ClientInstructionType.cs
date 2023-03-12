@@ -52,6 +52,11 @@ public class ClientInstructionType : CodeTypeBase {
     public static readonly ClientInstructionType CustomerService = new ClientInstructionType(9000, "客服二维码", "客服二维码");
 
     /// <summary>
+    /// 简单五步轻松转运
+    /// </summary>
+    public static readonly ClientInstructionType OrderSimpleStep = new ClientInstructionType(10000, "简单五步轻松转运", "简单五步轻松转运");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly ClientInstructionType None = new ClientInstructionType(0, "", "");
@@ -66,6 +71,7 @@ public class ClientInstructionType : CodeTypeBase {
         GoodsType,
         FollowTip,
         CustomerService,
+        OrderSimpleStep,
     };
 
     private static readonly IDictionary<int, ClientInstructionType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

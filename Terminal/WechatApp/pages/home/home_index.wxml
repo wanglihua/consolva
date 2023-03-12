@@ -37,6 +37,10 @@
         </van-grid>
     </view>
 
+    <view style="background-color: white; margin-bottom: 20rpx; padding: 0px;">
+        <van-image lazy-load loading="loading" fit="widthFix" width="100%" src="https://hk.shundaquanqiu.com/static/client/order_simple_step.jpg"/>
+    </view>
+
     <van-tabbar active="{{ 0 }}" placeholder="{{ true }}" bind:change="onTabbarChange">
         <van-tabbar-item icon="wap-home-o">首页</van-tabbar-item>
         <van-tabbar-item icon="sign">包裹</van-tabbar-item>
