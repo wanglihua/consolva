@@ -18,8 +18,20 @@
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="notice" icon-class="home-grid-icon" text="公告" badge="{{ homeData.newNoticeBadge }}" url="/pages/notice/notice_list"/>
-            <van-grid-item icon-prefix="iconfont" icon="warehouse-address" icon-class="home-grid-icon" text="仓库地址" url="/pages/instruction/instruction_warehouse_address"/>
-            <van-grid-item icon-prefix="iconfont" icon="goods-type" icon-class="home-grid-icon" text="物品分类" badge="{{ homeData.goodsTypeBadge }}" url="/pages/instruction/instruction_goods_type?url={{ homeData.goodsTypeUrl }}"/>
+            <van-grid-item icon-prefix="iconfont" icon="warehouse-address" icon-class="home-grid-icon" url="/pages/instruction/instruction_warehouse_address">
+                <view slot="text">
+                    <view class="grid-text-main">仓库地址</view>
+                    <view class="grid-text-sub">仓库地址 一键复制</view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="goods-type" icon-class="home-grid-icon" badge="{{ homeData.goodsTypeBadge }}" url="/pages/instruction/instruction_goods_type?url={{ homeData.goodsTypeUrl }}">
+                <view slot="text">
+                    <view class="grid-text-main">物品分类</view>
+                    <view class="grid-text-sub">物品分类 一目了然</view>
+                </view>
+            </van-grid-item>
+        </van-grid>
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" text="运费试算" url="/pages/freight_estimate/freight_estimate_goods"/>
             <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" badge="{{ homeData.couponBatchPickBadge }}" url="/pages/coupon/coupon_mine"/>
             <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额充值" url="/pages/customer/customer_account/customer_account"/>
