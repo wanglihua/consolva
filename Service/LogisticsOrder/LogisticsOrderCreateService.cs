@@ -170,7 +170,7 @@ public class LogisticsOrderCreateService {
             }
         }
 
-        string orderCode = logisticsOrderCodeService.GenerateNewCode(customerId);
+        string orderCode = logisticsOrderCodeService.GenerateNewCode(customerId, customer.CheckinCode);
         string customerCode = customerCodeService.GetCustomerCode(customerId);
         LogisticsGoodsType goodsType = logisticsGoodsTypeService.GetGoodsTypeFromGoodsTypeList(expressList.Select(e => e.GoodsType).Distinct().ToList());
         var orderStorageLoc = logisticsOrderStorageLocService.GetOrderStorageLoc(expressList);
