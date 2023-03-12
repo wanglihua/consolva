@@ -1267,7 +1267,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
 
-        string customerCode = (orderPack.Order.Customer?.Id ?? 0).ToString();
+        string customerCode = orderPack.Order.Customer.CheckinCode;
         string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
@@ -1346,9 +1346,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Query<LogisticsOrderPackBoxInfo>()
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
-
-        // string customerCode = orderPack.Order.CustomerCode;
-        string customerCode = (orderPack.Order.Customer?.Id ?? 0).ToString();
+        
+        string customerCode = orderPack.Order.Customer.CheckinCode;
         string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
@@ -1424,7 +1423,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
 
-        string customerCode = orderPack.Order.Customer.Id.ToString();
+        string customerCode = orderPack.Order.Customer.CheckinCode;
         string orderCode = orderPack.Order.Code;
 
         IList<string> customerCodeList = new List<string>();
@@ -1496,7 +1495,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException($"订单#{orderId}收货地址不存在，数据存在问题！");
         }
 
-        string customerCode = order.Customer.Id.ToString();
+        string customerCode = order.Customer.CheckinCode;
         string orderCode = order.Code;
 
         string firstLogisticsModeName = order.FirstMode.Name;
