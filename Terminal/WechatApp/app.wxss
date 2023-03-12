@@ -23,7 +23,7 @@ page {
 }
 
 .home-grid-icon {
-    color: #e35311;
+    color: #e3b71d;
 }
 
 .search-bar {
