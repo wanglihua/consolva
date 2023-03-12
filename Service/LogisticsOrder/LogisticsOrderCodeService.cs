@@ -1,13 +1,14 @@
 using NHibernate;
 using NLog;
+using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
 
 namespace shunda.Service.LogisticsOrder;
 
 [Service(ServiceType.Scoped)]
-public class LogisticsOrderCodeService
-{
+public class LogisticsOrderCodeService {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static readonly string OrderCodePrefix = "SD";
@@ -16,8 +17,7 @@ public class LogisticsOrderCodeService
 
     private static readonly object LockObject = new object();
 
-    public LogisticsOrderCodeService(ISessionFactory sessionFactory)
-    {
+    public LogisticsOrderCodeService(ISessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -38,18 +38,24 @@ public class LogisticsOrderCodeService
         共3箱的话：SD0500100150001，SD0500100150002，SD0500100150003         
      */
 
-    public string GenerateNewCode(int customerId)
-    {
+    public string GenerateNewCode(int customerId) {
         lock (LockObject) // lock() 时，数据库事务应该是在内部，否则 lock() 后有时也没意义
         {
             int customerOrderSeq = 0;
+            string customerCheckinCode;
 
             ISession? sessionLocal = null;
             ITransaction? transaction = null;
-            try
-            {
+            try {
                 sessionLocal = HibernateSessionFactory.OpenSession(sessionFactory);
                 transaction = sessionLocal.BeginTransaction();
+
+                var customer = sessionLocal.Get<CustomerInfo>(customerId);
+                if (customer == null) {
+                    throw new ValidationException($"指定的客户#{customerId}不存在！");
+                }
+
+                customerCheckinCode = customer.CheckinCode;
 
                 // 改成序列的方式
                 customerOrderSeq = sessionLocal.CreateSQLQuery($"CALL logistics_order_code_customer_next_code({customerId})").UniqueResult<int>();
@@ -57,19 +63,17 @@ public class LogisticsOrderCodeService
                 sessionLocal.Flush();
                 transaction.Commit();
             }
-            catch (Exception exp)
-            {
+            catch (Exception exp) {
                 log.Error(exp);
                 transaction?.Rollback();
 
                 throw;
             }
-            finally
-            {
+            finally {
                 sessionLocal?.Close();
             }
 
-            return $"{OrderCodePrefix}{customerId:#00000}{(customerOrderSeq + 1):#0000}";
+            return $"{OrderCodePrefix}{customerCheckinCode}{(customerOrderSeq + 1):#0000}";
         }
     }
 }
