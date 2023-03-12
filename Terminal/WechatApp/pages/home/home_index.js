@@ -70,6 +70,14 @@ Page({
         }).exec();
     },
 
+    onOrderSimpleStepClick(e) {
+        app.post("/client/order/simple/step/detail", {}, function (res) {
+            wx.navigateTo({
+                url: "/pages/home/home_web_view?url=" + res.data.url + "&title=" + res.data.title,
+            });
+        });
+    },    
+
     onTabbarChange(e) {
         if (e.detail === 0) {
             wx.redirectTo({

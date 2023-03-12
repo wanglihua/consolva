@@ -102,7 +102,7 @@
     </view>
 
     <view style="background-color: white; margin-bottom: 20rpx; padding: 0px;">
-        <van-image lazy-load loading="loading" fit="widthFix" width="100%" src="https://hk.shundaquanqiu.com/static/client/order_simple_step.jpg"/>
+        <van-image lazy-load loading="loading" fit="widthFix" width="100%" src="https://hk.shundaquanqiu.com/static/client/order_simple_step.jpg" bind:click="onOrderSimpleStepClick"/>
     </view>
 
     <van-tabbar active="{{ 0 }}" placeholder="{{ true }}" bind:change="onTabbarChange">
