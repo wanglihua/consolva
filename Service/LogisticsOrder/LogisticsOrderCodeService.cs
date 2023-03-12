@@ -3,7 +3,6 @@ using NLog;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Service;
-using shunda.Domain.Customer;
 
 namespace shunda.Service.LogisticsOrder;
 
