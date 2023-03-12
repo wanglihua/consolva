@@ -47,6 +47,13 @@ Page({
         });
     },
 
+    onOrderCodeCopyClick(e) {
+
+    },
+
+    onExpressTrackingNoCopyClick(e) {
+    },
+
     onOrderHeaderClick(e) {
         const orderShow = this.data.orderShow;
         if (orderShow.show) {
