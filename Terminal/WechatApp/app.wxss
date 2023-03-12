@@ -23,7 +23,7 @@ page {
 }
 
 .home-grid-icon {
-    color: #58727e;
+    color: #e35311;
 }
 
 .search-bar {
@@ -48,7 +48,7 @@ page {
 }
 
 .item-header {
-    background-color: teal !important;
+    background-color: #2c9af2 !important;
 }
 
 .item {
@@ -69,7 +69,7 @@ page {
 }
 
 .item-header-alt {
-    background-color: rgb(231, 174, 0) !important;
+    background-color: #e3b71d !important;
 }
 
 .item-header-title {
@@ -83,7 +83,7 @@ page {
 }
 
 .item-header-title-selected {
-    color: rgb(231, 174, 0) !important;
+    color: #e3b71d !important;
 }
 
 .item-header-value {
@@ -127,7 +127,7 @@ page {
 
 .item-button-selected {
     width: 180rpx !important;
-    color: rgb(231, 174, 0) !important;
+    color: #e3b71d !important;
 }
 
 .item-button-mini {
