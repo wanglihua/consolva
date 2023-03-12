@@ -16,6 +16,18 @@ Page({
             show: false,
             text: "显示",
         },
+        expressListShow: {
+            show: false,
+            text: "显示",
+        },
+        orderPackListShow: {
+            show: false,
+            text: "显示",
+        },
+        feeShow: {
+            show: false,
+            text: "显示",
+        },
     },
 
     onLoad(options) {
@@ -81,12 +93,47 @@ Page({
     },
 
     onExpressListHeaderClick(e) {
+        const expressListShow = this.data.expressListShow;
+        if (expressListShow.show) {
+            expressListShow.show = false;
+            expressListShow.text = "显示";
+        } else {
+            expressListShow.show = true;
+            expressListShow.text = "隐藏";
+        }
+
+        this.setData({
+            expressListShow: expressListShow,
+        });
     },
 
     onOrderPackListHeaderClick(e) {
+        const orderPackListShow = this.data.orderPackListShow;
+        if (orderPackListShow.show) {
+            orderPackListShow.show = false;
+            orderPackListShow.text = "显示";
+        } else {
+            orderPackListShow.show = true;
+            orderPackListShow.text = "隐藏";
+        }
+
+        this.setData({
+            orderPackListShow: orderPackListShow,
+        });
     },
 
     onFeeHeaderClick(e) {
+        const feeShow = this.data.feeShow;
+        if (feeShow.show) {
+            feeShow.show = false;
+            feeShow.text = "显示";
+        } else {
+            feeShow.show = true;
+            feeShow.text = "隐藏";
+        }
 
+        this.setData({
+            feeShow: feeShow,
+        });
     }
 })
