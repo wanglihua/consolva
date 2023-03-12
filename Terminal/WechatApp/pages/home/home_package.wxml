@@ -2,7 +2,12 @@
 <view class="container">
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}" column-num="3">
-            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" text="已预报" badge="{{ homeData.expressExpectBadge }}" url="/pages/express/express_expect/express_expect_list"/>
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" badge="{{ homeData.expressExpectBadge }}" url="/pages/express/express_expect/express_expect_list">
+                <view slot="text">
+                    <view class="grid-text-main" style="text-align:center;">包裹预报</view>
+                    <view class="grid-text-sub" style="text-align:center;">快递预报 快速入库</view>
+                </view>
+            </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text="已入库" badge="{{ homeData.expressCheckinBadge }}" url="/pages/express/express_checkin/express_checkin_list"/>
             <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text="退运池" badge="{{ homeData.expressReturnBadge }}" url="/pages/express/express_return/express_return_list"/>
         </van-grid>
@@ -19,12 +24,10 @@
     </view>
 
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
-        <van-grid border="{{false}}">
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" text="包裹认领" badge="{{ homeData.expressClaimBadge }}" url="/pages/express/express_claim/express_claim_list"/>
         </van-grid>
-    </view>    
-    
-
+    </view>
 
     <van-tabbar active="{{ 1 }}" placeholder="{{ true }}" bind:change="onTabbarChange">
         <van-tabbar-item icon="wap-home-o">首页</van-tabbar-item>
