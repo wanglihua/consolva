@@ -18,7 +18,7 @@ public class OrderSimpleStepController : Controller {
     [Route("/client/order/simple/step/detail")]
     public IActionResult Detail() {
         var instruction = session.Query<ClientInstructionInfo>()
-            .Where(e => e.Type == ClientInstructionType.CustomerService)
+            .Where(e => e.Type == ClientInstructionType.OrderSimpleStep)
             .Take(1)
             .SingleOrDefault();
 
