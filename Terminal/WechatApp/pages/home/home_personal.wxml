@@ -44,6 +44,36 @@
                     <view class="grid-text-sub"></view>
                 </view>
             </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">我的评价</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">我的推广</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">积分说明</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">常见问题</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">我的签到</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
         </van-grid>
     </view>
 
