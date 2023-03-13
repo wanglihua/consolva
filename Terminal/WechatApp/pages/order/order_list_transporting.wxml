@@ -1,6 +1,6 @@
 <header/>
 <view class="container">
-    <van-cell-group title="转运中"/>
+    <van-cell-group title="已发货"/>
     <block wx:if="{{ orderCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
     </block>

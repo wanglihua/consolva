@@ -1,6 +1,6 @@
 <header/>
 <view class="container">
-    <van-cell-group title="待支付"/>
+    <van-cell-group title="待付款"/>
     <block wx:if="{{ orderCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
     </block>

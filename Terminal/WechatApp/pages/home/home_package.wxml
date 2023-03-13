@@ -73,16 +73,44 @@
                     <view class="grid-text-sub">已付款待转运发货</view>
                 </view>
             </van-grid-item>
+        </van-grid>
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon" badge="{{ homeData.orderTransportingBadge }}" url="/pages/order/order_list_transporting" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">已发货</view>
                     <view class="grid-text-sub">已从仓库转运发出</view>
                 </view>
             </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon">
+                <view slot="text">
+                    <view class="grid-text-main">已签收</view>
+                    <view class="grid-text-sub">物流动态显示签收</view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon">
+                <view slot="text">
+                    <view class="grid-text-main">待评价</view>
+                    <view class="grid-text-sub">好评反馈,可得积分</view>
+                </view>
+            </van-grid-item>
+        </van-grid>
+        <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" badge="{{ homeData.orderDeliveredBadge }}" url="/pages/order/order_list_delivered" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">已完成</view>
                     <view class="grid-text-sub">订单转运流程完结</view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">订单退运</view>
+                    <view class="grid-text-sub">打包后退运</view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">已退运</view>
+                    <view class="grid-text-sub">仓库已退运完成</view>
                 </view>
             </van-grid-item>
         </van-grid>

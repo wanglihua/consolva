@@ -10,7 +10,7 @@
 </van-sticky>
 
 <view class="container-bottom">
-    <!--<van-cell-group title="预报池"/>-->
+    <!--<van-cell-group title="包裹预报"/>-->
 
     <block wx:if="{{ expressExpectCount === 0 }}">
         <van-empty description="暂时没有数据项！"/>
