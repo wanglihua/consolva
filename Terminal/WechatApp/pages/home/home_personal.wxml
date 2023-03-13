@@ -2,13 +2,48 @@
 <view class="container">
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <van-grid border="{{false}}" column-num="3">
-            <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" text="余额充值" url="/pages/customer/customer_account/customer_account" text-class="grid-text"/>
-            <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" text="优惠券" badge="{{ homeData.couponBatchPickBadge }}" url="/pages/coupon/coupon_mine" text-class="grid-text"/>
-            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" text="我的消息" badge="{{ homeData.newMessageBadge }}" url="/pages/message/message_list" text-class="grid-text"/>
-            <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" text="消息定制" url="/pages/message/message_customize" text-class="grid-text"/>
-            <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" text="收货地址" url="/pages/customer/customer_address/customer_address_receive/customer_address_receive_list" text-class="grid-text"/>
-            <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" text="我的积分" url="/pages/customer/customer_score/customer_score" text-class="grid-text"/>
-            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" text="支付明细" url="/pages/customer/customer_pay/customer_pay" text-class="grid-text"/>
+            <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" url="/pages/customer/customer_account/customer_account" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">余额充值</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" badge="{{ homeData.couponBatchPickBadge }}" url="/pages/coupon/coupon_mine" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">优惠券</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="message" icon-class="home-grid-icon" badge="{{ homeData.newMessageBadge }}" url="/pages/message/message_list" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">我的消息</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="message-setting" icon-class="home-grid-icon" url="/pages/message/message_customize" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">消息定制</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="address" icon-class="home-grid-icon" url="/pages/customer/customer_address/customer_address_receive/customer_address_receive_list" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">收货地址</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="score" icon-class="home-grid-icon" url="/pages/customer/customer_score/customer_score" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">我的积分</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="pay" icon-class="home-grid-icon" url="/pages/customer/customer_pay/customer_pay" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">支付明细</view>
+                    <view class="grid-text-sub"></view>
+                </view>
+            </van-grid-item>
         </van-grid>
     </view>
 
