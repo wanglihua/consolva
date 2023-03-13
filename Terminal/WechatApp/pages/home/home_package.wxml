@@ -13,7 +13,7 @@
                     <view class="grid-text-sub">已预报包裹数量</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="arrive-warehouse" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">已到仓</view>
                     <view class="grid-text-sub">已到仓待入库包裹</view>
@@ -27,7 +27,7 @@
             </van-grid-item>
         </van-grid>
         <van-grid border="{{false}}" column-num="3">
-            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="exception-package" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">异常包裹</view>
                     <view class="grid-text-sub">入库有异常的包裹</view>
@@ -39,7 +39,7 @@
                     <view class="grid-text-sub">申请退运的包裹</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="returned" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">已退运</view>
                     <view class="grid-text-sub">退运处理完成的包裹</view>
@@ -81,13 +81,13 @@
                     <view class="grid-text-sub">已从仓库转运发出</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon">
+            <van-grid-item icon-prefix="iconfont" icon="received" icon-class="home-grid-icon">
                 <view slot="text">
                     <view class="grid-text-main">已签收</view>
                     <view class="grid-text-sub">物流动态显示签收</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon">
+            <van-grid-item icon-prefix="iconfont" icon="to-rate" icon-class="home-grid-icon">
                 <view slot="text">
                     <view class="grid-text-main">待评价</view>
                     <view class="grid-text-sub">好评反馈,可得积分</view>
@@ -101,13 +101,13 @@
                     <view class="grid-text-sub">订单转运流程完结</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">订单退运</view>
                     <view class="grid-text-sub">打包后退运</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="returned" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">已退运</view>
                     <view class="grid-text-sub">仓库已退运完成</view>

@@ -49,7 +49,7 @@
                     <view class="grid-text-sub">券在我手 省钱我有</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="beginner-guide" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">新手指南</view>
                     <view class="grid-text-sub">常见问题 快速解答</view>
@@ -80,7 +80,7 @@
             </van-grid-item>
         </van-grid>
         <van-grid border="{{false}}" column-num="3">
-            <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="transport-limit" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">时效展示</view>
                     <view class="grid-text-sub">近期时效 供您参考</view>
@@ -92,7 +92,7 @@
                     <view class="grid-text-sub">寄货必看 理赔保障</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="rate-order" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">评价晒单</view>
                     <view class="grid-text-sub">评价晒单 可得积分</view>
