@@ -1,6 +1,11 @@
 <header/>
 <view class="container">
-    <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
+    <view style="background-color: white; margin-bottom: 20rpx;">
+        <view style="padding: 10px;">
+            <view class="grid-icon-cate-title">国内包裹</view>
+            <view class="grid-icon-cate-desc">从国内淘宝京东拼多多购买并邮寄到舜达仓库的包裹</view>
+            <van-divider hairline/>
+        </view>
         <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" badge="{{ homeData.expressExpectBadge }}" url="/pages/express/express_expect/express_expect_list" text-class="grid-text">
                 <view slot="text">
@@ -24,6 +29,11 @@
     </view>
 
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
+        <view style="padding: 10px;">
+            <view class="grid-icon-cate-title">国际运单</view>
+            <view class="grid-icon-cate-desc">包裹到舜达仓库集中后发往您海外地址的运单</view>
+            <van-divider hairline/>
+        </view>
         <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="pack-list" icon-class="home-grid-icon" badge="{{ homeData.orderSubmittedBadge }}" url="/pages/order/order_list_submitted" text-class="grid-text">
                 <view slot="text">
@@ -59,6 +69,11 @@
     </view>
 
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
+        <view style="padding: 10px;">
+            <view class="grid-icon-cate-title">包裹认领</view>
+            <view class="grid-icon-cate-desc">邮奇到舜达仓库面单上没有会员号也没有预报的包裹</view>
+            <van-divider hairline/>
+        </view>
         <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="claim-list" icon-class="home-grid-icon" badge="{{ homeData.expressClaimBadge }}" url="/pages/express/express_claim/express_claim_list" text-class="grid-text">
                 <view slot="text">

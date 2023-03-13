@@ -1,0 +1,13 @@
+.grid-icon-cate-title {
+    display: block;
+    padding-bottom: 10px;
+    font-size: 18px;
+    color: #646566;
+    font-weight: bold;
+}
+
+.grid-icon-cate-desc {
+    display: block;
+    font-size: 14px;
+    color: #848586;
+}
