@@ -58,31 +58,31 @@
             <van-grid-item icon-prefix="iconfont" icon="pack-list" icon-class="home-grid-icon" badge="{{ homeData.orderSubmittedBadge }}" url="/pages/order/order_list_submitted" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">待打包</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-sub">待去除包装重新打包</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="pay-list" icon-class="home-grid-icon" badge="{{ homeData.orderPayBadge }}" url="/pages/order/order_list_pay" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">待支付</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-main">待付款</view>
+                    <view class="grid-text-sub">已打包等待付款</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="waiting-transport" icon-class="home-grid-icon" badge="{{ homeData.orderWaitingTransportBadge }}" url="/pages/order/order_list_wait_transport" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">待转运</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-main">待发货</view>
+                    <view class="grid-text-sub">已付款待转运发货</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="transporting" icon-class="home-grid-icon" badge="{{ homeData.orderTransportingBadge }}" url="/pages/order/order_list_transporting" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">转运中</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-main">已发货</view>
+                    <view class="grid-text-sub">已从仓库转运发出</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="order-history" icon-class="home-grid-icon" badge="{{ homeData.orderDeliveredBadge }}" url="/pages/order/order_list_delivered" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">已交付</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-main">已完成</view>
+                    <view class="grid-text-sub">订单转运流程完结</view>
                 </view>
             </van-grid-item>
         </van-grid>
