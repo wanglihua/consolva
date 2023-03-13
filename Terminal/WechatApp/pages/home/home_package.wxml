@@ -3,26 +3,46 @@
     <view style="background-color: white; margin-bottom: 20rpx;">
         <view style="padding: 10px;">
             <view class="grid-icon-cate-title">国内包裹</view>
-            <view class="grid-icon-cate-desc">从国内淘宝京东拼多多购买并邮寄到舜达仓库的包裹</view>
+            <view class="grid-icon-cate-desc">从国内淘宝，京东，拼多多购买并邮寄到舜达仓库的包裹</view>
             <van-divider hairline/>
         </view>
         <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" badge="{{ homeData.expressExpectBadge }}" url="/pages/express/express_expect/express_expect_list" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">包裹预报</view>
-                    <view class="grid-text-sub">快递预报 快速入库</view>
+                    <view class="grid-text-main">已预报</view>
+                    <view class="grid-text-sub">已预报包裹数量</view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">已到仓</view>
+                    <view class="grid-text-sub">已到仓待入库包裹</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="checkin-list" icon-class="home-grid-icon" badge="{{ homeData.expressCheckinBadge }}" url="/pages/express/express_checkin/express_checkin_list" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">已入库</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-sub">可提交转运单</view>
+                </view>
+            </van-grid-item>
+        </van-grid>
+        <van-grid border="{{false}}" column-num="3">
+            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">异常包裹</view>
+                    <view class="grid-text-sub">入库有异常的包裹</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" badge="{{ homeData.expressReturnBadge }}" url="/pages/express/express_return/express_return_list" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">退运池</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-sub">申请退运的包裹</view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="express-return" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">已退运</view>
+                    <view class="grid-text-sub">退运处理完成的包裹</view>
                 </view>
             </van-grid-item>
         </van-grid>
@@ -31,7 +51,7 @@
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <view style="padding: 10px;">
             <view class="grid-icon-cate-title">国际运单</view>
-            <view class="grid-icon-cate-desc">包裹到舜达仓库集中后发往您海外地址的运单</view>
+            <view class="grid-icon-cate-desc">您的包裹到舜达集运仓库后，并下单发往您海外地址的运单</view>
             <van-divider hairline/>
         </view>
         <van-grid border="{{false}}" column-num="3">
@@ -71,7 +91,7 @@
     <view style="background-color: white; margin-bottom: 20rpx; padding-top: 10px;">
         <view style="padding: 10px;">
             <view class="grid-icon-cate-title">包裹认领</view>
-            <view class="grid-icon-cate-desc">邮奇到舜达仓库面单上没有会员号也没有预报的包裹</view>
+            <view class="grid-icon-cate-desc">邮寄到舜达仓库，但包裹上既没有会员号又没有预报的包裹，可用快递单号搜索认领</view>
             <van-divider hairline/>
         </view>
         <van-grid border="{{false}}" column-num="3">

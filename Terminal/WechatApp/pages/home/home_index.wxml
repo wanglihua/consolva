@@ -20,7 +20,7 @@
             <van-grid-item icon-prefix="iconfont" icon="notice" icon-class="home-grid-icon" badge="{{ homeData.newNoticeBadge }}" url="/pages/notice/notice_list" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">公告</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-sub">最新资讯 及时关注</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="warehouse-address" icon-class="home-grid-icon" url="/pages/instruction/instruction_warehouse_address" text-class="grid-text">
@@ -37,10 +37,10 @@
             </van-grid-item>
         </van-grid>
         <van-grid border="{{false}}" column-num="3">
-            <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" url="/pages/freight_estimate/freight_estimate_goods" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="promotion" icon-class="home-grid-icon" badge="{{ homeData.promotionBadge }}" url="/pages/instruction/instruction_promotion?url={{ homeData.promotionUrl }}" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">运费试算</view>
-                    <view class="grid-text-sub">超低运费 轻松试算</view>
+                    <view class="grid-text-main">活动福利</view>
+                    <view class="grid-text-sub">活动特惠 邀您参加</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="coupon" icon-class="home-grid-icon" badge="{{ homeData.couponBatchPickBadge }}" url="/pages/coupon/coupon_mine" text-class="grid-text">
@@ -49,10 +49,10 @@
                     <view class="grid-text-sub">券在我手 省钱我有</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="account" icon-class="home-grid-icon" url="/pages/customer/customer_account/customer_account" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">余额充值</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-main">新手指南</view>
+                    <view class="grid-text-sub">常见问题 快速解答</view>
                 </view>
             </van-grid-item>
         </van-grid>
@@ -60,42 +60,42 @@
 
     <view style="background-color: white; margin-bottom: 20rpx; padding: 10px;">
         <van-grid border="{{false}}" column-num="3">
+            <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" badge="{{ homeData.expressExpectBadge }}" url="/pages/express/express_expect/express_expect_list" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">包裹预报</view>
+                    <view class="grid-text-sub">快递预报 优先入库</view>
+                </view>
+            </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="freight-desc" icon-class="home-grid-icon" badge="{{ homeData.freightDescBadge }}" url="/pages/instruction/instruction_freight_desc?url={{ homeData.freightDescUrl }}" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">运费说明</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-sub">路线报价 划算第一</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="promotion" icon-class="home-grid-icon" badge="{{ homeData.promotionBadge }}" url="/pages/instruction/instruction_promotion?url={{ homeData.promotionUrl }}" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="estimate" icon-class="home-grid-icon" url="/pages/freight_estimate/freight_estimate_goods" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">活动福利</view>
-                    <view class="grid-text-sub">活动福利 邀你参加</view>
-                </view>
-            </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="order-process" icon-class="home-grid-icon" badge="{{ homeData.orderProcessBadge }}" url="/pages/instruction/instruction_order_process?url={{ homeData.orderProcessUrl }}" text-class="grid-text">
-                <view slot="text">
-                    <view class="grid-text-main">下单流程</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-main">运费试算</view>
+                    <view class="grid-text-sub">超低运费 轻松试算</view>
                 </view>
             </van-grid-item>
         </van-grid>
         <van-grid border="{{false}}" column-num="3">
-            <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" badge="{{ homeData.storageInstructionBadge }}" url="/pages/instruction/instruction_storage?url={{ homeData.storageInstructionUrl }}" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="storage-instruction" icon-class="home-grid-icon" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">仓储说明</view>
-                    <view class="grid-text-sub"></view>
-                </view>
-            </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" badge="{{ homeData.useAgreementBadge }}" url="/pages/instruction/instruction_use_agreement?url={{ homeData.useAgreementUrl }}" text-class="grid-text">
-                <view slot="text">
-                    <view class="grid-text-main">使用协议</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-main">时效展示</view>
+                    <view class="grid-text-sub">近期时效 供您参考</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="insurance-clause" icon-class="home-grid-icon" badge="{{ homeData.insuranceClauseBadge }}" url="/pages/instruction/instruction_insurance_clause?url={{ homeData.insuranceClauseUrl }}" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">保险条款</view>
-                    <view class="grid-text-sub"></view>
+                    <view class="grid-text-sub">寄货必看 理赔保障</view>
+                </view>
+            </van-grid-item>
+            <van-grid-item icon-prefix="iconfont" icon="use-agreement" icon-class="home-grid-icon" text-class="grid-text">
+                <view slot="text">
+                    <view class="grid-text-main">评价晒单</view>
+                    <view class="grid-text-sub">评价晒单 可得积分</view>
                 </view>
             </van-grid-item>
         </van-grid>
