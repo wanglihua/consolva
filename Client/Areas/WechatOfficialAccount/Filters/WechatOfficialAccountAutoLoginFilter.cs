@@ -40,7 +40,7 @@ public class WechatOfficialAccountAutoLoginFilter : ActionFilterAttribute {
 
         // 如果当前是已经登录的
         if (loginCustomerService.IsLogined == true) {
-            context.HttpContext.Response.Redirect(url);
+            // 不用重定向，context.HttpContext.Response.Redirect(url);
             return;
         }
 
@@ -76,7 +76,7 @@ public class WechatOfficialAccountAutoLoginFilter : ActionFilterAttribute {
             // 使用 open id 自动登录
             loginCustomerService.Login(customer, CustomerLoginStage.WechatOfficialAccountLogin, context.HttpContext.Request);
 
-            context.HttpContext.Response.Redirect(url);
+            // 不用重定向，context.HttpContext.Response.Redirect(url);
             return;
         }
 

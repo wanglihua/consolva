@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Client.Areas.WechatOfficialAccount.Filters;
+using shunda.Core.Web;
 
 namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 
@@ -9,6 +10,7 @@ namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 [WechatOfficialAccountArea]
 public class WechatOfficialAccountAlipayController : Controller {
     [HttpGet]
+    [NoLoginRequired]
     [ServiceFilter(typeof(WechatOfficialAccountAutoLoginFilter))]
     [Route("/client/wechat/official/account/alipay")]
     public IActionResult Index() {
