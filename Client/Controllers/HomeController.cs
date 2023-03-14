@@ -125,6 +125,7 @@ public class HomeController : Controller {
         var homeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
 
         var model = new HomeClientHomeDataModel {
+            TopImageList = topImageItemList,
             ExpressClaimBadge = homeData.ExpressClaimCount > 0 ? homeData.ExpressClaimCount.ToString() : string.Empty,
             ExpressExpectBadge = homeData.ExpressExpectCount > 0 ? homeData.ExpressExpectCount.ToString() : string.Empty,
             ExpressCheckinBadge = homeData.ExpressCheckinCount > 0 ? homeData.ExpressCheckinCount.ToString() : string.Empty,
@@ -153,7 +154,8 @@ public class HomeController : Controller {
             StorageInstructionUrl = homeData.StorageInstructionUrl,
             GoodsTypeUrl = homeData.GoodsTypeUrl,
             FollowTipUrl = homeData.FollowTipUrl,
-            TopImageList = topImageItemList,
+            BeginnerGuideUrl = homeData.BeginnerGuideUrl,
+            FaqUrl = homeData.FaqUrl,
         };
 
         return Json(new JsonResultData {

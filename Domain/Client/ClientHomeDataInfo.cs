@@ -78,6 +78,9 @@ public class ClientHomeDataInfo {
     [JsonProperty("hasFollowed")]
     public virtual bool HasFollowed { get; set; }
 
+    /// <summary>
+    /// todo  应该是不再使用了，后面去掉
+    /// </summary>
     [JsonProperty("useAgreementUrl")]
     public virtual string UseAgreementUrl { get; set; } = string.Empty;
 
@@ -87,12 +90,18 @@ public class ClientHomeDataInfo {
     [JsonProperty("freightDescUrl")]
     public virtual string FreightDescUrl { get; set; } = string.Empty;
 
+    /// <summary>
+    /// todo  应该是不再使用了，后面去掉
+    /// </summary>
     [JsonProperty("orderProcessUrl")]
     public virtual string OrderProcessUrl { get; set; } = string.Empty;
 
     [JsonProperty("promotionUrl")]
     public virtual string PromotionUrl { get; set; } = string.Empty;
 
+    /// <summary>
+    /// todo  应该是不再使用了，后面去掉
+    /// </summary>
     [JsonProperty("storageInstructionUrl")]
     public virtual string StorageInstructionUrl { get; set; } = string.Empty;
 
@@ -101,6 +110,12 @@ public class ClientHomeDataInfo {
 
     [JsonProperty("followTipUrl")]
     public virtual string FollowTipUrl { get; set; } = string.Empty;
+
+    [JsonProperty("beginnerGuideUrl")]
+    public virtual string BeginnerGuideUrl { get; set; } = string.Empty;
+
+    [JsonProperty("faqUrl")]
+    public virtual string FaqUrl { get; set; } = string.Empty;
 
     #region override
 

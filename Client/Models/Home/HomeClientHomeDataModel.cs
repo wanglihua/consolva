@@ -89,4 +89,10 @@ public class HomeClientHomeDataModel {
 
     [JsonProperty("followTipUrl")]
     public string FollowTipUrl { get; set; } = string.Empty;
+
+    [JsonProperty("beginnerGuideUrl")]
+    public string BeginnerGuideUrl { get; set; } = string.Empty;
+
+    [JsonProperty("faqUrl")]
+    public string FaqUrl { get; set; } = string.Empty;
 }

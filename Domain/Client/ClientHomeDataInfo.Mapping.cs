@@ -266,5 +266,23 @@ public class ClientHomeCountInfoMapping : ClassMapping<ClientHomeDataInfo> {
                 map.NotNullable(true);
             }
         );
+
+        Property(
+            x => x.BeginnerGuideUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("beginner_guide_url");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.FaqUrl,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("faq_url");
+                map.NotNullable(true);
+            }
+        );
     }
 }
