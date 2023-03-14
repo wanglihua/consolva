@@ -12,11 +12,12 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Controllers;
+namespace shunda.Client.Areas.Pay.Controllers;
 
 /// <summary>
 /// 订单支付
 /// </summary>
+[PayArea]
 public class WechatAppOrderWechatPayController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 

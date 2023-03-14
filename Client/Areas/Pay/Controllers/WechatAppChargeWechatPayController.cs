@@ -10,11 +10,12 @@ using shunda.Core.WechatPay;
 using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Controllers;
+namespace shunda.Client.Areas.Pay.Controllers;
 
 /// <summary>
 /// 充值支付
 /// </summary>
+[PayArea]
 public class WechatAppChargeWechatPayController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
