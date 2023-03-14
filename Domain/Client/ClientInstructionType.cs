@@ -8,7 +8,7 @@ namespace shunda.Domain.Client;
 public class ClientInstructionType : CodeTypeBase {
     /// <summary>
     /// 使用协议
-    /// todo  应该是不再使用了，后面去掉
+    /// 现在只用在公众号菜单里面
     /// </summary>
     public static readonly ClientInstructionType UseAgreement = new ClientInstructionType(1000, "使用协议", "使用协议");
 
