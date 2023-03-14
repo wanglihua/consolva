@@ -41,7 +41,7 @@ page {
     text-align: cener;
     display: block;
     font-size: 10px;
-    color: lightgray;
+    color: gray;
 }
 
 .search-bar {

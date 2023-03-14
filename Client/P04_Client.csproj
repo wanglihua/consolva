@@ -42,4 +42,8 @@
         <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\Pay\Controllers" />
+    </ItemGroup>
+
 </Project>

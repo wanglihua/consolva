@@ -66,7 +66,7 @@ public class WechatAppExpressReturnWechatPayController : Controller {
         });
     }
 
-    private const string NOTIFY_URL = "//client/wechat/app/express/return/wechat/pay/notify";
+    private const string NOTIFY_URL = "/client/wechat/app/express/return/wechat/pay/notify";
 
     [NoLoginRequired]
     [HttpPost]
