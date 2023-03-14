@@ -1,7 +1,7 @@
 using FluentValidation;
 using Newtonsoft.Json;
 
-namespace shunda.Client.Models.WechatAppOrderWechatPay;
+namespace shunda.Client.Areas.Pay.Models.WechatAppOrderWechatPay;
 
 public class WechatAppOrderWechatPayCreateParam {
     [JsonProperty("orderId")]

@@ -1,7 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using shunda.Client.Models.WechatAppExpressReturnWechatPay;
+using shunda.Client.Areas.Pay.Models.WechatAppExpressReturnWechatPay;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
