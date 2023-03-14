@@ -46,4 +46,12 @@
             <van-button type="info" class-prefix="iconfont" icon="copy" block bind:click="onFullAddressCopyClick">复制仓库完整地址</van-button>
         </van-cell>
     </van-cell-group>
+    
+    <view class="tip">
+        <view class="tip-title">温馨提示：</view>
+        <view class="tip-content">●请务必填写收件人及详细地址中的六个字母的代码</view>
+        <view class="tip-content">●不要做任何更改，避免无法将包裹登记在您的名下</view>
+        <view class="tip-content">●请在邮寄物品后，及时在系统内进行预报，我们会在收到物品后为您自动入库</view>
+        <view class="tip-content">●如果发现签收2天未入库，请及时联系客服确认（避免快递包裹上面的六个字母代码被隐藏）</view>
+    </view>
 </view>
