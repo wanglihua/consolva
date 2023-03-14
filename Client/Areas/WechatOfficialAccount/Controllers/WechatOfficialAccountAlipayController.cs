@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Core.Web;
+using shunda.Client.Areas.WechatOfficialAccount.Filters;
 
 namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 
@@ -9,12 +9,9 @@ namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 [WechatOfficialAccountArea]
 public class WechatOfficialAccountAlipayController : Controller {
     [HttpPost]
+    [ServiceFilter(typeof(WechatOfficialAccountAutoLoginFilter))]
     [Route("/client/wechat/official/account/alipay")]
     public IActionResult Index() {
-        // 应该是展现一个订单列表界面
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        return View("WechatOfficialAccountAlipayIndex");
     }
 }
