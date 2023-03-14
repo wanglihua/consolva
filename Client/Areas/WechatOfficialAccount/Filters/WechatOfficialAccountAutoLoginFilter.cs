@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Filters;
+using shunda.Core.Service;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.WechatOfficialAccount.Filters;
@@ -6,6 +7,7 @@ namespace shunda.Client.Areas.WechatOfficialAccount.Filters;
 /// <summary>
 /// 在需要微信公众号自动登录的Action上放上 [ServiceFilter(typeof(WechatOfficialAccountAutoLoginFilter))]
 /// </summary>
+[Service(ServiceType.Scoped)]
 public class WechatOfficialAccountAutoLoginFilter : ActionFilterAttribute {
     private readonly ISession session;
 
