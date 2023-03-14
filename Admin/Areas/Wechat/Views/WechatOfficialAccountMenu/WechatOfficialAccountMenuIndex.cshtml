@@ -12,18 +12,23 @@
 }
 
 <div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-success btn-sm" onclick="uploadMenu();">
+    <button type="button" class="btn btn-success btn-sm" onclick="createMenu();">
         <i class="ace-icon fa fa-plus"></i>
-        上传菜单
+        创建菜单
+    </button>
+
+    <button type="button" class="btn btn-success btn-sm" onclick="createMenu();">
+        <i class="ace-icon fa fa-plus"></i>
+        删除菜单
     </button>
 </div>
 
 <script type="text/javascript">
     
-    function uploadMenu() {
-        $.msg.confirm("确认要上传微信公众号菜单吗？", function() {
+    function createMenu() {
+        $.msg.confirm("确认要创建微信公众号菜单吗？", function() {
             $.ajax({
-                url: '@Url.Action("UploadMenu", "WechatOfficialAccountMenu")',
+                url: '@Url.Action("Create", "WechatOfficialAccountMenu")',
                 type: "POST",
                 success: function(data) {
                     if (data.success === false) {
@@ -37,4 +42,20 @@
         });
     }
     
+    function deleteMenu() {
+        $.msg.confirm("确认要删除微信公众号菜单吗？", function() {
+            $.ajax({
+                url: '@Url.Action("Delete", "WechatOfficialAccountMenu")',
+                type: "POST",
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    } 
+                    
+                    $.msg.show(data.message);
+                }
+            });
+        });
+    }
 </script>

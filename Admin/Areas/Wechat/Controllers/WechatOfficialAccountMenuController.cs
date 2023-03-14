@@ -33,8 +33,8 @@ public class WechatOfficialAccountMenuController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/wechat/official/account/menu/upload")]
-    public IActionResult Upload() {
+    [Route("/admin/wechat/official/account/menu/create")]
+    public IActionResult Create() {
         ButtonGroup menu = new ButtonGroup();
 
         #region menu1
@@ -43,17 +43,17 @@ public class WechatOfficialAccountMenuController : Controller {
 
         var mainMenu1 = new SubButton() { name = "转运管理" };
 
-        mainMenu1.sub_button.Add(new SingleMiniProgramButton {
-            name = "仓库地址",
-            appid = WechatAppConfig.AppId,
-            pagepath = "pages/instruction/instruction_warehouse_address",
-        });
-
-        mainMenu1.sub_button.Add(new SingleMiniProgramButton {
-            name = "包裹预报",
-            appid = WechatAppConfig.AppId,
-            pagepath = "pages/express/express_expect/express_expect_list",
-        });
+        // mainMenu1.sub_button.Add(new SingleMiniProgramButton {
+        //     name = "仓库地址",
+        //     appid = WechatAppConfig.AppId,
+        //     pagepath = "pages/instruction/instruction_warehouse_address",
+        // });
+        //
+        // mainMenu1.sub_button.Add(new SingleMiniProgramButton {
+        //     name = "包裹预报",
+        //     appid = WechatAppConfig.AppId,
+        //     pagepath = "pages/express/express_expect/express_expect_list",
+        // });
 
         mainMenu1.sub_button.Add(new SingleViewButton {
             name = "活动福利",
@@ -78,13 +78,15 @@ public class WechatOfficialAccountMenuController : Controller {
 
         // menu2
 
-        var mainMenu2 = new SingleMiniProgramButton() {
-            name = "开始集运",
-            appid = WechatAppConfig.AppId,
-            pagepath = "pages/home/home_index",
-        };
-
-        menu.button.Add(mainMenu2);
+        // var mainMenu2 = new SubButton("开始集运");
+        //
+        // mainMenu2.sub_button.Add(new SingleMiniProgramButton() {
+        //     name = "开始集运",
+        //     appid = WechatAppConfig.AppId,
+        //     pagepath = "pages/home/home_index",
+        // });
+        //
+        // menu.button.Add(mainMenu2);
 
         #endregion
 
@@ -129,9 +131,21 @@ public class WechatOfficialAccountMenuController : Controller {
 
         log.Error($"create menu result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}");
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", $"微信公众号菜单上传 result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}！" },
+        return Json(new JsonResultData {
+            Success = true,
+            Message = $"微信公众号菜单创建 result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/wechat/official/account/menu/delete")]
+    public IActionResult Delete() {
+        var accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
+        var result = CommonApi.DeleteMenu(accessToken);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = $"微信公众号菜单删除 result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}！",
         });
     }
 }
