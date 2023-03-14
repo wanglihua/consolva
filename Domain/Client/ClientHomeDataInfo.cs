@@ -117,6 +117,9 @@ public class ClientHomeDataInfo {
     [JsonProperty("faqUrl")]
     public virtual string FaqUrl { get; set; } = string.Empty;
 
+    [JsonProperty("scoreRemarkUrl")]
+    public virtual string ScoreRemarkUrl { get; set; } = string.Empty;
+
     #region override
 
     public override bool Equals(object? obj) {

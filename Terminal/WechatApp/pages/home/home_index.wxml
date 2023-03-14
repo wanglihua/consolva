@@ -49,7 +49,7 @@
                     <view class="grid-text-sub">券在我手 省钱我有</view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="beginner-guide" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="beginner-guide" icon-class="home-grid-icon" url="./home_web_view?url={{ homeData.beginnerGuideUrl }}&title=新手指南" text-class=" grid-text">
                 <view slot="text">
                     <view class="grid-text-main">新手指南</view>
                     <view class="grid-text-sub">常见问题 快速解答</view>

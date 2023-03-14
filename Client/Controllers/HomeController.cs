@@ -156,6 +156,7 @@ public class HomeController : Controller {
             FollowTipUrl = homeData.FollowTipUrl,
             BeginnerGuideUrl = homeData.BeginnerGuideUrl,
             FaqUrl = homeData.FaqUrl,
+            ScoreRemarkUrl = homeData.ScoreRemarkUrl,
         };
 
         return Json(new JsonResultData {

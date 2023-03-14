@@ -29,9 +29,9 @@ public class ClientInstructionType : CodeTypeBase {
     public static readonly ClientInstructionType OrderProcess = new ClientInstructionType(4000, "下单流程", "下单流程");
 
     /// <summary>
-    /// 优惠活动
+    /// 活动福利
     /// </summary>
-    public static readonly ClientInstructionType Promotion = new ClientInstructionType(5000, "优惠活动", "优惠活动");
+    public static readonly ClientInstructionType Promotion = new ClientInstructionType(5000, "活动福利", "活动福利");
 
     /// <summary>
     /// 仓储说明
@@ -70,6 +70,11 @@ public class ClientInstructionType : CodeTypeBase {
     public static readonly ClientInstructionType Faq = new ClientInstructionType(12000, "常见问题", "常见问题");
 
     /// <summary>
+    /// 积分说明
+    /// </summary>
+    public static readonly ClientInstructionType ScoreRemark = new ClientInstructionType(13000, "积分说明", "积分说明");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly ClientInstructionType None = new ClientInstructionType(0, "", "");
@@ -87,6 +92,7 @@ public class ClientInstructionType : CodeTypeBase {
         OrderSimpleStep,
         BeginnerGuide,
         Faq,
+        ScoreRemark,
     };
 
     private static readonly IDictionary<int, ClientInstructionType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

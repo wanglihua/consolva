@@ -56,13 +56,13 @@
                     <view class="grid-text-sub"></view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="score-remark" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="score-remark" icon-class="home-grid-icon" url="./home_web_view?url={{ homeData.scoreRemarkUrl }}&title=积分说明" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">积分说明</view>
                     <view class="grid-text-sub"></view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="question" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="question" icon-class="home-grid-icon" url="./home_web_view?url={{ homeData.faqUrl }}&title=常见问题" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">常见问题</view>
                     <view class="grid-text-sub"></view>
