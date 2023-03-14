@@ -9,7 +9,7 @@ namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 /// </summary>
 [WechatOfficialAccountArea]
 public class WechatOfficialAccountPaypalController : Controller {
-    [HttpPost]
+    [HttpGet]
     [ServiceFilter(typeof(WechatOfficialAccountAutoLoginFilter))]
     [Route("/client/wechat/official/account/paypal")]
     public IActionResult Index() {

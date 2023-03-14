@@ -17,37 +17,37 @@ public class WechatOfficialAccountArticleViewController : Controller {
         this.session = session;
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/client/wechat/official/account/article/promotion")]
     public IActionResult Promotion() {
         return Redirect(GetArticleUrl(ClientInstructionType.Promotion));
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/client/wechat/official/account/article/goods/type")]
     public IActionResult GoodsType() {
         return Redirect(GetArticleUrl(ClientInstructionType.GoodsType));
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/client/wechat/official/account/article/use/agreement")]
     public IActionResult UseAgreement() {
         return Redirect(GetArticleUrl(ClientInstructionType.UseAgreement));
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/client/wechat/official/account/article/insurance/clause")]
     public IActionResult InsuranceClause() {
         return Redirect(GetArticleUrl(ClientInstructionType.InsuranceClause));
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/client/wechat/official/account/article/score/remark")]
     public IActionResult ScoreRemark() {
         return Redirect(GetArticleUrl(ClientInstructionType.ScoreRemark));
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/client/wechat/official/account/article/freight/desc")]
     public IActionResult FreightDesc() {
         return Redirect(GetArticleUrl(ClientInstructionType.FreightDesc));
