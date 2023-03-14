@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Alipay.AopSdk.Core" Version="2.5.0.1" />
         <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.13.0" />
         <PackageReference Include="CSRedisCore" Version="3.8.669" />
         <PackageReference Include="FluentValidation" Version="11.4.0" />
