@@ -42,11 +42,4 @@
         <ProjectReference Include="..\Domain\P03_Domain.csproj" />
         <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\static\images\favicon.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\static\images\logo.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\static\images\shunda_qr1.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\static\images\shunda_qr2.jpg" />
-    </ItemGroup>
 </Project>
