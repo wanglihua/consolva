@@ -12,11 +12,12 @@ using shunda.Service.Wechat;
 using shunda.Service.Wechat.CustomMessageHandler;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Controllers;
+namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 
 #pragma warning disable 0618
 
 [NoLoginRequired]
+[WechatOfficialAccountArea]
 public class WechatOfficialAccountCallbackController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 

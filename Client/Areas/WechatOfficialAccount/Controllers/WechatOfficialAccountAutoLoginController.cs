@@ -11,9 +11,10 @@ using shunda.Service.Customer;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Controllers;
+namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 
 [NoLoginRequired]
+[WechatOfficialAccountArea]
 public class WechatOfficialAccountAutoLoginController : Controller {
     private readonly ISession session;
     private readonly WechatOfficialAccountSessionService wechatOfficialAccountSessionService;

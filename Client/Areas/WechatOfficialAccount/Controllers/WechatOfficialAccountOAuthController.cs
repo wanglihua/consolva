@@ -9,9 +9,10 @@ using shunda.Core.Redis;
 using shunda.Core.Web;
 using shunda.Service.Wechat;
 
-namespace shunda.Client.Controllers;
+namespace shunda.Client.Areas.WechatOfficialAccount.Controllers;
 
 [NoLoginRequired]
+[WechatOfficialAccountArea]
 public class WechatOfficialAccountOAuthController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
