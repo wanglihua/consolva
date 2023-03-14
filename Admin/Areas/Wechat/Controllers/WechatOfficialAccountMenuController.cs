@@ -14,7 +14,7 @@ namespace shunda.Admin.Areas.Wechat.Controllers;
 [WechatArea]
 public class WechatOfficialAccountMenuController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
-    
+
     private readonly ISession session;
     private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;
 
@@ -37,107 +37,97 @@ public class WechatOfficialAccountMenuController : Controller {
     public IActionResult UploadMenu() {
         ButtonGroup menu = new ButtonGroup();
 
+        #region menu1
+
         // menu1
+
         var mainMenu1 = new SubButton() { name = "转运管理" };
 
-        // mainMenu1.sub_button.Add(new SingleViewButton {
-        //     name = "下单流程",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/order/process")
-        // });
-        //
-        // mainMenu1.sub_button.Add(new SingleViewButton {
-        //     name = "快递预报",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/express/expect/list")
-        // });
-        //
-        // mainMenu1.sub_button.Add(new SingleViewButton {
-        //     name = "我要认领",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/express/claim/list")
-        // });
-        //
-        // mainMenu1.sub_button.Add(new SingleViewButton {
-        //     name = "提交转运",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/express/checkin/list")
-        // });
+        mainMenu1.sub_button.Add(new SingleMiniProgramButton {
+            name = "仓库地址",
+            appid = WechatAppConfig.AppId,
+            pagepath = "pages/instruction/instruction_warehouse_address",
+        });
 
         mainMenu1.sub_button.Add(new SingleMiniProgramButton {
-            name = "舜达首页",
-            // url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/client")
+            name = "包裹预报",
             appid = WechatAppConfig.AppId,
-            pagepath = "pages/home/home_index",
+            pagepath = "pages/express/express_expect/express_expect_list",
+        });
+
+        mainMenu1.sub_button.Add(new SingleViewButton {
+            name = "活动福利",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/promotion",
+        });
+
+        mainMenu1.sub_button.Add(new SingleViewButton {
+            name = "PayPal支付",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/paypal",
+        });
+
+        mainMenu1.sub_button.Add(new SingleViewButton {
+            name = "支付宝支付",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/alipay",
         });
 
         menu.button.Add(mainMenu1);
 
-        // // menu2
-        // var mainMenu2 = new SubButton() { name = "费用相关" };
-        //
-        // mainMenu2.sub_button.Add(new SingleViewButton {
-        //     name = "收费标准",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/freight/desc")
-        // });
-        //
-        // mainMenu2.sub_button.Add(new SingleViewButton {
-        //     name = "优惠来袭",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/promotion")
-        // });
-        //
-        // mainMenu2.sub_button.Add(new SingleViewButton {
-        //     name = "预估运费",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/freight/estimate")
-        // });
-        //
-        // mainMenu2.sub_button.Add(new SingleViewButton {
-        //     name = "积分查询",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/score")
-        // });
-        //
-        // mainMenu2.sub_button.Add(new SingleViewButton {
-        //     name = "支付明细",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/pay/history")
-        // });
-        //
-        // menu.button.Add(mainMenu2);
+        #endregion
 
-        // // menu3
-        // var mainMenu3 = new SubButton() { name = "转运须知" };
-        //
-        // mainMenu3.sub_button.Add(new SingleViewButton {
-        //     name = "澳拼仓库",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/warehouse/address")
-        // });
-        //
-        // mainMenu3.sub_button.Add(new SingleViewButton {
-        //     name = "产品分类",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/goods/list")
-        // });
-        //
-        // mainMenu3.sub_button.Add(new SingleViewButton {
-        //     name = "使用协议",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/use/agreement")
-        // });
-        //
-        // mainMenu3.sub_button.Add(new SingleViewButton {
-        //     name = "运输时效",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/transport/limit")
-        // });
-        //
-        // mainMenu3.sub_button.Add(new SingleViewButton {
-        //     name = "保险条款",
-        //     url = GetWeiXinAccount1AutoLoginUrl(SiteConfig.SiteRoot + "/mobile/insurance/clause")
-        // });
-        //
-        // menu.button.Add(mainMenu3);
+        #region menu2
+
+        // menu2
+
+        var mainMenu2 = new SubButton() { name = "开始集运" };
+
+        menu.button.Add(mainMenu2);
+
+        #endregion
+
+        #region menu3
+
+        // menu3
+
+        var mainMenu3 = new SubButton() { name = "转运须知" };
+
+        mainMenu3.sub_button.Add(new SingleViewButton {
+            name = "物品分类",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/goods/type",
+        });
+
+        mainMenu3.sub_button.Add(new SingleViewButton {
+            name = "使用协议",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/use/agreement",
+        });
+
+        mainMenu3.sub_button.Add(new SingleViewButton {
+            name = "理赔条款",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/insurance/clause",
+        });
+
+        mainMenu3.sub_button.Add(new SingleViewButton {
+            name = "积分说明",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/score/remark",
+        });
+
+        mainMenu3.sub_button.Add(new SingleViewButton {
+            name = "收费标准",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/freight/desc",
+        });
+
+        menu.button.Add(mainMenu3);
+
+        #endregion
 
         // create
         var accessToken = wechatOfficialAccountAccessTokenService.GetAccessToken();
         var result = CommonApi.CreateMenu(accessToken, menu);
 
-        log.Error($"create menu result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}" );
+        log.Error($"create menu result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}");
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
-            { "message", $"微信公众号菜单上传 result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}！"},
+            { "message", $"微信公众号菜单上传 result:  errcode: {result.errcode}, ErrorCodeValue:{result.ErrorCodeValue}, errmsg:{result.errmsg}！" },
         });
     }
 }
