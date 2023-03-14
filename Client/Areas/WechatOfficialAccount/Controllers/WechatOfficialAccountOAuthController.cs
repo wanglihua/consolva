@@ -31,11 +31,6 @@ public class WechatOfficialAccountOAuthController : Controller {
     [HttpGet]
     [Route(CallbackUrl)]
     public IActionResult Callback1(string code, string state, string returnUrl) {
-        return CallbackInternal(code, state, returnUrl);
-    }
-
-    [NonAction]
-    private IActionResult CallbackInternal(string code, string state, string returnUrl) {
         try {
             if (string.IsNullOrEmpty(code)) {
                 throw new Exception("参数 code 不能为空！");
