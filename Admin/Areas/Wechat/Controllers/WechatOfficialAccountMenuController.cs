@@ -33,8 +33,8 @@ public class WechatOfficialAccountMenuController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/wei/xin/create/menu/1")]
-    public IActionResult UploadMenu() {
+    [Route("/admin/wechat/official/account/menu/upload")]
+    public IActionResult Upload() {
         ButtonGroup menu = new ButtonGroup();
 
         #region menu1
