@@ -8,6 +8,7 @@ namespace shunda.Domain.Client;
 public class ClientInstructionType : CodeTypeBase {
     /// <summary>
     /// 使用协议
+    /// todo  应该是不再使用了，后面去掉
     /// </summary>
     public static readonly ClientInstructionType UseAgreement = new ClientInstructionType(1000, "使用协议", "使用协议");
 
@@ -23,6 +24,7 @@ public class ClientInstructionType : CodeTypeBase {
 
     /// <summary>
     /// 下单流程
+    /// todo  应该是不再使用了，后面去掉
     /// </summary>
     public static readonly ClientInstructionType OrderProcess = new ClientInstructionType(4000, "下单流程", "下单流程");
 
@@ -33,6 +35,7 @@ public class ClientInstructionType : CodeTypeBase {
 
     /// <summary>
     /// 仓储说明
+    /// todo  应该是不再使用了，后面去掉
     /// </summary>
     public static readonly ClientInstructionType StorageInstruction = new ClientInstructionType(6000, "仓储说明", "仓储说明");
 
@@ -59,7 +62,7 @@ public class ClientInstructionType : CodeTypeBase {
     /// <summary>
     /// 新手指南
     /// </summary>
-    public static readonly ClientInstructionType BeginerGuide = new ClientInstructionType(11000, "新手指南", "新手指南");
+    public static readonly ClientInstructionType BeginnerGuide = new ClientInstructionType(11000, "新手指南", "新手指南");
 
     /// <summary>
     /// 常见问题
@@ -82,7 +85,7 @@ public class ClientInstructionType : CodeTypeBase {
         FollowTip,
         CustomerService,
         OrderSimpleStep,
-        BeginerGuide,
+        BeginnerGuide,
         Faq,
     };
 
