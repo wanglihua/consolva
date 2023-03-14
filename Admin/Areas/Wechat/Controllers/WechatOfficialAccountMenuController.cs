@@ -78,7 +78,11 @@ public class WechatOfficialAccountMenuController : Controller {
 
         // menu2
 
-        var mainMenu2 = new SubButton() { name = "开始集运" };
+        var mainMenu2 = new SingleMiniProgramButton() {
+            name = "开始集运",
+            appid = WechatAppConfig.AppId,
+            pagepath = "pages/home/home_index",
+        };
 
         menu.button.Add(mainMenu2);
 
