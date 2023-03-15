@@ -21,6 +21,7 @@ using shunda.Core.Service;
 using shunda.Domain;
 using shunda.Service;
 using StackExchange.Profiling;
+using Alipay.AopSdk.AspnetCore;
 
 namespace shunda.Client;
 
@@ -95,6 +96,18 @@ public class Program {
         services.AddSenparcGlobalServices(builder.Configuration);
         services.AddSenparcWeixinServices(builder.Configuration);
 
+        // 支付宝支付
+        services.AddAlipay(options => {
+            options.PrivateKey = AlipayConfig.PrivateKey;
+            options.AlipayPublicKey = AlipayConfig.PublicKey;
+            options.AppId = AlipayConfig.AppId;
+            options.Uid = AlipayConfig.Partner;
+            options.CharSet = AlipayConfig.CharSet;
+            options.Gatewayurl = AlipayConfig.GatewayUrl;
+            options.SignType = AlipayConfig.SignType;
+            options.IsKeyFromFile = false;
+        });
+
         services.AddHttpClient();
 
         // 这个可以保证 Html.Action() 的正确执行
@@ -166,7 +179,7 @@ public class Program {
         });
 
         CacheStrategyDomainWarehouse.RegisterCacheStrategyDomain(LocalContainerCacheStrategy.Instance);
-        AccessTokenContainer.RegisterAsync(WechatOfficialAccountConfig.AppId, WechatOfficialAccountConfig.AppSecret);        
+        AccessTokenContainer.RegisterAsync(WechatOfficialAccountConfig.AppId, WechatOfficialAccountConfig.AppSecret);
 
         app.Run();
     }
