@@ -26,6 +26,10 @@ page {
     color: #e3b71d;
 }
 
+.van-grid-item__content {
+    padding: 10px 8px !important;
+}
+
 .grid-text {
     margin-top: 6px !important;
 }

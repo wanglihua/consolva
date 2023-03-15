@@ -56,9 +56,6 @@
                 </view>
             </van-grid-item>
         </van-grid>
-    </view>
-
-    <view style="background-color: white; margin-bottom: 20rpx; padding: 10px;">
         <van-grid border="{{false}}" column-num="3">
             <van-grid-item icon-prefix="iconfont" icon="express-expect" icon-class="home-grid-icon" badge="{{ homeData.expressExpectBadge }}" url="/pages/express/express_expect/express_expect_list" text-class="grid-text">
                 <view slot="text">
