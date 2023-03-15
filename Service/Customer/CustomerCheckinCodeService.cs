@@ -15,17 +15,30 @@ public class CustomerCheckinCodeService {
         this.session = session;
     }
 
+    // private static readonly IDictionary<string, string> CODE_CHINESE_MAP = new Dictionary<string, string>() {
+    //     { "0", "零" },
+    //     { "1", "壹" },
+    //     { "2", "贰" },
+    //     { "3", "叁" },
+    //     { "4", "肆" },
+    //     { "5", "伍" },
+    //     { "6", "陆" },
+    //     { "7", "柒" },
+    //     { "8", "捌" },
+    //     { "9", "玖" },
+    // };
+
     private static readonly IDictionary<string, string> CODE_CHINESE_MAP = new Dictionary<string, string>() {
         { "0", "零" },
-        { "1", "壹" },
-        { "2", "贰" },
-        { "3", "叁" },
-        { "4", "肆" },
-        { "5", "伍" },
-        { "6", "陆" },
-        { "7", "柒" },
-        { "8", "捌" },
-        { "9", "玖" },
+        { "1", "一" },
+        { "2", "二" },
+        { "3", "三" },
+        { "4", "四" },
+        { "5", "五" },
+        { "6", "六" },
+        { "7", "七" },
+        { "8", "八" },
+        { "9", "九" },
     };
 
     private static readonly IList<string> CHECKIN_CODE_CHAR_LIST = CODE_CHINESE_MAP.Keys.OrderBy(e => e).ToList();
