@@ -14,14 +14,9 @@ public class CustomerCheckinCodeService {
         this.session = session;
     }
 
-    // string checkinCodeChars = "3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,j,k,m,n,p,r,s,t,u,v,w,x,y,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,U,V,W,X,Y";
-    private static readonly string CHECKIN_CODE_CHARS = "a,b,c,d,e,f,g,h,j,k,m,n,p,r,s,t,u,v,w,x,y";
+    private static readonly string CHECKIN_CODE_CHARS = "0,1,2,3,4,5,6,7,8,9";
     private static readonly string[] CHECKIN_CODE_CHAR_ARRAY = CHECKIN_CODE_CHARS.Split(new Char[] { ',' });
     private static readonly int CHECKIN_CODE_CHAR_ARRAY_LENGTH = CHECKIN_CODE_CHAR_ARRAY.Length;
-
-    private static readonly IDictionary<string, int> DICT_CHECKIN_CODE_INDEX = CHECKIN_CODE_CHAR_ARRAY
-        .Select((e, index) => new { Code = e, Index = index })
-        .ToDictionary(e => e.Code, e => e.Index);
 
     /// <summary>
     /// 生成一个跟现有的不相重的入库校验码
@@ -36,9 +31,9 @@ public class CustomerCheckinCodeService {
                 randCheckCodeList.Add(RandCode());
             }
 
-            // 去掉sd 和 sdqq 开头的
+            // 去掉0开头的
             randCheckCodeList = randCheckCodeList
-                .Where(e => e.StartsWith("sd") == false && e.StartsWith("sdqq") == false) // 假设生成的都是小写的
+                .Where(e => e.StartsWith("0") == false)
                 .ToList();
 
             if (randCheckCodeList.Count > 0) {
@@ -72,55 +67,18 @@ public class CustomerCheckinCodeService {
     public string RandCode() {
         string code = ""; //产生的随机数
         Dictionary<int, bool> codeIndexMap = new Dictionary<int, bool>();
-        int indexSum = 0;
         Random rand = new Random();
-        for (int i = 0; i < CODE_LENGTH - 1; i++) {
-            int codeIndex = rand.Next(CHECKIN_CODE_CHAR_ARRAY.Length);
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            int codeIndex = rand.Next(CHECKIN_CODE_CHAR_ARRAY_LENGTH);
             // 保证生成的 checkin code 各个字母都不相同
             while (codeIndexMap.ContainsKey(codeIndex)) {
-                codeIndex = rand.Next(CHECKIN_CODE_CHAR_ARRAY.Length);
+                codeIndex = rand.Next(CHECKIN_CODE_CHAR_ARRAY_LENGTH);
             }
 
             code += CHECKIN_CODE_CHAR_ARRAY[codeIndex]; //随机数的位数加一
             codeIndexMap.Add(codeIndex, true);
-            indexSum += codeIndex;
         }
-
-        // 校验位
-        indexSum %= CHECKIN_CODE_CHAR_ARRAY_LENGTH;
-        code += CHECKIN_CODE_CHAR_ARRAY[indexSum];
 
         return code;
-    }
-
-    /// <summary>
-    /// 用校验位验证入库码的合法性
-    /// </summary>
-    /// <returns></returns>
-    public bool CheckCheckinCodeValid(string checkinCode) {
-        if (string.IsNullOrWhiteSpace(checkinCode)) {
-            return false;
-        }
-
-        checkinCode = checkinCode.ToLower();
-
-        if (checkinCode.Length != CODE_LENGTH) {
-            return false;
-        }
-
-        int codeIndexSum = 0;
-        for (int i = 0; i < CODE_LENGTH - 1; i++) {
-            string codeSingle = checkinCode[i].ToString();
-            if (DICT_CHECKIN_CODE_INDEX.ContainsKey(codeSingle)) {
-                codeIndexSum += DICT_CHECKIN_CODE_INDEX[codeSingle];
-            }
-        }
-
-        codeIndexSum %= CHECKIN_CODE_CHAR_ARRAY_LENGTH;
-        if (CHECKIN_CODE_CHAR_ARRAY[codeIndexSum] != checkinCode[CODE_LENGTH - 1].ToString()) {
-            return false;
-        }
-
-        return true;
     }
 }

@@ -77,10 +77,6 @@ public class CustomerCodeService {
 
         remain = remain.ToLower(); // 数据库中是小写存储的
 
-        if (customerCheckinCodeService.CheckCheckinCodeValid(remain) == false) {
-            return PARSE_FAIL_CUSTOMER_ID;
-        }
-
         var customerCheckinCode = session.Query<CustomerCheckinCodeInfo>()
             .Where(e => e.CheckinCode == remain)
             .Take(1)
