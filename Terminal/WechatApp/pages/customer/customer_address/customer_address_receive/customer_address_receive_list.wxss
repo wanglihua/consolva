@@ -1,0 +1,19 @@
+.tip {
+    padding: 10px;
+    font-size: 12px;
+    color: #545556;
+    line-height: 26px;
+    background-color: white;
+}
+
+.tip-title {
+    font-weight: bold;
+}
+
+.tip-content {
+    padding-left: 1em;
+}
+
+.tip-content:first-letter {
+    margin-left: -1em;
+}
