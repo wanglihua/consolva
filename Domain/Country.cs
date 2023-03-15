@@ -18,18 +18,10 @@ public class Country : CodeTypeBase {
     /// </summary>
     public static readonly Country America = new Country(3000, "America", "美国", "美国");
 
-    /*
-    暂时不开放
-    
     /// <summary>
     /// 加拿大, 4000
     /// </summary>
     public static readonly Country Canada = new Country(4000, "Canada", "加拿大", "加拿大");
-
-    /// <summary>
-    /// 英国, 5000
-    /// </summary>
-    public static readonly Country Britain = new Country(5000, "Britain", "英国", "英国");
 
     /// <summary>
     /// 新西兰, 6000
@@ -45,6 +37,14 @@ public class Country : CodeTypeBase {
     /// 马来西亚, 8000
     /// </summary>
     public static readonly Country Malaysia = new Country(8000, "Malaysia", "马来西亚", "马来西亚");
+
+    /*
+    暂时不开放
+
+    /// <summary>
+    /// 英国, 5000
+    /// </summary>
+    public static readonly Country Britain = new Country(5000, "Britain", "英国", "英国");
 
     /// <summary>
     /// 日本, 9000
@@ -73,12 +73,13 @@ public class Country : CodeTypeBase {
         China,
         Australia,
         America,
-        /*
         Canada,
-        Britain,
         NewZealand,
         Singapore,
         Malaysia,
+
+        /*
+        Britain,
         Japan,
         Thailand,
         Indonesia,
