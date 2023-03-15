@@ -1,3 +1,4 @@
+using System.Text;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using ISession = NHibernate.ISession;
@@ -14,9 +15,21 @@ public class CustomerCheckinCodeService {
         this.session = session;
     }
 
-    private static readonly string CHECKIN_CODE_CHARS = "0,1,2,3,4,5,6,7,8,9";
-    private static readonly string[] CHECKIN_CODE_CHAR_ARRAY = CHECKIN_CODE_CHARS.Split(new Char[] { ',' });
-    private static readonly int CHECKIN_CODE_CHAR_ARRAY_LENGTH = CHECKIN_CODE_CHAR_ARRAY.Length;
+    private static readonly IDictionary<string, string> CODE_CHINESE_MAP = new Dictionary<string, string>() {
+        { "0", "零" },
+        { "1", "壹" },
+        { "2", "贰" },
+        { "3", "叁" },
+        { "4", "肆" },
+        { "5", "伍" },
+        { "6", "陆" },
+        { "7", "柒" },
+        { "8", "捌" },
+        { "9", "玖" },
+    };
+
+    private static readonly IList<string> CHECKIN_CODE_CHAR_LIST = CODE_CHINESE_MAP.Keys.OrderBy(e => e).ToList();
+    private static readonly int CHECKIN_CODE_CHAR_LIST_LENGTH = CODE_CHINESE_MAP.Keys.Count;
 
     /// <summary>
     /// 生成一个跟现有的不相重的入库校验码
@@ -69,16 +82,41 @@ public class CustomerCheckinCodeService {
         Dictionary<int, bool> codeIndexMap = new Dictionary<int, bool>();
         Random rand = new Random();
         for (int i = 0; i < CODE_LENGTH; i++) {
-            int codeIndex = rand.Next(CHECKIN_CODE_CHAR_ARRAY_LENGTH);
+            int codeIndex = rand.Next(CHECKIN_CODE_CHAR_LIST_LENGTH);
             // 保证生成的 checkin code 各个字母都不相同
             while (codeIndexMap.ContainsKey(codeIndex)) {
-                codeIndex = rand.Next(CHECKIN_CODE_CHAR_ARRAY_LENGTH);
+                codeIndex = rand.Next(CHECKIN_CODE_CHAR_LIST_LENGTH);
             }
 
-            code += CHECKIN_CODE_CHAR_ARRAY[codeIndex]; //随机数的位数加一
+            code += CHECKIN_CODE_CHAR_LIST[codeIndex]; //随机数的位数加一
             codeIndexMap.Add(codeIndex, true);
         }
 
         return code;
+    }
+
+    /// <summary>
+    /// 将代码转成中文
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    public string GetChineseCode(string code) {
+        if (string.IsNullOrWhiteSpace(code)) {
+            return string.Empty;
+        }
+
+        code = code.Trim();
+
+        StringBuilder sb = new StringBuilder();
+        foreach (char codeChar in code) {
+            string codeCharStr = codeChar.ToString();
+            if (CODE_CHINESE_MAP.TryGetValue(codeCharStr, out string? chineseCode)) {
+                sb.Append(chineseCode);
+            } else {
+                sb.Append(codeCharStr);
+            }
+        }
+
+        return sb.ToString();
     }
 }

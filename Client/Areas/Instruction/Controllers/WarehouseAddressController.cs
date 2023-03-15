@@ -64,7 +64,7 @@ public class WarehouseAddressController : Controller {
 
         customerClientContentViewRecordService.RecordView(loginCustomerId, ClientContentType.WarehouseAddress);
 
-        string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
+        string customerCode = customerCodeService.GetCustomerCodeChinese(loginCustomerId);
 
         // 这个格式基本上大多数系统都能识别
         string fullAddress = @$"收件人:{customerCode}
