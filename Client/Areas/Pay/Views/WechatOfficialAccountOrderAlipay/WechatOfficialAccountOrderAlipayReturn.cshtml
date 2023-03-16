@@ -11,9 +11,8 @@
 
 <div style="padding: 20px;">
     @if (Model.Success) {
-        <span style="font-weight: bold;font-size: 28px; color: green;">@(ViewData[ViewDataKey.Title])</span>
-        <span style="font-weight: bold;font-size: 28px;">订单编号：@(Model.Order.Code)</span>
+        <span style="font-weight: bold;font-size: 28px; color: green;">@(Model.Message)</span>
     } else {
-        <span style="font-weight: bold;font-size: 28px; color: red;">@(ViewData[ViewDataKey.Title])</span>
+        <span style="font-weight: bold;font-size: 28px; color: red;">@(Model.Message)</span>
     }
 </div>

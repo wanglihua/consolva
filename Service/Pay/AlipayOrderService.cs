@@ -144,19 +144,19 @@ public class AlipayOrderService {
         }
     }
 
-    public void Callback(Dictionary<string, string> sArray) {
+    public void Callback(Dictionary<string, string> callbackDataDict) {
         try {
-            log.Error("支付宝支付回调 数据: " + JsonConvert.SerializeObject(sArray));
+            log.Error("支付宝支付回调 数据: " + JsonConvert.SerializeObject(callbackDataDict));
         }
         catch (Exception exp) {
             log.Error(exp);
         }
 
-        if (sArray.Count == 0) {
+        if (callbackDataDict.Count == 0) {
             throw new Exception("支付宝支付回调 end fail_001");
         }
 
-        bool checkSuccess = alipayService.RSACheckV1(sArray);
+        bool checkSuccess = alipayService.RSACheckV1(callbackDataDict);
         if (checkSuccess == false) {
             throw new Exception("支付宝支付回调 end fail_003");
         }
@@ -167,7 +167,7 @@ public class AlipayOrderService {
         //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
         //如果有做过处理，不执行商户的业务程序
 
-        string outTradeNo = sArray["out_trade_no"];
+        string outTradeNo = callbackDataDict["out_trade_no"];
         var orderPay = session.Query<LogisticsOrderPayInfo>()
             .Where(e => e.OutTradeNo == outTradeNo)
             .Take(1)
@@ -176,17 +176,17 @@ public class AlipayOrderService {
             throw new Exception("支付宝支付回调 end fail_002");
         }
 
-        if (orderPay.Status == PayStatus.Paid) // 如果该笔支付已经标记为成功，就直接返回 success 就行
-        {
+        // 如果该笔支付已经标记为成功，就直接返回 success 就行
+        if (orderPay.Status == PayStatus.Paid) {
             log.Warn("支付宝支付回调 end success 1");
             return;
         }
 
-        if (sArray.ContainsKey("total_amount") == false) {
+        if (callbackDataDict.ContainsKey("total_amount") == false) {
             throw new Exception($"total_amount 参数未提供，out_trade_no: {outTradeNo}");
         }
 
-        decimal.TryParse(sArray["total_amount"], out decimal payAmount);
+        decimal.TryParse(callbackDataDict["total_amount"], out decimal payAmount);
 
         orderPay.Amount = payAmount;
         orderPay.Status = PayStatus.Paid;
@@ -207,7 +207,6 @@ public class AlipayOrderService {
 
         // 会员积分
         customerScoreService.AddScore(orderPay.Id);
-        
 
         log.Warn("支付宝支付回调 end success 2");
     }

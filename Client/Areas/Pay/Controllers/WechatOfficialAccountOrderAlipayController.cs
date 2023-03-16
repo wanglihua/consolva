@@ -215,137 +215,23 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     // [Route("/client/wechat/official/account/alipay/notify")]
     [Route("/client/order/alipay/notify")] // 跟这个控制器中其他的URL一致
     public IActionResult Notify() {
+        Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
+
+        ICollection<string> requestItem = Request.Form.Keys;
+        foreach (var item in requestItem) {
+            callbackDataDict.Add(item, Request.Form[item]);
+        }
+
         try {
-            bool success = false;
-
-            ITransaction? transaction = null;
-            try {
-                transaction = session.BeginTransaction();
-
-                Tuple<bool, LogisticsOrderInfo?> result = AlipayNotifyInternal();
-                success = result.Item1;
-
-                transaction.Commit();
-            }
-            catch (Exception exp) {
-                log.Error(exp);
-
-                transaction?.Rollback();
-
-                throw; // 重新抛出异常
-            }
-
-            if (success) {
-                return Content("success");
-            } else {
-                return Content("fail");
-            }
+            Transactional.Wrap(session, () => { alipayOrderService.Callback(callbackDataDict); });
+            return Content("success");
         }
         catch (Exception exp) {
             log.Error(exp);
-
             log.Error("支付宝支付异步回调 end fail_004");
+
             return Content("fail");
         }
-    }
-
-    [NonAction]
-    private WechatOfficialAccountOrderAlipayReturnModel AliPayCallbackInternal() {
-        log.Warn("支付宝支付同步回调 begin");
-
-        Dictionary<string, string> sArray = new Dictionary<string, string>();
-
-        ICollection<string> requestItem = Request.Query.Keys;
-        foreach (var item in requestItem) {
-            sArray.Add(item, Request.Query[item]);
-        }
-
-        try {
-            log.Error("支付宝支付同步回调 数据: " + JsonConvert.SerializeObject(sArray));
-        }
-        catch (Exception exp) {
-            log.Error(exp);
-        }
-
-        WechatOfficialAccountOrderAlipayReturnModel model = new WechatOfficialAccountOrderAlipayReturnModel();
-        if (sArray.Count != 0) {
-            bool flag = alipayService.RSACheckV1(sArray);
-            if (flag) {
-                // 标记订单为已支付
-                string outTradeNo = sArray["out_trade_no"];
-                var orderPay = session.Query<LogisticsOrderPayInfo>()
-                    .Where(e => e.OutTradeNo == outTradeNo)
-                    .Take(1)
-                    .SingleOrDefault();
-                if (orderPay == null) {
-                    model.Success = false;
-                    model.Message = "支付失败！";
-
-                    log.Error("支付宝支付同步回调 end fail-001");
-                    // return View("PayAliPayCallback", model);
-                    return model;
-                }
-
-                if (orderPay.Status == PayStatus.Paid) // 如果该笔支付已经是已支付的，直接返回支付成功就行
-                {
-                    model.Success = true;
-                    model.Order = orderPay.Order;
-                    model.Message = "同步验证通过，支付成功！";
-
-                    log.Warn("支付宝支付同步回调 end success 1");
-                    // return View("PayAliPayCallback", model);
-                    return model;
-                }
-
-                if (sArray.ContainsKey("total_amount") == false) {
-                    throw new Exception($"total_amount 参数未提供，out_trade_no: {outTradeNo}");
-                }
-
-                decimal.TryParse(sArray["total_amount"], out decimal payAmount);
-
-                orderPay.Status = PayStatus.Paid;
-                orderPay.Amount = payAmount;
-                session.Update(orderPay);
-                session.Flush();
-
-                LogisticsOrderInfo order = orderPay.Order;
-
-                PayStatus orderPayStatusBefore = order.PayStatus;
-
-                // 合计标记支付状态
-                logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
-
-                PayStatus orderPayStatusAfter = order.PayStatus;
-
-                // 记录日志
-                logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
-
-                // 会员积分
-                customerScoreService.AddScore(orderPay.Id);
-
-                model.Success = true;
-                model.Order = orderPay.Order;
-                model.Message = "同步验证通过，支付成功！";
-
-                log.Warn("支付宝支付同步回调 end success 2");
-                // return View("PayAliPayCallback", model);
-                return model;
-            } else {
-                model.Success = false;
-                model.Message = "支付失败！";
-
-                log.Error("支付宝支付同步回调 end fail-002");
-                // return View("PayAliPayCallback", model);
-                return model;
-            }
-        }
-
-        model.Success = false;
-        model.Message = "";
-
-        log.Error("支付宝支付同步回调 end fail-003");
-
-        return model;
     }
 
     /// <summary>
@@ -354,14 +240,32 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/callback")]
     [Route("/client/order/alipay/return")] // 让浏览器里面的URL好看点
-    [Transactional]
     public IActionResult Return() {
-        WechatOfficialAccountOrderAlipayReturnModel model;
+        Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 
+        ICollection<string> requestItem = Request.Form.Keys;
+        foreach (var item in requestItem) {
+            callbackDataDict.Add(item, Request.Form[item]);
+        }
 
-        model = AliPayCallbackInternal();
+        try {
+            Transactional.Wrap(session, () => { alipayOrderService.Callback(callbackDataDict); });
+            var model = new WechatOfficialAccountOrderAlipayReturnModel {
+                Success = true,
+                Message = "支付成功！",
+            };
+            return View("WechatOfficialAccountOrderAlipayReturn", model);
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+            log.Error("支付宝支付同步回调 end fail_004");
 
-        return View("WechatOfficialAccountOrderAlipayCallback", model);
+            var model = new WechatOfficialAccountOrderAlipayReturnModel {
+                Success = false,
+                Message = "支付失败！",
+            };
+            return View("WechatOfficialAccountOrderAlipayReturn", model);
+        }
     }
 
     #endregion
