@@ -1,3 +1,34 @@
+@using shunda.Core.Web
+@model shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargeAlipay.WechatOfficialAccountChargeAlipayCopyUrlModel
 @{
-    Layout = null;
+    Layout = "_ClientSite";
+    ViewData[ViewDataKey.Title] = "复制链接继续支付";
 }
+
+<div style="margin: 30px; font-size: 16px; line-height: 28px;">
+    <div>
+        如果您是通过微信进入支付页面，但需要支付宝支付，请点击右上角【...】，<span style="font-weight: bold">复制链接</span>到浏览器或直接选择<span style="font-weight: bold">在浏览器中打开</span>，即可使用支付宝支付
+    </div>
+
+    <div style="text-align: center;">
+        <img alt="" style="width: 80%" src="/static/client/images/wechat_open_browser.png"/>
+    </div>
+
+    <br/>
+
+    <div>或也可<a onclick="copyUrl()" style="cursor: pointer;font-weight: bold;">复制</a>下面URL到浏览器。</div>
+    <div>
+        @(Model.Url) <a onclick="copyUrl()" style="cursor: pointer;font-weight: bold;">复制</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function copyUrl() {
+        var txtUrlAutoCopy = $("<input id='txtUrlCopy' type='text' value='@(Model.Url)' />").appendTo('body');
+        txtUrlAutoCopy[0].select();
+        document.execCommand("Copy");
+        txtUrlAutoCopy.remove();
+        
+        $.msg.show("复制URL成功，请粘贴到浏览器！", { icon: 1, time: 2000});   
+    }
+</script>

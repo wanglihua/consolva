@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderAlipay;
 
-public class WechatOfficialAccountAlipayCopyUrlModel {
+public class WechatOfficialAccountOrderAlipayCopyUrlModel {
     [BindNever]
     public string Url { get; set; } = string.Empty;
 }

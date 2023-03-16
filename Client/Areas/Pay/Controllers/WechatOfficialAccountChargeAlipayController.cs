@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
@@ -25,6 +26,8 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
         this.alipayChargeService = alipayChargeService;
     }
 
+    public const string CHARGE_ALIPAY_URL = "/client/charge/alipay/{customerPayCode}/{amountPayCode}";
+
     /// <summary>
     /// 用于复制粘贴到浏览器的URL
     /// </summary>
@@ -32,7 +35,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     /// <param name="amountPayCode">充值金额乘以100后的整数加密后的代码</param>
     /// <returns></returns>
     [HttpGet]
-    [Route("/client/charge/alipay/{customerPayCode}/{amountPayCode}")]
+    [Route(CHARGE_ALIPAY_URL)]
     public IActionResult CopyUrl(string customerPayCode, string amountPayCode) {
         return Json(new JsonResultData {
             Success = true,
@@ -43,9 +46,31 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [HttpGet]
     [Route("/client/charge/alipay/request/{customerPayCode}/{amountPayCode}")]
     public IActionResult AlipayRequest() {
-         return Json(new JsonResultData {
+        return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
         });
+    }
+
+    [HttpPost]
+    [Route("/client/charge/alipay/notify")]
+    public IActionResult Notify() {
+        Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
+
+        ICollection<string> requestItem = Request.Form.Keys;
+        foreach (var item in requestItem) {
+            callbackDataDict.Add(item, Request.Form[item]);
+        }
+
+        try {
+            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); });
+            return Content("success");
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+            log.Error("支付宝支付异步回调 end fail_004");
+
+            return Content("fail");
+        }
     }
 }

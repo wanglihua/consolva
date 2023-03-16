@@ -36,6 +36,8 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         this.alipayOrderService = alipayOrderService;
     }
 
+    public const string ORDER_ALIPAY_URL = "/client/order/alipay/{orderPayCode}/{couponPayCode}";
+
     /// <summary>
     /// 用于复制粘贴到浏览器的URL
     /// </summary>
@@ -44,7 +46,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     /// <returns></returns>
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/{orderPayCode}/{couponPayCode}")]
-    [Route("/client/order/alipay/{orderPayCode}/{couponPayCode}")] // 让复制出来的URL好看一点
+    [Route(ORDER_ALIPAY_URL)] // 让复制出来的URL好看一点
     public IActionResult CopyUrl(string orderPayCode, string couponPayCode) {
         // 检查参数正确性
         int orderId = payService.GetIdFromPayCodeInUrl(orderPayCode);
@@ -61,7 +63,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         }
 
         if (WebUtil.IsWechatRequest(Request)) {
-            WechatOfficialAccountAlipayCopyUrlModel model = new WechatOfficialAccountAlipayCopyUrlModel {
+            WechatOfficialAccountOrderAlipayCopyUrlModel model = new WechatOfficialAccountOrderAlipayCopyUrlModel {
                 Url = Request.GetEncodedUrl()
             };
             return View("WechatOfficialAccountOrderAlipayCopyUrl", model);
@@ -100,9 +102,6 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         return Redirect(alipayRequestUrl);
     }
 
-    /// <summary>
-    /// 支付异步回调通知 需配置域名 因为是支付宝主动post请求这个action 所以要通过域名访问或者公网ip
-    /// </summary>
     [HttpPost]
     // [Route("/client/wechat/official/account/alipay/notify")]
     [Route("/client/order/alipay/notify")] // 跟这个控制器中其他的URL一致
@@ -126,9 +125,6 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         }
     }
 
-    /// <summary>
-    /// 支付同步回调
-    /// </summary>
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/callback")]
     [Route("/client/order/alipay/return")] // 让浏览器里面的URL好看点
