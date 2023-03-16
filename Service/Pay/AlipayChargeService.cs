@@ -1,7 +1,11 @@
 using Alipay.AopSdk.AspnetCore;
+using Alipay.AopSdk.Core.Domain;
+using Alipay.AopSdk.Core.Request;
 using Newtonsoft.Json;
 using NLog;
+using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
@@ -34,7 +38,90 @@ public class AlipayChargeService {
     /// <param name="param">参数对象</param>
     /// <returns>alipay request url 用于跳转支付宝支付</returns>
     public string Create(AlipayChargeCreateParam param) {
-        return "";
+        int customerId = param.CustomerId;
+        decimal amount = param.Amount;
+
+        CustomerInfo customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的充值客户#{customerId}不存在！");
+        }
+
+        if (amount <= 0) {
+            throw new ValidationException("充值金额不能为负或0！");
+        }
+
+        string outTradeNo = payService.GenerateOutTradeNo();
+
+        var customerCharge = new CustomerChargeInfo {
+            ChargeType = CustomerChargeType.Wechat,
+            Customer = customer,
+            OutTradeNo = outTradeNo,
+            Amount = amount,
+            Status = CustomerChargeStatus.New
+        };
+
+        session.Save(customerCharge);
+        session.Flush();
+
+        // 订单名称
+        string subject = $"会员充值_{customerId}_{customerCharge.Id}";
+
+        // 商品描述
+        string itemBody = $"会员充值_{customerId}_{customerCharge.Id}";
+
+        if (param.IsMobile == false) {
+            // 组装业务参数model
+            AlipayTradePagePayModel payModel = new AlipayTradePagePayModel {
+                Subject = subject,
+                Body = itemBody,
+                TotalAmount = amount.ToString("#0.00"),
+                OutTradeNo = outTradeNo,
+                ProductCode = "FAST_INSTANT_TRADE_PAY"
+            };
+
+            AlipayTradePagePayRequest payRequest = new AlipayTradePagePayRequest();
+            // 设置同步回调地址
+            payRequest.SetReturnUrl(param.ReturnUrl);
+            // 设置异步通知接收地址
+            payRequest.SetNotifyUrl(param.NotifyUrl);
+            // 将业务model载入到request
+            payRequest.SetBizModel(payModel);
+
+            var response = alipayService.SdkExecute(payRequest);
+
+            log.Warn("支付宝支付发起 end");
+
+            string alipayRequestUrl = alipayService.Options.Gatewayurl + "?" + response.Body;
+
+            //跳转支付宝支付
+            return alipayRequestUrl;
+        } else {
+            // 组装业务参数model
+            AlipayTradeWapPayModel payModel = new AlipayTradeWapPayModel {
+                Subject = subject,
+                Body = itemBody,
+                TotalAmount = amount.ToString("#0.00"),
+                OutTradeNo = outTradeNo,
+                ProductCode = "QUICK_WAP_WAY"
+            };
+
+            AlipayTradeWapPayRequest payRequest = new AlipayTradeWapPayRequest();
+            // 设置同步回调地址
+            payRequest.SetReturnUrl(param.ReturnUrl);
+            // 设置异步通知接收地址
+            payRequest.SetNotifyUrl(param.NotifyUrl);
+            // 将业务model载入到request
+            payRequest.SetBizModel(payModel);
+
+            var response = alipayService.SdkExecute(payRequest);
+
+            log.Warn("支付宝支付发起 end");
+
+            string alipayRequestUrl = alipayService.Options.Gatewayurl + "?" + response.Body;
+
+            //跳转支付宝支付
+            return alipayRequestUrl;
+        }
     }
 
     public void Callback(Dictionary<string, string> callbackDataDict) {
@@ -53,12 +140,6 @@ public class AlipayChargeService {
         if (checkSuccess == false) {
             throw new Exception("支付宝支付回调 end fail_003");
         }
-
-        //交易状态
-        //判断该笔订单是否在商户网站中已经做过处理
-        //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-        //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
-        //如果有做过处理，不执行商户的业务程序
 
         string outTradeNo = callbackDataDict["out_trade_no"];
     }
