@@ -62,7 +62,8 @@ public class WechatOfficialAccountAlipayController : Controller {
     /// <param name="couponPayCode">优惠券ID加密码</param>
     /// <returns></returns>
     [HttpGet]
-    [Route("/client/wechat/official/account/alipay/{orderPayCode}/{couponPayCode}")]
+    // [Route("/client/wechat/official/account/alipay/{orderPayCode}/{couponPayCode}")]
+    [Route("/client/order/alipay/{orderPayCode}/{couponPayCode}")] // 让复制出来的URL好看一点
     public IActionResult CopyUrl(string orderPayCode, string couponPayCode) {
         // 检查参数正确性
         int orderId = payService.GetIdFromPayCodeInUrl(orderPayCode);
@@ -95,7 +96,8 @@ public class WechatOfficialAccountAlipayController : Controller {
     /// <param name="couponPayCode">优惠券ID加密码</param>
     /// <returns></returns>
     [HttpGet]
-    [Route("/client/wechat/official/account/alipay/request/{orderPayCode}/{couponPayCode}")]
+    // [Route("/client/wechat/official/account/alipay/request/{orderPayCode}/{couponPayCode}")]
+    [Route("/client/order/alipay/request/{orderPayCode}/{couponPayCode}")]  // 让复制出来的URL好看一点
     public IActionResult AliPayRequest(string orderPayCode, string couponPayCode) {
         if (WebUtil.IsWechatRequest(Request)) {
             return RedirectToAction("CopyUrl", new { orderPayCode = orderPayCode, couponPayCode = couponPayCode });
@@ -288,7 +290,8 @@ public class WechatOfficialAccountAlipayController : Controller {
     /// 支付异步回调通知 需配置域名 因为是支付宝主动post请求这个action 所以要通过域名访问或者公网ip
     /// </summary>
     [HttpPost]
-    [Route("/client/wechat/official/account/alipay/notify")]
+    // [Route("/client/wechat/official/account/alipay/notify")]
+    [Route("/client/order/alipay/notify")] // 跟这个控制器中其他的URL一致
     public IActionResult Notify() {
         try {
             bool success = false;
@@ -427,7 +430,8 @@ public class WechatOfficialAccountAlipayController : Controller {
     /// 支付同步回调
     /// </summary>
     [HttpGet]
-    [Route("/client/wechat/official/account/alipay/callback")]
+    // [Route("/client/wechat/official/account/alipay/callback")]
+    [Route("/client/order/alipay/callback")] // 让浏览器里面的URL好看点
     public IActionResult Callback() {
         try {
             WechatOfficialAccountAlipayCallbackModel model;
