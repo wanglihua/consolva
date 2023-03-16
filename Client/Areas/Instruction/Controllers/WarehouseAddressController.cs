@@ -67,9 +67,10 @@ public class WarehouseAddressController : Controller {
         string customerCode = customerCodeService.GetCustomerCodeChinese(loginCustomerId);
 
         // 这个格式基本上大多数系统都能识别
-        string fullAddress = @$"收件人:{customerCode}
-手机:{warehouse.Phone}
-收件地址:{warehouse.Area}{warehouse.Address}{customerCode}室 
+        string fullAddress = @$"收货人:{customerCode}
+手机号码:{warehouse.Phone}
+所在地区:{warehouse.Area} 
+详细地址:{warehouse.Address}{customerCode}室
 邮编:{warehouse.Zipcode}";
 
         return Json(new JsonResultData {
