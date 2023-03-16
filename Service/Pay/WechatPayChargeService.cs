@@ -43,6 +43,10 @@ public class WechatPayChargeService {
             throw new ValidationException($"指定的客户#{customerId}不存在，请确认客户已登录！");
         }
 
+        if (amount <= 0) {
+            throw new ValidationException("充值金额不能为负或0！");
+        }
+
         string outTradeNo = payService.GenerateOutTradeNo();
 
         var customerCharge = new CustomerChargeInfo {
@@ -57,10 +61,10 @@ public class WechatPayChargeService {
         session.Flush();
 
         // 订单名称
-        string subject = "会员充值_" + customerId + "_" + customerCharge.Id;
+        string subject = $"会员充值_{customerId}_{customerCharge.Id}";
 
         // 商品描述
-        string itemBody = "会员充值_" + customerId + "_" + customerCharge.Id;
+        string itemBody = $"会员充值_{customerId}_{customerCharge.Id}";
 
         string appId = WechatAppConfig.AppId;
 
