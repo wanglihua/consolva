@@ -3,7 +3,7 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderAlipay;
 
-public class WechatOfficialAccountOrderAlipayCallbackModel {
+public class WechatOfficialAccountOrderAlipayReturnModel {
     [BindNever]
     public bool Success { get; set; }
 

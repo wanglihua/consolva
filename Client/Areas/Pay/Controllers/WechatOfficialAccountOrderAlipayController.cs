@@ -1,6 +1,4 @@
 using Alipay.AopSdk.AspnetCore;
-using Alipay.AopSdk.Core.Domain;
-using Alipay.AopSdk.Core.Request;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -115,7 +113,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
             OrderId = orderId,
             CouponId = couponId,
             IsMobile = isMobile,
-            CallbackUrl = SiteConfig.SiteUrlBase + Url.Action("Callback", "WechatOfficialAccountOrderAlipay"),
+            ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Return", "WechatOfficialAccountOrderAlipay"),
             NotifyUrl = SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountOrderAlipay"),
         };
 
@@ -252,7 +250,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     }
 
     [NonAction]
-    private WechatOfficialAccountOrderAlipayCallbackModel AliPayCallbackInternal() {
+    private WechatOfficialAccountOrderAlipayReturnModel AliPayCallbackInternal() {
         log.Warn("支付宝支付同步回调 begin");
 
         Dictionary<string, string> sArray = new Dictionary<string, string>();
@@ -269,7 +267,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
             log.Error(exp);
         }
 
-        WechatOfficialAccountOrderAlipayCallbackModel model = new WechatOfficialAccountOrderAlipayCallbackModel();
+        WechatOfficialAccountOrderAlipayReturnModel model = new WechatOfficialAccountOrderAlipayReturnModel();
         if (sArray.Count != 0) {
             bool flag = alipayService.RSACheckV1(sArray);
             if (flag) {
@@ -355,10 +353,10 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     /// </summary>
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/callback")]
-    [Route("/client/order/alipay/callback")] // 让浏览器里面的URL好看点
+    [Route("/client/order/alipay/return")] // 让浏览器里面的URL好看点
     [Transactional]
-    public IActionResult Callback() {
-        WechatOfficialAccountOrderAlipayCallbackModel model;
+    public IActionResult Return() {
+        WechatOfficialAccountOrderAlipayReturnModel model;
 
 
         model = AliPayCallbackInternal();

@@ -10,7 +10,7 @@ public class AlipayOrderCreateParam {
     /// <summary>
     /// 同步回调URL，URL中已经带有 域名等信息
     /// </summary>
-    public string CallbackUrl { get; set; } = string.Empty;
+    public string ReturnUrl { get; set; } = string.Empty;
 
     /// <summary>
     /// 异步回调URL，URL中已经带有 域名等信息

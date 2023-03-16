@@ -1,6 +1,7 @@
 using Alipay.AopSdk.AspnetCore;
 using Alipay.AopSdk.Core.Domain;
 using Alipay.AopSdk.Core.Request;
+using Newtonsoft.Json;
 using NHibernate;
 using NLog;
 using shunda.Core;
@@ -8,6 +9,9 @@ using shunda.Core.Service;
 using shunda.Domain.Coupon;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Customer;
+using shunda.Service.Fee;
+using shunda.Service.LogisticsOrder;
 
 namespace shunda.Service.Pay;
 
@@ -18,15 +22,24 @@ public class AlipayOrderService {
     private readonly ISession session;
     private readonly PayService payService;
     private readonly AlipayService alipayService;
+    private readonly LogisticsOrderActionService logisticsOrderActionService;
+    private readonly CustomerScoreService customerScoreService;
+    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
 
     public AlipayOrderService(
         ISession session,
         PayService payService,
-        AlipayService alipayService
+        AlipayService alipayService,
+        LogisticsOrderActionService logisticsOrderActionService,
+        CustomerScoreService customerScoreService,
+        LogisticsOrderPaySumService logisticsOrderPaySumService
     ) {
         this.session = session;
         this.payService = payService;
         this.alipayService = alipayService;
+        this.logisticsOrderActionService = logisticsOrderActionService;
+        this.customerScoreService = customerScoreService;
+        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
     }
 
     /// <summary>
@@ -88,7 +101,7 @@ public class AlipayOrderService {
 
             AlipayTradePagePayRequest payRequest = new AlipayTradePagePayRequest();
             // 设置同步回调地址
-            payRequest.SetReturnUrl(param.CallbackUrl);
+            payRequest.SetReturnUrl(param.ReturnUrl);
             // 设置异步通知接收地址
             payRequest.SetNotifyUrl(param.NotifyUrl);
             // 将业务model载入到request
@@ -114,7 +127,7 @@ public class AlipayOrderService {
 
             AlipayTradeWapPayRequest payRequest = new AlipayTradeWapPayRequest();
             // 设置同步回调地址
-            payRequest.SetReturnUrl(param.CallbackUrl);
+            payRequest.SetReturnUrl(param.ReturnUrl);
             // 设置异步通知接收地址
             payRequest.SetNotifyUrl(param.NotifyUrl);
             // 将业务model载入到request
@@ -129,5 +142,73 @@ public class AlipayOrderService {
             //跳转支付宝支付
             return alipayRequestUrl;
         }
+    }
+
+    public void Callback(Dictionary<string, string> sArray) {
+        try {
+            log.Error("支付宝支付回调 数据: " + JsonConvert.SerializeObject(sArray));
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+        }
+
+        if (sArray.Count == 0) {
+            throw new Exception("支付宝支付回调 end fail_001");
+        }
+
+        bool checkSuccess = alipayService.RSACheckV1(sArray);
+        if (checkSuccess == false) {
+            throw new Exception("支付宝支付回调 end fail_003");
+        }
+
+        //交易状态
+        //判断该笔订单是否在商户网站中已经做过处理
+        //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+        //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
+        //如果有做过处理，不执行商户的业务程序
+
+        string outTradeNo = sArray["out_trade_no"];
+        var orderPay = session.Query<LogisticsOrderPayInfo>()
+            .Where(e => e.OutTradeNo == outTradeNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (orderPay == null) {
+            throw new Exception("支付宝支付回调 end fail_002");
+        }
+
+        if (orderPay.Status == PayStatus.Paid) // 如果该笔支付已经标记为成功，就直接返回 success 就行
+        {
+            log.Warn("支付宝支付回调 end success 1");
+            return;
+        }
+
+        if (sArray.ContainsKey("total_amount") == false) {
+            throw new Exception($"total_amount 参数未提供，out_trade_no: {outTradeNo}");
+        }
+
+        decimal.TryParse(sArray["total_amount"], out decimal payAmount);
+
+        orderPay.Amount = payAmount;
+        orderPay.Status = PayStatus.Paid;
+        session.Update(orderPay);
+        session.Flush();
+
+        LogisticsOrderInfo order = orderPay.Order;
+
+        PayStatus orderPayStatusBefore = order.PayStatus;
+
+        // 合计标记支付状态
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
+
+        PayStatus orderPayStatusAfter = order.PayStatus;
+
+        // 记录日志
+        logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
+
+        // 会员积分
+        customerScoreService.AddScore(orderPay.Id);
+        
+
+        log.Warn("支付宝支付回调 end success 2");
     }
 }
