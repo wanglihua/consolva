@@ -36,10 +36,8 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         this.alipayOrderService = alipayOrderService;
     }
 
-    #region 支付宝支付
-
     /// <summary>
-    /// 用于微信界面复制URL
+    /// 用于复制粘贴到浏览器的URL
     /// </summary>
     /// <param name="orderPayCode">订单ID加密码</param>
     /// <param name="couponPayCode">优惠券ID加密码</param>
@@ -161,6 +159,4 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
             return View("WechatOfficialAccountOrderAlipayReturn", model);
         }
     }
-
-    #endregion
 }
