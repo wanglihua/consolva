@@ -162,24 +162,23 @@ public class AlipayOrderService {
             throw new Exception("支付宝支付回调 end fail_003");
         }
 
-        //交易状态
-        //判断该笔订单是否在商户网站中已经做过处理
-        //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-        //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
-        //如果有做过处理，不执行商户的业务程序
-
         string outTradeNo = callbackDataDict["out_trade_no"];
+        if (string.IsNullOrWhiteSpace(outTradeNo)) {
+            throw new Exception("支付宝支付回调 out_trade_no 为空！");
+        }
+
         var orderPay = session.Query<LogisticsOrderPayInfo>()
             .Where(e => e.OutTradeNo == outTradeNo)
             .Take(1)
             .SingleOrDefault();
         if (orderPay == null) {
-            throw new Exception("支付宝支付回调 end fail_002");
+            throw new Exception($"支付宝支付回调 指定的 out_trade_no:{outTradeNo} 不存在！");
         }
 
         // 如果该笔支付已经标记为成功，就直接返回 success 就行
         if (orderPay.Status == PayStatus.Paid) {
-            log.Warn("支付宝支付回调 end success 1");
+            // throw new Exception($"支付宝支付回调 指定的支付 out_trade_no:{outTradeNo},之前已完成！");
+            log.Error($"支付宝支付回调 指定的支付 out_trade_no:{outTradeNo},之前已完成！");
             return;
         }
 
@@ -187,7 +186,9 @@ public class AlipayOrderService {
             throw new Exception($"total_amount 参数未提供，out_trade_no: {outTradeNo}");
         }
 
-        decimal.TryParse(callbackDataDict["total_amount"], out decimal payAmount);
+        if (decimal.TryParse(callbackDataDict["total_amount"], out decimal payAmount) == false) {
+            throw new Exception($"total_amount 参数格式错误，out_trade_no: {outTradeNo}");
+        }
 
         orderPay.Amount = payAmount;
         orderPay.Status = PayStatus.Paid;

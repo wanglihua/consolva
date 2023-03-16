@@ -142,5 +142,29 @@ public class AlipayChargeService {
         }
 
         string outTradeNo = callbackDataDict["out_trade_no"];
+        if (string.IsNullOrWhiteSpace(outTradeNo)) {
+            throw new Exception("支付宝支付回调 out_trade_no 为空！");
+        }
+
+        var customerCharge = session.Query<CustomerChargeInfo>()
+            .Where(e => e.OutTradeNo == outTradeNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (customerCharge == null) {
+            throw new Exception($"out_trade_no 本地系统客户充值支付记录中不存在。out_trade_no：{outTradeNo}");
+        }
+
+        if (callbackDataDict.ContainsKey("total_amount") == false) {
+            throw new Exception($"total_amount 参数未提供，out_trade_no: {outTradeNo}");
+        }
+
+        if (decimal.TryParse(callbackDataDict["total_amount"], out decimal payAmount) == false) {
+            throw new Exception($"total_amount 参数格式错误，out_trade_no: {outTradeNo}");
+        }
+
+        if (customerCharge.Status == CustomerChargeStatus.New) {
+            // 完成充值
+            customerChargeService.CompleteCharge(customerCharge, payAmount, CustomerChargeType.Wechat);
+        }
     }
 }
