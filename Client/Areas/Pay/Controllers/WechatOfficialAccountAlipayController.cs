@@ -191,9 +191,9 @@ public class WechatOfficialAccountAlipayController : Controller {
 
             AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
             // 设置同步回调地址
-            request.SetReturnUrl(SiteConfig.SiteUrlBase + Url.Action("AliPayCallback", "WechatOfficialAccountAlipay"));
+            request.SetReturnUrl(SiteConfig.SiteUrlBase + Url.Action("Callback", "WechatOfficialAccountAlipay"));
             // 设置异步通知接收地址
-            request.SetNotifyUrl(SiteConfig.SiteUrlBase + Url.Action("AliPayNotify", "WechatOfficialAccountAlipay"));
+            request.SetNotifyUrl(SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountAlipay"));
             // 将业务model载入到request
             request.SetBizModel(payModel);
 
@@ -215,9 +215,9 @@ public class WechatOfficialAccountAlipayController : Controller {
 
             AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
             // 设置同步回调地址
-            request.SetReturnUrl(SiteConfig.SiteUrlBase + Url.Action("AliPayCallback", "WechatOfficialAccountAlipay")); // 这个是不是也要改成移动界面模式的
+            request.SetReturnUrl(SiteConfig.SiteUrlBase + Url.Action("Callback", "WechatOfficialAccountAlipay"));
             // 设置异步通知接收地址
-            request.SetNotifyUrl(SiteConfig.SiteUrlBase + Url.Action("AliPayNotify", "WechatOfficialAccountAlipay"));
+            request.SetNotifyUrl(SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountAlipay"));
             // 将业务model载入到request
             request.SetBizModel(payModel);
 
@@ -232,7 +232,8 @@ public class WechatOfficialAccountAlipayController : Controller {
         }
     }
 
-    private Tuple<bool, LogisticsOrderInfo> AlipayNotifyInternal() {
+    [NonAction]
+    private Tuple<bool, LogisticsOrderInfo?> AlipayNotifyInternal() {
         log.Warn("支付宝支付异步回调 begin");
 
         Dictionary<string, string> sArray = new Dictionary<string, string>();
@@ -253,7 +254,7 @@ public class WechatOfficialAccountAlipayController : Controller {
             log.Error("支付宝支付异步回调 end fail_001");
 
             // return Content("fail");
-            return new Tuple<bool, LogisticsOrderInfo>(false, null);
+            return new Tuple<bool, LogisticsOrderInfo?>(false, null);
         }
 
         bool flag = alipayService.RSACheckV1(sArray);
@@ -272,14 +273,14 @@ public class WechatOfficialAccountAlipayController : Controller {
             if (orderPay == null) {
                 log.Error("支付宝支付异步回调 end fail_002");
                 // return Content("fail");
-                return new Tuple<bool, LogisticsOrderInfo>(false, null);
+                return new Tuple<bool, LogisticsOrderInfo?>(false, null);
             }
 
             if (orderPay.Status == PayStatus.Paid) // 如果该笔支付已经标记为成功，就直接返回 success 就行
             {
                 log.Warn("支付宝支付异步回调 end success 1");
                 // return Content("success");
-                return new Tuple<bool, LogisticsOrderInfo>(true, orderPay.Order);
+                return new Tuple<bool, LogisticsOrderInfo?>(true, orderPay.Order);
             }
 
             decimal.TryParse(sArray["total_amount"], out decimal payAmount);
@@ -310,31 +311,29 @@ public class WechatOfficialAccountAlipayController : Controller {
 
             log.Warn("支付宝支付异步回调 end success 2");
             // return Content("success");
-            return new Tuple<bool, LogisticsOrderInfo>(true, order);
+            return new Tuple<bool, LogisticsOrderInfo?>(true, order);
         }
 
         log.Error("支付宝支付异步回调 end fail_003");
         // return Content("fail");
-        return new Tuple<bool, LogisticsOrderInfo>(false, null);
+        return new Tuple<bool, LogisticsOrderInfo?>(false, null);
     }
 
     /// <summary>
     /// 支付异步回调通知 需配置域名 因为是支付宝主动post请求这个action 所以要通过域名访问或者公网ip
     /// </summary>
     [HttpPost]
-    [Route("/pay/alipay/notify")]
-    public IActionResult AliPayNotify() {
+    [Route("/client/wechat/official/account/alipay/notify")]
+    public IActionResult Notify() {
         try {
             bool success = false;
-            LogisticsOrderInfo order = null;
 
-            ITransaction transaction = null;
+            ITransaction? transaction = null;
             try {
                 transaction = session.BeginTransaction();
 
-                Tuple<bool, LogisticsOrderInfo> result = AlipayNotifyInternal();
+                Tuple<bool, LogisticsOrderInfo?> result = AlipayNotifyInternal();
                 success = result.Item1;
-                order = result.Item2;
 
                 transaction.Commit();
             }
@@ -360,7 +359,8 @@ public class WechatOfficialAccountAlipayController : Controller {
         }
     }
 
-    private PayAliPayCallbackModel AliPayCallbackInternal() {
+    [NonAction]
+    private WechatOfficialAccountAlipayCallbackModel AliPayCallbackInternal() {
         log.Warn("支付宝支付同步回调 begin");
 
         Dictionary<string, string> sArray = new Dictionary<string, string>();
@@ -377,7 +377,7 @@ public class WechatOfficialAccountAlipayController : Controller {
             log.Error(exp);
         }
 
-        PayAliPayCallbackModel model = new PayAliPayCallbackModel();
+        WechatOfficialAccountAlipayCallbackModel model = new WechatOfficialAccountAlipayCallbackModel();
         if (sArray.Count != 0) {
             bool flag = alipayService.RSACheckV1(sArray);
             if (flag) {
@@ -462,12 +462,12 @@ public class WechatOfficialAccountAlipayController : Controller {
     /// 支付同步回调
     /// </summary>
     [HttpGet]
-    [Route("/pay/alipay/callback")]
-    public IActionResult AliPayCallback() {
+    [Route("/client/wechat/official/account/alipay/callback")]
+    public IActionResult Callback() {
         try {
-            PayAliPayCallbackModel model = new PayAliPayCallbackModel();
+            WechatOfficialAccountAlipayCallbackModel model;
 
-            ITransaction transaction = null;
+            ITransaction? transaction = null;
             try {
                 transaction = session.BeginTransaction();
                 model = AliPayCallbackInternal();
@@ -480,7 +480,7 @@ public class WechatOfficialAccountAlipayController : Controller {
                 throw; // 重新抛出异常                    
             }
 
-            return View("PayAliPayCallback", model);
+            return View("WechatOfficialAccountAlipayCallback", model);
         }
         catch (Exception exp) {
             log.Error(exp);
