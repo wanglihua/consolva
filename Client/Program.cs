@@ -101,7 +101,7 @@ public class Program {
             options.PrivateKey = AlipayConfig.PrivateKey;
             options.AlipayPublicKey = AlipayConfig.PublicKey;
             options.AppId = AlipayConfig.AppId;
-            options.Uid = AlipayConfig.Partner;
+            options.Uid = AlipayConfig.UId;
             options.CharSet = AlipayConfig.CharSet;
             options.Gatewayurl = AlipayConfig.GatewayUrl;
             options.SignType = AlipayConfig.SignType;
