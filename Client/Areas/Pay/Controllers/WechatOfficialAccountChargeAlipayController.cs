@@ -1,8 +1,13 @@
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargeAlipay;
+using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Hibernate;
+using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Customer;
 using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
 
@@ -38,19 +43,51 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [HttpGet]
     [Route(CHARGE_ALIPAY_URL)]
     public IActionResult CopyUrl(string customerPayCode, string amountPayCode) {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        // 检查参数正确性
+        int customerId = payService.GetIntFromPayCodeInUrl(customerPayCode);
+        int amountInt = payService.GetIntFromPayCodeInUrl(amountPayCode);
+
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        if (amountInt <= 0) {
+            throw new ValidationException("充值金额不能为负或0！");
+        }
+
+        if (WebUtil.IsWechatRequest(Request)) {
+            var model = new WechatOfficialAccountChargeAlipayCopyUrlModel {
+                Url = Request.GetEncodedUrl(),
+            };
+            return View("WechatOfficialAccountChargeAlipayCopyUrl", model);
+        }
+
+        return RedirectToAction("AliPayRequest", new { customerPayCode = customerPayCode, amountPayCode = amountPayCode });
     }
 
     [HttpGet]
     [Route("/client/charge/alipay/request/{customerPayCode}/{amountPayCode}")]
-    public IActionResult AlipayRequest() {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+    public IActionResult AlipayRequest(string customerPayCode, string amountPayCode) {
+        if (WebUtil.IsWechatRequest(Request)) {
+            return RedirectToAction("CopyUrl", new { customerPayCode = customerPayCode, amountPayCode = amountPayCode });
+        }
+
+        int customerId = payService.GetIntFromPayCodeInUrl(customerPayCode);
+        int amountInt = payService.GetIntFromPayCodeInUrl(amountPayCode);
+
+        bool isMobile = WebUtil.IsMobileRequest(Request);
+
+        AlipayChargeCreateParam createParam = new AlipayChargeCreateParam {
+            CustomerId = customerId,
+            Amount = (decimal)amountInt / 100m,
+            IsMobile = isMobile,
+            ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Return", "WechatOfficialAccountChargeAlipay"),
+            NotifyUrl = SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountChargeAlipay"),
+        };
+
+        string alipayRequestUrl = alipayChargeService.Create(createParam);
+        return Redirect(alipayRequestUrl);
     }
 
     [HttpPost]
@@ -74,7 +111,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
             return Content("fail");
         }
     }
-    
+
     [HttpGet]
     [Route("/client/charge/alipay/return")]
     public IActionResult Return() {
@@ -103,5 +140,5 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
             };
             return View("WechatOfficialAccountChargeAlipayReturn", model);
         }
-    }    
+    }
 }
