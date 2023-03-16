@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderAlipay;
+using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Hibernate;
@@ -17,21 +18,23 @@ namespace shunda.Client.Areas.Pay.Controllers;
 /// <summary>
 /// 公众号支付宝支付 处理支付接口
 /// </summary>
-[NoLoginRequired]
 [PayArea]
 public class WechatOfficialAccountOrderAlipayController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly LoginCustomerService loginCustomerService;
     private readonly PayService payService;
     private readonly AlipayOrderService alipayOrderService;
 
     public WechatOfficialAccountOrderAlipayController(
         ISession session,
+        LoginCustomerService loginCustomerService,
         PayService payService,
         AlipayOrderService alipayOrderService
     ) {
         this.session = session;
+        this.loginCustomerService = loginCustomerService;
         this.payService = payService;
         this.alipayOrderService = alipayOrderService;
     }
@@ -43,6 +46,17 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     public IActionResult CreateUrl([FromBody] WechatOfficialAccountOrderAlipayCreateUrlParam param) {
         int orderId = param.OrderId;
         int couponId = param.CouponId;
+
+        int customerId = loginCustomerService.GetLoginCustomerId();
+
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if(order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        if(order.Customer.Id != customerId) {
+            throw new ValidationException($"指定的订单{order.Code}不是当前登录用户的！");
+        }
 
         string orderPayCode = payService.GenereatePayCodeInUrl(orderId);
         string couponPayCode = payService.GenereatePayCodeInUrl(couponId);
@@ -65,6 +79,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     /// <param name="orderPayCode">订单ID加密码</param>
     /// <param name="couponPayCode">优惠券ID加密码</param>
     /// <returns></returns>
+    [NoLoginRequired]
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/{orderPayCode}/{couponPayCode}")]
     [Route(ORDER_ALIPAY_URL)] // 让复制出来的URL好看一点
@@ -99,6 +114,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     /// <param name="orderPayCode">订单ID加密码</param>
     /// <param name="couponPayCode">优惠券ID加密码</param>
     /// <returns></returns>
+    [NoLoginRequired]
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/request/{orderPayCode}/{couponPayCode}")]
     [Route("/client/order/alipay/request/{orderPayCode}/{couponPayCode}")] // 让复制出来的URL好看一点
@@ -123,6 +139,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         return Redirect(alipayRequestUrl);
     }
 
+    [NoLoginRequired]
     [HttpPost]
     // [Route("/client/wechat/official/account/alipay/notify")]
     [Route("/client/order/alipay/notify")] // 跟这个控制器中其他的URL一致
@@ -146,6 +163,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         }
     }
 
+    [NoLoginRequired]
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/callback")]
     [Route("/client/order/alipay/return")] // 让浏览器里面的URL好看点

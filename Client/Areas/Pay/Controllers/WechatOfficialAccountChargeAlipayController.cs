@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargeAlipay;
+using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Hibernate;
@@ -13,21 +14,23 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Pay.Controllers;
 
-[NoLoginRequired]
 [PayArea]
 public class WechatOfficialAccountChargeAlipayController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly LoginCustomerService loginCustomerService;
     private readonly PayService payService;
     private readonly AlipayChargeService alipayChargeService;
 
     public WechatOfficialAccountChargeAlipayController(
         ISession session,
+        LoginCustomerService loginCustomerService,
         PayService payService,
         AlipayChargeService alipayChargeService
     ) {
         this.session = session;
+        this.loginCustomerService = loginCustomerService;
         this.payService = payService;
         this.alipayChargeService = alipayChargeService;
     }
@@ -37,7 +40,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [HttpPost]
     [Route("/client/charge/alipay/create/url")]
     public IActionResult CreateUrl([FromBody] WechatOfficialAccountChargeAlipayCreateUrlParam param) {
-        int customerId = param.CustomerId;
+        int customerId = loginCustomerService.GetLoginCustomerId();
         decimal amount = param.Amount;
         int amountInt = (int)(amount * 100); // 转成 int 分
 
@@ -62,6 +65,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     /// <param name="customerPayCode">客户ID加密后的代码</param>
     /// <param name="amountPayCode">充值金额乘以100后的整数加密后的代码</param>
     /// <returns></returns>
+    [NoLoginRequired]
     [HttpGet]
     [Route(CHARGE_ALIPAY_URL)]
     public IActionResult CopyUrl(string customerPayCode, string amountPayCode) {
@@ -88,6 +92,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
         return RedirectToAction("AliPayRequest", new { customerPayCode = customerPayCode, amountPayCode = amountPayCode });
     }
 
+    [NoLoginRequired]
     [HttpGet]
     [Route("/client/charge/alipay/request/{customerPayCode}/{amountPayCode}")]
     public IActionResult AlipayRequest(string customerPayCode, string amountPayCode) {
@@ -112,6 +117,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
         return Redirect(alipayRequestUrl);
     }
 
+    [NoLoginRequired]
     [HttpPost]
     [Route("/client/charge/alipay/notify")]
     public IActionResult Notify() {
@@ -134,6 +140,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
         }
     }
 
+    [NoLoginRequired]
     [HttpGet]
     [Route("/client/charge/alipay/return")]
     public IActionResult Return() {
