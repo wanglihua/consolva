@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace shunda.Client.Areas.Pay.Models.WechatOfficialAccountAlipay;
+namespace shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderAlipay;
 
 public class WechatOfficialAccountAlipayCopyUrlModel {
     [BindNever]

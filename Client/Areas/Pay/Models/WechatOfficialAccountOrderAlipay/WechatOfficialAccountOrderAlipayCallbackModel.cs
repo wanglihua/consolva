@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.LogisticsOrder;
 
-namespace shunda.Client.Areas.Pay.Models.WechatOfficialAccountAlipay;
+namespace shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderAlipay;
 
-public class WechatOfficialAccountAlipayCallbackModel {
+public class WechatOfficialAccountOrderAlipayCallbackModel {
     [BindNever]
     public bool Success { get; set; }
 
