@@ -73,13 +73,14 @@ public class AlipayOrderService {
         // 付款金额
         string totalAmount = order.ArrearsAmountFormula.ToString("#0.00");
 
-        LogisticsOrderPayInfo orderPay = new LogisticsOrderPayInfo();
-        orderPay.Order = order;
-        orderPay.Customer = order.Customer;
-        orderPay.PayType = PayType.AliPay;
-        orderPay.OutTradeNo = outTradeNo;
-        orderPay.Amount = order.ArrearsAmountFormula;
-        orderPay.Status = PayStatus.NotPaid;
+        LogisticsOrderPayInfo orderPay = new LogisticsOrderPayInfo {
+            Order = order,
+            Customer = order.Customer,
+            PayType = PayType.AliPay,
+            OutTradeNo = outTradeNo,
+            Amount = order.ArrearsAmountFormula,
+            Status = PayStatus.NotPaid
+        };
         session.Save(orderPay);
         session.Flush();
 

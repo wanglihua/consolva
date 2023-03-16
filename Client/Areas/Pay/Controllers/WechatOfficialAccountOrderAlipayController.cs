@@ -1,8 +1,5 @@
-using Alipay.AopSdk.AspnetCore;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using NHibernate;
 using NLog;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderAlipay;
 using shunda.Core;
@@ -11,11 +8,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
-using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
-using shunda.Service.Customer;
-using shunda.Service.Fee;
-using shunda.Service.LogisticsOrder;
 using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
 
@@ -31,28 +24,16 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
 
     private readonly ISession session;
     private readonly PayService payService;
-    private readonly AlipayService alipayService;
     private readonly AlipayOrderService alipayOrderService;
-    private readonly LogisticsOrderActionService logisticsOrderActionService;
-    private readonly CustomerScoreService customerScoreService;
-    private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
 
     public WechatOfficialAccountOrderAlipayController(
         ISession session,
         PayService payService,
-        AlipayService alipayService,
-        AlipayOrderService alipayOrderService,
-        LogisticsOrderActionService logisticsOrderActionService,
-        CustomerScoreService customerScoreService,
-        LogisticsOrderPaySumService logisticsOrderPaySumService
+        AlipayOrderService alipayOrderService
     ) {
         this.session = session;
         this.payService = payService;
-        this.alipayService = alipayService;
         this.alipayOrderService = alipayOrderService;
-        this.logisticsOrderActionService = logisticsOrderActionService;
-        this.customerScoreService = customerScoreService;
-        this.logisticsOrderPaySumService = logisticsOrderPaySumService;
     }
 
     #region 支付宝支付
@@ -119,93 +100,6 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
 
         string alipayRequestUrl = alipayOrderService.Create(createParam);
         return Redirect(alipayRequestUrl);
-    }
-
-    [NonAction]
-    private Tuple<bool, LogisticsOrderInfo?> AlipayNotifyInternal() {
-        log.Warn("支付宝支付异步回调 begin");
-
-        Dictionary<string, string> sArray = new Dictionary<string, string>();
-
-        ICollection<string> requestItem = Request.Form.Keys;
-        foreach (var item in requestItem) {
-            sArray.Add(item, Request.Form[item]);
-        }
-
-        try {
-            log.Error("支付宝支付异步回调 数据: " + JsonConvert.SerializeObject(sArray));
-        }
-        catch (Exception exp) {
-            log.Error(exp);
-        }
-
-        if (sArray.Count == 0) {
-            log.Error("支付宝支付异步回调 end fail_001");
-
-            // return Content("fail");
-            return new Tuple<bool, LogisticsOrderInfo?>(false, null);
-        }
-
-        bool flag = alipayService.RSACheckV1(sArray);
-        if (flag) {
-            //交易状态
-            //判断该笔订单是否在商户网站中已经做过处理
-            //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-            //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
-            //如果有做过处理，不执行商户的业务程序
-
-            string outTradeNo = sArray["out_trade_no"];
-            var orderPay = session.Query<LogisticsOrderPayInfo>()
-                .Where(e => e.OutTradeNo == outTradeNo)
-                .Take(1)
-                .SingleOrDefault();
-            if (orderPay == null) {
-                log.Error("支付宝支付异步回调 end fail_002");
-                // return Content("fail");
-                return new Tuple<bool, LogisticsOrderInfo?>(false, null);
-            }
-
-            if (orderPay.Status == PayStatus.Paid) // 如果该笔支付已经标记为成功，就直接返回 success 就行
-            {
-                log.Warn("支付宝支付异步回调 end success 1");
-                // return Content("success");
-                return new Tuple<bool, LogisticsOrderInfo?>(true, orderPay.Order);
-            }
-
-            decimal.TryParse(sArray["total_amount"], out decimal payAmount);
-
-            orderPay.Amount = payAmount;
-            orderPay.Status = PayStatus.Paid;
-            session.Update(orderPay);
-            session.Flush();
-
-            LogisticsOrderInfo order = orderPay.Order;
-
-            PayStatus orderPayStatusBefore = order.PayStatus;
-
-            // 合计标记支付状态
-            logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
-
-            PayStatus orderPayStatusAfter = order.PayStatus;
-
-            // 记录日志
-            logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
-
-            // 会员积分
-            customerScoreService.AddScore(orderPay.Id);
-
-
-            //注意：
-            //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
-
-            log.Warn("支付宝支付异步回调 end success 2");
-            // return Content("success");
-            return new Tuple<bool, LogisticsOrderInfo?>(true, order);
-        }
-
-        log.Error("支付宝支付异步回调 end fail_003");
-        // return Content("fail");
-        return new Tuple<bool, LogisticsOrderInfo?>(false, null);
     }
 
     /// <summary>

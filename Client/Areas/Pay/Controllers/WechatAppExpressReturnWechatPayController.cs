@@ -64,6 +64,7 @@ public class WechatAppExpressReturnWechatPayController : Controller {
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
+            Data = data,
         });
     }
 
@@ -98,5 +99,5 @@ public class WechatAppExpressReturnWechatPayController : Controller {
 
             return Content(data.ToXml(), "text/xml", Encoding.UTF8);
         }
-    }    
+    }
 }
