@@ -33,7 +33,7 @@ public class CustomerChargeService {
         }
 
         string chargeDescription = "";
-        if (chargeType == CustomerChargeType.AliPay) {
+        if (chargeType == CustomerChargeType.Alipay) {
             chargeDescription = $"支付宝充值{amount:#0.00}元";
         } else if (chargeType == CustomerChargeType.Wechat) {
             chargeDescription = $"微信充值{amount:#0.00}元";

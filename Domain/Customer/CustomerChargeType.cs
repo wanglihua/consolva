@@ -15,7 +15,7 @@ public class CustomerChargeType : CodeTypeBase
     /// <summary>
     /// 支付宝支付
     /// </summary>
-    public static readonly CustomerChargeType AliPay = new CustomerChargeType(2000, "支付宝", "支付宝支付");
+    public static readonly CustomerChargeType Alipay = new CustomerChargeType(2000, "支付宝", "支付宝支付");
 
     /// <summary>
     /// PayPal支付(澳币)
@@ -35,7 +35,7 @@ public class CustomerChargeType : CodeTypeBase
 
     private static List<CustomerChargeType> codeTypeList = new List<CustomerChargeType>() {
         Wechat,
-        AliPay,
+        Alipay,
         PayPal,
         Manual,
     };

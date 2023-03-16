@@ -164,7 +164,7 @@ public class AlipayChargeService {
 
         if (customerCharge.Status == CustomerChargeStatus.New) {
             // 完成充值
-            customerChargeService.CompleteCharge(customerCharge, payAmount, CustomerChargeType.Wechat);
+            customerChargeService.CompleteCharge(customerCharge, payAmount, CustomerChargeType.Alipay);
         }
     }
 }
