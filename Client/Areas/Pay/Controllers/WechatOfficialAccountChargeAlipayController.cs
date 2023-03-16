@@ -34,6 +34,13 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
 
     public const string CHARGE_ALIPAY_URL = "/client/charge/alipay/{customerPayCode}/{amountPayCode}";
 
+    public static string CreateChargeAlipayUrl(string customerPayCode, string amountPayCode) {
+        string url = CHARGE_ALIPAY_URL.Replace("{customerPayCode}", customerPayCode);
+        url = url.Replace("{amountPayCode}", amountPayCode);
+
+        return url;
+    }
+
     /// <summary>
     /// 用于复制粘贴到浏览器的URL
     /// </summary>
@@ -101,7 +108,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
         }
 
         try {
-            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); });
+            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); }); // 数据库事务
             return Content("success");
         }
         catch (Exception exp) {
@@ -123,7 +130,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
         }
 
         try {
-            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); });
+            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); }); // 数据库事务
             var model = new WechatOfficialAccountChargeAlipayReturnModel {
                 Success = true,
                 Message = "支付成功！",

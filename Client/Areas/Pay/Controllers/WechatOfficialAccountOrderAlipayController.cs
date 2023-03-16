@@ -36,7 +36,14 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         this.alipayOrderService = alipayOrderService;
     }
 
-    public const string ORDER_ALIPAY_URL = "/client/order/alipay/{orderPayCode}/{couponPayCode}";
+    private const string ORDER_ALIPAY_URL = "/client/order/alipay/{orderPayCode}/{couponPayCode}";
+
+    public static string CreateOrderAlipayUrl(string orderPayCode, string couponPayCode) {
+        string url = ORDER_ALIPAY_URL.Replace("{orderPayCode}", orderPayCode);
+        url = url.Replace("{couponPayCode}", couponPayCode);
+        
+        return url;
+    }
 
     /// <summary>
     /// 用于复制粘贴到浏览器的URL
@@ -114,7 +121,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         }
 
         try {
-            Transactional.Wrap(session, () => { alipayOrderService.Callback(callbackDataDict); });
+            Transactional.Wrap(session, () => { alipayOrderService.Callback(callbackDataDict); }); // 数据库事务
             return Content("success");
         }
         catch (Exception exp) {
@@ -137,7 +144,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         }
 
         try {
-            Transactional.Wrap(session, () => { alipayOrderService.Callback(callbackDataDict); });
+            Transactional.Wrap(session, () => { alipayOrderService.Callback(callbackDataDict); }); // 数据库事务
             var model = new WechatOfficialAccountOrderAlipayReturnModel {
                 Success = true,
                 Message = "支付成功！",
