@@ -718,7 +718,7 @@ function isEmptyStr(str) {
     }
 }
 
-function downLoadFile(options) {
+function downloadFile(options) {
     var config = $.extend(true, {method: 'post'}, options);
     var $form = $('<form method="' + config.method + '" />');
     $form.attr('action', config.url);

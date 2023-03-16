@@ -348,7 +348,7 @@
         $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
         *@
         
-        downLoadFile({
+        downloadFile({
             url: "@Url.Action("Export", "ExpressList")",
             data: {
                 '@(nameof(ExpressListQueryParam.IdList))': idList,

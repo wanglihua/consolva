@@ -38,8 +38,6 @@ public class WechatOfficialAccountAlipayController : Controller {
         this.alipayService = alipayService;
     }
     
-    /*
-
     [NonAction]
     private void CheckOrder(int orderId) {
         LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
@@ -61,7 +59,7 @@ public class WechatOfficialAccountAlipayController : Controller {
             WechatOfficialAccountAlipayCopyUrlModel model = new WechatOfficialAccountAlipayCopyUrlModel {
                 Url = Request.GetEncodedUrl()
             };
-            return View("PayAliPay", model);
+            return View("WechatOfficialAccountAlipayCopyUrl", model);
         }
 
         int orderId = GetOrderIdFromAlipayCode(code);
@@ -502,6 +500,4 @@ public class WechatOfficialAccountAlipayController : Controller {
     }
 
     #endregion
-    
-    */
 }
