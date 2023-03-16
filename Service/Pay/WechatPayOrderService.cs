@@ -237,7 +237,7 @@ public class WechatPayOrderService {
             logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
             // 订单日志
-            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, $"金额：{payAmount:#0.00)}, 微信单号：{orderPay.OutTradeNo}");
+            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, $"金额:{payAmount:#0.00)}, 支付单号:{orderPay.OutTradeNo}");
 
             // 会员积分
             customerScoreService.AddScore(orderPay.Id);

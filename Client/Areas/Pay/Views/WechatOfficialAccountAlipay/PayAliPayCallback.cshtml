@@ -1,0 +1,19 @@
+@using shunda.Core.Web
+@model shunda.Client.Areas.Pay.Models.WechatOfficialAccountAlipay.PayAliPayCallbackModel
+@{
+    Layout = "_ClientSite";
+    if (Model.Success) {
+        ViewData[ViewDataKey.Title] = "支付成功";
+    } else {
+        ViewData[ViewDataKey.Title] = "支付失败";
+    }
+}
+
+<div style="padding: 20px;">
+    @if (Model.Success) {
+        <span style="font-weight: bold;font-size: 28px; color: green;">@(ViewData[ViewDataKey.Title])</span>
+        <span style="font-weight: bold;font-size: 28px;">订单编号：@(Model.Order.Code)</span>
+    } else {
+        <span style="font-weight: bold;font-size: 28px; color: red;">@(ViewData[ViewDataKey.Title])</span>
+    }
+</div>

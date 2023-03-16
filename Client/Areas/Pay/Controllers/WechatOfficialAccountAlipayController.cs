@@ -298,7 +298,7 @@ public class WechatOfficialAccountAlipayController : Controller {
             logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
 
             // 记录日志
-            logisticsOrderActionService.NewAction(order, LogisticsOrderActionType.Pay, $"金额：{payAmount:#0.00}，支付宝单号：{orderPay.OutTradeNo}");
+            logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
 
             // 会员积分
             customerScoreService.AddScore(orderPay.Id);
@@ -423,7 +423,7 @@ public class WechatOfficialAccountAlipayController : Controller {
                 logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
 
                 // 记录日志
-                logisticsOrderActionService.NewAction(order.Id, LogisticsOrderActionType.Pay, $"金额：{payAmount.ToString("#0.00")}，支付宝单号：{orderPay.OutTradeNo}");
+                logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
 
                 // 会员积分
                 customerScoreService.AddScore(orderPay.Id);
