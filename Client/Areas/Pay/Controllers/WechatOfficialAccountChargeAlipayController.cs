@@ -49,6 +49,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
 
         string url = CHARGE_ALIPAY_URL.Replace("{customerPayCode}", customerPayCode);
         url = url.Replace("{amountPayCode}", amountPayCode);
+        url = SiteConfig.SiteUrlBase + url;
 
         return Json(new JsonResultData {
             Success = true,

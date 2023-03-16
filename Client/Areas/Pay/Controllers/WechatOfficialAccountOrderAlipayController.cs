@@ -50,11 +50,11 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         int customerId = loginCustomerService.GetLoginCustomerId();
 
         var order = session.Get<LogisticsOrderInfo>(orderId);
-        if(order == null) {
+        if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
-        if(order.Customer.Id != customerId) {
+        if (order.Customer.Id != customerId) {
             throw new ValidationException($"指定的订单{order.Code}不是当前登录用户的！");
         }
 
@@ -63,6 +63,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
 
         string url = ORDER_ALIPAY_URL.Replace("{orderPayCode}", orderPayCode);
         url = url.Replace("{couponPayCode}", couponPayCode);
+        url = SiteConfig.SiteUrlBase + url;
 
         return Json(new JsonResultData {
             Success = true,
