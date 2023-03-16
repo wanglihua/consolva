@@ -38,11 +38,25 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
 
     private const string ORDER_ALIPAY_URL = "/client/order/alipay/{orderPayCode}/{couponPayCode}";
 
-    public static string CreateOrderAlipayUrl(string orderPayCode, string couponPayCode) {
+    [HttpPost]
+    [Route("/client/order/alipay/create/url")]
+    public IActionResult CreateUrl([FromBody] WechatOfficialAccountOrderAlipayCreateUrlParam param) {
+        int orderId = param.OrderId;
+        int couponId = param.CouponId;
+
+        string orderPayCode = payService.GenereatePayCodeInUrl(orderId);
+        string couponPayCode = payService.GenereatePayCodeInUrl(couponId);
+
         string url = ORDER_ALIPAY_URL.Replace("{orderPayCode}", orderPayCode);
         url = url.Replace("{couponPayCode}", couponPayCode);
-        
-        return url;
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new WechatOfficialAccountOrderAlipayCreateUrlModel {
+                Url = url,
+            },
+        });
     }
 
     /// <summary>

@@ -34,11 +34,26 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
 
     public const string CHARGE_ALIPAY_URL = "/client/charge/alipay/{customerPayCode}/{amountPayCode}";
 
-    public static string CreateChargeAlipayUrl(string customerPayCode, string amountPayCode) {
+    [HttpPost]
+    [Route("/client/charge/alipay/create/url")]
+    public IActionResult CreateUrl([FromBody] WechatOfficialAccountChargeAlipayCreateUrlParam param) {
+        int customerId = param.CustomerId;
+        decimal amount = param.Amount;
+        int amountInt = (int)(amount * 100); // 转成 int 分
+
+        string customerPayCode = payService.GenereatePayCodeInUrl(customerId);
+        string amountPayCode = payService.GenereatePayCodeInUrl(amountInt);
+
         string url = CHARGE_ALIPAY_URL.Replace("{customerPayCode}", customerPayCode);
         url = url.Replace("{amountPayCode}", amountPayCode);
 
-        return url;
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new WechatOfficialAccountChargeAlipayCreateUrlModel {
+                Url = url,
+            },
+        });
     }
 
     /// <summary>

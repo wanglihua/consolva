@@ -24,6 +24,10 @@
         <van-cell title="微信支付" is-link size="large" bind:click="onWechatPayClick">
             <van-icon slot="icon" class-prefix="iconfont" name="wechat-pay" class="cell-left-icon"/>
         </van-cell>
+
+        <van-cell title="支付宝支付" is-link size="large" bind:click="onAlipayClick">
+            <van-icon slot="icon" class-prefix="iconfont" name="alipay" class="cell-left-icon"/>
+        </van-cell>
     </van-cell-group>
 
 </view>

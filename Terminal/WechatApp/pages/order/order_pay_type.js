@@ -86,4 +86,9 @@ Page({
             }
         });
     },
+
+    onAlipayClick(e) {
+        const orderId = this.data.orderId;
+        const couponId = this.data.couponId;
+    },
 })
