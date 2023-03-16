@@ -24,14 +24,14 @@ public class PayService {
     /// <summary>
     /// 将ID放在支付宝支付URL种是做加密，防止被篡改
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="intValue"></param>
     /// <returns></returns>
-    public string GenereatePayCodeInUrl(int id) {
+    public string GenereatePayCodeInUrl(int intValue) {
         string payCodeSalt = "shunda_pay_secret_32lkjadfasd45lpo";
 
-        string idStr = id.ToString();
-        string md5 = Md5Util.Encrypt(idStr + payCodeSalt);
-        return md5 + idStr;
+        string intValueStr = intValue.ToString();
+        string md5 = Md5Util.Encrypt(intValueStr + payCodeSalt);
+        return md5 + intValueStr;
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public class PayService {
     /// <param name="payCode"></param>
     /// <returns></returns>
     /// <exception cref="ValidationException"></exception>
-    public int GetIdFromPayCodeInUrl(string payCode) {
+    public int GetIntFromPayCodeInUrl(string payCode) {
         string errorMessage = "支付URL代码错误，请确认复制正确！";
         if (string.IsNullOrWhiteSpace(payCode) == true) {
             throw new ValidationException(errorMessage);

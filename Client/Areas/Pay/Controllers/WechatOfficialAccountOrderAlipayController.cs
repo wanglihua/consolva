@@ -49,8 +49,8 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     [Route(ORDER_ALIPAY_URL)] // 让复制出来的URL好看一点
     public IActionResult CopyUrl(string orderPayCode, string couponPayCode) {
         // 检查参数正确性
-        int orderId = payService.GetIdFromPayCodeInUrl(orderPayCode);
-        int couponId = payService.GetIdFromPayCodeInUrl(couponPayCode);
+        int orderId = payService.GetIntFromPayCodeInUrl(orderPayCode);
+        int couponId = payService.GetIntFromPayCodeInUrl(couponPayCode);
 
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
@@ -86,8 +86,8 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
             return RedirectToAction("CopyUrl", new { orderPayCode = orderPayCode, couponPayCode = couponPayCode });
         }
 
-        int orderId = payService.GetIdFromPayCodeInUrl(orderPayCode);
-        int couponId = payService.GetIdFromPayCodeInUrl(couponPayCode);
+        int orderId = payService.GetIntFromPayCodeInUrl(orderPayCode);
+        int couponId = payService.GetIntFromPayCodeInUrl(couponPayCode);
         bool isMobile = WebUtil.IsMobileRequest(Request);
 
         AlipayOrderCreateParam createParam = new AlipayOrderCreateParam {

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargeAlipay;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Service.Pay;
@@ -73,4 +74,34 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
             return Content("fail");
         }
     }
+    
+    [HttpGet]
+    [Route("/client/charge/alipay/return")]
+    public IActionResult Return() {
+        Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
+
+        ICollection<string> requestItem = Request.Form.Keys;
+        foreach (var item in requestItem) {
+            callbackDataDict.Add(item, Request.Form[item]);
+        }
+
+        try {
+            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); });
+            var model = new WechatOfficialAccountChargeAlipayReturnModel {
+                Success = true,
+                Message = "支付成功！",
+            };
+            return View("WechatOfficialAccountChargeAlipayReturn", model);
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+            log.Error("支付宝支付同步回调 end fail_004");
+
+            var model = new WechatOfficialAccountChargeAlipayReturnModel {
+                Success = false,
+                Message = "支付失败！",
+            };
+            return View("WechatOfficialAccountChargeAlipayReturn", model);
+        }
+    }    
 }
