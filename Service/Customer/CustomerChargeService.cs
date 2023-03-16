@@ -34,19 +34,19 @@ public class CustomerChargeService {
 
         string chargeDescription = "";
         if (chargeType == CustomerChargeType.AliPay) {
-            chargeDescription = "支付宝充值" + amount.ToString("0.00") + "元";
+            chargeDescription = $"支付宝充值{amount:#0.00}元";
         } else if (chargeType == CustomerChargeType.Wechat) {
-            chargeDescription = "微信充值" + amount.ToString("0.00") + "元";
+            chargeDescription = $"微信充值{amount:#0.00}元";
         } else if (chargeType == CustomerChargeType.PayPal) {
             decimal audExchangeRate = exchangeRateService.GetAudFinalRate();
             if (audExchangeRate <= 0) {
-                throw new ValidationException("汇率值不合法!");
+                throw new Exception("汇率值不合法!");
             }
 
             string totalAmountAud = (amount / audExchangeRate).ToString("#0.00");
-            chargeDescription = $"PayPal 人民币支付：{amount.ToString("#0.00")}, 折算澳币: {totalAmountAud}";
+            chargeDescription = $"PayPal 人民币支付{amount:#0.00}, 折算澳币{totalAmountAud}";
         } else if (chargeType == CustomerChargeType.Manual) {
-            chargeDescription = "手工充值" + amount.ToString("0.00") + "元";
+            chargeDescription = $"手工充值{amount:#0.00}元";
         }
 
         // 标记订单为已支付
@@ -134,7 +134,7 @@ public class CustomerChargeService {
                         session.Flush();
 
                         // 充值和日志
-                        string awardDescription = $"充值奖惩，充值{amount.ToString("0.00")}，奖励{award.ToString("0.00")}";
+                        string awardDescription = $"充值奖惩，充值{amount.ToString("#0.00")}，奖励{award.ToString("#0.00")}";
                         customerAccountService.Change(CustomerAccountChangeType.ChargeAward, customer?.Id ?? 0, award, awardDescription);
                     }
                 }

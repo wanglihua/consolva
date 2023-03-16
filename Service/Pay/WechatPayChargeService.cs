@@ -44,8 +44,6 @@ public class WechatPayChargeService {
         }
 
         string outTradeNo = payService.GenerateOutTradeNo();
-        // log.Error("outTradeNo:");
-        // log.Error(outTradeNo);
 
         var customerCharge = new CustomerChargeInfo {
             ChargeType = CustomerChargeType.Wechat,

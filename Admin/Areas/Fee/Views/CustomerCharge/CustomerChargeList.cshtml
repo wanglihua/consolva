@@ -54,10 +54,10 @@
                     <td style="text-align: center;">@customerCharge.ChargeType?.Name</td>
                     <td style="text-align: center;">@customerCharge.Customer.Id</td>
                     <td style="text-align: right;">
-                        @customerCharge.Amount.ToString("0.00")<span>&nbsp;</span><span>RMB</span>
+                        @customerCharge.Amount.ToString("#0.00")<span>&nbsp;</span><span>RMB</span>
                     </td>
                     <td style="text-align: right;">
-                        @customerCharge.Award.ToString("0.00")<span>&nbsp;</span><span>RMB</span>
+                        @customerCharge.Award.ToString("#0.00")<span>&nbsp;</span><span>RMB</span>
                     </td>
                     <td style="text-align: center;">@customerCharge.Status?.Name</td>
                     <td style="text-align: center;">@customerCharge.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
