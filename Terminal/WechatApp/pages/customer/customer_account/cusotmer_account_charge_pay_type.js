@@ -1,3 +1,5 @@
+const app = getApp();
+
 Page({
     data: {
         amount: 0,
@@ -40,6 +42,24 @@ Page({
     },
 
     onAlipayClick(e) {
+        const amount = this.data.amount;
 
+        app.post("/client/charge/alipay/create/url", {
+            amount: amount,
+        }, function (res) {
+            const url = res.data.url;
+            wx.setClipboardData({
+                data: url,
+                success: function (res) {
+                    wx.showModal({
+                        title: '成功',
+                        content: "支付宝支付URL已复制，请粘贴到手机浏览器或电脑浏览器地址栏中完成支付！",
+                        showCancel: false,
+                        success: function (res) {
+                        }
+                    });
+                }
+            });
+        });
     },
 })

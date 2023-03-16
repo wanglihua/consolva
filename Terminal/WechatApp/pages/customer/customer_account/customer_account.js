@@ -55,7 +55,7 @@ Page({
         });
 
         wx.redirectTo({
-            url: './cusotmer_account_charge_pay_type?amount=' + chargeAmountNum,
+            url: './cusotmer_account_charge_pay_type?amount=' + chargeAmount,
         });
     },
 
