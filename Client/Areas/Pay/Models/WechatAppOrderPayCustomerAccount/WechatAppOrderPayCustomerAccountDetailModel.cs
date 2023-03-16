@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Order.Models.OrderPayCustomerAccount;
+namespace shunda.Client.Areas.Pay.Models.WechatAppOrderPayCustomerAccount;
 
-public class OrderPayCustomerAccountDetailModel {
+public class WechatAppOrderPayCustomerAccountDetailModel {
     [JsonProperty("orderId")]
     public int OrderId { get; set; }
 

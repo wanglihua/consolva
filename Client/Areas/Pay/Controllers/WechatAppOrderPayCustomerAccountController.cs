@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Client.Areas.Order.Models.OrderPayCustomerAccount;
+using shunda.Client.Areas.Pay.Models.WechatAppOrderPayCustomerAccount;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Hibernate;
@@ -8,7 +8,6 @@ using shunda.Core.Web;
 using shunda.Domain.Coupon;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
-using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
 using shunda.Service.Customer;
@@ -16,10 +15,10 @@ using shunda.Service.Fee;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Client.Areas.Order.Controllers;
+namespace shunda.Client.Areas.Pay.Controllers;
 
-[OrderArea]
-public class OrderPayCustomerAccountController : Controller {
+[PayArea]
+public class WechatAppOrderPayCustomerAccountController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
@@ -29,7 +28,7 @@ public class OrderPayCustomerAccountController : Controller {
     private readonly CouponService couponService;
     private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
 
-    public OrderPayCustomerAccountController(
+    public WechatAppOrderPayCustomerAccountController(
         ISession session,
         LoginCustomerService loginCustomerService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
@@ -51,8 +50,8 @@ public class OrderPayCustomerAccountController : Controller {
 
     [HttpPost]
     [Route("/client/order/pay/customer/account/detail")]
-    public IActionResult Detail([FromBody] OrderPayCustomerAccountDetailParam param) {
-        ValidationUtil.Validate<OrderPayCustomerAccountDetailParamValidator, OrderPayCustomerAccountDetailParam>(param);
+    public IActionResult Detail([FromBody] WechatAppOrderPayCustomerAccountDetailParam param) {
+        ValidationUtil.Validate<WechatAppOrderPayCustomerAccountDetailParamValidator, WechatAppOrderPayCustomerAccountDetailParam>(param);
 
         int orderId = param.OrderId;
         int couponId = param.CouponId;
@@ -123,7 +122,7 @@ public class OrderPayCustomerAccountController : Controller {
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = new OrderPayCustomerAccountDetailModel {
+            Data = new WechatAppOrderPayCustomerAccountDetailModel {
                 OrderId = order.Id,
                 OrderCode = order.Code,
                 TotalAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount.ToString("#0.00"),
@@ -140,8 +139,8 @@ public class OrderPayCustomerAccountController : Controller {
     [HttpPost]
     [Route("/client/order/pay/customer/account/pay")]
     [Transactional]
-    public IActionResult Pay([FromBody] OrderPayCustomerAccountPayParam param) {
-        ValidationUtil.Validate<OrderPayCustomerAccountPayParamValidator, OrderPayCustomerAccountPayParam>(param);
+    public IActionResult Pay([FromBody] WechatAppOrderPayCustomerAccountPayParam param) {
+        ValidationUtil.Validate<WechatAppOrderPayCustomerAccountPayParamValidator, WechatAppOrderPayCustomerAccountPayParam>(param);
 
         int orderId = param.OrderId;
         int couponId = param.CouponId;
