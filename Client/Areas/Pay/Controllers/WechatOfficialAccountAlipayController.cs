@@ -65,8 +65,8 @@ public class WechatOfficialAccountAlipayController : Controller {
     [Route("/client/wechat/official/account/alipay/{orderPayCode}/{couponPayCode}")]
     public IActionResult CopyUrl(string orderPayCode, string couponPayCode) {
         // 检查参数正确性
-        int orderId = GetIdFromAlipayCode(orderPayCode);
-        int couponId = GetIdFromAlipayCode(couponPayCode);
+        int orderId = payService.GetIdFromPayCodeInUrl(orderPayCode);
+        int couponId = payService.GetIdFromPayCodeInUrl(couponPayCode);
 
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
@@ -88,41 +88,6 @@ public class WechatOfficialAccountAlipayController : Controller {
         return RedirectToAction("AliPayRequest", new { orderPayCode = orderPayCode, couponPayCode = couponPayCode });
     }
 
-    [NonAction]
-    private string GenerateAlipayCode(int id) {
-        string alipayCodeSalt = "shunda_alipay_secret_32lkjadfasd";
-
-        string idStr = id.ToString();
-        string md5 = Md5Util.Encrypt(idStr + alipayCodeSalt);
-        return md5 + idStr;
-    }
-
-    [NonAction]
-    private int GetIdFromAlipayCode(string payCode) {
-        string errorMessage = "支付URL代码错误，请确认复制正确！";
-        if (string.IsNullOrWhiteSpace(payCode) == true) {
-            throw new ValidationException(errorMessage);
-        }
-
-        int md5Length = Md5Util.Md5Length;
-
-        if (payCode.Length <= md5Length) {
-            throw new ValidationException(errorMessage);
-        }
-
-        string idStr = payCode.Substring(md5Length);
-        if (int.TryParse(idStr, out int id) == false) {
-            throw new ValidationException(errorMessage);
-        }
-
-        string alipayCode = GenerateAlipayCode(id);
-        if (alipayCode != payCode) {
-            throw new ValidationException(errorMessage);
-        }
-
-        return id;
-    }
-
     /// <summary>
     /// 发起支付请求
     /// </summary>
@@ -138,8 +103,8 @@ public class WechatOfficialAccountAlipayController : Controller {
 
         log.Warn("支付宝支付发起 begin");
 
-        int orderId = GetIdFromAlipayCode(orderPayCode);
-        int couponId = GetIdFromAlipayCode(couponPayCode);
+        int orderId = payService.GetIdFromPayCodeInUrl(orderPayCode);
+        int couponId = payService.GetIdFromPayCodeInUrl(couponPayCode);
 
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
