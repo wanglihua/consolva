@@ -89,7 +89,6 @@ Page({
         const orderCode = currentOrder.orderCode;
         const action = e.detail.action;
 
-        const that = this;
         if (action === "detail") {
             wx.navigateTo({
                 url: './order_detail?id=' + orderId,

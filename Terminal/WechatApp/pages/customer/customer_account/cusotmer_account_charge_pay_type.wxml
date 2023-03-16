@@ -1,0 +1,21 @@
+<header/>
+<view class="container">
+    <van-cell-group title="余额充值支付方式"/>
+
+    <van-cell-group custom-class="items">
+        <van-cell title="充值费用" value="{{ amount }} RMB" border="{{ false }}" custom-class="item"/>
+        <view class="item-last-vspace"/>
+    </van-cell-group>
+
+    <van-cell-group title="充值支付方式"/>
+    <van-cell-group custom-class="items">
+        <van-cell title="微信支付" is-link size="large" bind:click="onWechatPayClick">
+            <van-icon slot="icon" class-prefix="iconfont" name="wechat-pay" class="cell-left-icon"/>
+        </van-cell>
+
+        <van-cell title="支付宝支付" is-link size="large" bind:click="onAlipayClick">
+            <van-icon slot="icon" class-prefix="iconfont" name="alipay" class="cell-left-icon"/>
+        </van-cell>
+    </van-cell-group>
+
+</view>

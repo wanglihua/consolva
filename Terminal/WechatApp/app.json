@@ -8,6 +8,7 @@
         "pages/coupon/coupon_pick",
         "pages/customer/customer_account/customer_account",
         "pages/customer/customer_account/customer_account_entry",
+        "pages/customer/customer_account/cusotmer_account_charge_pay_type",
         "pages/customer/customer_address/customer_address_receive/customer_address_receive_list",
         "pages/customer/customer_address/customer_address_receive/customer_address_receive_detail",
         "pages/customer/customer_address/customer_address_send/customer_address_send_list",
