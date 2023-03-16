@@ -33,7 +33,6 @@ public class WechatOfficialAccountAlipayController : Controller {
     private readonly ISession session;
     private readonly PayService payService;
     private readonly AlipayService alipayService;
-    private readonly LogisticsOrderFeeService logisticsOrderFeeService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly CustomerScoreService customerScoreService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
@@ -42,7 +41,6 @@ public class WechatOfficialAccountAlipayController : Controller {
         ISession session,
         PayService payService,
         AlipayService alipayService,
-        LogisticsOrderFeeService logisticsOrderFeeService,
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService,
         LogisticsOrderPaySumService logisticsOrderPaySumService
@@ -50,7 +48,6 @@ public class WechatOfficialAccountAlipayController : Controller {
         this.session = session;
         this.payService = payService;
         this.alipayService = alipayService;
-        this.logisticsOrderFeeService = logisticsOrderFeeService;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.customerScoreService = customerScoreService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
@@ -294,11 +291,15 @@ public class WechatOfficialAccountAlipayController : Controller {
 
             LogisticsOrderInfo order = orderPay.Order;
 
+            PayStatus orderPayStatusBefore = order.PayStatus;
+
             // 合计标记支付状态
             logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
 
+            PayStatus orderPayStatusAfter = order.PayStatus;
+
             // 记录日志
-            logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
+            logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
 
             // 会员积分
             customerScoreService.AddScore(orderPay.Id);
@@ -419,11 +420,15 @@ public class WechatOfficialAccountAlipayController : Controller {
 
                 LogisticsOrderInfo order = orderPay.Order;
 
+                PayStatus orderPayStatusBefore = order.PayStatus;
+
                 // 合计标记支付状态
                 logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(order.Id);
 
+                PayStatus orderPayStatusAfter = order.PayStatus;
+
                 // 记录日志
-                logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
+                logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
 
                 // 会员积分
                 customerScoreService.AddScore(orderPay.Id);

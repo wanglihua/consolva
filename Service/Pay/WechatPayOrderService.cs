@@ -233,11 +233,15 @@ public class WechatPayOrderService {
             session.Update(orderPay);
             session.Flush();
 
+            PayStatus orderPayStatusBefore = order.PayStatus;
+
             // 合计标记支付状态
             logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
+            PayStatus orderPayStatusAfter = order.PayStatus;
+
             // 订单日志
-            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, $"金额:{payAmount:#0.00)}, 支付单号:{orderPay.OutTradeNo}");
+            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00)}, 支付单号:{orderPay.OutTradeNo}");
 
             // 会员积分
             customerScoreService.AddScore(orderPay.Id);
