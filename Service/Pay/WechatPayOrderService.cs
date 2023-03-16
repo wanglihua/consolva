@@ -121,7 +121,7 @@ public class WechatPayOrderService {
         }
 
         string outTradeNo = payService.GenerateOutTradeNo();
-        var logisticsOrderPay = new LogisticsOrderPayInfo {
+        var orderPay = new LogisticsOrderPayInfo {
             Order = order,
             Customer = order.Customer,
             PayType = PayType.Wechat,
@@ -130,14 +130,14 @@ public class WechatPayOrderService {
             Status = PayStatus.NotPaid
         };
 
-        session.Save(logisticsOrderPay);
+        session.Save(orderPay);
         session.Flush();
 
         // 订单名称
-        string subject = "订单" + order.Code + "_" + logisticsOrderPay.Id;
+        string subject = $"订单{order.Code}_{orderPay.Id}";
 
         // 商品描述
-        string itemBody = "订单" + order.Code + "_" + logisticsOrderPay.Id;
+        string itemBody = $"订单{order.Code}_{orderPay.Id}";
 
         // 付款金额，单位是分
         int arrearsAmountCent = (int)(arrearsAmount * 100);
