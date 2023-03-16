@@ -5,7 +5,7 @@
         <van-field model:value="{{ goodsValue }}" label="货品总值" placeholder="请输入快递单物品总货值" border="{{ false }}" error="{{ goodsValueHasError }}" error-message="{{ goodsValueErrorMsg }}" custom-style="padding-bottom: 0;">
             <view slot="right-icon">RMB</view>
         </van-field>
-        <van-field model:value="{{ description }}" label="备注" type="textarea" autosize="{{ {minHeight:60, maxHeight:120 } }}" placeholder="请输入备注" border="{{ false }}"/>
+        <van-field model:value="{{ description }}" label="备注" type="textarea" autosize="{{ {minHeight:70, maxHeight:140 } }}" placeholder="如您有特殊物品，需要我们在入库时核对颜色、尺寸、质量等物品细节，请在该处注明! 我们会免费为您提供核对服务" border="{{ false }}"/>
     </van-cell-group>
     <van-cell-group custom-class="detail-buttons" border="{{false}}">
         <van-cell border="{{false}}">
