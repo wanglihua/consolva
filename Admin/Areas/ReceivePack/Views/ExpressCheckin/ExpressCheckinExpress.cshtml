@@ -189,7 +189,19 @@
                                     </div>
                                 </td>
                             </tr>
-
+                            @{
+                                string customerExpectRemark = Model.ExpressExpect?.Description ?? string.Empty;
+                                @if (string.IsNullOrWhiteSpace(customerExpectRemark) == false) {
+                                    <tr>
+                                        <td class="lbl">
+                                            <span>客户备注</span>
+                                        </td>
+                                        <td colspan="5" class="break-word">
+                                            <span style="color: blue;">@(customerExpectRemark)</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>

@@ -1,3 +1,4 @@
+using Alipay.AopSdk.AspnetCore;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
@@ -97,6 +98,18 @@ public class Program {
         // 微信开发相关
         services.AddSenparcGlobalServices(builder.Configuration);
         services.AddSenparcWeixinServices(builder.Configuration);
+
+        // 支付宝支付 在这里添加支付宝服务是为了，使用他的服务类初始化的时候不报错
+        services.AddAlipay(options => {
+            options.PrivateKey = AlipayConfig.PrivateKey;
+            options.AlipayPublicKey = AlipayConfig.PublicKey;
+            options.AppId = AlipayConfig.AppId;
+            options.Uid = AlipayConfig.UId;
+            options.CharSet = AlipayConfig.CharSet;
+            options.Gatewayurl = AlipayConfig.GatewayUrl;
+            options.SignType = AlipayConfig.SignType;
+            options.IsKeyFromFile = false;
+        });
 
         services.AddHttpClient();
 

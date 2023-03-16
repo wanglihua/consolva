@@ -11,7 +11,7 @@ public class LogisticsExpressCheckinExpressDetailModel : LogisticsExpressCheckin
     /// </summary>
     [BindNever]
     public ExpressStatus ExpressStatus { get; set; } = ExpressStatus.None;
-    
+
     [BindNever]
     public WarehouseInfo Warehouse { get; set; } = new();
 
