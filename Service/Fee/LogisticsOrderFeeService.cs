@@ -127,37 +127,50 @@ public class LogisticsOrderFeeService {
 
         int customerId = order.Customer.Id;
 
+        // 超级VIP折扣
         CustomerSuperVipDiscountInfo? superVipDiscount = session.Query<CustomerSuperVipDiscountInfo>()
             .Where(e => e.Customer.Id == customerId)
             .Take(1)
             .SingleOrDefault();
 
-        CustomerVipDiscountInfo? vipDiscount = null;
-        // 不是超级VIP的才需要查看VIP折扣
-        if (superVipDiscount == null) {
-            vipDiscount = customerVipDiscountService.GetDiscount(customerId);
-        }
+        // VIP折扣
+        CustomerVipDiscountInfo? vipDiscount = customerVipDiscountService.GetDiscount(customerId);
+
+        LogisticsOrderFeeType discountFeeType = LogisticsOrderFeeType.None;
+        string discountFeeTitle = string.Empty;
+        decimal discount = 0m;
 
         if (superVipDiscount != null) {
-            decimal discount = -firstModeFeeNoPromotion * superVipDiscount.Discount / 100m; // 负的费用
+            decimal discountVip = -firstModeFeeNoPromotion * superVipDiscount.Discount / 100m; // 负的费用
+
+            // 意思就是 <0 有折扣
+            if (discountVip < discount) {
+                discount = discountVip;
+                discountFeeType = LogisticsOrderFeeType.SuperVipDiscount;
+                discountFeeTitle = LogisticsOrderFeeType.SuperVipDiscount.Name;
+            }
+        }
+
+        if (vipDiscount != null) {
+            decimal discountSuperVip = -firstModeFeeNoPromotion * vipDiscount.Discount / 100m; // 负的费用
+
+            // 意思就是有折扣，或者折扣更小
+            if (discountSuperVip < discount) {
+                discount = discountSuperVip;
+                discountFeeType = LogisticsOrderFeeType.VipDiscount;
+                discountFeeTitle = LogisticsOrderFeeType.VipDiscount.Name;
+            }
+        }
+
+
+        if (discountFeeType != LogisticsOrderFeeType.None) {
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
                 OrderFirstMode = null,
                 LogisticsMode = null,
-                Title = LogisticsOrderFeeType.SuperVipDiscount.Name,
+                Title = discountFeeTitle,
                 Fee = discount,
                 GoodsType = LogisticsGoodsType.None,
-                FeeType = LogisticsOrderFeeType.SuperVipDiscount,
-                EntryType = LogisticsFeeResultEntryType.Single
-            });
-        } else if (vipDiscount != null) {
-            decimal discount = -firstModeFeeNoPromotion * vipDiscount.Discount / 100m; // 负的费用
-            orderResultEntryList.Add(new LogisticsFeeResultEntry() {
-                OrderFirstMode = null,
-                LogisticsMode = null,
-                Title = LogisticsOrderFeeType.VipDiscount.Name,
-                Fee = discount,
-                GoodsType = LogisticsGoodsType.None,
-                FeeType = LogisticsOrderFeeType.VipDiscount,
+                FeeType = discountFeeType,
                 EntryType = LogisticsFeeResultEntryType.Single
             });
         }
