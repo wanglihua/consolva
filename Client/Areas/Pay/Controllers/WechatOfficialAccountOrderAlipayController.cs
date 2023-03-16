@@ -9,6 +9,7 @@ using NLog;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderAlipay;
 using shunda.Core;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
@@ -33,6 +34,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     private readonly ISession session;
     private readonly PayService payService;
     private readonly AlipayService alipayService;
+    private readonly AlipayOrderService alipayOrderService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly CustomerScoreService customerScoreService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
@@ -41,6 +43,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         ISession session,
         PayService payService,
         AlipayService alipayService,
+        AlipayOrderService alipayOrderService,
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService,
         LogisticsOrderPaySumService logisticsOrderPaySumService
@@ -48,6 +51,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         this.session = session;
         this.payService = payService;
         this.alipayService = alipayService;
+        this.alipayOrderService = alipayOrderService;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.customerScoreService = customerScoreService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
@@ -97,106 +101,26 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     /// <returns></returns>
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/request/{orderPayCode}/{couponPayCode}")]
-    [Route("/client/order/alipay/request/{orderPayCode}/{couponPayCode}")]  // 让复制出来的URL好看一点
+    [Route("/client/order/alipay/request/{orderPayCode}/{couponPayCode}")] // 让复制出来的URL好看一点
     public IActionResult AliPayRequest(string orderPayCode, string couponPayCode) {
         if (WebUtil.IsWechatRequest(Request)) {
             return RedirectToAction("CopyUrl", new { orderPayCode = orderPayCode, couponPayCode = couponPayCode });
         }
 
-        log.Warn("支付宝支付发起 begin");
-
         int orderId = payService.GetIdFromPayCodeInUrl(orderPayCode);
         int couponId = payService.GetIdFromPayCodeInUrl(couponPayCode);
-
-        var order = session.Get<LogisticsOrderInfo>(orderId);
-        if (order == null) {
-            throw new ValidationException($"指定的订单#{orderId}不存在！");
-        }
-
-        var coupon = session.Get<CouponInfo>(couponId);
-        if (coupon == null) {
-            throw new ValidationException($"指定的优惠券{couponId}不存在！");
-        }
-
-        if (order.ArrearsAmountFormula <= 0) {
-            throw new ValidationException("当前订单无欠费金额，无需支付！");
-        }
-
-        // 外部订单号，商户网站订单系统中唯一的订单号
-        string outTradeNo = payService.GenerateOutTradeNo();
-
-        // 付款金额
-        string totalAmount = order.ArrearsAmountFormula.ToString("#0.00");
-
-        LogisticsOrderPayInfo orderPay = new LogisticsOrderPayInfo();
-        orderPay.Order = order;
-        orderPay.Customer = order.Customer;
-        orderPay.PayType = PayType.AliPay;
-        orderPay.OutTradeNo = outTradeNo;
-        orderPay.Amount = order.ArrearsAmountFormula;
-        orderPay.Status = PayStatus.NotPaid;
-        session.Save(orderPay);
-        session.Flush();
-
-        // 订单名称
-        string subject = $"订单{order.Code}_{orderPay.Id}";
-
-        // 商品描述
-        string itemBody = $"订单{order.Code}_{orderPay.Id}";
-
         bool isMobile = WebUtil.IsMobileRequest(Request);
 
-        if (isMobile == false) {
-            // 组装业务参数model
-            AlipayTradePagePayModel payModel = new AlipayTradePagePayModel {
-                Subject = subject,
-                Body = itemBody,
-                TotalAmount = totalAmount,
-                OutTradeNo = outTradeNo,
-                ProductCode = "FAST_INSTANT_TRADE_PAY"
-            };
+        AlipayOrderCreateParam createParam = new AlipayOrderCreateParam {
+            OrderId = orderId,
+            CouponId = couponId,
+            IsMobile = isMobile,
+            CallbackUrl = SiteConfig.SiteUrlBase + Url.Action("Callback", "WechatOfficialAccountOrderAlipay"),
+            NotifyUrl = SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountOrderAlipay"),
+        };
 
-            AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
-            // 设置同步回调地址
-            request.SetReturnUrl(SiteConfig.SiteUrlBase + Url.Action("Callback", "WechatOfficialAccountOrderAlipay"));
-            // 设置异步通知接收地址
-            request.SetNotifyUrl(SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountOrderAlipay"));
-            // 将业务model载入到request
-            request.SetBizModel(payModel);
-
-            var response = alipayService.SdkExecute(request);
-
-            string alipayRequestUrl = alipayService.Options.Gatewayurl + "?" + response.Body;
-
-            //跳转支付宝支付
-            return Redirect(alipayRequestUrl);
-        } else {
-            // 组装业务参数model
-            AlipayTradeWapPayModel payModel = new AlipayTradeWapPayModel {
-                Subject = subject,
-                Body = itemBody,
-                TotalAmount = totalAmount,
-                OutTradeNo = outTradeNo,
-                ProductCode = "QUICK_WAP_WAY"
-            };
-
-            AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
-            // 设置同步回调地址
-            request.SetReturnUrl(SiteConfig.SiteUrlBase + Url.Action("Callback", "WechatOfficialAccountOrderAlipay"));
-            // 设置异步通知接收地址
-            request.SetNotifyUrl(SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountOrderAlipay"));
-            // 将业务model载入到request
-            request.SetBizModel(payModel);
-
-            var response = alipayService.SdkExecute(request);
-
-            log.Warn("支付宝支付发起 end");
-
-            string alipayRequestUrl = alipayService.Options.Gatewayurl + "?" + response.Body;
-
-            //跳转支付宝支付
-            return Redirect(alipayRequestUrl);
-        }
+        string alipayRequestUrl = alipayOrderService.Create(createParam);
+        return Redirect(alipayRequestUrl);
     }
 
     [NonAction]
@@ -432,31 +356,14 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/callback")]
     [Route("/client/order/alipay/callback")] // 让浏览器里面的URL好看点
+    [Transactional]
     public IActionResult Callback() {
-        try {
-            WechatOfficialAccountOrderAlipayCallbackModel model;
+        WechatOfficialAccountOrderAlipayCallbackModel model;
 
-            ITransaction? transaction = null;
-            try {
-                transaction = session.BeginTransaction();
-                model = AliPayCallbackInternal();
-                transaction.Commit();
-            }
-            catch (Exception exp) {
-                log.Error(exp);
 
-                transaction?.Rollback();
-                throw; // 重新抛出异常                    
-            }
+        model = AliPayCallbackInternal();
 
-            return View("WechatOfficialAccountOrderAlipayCallback", model);
-        }
-        catch (Exception exp) {
-            log.Error(exp);
-
-            log.Error("支付宝支付同步回调 end fail-004");
-            throw; // 加上，让事务回滚
-        }
+        return View("WechatOfficialAccountOrderAlipayCallback", model);
     }
 
     #endregion
