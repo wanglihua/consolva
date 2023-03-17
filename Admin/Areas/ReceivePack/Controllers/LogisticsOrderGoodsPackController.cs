@@ -1287,7 +1287,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         int orderId = orderPack.Order.Id;
-        string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
+        string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
 
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
@@ -1346,7 +1346,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Query<LogisticsOrderPackBoxInfo>()
             .Where(e => e.OrderPack.Id == orderPackId)
             .ToList();
-        
+
         string customerCode = orderPack.Order.Customer.CheckinCode;
         string orderCode = orderPack.Order.Code;
 
@@ -1366,7 +1366,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
-        string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
+        string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
 
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
@@ -1442,7 +1442,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
-        string firstLogisticsTypeName = orderPack.Order.FirstMode.Name;
+        string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "方";
@@ -1473,6 +1473,12 @@ public class LogisticsOrderGoodsPackController : Controller {
         });
     }
 
+    /// <summary>
+    /// 实际上现在起作用的就这个
+    /// </summary>
+    /// <param name="orderPackId"></param>
+    /// <returns></returns>
+    /// <exception cref="ValidationException"></exception>
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/get/print/pack/data/air/express")]
     [NoLoginRequired]
@@ -1498,7 +1504,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         string customerCode = order.Customer.CheckinCode;
         string orderCode = order.Code;
 
-        string firstLogisticsModeName = order.FirstMode.Name;
+        string firstLogisticsModeName = orderPack.OrderFirstMode.FirstMode.Name;
         string actualWeight = orderPack.Weight.ToString("#0.0") + "Kg";
         string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "立方";
