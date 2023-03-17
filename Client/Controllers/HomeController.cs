@@ -3,6 +3,7 @@ using NLog;
 using shunda.Client.Models.Home;
 using shunda.Client.Services;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Client;
@@ -99,18 +100,29 @@ public class HomeController : Controller {
             discountDesc = (int)(100 - discountPercent) + "折";
         }
 
-        var vipDiscountForDiscountPercent = vipDiscountList
+        var vipDiscountFromDiscountPercent = vipDiscountList
             .Where(e => e.Discount <= discountPercent)
             .OrderByDescending(e => e.Discount)
             .Take(1)
             .SingleOrDefault();
 
-        string customerLevelTitle = vipDiscountForDiscountPercent?.Rank.Name ?? string.Empty; // VIP1,2,3...
+        string customerLevelTitle = vipDiscountFromDiscountPercent?.Rank.Name ?? string.Empty; // VIP1,2,3...
         if (string.IsNullOrWhiteSpace(customerLevelTitle)) {
             customerLevelTitle = customer.Level.Name;
         }
 
         customerCode = $"SD{customerCode} {customerLevelTitle} {discountDesc}";
+
+        if (vipDiscountFromDiscountPercent != null
+            && (customer.Level != CustomerLevel.Vip || customer.VipRank != vipDiscountFromDiscountPercent.Rank)) {
+            Transactional.Wrap(session, () => {
+                customer.Level = CustomerLevel.Vip;
+                customer.VipRank = vipDiscountFromDiscountPercent.Rank;
+
+                session.Update(customer);
+                session.Flush();
+            });
+        }
 
         return Json(new JsonResultData {
             Success = true,

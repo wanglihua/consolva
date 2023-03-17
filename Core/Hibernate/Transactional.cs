@@ -3,21 +3,17 @@ using NLog;
 
 namespace shunda.Core.Hibernate;
 
-public class Transactional
-{
+public class Transactional {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-    public static void Wrap(ISession session, Action action)
-    {
+    public static void Wrap(ISession session, Action action) {
         bool transactionBegin = false;
 
         ITransaction? transaction = null;
 
-        try
-        {
+        try {
             transaction = session.GetCurrentTransaction();
-            if (transaction == null)
-            {
+            if (transaction == null) {
                 transaction = session.BeginTransaction();
                 transactionBegin = true;
             }
@@ -25,14 +21,12 @@ public class Transactional
             // 执行业务代码
             action();
 
-            if (transactionBegin == true)
-            {
+            if (transactionBegin == true) {
                 session.Flush();
                 transaction.Commit();
             }
         }
-        catch (Exception exp)
-        {
+        catch (Exception exp) {
             transaction?.Rollback();
 
             log.Error(exp);

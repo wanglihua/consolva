@@ -42,8 +42,9 @@ public class LogisticsOrderFeeType : CodeTypeBase {
 
     /// <summary>
     /// 超级VIP折扣，这个费用是负的
+    /// 客户端显示时，也显示VIP折扣
     /// </summary>
-    public static readonly LogisticsOrderFeeType SuperVipDiscount = new LogisticsOrderFeeType(11000, "超级VIP折扣", "超级VIP折扣");
+    public static readonly LogisticsOrderFeeType SuperVipDiscount = new LogisticsOrderFeeType(11000, "VIP折扣", "VIP折扣");
 
     /// <summary>
     /// VIP折扣，这个费用是负的
