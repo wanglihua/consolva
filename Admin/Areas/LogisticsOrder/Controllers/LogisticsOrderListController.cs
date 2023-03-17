@@ -300,6 +300,8 @@ public class LogisticsOrderListController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/excel/export")]
     public IActionResult Export() {
+        // todo 导出的时候，加上实际打包的物流方式，不仅仅只有订单的物流方式
+        
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
