@@ -26,7 +26,7 @@ public class CustomerVipDiscountInfo : Entity {
     public virtual decimal Score { get; set; }
 
     /// <summary>
-    /// 折扣
+    /// 折扣, 是一个0-100的值
     /// </summary>
     [Required(ErrorMessage = "折扣不能为空！")]
     public virtual decimal Discount { get; set; }

@@ -17,7 +17,7 @@ public class CustomerSuperVipDiscountInfo : Entity
     public virtual CustomerInfo Customer { get; set; } = new ();
 
     /// <summary>
-    /// 折扣
+    /// 折扣，是一个0-100的值
     /// </summary>
     [Required(ErrorMessage = "折扣不能为空！")]
     public virtual decimal Discount { get; set; }

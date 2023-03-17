@@ -41,6 +41,7 @@ public class CustomerVipDiscountService {
     /// <summary>
     /// 获取会员VIP折扣列表
     /// 总的数量也不多，后面的很多操作都建立在这个获取的列表之上
+    /// todo 这里是不是可以加个缓存，可以时间长一点的缓存
     /// </summary>
     public IList<CustomerVipDiscountInfo> GetCustomerVipDiscountList() {
         return session.Query<CustomerVipDiscountInfo>().OrderBy(e => e.Score).ToList();

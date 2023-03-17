@@ -55,9 +55,6 @@ Page({
     },
 
     onTopImageLoad(e) {
-
-        console.log(e);
-
         const that = this;
         let query = wx.createSelectorQuery();
         query.select('.top-image-item').boundingClientRect(r => {

@@ -3,7 +3,6 @@ using NLog;
 using shunda.Client.Models.Home;
 using shunda.Client.Services;
 using shunda.Core.Config;
-using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Client;
@@ -76,17 +75,14 @@ public class HomeController : Controller {
 
         // 客户信息
         string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
-        string customerLevelTitle = customer.Level.Name; // 普通会员, VIP1,2,3..., 超级VIP
-        decimal discountRatio = 0; // >=0
+        decimal discountPercent = 0; // >=0
+
+        var vipDiscountList = customerVipDiscountService.GetCustomerVipDiscountList();
 
         // VIP折扣
-        CustomerVipDiscountInfo? vipDiscount = customerVipDiscountService.GetDiscount(loginCustomerId);
-        if (vipDiscount != null) {
-            customerLevelTitle = vipDiscount.Rank.Name;
-
-            if (vipDiscount.Discount > discountRatio) {
-                discountRatio = vipDiscount.Discount;
-            }
+        CustomerVipDiscountInfo? vipDiscount = customerVipDiscountService.GetDiscount(loginCustomerId, vipDiscountList);
+        if (vipDiscount != null && vipDiscount.Discount > discountPercent) {
+            discountPercent = vipDiscount.Discount;
         }
 
         // 超级VIP折扣
@@ -94,17 +90,24 @@ public class HomeController : Controller {
             .Where(e => e.Customer.Id == loginCustomerId)
             .Take(1)
             .SingleOrDefault();
-        if (superVipDiscount != null) {
-            customerLevelTitle = CustomerLevel.SuperVip.Name;
-
-            if (superVipDiscount.Discount > discountRatio) {
-                discountRatio = superVipDiscount.Discount;
-            }
+        if (superVipDiscount != null && superVipDiscount.Discount > discountPercent) {
+            discountPercent = superVipDiscount.Discount;
         }
 
         string discountDesc = "无折扣";
-        if (discountRatio > 0) {
-            discountDesc = (int)((1 - discountRatio) * 100) + "折";
+        if (discountPercent > 0) {
+            discountDesc = (int)(100 - discountPercent) + "折";
+        }
+
+        var vipDiscountForDiscountPercent = vipDiscountList
+            .Where(e => e.Discount <= discountPercent)
+            .OrderByDescending(e => e.Discount)
+            .Take(1)
+            .SingleOrDefault();
+
+        string customerLevelTitle = vipDiscountForDiscountPercent?.Rank.Name ?? string.Empty; // VIP1,2,3...
+        if (string.IsNullOrWhiteSpace(customerLevelTitle)) {
+            customerLevelTitle = customer.Level.Name;
         }
 
         customerCode = $"SD{customerCode} {customerLevelTitle} {discountDesc}";
