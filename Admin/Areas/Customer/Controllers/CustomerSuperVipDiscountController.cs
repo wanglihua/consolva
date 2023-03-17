@@ -105,6 +105,7 @@ public class CustomerSuperVipDiscountController : Controller {
             }
         }
 
+        model.DiscountId = superVipDiscount.Id;
         model.CustomerCode = customerCodeService.GetCustomerCode(superVipDiscount.Customer.Id);
         model.Discount = superVipDiscount.Discount;
         model.Description = superVipDiscount.Description;
