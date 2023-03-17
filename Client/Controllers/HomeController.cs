@@ -23,13 +23,15 @@ public class HomeController : Controller {
     private readonly WechatAppLoginService wechatAppLoginService;
     private readonly ClientHomeDataService clientHomeDataService;
     private readonly AdvertBannerImageService advertBannerImageService;
+    private readonly CustomerVipDiscountService customerVipDiscountService;
 
     public HomeController(ISession session,
         LoginCustomerService loginCustomerService,
         CustomerCodeService customerCodeService,
         WechatAppLoginService wechatAppLoginService,
         ClientHomeDataService clientHomeDataService,
-        AdvertBannerImageService advertBannerImageService
+        AdvertBannerImageService advertBannerImageService,
+        CustomerVipDiscountService customerVipDiscountService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
@@ -37,6 +39,7 @@ public class HomeController : Controller {
         this.wechatAppLoginService = wechatAppLoginService;
         this.clientHomeDataService = clientHomeDataService;
         this.advertBannerImageService = advertBannerImageService;
+        this.customerVipDiscountService = customerVipDiscountService;
     }
 
     // 这个只能通过dotnet 部署的端口号访问到
@@ -69,28 +72,49 @@ public class HomeController : Controller {
 
         // 这时肯定已经登录
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        var customer = loginCustomerService.GetLoginCustomer();
 
         // 客户信息
         string customerCode = customerCodeService.GetCustomerCode(loginCustomerId);
+        string customerLevelTitle = customer.Level.Name; // 普通会员, VIP1,2,3..., 超级VIP
+        decimal discountRatio = 0; // >=0
 
-        var customer = loginCustomerService.GetLoginCustomer();
-        CustomerLevel customerLevel = customer.Level;
-        if (customerLevel == CustomerLevel.SuperVip) {
-            customerCode += $" {CustomerLevel.SuperVip.Name}";
-        } else if (customerLevel == CustomerLevel.Vip) {
-            customerCode += $" {customer.VipRank.Name}";
-        } else if (customerLevel == CustomerLevel.Common) {
-            customerCode += $" {customer.Level.Name}";
+        // VIP折扣
+        CustomerVipDiscountInfo? vipDiscount = customerVipDiscountService.GetDiscount(loginCustomerId);
+        if (vipDiscount != null) {
+            customerLevelTitle = vipDiscount.Rank.Name;
+
+            if (vipDiscount.Discount > discountRatio) {
+                discountRatio = vipDiscount.Discount;
+            }
         }
 
-        var model = new HomeClientHeaderDataModel {
-            CustomerCode = customerCode,
-        };
+        // 超级VIP折扣
+        CustomerSuperVipDiscountInfo? superVipDiscount = session.Query<CustomerSuperVipDiscountInfo>()
+            .Where(e => e.Customer.Id == loginCustomerId)
+            .Take(1)
+            .SingleOrDefault();
+        if (superVipDiscount != null) {
+            customerLevelTitle = CustomerLevel.SuperVip.Name;
+
+            if (superVipDiscount.Discount > discountRatio) {
+                discountRatio = superVipDiscount.Discount;
+            }
+        }
+
+        string discountDesc = "无折扣";
+        if (discountRatio > 0) {
+            discountDesc = (int)((1 - discountRatio) * 100) + "折";
+        }
+
+        customerCode = $"SD{customerCode} {customerLevelTitle} {discountDesc}";
 
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
-            Data = model,
+            Data = new HomeClientHeaderDataModel {
+                CustomerCode = customerCode,
+            },
         });
     }
 
