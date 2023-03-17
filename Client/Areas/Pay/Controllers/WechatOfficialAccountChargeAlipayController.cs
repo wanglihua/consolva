@@ -147,9 +147,9 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     public IActionResult Return() {
         Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 
-        ICollection<string> requestItem = Request.Form.Keys;
+        ICollection<string> requestItem = Request.Query.Keys;
         foreach (var item in requestItem) {
-            callbackDataDict.Add(item, Request.Form[item]);
+            callbackDataDict.Add(item, Request.Query[item]);
         }
 
         try {
