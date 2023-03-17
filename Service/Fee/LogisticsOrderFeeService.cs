@@ -273,7 +273,7 @@ public class LogisticsOrderFeeService {
         var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Fetch(e => e.FirstMode)
             .Where(e => e.Order.Id == orderId)
-            .OrderBy(e => e.FirstMode.Id)
+            .OrderBy(e => e.FirstMode.Id) // 排序跟下面的一致
             .ThenBy(e => e.GoodsType)
             .ThenBy(e => e.Id)
             .ToList();
@@ -286,7 +286,8 @@ public class LogisticsOrderFeeService {
         var orderFirstModeListFromPack = orderPackList
             .Select(e => e.OrderFirstMode)
             .Distinct()
-            .OrderBy(e => e.GoodsType.Id)
+            .OrderBy(e => e.FirstMode.Id) // 排序跟上面的一致
+            .ThenBy(e => e.GoodsType.Id)
             .ThenBy(e => e.Id)
             .ToList();
 
@@ -298,7 +299,7 @@ public class LogisticsOrderFeeService {
             var orderFirstMode = orderFirstModeList[index];
             var orderFirstModeFromPack = orderFirstModeListFromPack[index];
             if (orderFirstMode.Id != orderFirstModeFromPack.Id) {
-                throw new ValidationException("订单头程物流方式记录和订单打包数据不匹配，数据有问题！");
+                throw new ValidationException("订单头程物流方式记录和订单打包数据不一致，数据有问题！");
             }
         }
 
