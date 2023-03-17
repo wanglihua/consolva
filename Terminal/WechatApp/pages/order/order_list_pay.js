@@ -101,11 +101,11 @@ Page({
             }, function (res) {
                 const hasCoupon = res.data.hasCoupon;
                 if(hasCoupon === true) {
-                    wx.redirectTo({
+                    wx.navigateTo({
                         url: "./order_pay_coupon?orderId=" + orderId,
                     });
                 } else {
-                    wx.redirectTo({
+                    wx.navigateTo({
                         url: "./order_pay_type?orderId=" + orderId,
                     });
                 }
