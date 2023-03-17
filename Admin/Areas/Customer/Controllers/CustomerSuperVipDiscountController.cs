@@ -90,41 +90,46 @@ public class CustomerSuperVipDiscountController : Controller {
     public IActionResult Detail(int? id) {
         session.DefaultReadOnly = true;
 
-        CustomerSuperVipDiscountInfo? customerSuperVipDiscount;
+        CustomerSuperVipDiscountInfo? superVipDiscount;
 
         var model = new CustomerSuperVipDiscountDetailModel();
 
         if (id == null || id.Value == 0) {
-            customerSuperVipDiscount = new CustomerSuperVipDiscountInfo();
+            superVipDiscount = new CustomerSuperVipDiscountInfo();
         } else {
-            customerSuperVipDiscount = session.Get<CustomerSuperVipDiscountInfo>(id.Value);
-            if (customerSuperVipDiscount == null) throw new ValidationException("指定的数据项不存在！");
-
-            customerSuperVipDiscount.CustomerCodeCache = customerCodeService.GetCustomerCode(customerSuperVipDiscount.Customer?.Id ?? 0);
+            superVipDiscount = session.Get<CustomerSuperVipDiscountInfo>(id.Value);
+            if (superVipDiscount == null) {
+                throw new ValidationException("指定的数据项不存在！");
+            }
         }
 
-        model.CustomerSuperVipDiscount = customerSuperVipDiscount;
+        model.CustomerCode = customerCodeService.GetCustomerCode(superVipDiscount.Customer.Id);
+        model.Discount = superVipDiscount.Discount;
+        model.Description = superVipDiscount.Description;
 
         return View("CustomerSuperVipDiscountDetail", model);
     }
 
     [HttpPost]
     [Route("/admin/customer/super/vip/discount/save")]
-    public IActionResult Save(CustomerSuperVipDiscountDetailModel model) {
-        if (!ModelState.IsValid) throw new ValidationException(ValidationUtil.GetErrorMessages(ModelState));
+    public IActionResult Save(CustomerSuperVipDiscountSaveModel model) {
+        ValidationUtil.Validate<CustomerSuperVipDiscountSaveModelValidator, CustomerSuperVipDiscountSaveModel>(model);
 
-        var customerSuperVipDiscountFromUi = model.CustomerSuperVipDiscount;
-        var customerSuperVipDiscountId = customerSuperVipDiscountFromUi.Id;
-
-        var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerSuperVipDiscountFromUi.CustomerCodeCache);
-        if (customerId == 0) throw new ValidationException("指定的客户ID格式不对或客户ID未指定！");
+        var customerId = customerCodeService.GetCustomerIdFromCustomerCode(model.CustomerCode);
+        if (customerId == 0) {
+            throw new ValidationException("指定的客户ID格式不对或客户ID未指定！");
+        }
 
         var customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null) throw new ValidationException("指定的客户不存在！");
+        if (customer == null) {
+            throw new ValidationException("指定的客户不存在！");
+        }
 
-        var isCreate = customerSuperVipDiscountId == 0;
+        int discountId = model.DiscountId;
 
-        CustomerSuperVipDiscountInfo? customerSuperVipDiscount;
+        var isCreate = discountId == 0;
+
+        CustomerSuperVipDiscountInfo? superVipDiscount;
 
         if (isCreate) {
             var customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
@@ -132,29 +137,34 @@ public class CustomerSuperVipDiscountController : Controller {
                 .Take(1)
                 .SingleOrDefault();
 
-            if (customerSuperVipDiscountExist != null) throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
+            if (customerSuperVipDiscountExist != null) {
+                throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
+            }
 
-            customerSuperVipDiscount = new CustomerSuperVipDiscountInfo();
+            superVipDiscount = new CustomerSuperVipDiscountInfo();
         } else {
             var customerSuperVipDiscountExist = session.Query<CustomerSuperVipDiscountInfo>()
-                .Where(e => e.Customer.Id == customerId && e.Id != customerSuperVipDiscountId)
+                .Where(e => e.Customer.Id == customerId && e.Id != discountId)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (customerSuperVipDiscountExist != null) throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
+            if (customerSuperVipDiscountExist != null) {
+                throw new ValidationException($"指定的客户#{customerId}超级VIP设置已存在！");
+            }
 
-            customerSuperVipDiscount = session.Get<CustomerSuperVipDiscountInfo>(customerSuperVipDiscountId);
+            superVipDiscount = session.Get<CustomerSuperVipDiscountInfo>(discountId);
         }
 
-        customerSuperVipDiscount.Customer = customer;
-        customerSuperVipDiscount.Description = model.CustomerSuperVipDiscount.Description;
-        customerSuperVipDiscount.Discount = customerSuperVipDiscountFromUi.Discount;
-        customerSuperVipDiscount.User = session.Load<UserInfo>(loginUserService.GetLoginUserId());
+        superVipDiscount.Customer = customer;
+        superVipDiscount.Discount = model.Discount;
+        superVipDiscount.Description = model.Description;
+        superVipDiscount.User = loginUserService.GetLoginUser();
 
-        if (isCreate)
-            session.Save(customerSuperVipDiscount);
-        else
-            session.Update(customerSuperVipDiscount);
+        if (isCreate) {
+            session.Save(superVipDiscount);
+        } else {
+            session.Update(superVipDiscount);
+        }
 
         session.Flush();
 

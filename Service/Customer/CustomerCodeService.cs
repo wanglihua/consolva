@@ -24,18 +24,18 @@ public class CustomerCodeService {
     /// 解析类似 SDABCDE001, SDABCDE, SDQQABCDE, SDQQABCDE001 等的客户ID，可以有数字但必须要有校验码
     /// 实际如果写成这样也能识别的 SD001ABCDE, SDQQ001ABCDE
     /// </summary>
-    /// <param name="customerIdOrCode"></param>
+    /// <param name="checkinCode"></param>
     /// <returns></returns>
-    public int GetCustomerIdFromCustomerCode(string customerIdOrCode) {
-        if (string.IsNullOrWhiteSpace(customerIdOrCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
+    public int GetCustomerIdFromCustomerCode(string checkinCode) {
+        if (string.IsNullOrWhiteSpace(checkinCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
         {
             return 0;
         }
 
-        customerIdOrCode = customerIdOrCode.ToUpper(); // 转成大写
+        checkinCode = checkinCode.ToUpper(); // 转成大写
 
         // 解析数字部分，如果含有多个数字部分，取长度最长的数字部分
-        MatchCollection matches = REGEX_CUSTOMER_ID.Matches(customerIdOrCode);
+        MatchCollection matches = REGEX_CUSTOMER_ID.Matches(checkinCode);
 
         string maxLengthMatchValue = string.Empty;
         foreach (Match match in matches) {
@@ -52,9 +52,9 @@ public class CustomerCodeService {
         }
 
         // 处理最大数字部分剩下的部分
-        string remain = customerIdOrCode;
+        string remain = checkinCode;
         if (hasCustomerIdFromDigits == true) {
-            remain = customerIdOrCode.Replace(maxLengthMatchValue, "");
+            remain = checkinCode.Replace(maxLengthMatchValue, "");
         }
 
         if (string.IsNullOrWhiteSpace(remain)) {
