@@ -16,101 +16,39 @@ public class CustomerCodeService {
         this.customerCheckinCodeService = customerCheckinCodeService;
     }
 
-    private static readonly Regex REGEX_CUSTOMER_ID = new Regex(@"[0-9]+", RegexOptions.Compiled);
+    private static readonly Regex REGEX_CHECKIN_CODE = new Regex(@"[0-9]+", RegexOptions.Compiled);
 
     private static readonly int PARSE_FAIL_CUSTOMER_ID = 0;
 
-    /// <summary>
-    /// 解析类似 SDABCDE001, SDABCDE, SDQQABCDE, SDQQABCDE001 等的客户ID，可以有数字但必须要有校验码
-    /// 实际如果写成这样也能识别的 SD001ABCDE, SDQQ001ABCDE
-    /// </summary>
-    /// <param name="checkinCode"></param>
-    /// <returns></returns>
-    public int GetCustomerIdFromCustomerCode(string checkinCode) {
-        if (string.IsNullOrWhiteSpace(checkinCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
+    public int GetCustomerIdFromCustomerCode(string customerCode) {
+        if (string.IsNullOrWhiteSpace(customerCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
         {
             return 0;
         }
 
-        checkinCode = checkinCode.ToUpper(); // 转成大写
-
         // 解析数字部分，如果含有多个数字部分，取长度最长的数字部分
-        MatchCollection matches = REGEX_CUSTOMER_ID.Matches(checkinCode);
+        MatchCollection matches = REGEX_CHECKIN_CODE.Matches(customerCode);
 
-        string maxLengthMatchValue = string.Empty;
+        string maxLengthCheckiniCodeMatchValue = string.Empty;
         foreach (Match match in matches) {
             string matchValue = match.Value;
-            if (matchValue.Length > maxLengthMatchValue.Length) {
-                maxLengthMatchValue = matchValue;
+            if (matchValue.Length > maxLengthCheckiniCodeMatchValue.Length) {
+                maxLengthCheckiniCodeMatchValue = matchValue;
             }
         }
 
-        bool hasCustomerIdFromDigits = false;
-        int customerIdFromDigits = 0;
-        if (string.IsNullOrWhiteSpace(maxLengthMatchValue) == false) {
-            hasCustomerIdFromDigits = int.TryParse(maxLengthMatchValue, out customerIdFromDigits);
-        }
-
-        // 处理最大数字部分剩下的部分
-        string remain = checkinCode;
-        if (hasCustomerIdFromDigits == true) {
-            remain = checkinCode.Replace(maxLengthMatchValue, "");
-        }
-
-        if (string.IsNullOrWhiteSpace(remain)) {
-            // throw new ValidationException("客户ID格式错误，暂不支持纯数字形式的客户ID！");
+        if (string.IsNullOrWhiteSpace(maxLengthCheckiniCodeMatchValue)) {
             return PARSE_FAIL_CUSTOMER_ID;
         }
 
-        if (remain.StartsWith("SDQQ") == true) {
-            remain = remain.Substring(4);
-        }
-
-        if (remain.StartsWith("SD") == true) {
-            remain = remain.Substring(2);
-        }
-
-        if (string.IsNullOrWhiteSpace(remain) == true) {
-            // throw new ValidationException("客户ID格式错误，信息缺失！");
-            return PARSE_FAIL_CUSTOMER_ID;
-        }
-
-        remain = remain.ToLower(); // 数据库中是小写存储的
+        string checkinCode = maxLengthCheckiniCodeMatchValue;
 
         var customerCheckinCode = session.Query<CustomerCheckinCodeInfo>()
-            .Where(e => e.CheckinCode == remain)
+            .Where(e => e.CheckinCode == checkinCode)
             .Take(1)
             .SingleOrDefault();
         if (customerCheckinCode != null) {
-            if (hasCustomerIdFromDigits == true && customerCheckinCode.Id != customerIdFromDigits) {
-                // throw new ValidationException("客户ID格式错误，信息不匹配！");
-                return PARSE_FAIL_CUSTOMER_ID;
-            }
-
             return customerCheckinCode.Id;
-        }
-
-        return PARSE_FAIL_CUSTOMER_ID;
-    }
-
-    public int GetGuestIdFromGuestCode(string guestIdOrCode) {
-        if (string.IsNullOrWhiteSpace(guestIdOrCode)) // 这个判断不能少，否则下面的 Regex.Matches 会报异常
-        {
-            return PARSE_FAIL_CUSTOMER_ID;
-        }
-
-        MatchCollection matches = REGEX_CUSTOMER_ID.Matches(guestIdOrCode);
-
-        IList<string> matchDigitList = new List<string>();
-        foreach (Match match in matches) {
-            matchDigitList.Add(match.Value);
-        }
-
-        if (matchDigitList.Count != 0) {
-            string? maxLengthDigit = matchDigitList.OrderByDescending(e => e.Length).Take(1).SingleOrDefault();
-            if (string.IsNullOrWhiteSpace(maxLengthDigit) == false && int.TryParse(maxLengthDigit, out int guestId)) {
-                return guestId;
-            }
         }
 
         return PARSE_FAIL_CUSTOMER_ID;

@@ -63,7 +63,9 @@ public class CustomerSuperVipDiscountController : Controller {
             .SetMaxResults(listPager.PageSize)
             .List<CustomerSuperVipDiscountInfo>();
 
-        foreach (var customerSuperVipDiscount in customerSuperVipDiscountList) customerSuperVipDiscount.CustomerCodeCache = customerCodeService.GetCustomerCode(customerSuperVipDiscount.Customer?.Id ?? 0);
+        foreach (var customerSuperVipDiscount in customerSuperVipDiscountList) {
+            customerSuperVipDiscount.CustomerCodeCache = customerCodeService.GetCustomerCode(customerSuperVipDiscount.Customer.Id);
+        }
 
         var model = new CustomerSuperVipDiscountListModel(listPager);
         model.CustomerSuperVipDiscountList = customerSuperVipDiscountList;
@@ -112,6 +114,7 @@ public class CustomerSuperVipDiscountController : Controller {
 
     [HttpPost]
     [Route("/admin/customer/super/vip/discount/save")]
+    [Transactional]
     public IActionResult Save(CustomerSuperVipDiscountSaveModel model) {
         ValidationUtil.Validate<CustomerSuperVipDiscountSaveModelValidator, CustomerSuperVipDiscountSaveModel>(model);
 
