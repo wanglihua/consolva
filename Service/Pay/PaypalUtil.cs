@@ -1,6 +1,5 @@
 using PayPal.Api;
 using shunda.Core.Config;
-using shunda.Core.Service;
 
 namespace shunda.Service.Pay;
 
