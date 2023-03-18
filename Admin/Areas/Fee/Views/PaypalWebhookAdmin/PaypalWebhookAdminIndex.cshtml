@@ -1,0 +1,66 @@
+@using shunda.Core.Web
+@model shunda.Admin.Areas.Fee.Models.PaypalWebhookAdmin.PaypalWebhookAdminIndexModel
+
+@{
+    ViewData[ViewDataKey.Title] = "Paypal Webhook";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="fee-menu">费用管理</li>
+    <li class="active" data-menu="fee-paypal-webhook-index-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-success btn-sm" onclick="createWebhook();">
+        <i class="ace-icon fa fa-plus"></i>
+        创建
+    </button>
+
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteWebhook();">
+        <i class="ace-icon fa fa-remove"></i>
+        删除
+    </button>
+</div>
+
+<div style="padding: 20px;">
+    <a target="_blank" asp-area="Fee" asp-controller="PaypalWebhookAdmin" asp-action="List">查看 webhook 列表</a>
+</div>
+
+
+<script type="text/javascript">
+    
+    function createMenu() {
+        $.msg.confirm("确认要创建 Paypal Webhook 吗？", function() {
+            $.ajax({
+                url: '@Url.Action("Create", "PaypalWebhookAdmin")',
+                type: "POST",
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    } 
+                    
+                    $.msg.show(data.message);
+                }
+            });
+        });
+    }
+    
+    function deleteMenu() {
+        $.msg.confirm("确认要删除 Paypal Webhook 吗？", function() {
+            $.ajax({
+                url: '@Url.Action("Delete", "PaypalWebhookAdmin")',
+                type: "POST",
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    } 
+                    
+                    $.msg.show(data.message);
+                }
+            });
+        });
+    }
+</script>
