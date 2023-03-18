@@ -3,6 +3,7 @@ using NLog;
 using PayPal.Api;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Coupon;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
@@ -30,6 +31,8 @@ public class PaypalOrderService {
     }
 
     public string Create(PaypalOrderCreateParam param) {
+        ValidationUtil.Validate<PaypalOrderCreateParamValidator, PaypalOrderCreateParam>(param);
+
         int orderId = param.OrderId;
         int couponId = param.CouponId;
 
@@ -71,29 +74,31 @@ public class PaypalOrderService {
         session.Save(orderPay);
         session.Flush();
 
-        Payment payment = new Payment() {
+        Payment payment = new Payment {
             intent = "sale",
-            payer = new Payer() { payment_method = param.PaymentMethod.Code },
-            redirect_urls = new RedirectUrls() {
+            payer = new Payer {
+                payment_method = param.PaymentMethod.Code
+            },
+            redirect_urls = new RedirectUrls {
                 return_url = param.ReturnUrl,
                 cancel_url = param.CancelUrl,
             },
-            transactions = new List<Transaction>() {
-                new Transaction() {
+            transactions = new List<Transaction> {
+                new Transaction {
                     description = $"订单{order.Code}_{orderPay.Id}",
                     invoice_number = outTradeNo,
-                    amount = new Amount() {
+                    amount = new Amount {
                         currency = currency.Code,
                         total = totalAmountCurrency, // Total must be equal to sum of shipping, tax and subtotal.
-                        details = new Details() {
+                        details = new Details {
                             tax = "0",
                             shipping = "0",
                             subtotal = totalAmountCurrency
                         }
                     },
-                    item_list = new ItemList() {
-                        items = new List<Item>() {
-                            new Item() {
+                    item_list = new ItemList {
+                        items = new List<Item> {
+                            new Item {
                                 name = $"订单{order.Code}_{orderPay.Id}",
                                 currency = currency.Code,
                                 price = totalAmountCurrency,
