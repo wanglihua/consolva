@@ -9,4 +9,8 @@ public class PaypalOrderCreateParam {
     public int CouponId { get; set; }
     
     public CurrencyType Currency { get; set; } = CurrencyType.None;
+
+    public string ReturnUrl { get; set; } = string.Empty;
+
+    public string ProcessUrl { get; set; } = string.Empty;
 }
