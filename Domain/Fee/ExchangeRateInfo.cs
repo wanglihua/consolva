@@ -40,12 +40,4 @@ public class ExchangeRateInfo : Entity
     /// 更新标记，用来标记数据已更新，让 NHibernate 更新实体的更新时间，每次 Update 的时候都更新这个时间就行
     /// </summary>
     public virtual int RefreshMark { get; set; }
-
-    /// <summary>
-    /// 获取最终汇率
-    /// </summary>
-    public virtual decimal GetFinalRate()
-    {
-        return Rate + RateFix;
-    }
 }

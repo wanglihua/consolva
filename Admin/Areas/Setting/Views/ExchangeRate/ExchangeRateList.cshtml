@@ -53,7 +53,7 @@
                     <td style="text-align: center;">@exchangeRate.ToCurrency.Name</td>
                     <td style="text-align: right;">@exchangeRate.Rate</td>
                     <td style="text-align: right;">@exchangeRate.RateFix</td>
-                    <td style="text-align: right;">@exchangeRate.GetFinalRate()</td>
+                    <td style="text-align: right;">@(exchangeRate.Rate + exchangeRate.RateFix )</td>
                     <td style="text-align: center;">@exchangeRate.UpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>
                         &nbsp;

@@ -38,13 +38,7 @@ public class CustomerChargeService {
         } else if (chargeType == CustomerChargeType.Wechat) {
             chargeDescription = $"微信充值{amount:#0.00}元";
         } else if (chargeType == CustomerChargeType.PayPal) {
-            decimal audExchangeRate = exchangeRateService.GetAudFinalRate();
-            if (audExchangeRate <= 0) {
-                throw new Exception("汇率值不合法!");
-            }
-
-            string totalAmountAud = (amount / audExchangeRate).ToString("#0.00");
-            chargeDescription = $"PayPal 人民币支付{amount:#0.00}, 折算澳币{totalAmountAud}";
+            chargeDescription = $"PayPal充值{amount:#0.00}元";
         } else if (chargeType == CustomerChargeType.Manual) {
             chargeDescription = $"手工充值{amount:#0.00}元";
         }

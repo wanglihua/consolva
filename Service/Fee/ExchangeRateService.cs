@@ -27,39 +27,39 @@ public class ExchangeRateService {
     }
 
     /// <summary>
-    /// 澳币转人民币未修正过的汇率
+    /// 转人民币未修正过的汇率
     /// </summary>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public decimal GetAudRate() {
-        ExchangeRateInfo? exchangeRateInfo = session.Query<ExchangeRateInfo>()
-            .Where(e => e.FromCurrency == CurrencyType.AUD && e.ToCurrency == CurrencyType.CNY)
+    public decimal GetRate(CurrencyType currency) {
+        ExchangeRateInfo? exchangeRate = session.Query<ExchangeRateInfo>()
+            .Where(e => e.FromCurrency == currency && e.ToCurrency == CurrencyType.CNY)
             .Take(1)
             .SingleOrDefault();
 
-        if (exchangeRateInfo == null) {
+        if (exchangeRate == null) {
             throw new Exception("指定的汇率换算不存在");
         }
 
-        return exchangeRateInfo.Rate;
+        return exchangeRate.Rate;
     }
 
     /// <summary>
-    /// 澳币转人民币修正过的最终汇率
+    /// 转人民币修正过的最终汇率
     /// 修正过的最终汇率
     /// </summary>
     /// <returns></returns>
-    public decimal GetAudFinalRate() {
-        ExchangeRateInfo? exchangeRateInfo = session.Query<ExchangeRateInfo>()
-            .Where(e => e.FromCurrency == CurrencyType.AUD && e.ToCurrency == CurrencyType.CNY)
+    public decimal GetFinalRate(CurrencyType currency) {
+        ExchangeRateInfo? exchangeRate = session.Query<ExchangeRateInfo>()
+            .Where(e => e.FromCurrency == currency && e.ToCurrency == CurrencyType.CNY)
             .Take(1)
             .SingleOrDefault();
 
-        if (exchangeRateInfo == null) {
+        if (exchangeRate == null) {
             throw new Exception("指定的汇率换算不存在");
         }
 
-        decimal audRate = exchangeRateInfo.GetFinalRate();
+        decimal audRate = exchangeRate.Rate + exchangeRate.RateFix;
 
         if (audRate <= 0) {
             throw new Exception("汇率不能小于或等于0，汇率值不合法！");
@@ -68,54 +68,12 @@ public class ExchangeRateService {
         return audRate;
     }
 
-    /// <summary>
-    /// 美金转人民币未修正过的汇率
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public decimal GetUsdRate() {
-        ExchangeRateInfo? exchangeRateInfo = session.Query<ExchangeRateInfo>()
-            .Where(e => e.FromCurrency == CurrencyType.USD && e.ToCurrency == CurrencyType.CNY)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (exchangeRateInfo == null) {
-            throw new Exception("指定的汇率换算不存在");
-        }
-
-        return exchangeRateInfo.Rate;
-    }
-
-    /// <summary>
-    /// 美金转人民币修正过的最终汇率
-    /// 修正过的最终汇率
-    /// </summary>
-    /// <returns></returns>
-    public decimal GetUsdFinalRate() {
-        ExchangeRateInfo? exchangeRate = session.Query<ExchangeRateInfo>()
-            .Where(e => e.FromCurrency == CurrencyType.USD && e.ToCurrency == CurrencyType.CNY)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (exchangeRate == null) {
-            throw new Exception("指定的汇率换算不存在");
-        }
-
-        decimal usdRate = exchangeRate.GetFinalRate();
-
-        if (usdRate <= 0) {
-            throw new Exception("汇率不能小于或等于0，汇率值不合法！");
-        }
-
-        return usdRate;
-    }
-
     public void RefreshRate() {
         var currencyListWithoutCny = CurrencyType.GetList().Where(e => e != CurrencyType.CNY).ToList();
 
         foreach (var currency in currencyListWithoutCny) {
             RefreshSingleRate(currency, CurrencyType.CNY);
-            RefreshSingleRate(CurrencyType.CNY, currency);
+            // RefreshSingleRate(CurrencyType.CNY, currency);
         }
     }
 
