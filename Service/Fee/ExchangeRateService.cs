@@ -111,22 +111,12 @@ public class ExchangeRateService {
     }
 
     public void RefreshRate() {
-        RefreshSingleRate(CurrencyType.AUD, CurrencyType.CNY);
-        RefreshSingleRate(CurrencyType.USD, CurrencyType.CNY);
-        RefreshSingleRate(CurrencyType.EUR, CurrencyType.CNY);
-        RefreshSingleRate(CurrencyType.HKD, CurrencyType.CNY);
-        RefreshSingleRate(CurrencyType.JPY, CurrencyType.CNY);
-        RefreshSingleRate(CurrencyType.KRW, CurrencyType.CNY);
+        var currencyListWithoutCny = CurrencyType.GetList().Where(e => e != CurrencyType.CNY).ToList();
 
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.AUD);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.USD);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.EUR);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.HKD);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.JPY);
-        RefreshSingleRate(CurrencyType.CNY, CurrencyType.KRW);
-
-        RefreshSingleRate(CurrencyType.AUD, CurrencyType.HKD);
-        RefreshSingleRate(CurrencyType.HKD, CurrencyType.AUD);
+        foreach (var currency in currencyListWithoutCny) {
+            RefreshSingleRate(currency, CurrencyType.CNY);
+            RefreshSingleRate(CurrencyType.CNY, currency);
+        }
     }
 
     public void RefreshSingleRate(CurrencyType currencyTypeFrom, CurrencyType currencyTypeTo) {
@@ -165,12 +155,13 @@ public class ExchangeRateService {
 
         Transactional.Wrap(session, () => {
             if (exchangeRate == null) {
-                exchangeRate = new ExchangeRateInfo();
-                exchangeRate.FromCurrency = currencyTypeFrom;
-                exchangeRate.ToCurrency = currencyTypeTo;
-                exchangeRate.Rate = rate;
-                exchangeRate.RateFix = 0m;
-                exchangeRate.RefreshMark = 0;
+                exchangeRate = new ExchangeRateInfo {
+                    FromCurrency = currencyTypeFrom,
+                    ToCurrency = currencyTypeTo,
+                    Rate = rate,
+                    RateFix = 0m,
+                    RefreshMark = 0
+                };
 
                 session.Save(exchangeRate);
             } else {

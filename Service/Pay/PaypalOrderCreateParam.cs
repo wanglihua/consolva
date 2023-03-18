@@ -8,5 +8,5 @@ public class PaypalOrderCreateParam {
     
     public int CouponId { get; set; }
     
-    public CurrencyType
+    public CurrencyType Currency { get; set; } = CurrencyType.None;
 }
