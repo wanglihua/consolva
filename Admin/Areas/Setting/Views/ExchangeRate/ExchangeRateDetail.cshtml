@@ -73,7 +73,7 @@
                             <div class="form-group">
                                 <label for="finalRate" class="col-xs-2 control-label">最终汇率</label>
                                 <div class="col-xs-10">
-                                    <input id="finalRate" type="text" value="@(Model.ExchangeRate.GetFinalRate())" class="input-sm form-control" readonly="readonly"/>
+                                    <input id="finalRate" type="text" value="@(Model.ExchangeRate.Rate + Model.ExchangeRate.RateFix)" class="input-sm form-control" readonly="readonly"/>
                                 </div>
                             </div>
                         </div>
