@@ -30,7 +30,7 @@
 
 <script type="text/javascript">
     
-    function createMenu() {
+    function createWebhook() {
         $.msg.confirm("确认要创建 Paypal Webhook 吗？", function() {
             $.ajax({
                 url: '@Url.Action("Create", "PaypalWebhookAdmin")',
@@ -47,7 +47,7 @@
         });
     }
     
-    function deleteMenu() {
+    function deleteWebhook() {
         $.msg.confirm("确认要删除 Paypal Webhook 吗？", function() {
             $.ajax({
                 url: '@Url.Action("Delete", "PaypalWebhookAdmin")',
