@@ -1,5 +1,8 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using PayPal;
+using PayPal.Api;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderPaypal;
 using shunda.Client.Services;
 using shunda.Core;
@@ -79,12 +82,14 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
         int orderId = payService.GetIntFromPayCodeInUrl(orderPayCode);
         int couponId = payService.GetIntFromPayCodeInUrl(couponPayCode);
 
+        string outTradeNo = payService.GenerateOutTradeNo();
+
         var createParam = new PaypalOrderCreateParam {
             OrderId = orderId,
             CouponId = couponId,
             PaymentMethod = PaypalPaymentMethod.Paypal,
 
-            ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Process", "WechatOfficialAccountOrderPaypal"),
+            ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Process", "WechatOfficialAccountOrderPaypal") + $"?{shundaKey}={outTradeNo}",
             CancelUrl = SiteConfig.SiteUrlBase + Url.Action("Cancel", "WechatOfficialAccountOrderPaypal"),
         };
 
@@ -95,17 +100,71 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
     [HttpGet]
     [Route("/client/order/paypal/process")]
     public IActionResult Process() {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        string payerId = Request.Query["PayerID"];
+        string outTradeNo = Request.Query[shundaKey];
+
+        bool hasPaypalError = false;
+        string paymentId = string.Empty;
+
+        try {
+            var processParam = new PaypalOrderProcessParam {
+                PayerId = payerId,
+                OutTradeNo = outTradeNo,
+            };
+            paymentId = paypalOrderService.Process(processParam);
+        }
+        catch (PaymentsException exp) {
+            hasPaypalError = true;
+
+            var detailError = exp.Details;
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine("   Error:    " + detailError.name);
+            sb.AppendLine("   Message:  " + detailError.message);
+            sb.AppendLine("   URI:      " + detailError.information_link);
+            sb.AppendLine("   Debug ID: " + detailError.debug_id);
+
+            if (detailError.details != null) {
+                foreach (ErrorDetails detail in detailError.details) {
+                    sb.AppendLine("   Details:  " + detail.field + " -> " + detail.issue);
+                }
+            }
+
+            log.Error("PaymentsException error details: ");
+            log.Error(sb.ToString());
+
+            log.Error(exp);
+        }
+        catch (ConnectionException exp) {
+            hasPaypalError = true;
+
+            log.Error("ConnectionException response:");
+            log.Error(exp.Response);
+
+            log.Error(exp);
+        }
+        catch (PayPalException exp) {
+            hasPaypalError = true;
+
+            log.Error(exp);
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+            throw;
+        }
+
+        var model = new WechatOfficialAccountOrderPaypalProcessModel {
+            HasPaypalError = hasPaypalError,
+            PaymentId = paymentId,
+        };
+
+        return View("WechatOfficialAccountOrderPaypalProcess", model);
     }
 
     [Route("/client/order/paypal/cancel")]
     public IActionResult Cancel() {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        var model = new WechatOfficialAccountOrderPaypalCancelModel();
+        return View("WechatOfficialAccountOrderPaypalCancel", model);
     }
 }

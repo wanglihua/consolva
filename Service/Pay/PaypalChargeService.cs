@@ -121,7 +121,7 @@ public class PaypalChargeService {
         return createdPayment.GetApprovalUrl();
     }
 
-    public void Process(PaypalChargeProcessParam param) {
+    public string Process(PaypalChargeProcessParam param) {
         ValidationUtil.Validate<PaypalChargeProcessParamValidator, PaypalChargeProcessParam>(param);
 
         string payerId = param.PayerId;
@@ -162,5 +162,7 @@ public class PaypalChargeService {
             // 完成充值
             customerChargeService.CompleteCharge(customerCharge, customerCharge.Amount, CustomerChargeType.Alipay);
         }
+
+        return paymentId;
     }
 }

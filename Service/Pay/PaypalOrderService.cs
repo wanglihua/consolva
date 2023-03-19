@@ -190,7 +190,13 @@ public class PaypalOrderService {
         return createdPayment.GetApprovalUrl();
     }
 
-    public void Process(PaypalOrderProcessParam param) {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="param"></param>
+    /// <returns>payment id</returns>
+    /// <exception cref="Exception"></exception>
+    public string Process(PaypalOrderProcessParam param) {
         ValidationUtil.Validate<PaypalOrderProcessParamValidator, PaypalOrderProcessParam>(param);
 
         string payerId = param.PayerId;
@@ -251,5 +257,7 @@ public class PaypalOrderService {
 
         // 会员积分
         customerScoreService.AddScore(orderPay.Id);
+
+        return paymentId;
     }
 }
