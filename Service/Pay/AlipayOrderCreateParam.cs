@@ -1,3 +1,5 @@
+using FluentValidation;
+
 namespace shunda.Service.Pay;
 
 public class AlipayOrderCreateParam {
@@ -16,4 +18,12 @@ public class AlipayOrderCreateParam {
     /// 异步回调URL，URL中已经带有 域名等信息
     /// </summary>
     public string NotifyUrl { get; set; } = string.Empty;
+}
+
+public class AlipayOrderCreateParamValidator : AbstractValidator<AlipayOrderCreateParam> {
+    public AlipayOrderCreateParamValidator() {
+        RuleFor(e => e.OrderId).Must(p => p > 0).WithMessage("订单ID不能为空！");
+        RuleFor(e => e.ReturnUrl).NotNull().NotEmpty().WithMessage("return url 不能为空！");
+        RuleFor(e => e.NotifyUrl).NotNull().NotEmpty().WithMessage("notify url 不能为空！");
+    }
 }

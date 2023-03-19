@@ -6,6 +6,7 @@ using NHibernate;
 using NLog;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Coupon;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
@@ -55,6 +56,8 @@ public class AlipayOrderService {
     /// <param name="param">参数对象</param>
     /// <returns>alipay request url 用于跳转支付宝支付</returns>
     public string Create(AlipayOrderCreateParam param) {
+        ValidationUtil.Validate<AlipayOrderCreateParamValidator, AlipayOrderCreateParam>(param);
+
         log.Warn("支付宝支付发起 begin");
 
         int orderId = param.OrderId;

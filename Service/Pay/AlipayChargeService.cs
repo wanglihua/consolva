@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using NLog;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain.Customer;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
@@ -38,6 +39,8 @@ public class AlipayChargeService {
     /// <param name="param">参数对象</param>
     /// <returns>alipay request url 用于跳转支付宝支付</returns>
     public string Create(AlipayChargeCreateParam param) {
+        ValidationUtil.Validate<AlipayChargeCreateParamValidator, AlipayChargeCreateParam>(param);
+
         int customerId = param.CustomerId;
         decimal amount = param.Amount;
 
