@@ -119,6 +119,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/request/{orderPayCode}/{couponPayCode}")]
     [Route("/client/order/alipay/request/{orderPayCode}/{couponPayCode}")] // 让复制出来的URL好看一点
+    [Transactional]
     public IActionResult AliPayRequest(string orderPayCode, string couponPayCode) {
         if (WebUtil.IsWechatRequest(Request)) {
             return RedirectToAction("CopyUrl", new { orderPayCode = orderPayCode, couponPayCode = couponPayCode });
@@ -144,6 +145,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     [HttpPost]
     // [Route("/client/wechat/official/account/alipay/notify")]
     [Route("/client/order/alipay/notify")] // 跟这个控制器中其他的URL一致
+    // 里面有事务
     public IActionResult Notify() {
         Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 
@@ -168,6 +170,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/callback")]
     [Route("/client/order/alipay/return")] // 让浏览器里面的URL好看点
+    // 里面有事务
     public IActionResult Return() {
         Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 

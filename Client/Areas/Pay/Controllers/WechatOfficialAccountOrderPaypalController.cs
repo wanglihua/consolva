@@ -7,6 +7,7 @@ using shunda.Client.Areas.Pay.Models.WechatOfficialAccountOrderPaypal;
 using shunda.Client.Services;
 using shunda.Core;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Pay;
@@ -75,6 +76,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
     [NoLoginRequired]
     [HttpGet]
     [Route(ORDER_PAYPAL_URL)]
+    [Transactional]
     public IActionResult PaypalRequest(string orderPayCode, string couponPayCode) {
         int orderId = payService.GetIntFromPayCodeInUrl(orderPayCode);
         int couponId = payService.GetIntFromPayCodeInUrl(couponPayCode);
@@ -97,6 +99,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
     [NoLoginRequired]
     [HttpGet]
     [Route("/client/order/paypal/process")]
+    [Transactional]
     public IActionResult Process() {
         string payerId = Request.Query["PayerID"];
         string outTradeNo = Request.Query[shundaKey];

@@ -96,6 +96,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [NoLoginRequired]
     [HttpGet]
     [Route("/client/charge/alipay/request/{customerPayCode}/{amountPayCode}")]
+    [Transactional]
     public IActionResult AlipayRequest(string customerPayCode, string amountPayCode) {
         if (WebUtil.IsWechatRequest(Request)) {
             return RedirectToAction("CopyUrl", new { customerPayCode = customerPayCode, amountPayCode = amountPayCode });
@@ -121,6 +122,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [NoLoginRequired]
     [HttpPost]
     [Route("/client/charge/alipay/notify")]
+    // 里面有事务
     public IActionResult Notify() {
         Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 
@@ -144,6 +146,7 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [NoLoginRequired]
     [HttpGet]
     [Route("/client/charge/alipay/return")]
+    // 里面有事务
     public IActionResult Return() {
         Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 
