@@ -1,1 +1,24 @@
+@using shunda.Core.Web
 @model shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargePaypal.WechatOfficialAccountChargePaypalProcessModel
+@{
+    Layout = "_ClientSite";
+    if (Model.HasPaypalError == false) {
+        ViewData[ViewDataKey.Title] = "支付成功";
+    } else {
+        ViewData[ViewDataKey.Title] = "支付失败";
+    }
+}
+
+<div style="padding: 20px;">
+    @if (Model.HasPaypalError) {
+        <div style="color: red; text-align: center;font-size: 28px; margin: 30px;">
+            <span>支付出现错误，请重试！</span>
+            <div>支付ID: @(Model.PaymentId)</div>
+        </div>
+    } else {
+        <div style="color: blue; text-align: center;font-size: 28px; margin: 30px;">
+            当前PayPal支付成功! <br/>
+            支付ID: @(Model.PaymentId)
+        </div>
+    }
+</div>
