@@ -203,6 +203,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
 
         var orderPay = new LogisticsOrderPayInfo {
             Order = order,
+            OrderCode = order.Code,
             OutTradeNo = string.Empty, // 非空，其实生成一个也可以的
             Customer = order.Customer,
             PayType = PayType.Balance,

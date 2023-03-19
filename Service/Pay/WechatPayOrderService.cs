@@ -98,6 +98,7 @@ public class WechatPayOrderService {
             // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了
             var orderPayZeroAmount = new LogisticsOrderPayInfo {
                 Order = order,
+                OrderCode = order.Code,
                 Customer = order.Customer,
                 PayType = PayType.Wechat,
                 OutTradeNo = string.Empty,
@@ -123,6 +124,7 @@ public class WechatPayOrderService {
         string outTradeNo = payService.GenerateOutTradeNo();
         var orderPay = new LogisticsOrderPayInfo {
             Order = order,
+            OrderCode = order.Code,
             Customer = order.Customer,
             PayType = PayType.Wechat,
             OutTradeNo = outTradeNo,

@@ -100,6 +100,7 @@ public class PaypalOrderService {
             // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了
             var orderPayZeroAmount = new LogisticsOrderPayInfo {
                 Order = order,
+                OrderCode = order.Code,
                 Customer = order.Customer,
                 PayType = PayType.Paypal,
                 OutTradeNo = string.Empty,
@@ -122,6 +123,7 @@ public class PaypalOrderService {
 
         LogisticsOrderPayInfo orderPay = new LogisticsOrderPayInfo {
             Order = order,
+            OrderCode = order.Code,
             Customer = order.Customer,
             PayType = PayType.Paypal,
             OutTradeNo = outTradeNo,
