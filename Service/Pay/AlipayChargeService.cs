@@ -56,7 +56,7 @@ public class AlipayChargeService {
         string outTradeNo = payService.GenerateOutTradeNo();
 
         var customerCharge = new CustomerChargeInfo {
-            ChargeType = CustomerChargeType.Wechat,
+            ChargeType = CustomerChargeType.Alipay,
             Customer = customer,
             OutTradeNo = outTradeNo,
             Amount = amount,
