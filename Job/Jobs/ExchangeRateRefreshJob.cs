@@ -30,8 +30,7 @@ public class ExchangeRateRefreshJob : IJob
         IJobDetail jobDetail = JobBuilder.Create<ExchangeRateRefreshJob>().WithDescription("ExchangeRateRefreshJob").Build();
         ITrigger jobTrigger = TriggerBuilder.Create()
             .StartAt(new DateTimeOffset(jobStartTime, new TimeSpan(8, 0, 0))) // 暂时按中国区时间
-            // .WithSimpleSchedule(x => x.WithIntervalInHours(12).RepeatForever())
-            .WithSimpleSchedule(x => x.WithIntervalInMinutes(30).RepeatForever())
+            .WithSimpleSchedule(x => x.WithIntervalInHours(8).RepeatForever())
             .Build();
 
         scheduler.ScheduleJob(jobDetail, jobTrigger).Wait();
