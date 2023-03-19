@@ -60,10 +60,10 @@ public class WechatOfficialAccountMenuController : Controller {
             url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/promotion",
         });
 
-        mainMenu1.sub_button.Add(new SingleViewButton {
-            name = "PayPal支付",
-            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/paypal",
-        });
+        // mainMenu1.sub_button.Add(new SingleViewButton {
+        //     name = "PayPal支付",
+        //     url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/paypal",
+        // });
 
         // mainMenu1.sub_button.Add(new SingleViewButton {
         //     name = "支付宝支付",

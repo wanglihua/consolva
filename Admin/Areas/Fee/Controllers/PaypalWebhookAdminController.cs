@@ -24,7 +24,7 @@ public class PaypalWebhookAdminController : Controller {
         var eventTypeList = WebhookEventType.AvailableEventTypes(apiContext);
 
         var webhook = Webhook.Create(apiContext, new Webhook() {
-            url = SiteConfig.SiteUrlBase + "/client/order/paypal/webhook",
+            url = SiteConfig.SiteUrlBase + "/client/paypal/webhook",
             event_types = eventTypeList.event_types,
         });
 
