@@ -5,10 +5,8 @@ using shunda.Domain.Pass;
 
 namespace shunda.Domain.Customer;
 
-public class CustomerChargeInfoMapping : EntityMapping<CustomerChargeInfo>
-{
-    public CustomerChargeInfoMapping()
-    {
+public class CustomerChargeInfoMapping : EntityMapping<CustomerChargeInfo> {
+    public CustomerChargeInfoMapping() {
         Table("tbl_customer_charge");
 
         Property(
@@ -88,6 +86,15 @@ public class CustomerChargeInfoMapping : EntityMapping<CustomerChargeInfo>
         );
 
         Property(
+            x => x.Description,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("description");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Status,
             map => {
                 map.Type<CustomerChargeStatusHibernateType>();
@@ -95,6 +102,5 @@ public class CustomerChargeInfoMapping : EntityMapping<CustomerChargeInfo>
                 map.NotNullable(true);
             }
         );
-
     }
 }

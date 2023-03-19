@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using shunda.Core;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
@@ -10,13 +11,12 @@ namespace shunda.Domain.Fee;
 /// <summary>
 /// 物流订单支付
 /// </summary>
-public class LogisticsOrderPayInfo : Entity
-{
+public class LogisticsOrderPayInfo : Entity {
     /// <summary>
     /// 订单
     /// </summary>
     [Required(ErrorMessage = "订单不能为空！")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new ();
+    public virtual LogisticsOrderInfo Order { get; set; } = new();
 
     /// <summary>
     /// 订单编号，非空
@@ -27,7 +27,7 @@ public class LogisticsOrderPayInfo : Entity
     /// 客户
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]
-    public virtual CustomerInfo Customer { get; set; } = new ();
+    public virtual CustomerInfo Customer { get; set; } = new();
 
     /// <summary>
     /// 支付类型
@@ -75,6 +75,12 @@ public class LogisticsOrderPayInfo : Entity
     /// 核销原因
     /// </summary>
     public virtual string WriteOffReasonContent { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 描述
+    /// </summary>
+    [JsonProperty("description")]
+    public virtual string Description { get; set; } = string.Empty;
 
     #region Cache
 

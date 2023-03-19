@@ -9,8 +9,7 @@ namespace shunda.Domain.Customer;
 /// <summary>
 /// 客户账户充值
 /// </summary>
-public class CustomerChargeInfo : Entity
-{
+public class CustomerChargeInfo : Entity {
     /// <summary>
     /// 充值方式，非空
     /// </summary>
@@ -24,7 +23,7 @@ public class CustomerChargeInfo : Entity
     /// </summary>
     [Required(ErrorMessage = "客户id不能为空！")]
     [JsonProperty("customer")]
-    public virtual CustomerInfo Customer { get; set; } = new ();
+    public virtual CustomerInfo Customer { get; set; } = new();
 
     /// <summary>
     /// 充值金额，非空
@@ -69,6 +68,12 @@ public class CustomerChargeInfo : Entity
     /// </summary>
     [JsonProperty("user")]
     public virtual UserInfo? User { get; set; } = null;
+
+    /// <summary>
+    /// 描述
+    /// </summary>
+    [JsonProperty("description")]
+    public virtual string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// 充值状态，非空

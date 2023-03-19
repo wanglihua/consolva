@@ -7,10 +7,8 @@ using shunda.Domain.Pass;
 
 namespace shunda.Domain.Fee;
 
-public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
-{
-    public LogisticsOrderPayInfoMapping()
-    {
+public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo> {
+    public LogisticsOrderPayInfoMapping() {
         Table("tbl_logistics_order_pay");
 
         ManyToOne(
@@ -116,6 +114,15 @@ public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
             map => {
                 map.Type(NHibernateUtil.String);
                 map.Column("write_off_reason_content");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.Description,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("description");
                 map.NotNullable(true);
             }
         );
