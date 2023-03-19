@@ -10,7 +10,7 @@ namespace shunda.Admin.Areas.Fee.Controllers;
 [FeeArea]
 [AdminAuth(AdminOnly = true)]
 public class PaypalWebhookAdminController : Controller {
-    [HttpPost]
+    [HttpGet]
     [Route("/admin/paypal/webhook/admin")]
     public IActionResult Index() {
         var model = new PaypalWebhookAdminIndexModel();
