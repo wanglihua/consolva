@@ -14,10 +14,6 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Pay.Controllers;
 
-/// <summary>
-/// 公众号 PayPal支付 处理支付接口
-/// </summary>
-[NoLoginRequired]
 [PayArea]
 public class WechatOfficialAccountOrderPaypalController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -76,6 +72,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
         });
     }
 
+    [NoLoginRequired]
     [HttpGet]
     [Route(ORDER_PAYPAL_URL)]
     public IActionResult PaypalRequest(string orderPayCode, string couponPayCode) {
@@ -97,6 +94,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
         return Redirect(approvalUrl);
     }
 
+    [NoLoginRequired]
     [HttpGet]
     [Route("/client/order/paypal/process")]
     public IActionResult Process() {
@@ -162,6 +160,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
         return View("WechatOfficialAccountOrderPaypalProcess", model);
     }
 
+    [NoLoginRequired]
     [Route("/client/order/paypal/cancel")]
     public IActionResult Cancel() {
         var model = new WechatOfficialAccountOrderPaypalCancelModel();
