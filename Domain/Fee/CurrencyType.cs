@@ -90,6 +90,11 @@ public class CurrencyType : StringCodeTypeBase {
     }
 
     public static CurrencyType GetByCode(string code) {
+        if (string.IsNullOrWhiteSpace(code)) {
+            return None;
+        }
+
+        code = code.ToUpper();
         if (codeTypeMap.TryGetValue(code, out CurrencyType? codeType)) {
             return codeType;
         }

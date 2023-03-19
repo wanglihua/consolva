@@ -7,6 +7,7 @@ using shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargePaypal;
 using shunda.Client.Services;
 using shunda.Core.Config;
 using shunda.Core.Web;
+using shunda.Domain.Fee;
 using shunda.Service.Pay;
 using ISession = NHibernate.ISession;
 
@@ -35,7 +36,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
         this.paypalChargeService = paypalChargeService;
     }
 
-    private const string CHARGE_PAYPAL_URL = "/client/charge/paypal/{customerPayCode}/{amountPayCode}";
+    private const string CHARGE_PAYPAL_URL = "/client/charge/paypal/{customerPayCode}/{amountPayCode}/{currencyCode}";
 
     [HttpPost]
     [Route("/client/charge/alipay/create/url")]
@@ -49,6 +50,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
 
         string url = CHARGE_PAYPAL_URL.Replace("{customerPayCode}", customerPayCode);
         url = url.Replace("{amountPayCode}", amountPayCode);
+        url = url.Replace("{currencyCode}", param.Currency);
         url = SiteConfig.SiteUrlBase + url;
 
         return Json(new JsonResultData {
@@ -58,14 +60,16 @@ public class WechatOfficialAccountChargePaypalController : Controller {
                 Url = url,
             },
         });
-    } 
-    
+    }
+
     [NoLoginRequired]
     [HttpGet]
     [Route(CHARGE_PAYPAL_URL)]
-    public IActionResult PaypalRequest(string customerPayCode, string amountPayCode) {
+    public IActionResult PaypalRequest(string customerPayCode, string amountPayCode, string currencyCode) {
         int customerId = payService.GetIntFromPayCodeInUrl(customerPayCode);
         int amountInt = payService.GetIntFromPayCodeInUrl(amountPayCode);
+
+        CurrencyType currency = CurrencyType.GetByCode(currencyCode);
 
         string outTradeNo = payService.GenerateOutTradeNo();
 
@@ -73,6 +77,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
             CustomerId = customerId,
             Amount = (decimal)amountInt / 100m,
             PaymentMethod = PaypalPaymentMethod.Paypal,
+            Currency = currency,
 
             ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Process", "WechatOfficialAccountChargePaypal") + $"?{shundaKey}={outTradeNo}",
             CancelUrl = SiteConfig.SiteUrlBase + Url.Action("Cancel", "WechatOfficialAccountChargePaypal"),
@@ -153,5 +158,5 @@ public class WechatOfficialAccountChargePaypalController : Controller {
     public IActionResult Cancel() {
         var model = new WechatOfficialAccountChargePaypalCancelModel();
         return View("WechatOfficialAccountChargePaypalCancel", model);
-    }    
+    }
 }
