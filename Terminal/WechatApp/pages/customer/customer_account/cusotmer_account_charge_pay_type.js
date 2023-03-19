@@ -3,12 +3,24 @@ const app = getApp();
 Page({
     data: {
         amount: 0,
+
+        currencyList: [],
+        showActionSheet: false,
+        actionSheetActions: [],
     },
 
     onLoad(options) {
         const amount = options.amount;
         this.setData({
             amount,
+        });
+
+        const that = this;
+
+        app.post("/client/customer/account/charge", {}, function (res) {
+            that.setData({
+                currencyList: res.data.currencyList,
+            });
         });
     },
 
@@ -25,7 +37,7 @@ Page({
                 'paySign': res.data.paySign,
                 'success': function (res) {
                     wx.redirectTo({
-                      url: '/pages/customer/customer_account/customer_account',
+                        url: '/pages/customer/customer_account/customer_account',
                     })
                 },
                 'fail': function (res) {
@@ -62,4 +74,55 @@ Page({
             });
         });
     },
+
+    onPaypalClick(e) {
+        const actionSheetActions = [];
+
+        const currencyList = this.data.currencyList;
+        for (let currency of currencyList) {
+            actionSheetActions.push({
+                currency: currency.code,
+                name: currency.code + " " + currency.name,
+            });
+        }
+
+        this.setData({
+            actionSheetActions: actionSheetActions,
+            showActionSheet: true
+        });
+    },
+
+    onActionSheetCloseClick(e) {
+        this.setData({
+            showActionSheet: false
+        });
+    },
+
+    onActionSheetSelect(e) {
+        const amount = this.data.amount;
+        const currency = e.detail.currency;
+
+        app.post("/client/charge/paypal/create/url", {
+            amount: amount,
+            currency: currency,
+        }, function (res) {
+            const url = res.data.url;
+            wx.setClipboardData({
+                data: url,
+                success: function (res) {
+                    wx.showModal({
+                        title: '成功',
+                        content: "PayPal支付URL已复制，请粘贴到手机浏览器或电脑浏览器地址栏中完成支付！",
+                        showCancel: false,
+                        success: function (res) {
+                        }
+                    });
+                }
+            });
+        });
+
+        this.setData({
+            showActionSheet: false,
+        });
+    }
 })

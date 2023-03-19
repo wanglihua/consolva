@@ -9,26 +9,22 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Customer.Controllers;
 
 [CustomerArea]
-public class CustomerAccountController : Controller
-{
+public class CustomerAccountController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
 
-    public CustomerAccountController(ISession session, LoginCustomerService loginCustomerService)
-    {
+    public CustomerAccountController(ISession session, LoginCustomerService loginCustomerService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
     }
 
     [HttpPost]
     [Route("/client/customer/account")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         var customer = session.Get<CustomerInfo>(loginCustomerId);
-        if (customer == null)
-        {
+        if (customer == null) {
             throw new ValidationException($"指定的客户#{loginCustomerId}不存在！");
         }
 

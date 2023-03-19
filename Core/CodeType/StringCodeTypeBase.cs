@@ -1,19 +1,24 @@
+using Newtonsoft.Json;
+
 namespace shunda.Core.CodeType;
 
 public abstract class StringCodeTypeBase : IComparable {
     /// <summary>
     /// 编码
     /// </summary>
+    [JsonProperty("code")]
     public string Code { get; protected set; } = string.Empty;
 
     /// <summary>
     /// 名称
     /// </summary>
+    [JsonProperty("name")]
     public string Name { get; protected set; } = string.Empty;
 
     /// <summary>
     /// 描述
     /// </summary>
+    [JsonProperty("description")]
     public string Description { get; protected set; } = string.Empty;
 
     protected StringCodeTypeBase(string code, string name, string description) {

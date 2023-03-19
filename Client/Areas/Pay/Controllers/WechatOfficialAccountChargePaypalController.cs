@@ -40,7 +40,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
     private const string CHARGE_PAYPAL_URL = "/client/charge/paypal/{customerPayCode}/{amountPayCode}/{currencyCode}";
 
     [HttpPost]
-    [Route("/client/charge/alipay/create/url")]
+    [Route("/client/charge/paypal/create/url")]
     public IActionResult CreateUrl([FromBody] WechatOfficialAccountChargePaypalCreateUrlParam param) {
         int customerId = loginCustomerService.GetLoginCustomerId();
         decimal amount = param.Amount;
