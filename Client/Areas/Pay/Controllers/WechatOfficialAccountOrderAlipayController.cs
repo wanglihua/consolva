@@ -128,7 +128,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         int couponId = payService.GetIntFromPayCodeInUrl(couponPayCode);
         bool isMobile = WebUtil.IsMobileRequest(Request);
 
-        AlipayOrderCreateParam createParam = new AlipayOrderCreateParam {
+        var createParam = new AlipayOrderCreateParam {
             OrderId = orderId,
             CouponId = couponId,
             IsMobile = isMobile,
