@@ -59,7 +59,8 @@ public class PaypalChargeService {
             Customer = customer,
             OutTradeNo = outTradeNo,
             Amount = amount,
-            Status = CustomerChargeStatus.New
+            Status = CustomerChargeStatus.New,
+            Description = $"币种:{currency.Name},金额:{amountCurrency}{currency.Code}",
         };
 
         session.Save(customerCharge);

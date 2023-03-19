@@ -129,7 +129,8 @@ public class PaypalOrderService {
             OutTradeNo = outTradeNo,
             PayPalPaymentId = string.Empty, // 后面更新
             Amount = arrearsAmount,
-            Status = PayStatus.NotPaid
+            Status = PayStatus.NotPaid,
+            Description = $"币种:{currency.Name},金额:{arrearsAmountCurrency}{currency.Code}",
         };
         session.Save(orderPay);
         session.Flush();
