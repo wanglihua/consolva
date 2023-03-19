@@ -60,15 +60,10 @@ public class WechatOfficialAccountMenuController : Controller {
             url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/promotion",
         });
 
-        // mainMenu1.sub_button.Add(new SingleViewButton {
-        //     name = "PayPal支付",
-        //     url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/paypal",
-        // });
-
-        // mainMenu1.sub_button.Add(new SingleViewButton {
-        //     name = "支付宝支付",
-        //     url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/alipay",
-        // });
+        mainMenu1.sub_button.Add(new SingleViewButton {
+            name = "收费标准",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/freight/desc",
+        });
 
         menu.button.Add(mainMenu1);
 
@@ -114,11 +109,6 @@ public class WechatOfficialAccountMenuController : Controller {
         mainMenu3.sub_button.Add(new SingleViewButton {
             name = "积分说明",
             url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/score/remark",
-        });
-
-        mainMenu3.sub_button.Add(new SingleViewButton {
-            name = "收费标准",
-            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/freight/desc",
         });
 
         menu.button.Add(mainMenu3);
