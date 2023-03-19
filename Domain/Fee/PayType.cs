@@ -22,7 +22,7 @@ public class PayType : CodeTypeBase
     /// <summary>
     /// PayPal支付, 4000
     /// </summary>
-    public static readonly PayType PayPal = new PayType(4000, "PayPal", "PayPal支付");
+    public static readonly PayType Paypal = new PayType(4000, "PayPal", "PayPal支付");
 
     /// <summary>
     /// 信用卡直接支付, 5000
@@ -48,7 +48,7 @@ public class PayType : CodeTypeBase
         Balance,
         Wechat,
         AliPay,
-        PayPal,
+        Paypal,
         CreditCard,
         Other,
         WriteOff,
@@ -58,7 +58,7 @@ public class PayType : CodeTypeBase
         Balance,
         Wechat,
         AliPay,
-        PayPal,
+        Paypal,
         CreditCard,
     };
 

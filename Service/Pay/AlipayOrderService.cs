@@ -9,6 +9,7 @@ using shunda.Core.Service;
 using shunda.Domain.Coupon;
 using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Coupon;
 using shunda.Service.Customer;
 using shunda.Service.Fee;
 using shunda.Service.LogisticsOrder;
@@ -25,6 +26,8 @@ public class AlipayOrderService {
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly CustomerScoreService customerScoreService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly CouponService couponService;
+    private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
 
     public AlipayOrderService(
         ISession session,
@@ -32,7 +35,9 @@ public class AlipayOrderService {
         AlipayService alipayService,
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService,
-        LogisticsOrderPaySumService logisticsOrderPaySumService
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
+        CouponService couponService,
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService
     ) {
         this.session = session;
         this.payService = payService;
@@ -40,6 +45,8 @@ public class AlipayOrderService {
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.customerScoreService = customerScoreService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
+        this.couponService = couponService;
+        this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
     }
 
     /// <summary>
@@ -58,20 +65,61 @@ public class AlipayOrderService {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
-        var coupon = session.Get<CouponInfo>(couponId);
-        if (coupon == null) {
-            throw new ValidationException($"指定的优惠券{couponId}不存在！");
+        CouponInfo? coupon = null;
+        if (couponId > 0) {
+            coupon = session.Get<CouponInfo>(couponId);
+            if (coupon == null) {
+                throw new ValidationException($"指定的优惠券{couponId}不存在！");
+            }
         }
 
         if (order.ArrearsAmountFormula <= 0) {
             throw new ValidationException("当前订单无欠费金额，无需支付！");
         }
 
+        var orderFeeSumData = logisticsOrderFeeSumService.GetSumData(orderId);
+
+        decimal discountAmount = 0;
+        if (coupon != null) {
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFee);
+            if (discountResult.Success == false) {
+                discountAmount = 0;
+            } else {
+                discountAmount = discountResult.Discount;
+
+                // 保存优惠券到订单，并生成响应的订单费用，负的费用
+                int customerId = order.Customer.Id;
+                couponService.SaveToOrder(customerId: customerId, orderId: orderId, couponId: couponId);
+            }
+        }
+
+        decimal paidAmount = order.PaidAmount;
+        decimal arrearsAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount - discountAmount - paidAmount;
+
+        if (arrearsAmount <= 0) {
+            // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了
+            var orderPayZeroAmount = new LogisticsOrderPayInfo {
+                Order = order,
+                Customer = order.Customer,
+                PayType = PayType.AliPay,
+                OutTradeNo = string.Empty,
+                Amount = 0, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。
+                Status = PayStatus.Paid
+            };
+
+            session.Save(orderPayZeroAmount);
+            session.Flush();
+
+            logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId); // 这个这里可以不调用，因为 couponService.SaveToOrder()里面已经调用过一次了
+
+            return string.Empty; // 无需支付返回空的url
+        }
+
         // 外部订单号，商户网站订单系统中唯一的订单号
         string outTradeNo = payService.GenerateOutTradeNo();
 
         // 付款金额
-        string totalAmount = order.ArrearsAmountFormula.ToString("#0.00");
+        string arrearsAmountStr = arrearsAmount.ToString("#0.00");
 
         LogisticsOrderPayInfo orderPay = new LogisticsOrderPayInfo {
             Order = order,
@@ -95,7 +143,7 @@ public class AlipayOrderService {
             AlipayTradePagePayModel payModel = new AlipayTradePagePayModel {
                 Subject = subject,
                 Body = itemBody,
-                TotalAmount = totalAmount,
+                TotalAmount = arrearsAmountStr,
                 OutTradeNo = outTradeNo,
                 ProductCode = "FAST_INSTANT_TRADE_PAY"
             };
@@ -121,7 +169,7 @@ public class AlipayOrderService {
             AlipayTradeWapPayModel payModel = new AlipayTradeWapPayModel {
                 Subject = subject,
                 Body = itemBody,
-                TotalAmount = totalAmount,
+                TotalAmount = arrearsAmountStr,
                 OutTradeNo = outTradeNo,
                 ProductCode = "QUICK_WAP_WAY"
             };

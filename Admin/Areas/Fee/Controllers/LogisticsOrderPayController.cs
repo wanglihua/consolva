@@ -134,7 +134,7 @@ public class LogisticsOrderPayController : Controller {
             .SetProjection(Projections.ProjectionList()
                 .Add(Projections.SqlProjection($"SUM(IF({alias}.pay_type_id = {PayType.AliPay.Id}, {alias}.amount, 0)) AS alipay_amount", new[] { "alipay_amount" }, new IType[] { NHibernateUtil.Decimal }))
                 .Add(Projections.SqlProjection($"SUM(IF({alias}.pay_type_id = {PayType.Wechat.Id}, {alias}.amount, 0)) AS wechat_amount", new[] { "wechat_amount" }, new IType[] { NHibernateUtil.Decimal }))
-                .Add(Projections.SqlProjection($"SUM(IF({alias}.pay_type_id = {PayType.PayPal.Id}, {alias}.amount, 0)) AS paypal_amount", new[] { "paypal_amount" }, new IType[] { NHibernateUtil.Decimal }))
+                .Add(Projections.SqlProjection($"SUM(IF({alias}.pay_type_id = {PayType.Paypal.Id}, {alias}.amount, 0)) AS paypal_amount", new[] { "paypal_amount" }, new IType[] { NHibernateUtil.Decimal }))
                 .Add(Projections.SqlProjection($"SUM(IF({alias}.pay_type_id = {PayType.Balance.Id}, {alias}.amount, 0)) AS balance_amount", new[] { "balance_amount" }, new IType[] { NHibernateUtil.Decimal }))
                 .Add(Projections.SqlProjection($"SUM(IF({alias}.pay_type_id = {PayType.WriteOff.Id}, {alias}.amount, 0)) AS write_off_amount", new[] { "write_off_amount" }, new IType[] { NHibernateUtil.Decimal }))
                 .Add(Projections.SqlProjection($"SUM({alias}.amount) AS total_amount", new[] { "total_amount" }, new IType[] { NHibernateUtil.Decimal }))
