@@ -208,8 +208,13 @@ public class PaypalOrderService {
 
         string paymentId = orderPay.PayPalPaymentId;
 
-        PaymentExecution paymentExecution = new PaymentExecution() { payer_id = payerId };
-        Payment payment = new Payment() { id = paymentId };
+        PaymentExecution paymentExecution = new PaymentExecution {
+            payer_id = payerId
+        };
+
+        Payment payment = new Payment {
+            id = paymentId
+        };
 
         // Execute the payment.
         Payment executedPayment = payment.Execute(PaypalUtil.GetApiContext(), paymentExecution);

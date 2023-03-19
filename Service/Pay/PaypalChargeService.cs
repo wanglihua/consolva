@@ -122,5 +122,44 @@ public class PaypalChargeService {
 
     public void Process(PaypalChargeProcessParam param) {
         ValidationUtil.Validate<PaypalChargeProcessParamValidator, PaypalChargeProcessParam>(param);
+
+        string payerId = param.PayerId;
+        string outTradeNo = param.OutTradeNo;
+
+        var customerCharge = session.Query<CustomerChargeInfo>()
+            .Where(e => e.OutTradeNo == outTradeNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (customerCharge == null) {
+            throw new Exception($"out_trade_no 本地系统客户充值支付记录中不存在。out_trade_no：{outTradeNo}");
+        }
+
+        string paymentId = customerCharge.PaypalPaymentId;
+
+        PaymentExecution paymentExecution = new PaymentExecution {
+            payer_id = payerId
+        };
+
+        Payment payment = new Payment {
+            id = paymentId
+        };
+
+        // Execute the payment.
+        Payment executedPayment = payment.Execute(PaypalUtil.GetApiContext(), paymentExecution);
+
+        log.Warn("PayPal订单支付已执行，executedPayment.ConvertToJson()");
+        log.Warn(executedPayment.ConvertToJson());
+
+        // 参考 https://stackoverflow.com/questions/51742413/paypal-api-payment-getstate
+        if (executedPayment.transactions.Count == 0
+            || executedPayment.transactions[0].related_resources.Count == 0
+            || executedPayment.transactions[0].related_resources[0].sale.state != "completed") {
+            throw new Exception($"PayPal支付已执行，舜达回调判断出错，状态判断失败! {executedPayment.ConvertToJson()}");
+        }
+
+        if (customerCharge.Status == CustomerChargeStatus.New) {
+            // 完成充值
+            customerChargeService.CompleteCharge(customerCharge, customerCharge.Amount, CustomerChargeType.Alipay);
+        }
     }
 }
