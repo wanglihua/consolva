@@ -1,7 +1,7 @@
 <header/>
 <view class="container">
     <block wx:if="{{ batchCount === 0 }}">
-        <van-empty description="当前没有可以领取的优惠券，或批次优惠券已经抢完！"/>
+        <van-empty description="当前没有可以领取的优惠券，或批次优惠券您已领取完成！"/>
     </block>
     <block wx:else>
         <block wx:for="{{ batchList }}" wx:key="id" wx:for-item="batch" wx:for-index="index">

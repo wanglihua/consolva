@@ -83,7 +83,7 @@ public class CouponPickController : Controller {
 
         return new CouponPickListModel {
             BatchList = batchItemList,
-            BatchCount = batchList.Count,
+            BatchCount = batchItemList.Count,
         };
     }
 
