@@ -94,9 +94,11 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
-        var coupon = session.Get<CouponInfo>(couponId);
-        if (coupon == null) {
-            throw new ValidationException($"指定的优惠券{couponId}不存在！");
+        if (couponId != 0) {
+            var coupon = session.Get<CouponInfo>(couponId);
+            if (coupon == null) {
+                throw new ValidationException($"指定的优惠券{couponId}不存在！");
+            }
         }
 
         if (WebUtil.IsWechatRequest(Request)) {
