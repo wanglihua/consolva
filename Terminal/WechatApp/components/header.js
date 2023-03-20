@@ -32,15 +32,7 @@ Component({
 
     methods: {
         onClickLeft() {
-            // wx.navigateTo({
-            //     url: "/pages/home/home_index",
-            // });
-
             app.goback("home_index");
-
-            // wx.redirectTo({
-            //     url: "/pages/home/home_index",
-            // });
         },
 
         onClickRight() {
