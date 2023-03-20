@@ -32,7 +32,25 @@ Component({
 
     methods: {
         onClickLeft() {
-            app.goback("home_index");
+            // app.goback("home_index");
+            const homePageId = app.globalData.homePageId;
+            if(homePageId === "home_index") {
+                wx.reLaunch({
+                    url: "/pages/home/home_index",
+                });
+            } else if(homePageId === "home_package") {
+                wx.reLaunch({
+                    url: "/pages/home/home_package",
+                });
+            } else if (homePageId === "home_personal") {
+                wx.reLaunch({
+                    url: "/pages/home/home_personal",
+                });
+            } else {
+                wx.reLaunch({
+                    url: "/pages/home/home_index",
+                });
+            }
         },
 
         onClickRight() {

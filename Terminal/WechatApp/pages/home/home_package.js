@@ -1,12 +1,14 @@
 const app = getApp();
 
 Page({
-    id: "index_package",
+    id: "home_package",
     data: {
         homeData: {},
         showFollowPopup: false,
     },
     onShow() {
+        app.globalData.homePageId = "home_package";
+        
         const nowMilliSeconds = new Date().getTime();
         const loginMilliSeconds = wx.getStorageSync("client-login-time");
         const that = this;
@@ -46,19 +48,19 @@ Page({
 
     onTabbarChange(e) {
         if (e.detail === 0) {
-            wx.redirectTo({
+            wx.reLaunch({
                 url: "./home_index",
             });
         }
 
         if (e.detail === 1) {
-            wx.redirectTo({
+            wx.reLaunch({
                 url: "./home_package",
             });
         }
 
         if (e.detail === 2) {
-            wx.redirectTo({
+            wx.reLaunch({
                 url: "./home_personal",
             });
         }
