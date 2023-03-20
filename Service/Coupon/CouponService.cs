@@ -188,7 +188,7 @@ public class CouponService {
     /// 清除订单使用的优惠券
     /// </summary>
     /// <param name="orderId"></param>
-    public void setCouponNotUsed(int orderId) {
+    public void setCouponNotUsedByOrderId(int orderId) {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -242,7 +242,20 @@ public class CouponService {
             throw new ValidationException($"指定的优惠券#{couponId}不存在！");
         }
 
-        setCouponNotUsed(couponId);
+        NHibernateUtil.Initialize(coupon.Batch);
+
+        coupon.Order = null;
+        coupon.ActualDiscountAmount = 0;
+        if (coupon.Batch.Status == CouponBatchStatus.Expire) {
+            coupon.Status = CouponStatus.Expire;
+        } else {
+            coupon.Status = CouponStatus.Pick;
+        }
+
+        coupon.UseTime = null;
+
+        session.Update(coupon);
+        session.Flush();
 
         couponBatchService.SumAndSaveBatchTotalUsed(coupon.Batch?.Id ?? 0);
     }
@@ -414,7 +427,7 @@ public class CouponService {
 
         // 把原来的取消掉
         if (orderCoupon != null) {
-            setCouponNotUsed(orderId: orderId);
+            setCouponNotUsedByOrderId(orderId: orderId);
         }
 
         // 把新的设置上
