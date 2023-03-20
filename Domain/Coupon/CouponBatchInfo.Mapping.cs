@@ -19,6 +19,15 @@ public class CouponBatchInfoMapping : EntityMapping<CouponBatchInfo>
         );
 
         Property(
+            x => x.GetMethod,
+            map => {
+                map.Type<CouponGetMethodHibernateType>();
+                map.Column("get_method_id");
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.Type,
             map => {
                 map.Type<CouponTypeHibernateType>();

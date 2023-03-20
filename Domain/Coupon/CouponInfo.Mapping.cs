@@ -91,6 +91,15 @@ public class CouponInfoMapping : EntityMapping<CouponInfo>
         );
 
         Property(
+            x => x.Expire,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("expire");
+                map.NotNullable(false);
+            }
+        );        
+
+        Property(
             x => x.GetMethod,
             map => {
                 map.Type<CouponGetMethodHibernateType>();

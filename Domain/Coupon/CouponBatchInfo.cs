@@ -13,6 +13,11 @@ public  class CouponBatchInfo : Entity
     public virtual string Name { get; set; } = string.Empty;
 
     /// <summary>
+    /// 获取方式
+    /// </summary>
+    public virtual CouponGetMethod GetMethod { get; set; } = CouponGetMethod.Pick;
+
+    /// <summary>
     /// 类型，非空
     /// </summary>
     public virtual CouponType Type { get; set; } = CouponType.None;
