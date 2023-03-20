@@ -26,7 +26,9 @@ public class CouponPickController : Controller {
     [HttpPost]
     [Route("/client/coupon/pick/list")]
     public IActionResult List([FromBody] CouponPickListParam param) {
-        var model = GetListData(param);
+        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+
+        var model = GetListData(param, loginCustomerId);
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
@@ -35,7 +37,7 @@ public class CouponPickController : Controller {
     }
 
     [NonAction]
-    private CouponPickListModel GetListData(CouponPickListParam param) {
+    private CouponPickListModel GetListData(CouponPickListParam param, int customerId) {
         DateTime today = DateTime.Today;
         var batchList = session.Query<CouponBatchInfo>()
             .Where(e => e.Status == CouponBatchStatus.Release
@@ -43,16 +45,41 @@ public class CouponPickController : Controller {
             .OrderByDescending(e => e.Id)
             .ToList();
 
-        var batchItemList = batchList
-            .Select(e => new CouponPickListItem {
-                Id = e.Id,
-                Name = e.Name,
-                Type = e.Type.Name,
-                Rule = e.Rule,
-                RuleDesc = e.RuleDesc,
-                Expire = e.Expire.ToString("yyyy-MM-dd"),
-            })
+        // 获取这些批次中，登录客户领取的优惠券
+        var batchIdList = batchList.Select(e => e.Id).ToList();
+        var couponPickList = session.Query<CouponInfo>()
+            .Where(e => e.Customer.Id == customerId
+                        && batchIdList.Contains(e.Batch.Id)
+            )
             .ToList();
+
+        // 各个批次已领取的数量
+        var batchPickCountDict = new Dictionary<int, int>();
+        foreach (var coupon in couponPickList) {
+            int batchId = coupon.Batch.Id;
+            if (batchPickCountDict.TryGetValue(batchId, out int pickCount) == false) {
+                batchPickCountDict[batchId] = 1;
+            } else {
+                batchPickCountDict[batchId] = pickCount + 1;
+            }
+        }
+
+        var batchItemList = new List<CouponPickListItem>();
+        foreach (var batch in batchList) {
+            int batchId = batch.Id;
+            if (batchPickCountDict.TryGetValue(batchId, out int pickCount) == false // 批次中客户还没领取
+                || pickCount < batch.MaxQtyPerCustomer // 批次中客户还没领完
+               ) {
+                batchItemList.Add(new CouponPickListItem {
+                    Id = batch.Id,
+                    Name = batch.Name,
+                    Type = batch.Type.Name,
+                    Rule = batch.Rule,
+                    RuleDesc = batch.RuleDesc,
+                    Expire = batch.Expire.ToString("yyyy-MM-dd"),
+                });
+            }
+        }
 
         return new CouponPickListModel {
             BatchList = batchItemList,
@@ -69,7 +96,7 @@ public class CouponPickController : Controller {
 
         couponBatchService.Pick(batchId: batchId, customerId: loginCustomerId);
 
-        var listModel = GetListData(param);
+        var listModel = GetListData(param, loginCustomerId);
 
         return Json(new JsonResultData {
             Success = true,

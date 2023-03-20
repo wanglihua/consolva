@@ -1,6 +1,4 @@
 namespace shunda.Client.Areas.Coupon.Models.CouponPick;
 
-public class CouponPickListParam
-{
-    
+public class CouponPickListParam {
 }
