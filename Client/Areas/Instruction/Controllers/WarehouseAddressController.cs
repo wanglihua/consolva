@@ -83,7 +83,7 @@ public class WarehouseAddressController : Controller {
             Success = true,
             Message = "操作成功！",
             Data = new WarehouseAddressDetailModel {
-                CustomerCode = customerCode,
+                CustomerCode = $"舜达{customerCode}",
                 Area = warehouse.Area,
                 Address = addressDetail,
                 Phone = warehouse.Phone,
