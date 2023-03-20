@@ -65,6 +65,11 @@ public class WechatOfficialAccountMenuController : Controller {
             url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/freight/desc",
         });
 
+        mainMenu1.sub_button.Add(new SingleViewButton {
+            name = "转运流程",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/order/simple/step",
+        });        
+
         menu.button.Add(mainMenu1);
 
         #endregion
@@ -109,6 +114,11 @@ public class WechatOfficialAccountMenuController : Controller {
         mainMenu3.sub_button.Add(new SingleViewButton {
             name = "积分说明",
             url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/score/remark",
+        });
+
+        mainMenu3.sub_button.Add(new SingleViewButton {
+            name = "常见问题",
+            url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/faq",
         });
 
         menu.button.Add(mainMenu3);
