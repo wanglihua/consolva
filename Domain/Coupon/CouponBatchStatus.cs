@@ -5,8 +5,7 @@ namespace shunda.Domain.Coupon;
 /// <summary>
 /// 优惠券批次状态
 /// </summary>
-public class CouponBatchStatus : CodeTypeBase
-{
+public class CouponBatchStatus : CodeTypeBase {
     /// <summary>
     /// 新创建
     /// </summary>
@@ -39,52 +38,41 @@ public class CouponBatchStatus : CodeTypeBase
     /// </summary>
     public static readonly CouponBatchStatus None = new CouponBatchStatus(0, "", "");
 
-    public static CouponBatchStatus GetById(int id)
-    {
-        IList<CouponBatchStatus> typeList = GetList();
-        foreach (CouponBatchStatus type in typeList)
-        {
-            if (type.Id == id)
-            {
-                return type;
-            }
+    private static readonly IReadOnlyList<CouponBatchStatus> codeTypeList = new List<CouponBatchStatus>() {
+        New,
+        Release,
+        Picked,
+        Complete,
+        Expire,
+    };
+
+    private static readonly IDictionary<int, CouponBatchStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
+
+    public static CouponBatchStatus GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out CouponBatchStatus? codeType)) {
+            return codeType;
         }
 
         return None;
     }
 
-    public static IList<CouponBatchStatus> GetList()
-    {
-        IList<CouponBatchStatus> typeList = new List<CouponBatchStatus>();
-
-        typeList.Add(New);
-        typeList.Add(Release);
-        typeList.Add(Picked);
-        typeList.Add(Complete);
-        typeList.Add(Expire);
-
-        return typeList;
+    public static IList<CouponBatchStatus> GetList() {
+        return codeTypeList.ToList();
     }
 
-    public static IList<CouponBatchStatus> GetMayExpireStatusList()
-    {
-        IList<CouponBatchStatus> typeList = new List<CouponBatchStatus>();
-
+    public static IList<CouponBatchStatus> GetMayExpireStatusList() {
         // 当前只有这两种状态下可能会过期
-        typeList.Add(Release);
-        typeList.Add(Picked);
-
-        return typeList;
+        return new List<CouponBatchStatus>() {
+            Release,
+            Picked,
+        };
     }
 
-    private CouponBatchStatus(int id, string name, string description) : base(id, name, description)
-    {
+    private CouponBatchStatus(int id, string name, string description) : base(id, name, description) {
     }
 
-    public bool Released()
-    {
-        if (Id == New.Id)
-        {
+    public bool Released() {
+        if (Id == New.Id) {
             return false;
         }
 
@@ -92,18 +80,14 @@ public class CouponBatchStatus : CodeTypeBase
     }
 }
 
-public class CouponBatchStatusHibernateType : CodeHibernateTypeBase<CouponBatchStatus>
-{
-    protected override CouponBatchStatus GetCodeTypeById(int id)
-    {
+public class CouponBatchStatusHibernateType : CodeHibernateTypeBase<CouponBatchStatus> {
+    protected override CouponBatchStatus GetCodeTypeById(int id) {
         return CouponBatchStatus.GetById(id);
     }
 }
 
-public class CouponBatchStatusModelBinder : CodeTypeModelBinderBase<CouponBatchStatus>
-{
-    protected override CouponBatchStatus GetCodeTypeById(int id)
-    {
+public class CouponBatchStatusModelBinder : CodeTypeModelBinderBase<CouponBatchStatus> {
+    protected override CouponBatchStatus GetCodeTypeById(int id) {
         return CouponBatchStatus.GetById(id);
     }
 }

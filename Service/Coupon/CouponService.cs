@@ -155,6 +155,7 @@ public class CouponService {
         }
 
         coupon.Order = order;
+        coupon.OrderCode = order.Code;
         coupon.ActualDiscountAmount = actualDiscountAmount;
         coupon.Status = CouponStatus.Use;
         coupon.UseTime = now;
@@ -202,6 +203,7 @@ public class CouponService {
             var actualDiscountAmountBefore = coupon.ActualDiscountAmount;
 
             coupon.Order = null;
+            coupon.OrderCode = string.Empty;
             coupon.ActualDiscountAmount = 0;
             if (coupon.Batch.Status == CouponBatchStatus.Expire) {
                 coupon.Status = CouponStatus.Expire;
@@ -245,6 +247,7 @@ public class CouponService {
         NHibernateUtil.Initialize(coupon.Batch);
 
         coupon.Order = null;
+        coupon.OrderCode = string.Empty;
         coupon.ActualDiscountAmount = 0;
         if (coupon.Batch.Status == CouponBatchStatus.Expire) {
             coupon.Status = CouponStatus.Expire;

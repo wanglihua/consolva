@@ -97,6 +97,7 @@ public class OrderPayCouponController : Controller {
             orderCouponId = 0;
 
             orderCoupon.Order = null;
+            orderCoupon.OrderCode = string.Empty;
             orderCoupon.UseTime = null;
 
             if (orderCoupon.Batch.Status == CouponBatchStatus.Expire) {
