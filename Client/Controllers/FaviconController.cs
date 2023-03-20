@@ -22,6 +22,6 @@ public class FaviconController : Controller
     {
         // string faviconPngFullPath = Path.Combine(webHostEnvironment.WebRootPath, "static", "images", "favicon.png");
         // return PhysicalFile(faviconPngFullPath, ContentType.ImagePng);
-        return File("/static/images/favicon.png", ContentType.ImagePng);
+        return File("/static/client/images/favicon.png", ContentType.ImagePng);
     }
 }

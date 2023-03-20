@@ -41,7 +41,7 @@ public class CouponPickController : Controller {
         DateTime today = DateTime.Today;
         var batchList = session.Query<CouponBatchInfo>()
             .Where(e => e.Status == CouponBatchStatus.Release
-                        && e.Expire > today)
+                        && e.Expire >= today)
             .OrderByDescending(e => e.Id)
             .ToList();
 
@@ -49,6 +49,7 @@ public class CouponPickController : Controller {
         var batchIdList = batchList.Select(e => e.Id).ToList();
         var couponPickList = session.Query<CouponInfo>()
             .Where(e => e.Customer.Id == customerId
+                        && e.GetMethod == CouponGetMethod.Pick
                         && batchIdList.Contains(e.Batch.Id)
             )
             .ToList();
