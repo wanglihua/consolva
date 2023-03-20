@@ -32,7 +32,8 @@ Page({
             const lastId = res.data.lastId;
 
             for (const expressClaim of expressClaimList) {
-                expressClaim.actions = "查看详细，认领";
+                // expressClaim.actions = "查看详细，认领";
+                expressClaim.actions = "认领";
             }
 
             that.setData({
@@ -62,11 +63,12 @@ Page({
 
         const actionSheetActions = [];
 
-        actionSheetActions.push({
-            action: "detail",
-            name: '查看详细',
-            className: 'iconfont iconfont-view-detail',
-        });
+        // 不查看详细了
+        // actionSheetActions.push({
+        //     action: "detail",
+        //     name: '查看详细',
+        //     className: 'iconfont iconfont-view-detail',
+        // });
 
         actionSheetActions.push({
             action: "claim",
@@ -90,11 +92,11 @@ Page({
         const action = e.detail.action;
 
         const that = this;
-        if (action === "detail") {
-            wx.navigateTo({
-                url: './express_claim_detail?id=' + expressClaimId,
-            });
-        }
+        // if (action === "detail") {
+        //     wx.navigateTo({
+        //         url: './express_claim_detail?id=' + expressClaimId,
+        //     });
+        // }
 
         if (action === "claim") {
             wx.navigateTo({

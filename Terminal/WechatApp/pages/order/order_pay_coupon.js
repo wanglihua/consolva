@@ -32,7 +32,7 @@ Page({
 
         const orderId = this.data.orderId;
 
-        wx.navigateTo({
+        wx.redirectTo({
             url: "./order_pay_type?orderId=" + orderId + "&couponId=" + couponId,
         });
     }

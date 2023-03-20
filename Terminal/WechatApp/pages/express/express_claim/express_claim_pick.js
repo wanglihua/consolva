@@ -119,9 +119,10 @@ Page({
                         }
                     });
                 } else {
-                    wx.navigateTo({
-                        url: './express_claim_list',
-                    });
+                    // wx.navigateTo({
+                    //     url: './express_claim_list',
+                    // });
+                    wx.navigateBack();
                 }
             }, 1000);
         });

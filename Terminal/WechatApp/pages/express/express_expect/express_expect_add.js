@@ -47,9 +47,10 @@ Page({
                     content: res.message,
                     showCancel: false,
                     success: function (res) {
-                        wx.navigateTo({
-                            url: "/pages/express/express_checkin/express_checkin_list",
-                        });
+                        // wx.navigateTo({
+                        //     url: "/pages/express/express_checkin/express_checkin_list",
+                        // });
+                        wx.navigateBack();
                     }
                 });
             } else {

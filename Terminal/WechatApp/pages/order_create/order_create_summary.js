@@ -53,7 +53,7 @@ Page({
     },
 
     gotoNext() {
-        wx.navigateTo({
+        wx.redirectTo({
             url: "./order_create_agreement",
         });
     }
