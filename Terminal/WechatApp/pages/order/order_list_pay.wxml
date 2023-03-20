@@ -16,7 +16,6 @@
                     </view>
                 </van-cell>
                 <van-cell title="订单状态" value="{{ order.orderStatus }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物流类型" value="{{ order.firstModeType }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="物流名称" value="{{ order.firstModeName }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="创建时间" value="{{ order.createTime }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="打包时间" value="{{ order.packTime }}" border="{{ false }}" custom-class="item"/>

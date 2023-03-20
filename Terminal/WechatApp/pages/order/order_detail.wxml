@@ -14,7 +14,6 @@
                     </view>
                 </van-cell>
                 <van-cell title="订单状态" value="{{ orderDetail.order.orderStatus }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物流类型" value="{{ orderDetail.order.firstModeType }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="创建时间" value="{{ orderDetail.order.createTime }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="打包时间" value="{{ orderDetail.order.packTime }}" border="{{ false }}" custom-class="item"/>
@@ -51,14 +50,12 @@
             <van-cell title="物流信息" value="{{ firstModeShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onFirstModeHeaderClick"/>
             <block wx:if="{{ firstModeShow.show }}">
                 <block wx:if="{{ orderDetail.firstMode.firstModeList.length === 1 }}">
-                    <van-cell title="物流类型" value="{{ orderDetail.firstMode.firstModeList[0].modeType }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物品类型" value="{{ orderDetail.firstMode.firstModeList[0].goodsType }}" border="{{ false }}" custom-class="item"/>
                 </block>
                 <block wx:else>
                     <block wx:for="{{ orderDetail.firstMode.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
-                        <van-cell title="物流类型{{ index + 1 }}" value="{{ firstMode.modeType }}" border="{{ false }}" custom-class="item"/>
                         <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item"/>
                         <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
                         <van-cell title="物品类型{{ index + 1 }}" value="{{ firstMode.goodsType }}" border="{{ false }}" custom-class="item"/>

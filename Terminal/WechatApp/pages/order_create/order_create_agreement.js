@@ -4,8 +4,6 @@ Page({
     data: {
         agreementList: [],
         detailAgreement: {},
-        noMoreOrderActionChecked: false,
-        transferAfterPaidChecked: false,
         allCheckChecked: false,
     },
 
@@ -63,20 +61,6 @@ Page({
         });
     },
 
-    onNoMoreOrderActionCheckboxChange(e) {
-        const noMoreOrderActionChecked = this.data.noMoreOrderActionChecked;
-        this.setData({
-            noMoreOrderActionChecked: !noMoreOrderActionChecked,
-        });
-    },
-
-    onNoMoreOrderActionTitleTap(e) {
-        const noMoreOrderActionChecked = this.data.noMoreOrderActionChecked;
-        this.setData({
-            noMoreOrderActionChecked: !noMoreOrderActionChecked,
-        });
-    },
-
     onTransferAfterPaidCheckboxChange(e) {
         const transferAfterPaidChecked = this.data.transferAfterPaidChecked;
         this.setData({
@@ -101,8 +85,6 @@ Page({
 
         this.setData({
             agreementList: agreementList,
-            noMoreOrderActionChecked: allCheckChecked,
-            transferAfterPaidChecked: allCheckChecked,
             allCheckChecked: allCheckChecked,
         });
     },
@@ -117,8 +99,6 @@ Page({
 
         this.setData({
             agreementList: agreementList,
-            noMoreOrderActionChecked: allCheckChecked,
-            transferAfterPaidChecked: allCheckChecked,
             allCheckChecked: allCheckChecked,
         });
     },
@@ -126,17 +106,11 @@ Page({
     onCreateOrderButtonClick(e) {
         let allAccepted = true;
         const agreementList = this.data.agreementList;
-        const noMoreOrderActionChecked = this.data.noMoreOrderActionChecked;
-        const transferAfterPaidChecked = this.data.transferAfterPaidChecked;
 
         for (const agreement of agreementList) {
             if (agreement.checked !== true) {
                 allAccepted = false;
             }
-        }
-
-        if (noMoreOrderActionChecked !== true || transferAfterPaidChecked !== true) {
-            allAccepted = false;
         }
 
         if (allAccepted !== true) {

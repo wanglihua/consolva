@@ -22,26 +22,6 @@
         <van-cell border="{{ false }}" custom-class="item">
             <view slot="title">
                 <view style="display: inline-block;">
-                    <van-checkbox value="{{ noMoreOrderActionChecked }}" shape="square" bind:change="onNoMoreOrderActionCheckboxChange"/>
-                </view>
-                <view style="font-size: 12px; display: inline;" bind:tap="onNoMoreOrderActionTitleTap">
-                    提交转运单后将无法操作：拆分转运单、合并转运单、出库转运单、退运快递！
-                </view>
-            </view>
-        </van-cell>
-        <van-cell border="{{ false }}" custom-class="item">
-            <view slot="title">
-                <view style="display: inline-block;">
-                    <van-checkbox value="{{ transferAfterPaidChecked }}" shape="square" bind:change="onTransferAfterPaidCheckboxChange"/>
-                </view>
-                <view style="font-size: 12px; display: inline;" bind:tap="onTransferAfterPaidTitleTap">
-                    转运单（订单）将在打包完毕后，支付费用，不欠费后，安排转运！
-                </view>
-            </view>
-        </van-cell>
-        <van-cell border="{{ false }}" custom-class="item">
-            <view slot="title">
-                <view style="display: inline-block;">
                     <van-checkbox value="{{ allCheckChecked }}" shape="square" bind:change="onAllCheckCheckboxChange"/>
                 </view>
                 <view style="font-size: 12px; font-weight: bold; display: inline;" bind:tap="onAllCheckTitleTap">

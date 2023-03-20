@@ -7,7 +7,7 @@
         <van-cell title="订单费用" value="{{ totalAmount }} RMB" border="{{ false }}" custom-class="item"/>
 
         <block wx:if="{{ hasCoupon }}">
-            <van-cell title="优惠折扣" value="{{ discountAmount }} RMB" border="{{ false }}" custom-class="item"/>
+            <van-cell title="优惠券折扣" value="{{ discountAmount }} RMB" border="{{ false }}" custom-class="item"/>
         </block>
 
         <van-cell title="已支付" value="{{ paidAmount }} RMB" border="{{ false }}" custom-class="item"/>
