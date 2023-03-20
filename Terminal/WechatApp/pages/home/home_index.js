@@ -7,7 +7,7 @@ Page({
         homeData: {},
         showFollowPopup: false,
     },
-    onLoad() {
+    onShow() {
         const nowMilliSeconds = new Date().getTime();
         const loginMilliSeconds = wx.getStorageSync("client-login-time");
         const that = this;
@@ -73,7 +73,7 @@ Page({
                 url: "/pages/home/home_web_view?url=" + res.data.url + "&title=" + res.data.title,
             });
         });
-    },    
+    },
 
     onTabbarChange(e) {
         if (e.detail === 0) {

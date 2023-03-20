@@ -6,7 +6,7 @@ Page({
         homeData: {},
         showFollowPopup: false,
     },
-    onLoad() {
+    onShow() {
         const nowMilliSeconds = new Date().getTime();
         const loginMilliSeconds = wx.getStorageSync("client-login-time");
         const that = this;
