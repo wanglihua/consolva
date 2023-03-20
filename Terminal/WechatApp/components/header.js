@@ -36,12 +36,11 @@ Component({
             //     url: "/pages/home/home_index",
             // });
 
-            // app.goback("index");
+            app.goback("home_index");
 
-            wx.redirectTo({
-                url: "/pages/home/home_index",
-            });
-
+            // wx.redirectTo({
+            //     url: "/pages/home/home_index",
+            // });
         },
 
         onClickRight() {

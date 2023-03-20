@@ -1,7 +1,7 @@
 const app = getApp();
 
 Page({
-    id: "index",
+    id: "home_index",
     data: {
         topImageHeight: 0,
         homeData: {},
