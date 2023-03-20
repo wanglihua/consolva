@@ -30,7 +30,7 @@ Page({
             const lastId = res.data.lastId;
 
             for (const expressClaim of orderList) {
-                expressClaim.actions = "查看详细，取消订单";
+                expressClaim.actions = "查看详细";
             }
 
             that.setData({
@@ -64,11 +64,11 @@ Page({
             className: 'iconfont iconfont-view-detail',
         });
 
-        actionSheetActions.push({
-            action: "cancel",
-            name: '取消订单',
-            className: 'iconfont iconfont-reject',
-        });
+        // actionSheetActions.push({
+        //     action: "cancel",
+        //     name: '取消订单',
+        //     className: 'iconfont iconfont-reject',
+        // });
 
         this.setData({
             currentOrder: currentOrder,
@@ -93,14 +93,6 @@ Page({
         if (action === "detail") {
             wx.navigateTo({
                 url: './order_detail?id=' + orderId,
-            });
-        }
-
-        if (action === "cancel") {
-            wx.showModal({
-                title: '订单取消',
-                content: '暂时不能自主操作取消订单，若确实需要取消订单，请联系客服处理！',
-                showCancel: false,
             });
         }
 
