@@ -5,3 +5,7 @@
 .item-header-goods-value {
     background-color: #438EB9 !important;
 }
+
+.van-tab {
+    padding: 0 !important;
+}

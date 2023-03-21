@@ -4,7 +4,7 @@
         <van-search model:value="{{ query }}" placeholder="快递单号，入库单号 模糊搜索" custom-class="search-bar" bind:search="onSearch" bind:change="onSearch" bind:clear="onSearchClear"/>
         <block wx:if="{{ expressTotalCount !== 0 }}">
             <view>
-                <van-divider contentPosition="center" custom-style="margin: -5px 0 3px 0; font-size: 12px;">
+                <van-divider contentPosition="center" custom-style="margin: -5px 0 2px 0; font-size: 12px;">
                     <block wx:if="{{ expressGoodsValueCount > 0 }}">
                         缺货值{{ expressGoodsValueCount }}项,
                     </block>
@@ -29,7 +29,7 @@
     <block wx:else>
         <block wx:if="{{ expressGoodsValueCount > 0 }}">
             <van-tabs>
-                <van-tab title="已完善货值({{ expressWaitOrderCount + expressCheckinCount }})">
+                <van-tab title="已完善货值({{ expressWaitOrderCount + expressCheckinCount }})" title-style="background-color: #2c9af2; color: white;">
                     <block wx:if="{{ expressWaitOrderCount > 0 }}">
                         <block wx:for="{{ expressWaitOrderList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                             <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
@@ -125,7 +125,7 @@
                         </block>
                     </block>
                 </van-tab>
-                <van-tab title="需完善货值({{ expressGoodsValueCount }})">
+                <van-tab title="需完善货值({{ expressGoodsValueCount }})" title-style="background-color: #438EB9; color: white;">
                     <block wx:if="{{ expressGoodsValueCount > 0 }}">
                         <block wx:for="{{ expressGoodsValueList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                             <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
