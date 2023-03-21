@@ -1,0 +1,7 @@
+.item-header-value-forbidden {
+    color: red !important;
+}
+
+.item-header-goods-value {
+    background-color: #438EB9 !important;
+}

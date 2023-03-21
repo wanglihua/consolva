@@ -98,7 +98,8 @@
         "van-col": "@vant/weapp/col/index",
         "van-checkbox": "@vant/weapp/checkbox/index",
         "van-checkbox-group": "@vant/weapp/checkbox-group/index",
-        "header": "components/header"
+        "header": "components/header",
+        "express-checkin-list-item": "components/express_checkin_list_item"
     },
     "networkTimeout": {
         "request": 10000,
