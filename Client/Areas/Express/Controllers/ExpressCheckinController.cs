@@ -47,7 +47,8 @@ public class ExpressCheckinController : Controller {
 
         // 这个不分页，一次性全部取出来
         var expressList = GetListQuery(param)
-            .OrderByDescending(e => e.Id)
+            .OrderByDescending(e => e.GoodsType)
+            .ThenByDescending(e => e.Id)
             .ToList();
 
         // int expressCount = GetListQuery(param).Count(); 这个不用再查询一次
