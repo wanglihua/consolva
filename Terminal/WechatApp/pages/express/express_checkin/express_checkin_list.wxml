@@ -14,14 +14,19 @@
     <block wx:else>
         <view>
             <van-divider contentPosition="center">
-                缺货值{{ expressGoodsValueCount }}项,
+                <block wx:if="{{ expressGoodsValueCount > 0 }}">
+                    缺货值{{ expressGoodsValueCount }}项,
+                </block>
                 已入库{{ expressCheckinCount }}项,
                 待建单{{ expressWaitOrderCount }}项,
-                禁止类{{ forbiddenCount }}项,
-                共{{ expressTotalCount }}项</van-divider>
-        </view>        
+                <block wx:if="{{ forbiddenCount > 0 }}">
+                    禁止类{{ forbiddenCount }}项,
+                </block>
+                共{{ expressTotalCount }}项
+            </van-divider>
+        </view>
         <block wx:if="{{ expressGoodsValueCount > 0 }}">
-            <van-tabs sticky offset-top="{{ 94 }}">
+            <van-tabs>
                 <van-tab title="已完善货值({{ expressWaitOrderCount + expressCheckinCount }})">
                     <block wx:if="{{ expressWaitOrderCount > 0 }}">
                         <block wx:for="{{ expressWaitOrderList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
@@ -163,7 +168,7 @@
                 </van-tab>
             </van-tabs>
         </block>
-        
+
         <block wx:else>
             <block wx:if="{{ expressWaitOrderCount > 0 }}">
                 <block wx:for="{{ expressWaitOrderList }}" wx:key="id" wx:for-item="express" wx:for-index="index">

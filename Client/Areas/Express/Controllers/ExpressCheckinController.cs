@@ -46,10 +46,16 @@ public class ExpressCheckinController : Controller {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
 
         // 这个不分页，一次性全部取出来
-        var expressList = GetListQuery(param)
-            .OrderByDescending(e => e.GoodsType)
-            .ThenByDescending(e => e.Id)
+        var expressListFromDb = GetListQuery(param)
+            // .OrderByDescending(e => e.Id) 后面反正还要排序，这里就不排了
             .ToList();
+        
+        // 把禁止类的取出来放最后
+        var expressList = new List<ExpressInfo>();
+        var expressListNoForbidden = expressListFromDb.Where(e => e.GoodsType != LogisticsGoodsType.Forbidden).OrderByDescending(e => e.Id).ToList();
+        var expressListForbidden = expressListFromDb.Where(e => e.GoodsType == LogisticsGoodsType.Forbidden).OrderByDescending(e => e.Id).ToList();
+        expressList.AddRange(expressListNoForbidden);
+        expressList.AddRange(expressListForbidden);
 
         // int expressCount = GetListQuery(param).Count(); 这个不用再查询一次
         int expressCount = expressList.Count;
