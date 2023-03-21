@@ -35,4 +35,7 @@ public class ExpressCheckinListModel {
 
     [JsonProperty("expressTotalCount")]
     public int ExpressTotalCount { get; set; }
+
+    [JsonProperty("forbiddenCount")]
+    public  int ForbiddenCount { get; set; } 
 }

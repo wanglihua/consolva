@@ -12,6 +12,7 @@ Page({
         expressWaitOrderCount: 0,
         expressCheckinCount: 0,
         expressTotalCount: 0,
+        forbiddenCount: 0,
 
         currentExpress: {},
         showActionSheet: false,
@@ -39,6 +40,7 @@ Page({
         const expressWaitOrderCount = resData.expressWaitOrderCount;
         const expressCheckinCount = resData.expressCheckinCount;
         const expressTotalCount = resData.expressTotalCount;
+        const forbiddenCount = resData.forbiddenCount;
 
         for (const express of expressGoodsValueList) {
             express.actions = "转运，查看详细，修改货值等";
@@ -78,6 +80,7 @@ Page({
             expressWaitOrderCount: expressWaitOrderCount,
             expressCheckinCount: expressCheckinCount,
             expressTotalCount: expressTotalCount,
+            forbiddenCount: forbiddenCount,
         });
     },
 

@@ -12,6 +12,14 @@
         <van-empty description="暂时没有数据项！"/>
     </block>
     <block wx:else>
+        <view>
+            <van-divider contentPosition="center">
+                缺货值{{ expressGoodsValueCount }}项,
+                已入库{{ expressCheckinCount }}项,
+                待建单{{ expressWaitOrderCount }}项,
+                禁止类{{ forbiddenCount }}项,
+                共{{ expressTotalCount }}项</van-divider>
+        </view>        
         <block wx:if="{{ expressGoodsValueCount > 0 }}">
             <van-tabs sticky offset-top="{{ 94 }}">
                 <van-tab title="已完善货值({{ expressWaitOrderCount + expressCheckinCount }})">
@@ -252,10 +260,6 @@
                 </block>
             </block>
         </block>
-        
-        <view class="bottom-divider">
-            <van-divider contentPosition="center">缺货值{{ expressGoodsValueCount }}项,已入库{{ expressCheckinCount }}项,待建单{{ expressWaitOrderCount }}项,共{{ expressTotalCount }}项</van-divider>
-        </view>
 
         <view style="height: 200rpx; width: 100%;"/>
     </block>

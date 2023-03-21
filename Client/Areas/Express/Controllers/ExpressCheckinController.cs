@@ -109,6 +109,8 @@ public class ExpressCheckinController : Controller {
         IList<ExpressCheckinListItem> expressWaitOrderList = new List<ExpressCheckinListItem>();
         IList<ExpressCheckinListItem> expressCheckinList = new List<ExpressCheckinListItem>();
 
+        int forbiddenCount = 0;
+
         // 按原来顺序循环，按原来顺序添加到 item list 中
         foreach (ExpressInfo express in expressList) {
             int expressId = express.Id;
@@ -174,6 +176,10 @@ public class ExpressCheckinController : Controller {
                 item.Cate = "Checkin";
                 expressCheckinList.Add(item);
             }
+
+            if (express.GoodsType == LogisticsGoodsType.Forbidden) {
+                forbiddenCount++;
+            }
         }
 
         return new ExpressCheckinListModel {
@@ -186,6 +192,7 @@ public class ExpressCheckinController : Controller {
             ExpressWaitOrderTotalCount = expressWaitOrderTotalCount,
             ExpressCheckinTotalCount = expressCheckinTotalCount,
             ExpressTotalCount = expressCount,
+            ForbiddenCount = forbiddenCount,
         };
     }
 
