@@ -15,6 +15,7 @@
         <block wx:if="{{ expressGoodsValueCount > 0 }}">
             <block wx:for="{{ expressGoodsValueList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                 <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
+                    <!--<express-checkin-list-item index="{{ index }}" express="{{ express }}" headerClass="item-header-goods-value" headerTip="(缺货值)"/>-->
                     <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}(缺货值)" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header-goods-value" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
                     <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ express.trackingNo }}">
                         <view slot="right-icon">
@@ -56,6 +57,7 @@
         <block wx:if="{{ expressWaitOrderCount > 0 }}">
             <block wx:for="{{ expressWaitOrderList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                 <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
+                    <!--<express-checkin-list-item index="{{ index }}" express="{{ express }}" headerClass="item-header-alt" headerTip="(已选择)"/>-->
                     <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}(已选择)" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header-alt" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
                     <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ express.trackingNo }}">
                         <view slot="right-icon">
@@ -108,6 +110,7 @@
         <block wx:if="{{ expressCheckinCount > 0 }}">
             <block wx:for="{{ expressCheckinList }}" wx:key="id" wx:for-item="express" wx:for-index="index">
                 <van-cell-group custom-class="items" bind:tap="onActionCellClick" data-item="{{ express }}">
+                    <!--<express-checkin-list-item index="{{ index }}" express="{{ express }}" headerClass="item-header" headerTip=""/>-->
                     <van-cell title="{{ index + 1 }}、{{ express.trackingNo }}" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="{{ express.headerValueClass }}"/>
                     <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ express.trackingNo }}">
                         <view slot="right-icon">
