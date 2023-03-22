@@ -14,13 +14,16 @@ public class CouponMineController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly CouponBatchService couponBatchService;
+    private readonly CouponService couponService;
 
     public CouponMineController(ISession session,
         LoginCustomerService loginCustomerService,
-        CouponBatchService couponBatchService) {
+        CouponBatchService couponBatchService,
+        CouponService couponService) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.couponBatchService = couponBatchService;
+        this.couponService = couponService;
     }
 
     [HttpPost]
@@ -28,6 +31,7 @@ public class CouponMineController : Controller {
     public IActionResult List([FromBody] CouponMineListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
         couponBatchService.CheckAndSetExpirePickBatch();
+        couponService.CheckAndSetExpireFollowByCustomerId(loginCustomerId);
 
         var couponList = session.Query<CouponInfo>()
             .Fetch(e => e.Batch)

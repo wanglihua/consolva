@@ -230,6 +230,30 @@ public class CouponBatchService {
         // session.Flush();
     }
 
+    public void CheckAndSetExpireFollowBatch() {
+        CheckAndSetExpireFollowBatch(-1);
+    }
+
+    public void CheckAndSetExpireFollowBatch(int batchId) {
+        DateTime todayEnd = DateTime.Today.AddDays(1);
+        var query = session.Query<CouponInfo>()
+            .Where(e => e.GetMethod == CouponGetMethod.Follow
+                        && e.Status == CouponStatus.Pick
+                        && e.Expire < todayEnd);
+
+        if (batchId > 0) {
+            query = query.Where(e => e.Batch.Id == batchId);
+        }
+
+        var couponList = query.ToList();
+        foreach (var coupon in couponList) {
+            coupon.Status = CouponStatus.Expire;
+            session.Update(coupon);
+        }
+
+        session.Flush();
+    }
+
     /// <summary>
     /// 检查批次数据是否已领完，并设置正确的领完状态
     /// 同时也更新了领取数量

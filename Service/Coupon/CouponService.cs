@@ -69,6 +69,7 @@ public class CouponService {
         }
 
         couponBatchService.CheckAndSetExpirePickBatch();
+        CheckAndSetExpireFollowByCustomerId(customerId);
 
         var coupon = session.Query<CouponInfo>()
             .Where(e => e.Customer.Id == customerId
@@ -138,6 +139,24 @@ public class CouponService {
         if (notPromotionFirstModeCount == 0) {
             throw new ValidationException($"指定的订单#{orderId}发货渠道都是促销渠道，不能使用优惠券！");
         }
+    }
+
+    public void CheckAndSetExpireFollowByCustomerId(int customerId) {
+        var couponList = session.Query<CouponInfo>()
+            .Where(e => e.Customer.Id == customerId
+                        && e.GetMethod == CouponGetMethod.Follow
+                        && e.Status == CouponStatus.Pick)
+            .ToList();
+
+        DateTime todayEnd = DateTime.Today.AddDays(1);
+        foreach (var coupon in couponList) {
+            if (coupon.Expire < todayEnd) {
+                coupon.Status = CouponStatus.Expire;
+                session.Update(coupon);
+            }
+        }
+
+        session.Flush();
     }
 
     public void SetCouponUsed(int couponId, LogisticsOrderInfo order, decimal actualDiscountAmount) {
