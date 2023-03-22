@@ -50,7 +50,7 @@ public partial class WechatOfficialAccountCustomMessageHandler {
             sceneId = int.Parse(eventKey.Replace("qrscene_", ""));
         }
 
-        wechatOfficialAccountFollowerService.NewFellow(openId, unionId, nickName, sceneId);
+        wechatOfficialAccountFollowerService.NewFollow(openId, unionId, nickName, sceneId);
 
         var responseMessage = ResponseMessageBase.CreateFromRequestMessage<ResponseMessageText>(requestMessage);
         responseMessage.Content = wechatOfficialAccountReplyService.GetReply(WechatOfficialAccountReplyType.FollowReply);

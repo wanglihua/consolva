@@ -61,7 +61,7 @@ public class WechatOfficialAccountFollowerService {
     /// <param name="unionId">union id</param>
     /// <param name="nickName">微信昵称</param>
     /// <param name="sceneId">场景Id</param>
-    public void NewFellow(string openId, string unionId, string nickName, int? sceneId) {
+    public void NewFollow(string openId, string unionId, string nickName, int? sceneId) {
         // 一个 openid 一般【只】对应一个 WechatOfficialAccountFollowerInfo，不会有多于两个的情况
         var follower = session.Query<WechatOfficialAccountFollowerInfo>()
             .Where(e => e.OpenId == openId)
@@ -113,7 +113,7 @@ public class WechatOfficialAccountFollowerService {
             return;
         }
 
-        couponFollowService.NewFellow(customer.Id);
+        couponFollowService.NewFollow(customer.Id);
 
         // 通过从公众号下载的关注用户，这里的逻辑也不会走
         // todo 在这里可以加上公众号关注奖励等等的逻辑 
@@ -147,8 +147,8 @@ public class WechatOfficialAccountFollowerService {
     /// <param name="openId">open id</param>
     /// <param name="unionId">union id</param>
     /// <param name="nickName">微信昵称</param>
-    public void NewFellow(string openId, string unionId, string nickName) {
-        NewFellow(openId, unionId, nickName, null);
+    public void NewFollow(string openId, string unionId, string nickName) {
+        NewFollow(openId, unionId, nickName, null);
     }
 
     /// <summary>
