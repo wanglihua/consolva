@@ -113,7 +113,7 @@ public class WechatOfficialAccountFollowerService {
             return;
         }
 
-        couponFollowService.NewFollow(customer.Id);
+        couponFollowService.NewFellow(customer.Id);
 
         // 通过从公众号下载的关注用户，这里的逻辑也不会走
         // todo 在这里可以加上公众号关注奖励等等的逻辑 

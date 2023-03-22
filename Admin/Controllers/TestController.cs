@@ -31,7 +31,7 @@ public class TestController : Controller {
             .ToList();
 
         foreach (var customer in customerList) {
-            couponFollowService.NewFollow(customer.Id);
+            couponFollowService.NewFellow(customer.Id);
         }
 
         session.Flush();
