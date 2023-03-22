@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using NHibernate.Linq;
 using NLog;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
-using shunda.Domain.Coupon;
+using shunda.Domain.Customer;
+using shunda.Service.Coupon;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Controllers;
@@ -13,26 +13,28 @@ public class TestController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly CouponFollowService couponFollowService;
 
-    public TestController(ISession session) {
+    public TestController(
+        ISession session,
+        CouponFollowService couponFollowService
+    ) {
         this.session = session;
+        this.couponFollowService = couponFollowService;
     }
 
     [HttpGet]
     [Route("/admin/test")]
     [Transactional]
     public IActionResult Index() {
-        var couponList = session.Query<CouponInfo>()
-            .Fetch(e => e.Batch)
-            .Where(e => e.Customer.Id == 1
-                        && e.Status == CouponStatus.Pick)
-            .Select(e => new {
-                CouponId = e.Id,
-                Code = e.Code,
-                BatchId = e.Batch.Id,
-                Expire = e.Batch.Expire,
-            })
+        var customerList = session.Query<CustomerInfo>()
             .ToList();
+
+        foreach (var customer in customerList) {
+            couponFollowService.NewFollow(customer.Id);
+        }
+
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,

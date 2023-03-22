@@ -19,7 +19,7 @@ public class CouponFollowService {
         this.couponCodeService = couponCodeService;
     }
 
-    public void NewFollor(int customerId) {
+    public void NewFollow(int customerId) {
         var couponGot = session.Query<CouponInfo>()
             .Where(e => e.Customer.Id == customerId
                         && e.GetMethod == CouponGetMethod.Follow)
