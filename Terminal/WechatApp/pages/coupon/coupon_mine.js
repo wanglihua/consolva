@@ -11,7 +11,7 @@ Page({
     onLoad(options) {
         // this.loadMyCouponList();
     },
-    
+
     onShow() {
         this.loadMyCouponList();
     },
@@ -19,8 +19,15 @@ Page({
     loadMyCouponList() {
         const that = this;
         app.post("/client/coupon/mine/list", {}, function (res) {
+            const couponList = res.data.couponList;
+            for (let coupon in couponList) {
+                if(coupon.follow === true) {
+                    coupon.rule = coupon.rule + " " + coupon.batchName;
+                }
+            }
+
             that.setData({
-                couponList: res.data.couponList,
+                couponList: couponList,
                 couponCount: res.data.couponCount,
                 hasBatchToPick: res.data.hasBatchToPick,
             });

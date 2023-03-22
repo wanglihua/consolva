@@ -21,4 +21,10 @@ public class CouponMineListItem
 
     [JsonProperty("expire")]
     public string Expire { get; set; } = string.Empty;
+
+    [JsonProperty("follow")]
+    public bool Follow { get; set; }
+
+    [JsonProperty("batchName")]
+    public string BatchName { get; set; } = string.Empty;
 }

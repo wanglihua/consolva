@@ -48,6 +48,8 @@ public class CouponMineController : Controller {
                 Rule = e.Batch.Rule,
                 RuleDesc = e.Batch.RuleDesc,
                 Expire = (e.GetMethod == CouponGetMethod.Follow && e.Expire != null) ? e.Expire.Value.ToString("yyyy-MM-dd") : e.Batch.Expire.ToString("yyyy-MM-dd"),
+                Follow = e.GetMethod == CouponGetMethod.Follow,
+                BatchName = e.Batch.Name,
             })
             .ToList();
 
