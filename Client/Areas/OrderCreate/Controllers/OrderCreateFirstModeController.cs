@@ -45,7 +45,8 @@ public class OrderCreateFirstModeController : Controller {
             .Where(e => e.Country == country
                         && e.Cate == LogisticsModeCate.Customer // 必须是客户端物流方式，不是内部物流方式
                         && e.Status == LogisticsModeStatus.Enabled)
-            .OrderBy(e => e.Type)
+            .OrderBy(e => e.OrderNum)
+            .ThenBy(e => e.Type)
             .ThenByDescending(e => e.Id)
             .ToList();
 
