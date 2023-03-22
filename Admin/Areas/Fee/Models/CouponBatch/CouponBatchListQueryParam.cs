@@ -4,8 +4,7 @@ using shunda.Domain.Coupon;
 
 namespace shunda.Admin.Areas.Fee.Models.CouponBatch;
 
-public class CouponBatchListQueryParam : ListQueryParam
-{
+public class CouponBatchListQueryParam : ListQueryParam {
     public string? NameQuery { get; set; }
 
     [ModelBinder(typeof(CouponTypeModelBinder))]

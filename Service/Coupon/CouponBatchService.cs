@@ -38,7 +38,7 @@ public class CouponBatchService {
             return false;
         }
 
-        CheckAndSetExpire();
+        CheckAndSetExpirePickBatch();
 
         // DateTime today = DateTime.Today;
         // var batchId = session.Query<CouponBatchInfo>()
@@ -53,7 +53,8 @@ public class CouponBatchService {
 
         DateTime today = DateTime.Today;
         var batchList = session.Query<CouponBatchInfo>()
-            .Where(e => e.Status == CouponBatchStatus.Release
+            .Where(e => e.GetMethod == CouponGetMethod.Pick
+                        && e.Status == CouponBatchStatus.Release
                         && e.Expire >= today)
             .ToList();
 
@@ -159,8 +160,8 @@ public class CouponBatchService {
         }
     }
 
-    public void CheckAndSetExpire() {
-        CheckAndSetExpire(-1);
+    public void CheckAndSetExpirePickBatch() {
+        CheckAndSetExpirePickBatch(-1);
     }
 
     /// <summary>
@@ -168,14 +169,15 @@ public class CouponBatchService {
     /// 一般是在展示的时候调用，领取的时候发现时间过期时也可以调用
     /// <param name="batchId">需要检查的批次，如果batchId不大于0，就表示检查所有批次</param>
     /// </summary>
-    public void CheckAndSetExpire(int batchId) {
+    public void CheckAndSetExpirePickBatch(int batchId) {
         var now = DateTime.Now;
         var today = now.Date;
 
         IList<CouponBatchStatus> mayExpireStatusList = CouponBatchStatus.GetMayExpireStatusList();
 
         var expireBatchQuery = session.Query<CouponBatchInfo>()
-            .Where(e => e.Expire < today // 已过期 
+            .Where(e => e.GetMethod == CouponGetMethod.Pick // 这里只检查需要客户领取的批次
+                        && e.Expire < today // 已过期
                         && mayExpireStatusList.Contains(e.Status)); // 不是新创建和已完结的状态
         if (batchId > 0) {
             expireBatchQuery = expireBatchQuery.Where(e => e.Id == batchId);
@@ -313,7 +315,7 @@ public class CouponBatchService {
         }
 
         if (batch.Expire < today) {
-            CheckAndSetExpire(batchId);
+            CheckAndSetExpirePickBatch(batchId);
             throw new ValidationException($"指定的优惠券批次 {batch.Name} 已过期！");
         }
 

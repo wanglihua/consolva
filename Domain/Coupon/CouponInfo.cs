@@ -51,7 +51,7 @@ public class CouponInfo : Entity
     public virtual DateTime? UseTime { get; set; }
 
     /// <summary>
-    /// 有效期，非空
+    /// 有效期，可空
     /// </summary>
     public virtual DateTime? Expire { get; set; }
 

@@ -4,8 +4,7 @@
 @{
     Layout = null;
 }
-@if (Model.HasOneOfPassRes(PassRes.Fee.All))
-{
+@if (Model.HasOneOfPassRes(PassRes.Fee.All)) {
     <li id="fee-menu">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-dollar"></i>
@@ -15,8 +14,7 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
-            @if (Model.HasPassRes(PassRes.Fee.ManualIncreaseFee))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.ManualIncreaseFee)) {
                 <li id="fee-manual-increase-fee-index-menu">
                     <a asp-area="Fee" asp-controller="ManualIncreaseFee" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -26,8 +24,7 @@
                 </li>
             }
 
-            @if (Model.HasOneOfPassRes(PassRes.Fee.ManualDecreaseFeeApply, PassRes.Fee.ManualDecreaseFeeApprove, PassRes.Fee.ManualDecreaseFee))
-            {
+            @if (Model.HasOneOfPassRes(PassRes.Fee.ManualDecreaseFeeApply, PassRes.Fee.ManualDecreaseFeeApprove, PassRes.Fee.ManualDecreaseFee)) {
                 <li id="fee-manual-decrease-fee-menu">
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text">减少费用</span>
@@ -36,8 +33,7 @@
                     <b class="arrow"></b>
                     <ul class="submenu">
 
-                        @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFeeApply))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFeeApply)) {
                             <li id="fee-manual-fee-apply-index-menu">
                                 <a asp-area="Fee" asp-controller="ManualFeeApply" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -47,8 +43,7 @@
                             </li>
                         }
 
-                        @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFeeApprove))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFeeApprove)) {
                             <li id="fee-manual-fee-approve-index-menu">
                                 <a asp-area="Fee" asp-controller="ManualFeeApprove" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -58,8 +53,7 @@
                             </li>
                         }
 
-                        @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFee))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.ManualDecreaseFee)) {
                             <li id="fee-manual-decrease-fee-index-menu">
                                 <a asp-area="Fee" asp-controller="ManualDecreaseFee" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -73,8 +67,7 @@
                 </li>
             }
 
-            @if (Model.HasOneOfPassRes(PassRes.Fee.WriteOffFeeApply, PassRes.Fee.WriteOffFeeApprove, PassRes.Fee.WriteOffFee))
-            {
+            @if (Model.HasOneOfPassRes(PassRes.Fee.WriteOffFeeApply, PassRes.Fee.WriteOffFeeApprove, PassRes.Fee.WriteOffFee)) {
                 <li id="fee-write-off-fee-menu">
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text">费用核销</span>
@@ -83,8 +76,7 @@
                     <b class="arrow"></b>
                     <ul class="submenu">
 
-                        @if (Model.HasPassRes(PassRes.Fee.WriteOffFeeApply))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.WriteOffFeeApply)) {
                             <li id="fee-write-off-apply-index-menu">
                                 <a asp-area="Fee" asp-controller="FeeWriteOffApply" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -94,8 +86,7 @@
                             </li>
                         }
 
-                        @if (Model.HasPassRes(PassRes.Fee.WriteOffFeeApprove))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.WriteOffFeeApprove)) {
                             <li id="fee-write-off-approve-index-menu">
                                 <a asp-area="Fee" asp-controller="FeeWriteOffApprove" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -105,8 +96,7 @@
                             </li>
                         }
 
-                        @if (Model.HasPassRes(PassRes.Fee.WriteOffFee))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.WriteOffFee)) {
                             <li id="fee-write-off-fee-index-menu">
                                 <a asp-area="Fee" asp-controller="FeeWriteOff" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -119,8 +109,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Fee.ManualFeeReason))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.ManualFeeReason)) {
                 <li id="fee-manual-fee-reason-index-menu">
                     <a asp-area="Fee" asp-controller="ManualFeeReason" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -130,8 +119,7 @@
                 </li>
             }
 
-            @if (Model.HasOneOfPassRes(PassRes.Fee.FeeRefundApply, PassRes.Fee.FeeRefundApprove, PassRes.Fee.FeeRefund))
-            {
+            @if (Model.HasOneOfPassRes(PassRes.Fee.FeeRefundApply, PassRes.Fee.FeeRefundApprove, PassRes.Fee.FeeRefund)) {
                 <li id="fee-refund-menu">
                     <a href="#" class="dropdown-toggle">
                         <span class="menu-text">退赔款</span>
@@ -140,8 +128,7 @@
                     <b class="arrow"></b>
                     <ul class="submenu">
 
-                        @if (Model.HasPassRes(PassRes.Fee.FeeRefundApply))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.FeeRefundApply)) {
                             <li id="fee-refund-apply-index-menu">
                                 <a asp-area="Fee" asp-controller="FeeRefundApply" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -151,8 +138,7 @@
                             </li>
                         }
 
-                        @if (Model.HasPassRes(PassRes.Fee.FeeRefundApprove))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.FeeRefundApprove)) {
                             <li id="fee-refund-approve-index-menu">
                                 <a asp-area="Fee" asp-controller="FeeRefundApprove" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -162,8 +148,7 @@
                             </li>
                         }
 
-                        @if (Model.HasPassRes(PassRes.Fee.FeeRefund))
-                        {
+                        @if (Model.HasPassRes(PassRes.Fee.FeeRefund)) {
                             <li id="fee-refund-index-menu">
                                 <a asp-area="Fee" asp-controller="FeeRefund" asp-action="Index">
                                     <i class="menu-icon fa fa-caret-right"></i>
@@ -176,9 +161,8 @@
                     </ul>
                 </li>
             }
-            
-            @if (Model.HasPassRes(PassRes.Fee.FeeRefundReason))
-            {
+
+            @if (Model.HasPassRes(PassRes.Fee.FeeRefundReason)) {
                 <li id="fee-manual-fee-reason-index-menu">
                     <a asp-area="Fee" asp-controller="FeeRefundReason" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -186,10 +170,9 @@
                     </a>
                     <b class="arrow"></b>
                 </li>
-            }            
+            }
 
-            @if (Model.HasPassRes(PassRes.Fee.LogisticsOrderPay))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.LogisticsOrderPay)) {
                 <li id="fee-logistics-order-pay-index-menu">
                     <a asp-area="Fee" asp-controller="LogisticsOrderPay" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -199,8 +182,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Fee.CustomerCharge))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.CustomerCharge)) {
                 <li id="fee-customer-charge-index-menu">
                     <a asp-area="Fee" asp-controller="CustomerCharge" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -210,8 +192,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Fee.ManualChargeReason))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.ManualChargeReason)) {
                 <li id="fee-manual-charge-reason-index-menu">
                     <a asp-area="Fee" asp-controller="ManualChargeReason" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -221,8 +202,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Fee.ExpressReturnPay))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.ExpressReturnPay)) {
                 <li id="fee-express-return-pay-index-menu">
                     <a asp-area="Fee" asp-controller="ExpressReturnPay" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -232,8 +212,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Fee.Coupon))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.Coupon)) {
                 <li id="fee-coupon-batch-index-menu">
                     <a asp-area="Fee" asp-controller="CouponBatch" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -243,8 +222,17 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Fee.Coupon))
-            {
+            @if (Model.HasPassRes(PassRes.Fee.Coupon)) {
+                <li id="fee-coupon-batch-follow-index-menu">
+                    <a asp-area="Fee" asp-controller="CouponBatch" asp-action="FollowIndex">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        关注赠送优惠券
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Fee.Coupon)) {
                 <li id="fee-coupon-index-menu">
                     <a asp-area="Fee" asp-controller="Coupon" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>

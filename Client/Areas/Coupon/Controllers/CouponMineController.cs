@@ -27,7 +27,7 @@ public class CouponMineController : Controller {
     [Route("/client/coupon/mine/list")]
     public IActionResult List([FromBody] CouponMineListParam param) {
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-        couponBatchService.CheckAndSetExpire();
+        couponBatchService.CheckAndSetExpirePickBatch();
 
         var couponList = session.Query<CouponInfo>()
             .Fetch(e => e.Batch)

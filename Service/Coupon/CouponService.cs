@@ -68,7 +68,7 @@ public class CouponService {
             return false;
         }
 
-        couponBatchService.CheckAndSetExpire();
+        couponBatchService.CheckAndSetExpirePickBatch();
 
         var coupon = session.Query<CouponInfo>()
             .Where(e => e.Customer.Id == customerId

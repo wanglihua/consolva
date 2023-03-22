@@ -36,7 +36,7 @@ public class CouponBatchController : Controller {
         model.StatusList = CouponBatchStatus.GetList();
 
         // 在这个时机检查和设置已过期状态
-        couponBatchService.CheckAndSetExpire();
+        couponBatchService.CheckAndSetExpirePickBatch();
 
         return View("CouponBatchIndex", model);
     }
@@ -70,6 +70,11 @@ public class CouponBatchController : Controller {
     private ICriteria GetListCriteria(CouponBatchListQueryParam queryParam) {
         ICriteria criteria = session.CreateCriteria<CouponBatchInfo>();
         criteria = criteria.SetReadOnly(true);
+
+        criteria = criteria.Add(Restrictions.Or(
+            Restrictions.Where<CouponBatchInfo>(e => e.GetMethod == CouponGetMethod.Pick),
+            Restrictions.Where<CouponBatchInfo>(e => e.GetMethod == CouponGetMethod.Grant))
+        );
 
         if (string.IsNullOrWhiteSpace(queryParam.NameQuery) == false) {
             string nameQuery = queryParam.NameQuery.Trim();
