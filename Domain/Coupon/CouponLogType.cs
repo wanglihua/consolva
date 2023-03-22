@@ -17,6 +17,11 @@ public class CouponLogType : CodeTypeBase {
     public static readonly CouponLogType Grant = new CouponLogType(2000, "发放", "发放");
 
     /// <summary>
+    /// 关注赠送, 2500
+    /// </summary>
+    public static readonly CouponLogType Follow = new CouponLogType(2500, "关注赠送", "关注赠送");
+
+    /// <summary>
     /// 使用, 3000
     /// </summary>
     public static readonly CouponLogType Use = new CouponLogType(3000, "使用", "使用");
@@ -34,6 +39,7 @@ public class CouponLogType : CodeTypeBase {
     private static readonly IReadOnlyList<CouponLogType> codeTypeList = new List<CouponLogType>() {
         Pick,
         Grant,
+        Follow,
         Use,
         Back,
     };

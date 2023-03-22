@@ -9,9 +9,14 @@ namespace shunda.Service.Coupon;
 [Service(ServiceType.Scoped)]
 public class CouponFollowService {
     private readonly ISession session;
+    private readonly CouponCodeService couponCodeService;
 
-    public CouponFollowService(ISession session) {
+    public CouponFollowService(
+        ISession session,
+        CouponCodeService couponCodeService
+    ) {
         this.session = session;
+        this.couponCodeService = couponCodeService;
     }
 
     public void NewFollor(int customerId) {
@@ -38,6 +43,7 @@ public class CouponFollowService {
                         && e.Status != CouponBatchStatus.Complete)
             .ToList();
 
+        var couponList = new List<CouponInfo>();
         foreach (var batch in batchFollowList) {
             int qtyPerCustomer = batch.MaxQtyPerCustomer;
             for (int index = 0; index < qtyPerCustomer; index++) {
@@ -51,8 +57,27 @@ public class CouponFollowService {
                 };
 
                 session.Save(coupon);
+
+                couponList.Add(coupon);
             }
         }
+
+        session.Flush();
+
+        foreach (var coupon in couponList) {
+            coupon.Code = couponCodeService.Generate(coupon.Batch.Id, coupon.Batch.Type, coupon.Id);
+            session.Update(coupon);
+        }
+
+        foreach (var coupon in couponList) {
+            // 记录日志
+            var couponLog = new CouponLogInfo {
+                Coupon = coupon,
+                Type = CouponLogType.Follow,
+                Description = string.Empty,
+            };
+            session.Save(couponLog);
+        }        
 
         session.Flush();
     }
