@@ -168,6 +168,7 @@ public class CouponBatchFollowController : Controller {
         }
 
         couponBatch.GetMethod = CouponGetMethod.Follow;
+        couponBatch.Expire = DateTime.Now; // 必须要给你值
         couponBatch.Name = model.Name;
         couponBatch.Type = model.Type;
         couponBatch.TotalQuantity = 0;
