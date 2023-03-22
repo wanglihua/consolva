@@ -3,6 +3,7 @@ using NLog;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Wechat;
+using shunda.Service.Coupon;
 using shunda.Service.Customer;
 
 namespace shunda.Service.Wechat;
@@ -14,14 +15,17 @@ public class WechatOfficialAccountFollowerService {
     private readonly ISession session;
     private readonly CustomerService customerService;
     private readonly CustomerPromotionService customerPromotionService;
+    private readonly CouponFollowService couponFollowService;
 
     public WechatOfficialAccountFollowerService(ISession session,
         CustomerService customerService,
-        CustomerPromotionService customerPromotionService
+        CustomerPromotionService customerPromotionService,
+        CouponFollowService couponFollowService
     ) {
         this.session = session;
         this.customerService = customerService;
         this.customerPromotionService = customerPromotionService;
+        this.couponFollowService = couponFollowService;
     }
 
     /// <summary>
@@ -101,13 +105,15 @@ public class WechatOfficialAccountFollowerService {
         }
 
         if (customer == null) {
-            customerService.CreateCustomerByWechatOfficialAccount(follower);
+            customer = customerService.CreateCustomerByWechatOfficialAccount(follower);
         }
 
         // 如果是老的关注者，下面的逻辑就不做了
         if (isNewFollow == false) {
             return;
         }
+
+        couponFollowService.NewFollow(customer.Id);
 
         // 通过从公众号下载的关注用户，这里的逻辑也不会走
         // todo 在这里可以加上公众号关注奖励等等的逻辑 

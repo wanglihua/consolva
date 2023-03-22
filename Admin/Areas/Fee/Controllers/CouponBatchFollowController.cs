@@ -131,6 +131,7 @@ public class CouponBatchFollowController : Controller {
         model.Name = couponBatch.Name;
         model.Type = couponBatch.Type;
         model.MaxQtyPerCustomer = couponBatch.MaxQtyPerCustomer;
+        model.ExpireMonth = couponBatch.ExpireMonth;
 
         model.TypeList = CouponType.GetList();
         model.StatusList = CouponBatchStatus.GetList();
@@ -174,6 +175,7 @@ public class CouponBatchFollowController : Controller {
         couponBatch.TotalQuantity = 0;
         // couponBatch.RuleDesc = model.RuleDesc; 这个这里不能编辑
         couponBatch.MaxQtyPerCustomer = model.MaxQtyPerCustomer;
+        couponBatch.ExpireMonth = model.ExpireMonth;
         // couponBatch.Status = model.Status; 状态不能通过详细编辑改变
 
         if (isCreate) {
