@@ -189,9 +189,8 @@ public class CouponBatchFollowController : Controller {
             { "message", "保存成功！" }
         });
     }
-    
-    // 下面的跟 CouponBatchController 里面的一样
 
+    // 跟 CouponBatchController 里面的一样
     [HttpPost]
     [Route("/admin/coupon/batch/follow/delete")]
     [Transactional]
@@ -244,17 +243,18 @@ public class CouponBatchFollowController : Controller {
         session.Flush();
 
         // 更新批次已领取总数量，实际这里是检查后台发放的数据是否已达到总数量
-        couponBatchService.SumAndSaveBatchTotalPicked(batchId);
+        // couponBatchService.SumAndSaveBatchTotalPicked(batchId); 这里不用设置这个
 
-        if (batch.Status == CouponBatchStatus.Release) // 发布状态才设置
-        {
-            if (batch.TotalQuantity <= batch.PickQuantity) {
-                batch.Status = CouponBatchStatus.Picked;
-                session.Update(batch);
-
-                session.Flush();
-            }
-        }
+        // 发布状态才设置
+        // 这里不用设置这个
+        // if (batch.Status == CouponBatchStatus.Release) {
+        //     if (batch.TotalQuantity <= batch.PickQuantity) {
+        //         batch.Status = CouponBatchStatus.Picked;
+        //         session.Update(batch);
+        //
+        //         session.Flush();
+        //     }
+        // }
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
@@ -262,6 +262,7 @@ public class CouponBatchFollowController : Controller {
         });
     }
 
+    // 跟 CouponBatchController 里面的一样
     [HttpPost]
     [Route("/admin/coupon/batch/follow/show/rule")]
     public IActionResult ShowRule(int batchId) {

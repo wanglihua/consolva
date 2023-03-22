@@ -107,7 +107,7 @@
         showMask("数据加载中，请稍候");
 
         $.ajax({
-            url: "@Url.Action("List", "CouponBatch")",
+            url: "@Url.Action("List", "CouponBatchFollow")",
             type: "POST",
             data: {
                 "@(nameof(CouponBatchFollowListQueryParam.NameQuery))": $("#nameQuery").val(),
@@ -141,7 +141,7 @@
         // $("#couponBatchDetailForm").clearValidation();
 
         $.ajax({
-            url: '@Url.Action("Detail", "CouponBatch")',
+            url: '@Url.Action("Detail", "CouponBatchFollow")',
             type: "POST",
             data: { "id": id },
             success: function(data) {
@@ -164,7 +164,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Save", "CouponBatch")',
+                url: '@Url.Action("Save", "CouponBatchFollow")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -194,7 +194,7 @@
             function() {
                 showMask("提交中...");
                 $.ajax({
-                    url: '@Url.Action("Delete", "CouponBatch")',
+                    url: '@Url.Action("Delete", "CouponBatchFollow")',
                     type: "POST",
                     data: { "idList": idList },
                     success: function(data) {
@@ -217,7 +217,7 @@
 
         showMask("加载中...");
         $.ajax({
-            url: '@Url.Action("ShowRule", "CouponBatch")',
+            url: '@Url.Action("ShowRule", "CouponBatchFollow")',
             type: "POST",
             data: { "batchId": batchId },
             success: function(data) {
@@ -237,7 +237,7 @@
         $.msg.confirm("投放后将不能修改批次信息和优惠规则，确认要投放客户吗？", function() {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Release", "CouponBatch")',
+                url: '@Url.Action("Release", "CouponBatchFollow")',
                 type: "POST",
                 data: {
                     batchId: batchId

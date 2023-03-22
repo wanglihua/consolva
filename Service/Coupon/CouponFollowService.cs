@@ -40,12 +40,13 @@ public class CouponFollowService {
 
         var batchFollowList = session.Query<CouponBatchInfo>()
             .Where(e => e.GetMethod == CouponGetMethod.Follow
-                        && e.Status != CouponBatchStatus.Complete)
+                        && e.Status == CouponBatchStatus.Release)
             .ToList();
 
         var couponList = new List<CouponInfo>();
         foreach (var batch in batchFollowList) {
             int qtyPerCustomer = batch.MaxQtyPerCustomer;
+            DateTime expire = now.AddMonths(batch.ExpireMonth);
             for (int index = 0; index < qtyPerCustomer; index++) {
                 var coupon = new CouponInfo {
                     Batch = batch,
