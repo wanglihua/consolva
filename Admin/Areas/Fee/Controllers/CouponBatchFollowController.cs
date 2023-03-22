@@ -113,7 +113,6 @@ public class CouponBatchFollowController : Controller {
         if (id == 0) {
             couponBatch = new CouponBatchInfo();
             model.Status = CouponBatchStatus.New;
-            model.Expire = DateTime.Today;
         } else {
             couponBatch = session.Get<CouponBatchInfo>(id);
             if (couponBatch == null) {
@@ -121,7 +120,6 @@ public class CouponBatchFollowController : Controller {
             }
 
             model.Status = couponBatch.Status;
-            model.Expire = couponBatch.Expire;
             model.Rule = couponBatch.Rule;
             model.RuleDesc = couponBatch.RuleDesc;
         }
@@ -132,7 +130,6 @@ public class CouponBatchFollowController : Controller {
 
         model.Name = couponBatch.Name;
         model.Type = couponBatch.Type;
-        model.TotalQuantity = couponBatch.TotalQuantity;
         model.MaxQtyPerCustomer = couponBatch.MaxQtyPerCustomer;
 
         model.TypeList = CouponType.GetList();
@@ -170,10 +167,10 @@ public class CouponBatchFollowController : Controller {
             }
         }
 
+        couponBatch.GetMethod = CouponGetMethod.Follow;
         couponBatch.Name = model.Name;
         couponBatch.Type = model.Type;
-        couponBatch.Expire = model.Expire;
-        couponBatch.TotalQuantity = model.TotalQuantity;
+        couponBatch.TotalQuantity = 0;
         // couponBatch.RuleDesc = model.RuleDesc; 这个这里不能编辑
         couponBatch.MaxQtyPerCustomer = model.MaxQtyPerCustomer;
         // couponBatch.Status = model.Status; 状态不能通过详细编辑改变

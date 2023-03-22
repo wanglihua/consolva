@@ -90,23 +90,7 @@
 
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <label asp-for="TotalQuantity" class="col-xs-4 control-label">总数量</label>
-                                <div class="col-xs-8">
-                                    @if (Model.Released)
-                                    {
-                                        <input asp-for="TotalQuantity" type="number" required="required" digits="true" class="input-sm form-control" disabled="disabled"/>
-                                    }
-                                    else
-                                    {
-                                        <input asp-for="TotalQuantity" type="number" required="required" digits="true" class="input-sm form-control"/>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label asp-for="MaxQtyPerCustomer" class="col-xs-4 control-label">每客户可领取</label>
+                                <label asp-for="MaxQtyPerCustomer" class="col-xs-4 control-label">每客户赠送</label>
                                 <div class="col-xs-8">
                                     @if (Model.Released)
                                     {
@@ -137,26 +121,6 @@
                                             <option value="9">9 张</option>
                                             <option value="10">10 张</option>
                                         </select>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-xs-6">
-                            <div class="form-group">
-                                <label for="expire" class="col-xs-4 control-label">有效期</label>
-                                <div class="col-xs-8">
-                                    @if (Model.Released)
-                                    {
-                                        <input id="expire" asp-for="Expire" value="@(Model.Expire.ToString("yyyy-MM-dd"))" type="text" required="required" class="input-sm form-control" disabled="disabled"/>
-                                    }
-                                    else
-                                    {
-                                        <input id="expire" asp-for="Expire" value="@(Model.Expire.ToString("yyyy-MM-dd"))" type="text" required="required" class="input-sm form-control"/>
                                     }
                                 </div>
                             </div>

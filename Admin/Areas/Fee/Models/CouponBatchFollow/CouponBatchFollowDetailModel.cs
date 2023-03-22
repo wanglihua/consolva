@@ -26,18 +26,6 @@ public class CouponBatchFollowDetailModel {
     public CouponType Type { get; set; } = CouponType.None;
 
     /// <summary>
-    /// 有效期，非空
-    /// </summary>
-    [Required(ErrorMessage = "有效期不能为空！")]
-    public DateTime Expire { get; set; }
-
-    /// <summary>
-    /// 总数量，非空
-    /// </summary>
-    [Required(ErrorMessage = "总数量不能为空！")]
-    public int TotalQuantity { get; set; }
-
-    /// <summary>
     /// 规则，可空
     /// </summary>
     [BindNever]

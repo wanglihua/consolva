@@ -173,6 +173,7 @@ public class CouponBatchController : Controller {
             }
         }
 
+        couponBatch.GetMethod = CouponGetMethod.Pick;
         couponBatch.Name = model.Name;
         couponBatch.Type = model.Type;
         couponBatch.Expire = model.Expire;

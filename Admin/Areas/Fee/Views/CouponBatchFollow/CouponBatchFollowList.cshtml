@@ -38,17 +38,11 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(nameof(CouponBatchInfo.Expire))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">有效期</a>
-                </div>
-                <div>
                     <a field="@(nameof(CouponBatchInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">状态</a>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(nameof(CouponBatchInfo.TotalQuantity))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">总数量</a>
-                </div>
                 <div>
                     <a field="@(nameof(CouponBatchInfo.MaxQtyPerCustomer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">每客户可领取</a>
                 </div>
@@ -56,7 +50,7 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(nameof(CouponBatchInfo.PickQuantity))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">已领用数量</a>
+                    <a field="@(nameof(CouponBatchInfo.PickQuantity))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">已赠送数量</a>
                 </div>
                 <div>
                     <a field="@(nameof(CouponBatchInfo.UseQuantity))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">已使用数量</a>
@@ -101,7 +95,7 @@
 
                     <td style="text-align: center;">
                         <div style="color: blue;">
-                            @ListDataUtil.Render(couponBatch.Type?.Name)
+                            @ListDataUtil.Render(couponBatch.Type.Name)
                         </div>
                     </td>
 
@@ -115,17 +109,12 @@
                     </td>
 
                     <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(couponBatch.Expire, "yyyy-MM-dd")
-                        </div>
+
                         <div style="color: blue;">
-                            @ListDataUtil.Render(couponBatch.Status?.Name)
+                            @ListDataUtil.Render(couponBatch.Status.Name)
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(couponBatch.TotalQuantity)
-                        </div>
                         <div>
                             @ListDataUtil.Render(couponBatch.MaxQtyPerCustomer)
                         </div>
