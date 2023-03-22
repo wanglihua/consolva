@@ -168,6 +168,10 @@ public class CouponBatchFollowController : Controller {
             }
         }
 
+        if (model.ExpireMonth <= 0) {
+            throw new ValidationException("过期月份数必须大于0！");
+        }
+
         couponBatch.GetMethod = CouponGetMethod.Follow;
         couponBatch.Expire = DateTime.Now; // 必须要给你值
         couponBatch.Name = model.Name;

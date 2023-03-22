@@ -62,6 +62,9 @@ public class CouponFollowService {
 
                 couponList.Add(coupon);
             }
+
+            batch.PickQuantity += qtyPerCustomer;
+            session.Update(batch);
         }
 
         session.Flush();
