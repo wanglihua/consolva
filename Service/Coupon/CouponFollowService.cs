@@ -53,7 +53,8 @@ public class CouponFollowService {
                     Code = Guid.NewGuid().ToString("N"), // 后面会做修正
                     Customer = customer,
                     PickTime = now,
-                    GetMethod = CouponGetMethod.Pick,
+                    Expire = expire,
+                    GetMethod = CouponGetMethod.Follow,
                     Status = CouponStatus.Pick,
                 };
 
@@ -78,7 +79,7 @@ public class CouponFollowService {
                 Description = string.Empty,
             };
             session.Save(couponLog);
-        }        
+        }
 
         session.Flush();
     }

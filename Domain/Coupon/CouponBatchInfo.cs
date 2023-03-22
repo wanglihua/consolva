@@ -28,6 +28,11 @@ public  class CouponBatchInfo : Entity
     public virtual DateTime Expire { get; set; }
 
     /// <summary>
+    /// 有效期月份数，非空
+    /// </summary>
+    public virtual int ExpireMonth { get; set; }
+
+    /// <summary>
     /// 总数量，非空
     /// </summary>
     public virtual int TotalQuantity { get; set; }

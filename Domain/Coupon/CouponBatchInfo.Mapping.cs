@@ -46,6 +46,15 @@ public class CouponBatchInfoMapping : EntityMapping<CouponBatchInfo>
         );
 
         Property(
+            x => x.ExpireMonth,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("expire_month");
+                map.NotNullable(true);
+            }
+        );        
+
+        Property(
             x => x.TotalQuantity,
             map => {
                 map.Type(NHibernateUtil.Int32);
