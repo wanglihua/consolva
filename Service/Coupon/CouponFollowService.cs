@@ -1,5 +1,7 @@
+using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Coupon;
+using shunda.Domain.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Coupon;
@@ -13,8 +15,24 @@ public class CouponFollowService {
     }
 
     public void NewFollor(int customerId) {
-        // todo 判断这个客户是不是已经领取过
-        
+        var couponGot = session.Query<CouponInfo>()
+            .Where(e => e.Customer.Id == customerId
+                        && e.GetMethod == CouponGetMethod.Follow)
+            .Take(1)
+            .SingleOrDefault();
+
+        // 说明之前领取过关注赠送优惠券，这次就不送了
+        if (couponGot != null) {
+            return;
+        }
+
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        DateTime now = DateTime.Now;
+
         var batchFollowList = session.Query<CouponBatchInfo>()
             .Where(e => e.GetMethod == CouponGetMethod.Follow
                         && e.Status != CouponBatchStatus.Complete)
@@ -23,8 +41,19 @@ public class CouponFollowService {
         foreach (var batch in batchFollowList) {
             int qtyPerCustomer = batch.MaxQtyPerCustomer;
             for (int index = 0; index < qtyPerCustomer; index++) {
-                var coupon = new CouponInfo();
+                var coupon = new CouponInfo {
+                    Batch = batch,
+                    Code = Guid.NewGuid().ToString("N"), // 后面会做修正
+                    Customer = customer,
+                    PickTime = now,
+                    GetMethod = CouponGetMethod.Pick,
+                    Status = CouponStatus.Pick,
+                };
+
+                session.Save(coupon);
             }
         }
+
+        session.Flush();
     }
 }
