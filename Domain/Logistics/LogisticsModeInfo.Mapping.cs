@@ -166,5 +166,14 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo> {
                 map.NotNullable(true);
             }
         );
+
+        Property(
+            x => x.OrderNum,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("order_num");
+                map.NotNullable(true);
+            }
+        );        
     }
 }

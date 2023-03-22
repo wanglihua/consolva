@@ -42,6 +42,9 @@
                 <div>
                     <a field="@(nameof(LogisticsModeInfo.Promotion))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">是否促销</a>
                 </div>
+                <div>
+                    <a field="@(nameof(LogisticsModeInfo.OrderNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">排序值</a>
+                </div>
             </th>
 
             <th style="width: 90px;" class="center">
@@ -101,11 +104,16 @@
 
 
                     <td class="center">
-                        @if (logisticsMode.Promotion) {
-                            <span style="color: red;">是促销</span>
-                        } else {
-                            <span style="color: green;">非促销</span>
-                        }
+                        <div>
+                            @if (logisticsMode.Promotion) {
+                                <span style="color: red;">是促销</span>
+                            } else {
+                                <span style="color: green;">非促销</span>
+                            }
+                        </div>
+                        <div>
+                            <span>@(logisticsMode.OrderNum)</span>
+                        </div>
                     </td>
 
 

@@ -108,6 +108,11 @@ public class LogisticsModeDetailModel {
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
+    
+    /// <summary>
+    /// 排序号
+    /// </summary>
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 物流方式关联通用费率

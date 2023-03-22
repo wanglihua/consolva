@@ -110,6 +110,11 @@ public class LogisticsModeInfo : Entity {
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public virtual LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
+    
+    /// <summary>
+    /// 排序号
+    /// </summary>
+    public virtual  int OrderNum { get; set; }
 
     #region Cache
 

@@ -185,6 +185,8 @@ public class LogisticsModeController : Controller {
         model.Status = logisticsMode.Status;
         model.InnerStatus = logisticsMode.InnerStatus;
 
+        model.OrderNum = logisticsMode.OrderNum;
+
         model.FeeCalDesc = logisticsMode.FeeCalDesc;
 
         model.Promotion = logisticsMode.Promotion;
@@ -303,6 +305,8 @@ public class LogisticsModeController : Controller {
 
         logisticsMode.Status = model.Status;
         logisticsMode.InnerStatus = model.InnerStatus;
+
+        logisticsMode.OrderNum = model.OrderNum;
 
         logisticsMode.FeeCalDesc = model.FeeCalDesc;
 
