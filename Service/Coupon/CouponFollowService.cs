@@ -46,7 +46,7 @@ public class CouponFollowService {
         var couponList = new List<CouponInfo>();
         foreach (var batch in batchFollowList) {
             int qtyPerCustomer = batch.MaxQtyPerCustomer;
-            DateTime expire = now.AddMonths(batch.ExpireMonth);
+            DateTime expire = now.AddMonths(batch.ExpireMonth).Date;
             for (int index = 0; index < qtyPerCustomer; index++) {
                 var coupon = new CouponInfo {
                     Batch = batch,
