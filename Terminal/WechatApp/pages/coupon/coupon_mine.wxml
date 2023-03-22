@@ -17,11 +17,13 @@
     <block wx:else>
         <block wx:for="{{ couponList }}" wx:key="id" wx:for-item="coupon" wx:for-index="index">
             <van-cell-group custom-class="items">
-                <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" value="{{ coupon.type }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
-                <van-cell title="编号" value="{{ coupon.code }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="有效期" value="{{ coupon.expire }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="优惠" value="{{ coupon.ruleDesc }}" border="{{ false }}" custom-class="item"/>
-                <view class="item-last-vspace"/>
+                <van-cell title="{{ index + 1 }}、{{ coupon.rule }}" value="{{ coupon.type }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onCouponHeaderClick" data-item="{{ coupon }}"/>
+                <block wx:if="{{ coupon.show === true }}">
+                    <van-cell title="编号" value="{{ coupon.code }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="有效期" value="{{ coupon.expire }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="优惠" value="{{ coupon.ruleDesc }}" border="{{ false }}" custom-class="item"/>
+                    <view class="item-last-vspace"/>
+                </block>
             </van-cell-group>
         </block>
     </block>

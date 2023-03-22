@@ -19,9 +19,10 @@ Page({
     loadMyCouponList() {
         const that = this;
         app.post("/client/coupon/mine/list", {}, function (res) {
-            const couponList = res.data.couponList;
-            for (let coupon in couponList) {
-                if(coupon.follow === true) {
+            let couponList = res.data.couponList;
+            for (let index = 0; index < couponList.length; index++) {
+                let coupon = couponList[index];
+                if (coupon.follow === true) {
                     coupon.rule = coupon.rule + " " + coupon.batchName;
                 }
             }
@@ -37,6 +38,27 @@ Page({
     onCouponPickClick(e) {
         wx.navigateTo({
             url: "./coupon_pick",
+        });
+    },
+
+    onCouponHeaderClick(e) {
+        const coupon = e.currentTarget.dataset.item;
+        const couponId = coupon.id;
+
+        const couponList = this.data.couponList;
+        for (let index = 0; index < couponList.length; index++) {
+            let c = couponList[index];
+            if (c.id === couponId) {
+                if (c.show === true) {
+                    c.show = false;
+                } else {
+                    c.show = true;
+                }
+            }
+        }
+
+        this.setData({
+            couponList: couponList,
         });
     },
 
