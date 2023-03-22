@@ -143,7 +143,7 @@
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @if ((couponBatch.Status?.Released() ?? false) == false)
+                        @if (couponBatch.Status.Released() == false)
                         {
                             <div>
                                 <a href="javascript:showCouponRule('@(couponBatch.Id)');">编辑规则</a>
