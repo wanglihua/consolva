@@ -40,7 +40,8 @@ public class CouponPickController : Controller {
     private CouponPickListModel GetListData(CouponPickListParam param, int customerId) {
         DateTime today = DateTime.Today;
         var batchList = session.Query<CouponBatchInfo>()
-            .Where(e => e.Status == CouponBatchStatus.Release
+            .Where(e => e.GetMethod == CouponGetMethod.Pick
+                        && e.Status == CouponBatchStatus.Release
                         && e.Expire >= today)
             .OrderByDescending(e => e.Id)
             .ToList();
