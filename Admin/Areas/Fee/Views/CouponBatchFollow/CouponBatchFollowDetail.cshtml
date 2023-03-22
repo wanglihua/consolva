@@ -22,12 +22,9 @@
                             <div class="form-group">
                                 <label asp-for="Name" class="col-xs-4 control-label">批次名称</label>
                                 <div class="col-xs-8">
-                                    @if (Model.Released)
-                                    {
+                                    @if (Model.Released) {
                                         <input asp-for="Name" type="text" required="required" maxlength="200" class="input-sm form-control" disabled="disabled"/>
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <input asp-for="Name" type="text" required="required" maxlength="200" class="input-sm form-control"/>
                                     }
                                 </div>
@@ -38,22 +35,17 @@
                             <div class="form-group">
                                 <label asp-for="Type" class="col-xs-4 control-label">优惠券类型</label>
                                 <div class="col-xs-8">
-                                    @if (Model.Released)
-                                    {
+                                    @if (Model.Released) {
                                         <select asp-for="Type" required="required" digits="true" class="input-sm form-control" disabled="disabled">
                                             <option value="">请选择优惠券类型</option>
-                                            @foreach (CouponType type in Model.TypeList)
-                                            {
+                                            @foreach (CouponType type in Model.TypeList) {
                                                 <option value="@(type.Id)">@(type.Name)</option>
                                             }
                                         </select>
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <select asp-for="Type" required="required" digits="true" class="input-sm form-control">
                                             <option value="">请选择类型</option>
-                                            @foreach (CouponType type in Model.TypeList)
-                                            {
+                                            @foreach (CouponType type in Model.TypeList) {
                                                 <option value="@(type.Id)">@(type.Name)</option>
                                             }
                                         </select>
@@ -92,8 +84,7 @@
                             <div class="form-group">
                                 <label asp-for="MaxQtyPerCustomer" class="col-xs-4 control-label">每客户赠送</label>
                                 <div class="col-xs-8">
-                                    @if (Model.Released)
-                                    {
+                                    @if (Model.Released) {
                                         <select asp-for="MaxQtyPerCustomer" required="required" class="input-sm form-control" disabled="disabled">
                                             <option value="1">1 张</option>
                                             <option value="2">2 张</option>
@@ -106,9 +97,7 @@
                                             <option value="9">9 张</option>
                                             <option value="10">10 张</option>
                                         </select>
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <select asp-for="MaxQtyPerCustomer" required="required" class="input-sm form-control">
                                             <option value="1">1 张</option>
                                             <option value="2">2 张</option>
@@ -132,8 +121,7 @@
                                 <div class="col-xs-8">
                                     <select asp-for="Status" required="required" digits="true" class="input-sm form-control" disabled="disabled">
                                         <option value="">请选择状态</option>
-                                        @foreach (CouponBatchStatus type in Model.StatusList)
-                                        {
+                                        @foreach (CouponBatchStatus type in Model.StatusList) {
                                             <option value="@(type.Id)">@(type.Name)</option>
                                         }
                                     </select>
@@ -142,41 +130,24 @@
                         </div>
 
                     </div>
-                    
+
                     <div class="row">
 
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <label asp-for="MaxQtyPerCustomer" class="col-xs-4 control-label">过期月份数</label>
+                                <label asp-for="ExpireMonth" class="col-xs-4 control-label">过期月份数</label>
                                 <div class="col-xs-8">
-                                    @if (Model.Released)
-                                    {
-                                        <select asp-for="MaxQtyPerCustomer" required="required" class="input-sm form-control" disabled="disabled">
-                                            <option value="1">1 张</option>
-                                            <option value="2">2 张</option>
-                                            <option value="3">3 张</option>
-                                            <option value="4">4 张</option>
-                                            <option value="5">5 张</option>
-                                            <option value="6">6 张</option>
-                                            <option value="7">7 张</option>
-                                            <option value="8">8 张</option>
-                                            <option value="9">9 张</option>
-                                            <option value="10">10 张</option>
+                                    @if (Model.Released) {
+                                        <select asp-for="ExpireMonth" required="required" class="input-sm form-control" disabled="disabled">
+                                            @for (int index = 0; index < 12; index++) {
+                                                <option value="@(index + 1)">@(index + 1)个月</option>
+                                            }
                                         </select>
-                                    }
-                                    else
-                                    {
-                                        <select asp-for="MaxQtyPerCustomer" required="required" class="input-sm form-control">
-                                            <option value="1">1 张</option>
-                                            <option value="2">2 张</option>
-                                            <option value="3">3 张</option>
-                                            <option value="4">4 张</option>
-                                            <option value="5">5 张</option>
-                                            <option value="6">6 张</option>
-                                            <option value="7">7 张</option>
-                                            <option value="8">8 张</option>
-                                            <option value="9">9 张</option>
-                                            <option value="10">10 张</option>
+                                    } else {
+                                        <select asp-for="ExpireMonth" required="required" class="input-sm form-control">
+                                            @for (int index = 0; index < 12; index++) {
+                                                <option value="@(index + 1)">@(index + 1)个月</option>
+                                            }
                                         </select>
                                     }
                                 </div>
@@ -188,8 +159,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                @if (Model.Released == false)
-                {
+                @if (Model.Released == false) {
                     <button type="button" class="btn btn-success btn-sm" onclick="saveCouponBatch();">
                         <i class="ace-icon fa fa-floppy-o"></i>
                         保存

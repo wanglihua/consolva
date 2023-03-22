@@ -46,6 +46,9 @@
                 <div>
                     <a field="@(nameof(CouponBatchInfo.MaxQtyPerCustomer))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">每客户赠送</a>
                 </div>
+                <div>
+                    <a field="@(nameof(CouponBatchInfo.ExpireMonth))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">过期月份数</a>
+                </div>                
             </th>
 
             <th style="width: 100px; text-align: center;">
@@ -118,6 +121,9 @@
                         <div>
                             @ListDataUtil.Render(couponBatch.MaxQtyPerCustomer)
                         </div>
+                        <div>
+                            @ListDataUtil.Render(couponBatch.ExpireMonth)个月
+                        </div>                        
                     </td>
                     <td style="text-align: center;">
                         <div>

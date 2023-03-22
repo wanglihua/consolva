@@ -12,6 +12,7 @@ using Senparc.Weixin.MP.MessageHandlers;
 using Senparc.Weixin.Tencent;
 using shunda.Domain.Customer;
 using shunda.Domain.Wechat;
+using shunda.Service.Coupon;
 using shunda.Service.Customer;
 using shunda.Service.Pass;
 
@@ -42,7 +43,8 @@ public partial class WechatOfficialAccountCustomMessageHandler : MessageHandler<
         this.session = session;
         this.wechatOfficialAccountFollowerService = new WechatOfficialAccountFollowerService(session,
             new CustomerService(session, new CustomerCheckinCodeService(session), new PasswordService()),
-            new CustomerPromotionService(session)
+            new CustomerPromotionService(session),
+            new CouponFollowService(session, new CouponCodeService(session))
         );
         this.wechatOfficialAccountReplyService = new WechatOfficialAccountReplyService(session);
         this.wechatOfficialAccountReplyKeywordService = new WechatOfficialAccountReplyKeywordService(session);
