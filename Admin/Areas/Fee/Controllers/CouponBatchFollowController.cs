@@ -27,7 +27,7 @@ public class CouponBatchFollowController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/coupon/batch")]
+    [Route("/admin/coupon/batch/follow")]
     [Transactional] // 需要事务
     public IActionResult Index() {
         CouponBatchFollowIndexModel model = new CouponBatchFollowIndexModel();
@@ -42,7 +42,7 @@ public class CouponBatchFollowController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/coupon/batch/list")]
+    [Route("/admin/coupon/batch/follow/list")]
     public IActionResult List(CouponBatchFollowListQueryParam queryParam) {
         int totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
@@ -102,7 +102,7 @@ public class CouponBatchFollowController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/coupon/batch/detail")]
+    [Route("/admin/coupon/batch/follow/detail")]
     public IActionResult Detail(int id) {
         session.DefaultReadOnly = true;
 
@@ -139,7 +139,7 @@ public class CouponBatchFollowController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/coupon/batch/save")]
+    [Route("/admin/coupon/batch/follow/save")]
     [Transactional]
     public IActionResult Save(CouponBatchFollowDetailModel model) {
         if (!ModelState.IsValid) {
@@ -193,7 +193,7 @@ public class CouponBatchFollowController : Controller {
     // 下面的跟 CouponBatchController 里面的一样
 
     [HttpPost]
-    [Route("/admin/coupon/batch/delete")]
+    [Route("/admin/coupon/batch/follow/delete")]
     [Transactional]
     public IActionResult Delete(int[] idList) {
         if (idList == null || idList.Length == 0) {
@@ -223,7 +223,7 @@ public class CouponBatchFollowController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/coupon/batch/release")]
+    [Route("/admin/coupon/batch/follow/release")]
     [Transactional]
     public IActionResult Release(int batchId) {
         var batch = session.Get<CouponBatchInfo>(batchId);
@@ -263,7 +263,7 @@ public class CouponBatchFollowController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/coupon/batch/show/rule")]
+    [Route("/admin/coupon/batch/follow/show/rule")]
     public IActionResult ShowRule(int batchId) {
         var batch = session.Get<CouponBatchInfo>(batchId);
         if (batch == null) {
