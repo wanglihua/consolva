@@ -3,9 +3,11 @@ using NHibernate;
 using NHibernate.Criterion;
 using shunda.Admin.Areas.Customer.Models.CustomerScoreLog;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
+using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
@@ -102,4 +104,30 @@ public class CustomerScoreLogController : Controller
 
         return criteria;
     }
+
+    [HttpPost]
+    [Route("/admin/customer/score/export")]
+    public IActionResult Export() {
+        // var fileName = "超级VIP折扣.xlsx";
+        // byte[] excel = customerSuperVipDiscountExcelService.Export();
+        // return File(excel, ContentType.Xlsx, fileName);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/customer/score/import")]
+    [Transactional]
+    public IActionResult Import(IFormFile excelFile) {
+        // UserInfo loginUser = loginUserService.GetLoginUser();
+        // customerSuperVipDiscountExcelService.Import(excelFile, loginUser);
+
+        return Json(new Dictionary<string, object> {
+            { "success", true },
+            { "message", "导入成功！" }
+        });
+    }    
 }

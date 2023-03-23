@@ -14,22 +14,30 @@
     <li class="active" data-menu="customer-customer-score-log-index-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
-@*
+
 <div class="gridToolBar clearfix">
     <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerScoreLogList(0)">
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
+
+    <button id="btnImport" type="button" class="btn btn-purple btn-sm">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导入客户积分
+    </button>
+
+    <button type="button" class="btn btn-pink btn-sm" onclick="exportCustomerScore()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出客户积分
+    </button>
 </div>
-*@
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
     <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" name="customerCodeQuery" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
     <label for="customerScoreTypeQuery">积分类型</label>&nbsp;
     <select id="customerScoreTypeQuery" name="customerScoreTypeQuery" style="width: 100px; height: 30px;">
         <option value="">积分类型</option>
-        @foreach (var scoreType in Model.ScoreTypeList)
-        {
+        @foreach (var scoreType in Model.ScoreTypeList) {
             <option value="@(scoreType.Id)">@(scoreType.Name)</option>
         }
     </select>&nbsp;
@@ -96,4 +104,55 @@
             }
         });
     }
+    
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {
+        var url = '@Url.Action("Import", "CustomerScoreLog")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImport',
+            file_data_name: "excelFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                    } else {
+                        loadCustomerScoreLogList();
+                        $.msg.show(result.message);
+                    }
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }
+
+    function exportCustomerScore() {
+        var url = '@Url.Action("Export", "CustomerScoreLog")';
+        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+    }    
 </script>
