@@ -96,11 +96,15 @@ public class CustomerSuperVipDiscountExcelService {
     }
 
     public void Import(IFormFile excelFile, UserInfo loginUser) {
-        if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
+        if (excelFile == null) {
+            throw new ValidationException("导入失败，文件未上传！");
+        }
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
         var sheet = workbook.GetSheetAt(0);
-        if (sheet == null) throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
+        if (sheet == null) {
+            throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
+        }
 
         IList<CustomerSuperVipDiscountInfo> superVipDiscountList = new List<CustomerSuperVipDiscountInfo>();
 

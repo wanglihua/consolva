@@ -152,7 +152,13 @@
     }
 
     function exportCustomerScore() {
-        var url = '@Url.Action("Export", "CustomerScoreLog")';
-        $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+        // var url = '@Url.Action("Export", "CustomerScoreLog")';
+        // $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+        
+        downloadFile({
+            url: "@Url.Action("Export", "CustomerScoreLog")",
+            data: {
+            }
+        });         
     }    
 </script>
