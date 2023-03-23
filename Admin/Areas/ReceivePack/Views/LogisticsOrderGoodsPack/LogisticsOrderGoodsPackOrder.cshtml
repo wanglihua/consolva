@@ -443,6 +443,7 @@
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.Weight))": $("#" + packBoxId +" input.pack-weight").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.PackageCount))": $("#" + packBoxId +" input.pack-package-count").val(),
                     "@(nameof(LogisticsOrderGoodsPackSavePackParam.TrackingNoList))": scannedExpressTrackingNoList[goodsTypeId],
+                    "@(nameof(LogisticsOrderGoodsPackSavePackParam.ExpressCanPackAgain))": $("#expressCanPackAgain").val()
                 },
                 success: function(data) {
                     if (data.success === false) {

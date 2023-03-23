@@ -34,6 +34,9 @@ public class LogisticsOrderGoodsPackSavePackParam {
 
     [Required(ErrorMessage = "头程物流方式不能为空！")]
     public int FirstModeId { get; set; }
+
+    // 快递单是不是可以重复打包
+    public bool ExpressCanPackAgain { get; set; } = false;
 }
 
 public class LogisticsOrderGoodsPackSavePackParamValidator : AbstractValidator<LogisticsOrderGoodsPackSavePackParam> {

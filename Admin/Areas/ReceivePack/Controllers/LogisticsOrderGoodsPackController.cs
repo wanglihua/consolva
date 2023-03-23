@@ -717,14 +717,15 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
 
-        IList<string> packedExpressTrackingNoList = orderExpressToPackList
-            .Where(e => e.Status == ExpressStatus.Pack)
-            .Select(e => e.TrackingNo)
-            .ToList();
+        if (param.ExpressCanPackAgain == false) {
+            IList<string> packedExpressTrackingNoList = orderExpressToPackList
+                .Where(e => e.Status == ExpressStatus.Pack)
+                .Select(e => e.TrackingNo)
+                .ToList();
 
-        // todo 页面上加个 开关是否允许快递重复打包？？？
-        if (packedExpressTrackingNoList.Count != 0) {
-            throw new ValidationException($"快递单号{string.Join(",", packedExpressTrackingNoList)}，已经是打包状态，不能继续打包！");
+            if (packedExpressTrackingNoList.Count != 0) {
+                throw new ValidationException($"快递单号{string.Join(",", packedExpressTrackingNoList)}，已经是打包状态，不能继续打包！");
+            }
         }
 
         LogisticsOrderPackInfo orderPack = new LogisticsOrderPackInfo();
