@@ -182,4 +182,8 @@ public class CustomerVipDiscountService {
             return false;
         }
     }
+
+    public void UpdateAllCustomerVip() {
+        session.CreateSQLQuery("CALL customer_update_vip_all()").List();
+    }
 }

@@ -11,9 +11,11 @@ namespace shunda.Service.Customer;
 [Service(ServiceType.Scoped)]
 public class CustomerScoreExcelService {
     private readonly ISession session;
+    private readonly CustomerVipDiscountService customerVipDiscountService;
 
-    public CustomerScoreExcelService(ISession session) {
+    public CustomerScoreExcelService(ISession session, CustomerVipDiscountService customerVipDiscountService) {
         this.session = session;
+        this.customerVipDiscountService = customerVipDiscountService;
     }
 
     public byte[] Export() {
@@ -211,10 +213,12 @@ public class CustomerScoreExcelService {
                 LogisticsOrderCode = string.Empty,
                 LogisticsOrderCustomer = null,
                 Description = "后台导入历史积分"
-            });            
+            });
 
             session.Flush();
         }
+
+        customerVipDiscountService.UpdateAllCustomerVip();
 
         session.Flush();
     }

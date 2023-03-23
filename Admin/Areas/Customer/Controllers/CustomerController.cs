@@ -31,6 +31,7 @@ public class CustomerController : Controller {
     private readonly LoginUserService loginUserService;
     private readonly PasswordService passwordService;
     private readonly PassResService passResService;
+    private readonly CustomerVipDiscountService customerVipDiscountService;
 
     private readonly ISession session;
 
@@ -39,13 +40,15 @@ public class CustomerController : Controller {
         CustomerCheckinCodeService customerCheckinCodeService,
         LoginUserService loginUserService,
         PasswordService passwordService,
-        PassResService passResService) {
+        PassResService passResService,
+        CustomerVipDiscountService customerVipDiscountService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.customerCheckinCodeService = customerCheckinCodeService;
         this.loginUserService = loginUserService;
         this.passwordService = passwordService;
         this.passResService = passResService;
+        this.customerVipDiscountService = customerVipDiscountService;
     }
 
 
@@ -466,9 +469,9 @@ public class CustomerController : Controller {
     [HttpPost]
     [Route("/admin/customer/update/vip")]
     [AdminAuth(PassRes.Customer.CustomerList)]
-    // 这里的事务还是需要的，但事务已经做在存储过程里面了
+    [Transactional]
     public IActionResult UpdateVip() {
-        // customerCodeService.UpdateAllCustomerVip(); todo 这个这里还没实现
+        customerVipDiscountService.UpdateAllCustomerVip();
 
         return Json(new Dictionary<string, object> {
             { "success", true },
