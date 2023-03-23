@@ -23,7 +23,7 @@ Page({
             for (let index = 0; index < couponList.length; index++) {
                 let coupon = couponList[index];
                 if (coupon.follow === true) {
-                    coupon.rule = coupon.rule + " " + coupon.batchName;
+                    coupon.rule = coupon.rule + "(" + coupon.batchName + ")";
                 }
             }
 
