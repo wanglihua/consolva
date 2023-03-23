@@ -82,9 +82,9 @@ public class CustomerMessageAccountChangeService {
 
         CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled) {
-            string message1 = TransferMessage(setting.WechatMessageTemplate1, changeReason, accountAfterAmount, accountBeforeAmount, accountAfterAmount);
-            string message2 = TransferMessage(setting.WechatMessageTemplate2, changeReason, accountAfterAmount, accountBeforeAmount, accountAfterAmount);
-            string message3 = TransferMessage(setting.WechatMessageTemplate3, changeReason, accountAfterAmount, accountBeforeAmount, accountAfterAmount);
+            string message1 = TransferMessage(setting.WechatMessageTemplate1, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
+            string message2 = TransferMessage(setting.WechatMessageTemplate2, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
+            string message3 = TransferMessage(setting.WechatMessageTemplate3, changeReason, accountChangeAmount, accountBeforeAmount, accountAfterAmount);
 
             CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
