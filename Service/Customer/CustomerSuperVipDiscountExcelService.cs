@@ -115,7 +115,9 @@ public class CustomerSuperVipDiscountExcelService {
         for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++) {
             var row = sheet.GetRow(rowIndex);
 
-            if (row == null) break;
+            if (row == null) {
+                break;
+            }
 
             // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
             var cellIndex = 0;
@@ -131,7 +133,9 @@ public class CustomerSuperVipDiscountExcelService {
 
             // 客户
             var customerIdStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(customerIdStr)) break;
+            if (string.IsNullOrWhiteSpace(customerIdStr)) {
+                break;
+            }
 
             var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerIdStr);
             if (customerId == 0) {
