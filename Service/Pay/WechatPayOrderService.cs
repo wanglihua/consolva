@@ -76,7 +76,7 @@ public class WechatPayOrderService {
 
         decimal discountAmount = 0;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFee);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
             if (discountResult.Success == false) {
                 discountAmount = 0;
             } else {

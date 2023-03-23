@@ -83,7 +83,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         decimal discountAmount = 0;
         string discountAmountStr = string.Empty;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFee);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
             if (discountResult.Success == false) {
                 discountAmount = 0;
                 discountAmountStr = discountResult.Message;
@@ -101,23 +101,16 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         }
 
         decimal customerAccount = loginCustomer.Account;
-
-        // 这里不提示
-        // if (customerAccount <= 0) {
-        //     throw new ValidationException("当前客户账户没有余额，不能支付！");
-        // }
-
-        decimal actualPayAmount = arrearsAmount;
-        if (customerAccount < arrearsAmount) {
-            actualPayAmount = customerAccount;
-        }
+        decimal maxCustomerAccountAllowed = orderFeeSumData.FirstModeFeeNoPromotion - discountAmount;
+        decimal availableAccount = Math.Min(customerAccount, maxCustomerAccountAllowed);
+        decimal actualPayAmount = Math.Min(arrearsAmount, availableAccount);
 
         // 这个判断一般是不会成立的
         if (actualPayAmount < 0) {
             actualPayAmount = 0;
         }
 
-        bool hasAccountToPay = customerAccount > 0;
+        bool hasAccountToPay = availableAccount > 0;
 
         return Json(new JsonResultData {
             Success = true,
@@ -130,6 +123,8 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
                 DiscountAmount = discountAmountStr,
                 PaidAmount = paidAmount.ToString("#0.00"),
                 ArrearsAmount = arrearsAmount.ToString("#0.00"),
+                CustomerAccount = customerAccount.ToString("#0.00"),
+                AvailableAccount = availableAccount.ToString("#0.00"),
                 ActualPayAmount = actualPayAmount.ToString("#0.00"),
                 HasAccountToPay = hasAccountToPay,
             },
@@ -169,7 +164,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
 
         decimal discountAmount = 0;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFee);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
             if (discountResult.Success == false) {
                 discountAmount = 0;
             } else {
@@ -188,11 +183,9 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         }
 
         decimal customerAccount = loginCustomer.Account;
-
-        decimal actualPayAmount = arrearsAmount;
-        if (customerAccount < arrearsAmount) {
-            actualPayAmount = customerAccount;
-        }
+        decimal maxCustomerAccountAllowed = orderFeeSumData.FirstModeFeeNoPromotion - discountAmount;
+        decimal availableAccount = Math.Min(customerAccount, maxCustomerAccountAllowed);
+        decimal actualPayAmount = Math.Min(arrearsAmount, availableAccount);
 
         // 这个判断一般是不会成立的
         if (actualPayAmount < 0) {

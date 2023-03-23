@@ -24,6 +24,12 @@ public class WechatAppOrderPayCustomerAccountDetailModel {
     [JsonProperty("arrearsAmount")]
     public string ArrearsAmount { get; set; } = string.Empty;
 
+    [JsonProperty("customerAccount")]
+    public string CustomerAccount { get; set; } = string.Empty;
+
+    [JsonProperty("availableAccount")]
+    public string AvailableAccount { get; set; } = string.Empty;
+
     [JsonProperty("actualPayAmount")]
     public string ActualPayAmount { get; set; } = string.Empty;
 

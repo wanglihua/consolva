@@ -10,6 +10,8 @@ Page({
         discountAmount: "",
         paidAmount: "",
         arrearsAmount: "",
+        customerAccount: "",
+        availableAccount: "",
         actualPayAmount: "",
         hasAccountToPay: true,
     },
@@ -36,6 +38,8 @@ Page({
                 paidAmount: res.data.paidAmount,
                 arrearsAmount: res.data.arrearsAmount,
                 actualPayAmount: res.data.actualPayAmount,
+                customerAccount: res.data.customerAccount,
+                availableAccount: res.data.availableAccount,
                 hasAccountToPay: res.data.hasAccountToPay,
             });
         });
