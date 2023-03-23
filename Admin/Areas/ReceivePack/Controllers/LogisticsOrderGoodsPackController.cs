@@ -722,6 +722,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Select(e => e.TrackingNo)
             .ToList();
 
+        // todo 页面上加个 开关是否允许快递重复打包？？？
         if (packedExpressTrackingNoList.Count != 0) {
             throw new ValidationException($"快递单号{string.Join(",", packedExpressTrackingNoList)}，已经是打包状态，不能继续打包！");
         }
