@@ -124,6 +124,8 @@ public class LogisticsOrderFeeService {
         #region vip 和 超级 vip折扣
 
         // 按物流费用计算，促销的不参与
+        
+        // 这里是超级VIP和VIP都计算了的，实际只计算VIP也可以的，现在的VIP就是VIP和超级VIP中折扣大的那个
 
         int customerId = order.Customer.Id;
 
@@ -154,14 +156,13 @@ public class LogisticsOrderFeeService {
         if (vipDiscount != null) {
             decimal discountSuperVip = -firstModeFeeNoPromotion * vipDiscount.Discount / 100m; // 负的费用
 
-            // 意思就是有折扣，或者折扣更小
+            // 意思就是有折扣，或者折扣更多
             if (discountSuperVip < discount) {
                 discount = discountSuperVip;
                 discountFeeType = LogisticsOrderFeeType.VipDiscount;
                 discountFeeTitle = LogisticsOrderFeeType.VipDiscount.Name;
             }
         }
-
 
         if (discountFeeType != LogisticsOrderFeeType.None) {
             orderResultEntryList.Add(new LogisticsFeeResultEntry() {
@@ -177,7 +178,9 @@ public class LogisticsOrderFeeService {
 
         #endregion
 
-        #region 计算优惠券实扣
+        #region 计算优惠券实
+
+        // 这里计算的优惠券费用是无效的，因为现在创建时没有选择优惠券，支付时计算的才是有效的
 
         // 按物流费用计算，促销的不参与
 
