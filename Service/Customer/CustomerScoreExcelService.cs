@@ -183,9 +183,37 @@ public class CustomerScoreExcelService {
             customerListImport.Add(customer);
         }
 
-        // 其实这里不调用，也会保存到数据库的
         foreach (var customer in customerListImport) {
+            // 其实这里不调用 update，也会保存到数据库的
             session.Update(customer);
+
+            session.Save(new CustomerScoreLogInfo {
+                Customer = customer,
+                ScoreType = CustomerScoreType.Import,
+                Score = customer.ValidScore,
+                Amount = 0,
+                IsValidScore = true,
+                LogisticsOrderPay = null,
+                LogisticsOrder = null,
+                LogisticsOrderCode = string.Empty,
+                LogisticsOrderCustomer = null,
+                Description = "后台导入有效积分"
+            });
+
+            session.Save(new CustomerScoreLogInfo {
+                Customer = customer,
+                ScoreType = CustomerScoreType.Import,
+                Score = customer.TotalScore,
+                Amount = 0,
+                IsValidScore = false,
+                LogisticsOrderPay = null,
+                LogisticsOrder = null,
+                LogisticsOrderCode = string.Empty,
+                LogisticsOrderCustomer = null,
+                Description = "后台导入历史积分"
+            });            
+
+            session.Flush();
         }
 
         session.Flush();

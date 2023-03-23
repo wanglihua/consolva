@@ -27,6 +27,11 @@ public class CustomerMessageType : CodeTypeBase {
     public static readonly CustomerMessageType CustomerNoOrder = new CustomerMessageType(4000, "已注册未下单推送", "已注册未下单推送");
 
     /// <summary>
+    /// 定时提醒，新人大礼包
+    /// </summary>
+    public static readonly CustomerMessageType CouponFollow = new CustomerMessageType(5000, "新人大礼包", "新人大礼包");
+
+    /// <summary>
     /// 定时提醒，公共申领件处理提醒
     /// </summary>
     public static readonly CustomerMessageType NewClaim = new CustomerMessageType(6000, "公共申领件处理提醒", "公共申领件处理提醒");
@@ -143,6 +148,7 @@ public class CustomerMessageType : CodeTypeBase {
         AllCustomer,
         HelpMeMakeMoney,
         CustomerNoOrder,
+        CouponFollow,
         NewClaim,
         MoneyEarned,
         ExpressCheckin,

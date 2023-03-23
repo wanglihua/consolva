@@ -5,8 +5,7 @@ namespace shunda.Domain.Customer;
 /// <summary>
 /// 客户积分类型
 /// </summary>
-public class CustomerScoreType : CodeTypeBase
-{
+public class CustomerScoreType : CodeTypeBase {
     /// <summary>
     /// 会员推广
     /// </summary>
@@ -23,6 +22,11 @@ public class CustomerScoreType : CodeTypeBase
     public static readonly CustomerScoreType ScoreToBalance = new CustomerScoreType(3000, "积分换余额", "积分换余额");
 
     /// <summary>
+    /// 导入积分
+    /// </summary>
+    public static readonly CustomerScoreType Import = new CustomerScoreType(4000, "导入积分", "导入积分");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly CustomerScoreType None = new CustomerScoreType(0, "", "");
@@ -31,42 +35,35 @@ public class CustomerScoreType : CodeTypeBase
         Promotion,
         LogisticsConsume,
         ScoreToBalance,
+        Import,
     };
 
     private static readonly Dictionary<int, CustomerScoreType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static CustomerScoreType GetById(int id)
-    {
-        if(codeTypeMap.TryGetValue(id, out CustomerScoreType? codeType))
-        {
+    public static CustomerScoreType GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out CustomerScoreType? codeType)) {
             return codeType;
         }
 
         return None;
     }
 
-    public static IList<CustomerScoreType> GetList()
-    {
+    public static IList<CustomerScoreType> GetList() {
         return codeTypeList.ToList();
     }
 
-    private CustomerScoreType(int id, string name, string description) : base(id, name, description)
-    {
+    private CustomerScoreType(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class CustomerScoreTypeHibernateType : CodeHibernateTypeBase<CustomerScoreType>
-{
-    protected override CustomerScoreType GetCodeTypeById(int id)
-    {
+public class CustomerScoreTypeHibernateType : CodeHibernateTypeBase<CustomerScoreType> {
+    protected override CustomerScoreType GetCodeTypeById(int id) {
         return CustomerScoreType.GetById(id);
     }
 }
 
-public class CustomerScoreTypeModelBinder : CodeTypeModelBinderBase<CustomerScoreType>
-{
-    protected override CustomerScoreType GetCodeTypeById(int id)
-    {
+public class CustomerScoreTypeModelBinder : CodeTypeModelBinderBase<CustomerScoreType> {
+    protected override CustomerScoreType GetCodeTypeById(int id) {
         return CustomerScoreType.GetById(id);
     }
 }
