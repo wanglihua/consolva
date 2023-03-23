@@ -217,3 +217,24 @@ page {
     padding: 10rpx 20rpx 80rpx 20rpx;
     background-color: white;
 }
+
+.address-tip {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 12px;
+    color: #545556;
+    line-height: 26px;
+    background-color: white;
+}
+
+.address-tip-title {
+    font-weight: bold;
+}
+
+.address-tip-content {
+    padding-left: 1em;
+}
+
+.address-tip-content:first-letter {
+    margin-left: -1em;
+}

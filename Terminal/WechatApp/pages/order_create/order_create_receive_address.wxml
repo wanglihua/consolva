@@ -11,6 +11,12 @@
     </block>
     <block wx:else>
         <block wx:for="{{ addressList }}" wx:key="id" wx:for-item="address" wx:for-index="index">
+            <view class="address-tip">
+                <view class="address-tip-title">温馨提示：</view>
+                <view class="address-tip-content">所有订单均是按照客户填写的收件信息进行发货</view>
+                <view class="address-tip-content">请务必填写准确，请全部使用英文填写！！！</view>
+            </view>
+            
             <van-cell-group custom-class="items">
                 <block wx:if="{{ address.id === selectAddressId }}">
                     <van-cell title="{{ index + 1 }}、{{ address.firstName }} {{ address.lastName }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title-selected">

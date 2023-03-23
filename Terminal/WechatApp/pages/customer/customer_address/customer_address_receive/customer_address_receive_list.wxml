@@ -36,10 +36,10 @@
     </view>
     -->
 
-    <view class="tip">
-        <view class="tip-title">温馨提示：</view>
-        <view class="tip-content">所有订单均是按照客户填写的收件信息进行发货</view>
-        <view class="tip-content">请务必填写准确，请全部使用英文填写！！！</view>
+    <view class="address-tip">
+        <view class="address-tip-title">温馨提示：</view>
+        <view class="address-tip-content">所有订单均是按照客户填写的收件信息进行发货</view>
+        <view class="address-tip-content">请务必填写准确，请全部使用英文填写！！！</view>
     </view>
     <van-action-sheet title="{{ currentAddress.firstName }} {{ currentAddress.lastName }}" show="{{ showActionSheet }}" actions="{{ actionSheetActions }}" bind:close="onActionSheetCloseClick" bind:click-overlay="onActionSheetCloseClick" bind:select="onActionSheetSelect"/>    
 </view>
