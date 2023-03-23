@@ -29,11 +29,12 @@ public class LogisticsOrderRemarkListViewComponent : ViewComponent {
         this.expressRemarkService = expressRemarkService;
     }
 
-    public IViewComponentResult Invoke(int orderId) {
+    public IViewComponentResult Invoke(int orderId, bool showOrderRemarkAdd = true) {
         int loginUserId = loginUserService.GetLoginUserId();
 
         var model = new LogisticsOrderRemarkListViewComponentModel {
             OrderId = orderId,
+            ShowOrderRemarkAdd = showOrderRemarkAdd,
             OrderRemarkList = logisticsOrderRemarkService.GetOrderRemarkList(orderId),
             ExpressRemarkList = expressRemarkService.GetOrderExpressRemarkList(orderId),
 

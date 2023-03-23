@@ -7,6 +7,9 @@ namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark;
 public class LogisticsOrderRemarkListViewComponentModel {
     [BindNever]
     public int OrderId { get; set; }
+    
+    [BindNever]
+    public bool ShowOrderRemarkAdd { get; set; }    
 
     [BindNever]
     public IList<LogisticsOrderRemarkInfo> OrderRemarkList { get; set; } = new List<LogisticsOrderRemarkInfo>();

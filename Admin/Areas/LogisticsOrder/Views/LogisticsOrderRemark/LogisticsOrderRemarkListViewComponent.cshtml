@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Service.Express
 @model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark.LogisticsOrderRemarkListViewComponentModel
-@if (Model.CanOrderRemarkEdit) {
+@if (Model.ShowOrderRemarkAdd && Model.CanOrderRemarkEdit) {
     <div style="margin-bottom: 10px; text-align: right;">
         <a class="btn btn-mini btn-primary" href="javascript:showLogisticsOrderRemarkDetail();">添加备注</a>
     </div>

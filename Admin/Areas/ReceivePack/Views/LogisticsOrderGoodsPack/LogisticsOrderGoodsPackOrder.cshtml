@@ -162,6 +162,13 @@
                 </table>
             </div>
         </div>
+
+        <div id="orderRemark">
+            <div id="orderRemarkListWrapper">
+                @(await Component.InvokeAsync("LogisticsOrderRemarkList", new { orderId = Model.Order.Id, showOrderRemarkAdd = false }))
+            </div>
+        </div>
+
         <div id="expressList">
             <script type="text/javascript">
 
@@ -207,18 +214,18 @@
         <div style="text-align: right; padding: 5px 0;">
 
             @if (Model.IsOrderPackComplete == false) {
-                <button class="btn btn-xs btn-purple" onclick="completeOrderPack();return false;" style="width: 130px;">
-                    <i class="ace-icon fa fa fa-check-square-o"></i>&nbsp;完成订单打包
-                </button>
+                <div>
+                    <button class="btn btn-xs btn-purple" onclick="completeOrderPack();return false;" style="width: 130px;">
+                        <i class="ace-icon fa fa fa-check-square-o"></i>&nbsp;完成订单打包
+                    </button>
+                </div>
             }
 
-        </div>
-
-        <div id="orderRemark" style="border-top: 1px solid lightgray; margin-top: 30px; padding-top: 20px; padding-bottom: 30px; ">
-            <div id="orderRemarkListWrapper">
-                @(await Component.InvokeAsync("LogisticsOrderRemarkList", new { orderId = Model.Order.Id }))
+            <div>
+                <button class="btn btn-xs btn-primary" onclick="showLogisticsOrderRemarkDetail();" style="width: 130px;">添加备注</button>
             </div>
         </div>
+
     </div>
 
     <div style="height: 2800px; width: 100px;">@*保证不跳闪*@</div>
