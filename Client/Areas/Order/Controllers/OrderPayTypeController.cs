@@ -6,9 +6,9 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Coupon;
-using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
+using shunda.Service.Customer;
 using shunda.Service.Fee;
 using ISession = NHibernate.ISession;
 
@@ -21,19 +21,22 @@ public class OrderPayTypeController : Controller {
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly CouponService couponService;
     private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
+    private readonly CustomerScoreDeductService customerScoreDeductService;
 
     public OrderPayTypeController(
         ISession session,
         LoginCustomerService loginCustomerService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         CouponService couponService,
-        LogisticsOrderFeeSumService logisticsOrderFeeSumService
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService,
+        CustomerScoreDeductService customerScoreDeductService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.couponService = couponService;
         this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
+        this.customerScoreDeductService = customerScoreDeductService;
     }
 
     [HttpPost]
@@ -66,11 +69,18 @@ public class OrderPayTypeController : Controller {
         logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
         var orderFeeSumData = logisticsOrderFeeSumService.GetSumData(orderId);
+        var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId);
+
+        decimal firstModeFeeNoPromotionAfterScoreDeduct = orderFeeSumData.FirstModeFeeNoPromotion;
+        if (param.ScoreDeduct) {
+            // 计算积分抵扣，优惠券折扣应该是在积分抵扣的基础上计算的
+            firstModeFeeNoPromotionAfterScoreDeduct = orderFeeSumData.FirstModeFeeNoPromotion - scoreDeductResult.Amount;
+        }
 
         decimal discountAmount = 0;
         string discountAmountStr = string.Empty;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, firstModeFeeNoPromotionAfterScoreDeduct);
             if (discountResult.Success == false) {
                 discountAmount = 0;
                 discountAmountStr = discountResult.Message;
@@ -94,6 +104,8 @@ public class OrderPayTypeController : Controller {
                 OrderId = order.Id,
                 OrderCode = order.Code,
                 TotalAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount.ToString("#0.00"),
+                ScoreDeductScore = scoreDeductResult.Score,
+                ScoreDeductAmount = scoreDeductResult.Amount,
                 HasCoupon = coupon != null,
                 DiscountAmount = discountAmountStr,
                 PaidAmount = paidAmount.ToString("#0.00"),

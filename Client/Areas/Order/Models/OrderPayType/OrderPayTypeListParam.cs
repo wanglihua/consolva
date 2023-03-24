@@ -9,6 +9,9 @@ public class OrderPayTypeListParam {
 
     [JsonProperty("couponId")]
     public int CouponId { get; set; }
+
+    [JsonProperty("scoreDeduct")]
+    public bool ScoreDeduct { get; set; }
 }
 
 public class OrderPayTypeListParamValidator : AbstractValidator<OrderPayTypeListParam> {

@@ -12,6 +12,12 @@ public class OrderPayTypeListModel {
     [JsonProperty("totalAmount")]
     public string TotalAmount { get; set; } = string.Empty;
 
+    [JsonProperty("scoreDeductScore")]
+    public decimal ScoreDeductScore { get; set; }
+
+    [JsonProperty("scoreDeductAmount")]
+    public decimal ScoreDeductAmount { get; set; }
+
     [JsonProperty("hasCoupon")]
     public bool HasCoupon { get; set; }
 
