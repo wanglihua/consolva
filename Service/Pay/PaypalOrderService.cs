@@ -27,6 +27,7 @@ public class PaypalOrderService {
     private readonly CustomerScoreService customerScoreService;
     private readonly CouponService couponService;
     private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
+    private readonly CustomerScoreDeductService customerScoreDeductService;
 
     public PaypalOrderService(
         ISession session,
@@ -36,7 +37,8 @@ public class PaypalOrderService {
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService,
         CouponService couponService,
-        LogisticsOrderFeeSumService logisticsOrderFeeSumService
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService,
+        CustomerScoreDeductService customerScoreDeductService
     ) {
         this.session = session;
         this.payService = payService;
@@ -46,6 +48,7 @@ public class PaypalOrderService {
         this.customerScoreService = customerScoreService;
         this.couponService = couponService;
         this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
+        this.customerScoreDeductService = customerScoreDeductService;
     }
 
     public string Create(PaypalOrderCreateParam param) {
@@ -95,6 +98,15 @@ public class PaypalOrderService {
 
         decimal paidAmount = order.PaidAmount;
         decimal arrearsAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount - discountAmount - paidAmount;
+
+        if (arrearsAmount < 0) {
+            arrearsAmount = 0;
+        }
+
+        if (param.ScoreDeduct) {
+            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            arrearsAmount -= scoreDeductResult.Amount;
+        }
 
         if (arrearsAmount <= 0) {
             // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了

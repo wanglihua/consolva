@@ -6,6 +6,8 @@ public class PaypalOrderCreateParam {
     public int OrderId { get; set; }
 
     public int CouponId { get; set; }
+    
+    public bool ScoreDeduct { get; set; }
 
     public PaypalPaymentMethod PaymentMethod { get; set; } = PaypalPaymentMethod.None;
 

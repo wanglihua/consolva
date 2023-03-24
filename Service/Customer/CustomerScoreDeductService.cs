@@ -73,7 +73,7 @@ public class CustomerScoreDeductService {
     /// </summary>
     /// <param name="orderId"></param>
     /// <param name="baseAmount">基础费用，一般是非促销渠道物流费用</param>
-    public void Deduct(int orderId, decimal baseAmount) {
+    public CustomerScoreDeductResult Deduct(int orderId, decimal baseAmount) {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -112,5 +112,7 @@ public class CustomerScoreDeductService {
         session.Save(scoreLog);
 
         session.Flush();
+
+        return deductResult;
     }
 }

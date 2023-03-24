@@ -27,6 +27,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
     private readonly CustomerAccountService customerAccountService;
     private readonly CouponService couponService;
     private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
+    private readonly CustomerScoreDeductService customerScoreDeductService;
 
     public WechatAppOrderPayCustomerAccountController(
         ISession session,
@@ -36,7 +37,8 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         CustomerScoreService customerScoreService,
         CustomerAccountService customerAccountService,
         CouponService couponService,
-        LogisticsOrderFeeSumService logisticsOrderFeeSumService
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService,
+        CustomerScoreDeductService customerScoreDeductService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
@@ -46,6 +48,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         this.customerAccountService = customerAccountService;
         this.couponService = couponService;
         this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
+        this.customerScoreDeductService = customerScoreDeductService;
     }
 
     [HttpPost]
@@ -98,6 +101,11 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
 
         if (arrearsAmount < 0) {
             arrearsAmount = 0;
+        }
+
+        if (param.ScoreDeduct) {
+            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            arrearsAmount -= scoreDeductResult.Amount;
         }
 
         decimal customerAccount = loginCustomer.Account;
@@ -180,6 +188,11 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
 
         if (arrearsAmount < 0) {
             arrearsAmount = 0;
+        }
+
+        if (param.ScoreDeduct) {
+            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            arrearsAmount -= scoreDeductResult.Amount;
         }
 
         decimal customerAccount = loginCustomer.Account;

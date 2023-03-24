@@ -29,6 +29,7 @@ public class AlipayOrderService {
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly CouponService couponService;
     private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
+    private readonly CustomerScoreDeductService customerScoreDeductService;
 
     public AlipayOrderService(
         ISession session,
@@ -38,7 +39,8 @@ public class AlipayOrderService {
         CustomerScoreService customerScoreService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         CouponService couponService,
-        LogisticsOrderFeeSumService logisticsOrderFeeSumService
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService,
+        CustomerScoreDeductService customerScoreDeductService
     ) {
         this.session = session;
         this.payService = payService;
@@ -48,6 +50,7 @@ public class AlipayOrderService {
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.couponService = couponService;
         this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
+        this.customerScoreDeductService = customerScoreDeductService;
     }
 
     /// <summary>
@@ -98,6 +101,15 @@ public class AlipayOrderService {
 
         decimal paidAmount = order.PaidAmount;
         decimal arrearsAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount - discountAmount - paidAmount;
+
+        if (arrearsAmount < 0) {
+            arrearsAmount = 0;
+        }
+
+        if (param.ScoreDeduct) {
+            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            arrearsAmount -= scoreDeductResult.Amount;
+        }
 
         if (arrearsAmount <= 0) {
             // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了

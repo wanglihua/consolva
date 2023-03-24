@@ -26,6 +26,7 @@ public class WechatPayOrderService {
     private readonly CustomerScoreService customerScoreService;
     private readonly CouponService couponService;
     private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
+    private readonly CustomerScoreDeductService customerScoreDeductService;
 
     public WechatPayOrderService(
         ISession session,
@@ -34,7 +35,8 @@ public class WechatPayOrderService {
         LogisticsOrderActionService logisticsOrderActionService,
         CustomerScoreService customerScoreService,
         CouponService couponService,
-        LogisticsOrderFeeSumService logisticsOrderFeeSumService
+        LogisticsOrderFeeSumService logisticsOrderFeeSumService,
+        CustomerScoreDeductService customerScoreDeductService
     ) {
         this.session = session;
         this.payService = payService;
@@ -43,6 +45,7 @@ public class WechatPayOrderService {
         this.customerScoreService = customerScoreService;
         this.couponService = couponService;
         this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
+        this.customerScoreDeductService = customerScoreDeductService;
     }
 
     /// <summary>
@@ -53,10 +56,11 @@ public class WechatPayOrderService {
     /// <param name="customerId"></param>
     /// <param name="orderId"></param>
     /// <param name="couponId"></param>
+    /// <param name="scoreDeduct"></param>
     /// <param name="notifyUrl">回调URL，没有域名部分，比如 /client/wechat/app/charge/wechat/pay/notify</param>
     /// <returns></returns>
     /// <exception cref="ValidationException"></exception>
-    public WechatPayCreateResultData Create(int customerId, int orderId, int couponId, string notifyUrl) {
+    public WechatPayCreateResultData Create(int customerId, int orderId, int couponId, bool scoreDeduct, string notifyUrl) {
         LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -92,6 +96,11 @@ public class WechatPayOrderService {
 
         if (arrearsAmount < 0) {
             arrearsAmount = 0;
+        }
+
+        if (scoreDeduct) {
+            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            arrearsAmount -= scoreDeductResult.Amount;
         }
 
         if (arrearsAmount <= 0) {

@@ -8,7 +8,10 @@ public class WechatAppOrderPayCustomerAccountDetailParam {
     public int OrderId { get; set; }
 
     [JsonProperty("couponId")]
-    public int CouponId { get; set; }    
+    public int CouponId { get; set; }
+
+    [JsonProperty("scoreDeduct")]
+    public bool ScoreDeduct { get; set; }
 }
 
 public class WechatAppOrderPayCustomerAccountDetailParamValidator : AbstractValidator<WechatAppOrderPayCustomerAccountDetailParam> {

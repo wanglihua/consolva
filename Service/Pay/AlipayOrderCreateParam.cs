@@ -7,6 +7,8 @@ public class AlipayOrderCreateParam {
 
     public int CouponId { get; set; }
 
+    public bool ScoreDeduct { get; set; }
+
     public bool IsMobile { get; set; }
 
     /// <summary>
