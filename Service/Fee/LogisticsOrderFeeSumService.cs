@@ -41,8 +41,8 @@ public class LogisticsOrderFeeSumService {
                 totalAmountWithoutDiscount += fee.Fee;
             }
 
-            if (fee.Type != LogisticsOrderFeeType.VipDiscount
-                && fee.Type != LogisticsOrderFeeType.SuperVipDiscount) {
+            if (fee.Type == LogisticsOrderFeeType.VipDiscount
+                || fee.Type == LogisticsOrderFeeType.SuperVipDiscount) {
                 vipDiscount += fee.Fee;
             }
 

@@ -109,7 +109,7 @@ public class AlipayOrderService {
         decimal scoreDeductBaseAmount = 0;
         if (param.ScoreDeduct) {
             scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion);
-            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }
 

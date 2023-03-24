@@ -90,7 +90,7 @@ public class OrderPayTypeController : Controller {
             arrearsAmount = 0;
         }
 
-        var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, arrearsAmount);
+        var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
 
         if (param.ScoreDeduct) {
             arrearsAmount -= scoreDeductResult.Amount;

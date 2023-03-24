@@ -52,8 +52,11 @@ Page({
     },
 
     onScoreDeductSwitchChange(e) {
+        if(this.data.scoreDeductScore === "0.00") {
+            return;
+        }
+        
         const checked = e.detail;
-        console.log(checked);
         let scoreDeductMsg = "不抵扣积分";
         if(checked) {
             scoreDeductMsg = "抵扣积分";
