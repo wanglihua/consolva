@@ -12,6 +12,9 @@ public class OrderPayTypeListModel {
     [JsonProperty("totalAmount")]
     public string TotalAmount { get; set; } = string.Empty;
 
+    [JsonProperty("vipDiscountAmount")]
+    public string VipDiscountAmount { get; set; } = string.Empty;
+
     [JsonProperty("customerScore")]
     public string CustomerScore { get; set; } = string.Empty;
 
@@ -24,8 +27,8 @@ public class OrderPayTypeListModel {
     [JsonProperty("hasCoupon")]
     public bool HasCoupon { get; set; }
 
-    [JsonProperty("discountAmount")]
-    public string DiscountAmount { get; set; } = string.Empty;
+    [JsonProperty("couponDiscountAmount")]
+    public string CouponDiscountAmount { get; set; } = string.Empty;
 
     [JsonProperty("paidAmount")]
     public string PaidAmount { get; set; } = string.Empty;

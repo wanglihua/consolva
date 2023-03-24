@@ -71,21 +71,21 @@ public class OrderPayTypeController : Controller {
 
         var orderFeeSumData = logisticsOrderFeeSumService.GetSumData(orderId);
 
-        decimal discountAmount = 0;
-        string discountAmountStr = string.Empty;
+        decimal couponDiscountAmount = 0;
+        string couponDiscountAmountStr = string.Empty;
         if (coupon != null) {
             var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
             if (discountResult.Success == false) {
-                discountAmount = 0;
-                discountAmountStr = discountResult.Message;
+                couponDiscountAmount = 0;
+                couponDiscountAmountStr = discountResult.Message;
             } else {
-                discountAmount = discountResult.Discount;
-                discountAmountStr = discountAmount.ToString("#0.00");
+                couponDiscountAmount = discountResult.Discount;
+                couponDiscountAmountStr = couponDiscountAmount.ToString("#0.00");
             }
         }
 
         decimal paidAmount = order.PaidAmount;
-        decimal arrearsAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount - discountAmount - paidAmount;
+        decimal arrearsAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount - couponDiscountAmount - paidAmount;
         if (arrearsAmount < 0) {
             arrearsAmount = 0;
         }
@@ -102,12 +102,13 @@ public class OrderPayTypeController : Controller {
             Data = new OrderPayTypeListModel {
                 OrderId = order.Id,
                 OrderCode = order.Code,
-                TotalAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount.ToString("#0.00"),
+                TotalAmount = orderFeeSumData.TotalAmountWithoutDiscount.ToString("#0.00"),
+                VipDiscountAmount = orderFeeSumData.VipDiscountAmount.ToString("#0.00"),
                 CustomerScore = loginCustomer.ValidScore.ToString("#0.00"),
                 ScoreDeductScore = scoreDeductResult.Score.ToString("#0.00"),
                 ScoreDeductAmount = scoreDeductResult.Amount.ToString("#0.00"),
                 HasCoupon = coupon != null,
-                DiscountAmount = discountAmountStr,
+                CouponDiscountAmount = couponDiscountAmountStr,
                 PaidAmount = paidAmount.ToString("#0.00"),
                 ArrearsAmount = arrearsAmount.ToString("#0.00"),
             }

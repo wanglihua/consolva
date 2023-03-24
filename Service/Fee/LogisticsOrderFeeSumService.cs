@@ -27,10 +27,23 @@ public class LogisticsOrderFeeSumService {
 
         decimal totalAmount = 0.0m;
 
+        decimal totalAmountWithoutDiscount = 0.0m;
         decimal totalAmountWithoutCouponDiscount = 0.0m;
+        decimal vipDiscount = 0.0m;
         foreach (var fee in orderFeeList) {
             if (fee.Type != LogisticsOrderFeeType.CouponDiscountFee) {
                 totalAmountWithoutCouponDiscount += fee.Fee;
+            }
+
+            if (fee.Type != LogisticsOrderFeeType.CouponDiscountFee
+                && fee.Type != LogisticsOrderFeeType.VipDiscount
+                && fee.Type != LogisticsOrderFeeType.SuperVipDiscount) {
+                totalAmountWithoutDiscount += fee.Fee;
+            }
+
+            if (fee.Type != LogisticsOrderFeeType.VipDiscount
+                && fee.Type != LogisticsOrderFeeType.SuperVipDiscount) {
+                vipDiscount += fee.Fee;
             }
 
             totalAmount += fee.Fee;
@@ -51,6 +64,8 @@ public class LogisticsOrderFeeSumService {
 
         return new LogisticsOrderFeeSumData {
             TotaAmount = totalAmount,
+            TotalAmountWithoutDiscount = totalAmountWithoutDiscount,
+            VipDiscountAmount = Math.Abs(vipDiscount),
             TotalAmountWithoutCouponDiscount = totalAmountWithoutCouponDiscount,
             FirstModeFee = firstModeFee,
             FirstModeFeeNoPromotion = firstModeFeeNoPromotion,
