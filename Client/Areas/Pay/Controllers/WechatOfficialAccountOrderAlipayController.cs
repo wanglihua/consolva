@@ -39,7 +39,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         this.alipayOrderService = alipayOrderService;
     }
 
-    private const string ORDER_ALIPAY_URL = "/client/order/alipay/{orderPayCode}/{couponPayCode}";
+    private const string ORDER_ALIPAY_URL = "/client/order/alipay/{scoreDeduct}/{orderPayCode}/{couponPayCode}";
 
     [HttpPost]
     [Route("/client/order/alipay/create/url")]
@@ -61,7 +61,8 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         string orderPayCode = payService.GenereatePayCodeInUrl(orderId);
         string couponPayCode = payService.GenereatePayCodeInUrl(couponId);
 
-        string url = ORDER_ALIPAY_URL.Replace("{orderPayCode}", orderPayCode);
+        string url = ORDER_ALIPAY_URL.Replace("{scoreDeduct}", param.ScoreDeduct ? "1" : "0");
+        url = url.Replace("{orderPayCode}", orderPayCode);
         url = url.Replace("{couponPayCode}", couponPayCode);
         url = SiteConfig.SiteUrlBase + url;
 
@@ -77,14 +78,14 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
     /// <summary>
     /// 用于复制粘贴到浏览器的URL
     /// </summary>
+    /// <param name="scoreDeduct">是否积分抵扣</param>
     /// <param name="orderPayCode">订单ID加密码</param>
     /// <param name="couponPayCode">优惠券ID加密码</param>
     /// <returns></returns>
     [NoLoginRequired]
     [HttpGet]
-    // [Route("/client/wechat/official/account/alipay/{orderPayCode}/{couponPayCode}")]
     [Route(ORDER_ALIPAY_URL)] // 让复制出来的URL好看一点
-    public IActionResult CopyUrl(string orderPayCode, string couponPayCode) {
+    public IActionResult CopyUrl(int scoreDeduct, string orderPayCode, string couponPayCode) {
         // 检查参数正确性
         int orderId = payService.GetIntFromPayCodeInUrl(orderPayCode);
         int couponId = payService.GetIntFromPayCodeInUrl(couponPayCode);
@@ -108,23 +109,24 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
             return View("WechatOfficialAccountOrderAlipayCopyUrl", model);
         }
 
-        return RedirectToAction("AliPayRequest", new { orderPayCode = orderPayCode, couponPayCode = couponPayCode });
+        return RedirectToAction("AliPayRequest", new { scoreDeduct = scoreDeduct, orderPayCode = orderPayCode, couponPayCode = couponPayCode });
     }
 
     /// <summary>
     /// 发起支付请求
     /// </summary>
+    /// <param name="scoreDeduct">是否积分抵扣</param>
     /// <param name="orderPayCode">订单ID加密码</param>
     /// <param name="couponPayCode">优惠券ID加密码</param>
     /// <returns></returns>
     [NoLoginRequired]
     [HttpGet]
     // [Route("/client/wechat/official/account/alipay/request/{orderPayCode}/{couponPayCode}")]
-    [Route("/client/order/alipay/request/{orderPayCode}/{couponPayCode}")] // 让复制出来的URL好看一点
+    [Route("/client/order/alipay/request/{scoreDeduct}/{orderPayCode}/{couponPayCode}")] // 让复制出来的URL好看一点
     [Transactional]
-    public IActionResult AliPayRequest(string orderPayCode, string couponPayCode) {
+    public IActionResult AliPayRequest(int scoreDeduct, string orderPayCode, string couponPayCode) {
         if (WebUtil.IsWechatRequest(Request)) {
-            return RedirectToAction("CopyUrl", new { orderPayCode = orderPayCode, couponPayCode = couponPayCode });
+            return RedirectToAction("CopyUrl", new { scoreDeduct = scoreDeduct, orderPayCode = orderPayCode, couponPayCode = couponPayCode });
         }
 
         int orderId = payService.GetIntFromPayCodeInUrl(orderPayCode);
@@ -134,6 +136,7 @@ public class WechatOfficialAccountOrderAlipayController : Controller {
         var createParam = new AlipayOrderCreateParam {
             OrderId = orderId,
             CouponId = couponId,
+            ScoreDeduct = scoreDeduct > 0,
             IsMobile = isMobile,
             ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Return", "WechatOfficialAccountOrderAlipay"),
             NotifyUrl = SiteConfig.SiteUrlBase + Url.Action("Notify", "WechatOfficialAccountOrderAlipay"),

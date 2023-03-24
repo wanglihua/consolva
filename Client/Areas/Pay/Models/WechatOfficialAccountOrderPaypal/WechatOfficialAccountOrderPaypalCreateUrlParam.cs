@@ -8,4 +8,7 @@ public class WechatOfficialAccountOrderPaypalCreateUrlParam {
 
     [JsonProperty("couponId")]
     public int CouponId { get; set; }
+
+    [JsonProperty("scoreDeduct")]
+    public bool ScoreDeduct { get; set; }    
 }

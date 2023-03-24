@@ -38,7 +38,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
         this.paypalOrderService = paypalOrderService;
     }
 
-    private const string ORDER_PAYPAL_URL = "/client/order/paypal/{orderPayCode}/{couponPayCode}";
+    private const string ORDER_PAYPAL_URL = "/client/order/paypal/{scoreDeduct}/{orderPayCode}/{couponPayCode}";
 
     [HttpPost]
     [Route("/client/order/paypal/create/url")]
@@ -60,7 +60,8 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
         string orderPayCode = payService.GenereatePayCodeInUrl(orderId);
         string couponPayCode = payService.GenereatePayCodeInUrl(couponId);
 
-        string url = ORDER_PAYPAL_URL.Replace("{orderPayCode}", orderPayCode);
+        string url = ORDER_PAYPAL_URL.Replace("{scoreDeduct}", param.ScoreDeduct ? "1" : "0");
+        url = url.Replace("{orderPayCode}", orderPayCode);
         url = url.Replace("{couponPayCode}", couponPayCode);
         url = SiteConfig.SiteUrlBase + url;
 
@@ -77,7 +78,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
     [HttpGet]
     [Route(ORDER_PAYPAL_URL)]
     [Transactional]
-    public IActionResult PaypalRequest(string orderPayCode, string couponPayCode) {
+    public IActionResult PaypalRequest(int scoreDeduct, string orderPayCode, string couponPayCode) {
         int orderId = payService.GetIntFromPayCodeInUrl(orderPayCode);
         int couponId = payService.GetIntFromPayCodeInUrl(couponPayCode);
 
@@ -86,6 +87,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
         var createParam = new PaypalOrderCreateParam {
             OrderId = orderId,
             CouponId = couponId,
+            ScoreDeduct = scoreDeduct > 0,
             PaymentMethod = PaypalPaymentMethod.Paypal,
 
             ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Process", "WechatOfficialAccountOrderPaypal") + $"?{shundaKey}={outTradeNo}",
