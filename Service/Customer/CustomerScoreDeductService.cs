@@ -27,7 +27,8 @@ public class CustomerScoreDeductService {
     /// 计算订单可抵扣积分数量
     /// </summary>
     /// <param name="orderId"></param>
-    public CustomerScoreDeductResult GetDeduction(int orderId) {
+    /// <param name="baseAmount">基础费用，一般是非促销渠道物流费用</param>
+    public CustomerScoreDeductResult GetDeduction(int orderId, decimal baseAmount) {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -59,11 +60,8 @@ public class CustomerScoreDeductService {
             throw new Exception("积分兑换余额规则，兑换金额设置小于等于零，不符合要求！");
         }
 
-        var orderFeeSumData = logisticsOrderFeeSumService.GetSumData(orderId);
-
-        decimal firstModeFeeNoPromotion = orderFeeSumData.FirstModeFeeNoPromotion;
         // 将非促销渠道费用转成积分数量
-        decimal feeNeedScore = Math.Round((firstModeFeeNoPromotion / scoreToBalanceRule.Amount) * scoreToBalanceRule.Score, 2);
+        decimal feeNeedScore = Math.Round((baseAmount / scoreToBalanceRule.Amount) * scoreToBalanceRule.Score, 2);
         // 客户可用积分
         decimal customerScore = order.Customer.ValidScore;
         // 本次支付可用积分
@@ -81,7 +79,8 @@ public class CustomerScoreDeductService {
     /// 执行实际的抵扣
     /// </summary>
     /// <param name="orderId"></param>
-    public void Deduct(int orderId) {
+    /// <param name="baseAmount">基础费用，一般是非促销渠道物流费用</param>
+    public void Deduct(int orderId, decimal baseAmount) {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -91,7 +90,7 @@ public class CustomerScoreDeductService {
 
         var customer = order.Customer;
 
-        var deductResult = GetDeduction(orderId);
+        var deductResult = GetDeduction(orderId, baseAmount);
 
         customer.ValidScore -= deductResult.Score;
         session.Update(customer);

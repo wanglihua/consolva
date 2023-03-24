@@ -69,18 +69,11 @@ public class OrderPayTypeController : Controller {
         logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
         var orderFeeSumData = logisticsOrderFeeSumService.GetSumData(orderId);
-        var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId);
-
-        decimal firstModeFeeNoPromotionAfterScoreDeduct = orderFeeSumData.FirstModeFeeNoPromotion;
-        if (param.ScoreDeduct) {
-            // 计算积分抵扣，优惠券折扣应该是在积分抵扣的基础上计算的
-            firstModeFeeNoPromotionAfterScoreDeduct = orderFeeSumData.FirstModeFeeNoPromotion - scoreDeductResult.Amount;
-        }
 
         decimal discountAmount = 0;
         string discountAmountStr = string.Empty;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, firstModeFeeNoPromotionAfterScoreDeduct);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
             if (discountResult.Success == false) {
                 discountAmount = 0;
                 discountAmountStr = discountResult.Message;
@@ -92,9 +85,14 @@ public class OrderPayTypeController : Controller {
 
         decimal paidAmount = order.PaidAmount;
         decimal arrearsAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount - discountAmount - paidAmount;
-
         if (arrearsAmount < 0) {
             arrearsAmount = 0;
+        }
+
+        var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, arrearsAmount);
+
+        if (param.ScoreDeduct) {
+            arrearsAmount -= scoreDeductResult.Amount;
         }
 
         return Json(new JsonResultData {

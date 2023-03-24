@@ -124,7 +124,7 @@ public class LogisticsOrderFeeService {
         #region vip 和 超级 vip折扣
 
         // 按物流费用计算，促销的不参与
-        
+
         // 这里是超级VIP和VIP都计算了的，实际只计算VIP也可以的，现在的VIP就是VIP和超级VIP中折扣大的那个
 
         int customerId = order.Customer.Id;
@@ -181,6 +181,7 @@ public class LogisticsOrderFeeService {
         #region 计算优惠券实
 
         // 这里计算的优惠券费用是无效的，因为现在创建时没有选择优惠券，支付时计算的才是有效的
+        // 可能费用重新计算的时候，会有用
 
         // 按物流费用计算，促销的不参与
 
@@ -354,6 +355,9 @@ public class LogisticsOrderFeeService {
     /// <summary>
     /// 清除之前计算保存的订单费用数据
     /// 只清除物流费用和保险GST费用
+    ///
+    /// 这里有个问题积分抵扣费用是不移除的，计算的时候也是不计算的，积分抵扣只发生在支付阶段
+    /// 可能重新计算费用后，这个抵扣会不准确
     /// </summary>
     public void RemovePreviousSavedFee(int orderId) {
         IList<LogisticsOrderFeeType> feeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
