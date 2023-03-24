@@ -106,8 +106,10 @@ public class AlipayOrderService {
             arrearsAmount = 0;
         }
 
+        decimal scoreDeductBaseAmount = 0;
         if (param.ScoreDeduct) {
-            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion);
+            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
@@ -120,6 +122,7 @@ public class AlipayOrderService {
                 PayType = PayType.AliPay,
                 OutTradeNo = string.Empty,
                 Amount = 0, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。
+                ScoreDeductBaseAmount = scoreDeductBaseAmount,
                 Status = PayStatus.Paid
             };
 
@@ -143,7 +146,8 @@ public class AlipayOrderService {
             Customer = order.Customer,
             PayType = PayType.AliPay,
             OutTradeNo = outTradeNo,
-            Amount = order.ArrearsAmountFormula,
+            Amount = arrearsAmount,
+            ScoreDeductBaseAmount = scoreDeductBaseAmount,
             Status = PayStatus.NotPaid
         };
         session.Save(orderPay);
@@ -259,6 +263,11 @@ public class AlipayOrderService {
         orderPay.Status = PayStatus.Paid;
         session.Update(orderPay);
         session.Flush();
+
+        // 执行积分抵扣
+        if (orderPay.ScoreDeductBaseAmount > 0) {
+            customerScoreDeductService.Deduct(orderPay.Order.Id, orderPay.ScoreDeductBaseAmount);
+        }
 
         LogisticsOrderInfo order = orderPay.Order;
 

@@ -190,8 +190,10 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
             arrearsAmount = 0;
         }
 
+        decimal scoreDeductBaseAmount = 0;
         if (param.ScoreDeduct) {
-            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion);
+            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
@@ -213,7 +215,8 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
             OutTradeNo = string.Empty, // 非空，其实生成一个也可以的
             Customer = order.Customer,
             PayType = PayType.Balance,
-            Amount = actualPayAmount, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。
+            Amount = actualPayAmount, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。\
+            ScoreDeductBaseAmount = scoreDeductBaseAmount,
             Status = PayStatus.Paid
         };
 

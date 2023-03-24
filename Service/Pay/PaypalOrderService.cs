@@ -103,8 +103,10 @@ public class PaypalOrderService {
             arrearsAmount = 0;
         }
 
+        decimal scoreDeductBaseAmount = 0;
         if (param.ScoreDeduct) {
-            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion);
+            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
@@ -117,6 +119,7 @@ public class PaypalOrderService {
                 PayType = PayType.Paypal,
                 OutTradeNo = string.Empty,
                 Amount = 0, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。
+                ScoreDeductBaseAmount = scoreDeductBaseAmount,
                 Status = PayStatus.Paid
             };
 
@@ -141,6 +144,7 @@ public class PaypalOrderService {
             OutTradeNo = outTradeNo,
             PayPalPaymentId = string.Empty, // 后面更新
             Amount = arrearsAmount,
+            ScoreDeductBaseAmount = scoreDeductBaseAmount,
             Status = PayStatus.NotPaid,
             Description = $"币种:{currency.Name},金额:{arrearsAmountCurrency}{currency.Code}",
         };
@@ -253,6 +257,11 @@ public class PaypalOrderService {
         orderPay.Status = PayStatus.Paid;
         session.Update(orderPay);
         session.Flush();
+
+        // 执行积分抵扣
+        if (orderPay.ScoreDeductBaseAmount > 0) {
+            customerScoreDeductService.Deduct(orderPay.Order.Id, orderPay.ScoreDeductBaseAmount);
+        }
 
         var order = orderPay.Order;
         int orderId = order.Id;

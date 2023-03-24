@@ -77,6 +77,11 @@ public class LogisticsOrderPayInfo : Entity {
     public virtual string WriteOffReasonContent { get; set; } = string.Empty;
 
     /// <summary>
+    /// 积分抵扣基础金额
+    /// </summary>
+    public virtual decimal ScoreDeductBaseAmount { get; set; }
+
+    /// <summary>
     /// 描述
     /// </summary>
     [JsonProperty("description")]

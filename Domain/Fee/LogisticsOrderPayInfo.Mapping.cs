@@ -119,6 +119,15 @@ public class LogisticsOrderPayInfoMapping : EntityMapping<LogisticsOrderPayInfo>
         );
 
         Property(
+            x => x.ScoreDeductBaseAmount,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("score_deduct_base_amount");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Description,
             map => {
                 map.Type(NHibernateUtil.String);
