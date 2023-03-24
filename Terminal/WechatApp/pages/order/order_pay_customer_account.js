@@ -19,6 +19,7 @@ Page({
     onLoad(options) {
         const orderId = options.orderId;
         const couponId = options.couponId;
+        const scoreDeduct = options.scoreDeduct;
 
         this.setData({
             orderId: orderId,
@@ -29,6 +30,7 @@ Page({
         app.post("/client/order/pay/customer/account/detail", {
             orderId: orderId,
             couponId: couponId,
+            scoreDeduct: scoreDeduct,
         }, function (res) {
             that.setData({
                 orderCode: res.data.orderCode,

@@ -7,10 +7,15 @@ Page({
         couponId: 0,
         orderCode: "",
         totalAmount: "",
+        customerScore: "",
+        scoreDeductScore: "",
+        scoreDeductAmount: "",
         hasCoupon: false,
         discountAmount: "",
         paidAmount: "",
-        arrearsAmount: ""
+        arrearsAmount: "",
+        scoreDeduct: false,
+        scoreDeductMsg: "不抵扣积分",
     },
 
     onLoad(options) {
@@ -33,6 +38,9 @@ Page({
             that.setData({
                 orderCode: res.data.orderCode,
                 totalAmount: res.data.totalAmount,
+                customerScore: res.data.customerScore,
+                scoreDeductScore: res.data.scoreDeductScore,
+                scoreDeductAmount: res.data.scoreDeductAmount,
                 hasCoupon: res.data.hasCoupon,
                 discountAmount: res.data.discountAmount,
                 paidAmount: res.data.paidAmount,
@@ -41,14 +49,29 @@ Page({
         });
     },
 
+    onScoreDeductSwitchChange(e) {
+        const checked = e.detail;
+        console.log(checked);
+        let scoreDeductMsg = "不抵扣积分";
+        if(checked) {
+            scoreDeductMsg = "抵扣积分";
+        }
+        this.setData({
+            scoreDeduct: checked,
+            scoreDeductMsg: scoreDeductMsg,
+        });
+    },
+
     onWechatPayClick(e) {
         const orderId = this.data.orderId;
         const couponId = this.data.couponId;
+        const scoreDeduct = this.data.scoreDeduct;
 
         // 优惠券在这个请求里面保存到订单
         app.post("/client/wechat/app/order/wechat/pay/create", {
             orderId: orderId,
             couponId: couponId,
+            scoreDeduct: scoreDeduct,
         }, function (res) {
             if (res.needPay === false) {
                 wx.showModal({
@@ -90,10 +113,12 @@ Page({
     onAlipayClick(e) {
         const orderId = this.data.orderId;
         const couponId = this.data.couponId;
+        const scoreDeduct = this.data.scoreDeduct;
 
         app.post("/client/order/alipay/create/url", {
             orderId: orderId,
             couponId: couponId,
+            scoreDeduct: scoreDeduct,
         }, function (res) {
             const url = res.data.url;
             wx.setClipboardData({
@@ -114,10 +139,12 @@ Page({
     onPaypalClick(e) {
         const orderId = this.data.orderId;
         const couponId = this.data.couponId;
+        const scoreDeduct = this.data.scoreDeduct;
 
         app.post("/client/order/paypal/create/url", {
             orderId: orderId,
             couponId: couponId,
+            scoreDeduct: scoreDeduct,
         }, function (res) {
             const url = res.data.url;
             wx.setClipboardData({

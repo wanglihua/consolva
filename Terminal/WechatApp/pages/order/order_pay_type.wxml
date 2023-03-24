@@ -14,9 +14,25 @@
         <view class="item-last-vspace"/>
     </van-cell-group>
 
+    <van-cell-group title="积分抵扣"/>
+    <van-cell-group custom-class="items">
+        <van-cell title="剩余积分" value="{{ customerScore }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="可抵扣积分" value="{{ scoreDeductScore }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="可抵扣金额" value="{{ scoreDeductAmount }}" border="{{ false }}" custom-class="item"/>
+        <van-cell title="是否积分抵扣" border="{{ false }}" custom-class="item">
+            <view>
+                <view style="display:block;">
+                    <van-switch checked="{{ scoreDeduct }}" bind:change="onScoreDeductSwitchChange"/>
+                </view>
+                <view style="display:block;">{{ scoreDeductMsg }}</view>
+            </view>
+        </van-cell>
+        <view class="item-last-vspace"/>
+    </van-cell-group>    
+
     <van-cell-group title="订单支付方式"/>
     <van-cell-group custom-class="items">
-        <van-cell title="余额支付" is-link link-type="navigateTo" size="large" url="./order_pay_customer_account?orderId={{ orderId }}&couponId={{ couponId }}">
+        <van-cell title="余额支付" is-link link-type="navigateTo" size="large" url="./order_pay_customer_account?orderId={{ orderId }}&couponId={{ couponId }}&scoreDeduct={{ scoreDeduct }}">
             <van-icon slot="icon" class-prefix="iconfont" name="account" class="cell-left-icon"/>
         </van-cell>
 

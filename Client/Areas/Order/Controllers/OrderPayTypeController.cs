@@ -61,6 +61,7 @@ public class OrderPayTypeController : Controller {
         }
 
         int loginCustomerId = loginCustomerService.GetLoginCustomerId();
+        var loginCustomer = loginCustomerService.GetLoginCustomer();
 
         if (order.Customer.Id != loginCustomerId) {
             throw new ValidationException($"指定的订单{order.Code}不属于当前登录客户#{loginCustomerId}！");
@@ -102,8 +103,9 @@ public class OrderPayTypeController : Controller {
                 OrderId = order.Id,
                 OrderCode = order.Code,
                 TotalAmount = orderFeeSumData.TotalAmountWithoutCouponDiscount.ToString("#0.00"),
-                ScoreDeductScore = scoreDeductResult.Score,
-                ScoreDeductAmount = scoreDeductResult.Amount,
+                CustomerScore = loginCustomer.ValidScore.ToString("#0.00"),
+                ScoreDeductScore = scoreDeductResult.Score.ToString("#0.00"),
+                ScoreDeductAmount = scoreDeductResult.Amount.ToString("#0.00"),
                 HasCoupon = coupon != null,
                 DiscountAmount = discountAmountStr,
                 PaidAmount = paidAmount.ToString("#0.00"),
