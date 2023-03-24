@@ -117,7 +117,7 @@ public class CustomerScoreExcelService {
             throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
         }
 
-        var customerListImport = new List<CustomerInfo>();
+        var customerListImport = new List<CustomerScoreExcelImportItem>();
 
         // 略过标题行，所以 rowIndex = 1 开始
         var lastRowNum = sheet.LastRowNum;
@@ -179,20 +179,30 @@ public class CustomerScoreExcelService {
                 throw new ValidationException($"第{rowIndex}行数据 历史积分 数据格式有误 不能为空，导入失败！");
             }
 
-            customer.ValidScore = validScore;
-            customer.TotalScore = totalScore;
-
-            customerListImport.Add(customer);
+            customerListImport.Add(new CustomerScoreExcelImportItem() {
+                Customer = customer,
+                ValidScoreDelta = validScore,
+                TotalScoreDelta = totalScore,
+            });
         }
 
-        foreach (var customer in customerListImport) {
-            // 其实这里不调用 update，也会保存到数据库的
+        foreach (var customerImportItem in customerListImport) {
+            var customer = customerImportItem.Customer;
+
+            // decimal validScoreBefore = customer.ValidScore;
+            // decimal totalScoreBefore = customer.TotalScore;
+
+            customer.ValidScore += customerImportItem.ValidScoreDelta;
+            customer.TotalScore += customerImportItem.TotalScoreDelta;
+
+            // decimal validScoreAfter = customer.ValidScore;
+            // decimal totalScoreAfter = customer.TotalScore;
             session.Update(customer);
 
             session.Save(new CustomerScoreLogInfo {
                 Customer = customer,
                 ScoreType = CustomerScoreType.Import,
-                Score = customer.ValidScore,
+                Score = customerImportItem.ValidScoreDelta,
                 Amount = 0,
                 IsValidScore = true,
                 LogisticsOrderPay = null,
@@ -205,7 +215,7 @@ public class CustomerScoreExcelService {
             session.Save(new CustomerScoreLogInfo {
                 Customer = customer,
                 ScoreType = CustomerScoreType.Import,
-                Score = customer.TotalScore,
+                Score = customerImportItem.TotalScoreDelta,
                 Amount = 0,
                 IsValidScore = false,
                 LogisticsOrderPay = null,
