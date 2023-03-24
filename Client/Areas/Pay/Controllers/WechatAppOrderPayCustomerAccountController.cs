@@ -104,7 +104,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         }
 
         if (param.ScoreDeduct) {
-            var scoreDeductResult = customerScoreDeductService.Deduct(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
