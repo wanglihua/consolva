@@ -62,7 +62,7 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     public static readonly LogisticsOrderFeeType GstFee = new LogisticsOrderFeeType(14000, "GST费用", "GST费用");
 
     /// <summary>
-    /// 优惠券实扣s
+    /// 优惠券实扣
     /// </summary>
     public static readonly LogisticsOrderFeeType CouponDiscountFee = new LogisticsOrderFeeType(15000, "优惠券实扣", "优惠券实扣");
 
@@ -80,6 +80,11 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     /// 手动减少费用
     /// </summary>
     public static readonly LogisticsOrderFeeType ManualDecrease = new LogisticsOrderFeeType(18000, "手动减少", "手动减少费用");
+
+    /// <summary>
+    /// 积分抵扣费用
+    /// </summary>
+    public static readonly LogisticsOrderFeeType ScoreDeductFee = new LogisticsOrderFeeType(19000, "积分抵扣", "积分抵扣");
 
     /// <summary>
     /// 退款
@@ -114,6 +119,7 @@ public class LogisticsOrderFeeType : CodeTypeBase {
         GstFee,
         InsuranceFee,
         CouponDiscountFee,
+        ScoreDeductFee,
         ManualIncrease,
         ManualDecrease,
         RefundFee,

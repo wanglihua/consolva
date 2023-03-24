@@ -2,8 +2,7 @@ using shunda.Core.CodeType;
 
 namespace shunda.Domain.Fee;
 
-public class PayType : CodeTypeBase
-{
+public class PayType : CodeTypeBase {
     /// <summary>
     /// 账户余额支付, 1000
     /// </summary>
@@ -64,10 +63,8 @@ public class PayType : CodeTypeBase
 
     private static readonly Dictionary<int, PayType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static PayType GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out PayType? codeType))
-        {
+    public static PayType GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out PayType? codeType)) {
             return codeType;
         }
 
@@ -78,8 +75,7 @@ public class PayType : CodeTypeBase
     /// 返回所有支付类型列表
     /// </summary>
     /// <returns></returns>
-    public static IList<PayType> GetList()
-    {
+    public static IList<PayType> GetList() {
         return codeTypeList.ToList();
     }
 
@@ -87,28 +83,22 @@ public class PayType : CodeTypeBase
     /// 获取支付类型列表，用于客户支付时的可选支付类型选择
     /// </summary>
     /// <returns></returns>
-    public static IList<PayType> GetCustomerPayTypeList()
-    {
+    public static IList<PayType> GetCustomerPayTypeList() {
         return customerCodeTypeList.ToList();
     }
 
-    private PayType(int id, string name, string description) : base(id, name, description)
-    {
+    private PayType(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class PayTypeHibernateType : CodeHibernateTypeBase<PayType>
-{
-    protected override PayType GetCodeTypeById(int id)
-    {
+public class PayTypeHibernateType : CodeHibernateTypeBase<PayType> {
+    protected override PayType GetCodeTypeById(int id) {
         return PayType.GetById(id);
     }
 }
 
-public class PayTypeModelBinder : CodeTypeModelBinderBase<PayType>
-{
-    protected override PayType GetCodeTypeById(int id)
-    {
+public class PayTypeModelBinder : CodeTypeModelBinderBase<PayType> {
+    protected override PayType GetCodeTypeById(int id) {
         return PayType.GetById(id);
     }
 }

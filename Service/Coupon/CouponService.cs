@@ -488,14 +488,15 @@ public class CouponService {
 
         if (coupon != null) {
             // 插入新的优惠券费用
-            var couponFee = new LogisticsOrderFeeInfo();
-            couponFee.Customer = order.Customer;
-            couponFee.Order = order;
-            couponFee.OrderCode = order.Code;
-            couponFee.GoodsType = LogisticsGoodsType.None;
-            couponFee.Type = LogisticsOrderFeeType.CouponDiscountFee;
-            couponFee.Description = "优惠券实扣," + (coupon.Code);
-            couponFee.Fee = -couponDiscount;
+            var couponFee = new LogisticsOrderFeeInfo {
+                Customer = order.Customer,
+                Order = order,
+                OrderCode = order.Code,
+                GoodsType = LogisticsGoodsType.None,
+                Type = LogisticsOrderFeeType.CouponDiscountFee,
+                Description = "优惠券实扣," + (coupon.Code),
+                Fee = -couponDiscount
+            };
 
             session.Save(couponFee);
             session.Flush();

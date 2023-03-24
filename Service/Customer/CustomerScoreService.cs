@@ -350,13 +350,14 @@ public class CustomerScoreService {
         session.Flush();
 
         // 记录积分变动日志
-        CustomerScoreLogInfo scoreLog = new CustomerScoreLogInfo();
-        scoreLog.Customer = customer;
-        scoreLog.ScoreType = CustomerScoreType.ScoreToBalance;
-        scoreLog.Score = -score;
-        scoreLog.Amount = amount;
-        scoreLog.IsValidScore = true; // 有效积分才能换余额
-        scoreLog.Description = description;
+        CustomerScoreLogInfo scoreLog = new CustomerScoreLogInfo {
+            Customer = customer,
+            ScoreType = CustomerScoreType.ScoreToBalance,
+            Score = -score,
+            Amount = amount,
+            IsValidScore = true, // 有效积分才能换余额
+            Description = description
+        };
 
         session.Save(scoreLog);
         session.Flush();

@@ -1,7 +1,6 @@
 <header/>
 <view class="container">
     <van-cell-group title="订单支付费用"/>
-
     <van-cell-group custom-class="items">
         <van-cell title="订单编号" value="{{ orderCode }}" border="{{ false }}" custom-class="item"/>
         <van-cell title="订单费用" value="{{ totalAmount }} RMB" border="{{ false }}" custom-class="item"/>

@@ -27,6 +27,11 @@ public class CustomerScoreType : CodeTypeBase {
     public static readonly CustomerScoreType Import = new CustomerScoreType(4000, "导入积分", "导入积分");
 
     /// <summary>
+    /// 积分抵扣
+    /// </summary>
+    public static readonly CustomerScoreType Deduct = new CustomerScoreType(5000, "积分抵扣", "积分抵扣");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly CustomerScoreType None = new CustomerScoreType(0, "", "");
@@ -36,6 +41,7 @@ public class CustomerScoreType : CodeTypeBase {
         LogisticsConsume,
         ScoreToBalance,
         Import,
+        Deduct,
     };
 
     private static readonly Dictionary<int, CustomerScoreType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
