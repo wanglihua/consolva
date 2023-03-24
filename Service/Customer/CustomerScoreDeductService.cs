@@ -5,22 +5,15 @@ using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
-using shunda.Service.Fee;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
 public class CustomerScoreDeductService {
     private readonly ISession session;
-    private readonly LogisticsOrderFeeSumService logisticsOrderFeeSumService;
 
-    public CustomerScoreDeductService(
-        ISession session,
-        LogisticsOrderFeeSumService logisticsOrderFeeSumService
-    ) {
+    public CustomerScoreDeductService(ISession session) {
         this.session = session;
-        this.logisticsOrderFeeSumService = logisticsOrderFeeSumService;
     }
 
     /// <summary>
