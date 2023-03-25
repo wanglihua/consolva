@@ -1,5 +1,6 @@
 {
     "pages": [
+        "pages/home/home_login",
         "pages/home/home_index",
         "pages/home/home_package",
         "pages/home/home_personal",
