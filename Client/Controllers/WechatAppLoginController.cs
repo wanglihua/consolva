@@ -56,9 +56,11 @@ public class WechatAppLoginController : Controller {
             }
 
             if (param.Agreed == true) {
-                customer.Agreed = true;
-                session.Update(customer);
-                session.Flush();
+                Transactional.Wrap(session, () => {
+                    customer.Agreed = true;
+                    session.Update(customer);
+                    session.Flush();
+                });
             }
         }
 
