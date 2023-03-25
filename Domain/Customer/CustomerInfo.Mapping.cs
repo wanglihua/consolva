@@ -225,6 +225,15 @@ public class CustomerInfoMapping : EntityMapping<CustomerInfo> {
         );
 
         Property(
+            x => x.Agreed,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("agreed");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Status,
             map => {
                 map.Type<CustomerStatusHibernateType>();

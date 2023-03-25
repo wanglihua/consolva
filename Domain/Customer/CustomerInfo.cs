@@ -9,8 +9,7 @@ namespace shunda.Domain.Customer;
 /// <summary>
 /// 客户
 /// </summary>
-public class CustomerInfo : Entity
-{
+public class CustomerInfo : Entity {
     public static readonly string DefaultPassword = "111111"; // 6 个 1
 
     /// <summary>
@@ -44,7 +43,7 @@ public class CustomerInfo : Entity
     [MaxLength(100, ErrorMessage = "微信公众号OpenId长度不能大于100！")]
     [JsonProperty("wechatOfficialAccountOpenId")]
     public virtual string WechatOfficialAccountOpenId { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// 微信公众号关注状态，非空
     /// </summary>
@@ -55,13 +54,13 @@ public class CustomerInfo : Entity
     /// 微信公众号关注时间，可空
     /// </summary>
     [JsonProperty("wechatOfficialAccountFollowTime")]
-    public virtual  DateTime? WechatOfficialAccountFollowTime { get; set; }
+    public virtual DateTime? WechatOfficialAccountFollowTime { get; set; }
 
     /// <summary>
     /// 微信公众号取消关注时间，可空
     /// </summary>
     [JsonProperty("wechatOfficialAccountUnfollowTime")]
-    public virtual DateTime? WechatOfficialAccountUnfollowTime { get; set; } 
+    public virtual DateTime? WechatOfficialAccountUnfollowTime { get; set; }
 
     /// <summary>
     /// 微信UnionId，非空
@@ -191,6 +190,11 @@ public class CustomerInfo : Entity
     [JsonProperty("createMethod")]
     [ModelBinder(typeof(CustomerCreateMethodModelBinder))]
     public virtual CustomerCreateMethod CreateMethod { get; set; } = CustomerCreateMethod.None;
+
+    /// <summary>
+    /// 是否已同意 服务协议和隐私条款
+    /// </summary>
+    public virtual bool Agreed { get; set; }
 
     /// <summary>
     /// 状态，非空
