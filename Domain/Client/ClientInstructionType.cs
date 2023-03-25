@@ -75,6 +75,16 @@ public class ClientInstructionType : CodeTypeBase {
     public static readonly ClientInstructionType ScoreRemark = new ClientInstructionType(13000, "积分说明", "积分说明");
 
     /// <summary>
+    /// 用户服务协议
+    /// </summary>
+    public static readonly ClientInstructionType ServiceAgreement = new ClientInstructionType(14000, "用户服务协议", "用户服务协议");
+
+    /// <summary>
+    /// 隐私说明
+    /// </summary>
+    public static readonly ClientInstructionType PrivacyStatement = new ClientInstructionType(15000, "隐私说明", "隐私说明");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly ClientInstructionType None = new ClientInstructionType(0, "", "");
@@ -93,6 +103,8 @@ public class ClientInstructionType : CodeTypeBase {
         BeginnerGuide,
         Faq,
         ScoreRemark,
+        ServiceAgreement,
+        PrivacyStatement,
     };
 
     private static readonly IDictionary<int, ClientInstructionType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
