@@ -38,10 +38,12 @@ public class WechatAppLoginService {
     /// </summary>
     /// <param name="code">wx.login() 获得的 code</param>
     /// <param name="request"></param>
-    public void Login(string code, HttpRequest request) {
+    public LoginResult Login(string code, HttpRequest request) {
         var result = wechatAppAuthCodeSessionService.GetResult(code);
         string wechatAppOpenId = result.OpenId;
         string wechatUnionId = result.UnionId;
+
+        LoginResult loginResult = new LoginResult(LoginResultCode.AccountNotExist, null);
 
         // 主要是防止新的用户的重复创建
         lock (lockObj) {
@@ -96,8 +98,10 @@ public class WechatAppLoginService {
                     customer = customerService.CreateCustomerByWechatApp(wechatAppOpenId, wechatUnionId);
                 }
 
-                loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, request);
+                loginResult = loginCustomerService.Login(customer, CustomerLoginStage.WechatAppLogin, request);
             });
         }
+
+        return loginResult;
     }
 }

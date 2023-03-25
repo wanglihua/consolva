@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Models.WechatAppLogin;
 using shunda.Client.Services;
+using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Client;
 using shunda.Service.Wechat;
 using ISession = NHibernate.ISession;
 
@@ -28,7 +30,7 @@ public class WechatAppLoginController : Controller {
         this.wechatAppLoginService = wechatAppLoginService;
         this.wechatAppPhoneNumberService = wechatAppPhoneNumberService;
     }
-    
+
 
     [HttpPost]
     [Route("/client/wechat/app/login")]
@@ -36,11 +38,62 @@ public class WechatAppLoginController : Controller {
     public IActionResult Login([FromBody] WechatAppLoginParam param) {
         ValidationUtil.Validate<WechatAppLoginParamValidator, WechatAppLoginParam>(param);
 
-        wechatAppLoginService.Login(param.Code, Request);
+        LoginResult loginResult = wechatAppLoginService.Login(param.Code, Request);
+        if (loginResult.ResultCode != LoginResultCode.Success || loginResult.Customer == null) {
+            throw new Exception("登陆出现异常，请重试！");
+        }
+
+        var customer = loginResult.Customer;
+        if (customer.Agreed == false) {
+            if (param.Agreed == false) {
+                return Json(new JsonResultData {
+                    Success = false,
+                    Message = "登录失败，请同意用户协议和隐私协议，再继续！",
+                });
+            }
+
+            if (param.Agreed == true) {
+                customer.Agreed = true;
+                session.Update(customer);
+                session.Flush();
+            }
+        }
 
         return Json(new JsonResultData {
             Success = true,
             Message = "登录成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/client/wechat/app/show/login")]
+    public IActionResult ShowLogin() {
+        var clientInstructTypeList = new List<ClientInstructionType> {
+            ClientInstructionType.ServiceAgreement,
+            ClientInstructionType.PrivacyStatement,
+        };
+
+        var clientInstructList = session.Query<ClientInstructionInfo>()
+            .Where(e => clientInstructTypeList.Contains(e.Type))
+            .ToList();
+
+        var serviceAgreement = clientInstructList
+            .Where(e => e.Type == ClientInstructionType.ServiceAgreement)
+            .Take(1).SingleOrDefault();
+        string serviceAgreementUrl = serviceAgreement?.Url ?? string.Empty;
+
+        var privacyStatement = clientInstructList
+            .Where(e => e.Type == ClientInstructionType.PrivacyStatement)
+            .Take(1).SingleOrDefault();
+        string privacyStatementUrl = privacyStatement?.Url ?? string.Empty;
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new WechatAppLoginShowLoginModel {
+                ServiceAgreementUrl = serviceAgreementUrl,
+                PrivacyStatementUrl = privacyStatementUrl,
+            },
         });
     }
 

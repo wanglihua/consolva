@@ -6,6 +6,9 @@ namespace shunda.Client.Models.WechatAppLogin;
 public class WechatAppLoginParam {
     [JsonProperty("code")]
     public string Code { get; set; } = string.Empty;
+
+    [JsonProperty("agreed")]
+    public bool Agreed { get; set; } = false;
 }
 
 public class WechatAppLoginParamValidator : AbstractValidator<WechatAppLoginParam> {

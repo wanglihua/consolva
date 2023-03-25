@@ -1,1 +1,12 @@
-
+<view>
+    <view style="text-align: center; margin-top: 50px;">
+        <van-image loading="loading" fit="widthFix" width="68%" src="https://hk.shundaquanqiu.com/static/client/images/login.jpg" />
+    </view>
+    <view>
+        <van-cell-group custom-class="detail-buttons" border="{{false}}">
+            <van-cell border="{{false}}">
+                <van-button type="info" round block bind:click="onLoginClick">立即登录</van-button>
+            </van-cell>
+        </van-cell-group>
+    </view>
+</view>

@@ -12,6 +12,7 @@ namespace shunda.Client.Controllers;
 
 /// <summary>
 /// 用户客户端手动切换登录客户时使用
+/// 这个现在基本还没用起来
 /// </summary>
 [NoLoginRequired]
 public class LoginController : Controller {
