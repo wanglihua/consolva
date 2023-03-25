@@ -49,7 +49,7 @@ public class WechatOfficialAccountMenuController : Controller {
             url = "https://hk.shundaquanqiu.com/client",
             pagepath = "pages/instruction/instruction_warehouse_address",
         });
-        
+
         mainMenu1.sub_button.Add(new SingleMiniProgramButton {
             name = "包裹预报",
             appid = WechatAppConfig.AppId,
@@ -70,7 +70,7 @@ public class WechatOfficialAccountMenuController : Controller {
         mainMenu1.sub_button.Add(new SingleViewButton {
             name = "转运流程",
             url = SiteConfig.SiteUrlBase + "/client/wechat/official/account/article/order/simple/step",
-        });        
+        });
 
         menu.button.Add(mainMenu1);
 
@@ -80,15 +80,13 @@ public class WechatOfficialAccountMenuController : Controller {
 
         // menu2
 
-        var mainMenu2 = new SubButton("开始集运");
-        
-        mainMenu2.sub_button.Add(new SingleMiniProgramButton() {
+        var mainMenu2 = new SingleMiniProgramButton() {
             name = "开始集运",
             appid = WechatAppConfig.AppId,
             url = "https://hk.shundaquanqiu.com/client",
             pagepath = "pages/home/home_index",
-        });
-        
+        };
+
         menu.button.Add(mainMenu2);
 
         #endregion
