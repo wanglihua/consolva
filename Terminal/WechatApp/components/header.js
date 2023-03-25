@@ -72,7 +72,7 @@ Component({
                     if (res.data.agreed !== true) {
                         let pages = getCurrentPages();
                         let currentPage = pages[pages.length - 1];
-                        let url = currentPage.route;
+                        let url = "/" + currentPage.route;
 
                         wx.redirectTo({
                             url: "/pages/home/home_login?returnUrl=" + url,

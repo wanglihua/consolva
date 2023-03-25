@@ -46,12 +46,14 @@ public class WechatOfficialAccountMenuController : Controller {
         mainMenu1.sub_button.Add(new SingleMiniProgramButton {
             name = "仓库地址",
             appid = WechatAppConfig.AppId,
+            url = "https://hk.shundaquanqiu.com/client",
             pagepath = "pages/instruction/instruction_warehouse_address",
         });
         
         mainMenu1.sub_button.Add(new SingleMiniProgramButton {
             name = "包裹预报",
             appid = WechatAppConfig.AppId,
+            url = "https://hk.shundaquanqiu.com/client",
             pagepath = "pages/express/express_expect/express_expect_list",
         });
 
@@ -83,6 +85,7 @@ public class WechatOfficialAccountMenuController : Controller {
         mainMenu2.sub_button.Add(new SingleMiniProgramButton() {
             name = "开始集运",
             appid = WechatAppConfig.AppId,
+            url = "https://hk.shundaquanqiu.com/client",
             pagepath = "pages/home/home_index",
         });
         
