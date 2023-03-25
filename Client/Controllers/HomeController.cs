@@ -129,6 +129,7 @@ public class HomeController : Controller {
             Message = "操作成功！",
             Data = new HomeClientHeaderDataModel {
                 CustomerCode = customerCode,
+                Agreed = customer.Agreed,
             },
         });
     }

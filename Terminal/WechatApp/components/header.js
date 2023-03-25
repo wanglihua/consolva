@@ -34,11 +34,11 @@ Component({
         onClickLeft() {
             // app.goback("home_index");
             const homePageId = app.globalData.homePageId;
-            if(homePageId === "home_index") {
+            if (homePageId === "home_index") {
                 wx.reLaunch({
                     url: "/pages/home/home_index",
                 });
-            } else if(homePageId === "home_package") {
+            } else if (homePageId === "home_package") {
                 wx.reLaunch({
                     url: "/pages/home/home_package",
                 });
@@ -68,6 +68,16 @@ Component({
 
                     // 存储的是登录时间毫秒值
                     wx.setStorageSync('client-login-time', new Date().getTime());
+
+                    if (res.data.agreed !== true) {
+                        let pages = getCurrentPages();
+                        let currentPage = pages[pages.length - 1];
+                        let url = currentPage.route;
+
+                        wx.redirectTo({
+                            url: "/pages/home/home_login?returnUrl=" + url,
+                        });
+                    }
                 }
             );
         },

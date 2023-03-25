@@ -8,4 +8,7 @@ public class HomeClientHeaderDataModel {
     /// </summary>
     [JsonProperty("customerCode")]
     public string CustomerCode { get; set; } = string.Empty;
+
+    [JsonProperty("agreed")]
+    public bool Agreed { get; set; }
 }

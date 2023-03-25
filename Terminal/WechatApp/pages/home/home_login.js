@@ -5,37 +5,21 @@ Page({
         serviceAgreementUrl: "",
         privacyStatementUrl: "",
         agreed: false,
-        showLoginBtn: false,
+        returnUrl: "",
     },
 
     onLoad(options) {
-        // const returnUrl = options.returnUrl;
+        const returnUrl = options.returnUrl;
+        this.setData({
+            returnUrl: returnUrl,
+        });
 
         const that = this;
-        wx.login({
-            success: res => {
-                app.postWithoutLoading(
-                    "/client/wechat/app/login", {
-                        code: res.code
-                    }, function (res) {
-                        if (res.data.agreed === true) {
-                            wx.redirectTo({
-                                url: "./home_index",
-                            });
-                            return;
-                        }
-
-                        app.post("/client/wechat/app/show/login", {}, function (res) {
-                            that.setData({
-                                serviceAgreementUrl: res.data.serviceAgreementUrl,
-                                privacyStatementUrl: res.data.privacyStatementUrl,
-                                showLoginBtn: true,
-                            });
-                        });
-
-                    }
-                );
-            }
+        app.post("/client/wechat/app/show/login", {}, function (res) {
+            that.setData({
+                serviceAgreementUrl: res.data.serviceAgreementUrl,
+                privacyStatementUrl: res.data.privacyStatementUrl,
+            });
         });
     },
 
@@ -49,6 +33,8 @@ Page({
             return;
         }
 
+        const returnUrl = this.data.returnUrl;
+
         wx.login({
             success: res => {
                 app.post(
@@ -57,9 +43,15 @@ Page({
                         agreed: true,
                     }, function (res) {
                         if (res.data.agreed === true) {
-                            wx.redirectTo({
-                                url: "./home_index",
-                            });
+                            if (returnUrl && returnUrl !== "") {
+                                wx.redirectTo({
+                                    url: returnUrl,
+                                });
+                            } else {
+                                wx.redirectTo({
+                                    url: "./home_index",
+                                });
+                            }
                         }
                     }
                 );
