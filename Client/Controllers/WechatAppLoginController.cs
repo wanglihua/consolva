@@ -47,8 +47,11 @@ public class WechatAppLoginController : Controller {
         if (customer.Agreed == false) {
             if (param.Agreed == false) {
                 return Json(new JsonResultData {
-                    Success = false,
+                    Success = true,
                     Message = "登录失败，请同意用户协议和隐私协议，再继续！",
+                    Data = new WechatAppLoginModel {
+                        Agreed = false,
+                    }
                 });
             }
 
@@ -62,6 +65,9 @@ public class WechatAppLoginController : Controller {
         return Json(new JsonResultData {
             Success = true,
             Message = "登录成功！",
+            Data = new WechatAppLoginModel {
+                Agreed = true,
+            }
         });
     }
 
