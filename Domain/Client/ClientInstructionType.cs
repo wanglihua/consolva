@@ -24,7 +24,6 @@ public class ClientInstructionType : CodeTypeBase {
 
     /// <summary>
     /// 下单流程
-    /// todo  应该是不再使用了，后面去掉
     /// </summary>
     public static readonly ClientInstructionType OrderProcess = new ClientInstructionType(4000, "下单流程", "下单流程");
 
@@ -35,7 +34,6 @@ public class ClientInstructionType : CodeTypeBase {
 
     /// <summary>
     /// 仓储说明
-    /// todo  应该是不再使用了，后面去掉
     /// </summary>
     public static readonly ClientInstructionType StorageInstruction = new ClientInstructionType(6000, "仓储说明", "仓储说明");
 
