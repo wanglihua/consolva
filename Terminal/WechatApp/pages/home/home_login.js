@@ -2,10 +2,10 @@ const app = getApp();
 
 Page({
     data: {
-        loginBtnText: "自动登录中",
         serviceAgreementUrl: "",
         privacyStatementUrl: "",
         agreed: false,
+        showLoginBtn: false,
     },
 
     onLoad(options) {
@@ -29,7 +29,7 @@ Page({
                             that.setData({
                                 serviceAgreementUrl: res.data.serviceAgreementUrl,
                                 privacyStatementUrl: res.data.privacyStatementUrl,
-                                loginBtnText: "立即登录",
+                                showLoginBtn: true,
                             });
                         });
 

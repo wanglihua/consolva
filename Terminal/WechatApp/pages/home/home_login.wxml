@@ -2,22 +2,28 @@
     <view style="text-align: center; margin-top: 50px;">
         <van-image loading="loading" fit="widthFix" width="68%" src="https://hk.shundaquanqiu.com/static/client/images/login.jpg"/>
     </view>
-    <view>
-        <van-cell-group custom-class="detail-buttons" border="{{false}}">
-            <van-cell border="{{ false }}">
-                <van-button type="info" round block bind:click="onLoginClick">{{ loginBtnText }}</van-button>
-            </van-cell>
-            <view style="text-align: center; width: 100%;">
-                <view style="display: inline-block;">
-                    <van-checkbox value="{{ agreed }}" shape="square" bind:change="onAgreeCheckChange"/>
+
+    <block wx:if="{{ showLoginBtn}}">
+        <view>
+            <van-cell-group custom-class="detail-buttons" border="{{false}}">
+                <van-cell border="{{ false }}">
+                    <van-button type="info" round block bind:click="onLoginClick">立即登录</van-button>
+                </van-cell>
+
+                <view style="text-align: center; width: 100%;">
+                    <view style="display: inline-block;">
+                        <van-checkbox value="{{ agreed }}" shape="square" bind:change="onAgreeCheckChange"/>
+                    </view>
+                    <view style="font-size: 16px; display: inline;">
+                        请您同意
+                        <view style="display: inline; color: #2c9af2;" bind:tap="onServiceAgreementClick">用户服务协议</view>
+                        和
+                        <view style="display: inline; color: #2c9af2;" bind:tap="onPrivacyStatementClick">隐私协议</view>
+                    </view>
                 </view>
-                <view style="font-size: 16px; display: inline;">
-                    请您同意
-                    <view style="display: inline; color: #2c9af2;" bind:tap="onServiceAgreementClick">用户服务协议</view>
-                    和
-                    <view style="display: inline; color: #2c9af2;" bind:tap="onPrivacyStatementClick">隐私协议</view>
-                </view>
-            </view>
-        </van-cell-group>
-    </view>
+
+            </van-cell-group>
+        </view> 
+    </block>
+
 </view>
