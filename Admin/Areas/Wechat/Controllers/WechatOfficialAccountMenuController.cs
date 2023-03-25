@@ -43,17 +43,17 @@ public class WechatOfficialAccountMenuController : Controller {
 
         var mainMenu1 = new SubButton() { name = "转运管理" };
 
-        // mainMenu1.sub_button.Add(new SingleMiniProgramButton {
-        //     name = "仓库地址",
-        //     appid = WechatAppConfig.AppId,
-        //     pagepath = "pages/instruction/instruction_warehouse_address",
-        // });
-        //
-        // mainMenu1.sub_button.Add(new SingleMiniProgramButton {
-        //     name = "包裹预报",
-        //     appid = WechatAppConfig.AppId,
-        //     pagepath = "pages/express/express_expect/express_expect_list",
-        // });
+        mainMenu1.sub_button.Add(new SingleMiniProgramButton {
+            name = "仓库地址",
+            appid = WechatAppConfig.AppId,
+            pagepath = "pages/instruction/instruction_warehouse_address",
+        });
+        
+        mainMenu1.sub_button.Add(new SingleMiniProgramButton {
+            name = "包裹预报",
+            appid = WechatAppConfig.AppId,
+            pagepath = "pages/express/express_expect/express_expect_list",
+        });
 
         mainMenu1.sub_button.Add(new SingleViewButton {
             name = "活动福利",
@@ -78,15 +78,15 @@ public class WechatOfficialAccountMenuController : Controller {
 
         // menu2
 
-        // var mainMenu2 = new SubButton("开始集运");
-        //
-        // mainMenu2.sub_button.Add(new SingleMiniProgramButton() {
-        //     name = "开始集运",
-        //     appid = WechatAppConfig.AppId,
-        //     pagepath = "pages/home/home_index",
-        // });
-        //
-        // menu.button.Add(mainMenu2);
+        var mainMenu2 = new SubButton("开始集运");
+        
+        mainMenu2.sub_button.Add(new SingleMiniProgramButton() {
+            name = "开始集运",
+            appid = WechatAppConfig.AppId,
+            pagepath = "pages/home/home_index",
+        });
+        
+        menu.button.Add(mainMenu2);
 
         #endregion
 
