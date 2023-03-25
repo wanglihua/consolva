@@ -1,3 +1,7 @@
 .follow-title {
     color: red !important;
 }
+
+.follow-cell {
+    padding: 3px 0 0 0 !important;
+}
