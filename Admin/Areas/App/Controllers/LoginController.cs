@@ -8,8 +8,6 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.App.Controllers;
 
-// todo 如果加入图形验证码，可以参考 shunda.Admin.Controllers.LoginController.Login() 的实现方式
-
 [AppArea]
 [NoLoginRequired]
 public class LoginController : Controller {
@@ -29,11 +27,10 @@ public class LoginController : Controller {
     [HttpPost]
     [Route("/admin/app/login")]
     public IActionResult Login(LoginModel model) {
+        // 加上调用频率限制
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(this.ModelState));
         }
-
-        // todo 加上图形验证码
 
         var loginName = model.LoginName.Trim();
         var password = model.Password.Trim();
