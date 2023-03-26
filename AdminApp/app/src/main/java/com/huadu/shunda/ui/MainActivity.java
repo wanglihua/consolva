@@ -29,8 +29,6 @@ import com.huadu.shunda.ui.labelprint.PackBoxLabelPrintActivity;
 import com.huadu.shunda.ui.labelprint.PackBoxLabelTlaPrintActivity;
 import com.huadu.shunda.ui.load.PackBoxLoadShipContainerInnerListActivity;
 import com.huadu.shunda.ui.photo.PhotoHomeActivity;
-import com.huadu.shunda.ui.pickup.homedeliverbatch.HomeDeliverBatchWarehouseListActivity;
-import com.huadu.shunda.ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupWarehouseListActivity;
 import com.huadu.shunda.ui.query.CustomerPackBoxStockPlaceActivity;
 import com.huadu.shunda.ui.query.ExpressPackageQueryActivity;
 import com.huadu.shunda.ui.query.PackBoxDetailActivity;
@@ -68,7 +66,6 @@ public class MainActivity extends BaseActivity {
     private TextView tvStockCheck = null;
     private TextView tvStockMove = null;
     private TextView tvExpressPackageQuery = null;
-    private TextView tvLogisticsHomeDeliver = null;
     private TextView tvOrderPhoto = null;
     private TextView tvPackBoxLabelPrint = null;
     private TextView tvPackBoxLabelTlaPrint = null;
@@ -156,9 +153,6 @@ public class MainActivity extends BaseActivity {
 
         tvExpressPackageQuery = findViewById(R.id.tvExpressPackageQuery);
         tvExpressPackageQuery.setOnClickListener(new TextViewExpressPackageQueryClickListener());
-
-        tvLogisticsHomeDeliver = findViewById(R.id.tvLogisticsHomeDeliver);
-        tvLogisticsHomeDeliver.setOnClickListener(new TextViewLogisticsHomeDeliverClickListener());
 
         tvOrderPhoto = findViewById(R.id.tvOrderPhoto);
         tvOrderPhoto.setOnClickListener(new TextViewOrderPhotoClickListener());
@@ -283,7 +277,6 @@ public class MainActivity extends BaseActivity {
         tvStockCheck.setVisibility(View.GONE);
         tvStockMove.setVisibility(View.GONE);
         tvExpressPackageQuery.setVisibility(View.GONE);
-        tvLogisticsHomeDeliver.setVisibility(View.GONE);
         tvOrderPhoto.setVisibility(View.GONE);
         tvPackBoxLabelPrint.setVisibility(View.GONE);
         tvPackBoxLabelTlaPrint.setVisibility(View.GONE);
@@ -406,12 +399,6 @@ public class MainActivity extends BaseActivity {
             tvExpressPackageQuery.setVisibility(View.VISIBLE);
         } else {
             tvExpressPackageQuery.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanLogisticsHomeDeliver()) {
-            tvLogisticsHomeDeliver.setVisibility(View.VISIBLE);
-        } else {
-            tvLogisticsHomeDeliver.setVisibility(View.GONE);
         }
 
         if (respData.getCanOrderPhoto()) {
@@ -566,14 +553,6 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, ExpressPackageQueryActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewLogisticsHomeDeliverClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, LogisticsHomeDeliverPickupWarehouseListActivity.class);
             startActivity(intent);
         }
     }

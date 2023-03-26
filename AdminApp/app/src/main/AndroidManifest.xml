@@ -133,18 +133,6 @@
             android:name=".ui.query.ExpressPackageQueryActivity"
             android:label="快递单号查询" />
         <activity
-            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupWarehouseListActivity"
-            android:label="物流到家仓库列表" />
-        <activity
-            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupActivity"
-            android:label="物流到家交付" />
-        <activity
-            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupConfirmActivity"
-            android:label="物流到家交付确认" />
-        <activity
-            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupPackBoxActivity"
-            android:label="逐箱扫描交付" />
-        <activity
             android:name=".ui.labelprint.PackBoxLabelPrintActivity"
             android:label="箱号标签打印" />
         <activity
@@ -234,16 +222,6 @@
         <activity
             android:name=".ui.experssimageshow.ExpressImageViewActivity"
             android:label="快递图片查看" />
-        <activity
-            android:name=".ui.pickup.homedeliverbatch.HomeDeliverBatchWarehouseListActivity"
-            android:label="送货上门批次" />
-        <activity
-            android:name=".ui.pickup.homedeliverbatch.HomeDeliverBatchListActivity"
-            android:label="送货上门批次" />
-        <activity
-            android:name=".ui.pickup.homedeliverbatch.HomeDeliverBatchEntryListActivity"
-            android:label="送货上门批次明细" />
-
         <activity
             android:name=".ui.expressshelf.ExpressWarehouseCheckShelfListActivity"
             android:label="仓库需核实货架列表" />
