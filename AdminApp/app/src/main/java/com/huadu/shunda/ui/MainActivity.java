@@ -30,7 +30,6 @@ import com.huadu.shunda.ui.labelprint.PackBoxLabelTlaPrintActivity;
 import com.huadu.shunda.ui.load.PackBoxLoadShipContainerInnerListActivity;
 import com.huadu.shunda.ui.photo.PhotoHomeActivity;
 import com.huadu.shunda.ui.pickup.homedeliverbatch.HomeDeliverBatchWarehouseListActivity;
-import com.huadu.shunda.ui.pickup.homedeliverpickup.HomeDeliverPickupWarehouseListActivity;
 import com.huadu.shunda.ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupWarehouseListActivity;
 import com.huadu.shunda.ui.query.CustomerPackBoxStockPlaceActivity;
 import com.huadu.shunda.ui.query.ExpressPackageQueryActivity;
@@ -69,8 +68,6 @@ public class MainActivity extends BaseActivity {
     private TextView tvStockCheck = null;
     private TextView tvStockMove = null;
     private TextView tvExpressPackageQuery = null;
-    private TextView tvHomeDeliver = null;
-    private TextView tvHomeDeliverBatch = null;
     private TextView tvLogisticsHomeDeliver = null;
     private TextView tvOrderPhoto = null;
     private TextView tvPackBoxLabelPrint = null;
@@ -159,12 +156,6 @@ public class MainActivity extends BaseActivity {
 
         tvExpressPackageQuery = findViewById(R.id.tvExpressPackageQuery);
         tvExpressPackageQuery.setOnClickListener(new TextViewExpressPackageQueryClickListener());
-
-        tvHomeDeliver = findViewById(R.id.tvHomeDeliver);
-        tvHomeDeliver.setOnClickListener(new TextViewHomeDeliverClickListener());
-
-        tvHomeDeliverBatch = findViewById(R.id.tvHomeDeliverBatch);
-        tvHomeDeliverBatch.setOnClickListener(new TextViewHomeDeliverBatchClickListener());
 
         tvLogisticsHomeDeliver = findViewById(R.id.tvLogisticsHomeDeliver);
         tvLogisticsHomeDeliver.setOnClickListener(new TextViewLogisticsHomeDeliverClickListener());
@@ -292,8 +283,6 @@ public class MainActivity extends BaseActivity {
         tvStockCheck.setVisibility(View.GONE);
         tvStockMove.setVisibility(View.GONE);
         tvExpressPackageQuery.setVisibility(View.GONE);
-        tvHomeDeliver.setVisibility(View.GONE);
-        tvHomeDeliverBatch.setVisibility(View.GONE);
         tvLogisticsHomeDeliver.setVisibility(View.GONE);
         tvOrderPhoto.setVisibility(View.GONE);
         tvPackBoxLabelPrint.setVisibility(View.GONE);
@@ -417,18 +406,6 @@ public class MainActivity extends BaseActivity {
             tvExpressPackageQuery.setVisibility(View.VISIBLE);
         } else {
             tvExpressPackageQuery.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanHomeDeliver()) {
-            tvHomeDeliver.setVisibility(View.VISIBLE);
-        } else {
-            tvHomeDeliver.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanHomeDeliverBatch()) {
-            tvHomeDeliverBatch.setVisibility(View.VISIBLE);
-        } else {
-            tvHomeDeliverBatch.setVisibility(View.GONE);
         }
 
         if (respData.getCanLogisticsHomeDeliver()) {
@@ -589,22 +566,6 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, ExpressPackageQueryActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewHomeDeliverClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, HomeDeliverPickupWarehouseListActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewHomeDeliverBatchClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, HomeDeliverBatchWarehouseListActivity.class);
             startActivity(intent);
         }
     }

@@ -133,15 +133,6 @@
             android:name=".ui.query.ExpressPackageQueryActivity"
             android:label="快递单号查询" />
         <activity
-            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupWarehouseListActivity"
-            android:label="送货上门仓库列表" />
-        <activity
-            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupActivity"
-            android:label="送货上门交付" />
-        <activity
-            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupConfirmActivity"
-            android:label="送货上门交付确认" />
-        <activity
             android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupWarehouseListActivity"
             android:label="物流到家仓库列表" />
         <activity
@@ -152,9 +143,6 @@
             android:label="物流到家交付确认" />
         <activity
             android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupPackBoxActivity"
-            android:label="逐箱扫描交付" />
-        <activity
-            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupPackBoxActivity"
             android:label="逐箱扫描交付" />
         <activity
             android:name=".ui.labelprint.PackBoxLabelPrintActivity"
