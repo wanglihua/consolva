@@ -245,12 +245,12 @@ public class PhotoOrderActivity extends BaseActivity {
 
         // begin 上传至阿里云OSS
 
-        String bucketName = Config.getOssChinaBucketName();
-        String endPoint = Config.getOssChinaEndPoint();
+        String bucketName = Config.getOssBucketName();
+        String endPoint = Config.getOssEndPoint();
 
         if (photoType == OrderPhotoType.Deliver || photoType == OrderPhotoType.DeliverFail || photoType == OrderPhotoType.AuDamage) {
-            bucketName = Config.getOssHongKongBucketName();
-            endPoint = Config.getOssHongKongEndPoint();
+            bucketName = Config.getOssBucketName();
+            endPoint = Config.getOssEndPoint();
         }
 
         byte[] imageBytes = PhotoUtil.compressImageFileToBytes(imageCaptureUri.getPath(), PhotoOrderActivity.this);
@@ -451,7 +451,7 @@ public class PhotoOrderActivity extends BaseActivity {
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType("image/jpg");
 
-            PutObjectRequest put = new PutObjectRequest(Config.getOssChinaBucketName(), photoKey, imageBytes, objectMetadata);
+            PutObjectRequest put = new PutObjectRequest(Config.getOssBucketName(), photoKey, imageBytes, objectMetadata);
 
             // 异步上传时可以设置进度回调。
             put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
@@ -460,7 +460,7 @@ public class PhotoOrderActivity extends BaseActivity {
                 }
             });
 
-            OSS oss = new OSSClient(getApplicationContext(), Config.getOssChinaEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
+            OSS oss = new OSSClient(getApplicationContext(), Config.getOssEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
 
             OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                 @Override

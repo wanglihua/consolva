@@ -334,7 +334,7 @@ public class HomeDeliverBatchEntryListActivity extends BaseActivity {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType("image/jpg");
 
-        PutObjectRequest put = new PutObjectRequest(Config.getOssHongKongBucketName(), photoKey, imageBytes, objectMetadata);
+        PutObjectRequest put = new PutObjectRequest(Config.getOssBucketName(), photoKey, imageBytes, objectMetadata);
 
         // 异步上传时可以设置进度回调。
         put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
@@ -343,7 +343,7 @@ public class HomeDeliverBatchEntryListActivity extends BaseActivity {
             }
         });
 
-        OSS oss = new OSSClient(getApplicationContext(), Config.getOssHongKongEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
+        OSS oss = new OSSClient(getApplicationContext(), Config.getOssEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
 
         OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
             @Override
@@ -460,7 +460,7 @@ public class HomeDeliverBatchEntryListActivity extends BaseActivity {
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType("image/jpg");
 
-            PutObjectRequest put = new PutObjectRequest(Config.getOssHongKongBucketName(), photoKey, imageBytes, objectMetadata);
+            PutObjectRequest put = new PutObjectRequest(Config.getOssBucketName(), photoKey, imageBytes, objectMetadata);
 
             // 异步上传时可以设置进度回调。
             put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
@@ -469,7 +469,7 @@ public class HomeDeliverBatchEntryListActivity extends BaseActivity {
                 }
             });
 
-            OSS oss = new OSSClient(getApplicationContext(), Config.getOssHongKongEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
+            OSS oss = new OSSClient(getApplicationContext(), Config.getOssEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
 
             OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                 @Override
