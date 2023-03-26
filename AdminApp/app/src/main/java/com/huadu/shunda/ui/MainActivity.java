@@ -35,7 +35,6 @@ import com.huadu.shunda.ui.query.PackBoxStockPlaceActivity;
 import com.huadu.shunda.ui.stockcheck.StockCheckWarehouseListActivity;
 import com.huadu.shunda.ui.stockmove.StockMoveWarehouseListActivity;
 import com.huadu.shunda.ui.unload.PackBoxUnloadShipContainerInnerListActivity;
-import com.huadu.shunda.ui.unload.UnloadSortShipContainerListActivity;
 import com.huadu.shunda.update.UpdateManager;
 
 import java.util.ArrayList;
@@ -56,7 +55,6 @@ public class MainActivity extends BaseActivity {
     private TextView tvExpressPacking = null;
     private TextView tvLoad = null;
     private TextView tvUnload = null;
-    private TextView tvUnloadSort = null;
     private TextView tvOrderPayDetail = null;
     private TextView tvPackBoxDetail = null;
     private TextView tvPackBoxStockPlace = null;
@@ -125,9 +123,6 @@ public class MainActivity extends BaseActivity {
 
         tvUnload = findViewById(R.id.tvUnload);
         tvUnload.setOnClickListener(new TextViewUnloadClickListener());
-
-        tvUnloadSort = findViewById(R.id.tvUnloadSort);
-        tvUnloadSort.setOnClickListener(new TextViewUnloadSortClickListener());
 
         tvPackBoxDetail = findViewById(R.id.tvPackBoxDetail);
         tvPackBoxDetail.setOnClickListener(new TextViewPackBoxDetailClickListener());
@@ -259,7 +254,6 @@ public class MainActivity extends BaseActivity {
         tvExpressPacking.setVisibility(View.GONE);
         tvLoad.setVisibility(View.GONE);
         tvUnload.setVisibility(View.GONE);
-        tvUnloadSort.setVisibility(View.GONE);
         tvPackBoxDetail.setVisibility(View.GONE);
         tvPackBoxStockPlace.setVisibility(View.GONE);
         tvCustomerPackBoxStockPlace.setVisibility(View.GONE);
@@ -339,12 +333,6 @@ public class MainActivity extends BaseActivity {
             tvUnload.setVisibility(View.VISIBLE);
         } else {
             tvUnload.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanUnloadSort()) {
-            tvUnloadSort.setVisibility(View.VISIBLE);
-        } else {
-            tvUnloadSort.setVisibility(View.GONE);
         }
 
         if (respData.getCanPackBoxDetail()) {
@@ -465,14 +453,6 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, PackBoxUnloadShipContainerInnerListActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewUnloadSortClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, UnloadSortShipContainerListActivity.class);
             startActivity(intent);
         }
     }

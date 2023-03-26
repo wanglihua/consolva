@@ -145,15 +145,6 @@
             android:name=".ui.photo.PhotoDeliverActivity"
             android:label="交付图片" />
         <activity
-            android:name=".ui.unload.UnloadSortShipContainerListActivity"
-            android:label="卸货分拣" />
-        <activity
-            android:name=".ui.unload.UnloadSortShipContainerDetailActivity"
-            android:label="集装箱详细" />
-        <activity
-            android:name=".ui.unload.UnloadSortOrderPackBoxPositionActivity"
-            android:label="箱号位置" />
-        <activity
             android:name=".ui.expressshelf.ExpressOnShelfActivity"
             android:label="快递单上架" />
         <activity
