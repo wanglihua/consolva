@@ -105,20 +105,6 @@
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/tvPackBoxLabelTlaPrint"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="#ffa650b5"
-            android:drawableStart="@drawable/pack"
-            android:gravity="center_vertical|center_horizontal"
-            android:padding="5dp"
-            android:text="手工打包对接"
-            android:textColor="#ffffffff"
-            android:textSize="28.0sp"
-            android:visibility="visible" />
-
-        <TextView
             android:id="@+id/tvLoad"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -268,20 +254,6 @@
             android:gravity="center_vertical|center_horizontal"
             android:padding="5dp"
             android:text="订单图片"
-            android:textColor="#ffffffff"
-            android:textSize="28.0sp"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/tvPackBoxLabelPrint"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="#fff8c708"
-            android:drawableStart="@drawable/label_print"
-            android:gravity="center_vertical|center_horizontal"
-            android:padding="5dp"
-            android:text="箱号标签打印"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
             android:visibility="visible" />

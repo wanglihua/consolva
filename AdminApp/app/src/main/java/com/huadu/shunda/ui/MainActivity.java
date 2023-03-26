@@ -26,7 +26,6 @@ import com.huadu.shunda.ui.expressshelf.ExpressPackingActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressReturnOffShelfWarehouseListActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressWarehouseCheckShelfListActivity;
 import com.huadu.shunda.ui.labelprint.PackBoxLabelPrintActivity;
-import com.huadu.shunda.ui.labelprint.PackBoxLabelTlaPrintActivity;
 import com.huadu.shunda.ui.load.PackBoxLoadShipContainerInnerListActivity;
 import com.huadu.shunda.ui.photo.PhotoHomeActivity;
 import com.huadu.shunda.ui.query.CustomerPackBoxStockPlaceActivity;
@@ -67,8 +66,6 @@ public class MainActivity extends BaseActivity {
     private TextView tvStockMove = null;
     private TextView tvExpressPackageQuery = null;
     private TextView tvOrderPhoto = null;
-    private TextView tvPackBoxLabelPrint = null;
-    private TextView tvPackBoxLabelTlaPrint = null;
     private TextView tvSoftUpdate = null;
 
     private Button btnTest = null;
@@ -156,12 +153,6 @@ public class MainActivity extends BaseActivity {
 
         tvOrderPhoto = findViewById(R.id.tvOrderPhoto);
         tvOrderPhoto.setOnClickListener(new TextViewOrderPhotoClickListener());
-
-        tvPackBoxLabelPrint = findViewById(R.id.tvPackBoxLabelPrint);
-        tvPackBoxLabelPrint.setOnClickListener(new TextViewPackBoxLabelPrintClickListener());
-
-        tvPackBoxLabelTlaPrint = findViewById(R.id.tvPackBoxLabelTlaPrint);
-        tvPackBoxLabelTlaPrint.setOnClickListener(new TextViewPackBoxLabelTlaPrintClickListener());
 
         tvSoftUpdate = findViewById(R.id.tvSoftUpdate);
         tvSoftUpdate.setOnClickListener(new TextViewSoftUpdateClickListener());
@@ -278,8 +269,6 @@ public class MainActivity extends BaseActivity {
         tvStockMove.setVisibility(View.GONE);
         tvExpressPackageQuery.setVisibility(View.GONE);
         tvOrderPhoto.setVisibility(View.GONE);
-        tvPackBoxLabelPrint.setVisibility(View.GONE);
-        tvPackBoxLabelTlaPrint.setVisibility(View.GONE);
 
         LoginResponseInfo respData = LoginCache.getLoginResponse();
 
@@ -405,18 +394,6 @@ public class MainActivity extends BaseActivity {
             tvOrderPhoto.setVisibility(View.VISIBLE);
         } else {
             tvOrderPhoto.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanPackBoxLabelPrint()) {
-            tvPackBoxLabelPrint.setVisibility(View.VISIBLE);
-        } else {
-            tvPackBoxLabelPrint.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanPackBoxLabelTlaPrint()) {
-            tvPackBoxLabelTlaPrint.setVisibility(View.VISIBLE);
-        } else {
-            tvPackBoxLabelTlaPrint.setVisibility(View.GONE);
         }
 
          */
@@ -569,14 +546,6 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, PackBoxLabelPrintActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewPackBoxLabelTlaPrintClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PackBoxLabelTlaPrintActivity.class);
             startActivity(intent);
         }
     }

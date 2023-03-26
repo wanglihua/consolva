@@ -136,9 +136,6 @@
             android:name=".ui.labelprint.PackBoxLabelPrintActivity"
             android:label="箱号标签打印" />
         <activity
-            android:name=".ui.labelprint.PackBoxLabelTlaPrintActivity"
-            android:label="手工打包对接" />
-        <activity
             android:name=".ui.photo.PhotoHomeActivity"
             android:label="订单图片" />
         <activity
