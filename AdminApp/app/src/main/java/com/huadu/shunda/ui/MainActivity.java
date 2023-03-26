@@ -25,18 +25,13 @@ import com.huadu.shunda.ui.expressshelf.ExpressOnShelfActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressPackingActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressReturnOffShelfWarehouseListActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressWarehouseCheckShelfListActivity;
-import com.huadu.shunda.ui.handover.TerminalHandoverStationListActivity;
 import com.huadu.shunda.ui.labelprint.PackBoxLabelPrintActivity;
 import com.huadu.shunda.ui.labelprint.PackBoxLabelTlaPrintActivity;
 import com.huadu.shunda.ui.load.PackBoxLoadShipContainerInnerListActivity;
 import com.huadu.shunda.ui.photo.PhotoHomeActivity;
-import com.huadu.shunda.ui.pickup.booking.PickupBookingStationListActivity;
-import com.huadu.shunda.ui.pickup.booking.PickupBookingWarehouseListActivity;
 import com.huadu.shunda.ui.pickup.homedeliverbatch.HomeDeliverBatchWarehouseListActivity;
 import com.huadu.shunda.ui.pickup.homedeliverpickup.HomeDeliverPickupWarehouseListActivity;
 import com.huadu.shunda.ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupWarehouseListActivity;
-import com.huadu.shunda.ui.pickup.terminal.TerminalPickupStationListActivity;
-import com.huadu.shunda.ui.pickup.warehouse.WarehousePickupWarehouseListActivity;
 import com.huadu.shunda.ui.query.CustomerPackBoxStockPlaceActivity;
 import com.huadu.shunda.ui.query.ExpressPackageQueryActivity;
 import com.huadu.shunda.ui.query.PackBoxDetailActivity;
@@ -67,8 +62,6 @@ public class MainActivity extends BaseActivity {
     private TextView tvLoad = null;
     private TextView tvUnload = null;
     private TextView tvUnloadSort = null;
-    private TextView tvPickupBookingWarehouse = null;
-    private TextView tvPickupWarehouse = null;
     private TextView tvOrderPayDetail = null;
     private TextView tvPackBoxDetail = null;
     private TextView tvPackBoxStockPlace = null;
@@ -76,9 +69,6 @@ public class MainActivity extends BaseActivity {
     private TextView tvStockCheck = null;
     private TextView tvStockMove = null;
     private TextView tvExpressPackageQuery = null;
-    private TextView tvTerminalHandover = null;
-    private TextView tvTerminalPickupBooking = null;
-    private TextView tvTerminalPickup = null;
     private TextView tvHomeDeliver = null;
     private TextView tvHomeDeliverBatch = null;
     private TextView tvLogisticsHomeDeliver = null;
@@ -149,12 +139,6 @@ public class MainActivity extends BaseActivity {
         tvUnloadSort = findViewById(R.id.tvUnloadSort);
         tvUnloadSort.setOnClickListener(new TextViewUnloadSortClickListener());
 
-        tvPickupBookingWarehouse = findViewById(R.id.tvPickupBookingWarehouse);
-        tvPickupBookingWarehouse.setOnClickListener(new TextViewPickupBookingWarehouseClickListener());
-
-        tvPickupWarehouse = findViewById(R.id.tvPickupWarehouse);
-        tvPickupWarehouse.setOnClickListener(new TextViewPickupWarehouseClickListener());
-
         tvPackBoxDetail = findViewById(R.id.tvPackBoxDetail);
         tvPackBoxDetail.setOnClickListener(new TextViewPackBoxDetailClickListener());
 
@@ -175,15 +159,6 @@ public class MainActivity extends BaseActivity {
 
         tvExpressPackageQuery = findViewById(R.id.tvExpressPackageQuery);
         tvExpressPackageQuery.setOnClickListener(new TextViewExpressPackageQueryClickListener());
-
-        tvTerminalHandover = findViewById(R.id.tvTerminalHandover);
-        tvTerminalHandover.setOnClickListener(new TextViewTerminalHandoverClickListener());
-
-        tvTerminalPickupBooking = findViewById(R.id.tvTerminalPickupBooking);
-        tvTerminalPickupBooking.setOnClickListener(new TextViewTerminalPickupBookingClickListener());
-
-        tvTerminalPickup = findViewById(R.id.tvTerminalPickup);
-        tvTerminalPickup.setOnClickListener(new TextViewTerminalPickupClickListener());
 
         tvHomeDeliver = findViewById(R.id.tvHomeDeliver);
         tvHomeDeliver.setOnClickListener(new TextViewHomeDeliverClickListener());
@@ -310,8 +285,6 @@ public class MainActivity extends BaseActivity {
         tvLoad.setVisibility(View.GONE);
         tvUnload.setVisibility(View.GONE);
         tvUnloadSort.setVisibility(View.GONE);
-        tvPickupBookingWarehouse.setVisibility(View.GONE);
-        tvPickupWarehouse.setVisibility(View.GONE);
         tvPackBoxDetail.setVisibility(View.GONE);
         tvPackBoxStockPlace.setVisibility(View.GONE);
         tvCustomerPackBoxStockPlace.setVisibility(View.GONE);
@@ -319,9 +292,6 @@ public class MainActivity extends BaseActivity {
         tvStockCheck.setVisibility(View.GONE);
         tvStockMove.setVisibility(View.GONE);
         tvExpressPackageQuery.setVisibility(View.GONE);
-        tvTerminalHandover.setVisibility(View.GONE);
-        tvTerminalPickupBooking.setVisibility(View.GONE);
-        tvTerminalPickup.setVisibility(View.GONE);
         tvHomeDeliver.setVisibility(View.GONE);
         tvHomeDeliverBatch.setVisibility(View.GONE);
         tvLogisticsHomeDeliver.setVisibility(View.GONE);
@@ -350,6 +320,8 @@ public class MainActivity extends BaseActivity {
         }
 
         this.setTitle("舜达仓管 - " + respData.getUserName());
+
+        /*
 
         if (respData.getCanExpressOnShelf()) {
             tvExpressOnShelf.setVisibility(View.VISIBLE);
@@ -405,18 +377,6 @@ public class MainActivity extends BaseActivity {
             tvUnloadSort.setVisibility(View.GONE);
         }
 
-        if (respData.getCanWarehousePickupBooking()) {
-            tvPickupBookingWarehouse.setVisibility(View.VISIBLE);
-        } else {
-            tvPickupBookingWarehouse.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanWarehousePickup()) {
-            tvPickupWarehouse.setVisibility(View.VISIBLE);
-        } else {
-            tvPickupWarehouse.setVisibility(View.GONE);
-        }
-
         if (respData.getCanPackBoxDetail()) {
             tvPackBoxDetail.setVisibility(View.VISIBLE);
         } else {
@@ -459,24 +419,6 @@ public class MainActivity extends BaseActivity {
             tvExpressPackageQuery.setVisibility(View.GONE);
         }
 
-        if (respData.getCanTerminalHandover()) {
-            tvTerminalHandover.setVisibility(View.VISIBLE);
-        } else {
-            tvTerminalHandover.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanTerminalPickupBooking()) {
-            tvTerminalPickupBooking.setVisibility(View.VISIBLE);
-        } else {
-            tvTerminalPickupBooking.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanTerminalPickup()) {
-            tvTerminalPickup.setVisibility(View.VISIBLE);
-        } else {
-            tvTerminalPickup.setVisibility(View.GONE);
-        }
-
         if (respData.getCanHomeDeliver()) {
             tvHomeDeliver.setVisibility(View.VISIBLE);
         } else {
@@ -512,6 +454,8 @@ public class MainActivity extends BaseActivity {
         } else {
             tvPackBoxLabelTlaPrint.setVisibility(View.GONE);
         }
+
+         */
 
         UpdateManager.CheckNewVersionResult checkNewVersionResult = updateManager.checkNewVersion();
         if (checkNewVersionResult == UpdateManager.CheckNewVersionResult.ToUpdate) {
@@ -593,22 +537,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private class TextViewPickupBookingWarehouseClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PickupBookingWarehouseListActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewPickupWarehouseClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, WarehousePickupWarehouseListActivity.class);
-            startActivity(intent);
-        }
-    }
-
     private class TextViewPackBoxDetailClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -661,30 +589,6 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, ExpressPackageQueryActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewTerminalHandoverClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, TerminalHandoverStationListActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewTerminalPickupBookingClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PickupBookingStationListActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewTerminalPickupClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, TerminalPickupStationListActivity.class);
             startActivity(intent);
         }
     }

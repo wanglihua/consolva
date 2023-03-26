@@ -73,18 +73,6 @@
             android:name=".ui.pda.ScanWithImagesActivity"
             android:label="PDA扫描" />
         <activity
-            android:name=".ui.pickup.warehouse.WarehousePickupActivity"
-            android:label="取货码交货" />
-        <activity
-            android:name=".ui.pickup.warehouse.WarehousePickupWarehouseDetailActivity"
-            android:label="仓库自提" />
-        <activity
-            android:name=".ui.pickup.warehouse.WarehousePickupWarehouseListActivity"
-            android:label="仓库自提仓库列表" />
-        <activity
-            android:name=".ui.pickup.booking.PickupBookingWarehouseListActivity"
-            android:label="仓库自提预约仓库列表" />
-        <activity
             android:name=".ui.pickup.booking.PickupBookingListActivity"
             android:label="订单取货预约列表" />
         <activity
@@ -151,27 +139,6 @@
             android:name=".ui.query.ExpressPackageQueryActivity"
             android:label="快递单号查询" />
         <activity
-            android:name=".ui.handover.TerminalHandoverStationListActivity"
-            android:label="取货点交接取货点列表" />
-        <activity
-            android:name=".ui.handover.TerminalHandoverShipContainerInnerListActivity"
-            android:label="取货点交接船航批次列表" />
-        <activity
-            android:name=".ui.handover.TerminalHandoverActivity"
-            android:label="取货点交接" />
-        <activity
-            android:name=".ui.pickup.terminal.TerminalPickupStationListActivity"
-            android:label="取货点交付取货点列表" />
-        <activity
-            android:name=".ui.pickup.booking.PickupBookingStationListActivity"
-            android:label="取货点交付预约取货点列表" />
-        <activity
-            android:name=".ui.pickup.terminal.TerminalPickupActivity"
-            android:label="取货点交付" />
-        <activity
-            android:name=".ui.pickup.terminal.TerminalPickupConfirmActivity"
-            android:label="取货点交付确认" />
-        <activity
             android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupWarehouseListActivity"
             android:label="送货上门仓库列表" />
         <activity
@@ -190,16 +157,10 @@
             android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupConfirmActivity"
             android:label="物流到家交付确认" />
         <activity
-            android:name=".ui.pickup.warehouse.WarehousePickupPackBoxActivity"
-            android:label="逐箱扫描交付" />
-        <activity
             android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupPackBoxActivity"
             android:label="逐箱扫描交付" />
         <activity
             android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupPackBoxActivity"
-            android:label="逐箱扫描交付" />
-        <activity
-            android:name=".ui.pickup.terminal.TerminalPickupPackBoxActivity"
             android:label="逐箱扫描交付" />
         <activity
             android:name=".ui.labelprint.PackBoxLabelPrintActivity"

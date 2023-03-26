@@ -27,7 +27,6 @@ public class LoginController : Controller {
     [HttpPost]
     [Route("/admin/app/login")]
     public IActionResult Login(LoginModel model) {
-        // 加上调用频率限制
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(this.ModelState));
         }
