@@ -1,0 +1,20 @@
+package com.huadu.shunda.http;
+
+import com.huadu.shunda.data.http.ResponseInfo;
+import com.huadu.shunda.data.http.packbox.PackBoxLabelPrintDetailDataResponseInfo;
+
+import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
+
+public interface PackBoxLabelPrintRequest {
+
+    @POST("/user/api/pack/box/label/pack/box/detail")
+    @FormUrlEncoded
+    Call<PackBoxLabelPrintDetailDataResponseInfo> packBoxDetail(@Field("packBoxCode") String packBoxCode);
+
+    @POST("/user/api/pack/box/label/print")
+    @FormUrlEncoded
+    Call<ResponseInfo> print(@Field("packBoxCode") String packBoxCode);
+}

@@ -27,7 +27,7 @@
             android:paddingTop="1.0dip"
             android:paddingRight="8.0dip"
             android:paddingBottom="1.0dip"
-            android:text="澳拼入库号：请扫描澳拼入库号或快递单号！"
+            android:text="舜达入库号：请扫描舜达入库号或快递单号！"
             android:textColor="@color/colorAccent"
             android:textSize="16.0sp" />
 

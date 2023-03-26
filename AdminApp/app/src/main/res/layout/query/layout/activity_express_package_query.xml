@@ -27,7 +27,7 @@
             android:paddingTop="1.0dip"
             android:paddingRight="8.0dip"
             android:paddingBottom="1.0dip"
-            android:text="扫描快递单号或澳拼入库号二维码，查询单号系统状态！"
+            android:text="扫描快递单号或舜达入库号二维码，查询单号系统状态！"
             android:textColor="@color/colorAccent"
             android:textSize="16.0sp" />
 

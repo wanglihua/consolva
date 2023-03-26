@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">澳拼仓管</string>
+    <string name="app_name" translatable="false">舜达仓管</string>
 
     <string name="prompt_password" translatable="false">密码</string>
     <string name="action_sign_in_short" translatable="false">Sign in</string>
