@@ -73,12 +73,6 @@
             android:name=".ui.pda.ScanWithImagesActivity"
             android:label="PDA扫描" />
         <activity
-            android:name=".ui.pickup.booking.PickupBookingListActivity"
-            android:label="订单取货预约列表" />
-        <activity
-            android:name=".ui.pickup.booking.PickupBookingDetailActivity"
-            android:label="订单取货预约详细" />
-        <activity
             android:name=".ui.unload.StockPlaceListActivity"
             android:label="托盘列表" />
         <activity
