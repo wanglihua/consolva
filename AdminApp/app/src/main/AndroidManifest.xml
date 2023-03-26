@@ -133,9 +133,6 @@
             android:name=".ui.query.ExpressPackageQueryActivity"
             android:label="快递单号查询" />
         <activity
-            android:name=".ui.labelprint.PackBoxLabelPrintActivity"
-            android:label="箱号标签打印" />
-        <activity
             android:name=".ui.photo.PhotoHomeActivity"
             android:label="订单图片" />
         <activity

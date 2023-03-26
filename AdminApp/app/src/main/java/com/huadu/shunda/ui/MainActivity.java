@@ -25,7 +25,6 @@ import com.huadu.shunda.ui.expressshelf.ExpressOnShelfActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressPackingActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressReturnOffShelfWarehouseListActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressWarehouseCheckShelfListActivity;
-import com.huadu.shunda.ui.labelprint.PackBoxLabelPrintActivity;
 import com.huadu.shunda.ui.load.PackBoxLoadShipContainerInnerListActivity;
 import com.huadu.shunda.ui.photo.PhotoHomeActivity;
 import com.huadu.shunda.ui.query.CustomerPackBoxStockPlaceActivity;
@@ -538,14 +537,6 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, PhotoHomeActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewPackBoxLabelPrintClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PackBoxLabelPrintActivity.class);
             startActivity(intent);
         }
     }
