@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvExpressOnShelf"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff8c708"
+            android:drawableStart="@drawable/on_shelf"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="快递上架"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvExpressWarehouseCheck"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ffa650b5"
+            android:drawableStart="@drawable/express_warehouse_check"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="仓库需核实"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvExpressOffShelf"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff78221"
+            android:drawableStart="@drawable/off_shelf"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="快递下架"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvExpressReturnOffShelf"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff78221"
+            android:drawableStart="@drawable/off_shelf"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="退运下架"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvExpressDump"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fffe5000"
+            android:drawableStart="@drawable/express_dump"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="快递堆存"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvExpressPacking"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ff00bece"
+            android:drawableStart="@drawable/packing"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="入流动仓"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvPackBoxLabelTlaPrint"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ffa650b5"
+            android:drawableStart="@drawable/pack"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="手工打包对接"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvLoad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ffef5973"
+            android:drawableStart="@drawable/packbox_load"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="装箱"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvUnload"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff78221"
+            android:drawableStart="@drawable/packbox_unload"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="卸货"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvUnloadSort"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff78221"
+            android:drawableStart="@drawable/unload"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="卸货分拣"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvPickupBookingWarehouse"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fffe5000"
+            android:drawableStart="@drawable/warehouse_pickup"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="仓库自提预约"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvPickupWarehouse"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fffe5000"
+            android:drawableStart="@drawable/warehouse_pickup"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="仓库自提"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvPackBoxDetail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ff00bece"
+            android:drawableStart="@drawable/packbox_query"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="箱号信息查询"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvPackBoxStockPlace"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ff00bece"
+            android:drawableStart="@drawable/packbox_storage_loc_query"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="箱号仓位查询"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvCustomerPackBoxStockPlace"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ff00bece"
+            android:drawableStart="@drawable/checkin"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="会员箱号仓位查询"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvOrderPayDetail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ff00bece"
+            android:drawableStart="@drawable/arrears_query"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="欠费查询"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvStockCheck"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ffa650b5"
+            android:drawableStart="@drawable/stock_check"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="盘点"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvStockMove"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ffa650b5"
+            android:drawableStart="@drawable/stock_move"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="托盘移动"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvExpressPackageQuery"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff8c708"
+            android:drawableStart="@drawable/express_package"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="快递单号查询"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvTerminalHandover"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ffef5973"
+            android:drawableStart="@drawable/station_handover"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="取货点交接"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvTerminalPickupBooking"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff78221"
+            android:drawableStart="@drawable/pickup_station"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="取货点交付预约"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvTerminalPickup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff78221"
+            android:drawableStart="@drawable/pickup_station"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="取货点交付"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvHomeDeliver"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fffe5000"
+            android:drawableStart="@drawable/home_deliver"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="送货上门交付"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvHomeDeliverBatch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fffe5000"
+            android:drawableStart="@drawable/home_deliver"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="送货四步"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvLogisticsHomeDeliver"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ff00bece"
+            android:drawableStart="@drawable/au_express"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="物流到家交付"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvOrderPhoto"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ffa650b5"
+            android:drawableStart="@drawable/order_photo"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="订单图片"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvPackBoxLabelPrint"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#fff8c708"
+            android:drawableStart="@drawable/label_print"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="箱号标签打印"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvSoftUpdate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="#ff00bece"
+            android:drawableStart="@drawable/soft_update"
+            android:gravity="center_vertical|center_horizontal"
+            android:padding="5dp"
+            android:text="APP软件更新"
+            android:textColor="#ffffffff"
+            android:textSize="28.0sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnPdaScanTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PDA扫描DEMO"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</ScrollView>

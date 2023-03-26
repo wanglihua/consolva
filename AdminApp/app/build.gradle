@@ -1,0 +1,113 @@
+apply plugin: 'com.android.application'
+
+static def getVersionCode() {
+    return ((new Date().getTime() - new Date(2022 - 1900, 0, 1).getTime()) / (1000 * 60)).toInteger()
+}
+
+static def getVersionName() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("Asia/Shanghai"))
+}
+
+def getReleaseType() {
+    if (gradle.startParameter.taskNames.toString().contains('Debug')) {
+        return "-debug"
+    } else {
+        return ""
+    }
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
+    useLibrary 'org.apache.http.legacy'
+
+    def currentVersionCode = getVersionCode()
+    def currentVersionName = getVersionName()
+
+    defaultConfig {
+        applicationId "com.huadu.shunda"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode currentVersionCode
+        versionName currentVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            // abiFilters("armeabi-v7a")
+            // abiFilters("armeabi")
+            // abiFilters("x86_64")
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            ndk {
+                abiFilters("armeabi-v7a")
+                abiFilters("armeabi")
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                outputFileName = "shunda-${getVersionName()}${getReleaseType()}.apk"
+            }
+    }
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    'src/main/res/layout/handover',
+                    'src/main/res/layout/labelprint',
+                    'src/main/res/layout/load',
+                    'src/main/res/layout/pickup',
+                    'src/main/res/layout/pickupbooking',
+                    'src/main/res/layout/query',
+                    'src/main/res/layout/stockcheck',
+                    'src/main/res/layout/stockmove',
+                    'src/main/res/layout/unload',
+                    'src/main/res/layout/photo',
+                    'src/main/res/layout/expressimageshow',
+                    'src/main/res/layout/expressshelf',
+                    'src/main/res/layout/expressdump',
+                    'src/main/res'
+            ]
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.zxing:core:3.3.3'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.android.support:appcompat-v7:29.0.0'
+    implementation 'com.android.support:design:29.0.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.0.0'
+    implementation 'com.squareup.okio:okio:2.2.2'
+    implementation 'com.zhihu.android:matisse:0.5.3-beta3'
+    implementation files('libs/ScannerAPI.jar')
+    implementation files('libs/scans.jar')
+    implementation files('libs/rskscan.jar')
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "org.permissionsdispatcher:permissionsdispatcher:4.7.0"
+    annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:4.7.0"
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.4'
+}

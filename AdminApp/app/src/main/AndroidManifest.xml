@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.huadu.iepoch">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" /> <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@drawable/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="q">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="iepoch.Provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="舜达仓管">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:label="舜达仓管" />
+        <activity
+            android:name=".ui.TestActivity"
+            android:label="测试" />
+        <activity
+            android:name=".ui.pda.ScanDemoActivity"
+            android:label="PDA扫描测试" />
+        <activity
+            android:name=".ui.pda.ScanActivity"
+            android:label="PDA扫描" />
+        <activity
+            android:name=".ui.pda.ScanWithImagesActivity"
+            android:label="PDA扫描" />
+        <activity
+            android:name=".ui.pickup.warehouse.WarehousePickupActivity"
+            android:label="取货码交货" />
+        <activity
+            android:name=".ui.pickup.warehouse.WarehousePickupWarehouseDetailActivity"
+            android:label="仓库自提" />
+        <activity
+            android:name=".ui.pickup.warehouse.WarehousePickupWarehouseListActivity"
+            android:label="仓库自提仓库列表" />
+        <activity
+            android:name=".ui.pickup.booking.PickupBookingWarehouseListActivity"
+            android:label="仓库自提预约仓库列表" />
+        <activity
+            android:name=".ui.pickup.booking.PickupBookingListActivity"
+            android:label="订单取货预约列表" />
+        <activity
+            android:name=".ui.pickup.booking.PickupBookingDetailActivity"
+            android:label="订单取货预约详细" />
+        <activity
+            android:name=".ui.unload.StockPlaceListActivity"
+            android:label="托盘列表" />
+        <activity
+            android:name=".ui.unload.StockPlaceDetailActivity"
+            android:label="托盘详细" />
+        <activity
+            android:name=".ui.unload.StockPlaceAddActivity"
+            android:label="新建托盘" />
+        <activity
+            android:name=".ui.unload.PalletListActivity"
+            android:label="托盘列表" />
+        <activity
+            android:name=".ui.load.PackBoxLoadShipContainerInnerListActivity"
+            android:label="船航批次装箱" />
+        <activity
+            android:name=".ui.load.PackBoxLoadShipContainerInnerDetailActivity"
+            android:label="船航批次装箱" />
+        <activity
+            android:name=".ui.unload.PackBoxUnloadShipContainerInnerListActivity"
+            android:label="船航批次卸货" />
+        <activity
+            android:name=".ui.query.PackBoxDetailActivity"
+            android:label="箱号详细信息查询" />
+        <activity
+            android:name=".ui.query.PackBoxStockPlaceActivity"
+            android:label="箱号仓位查询" />
+        <activity
+            android:name=".ui.query.PackBoxOrderPayDetailActivity"
+            android:label="订单欠费查询" />
+        <activity
+            android:name=".ui.query.CustomerPackBoxStockPlaceActivity"
+            android:label="会员箱号仓位查询" />
+        <activity
+            android:name=".ui.stockcheck.StockCheckWarehouseListActivity"
+            android:label="盘点仓库列表" />
+        <activity
+            android:name=".ui.stockcheck.StockCheckBillListActivity"
+            android:label="盘点单列表" />
+        <activity
+            android:name=".ui.stockcheck.StockCheckStockPlaceListActivity"
+            android:label="盘点仓库托盘列表" />
+        <activity
+            android:name=".ui.stockcheck.StockCheckStockPlaceDetailActivity"
+            android:label="盘点托盘详细" />
+        <activity
+            android:name=".ui.stockcheck.StockCheckStockPlaceAddActivity"
+            android:label="盘点托盘添加" />
+        <activity
+            android:name=".ui.stockmove.StockMoveWarehouseListActivity"
+            android:label="托盘移动仓库列表" />
+        <activity
+            android:name=".ui.stockmove.StockMoveStockPlaceListActivity"
+            android:label="托盘移动托盘列表" />
+        <activity
+            android:name=".ui.stockmove.StockMoveStockPlaceDetailActivity"
+            android:label="托盘移动重命名" />
+        <activity
+            android:name=".ui.query.ExpressPackageQueryActivity"
+            android:label="快递单号查询" />
+        <activity
+            android:name=".ui.handover.TerminalHandoverStationListActivity"
+            android:label="取货点交接取货点列表" />
+        <activity
+            android:name=".ui.handover.TerminalHandoverShipContainerInnerListActivity"
+            android:label="取货点交接船航批次列表" />
+        <activity
+            android:name=".ui.handover.TerminalHandoverActivity"
+            android:label="取货点交接" />
+        <activity
+            android:name=".ui.pickup.terminal.TerminalPickupStationListActivity"
+            android:label="取货点交付取货点列表" />
+        <activity
+            android:name=".ui.pickup.booking.PickupBookingStationListActivity"
+            android:label="取货点交付预约取货点列表" />
+        <activity
+            android:name=".ui.pickup.terminal.TerminalPickupActivity"
+            android:label="取货点交付" />
+        <activity
+            android:name=".ui.pickup.terminal.TerminalPickupConfirmActivity"
+            android:label="取货点交付确认" />
+        <activity
+            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupWarehouseListActivity"
+            android:label="送货上门仓库列表" />
+        <activity
+            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupActivity"
+            android:label="送货上门交付" />
+        <activity
+            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupConfirmActivity"
+            android:label="送货上门交付确认" />
+        <activity
+            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupWarehouseListActivity"
+            android:label="物流到家仓库列表" />
+        <activity
+            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupActivity"
+            android:label="物流到家交付" />
+        <activity
+            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupConfirmActivity"
+            android:label="物流到家交付确认" />
+        <activity
+            android:name=".ui.pickup.warehouse.WarehousePickupPackBoxActivity"
+            android:label="逐箱扫描交付" />
+        <activity
+            android:name=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupPackBoxActivity"
+            android:label="逐箱扫描交付" />
+        <activity
+            android:name=".ui.pickup.homedeliverpickup.HomeDeliverPickupPackBoxActivity"
+            android:label="逐箱扫描交付" />
+        <activity
+            android:name=".ui.pickup.terminal.TerminalPickupPackBoxActivity"
+            android:label="逐箱扫描交付" />
+        <activity
+            android:name=".ui.labelprint.PackBoxLabelPrintActivity"
+            android:label="箱号标签打印" />
+        <activity
+            android:name=".ui.labelprint.PackBoxLabelTlaPrintActivity"
+            android:label="手工打包对接" />
+        <activity
+            android:name=".ui.photo.PhotoHomeActivity"
+            android:label="订单图片" />
+        <activity
+            android:name=".ui.photo.PhotoExpressActivity"
+            android:label="快递单图片" />
+        <activity
+            android:name=".ui.photo.PhotoOrderActivity"
+            android:label="订单图片" />
+        <activity
+            android:name=".ui.photo.PhotoDeliverActivity"
+            android:label="交付图片" />
+        <activity
+            android:name=".ui.unload.UnloadSortShipContainerListActivity"
+            android:label="卸货分拣" />
+        <activity
+            android:name=".ui.unload.UnloadSortShipContainerDetailActivity"
+            android:label="集装箱详细" />
+        <activity
+            android:name=".ui.unload.UnloadSortOrderPackBoxPositionActivity"
+            android:label="箱号位置" />
+        <activity
+            android:name=".ui.expressshelf.ExpressOnShelfActivity"
+            android:label="快递单上架" />
+        <activity
+            android:name=".ui.zxing.activity.CaptureActivity"
+            android:label="扫码" />
+        <activity
+            android:name=".ui.expressshelf.ExpressOffShelfWarehouseListActivity"
+            android:label="快递下架仓库" />
+        <activity
+            android:name=".ui.expressshelf.ExpressOffShelfShelfListActivity"
+            android:label="快递下架货架" />
+        <activity
+            android:name=".ui.expressshelf.ExpressOffShelfExpressListActivity"
+            android:label="快递下架" />
+        <activity
+            android:name=".ui.expressshelf.ExpressPackingActivity"
+            android:label="入流动仓" />
+        <activity
+            android:name=".ui.expressdump.ExpressDumpMainActivity"
+            android:label="快递堆存" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoPickupDumpWarehouseListActivity"
+            android:label="仓库列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoProcessDumpWarehouseListActivity"
+            android:label="仓库列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoPickupDumpShelfListActivity"
+            android:label="货架列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoProcessDumpShelfListActivity"
+            android:label="货架列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoPickupDumpTargetShelfListActivity"
+            android:label="堆存货架列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoProcessDumpTargetShelfListActivity"
+            android:label="堆存货架列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoPickupDumpTargetStorageLocListActivity"
+            android:label="堆存仓位列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoProcessDumpTargetStorageLocListActivity"
+            android:label="堆存仓位列表" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoPickupDumpExpressListActivity"
+            android:label="快递堆存扫描" />
+        <activity
+            android:name=".ui.expressdump.ExpressNoProcessDumpExpressListActivity"
+            android:label="快递堆存扫描" />
+        <activity
+            android:name=".ui.expressshelf.ExpressReturnOffShelfExpressListActivity"
+            android:label="退运下架快递" />
+        <activity
+            android:name=".ui.expressshelf.ExpressReturnOffShelfWarehouseListActivity"
+            android:label="退运下架仓库" />
+        <activity
+            android:name=".ui.experssimageshow.ExpressImageListActivity"
+            android:label="快递图片列表" />
+        <activity
+            android:name=".ui.experssimageshow.ExpressImageViewActivity"
+            android:label="快递图片查看" />
+        <activity
+            android:name=".ui.pickup.homedeliverbatch.HomeDeliverBatchWarehouseListActivity"
+            android:label="送货上门批次" />
+        <activity
+            android:name=".ui.pickup.homedeliverbatch.HomeDeliverBatchListActivity"
+            android:label="送货上门批次" />
+        <activity
+            android:name=".ui.pickup.homedeliverbatch.HomeDeliverBatchEntryListActivity"
+            android:label="送货上门批次明细" />
+
+        <activity
+            android:name=".ui.expressshelf.ExpressWarehouseCheckShelfListActivity"
+            android:label="仓库需核实货架列表" />
+        <activity
+            android:name=".ui.expressshelf.ExpressWarehouseCheckListActivity"
+            android:label="仓库需核实列表" />
+        <activity
+            android:name=".ui.expressshelf.ExpressWarehouseCheckDetailActivity"
+            android:label="仓库需核实详细" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+    </application>
+
+</manifest>

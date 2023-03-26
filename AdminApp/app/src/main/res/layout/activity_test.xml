@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fadingEdge="vertical"
+    android:scrollbars="vertical"
+    tools:context=".ui.TestActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="扫描"
+            tools:layout_editor_absoluteX="161dp"
+            tools:layout_editor_absoluteY="160dp" />
+
+        <Button
+            android:id="@+id/btnCameraScan"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="摄像头扫描"
+            tools:layout_editor_absoluteX="161dp"
+            tools:layout_editor_absoluteY="160dp" />
+
+        <Button
+            android:id="@+id/btnPdaScan"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="PDA扫描"
+            tools:layout_editor_absoluteX="161dp"
+            tools:layout_editor_absoluteY="160dp" />
+
+        <TextView
+            android:id="@+id/tvText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="1.0dip"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <ImageView
+            android:id="@+id/ivTest"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY"
+            android:contentDescription="test" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -47,3 +47,9 @@
 /.idea/
 
 /Document/temp.txt
+
+/AdminApp/.gradle
+/AdminApp/.idea/
+/AdminApp/build
+/AdminApp/app/build
+/AdminApp/app/release

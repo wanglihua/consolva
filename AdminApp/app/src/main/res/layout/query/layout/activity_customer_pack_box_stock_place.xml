@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".ui.query.CustomerPackBoxStockPlaceActivity">
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10.0dip">
+
+        <AutoCompleteTextView
+            android:id="@+id/etCustomerCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="会员ID"
+            android:inputType="text"
+            android:maxLength="200"
+            android:maxLines="1"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnQuery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20.0dip"
+        android:background="@color/colorPrimary"
+        android:text="查询"
+        android:textColor="@android:color/white"
+        android:textSize="20.0sp" />
+
+    <TextView
+        android:id="@+id/tvStockPlaceList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text=""
+        android:textSize="16.0sp" />
+
+    <ListView
+        android:id="@+id/lvStockPlacePackBoxCountList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="4dp" />
+
+
+</LinearLayout>

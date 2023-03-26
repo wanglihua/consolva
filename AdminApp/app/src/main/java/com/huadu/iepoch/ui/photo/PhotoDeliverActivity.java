@@ -1,0 +1,533 @@
+package com.huadu.iepoch.ui.photo;
+
+import android.Manifest;
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.OSS;
+import com.alibaba.sdk.android.oss.OSSClient;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
+import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
+import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
+import com.alibaba.sdk.android.oss.model.ObjectMetadata;
+import com.alibaba.sdk.android.oss.model.PutObjectRequest;
+import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.huadu.iepoch.R;
+import com.huadu.iepoch.core.ClientTimeUtil;
+import com.huadu.iepoch.core.Config;
+import com.huadu.iepoch.core.MaskDialog;
+import com.huadu.iepoch.core.PdaUtil;
+import com.huadu.iepoch.core.PermissionUtil;
+import com.huadu.iepoch.core.PhotoUtil;
+import com.huadu.iepoch.core.RetrofitUtil;
+import com.huadu.iepoch.core.SoundUtil;
+import com.huadu.iepoch.data.domain.OrderPhotoType;
+import com.huadu.iepoch.data.http.ResponseInfo;
+import com.huadu.iepoch.data.http.packbox.GetOrderCodeByPackBoxCodeResponseInfo;
+import com.huadu.iepoch.http.LogisticsOrderPhotoRequest;
+import com.huadu.iepoch.http.PackBoxRequest;
+import com.huadu.iepoch.ui.BaseActivity;
+import com.huadu.iepoch.ui.pda.ScanActivity;
+import com.huadu.iepoch.ui.zxing.QrScanConstants;
+import com.huadu.iepoch.ui.zxing.activity.CaptureActivity;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+
+import java.io.File;
+import java.util.List;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+@RuntimePermissions
+public class PhotoDeliverActivity extends BaseActivity {
+
+    private static final int REQ_QR_CODE_ORDER_PACK_BOX_NUM = 100;
+    private static final int REQ_CAPTURE_PHOTO = 200;
+    private static final int REQ_SELECT_PHOTO = 300;
+
+    private OrderPhotoType photoType;
+
+    private Uri imageCaptureUri;
+
+    private EditText etOrderNo = null;
+
+    private Button btnScan;
+    private Button btnCapturePhoto;
+    private Button btnSelectPhoto;
+    private Switch swAutoStartCapture;
+
+    private int autoStartCaptureCount = 0;
+    private final int autoStartCaptureCountLimit = 2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_photo_deliver);
+
+        photoType = OrderPhotoType.getById(getIntent().getIntExtra("photoTypeId", OrderPhotoType.None.getId()));
+        setTitle(photoType.getName());
+
+        etOrderNo = findViewById(R.id.etOrderNo);
+        etOrderNo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    showPhotoList();
+                }
+            }
+        });
+
+        btnScan = findViewById(R.id.btnScan);
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startQrCode(REQ_QR_CODE_ORDER_PACK_BOX_NUM);
+            }
+        });
+
+        btnCapturePhoto = findViewById(R.id.btnCapturePhoto);
+        btnCapturePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCapturePhoto();
+            }
+        });
+
+        btnSelectPhoto = findViewById(R.id.btnSelectPhoto);
+        btnSelectPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (swAutoStartCapture.isChecked()) {
+                    autoStartCaptureCount = 0;
+                }
+                showSelectPhoto();
+            }
+        });
+
+        swAutoStartCapture = findViewById(R.id.swAutoStartCapture);
+    }
+
+    protected void startQrCode(int requestCode) {
+        if (PdaUtil.hasPdaScanner(this)) {
+            Intent intent = new Intent(this, ScanActivity.class);
+            intent.putExtra("labelText", "扫描订单箱号二维码");
+            intent.putExtra("photoTypeId", photoType.getId()); // 这个参数这里没用
+            startActivityForResult(intent, requestCode);
+        } else {
+            if (PermissionUtil.checkCameraStoragePermissions(PhotoDeliverActivity.this, requestCode) == false) {
+                return;
+            }
+
+            Intent intent = new Intent(this, CaptureActivity.class);
+            intent.putExtra("labelText", "扫描订单箱号二维码");
+            intent.putExtra("photoTypeId", photoType.getId());
+            startActivityForResult(intent, requestCode);
+        }
+    }
+
+    @NeedsPermission(value = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    protected void showCapturePhoto() {
+        if (checkOrderCodeBlank() == false) {
+            return;
+        }
+
+        Intent intentTakePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        imageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "temp_order_photo_" + String.valueOf(System.currentTimeMillis()) + ".jpg"));
+        intentTakePhoto.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri);
+        intentTakePhoto.putExtra("return-data", true);
+
+        startActivityForResult(intentTakePhoto, REQ_CAPTURE_PHOTO);
+    }
+
+    @NeedsPermission(value = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    protected void onCapturePhoto(Intent data) {
+        if (checkOrderCodeBlank() == false) {
+            return;
+        }
+
+        // begin 上传至阿里云OSS
+
+        byte[] imageBytes = PhotoUtil.compressImageFileToBytes(imageCaptureUri.getPath(), PhotoDeliverActivity.this);
+
+        // 构造上传请求。
+        String photoKey = PhotoUtil.newPhotoStoreName(); // 获取新的文件名，一般都是以 .jpg 结尾
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType("image/jpg");
+
+        PutObjectRequest put = new PutObjectRequest(Config.getOssHongKongBucketName(), photoKey, imageBytes, objectMetadata);
+
+        // 异步上传时可以设置进度回调。
+        put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
+            @Override
+            public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
+            }
+        });
+
+        OSS oss = new OSSClient(getApplicationContext(), Config.getOssHongKongEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
+
+        OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+            @Override
+            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+                LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+
+                String orderCode = etOrderNo.getText().toString().trim();
+                String clientTime = ClientTimeUtil.getClientTime();
+                Call<ResponseInfo> createCall = photoRequest.create(orderCode, "", photoType.getId(), photoKey, clientTime);
+                // Dialog mask = MaskDialog.show(PhotoDeliverActivity.this);
+                createCall.enqueue(new Callback<ResponseInfo>() {
+                    @Override
+                    public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
+                        // mask.dismiss();
+
+                        if (imageCaptureUri != null && imageCaptureUri.getPath() != null) {
+                            File tempOrderPhoto = new File(imageCaptureUri.getPath());
+                            if (tempOrderPhoto.exists()) {
+                                tempOrderPhoto.delete();
+                            }
+                        }
+
+                        ResponseInfo respData = response.body();
+
+                        if (!RetrofitUtil.checkResponse(respData, PhotoDeliverActivity.this)) {
+                            return;
+                        }
+
+                        SoundUtil.playSuccess(PhotoDeliverActivity.this);
+                        Toast.makeText(PhotoDeliverActivity.this, respData.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        if (swAutoStartCapture.isChecked()) {
+                            if (autoStartCaptureCount > 0) {
+                                if (autoStartCaptureCount < autoStartCaptureCountLimit) {
+                                    autoStartCaptureCount++;
+                                    try {
+                                        Thread.sleep(500);
+                                    } catch (Exception exp) {
+                                        exp.printStackTrace();
+                                    }
+                                    showCapturePhoto();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseInfo> call, Throwable t) {
+                        Toast.makeText(PhotoDeliverActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                // 请求异常。
+                if (clientExcepion != null) {
+                    // 本地异常，如网络异常等。
+                    // clientExcepion.printStackTrace();
+
+                    Toast.makeText(PhotoDeliverActivity.this, "oss错误: " + clientExcepion.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (serviceException != null) {
+                    // 服务异常。
+                    Toast.makeText(PhotoDeliverActivity.this, "oss错误: " + serviceException.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Toast.makeText(PhotoDeliverActivity.this, "oss上传错误", Toast.LENGTH_LONG).show();
+            }
+        });
+        // task.cancel(); // 可以取消任务。
+        // task.waitUntilFinished(); // 等待上传完成。
+
+        // end 上传至阿里云OSS
+    }
+
+    @NeedsPermission(value = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    protected void showSelectPhoto() {
+        if (checkOrderCodeBlank() == false) {
+            return;
+        }
+
+        Matisse.from(PhotoDeliverActivity.this)
+                //选择图片
+                .choose(MimeType.ofImage())
+                //是否只显示选择的类型的缩略图，就不会把所有图片视频都放在一起，而是需要什么展示什么
+                .showSingleMediaType(true)
+                //这两行要连用 是否在选择图片中展示照相 和适配安卓7.0 FileProvider
+                //.capture(true)
+                //.captureStrategy(new CaptureStrategy(false, "PhotoProvider"))
+                //有序选择图片 123456...
+                .countable(true)
+                //最大选择数量为9
+                .maxSelectable(9)
+                //选择方向
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                //界面中缩略图的质量
+                .thumbnailScale(0.8f)
+                //蓝色主题
+                .theme(R.style.Matisse_Zhihu)
+                //Glide加载方式
+                .imageEngine(new GlideEngine())
+                //请求码
+                .forResult(REQ_SELECT_PHOTO);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    protected void onSelectPhoto(Intent data) {
+        if (checkOrderCodeBlank() == false) {
+            return;
+        }
+
+        List<Uri> selectedPhotoList = Matisse.obtainResult(data);
+
+        for (Uri selectedPhoto : selectedPhotoList) {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            Cursor actualimagecursor = this.managedQuery(selectedPhoto, proj, null, null, null);
+            int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            actualimagecursor.moveToFirst();
+            String img_path = actualimagecursor.getString(actual_image_column_index);
+
+            // begin 上传至阿里云OSS
+
+            byte[] imageBytes = PhotoUtil.compressImageFileToBytes(img_path, PhotoDeliverActivity.this);
+
+            // 构造上传请求。
+            String photoKey = PhotoUtil.newPhotoStoreName(); // 获取新的文件名，一般都是以 .jpg 结尾
+
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType("image/jpg");
+
+            PutObjectRequest put = new PutObjectRequest(Config.getOssHongKongBucketName(), photoKey, imageBytes, objectMetadata);
+
+            // 异步上传时可以设置进度回调。
+            put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
+                @Override
+                public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
+                }
+            });
+
+            OSS oss = new OSSClient(getApplicationContext(), Config.getOssHongKongEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
+
+            OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+                @Override
+                public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+                    LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+
+                    String orderCode = etOrderNo.getText().toString();
+                    String clientTime = ClientTimeUtil.getClientTime();
+                    Call<ResponseInfo> createCall = photoRequest.create(orderCode, "", photoType.getId(), photoKey, clientTime);
+                    // Dialog mask = MaskDialog.show(PhotoDeliverActivity.this);
+                    createCall.enqueue(new Callback<ResponseInfo>() {
+                        @Override
+                        public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
+                            // mask.dismiss();
+
+                            if (imageCaptureUri != null && imageCaptureUri.getPath() != null) {
+                                File tempOrderPhoto = new File(imageCaptureUri.getPath());
+                                if (tempOrderPhoto.exists()) {
+                                    tempOrderPhoto.delete();
+                                }
+                            }
+
+                            ResponseInfo respData = response.body();
+
+                            if (!RetrofitUtil.checkResponse(respData, PhotoDeliverActivity.this)) {
+                                return;
+                            }
+
+                            SoundUtil.playSuccess(PhotoDeliverActivity.this);
+                            Toast.makeText(PhotoDeliverActivity.this, respData.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            if (swAutoStartCapture.isChecked()) {
+                                if (autoStartCaptureCount > 0) {
+                                    if (autoStartCaptureCount < autoStartCaptureCountLimit) {
+                                        autoStartCaptureCount++;
+                                        try {
+                                            Thread.sleep(500);
+                                        } catch (Exception exp) {
+                                            exp.printStackTrace();
+                                        }
+                                        showCapturePhoto();
+                                    }
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseInfo> call, Throwable t) {
+                            Toast.makeText(PhotoDeliverActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                    // 请求异常。
+                    if (clientExcepion != null) {
+                        // 本地异常，如网络异常等。
+                        // clientExcepion.printStackTrace();
+
+                        Toast.makeText(PhotoDeliverActivity.this, "oss错误: " + clientExcepion.getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (serviceException != null) {
+                        // 服务异常。
+                        Toast.makeText(PhotoDeliverActivity.this, "oss错误: " + serviceException.getMessage(), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    Toast.makeText(PhotoDeliverActivity.this, "oss上传错误", Toast.LENGTH_LONG).show();
+                }
+            });
+            // task.cancel(); // 可以取消任务。
+            // task.waitUntilFinished(); // 等待上传完成。
+
+            // end 上传至阿里云OSS
+        }
+    }
+
+    private void showPhotoList() {
+        if (checkOrderCodeBlank() == false) {
+            return;
+        }
+
+        // todo 显示图片列表
+    }
+
+    private boolean checkOrderCodeBlank() {
+        String orderCode = etOrderNo.getText().toString().trim();
+        if ("".equals(orderCode)) {
+            SoundUtil.playError(PhotoDeliverActivity.this);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PhotoDeliverActivity.this);
+            alertDialogBuilder.setTitle("错误");
+            alertDialogBuilder.setMessage("订单号不能为空！");
+            alertDialogBuilder.setPositiveButton("确定", null);
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            if (resultCode == RESULT_OK) {
+
+                if (requestCode == REQ_QR_CODE_ORDER_PACK_BOX_NUM) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle == null) {
+                        Toast.makeText(PhotoDeliverActivity.this, "未能获取扫描的二维码数据！", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    final String orderPackBoxCode = bundle.getString(QrScanConstants.INTENT_EXTRA_KEY_QR_SCAN);
+                    if (orderPackBoxCode != null && orderPackBoxCode.length() != 0) {
+
+                        /*
+
+                        // 22931#20200304-6087合@9
+                        int beginIndex = orderPackBoxCode.indexOf("#") + 1;
+                        int endIndex = orderPackBoxCode.indexOf("@");
+
+                        String orderCode = orderPackBoxCode;
+
+                        if (beginIndex - 1 >= 0 && endIndex > beginIndex && endIndex < orderPackBoxCode.length()) {
+                            orderCode = orderPackBoxCode.substring(beginIndex, endIndex);
+                        }
+                        etOrderNo.setText(orderCode);
+
+                         */
+
+                        PackBoxRequest packBoxRequest = RetrofitUtil.createRequest(PackBoxRequest.class);
+                        Call<GetOrderCodeByPackBoxCodeResponseInfo> orderPayDetailCall = packBoxRequest.getOrderCodeByPackBoxCode(orderPackBoxCode);
+                        Dialog mask = MaskDialog.show(PhotoDeliverActivity.this);
+                        orderPayDetailCall.enqueue(new Callback<GetOrderCodeByPackBoxCodeResponseInfo>() {
+                            @Override
+                            public void onResponse(Call<GetOrderCodeByPackBoxCodeResponseInfo> call, Response<GetOrderCodeByPackBoxCodeResponseInfo> response) {
+                                mask.dismiss();
+
+                                GetOrderCodeByPackBoxCodeResponseInfo respData = response.body();
+
+                                if (!RetrofitUtil.checkResponse(respData, PhotoDeliverActivity.this)) {
+                                    return;
+                                }
+
+                                SoundUtil.playSuccess(PhotoDeliverActivity.this);
+
+                                etOrderNo.setText(respData.getOrderCode());
+
+                                if (swAutoStartCapture.isChecked()) {
+                                    // 自动开始拍第一张照片
+                                    autoStartCaptureCount = 1;
+
+                                    try {
+                                        Thread.sleep(500);
+                                    } catch (Exception exp) {
+                                        exp.printStackTrace();
+                                    }
+
+                                    showCapturePhoto();
+                                }
+
+                                // 显示图片列表
+                                showPhotoList();
+
+                                return;
+                            }
+
+                            @Override
+                            public void onFailure(Call<GetOrderCodeByPackBoxCodeResponseInfo> call, Throwable t) {
+                                Toast.makeText(PhotoDeliverActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } else if (requestCode == REQ_CAPTURE_PHOTO) {
+                    onCapturePhoto(data);
+                } else if (requestCode == REQ_SELECT_PHOTO) {
+                    onSelectPhoto(data);
+                }
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return true;
+    }
+}

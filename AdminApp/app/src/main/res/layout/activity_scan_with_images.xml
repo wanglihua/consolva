@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.pda.ScanWithImagesActivity">
+
+    <TextView
+        android:id="@+id/tvScanLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#ff000000"
+        android:paddingStart="38.0dip"
+        android:paddingTop="3.0dip"
+        android:paddingEnd="8.0dip"
+        android:paddingBottom="3.0dip"
+        android:text=""
+        android:textColor="#ffffffff"
+        android:textFontWeight="500"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/ivBigImage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tvImageNum"
+        android:layout_below="@id/tvScanLabel"
+        android:contentDescription=""
+        android:scaleType="center" />
+
+    <TextView
+        android:id="@+id/tvImageNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ff000000"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="3.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="3.0dip"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="#ffffffff"
+        android:textFontWeight="500"
+        android:textSize="12sp" />
+
+</RelativeLayout>

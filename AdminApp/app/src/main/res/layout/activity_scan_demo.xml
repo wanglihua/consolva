@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="50px">
+
+    <EditText
+        android:id="@+id/content_et"
+        android:layout_width="match_parent"
+        android:inputType="textMultiLine"
+        android:focusable="true"
+        android:layout_height="300px" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="输出模式"/>
+    <RadioButton
+        android:id="@+id/asBroacastRadioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "广播模式"
+        android:textSize="16sp"
+        />
+    <RadioButton
+        android:id="@+id/asInputRadioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "输入框模式"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="添加内容"/>
+    <RadioButton
+        android:id="@+id/addnone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "无"
+        android:textSize="16sp"
+        />
+    <RadioButton
+        android:id="@+id/addEnter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "回车按键"
+        android:textSize="16sp"
+        />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10px"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scanbtn"
+            android:text="开始扫描"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stopbtn"
+            android:text="停止扫描"/>
+    </LinearLayout>
+
+
+</LinearLayout>

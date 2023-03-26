@@ -1,0 +1,6 @@
+
+https://www.jianshu.com/p/ca869aa2fd72
+
+
+android.os.Build
+

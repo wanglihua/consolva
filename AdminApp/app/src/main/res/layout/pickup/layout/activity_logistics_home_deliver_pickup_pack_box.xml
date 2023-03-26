@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fadingEdge="vertical"
+    android:scrollbars="vertical"
+    tools:context=".ui.pickup.logisticshomedeliverpickup.LogisticsHomeDeliverPickupPackBoxActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/tvOrderPackBoxCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvOrderPackBoxShortCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvCustomerCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvOrderCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <Button
+            android:id="@+id/btnPickupConfirm"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20.0dip"
+            android:layout_marginBottom="20.0dip"
+            android:background="@color/colorPrimary"
+            android:text="确认箱号交付"
+            android:textColor="@android:color/white"
+            android:textSize="20.0sp" />
+
+        <TextView
+            android:id="@+id/tvOrderPackBoxNum"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvOrderPackBoxCount"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvTargetWarehouseName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvFirstLogisticsTypeName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvFirstLogisticsModeName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvSecondLogisticsTypeName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvPickupStationName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvOrderGoodsTypeName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvExpressGoodsTypeName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvWeight"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvVolumeWeight"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvVolume"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+        <TextView
+            android:id="@+id/tvPackTime"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8.0dip"
+            android:paddingTop="1.0dip"
+            android:paddingRight="8.0dip"
+            android:paddingBottom="8.0dip"
+            android:singleLine="false"
+            android:text=""
+            android:textSize="16.0sp" />
+
+    </LinearLayout>
+</ScrollView>

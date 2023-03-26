@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.photo.PhotoExpressActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10.0dip">
+
+            <EditText
+                android:id="@+id/etExpressTrackingNo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="快递单号"
+                android:imeOptions="actionUnspecified|normal"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--
+            这个扫描条形码的按钮没有启用，相机起不来
+            同时又发现，扫描二维码的那个居然也可以扫描条形码
+            这个按钮就更没用了，但是代码还留着，以备后用吧。
+            由于后面java代码还有引用，所有这里就只是隐藏，而不是注释掉或者删除掉，以免报错啥的。
+        -->
+        <Button
+            android:id="@+id/btnScanBarCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20.0dip"
+            android:background="@color/colorLogoYellow"
+            android:text="扫描快递单号条形码(已废弃)"
+            android:textColor="@android:color/white"
+            android:textSize="20.0sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnScanQrCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20.0dip"
+            android:background="@color/colorLogoYellow"
+            android:text="扫描快递单号"
+            android:textColor="@android:color/white"
+            android:textSize="20.0sp" />
+
+        <Button
+            android:id="@+id/btnCapturePhoto"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20.0dip"
+            android:background="@color/colorLogoYellow"
+            android:text="即时拍照上传图片"
+            android:textColor="@android:color/white"
+            android:textSize="20.0sp" />
+
+        <Button
+            android:id="@+id/btnSelectPhoto"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20.0dip"
+            android:background="@color/colorPrimary"
+            android:text="相册选择上传图片"
+            android:textColor="@android:color/white"
+            android:textSize="20.0sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dip"
+            android:layout_marginTop="20dip"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="扫描后自动开启拍照："
+                android:textSize="20.0sp" />
+
+            <Switch
+                android:id="@+id/swAutoStartCapture"
+                android:layout_width="wrap_content"
+                android:layout_height="20dip"
+                android:textOn="开启"
+                android:textOff="关闭"
+                android:showText="true"
+                android:switchPadding="15dip"
+                android:switchMinWidth="50dip"
+                android:checked="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dip"
+            android:layout_marginTop="20dip"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="扫码拍摄自动上传："
+                android:textSize="20.0sp" />
+
+            <Switch
+                android:id="@+id/swAutoUploadScan"
+                android:layout_width="wrap_content"
+                android:layout_height="20dip"
+                android:textOn="开启"
+                android:textOff="关闭"
+                android:showText="true"
+                android:switchPadding="15dip"
+                android:switchMinWidth="50dip"
+                android:checked="false" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

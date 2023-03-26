@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvOrderCode"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvPackBoxCount"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvOrderStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvMessageStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvCompany"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tvConfirmMessage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvConfirmStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvPhone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvDeliverTime"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8.0dip"
+        android:paddingTop="1.0dip"
+        android:paddingRight="8.0dip"
+        android:paddingBottom="1.0dip"
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:id="@+id/lytButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5.0dip"
+        android:layout_marginBottom="5.0dip"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnUploadFail"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5.0dip"
+            android:background="#FAFAFA"
+            android:padding="5.0dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/upload_fail_photo"
+            android:text="派送失败图片"
+            android:textSize="12.0sp" />
+
+        <ImageButton
+            android:id="@+id/btnCopy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5.0dip"
+            android:background="#FAFAFA"
+            android:padding="5.0dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/copy"
+            android:text="复制地址"
+            android:textSize="12.0sp" />
+
+        <ImageButton
+            android:id="@+id/btnNavigation"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5.0dip"
+            android:background="#FAFAFA"
+            android:padding="5.0dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/navigation"
+            android:text="地址导航"
+            android:textSize="12.0sp" />
+
+        <ImageButton
+            android:id="@+id/btnSend"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5.0dip"
+            android:background="#FAFAFA"
+            android:padding="5.0dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/message"
+            android:text="发送消息"
+            android:textSize="12.0sp" />
+
+        <ImageButton
+            android:id="@+id/btnPhone"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5.0dip"
+            android:background="#FAFAFA"
+            android:padding="5.0dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/phone"
+            android:text="拨打电话"
+            android:textSize="12.0sp" />
+
+        <ImageButton
+            android:id="@+id/btnUpload"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5.0dip"
+            android:background="#FAFAFA"
+            android:padding="5.0dip"
+            android:scaleType="centerInside"
+            android:src="@drawable/upload_photo"
+            android:text="上传图片"
+            android:textSize="12.0sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
