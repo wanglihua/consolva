@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Areas.App.Models.Login;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using ISession = NHibernate.ISession;
@@ -26,6 +27,7 @@ public class LoginController : Controller {
 
     [HttpPost]
     [Route("/admin/app/login")]
+    [Transactional]
     public IActionResult Login(LoginModel model) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(this.ModelState));

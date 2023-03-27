@@ -7,51 +7,42 @@ using shunda.Core.Config;
 
 namespace shunda.Core.Util;
 
-public class WebUtil
-{
+public class WebUtil {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-    public static bool IsAjaxRequest(HttpRequest request)
-    {
-        if (request == null)
-        {
+    public static bool IsAjaxRequest(HttpRequest request) {
+        if (request == null) {
             return false;
         }
 
-        if (request.Headers.ContainsKey(HeaderNames.XRequestedWith) == false)
-        {
+        if (request.Headers.ContainsKey(HeaderNames.XRequestedWith) == false) {
             return false;
         }
 
-        if (request.Headers[HeaderNames.XRequestedWith].Count != 0 && request.Headers[HeaderNames.XRequestedWith][0] == "XMLHttpRequest")
-        {
+        if (request.Headers[HeaderNames.XRequestedWith].Count != 0 && request.Headers[HeaderNames.XRequestedWith][0] == "XMLHttpRequest") {
             return true;
         }
 
         return false;
     }
 
-    public static bool IsFileUpload(HttpRequest request)
-    {
-        if (request == null)
-        {
+    public static bool IsFileUpload(HttpRequest request) {
+        if (request == null) {
             return false;
         }
 
         IList<string> contentTypeList = request.Headers[HeaderNames.ContentType];
-        if (contentTypeList.Count == 0)
-        {
+        if (contentTypeList.Count == 0) {
             return false;
         }
 
         string contentType = contentTypeList[0];
-        if (string.IsNullOrWhiteSpace(contentType))
-        {
+        if (string.IsNullOrWhiteSpace(contentType)) {
             return false;
         }
 
-        if (contentType.Contains("multipart/form-data") == false)
-        {
+        // 有这个 multipart/form-data 一般就都是文件上传的，这个 content type 就是用来支持二进制文件上传的
+        if (contentType.Contains("multipart/form-data") == false) {
             return false;
         }
 
@@ -72,21 +63,17 @@ public class WebUtil
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static bool IsMobileRequest(HttpRequest request)
-    {
-        if (request == null)
-        {
+    public static bool IsMobileRequest(HttpRequest request) {
+        if (request == null) {
             return false;
         }
 
         string userAgent = GetUserAgent(request);
-        if (string.IsNullOrWhiteSpace(userAgent))
-        {
+        if (string.IsNullOrWhiteSpace(userAgent)) {
             return false;
         }
 
-        if (RegexB.IsMatch(userAgent) || (userAgent.Length >= 4 && RegxV.IsMatch(userAgent.Substring(0, 4))))
-        {
+        if (RegexB.IsMatch(userAgent) || (userAgent.Length >= 4 && RegxV.IsMatch(userAgent.Substring(0, 4)))) {
             return true;
         }
 
@@ -94,40 +81,32 @@ public class WebUtil
         return false;
     }
 
-    public static string GetHeader(HttpRequest request, string key)
-    {
-        if (request == null)
-        {
+    public static string GetHeader(HttpRequest request, string key) {
+        if (request == null) {
             return string.Empty;
         }
 
-        if (request.Headers.ContainsKey(key) == false)
-        {
+        if (request.Headers.ContainsKey(key) == false) {
             return string.Empty;
         }
 
-        if (request.Headers[key].Count == 0)
-        {
+        if (request.Headers[key].Count == 0) {
             return string.Empty;
         }
 
         return request.Headers[key][0];
     }
 
-    public static string GetUserAgent(HttpRequest request)
-    {
-        if (request == null)
-        {
+    public static string GetUserAgent(HttpRequest request) {
+        if (request == null) {
             return string.Empty;
         }
 
-        if (request.Headers.ContainsKey(HeaderNames.UserAgent) == false)
-        {
+        if (request.Headers.ContainsKey(HeaderNames.UserAgent) == false) {
             return string.Empty;
         }
 
-        if (request.Headers[HeaderNames.UserAgent].Count == 0)
-        {
+        if (request.Headers[HeaderNames.UserAgent].Count == 0) {
             return string.Empty;
         }
 
@@ -145,26 +124,21 @@ public class WebUtil
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static bool IsWechatRequest(HttpRequest request)
-    {
-        if (request == null)
-        {
+    public static bool IsWechatRequest(HttpRequest request) {
+        if (request == null) {
             return false;
         }
 
-        if (request.Headers.ContainsKey(HeaderNames.UserAgent) == false)
-        {
+        if (request.Headers.ContainsKey(HeaderNames.UserAgent) == false) {
             return false;
         }
 
-        if (request.Headers[HeaderNames.UserAgent].Count == 0)
-        {
+        if (request.Headers[HeaderNames.UserAgent].Count == 0) {
             return false;
         }
 
         var userAgent = request.Headers[HeaderNames.UserAgent][0];
-        if (string.IsNullOrEmpty(userAgent) == false && userAgent.ToLower().Contains("MicroMessenger".ToLower()))
-        {
+        if (string.IsNullOrEmpty(userAgent) == false && userAgent.ToLower().Contains("MicroMessenger".ToLower())) {
             return true;
         }
 
@@ -176,13 +150,10 @@ public class WebUtil
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static bool IsHeaderSessionIdRequest(HttpRequest request)
-    {
+    public static bool IsHeaderSessionIdRequest(HttpRequest request) {
         if (request.Headers.ContainsKey(WebSessionConfig.SessionIdHeaderKey)
-            && request.Headers[WebSessionConfig.SessionIdHeaderKey].Count != 0)
-        {
-            if (string.IsNullOrWhiteSpace(request.Headers[WebSessionConfig.SessionIdHeaderKey][0]) == false)
-            {
+            && request.Headers[WebSessionConfig.SessionIdHeaderKey].Count != 0) {
+            if (string.IsNullOrWhiteSpace(request.Headers[WebSessionConfig.SessionIdHeaderKey][0]) == false) {
                 return true;
             }
         }
@@ -195,25 +166,20 @@ public class WebUtil
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static bool ShouldShowJson(HttpRequest request)
-    {
-        if (IsWechatRequest(request) || IsAjaxRequest(request) || IsFileUpload(request) || IsHeaderSessionIdRequest(request))
-        {
+    public static bool ShouldShowJson(HttpRequest request) {
+        if (IsHeaderSessionIdRequest(request) || IsWechatRequest(request) || IsAjaxRequest(request) || IsFileUpload(request)) {
             return true;
         }
 
         return false;
     }
 
-    public static string SiteSubTitle
-    {
+    public static string SiteSubTitle {
         get { return "舜达"; }
     }
 
-    public static string DebugTitle
-    {
-        get
-        {
+    public static string DebugTitle {
+        get {
             string debugTitle = string.Empty;
 
 #if DEBUG
@@ -224,10 +190,8 @@ public class WebUtil
         }
     }
 
-    public static bool IsDebug
-    {
-        get
-        {
+    public static bool IsDebug {
+        get {
             bool isDebug = false;
 #if DEBUG
             isDebug = true;
@@ -241,32 +205,26 @@ public class WebUtil
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public static string GetClientIp(HttpRequest request)
-    {
+    public static string GetClientIp(HttpRequest request) {
         string clientIp = request.Headers["X-Forwarded-For"];
 
-        if (string.IsNullOrWhiteSpace(clientIp))
-        {
+        if (string.IsNullOrWhiteSpace(clientIp)) {
             clientIp = request.Headers["X-Real-IP"];
         }
 
-        if (string.IsNullOrWhiteSpace(clientIp))
-        {
+        if (string.IsNullOrWhiteSpace(clientIp)) {
             clientIp = request.Headers["Proxy-Client-IP"];
         }
 
-        if (string.IsNullOrWhiteSpace(clientIp))
-        {
+        if (string.IsNullOrWhiteSpace(clientIp)) {
             clientIp = request.Headers["WL-Proxy-Client-IP"];
         }
 
-        if (string.IsNullOrWhiteSpace(clientIp))
-        {
+        if (string.IsNullOrWhiteSpace(clientIp)) {
             clientIp = request.HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
         }
 
-        if (string.IsNullOrWhiteSpace(clientIp))
-        {
+        if (string.IsNullOrWhiteSpace(clientIp)) {
             clientIp = string.Empty;
         }
 

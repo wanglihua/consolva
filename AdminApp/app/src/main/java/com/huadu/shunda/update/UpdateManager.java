@@ -126,7 +126,7 @@ public class UpdateManager {
         InputStream inStream = null;
         try {
             // 把version.xml放到网络上，然后获取文件信息
-            inStream = getInputStreamFromUrl(Config.getUrlBase() + "/static/apk/version.xml");
+            inStream = getInputStreamFromUrl(Config.getUrlBase() + "/static/admin-app/version.xml");
         } catch (Exception e) {
             e.printStackTrace();
             return CheckNewVersionResult.NetworkError;
