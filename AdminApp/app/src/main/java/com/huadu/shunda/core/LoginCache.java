@@ -1,6 +1,6 @@
 package com.huadu.shunda.core;
 
-import com.huadu.shunda.data.http.login.LoginResponseInfo;
+import com.huadu.shunda.data.http.login.LoginResponseData;
 
 public class LoginCache {
 
@@ -10,7 +10,7 @@ public class LoginCache {
 
     private static String password;
 
-    private static LoginResponseInfo loginResponse;
+    private static LoginResponseData loginResponse;
 
     public static int getUserId() {
         return userId;
@@ -36,11 +36,11 @@ public class LoginCache {
         LoginCache.password = password;
     }
 
-    public static LoginResponseInfo getLoginResponse() {
+    public static LoginResponseData getLoginResponse() {
         return loginResponse;
     }
 
-    public static void setLoginResponse(LoginResponseInfo loginResponse) {
+    public static void setLoginResponse(LoginResponseData loginResponse) {
         LoginCache.loginResponse = loginResponse;
     }
 

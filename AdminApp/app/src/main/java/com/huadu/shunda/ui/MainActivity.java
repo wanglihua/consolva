@@ -18,7 +18,7 @@ import com.huadu.shunda.R;
 import com.huadu.shunda.core.LoginCache;
 import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SoundUtil;
-import com.huadu.shunda.data.http.login.LoginResponseInfo;
+import com.huadu.shunda.data.http.login.LoginResponseData;
 import com.huadu.shunda.ui.expressdump.ExpressDumpMainActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressOffShelfWarehouseListActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressOnShelfActivity;
@@ -246,6 +246,7 @@ public class MainActivity extends BaseActivity {
 
         checkPermission();
 
+        /*
         tvExpressOnShelf.setVisibility(View.GONE);
         tvExpressWarehouseCheck.setVisibility(View.GONE);
         tvExpressOffShelf.setVisibility(View.GONE);
@@ -262,8 +263,11 @@ public class MainActivity extends BaseActivity {
         tvStockMove.setVisibility(View.GONE);
         tvExpressPackageQuery.setVisibility(View.GONE);
         tvOrderPhoto.setVisibility(View.GONE);
+         */
 
-        LoginResponseInfo respData = LoginCache.getLoginResponse();
+        tvOrderPhoto.setVisibility(View.VISIBLE);
+
+        LoginResponseData respData = LoginCache.getLoginResponse();
 
         if (respData == null) {
             /*

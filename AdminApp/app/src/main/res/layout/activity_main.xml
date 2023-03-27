@@ -32,7 +32,7 @@
             android:text="快递上架"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvExpressWarehouseCheck"
@@ -46,7 +46,7 @@
             android:text="仓库需核实"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvExpressOffShelf"
@@ -60,7 +60,7 @@
             android:text="快递下架"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvExpressReturnOffShelf"
@@ -74,7 +74,7 @@
             android:text="退运下架"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvExpressDump"
@@ -88,7 +88,7 @@
             android:text="快递堆存"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvExpressPacking"
@@ -102,7 +102,7 @@
             android:text="入流动仓"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvLoad"
@@ -116,7 +116,7 @@
             android:text="装箱"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvUnload"
@@ -130,7 +130,7 @@
             android:text="卸货"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvPackBoxDetail"
@@ -144,7 +144,7 @@
             android:text="箱号信息查询"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvPackBoxStockPlace"
@@ -158,7 +158,7 @@
             android:text="箱号仓位查询"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvCustomerPackBoxStockPlace"
@@ -172,7 +172,7 @@
             android:text="会员箱号仓位查询"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvOrderPayDetail"
@@ -186,7 +186,7 @@
             android:text="欠费查询"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvStockCheck"
@@ -200,7 +200,7 @@
             android:text="盘点"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvStockMove"
@@ -214,7 +214,7 @@
             android:text="托盘移动"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvExpressPackageQuery"
@@ -228,7 +228,7 @@
             android:text="快递单号查询"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvOrderPhoto"
@@ -242,7 +242,7 @@
             android:text="订单图片"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvSoftUpdate"

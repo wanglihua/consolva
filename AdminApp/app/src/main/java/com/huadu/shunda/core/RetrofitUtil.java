@@ -5,10 +5,8 @@ import android.content.Context;
 import androidx.appcompat.app.AlertDialog;
 
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.data.http.login.LoginResponseInfo;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

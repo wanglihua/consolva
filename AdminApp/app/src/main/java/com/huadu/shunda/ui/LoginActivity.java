@@ -19,7 +19,8 @@ import com.huadu.shunda.core.MaskDialog;
 import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SettingUtil;
 import com.huadu.shunda.core.SoundUtil;
-import com.huadu.shunda.data.http.login.LoginResponseInfo;
+import com.huadu.shunda.data.http.ResponseDataInfo;
+import com.huadu.shunda.data.http.login.LoginResponseData;
 import com.huadu.shunda.http.LoginRequest;
 import com.huadu.shunda.ui.pda.Pda2ScannerUtil;
 
@@ -119,18 +120,18 @@ public class LoginActivity extends BaseActivity {
             Config.setHost(host);
 
             LoginRequest loginRequest = RetrofitUtil.createRequest(LoginRequest.class);
-            Call<LoginResponseInfo> loginCall = loginRequest.login(loginNameFinal, passwordFinal);
+            Call<ResponseDataInfo<LoginResponseData>> loginCall = loginRequest.login(loginNameFinal, passwordFinal);
             Dialog mask = MaskDialog.show(LoginActivity.this);
-            loginCall.enqueue(new Callback<LoginResponseInfo>() {
+            loginCall.enqueue(new Callback<ResponseDataInfo<LoginResponseData>>() {
                 @Override
-                public void onResponse(Call<LoginResponseInfo> call, Response<LoginResponseInfo> response) {
+                public void onResponse(Call<ResponseDataInfo<LoginResponseData>> call, Response<ResponseDataInfo<LoginResponseData>> response) {
                     mask.dismiss();
 
                     if (!RetrofitUtil.processResponse(response, LoginActivity.this)) {
                         return;
                     }
 
-                    LoginResponseInfo respData = response.body();
+                    LoginResponseData respData = response.body().getData();
 
                     LoginCache.setUserId(respData.getUserId());
                     LoginCache.setLoginName(loginNameFinal);
@@ -150,7 +151,7 @@ public class LoginActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onFailure(Call<LoginResponseInfo> call, Throwable t) {
+                public void onFailure(Call<ResponseDataInfo<LoginResponseData>> call, Throwable t) {
                     Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });

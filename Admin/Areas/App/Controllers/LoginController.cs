@@ -49,3 +49,12 @@ public class LoginController : Controller {
         });
     }
 }
+
+/*
+    @SerializedName("userId")
+    private int userId;
+
+    @SerializedName("userName")
+    private String userName;
+    
+    */
