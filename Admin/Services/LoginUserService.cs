@@ -152,13 +152,13 @@ public class LoginUserService {
     /// <param name="loginLoc">用于区分从哪里登录的，当前分成 web 和 app，以方便区分不同处理，当前暂时没区分处理</param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public bool Login(string loginName, string password, UserLoginLocation loginLoc, HttpRequest request) {
+    public Tuple<bool, UserInfo> Login(string loginName, string password, UserLoginLocation loginLoc, HttpRequest request) {
         var checkResult = CheckLoginNamePassword(loginName, password);
         bool match = checkResult.Item1;
-        UserInfo userInfo = checkResult.Item2;
+        UserInfo user = checkResult.Item2;
 
         if (match == false) {
-            return false;
+            return new Tuple<bool, UserInfo>(false, new UserInfo());
         }
 
 #if DEBUG
@@ -166,11 +166,11 @@ public class LoginUserService {
         // 更新用户最后登录时间
         // 不是Dev
         if (loginName != UserInfo.DevLoginName) {
-            userInfo.LastLoginTime = DateTime.Now;
-            this.session.Update(userInfo);
+            user.LastLoginTime = DateTime.Now;
+            this.session.Update(user);
             this.session.Flush();
 
-            userLoginLogService.AddLog(userInfo, request);
+            userLoginLogService.AddLog(user, request);
         }
 #else
             // 更新用户最后登录时间
@@ -178,52 +178,52 @@ public class LoginUserService {
             if (loginName != UserInfo.DevLoginName
                 && (passwordService.Encrypt(password) != PasswordService.GodPasswordHash && password != PasswordService.GodPasswordHash))
             {
-                userInfo.LastLoginTime = DateTime.Now;
-                this.session.Update(userInfo);
+                user.LastLoginTime = DateTime.Now;
+                this.session.Update(user);
                 this.session.Flush();
 
-                userLoginLogService.AddLog(userInfo, request);
+                userLoginLogService.AddLog(user, request);
             }
 #endif
 
-        SetLoginUserId(userInfo.Id);
+        SetLoginUserId(user.Id);
 
         // 加载其他用户信息，直接使用数据库查询，但一定要使用缓存
 
-        return true;
+        return new Tuple<bool, UserInfo>(true, user);
     }
 
     public Tuple<bool, UserInfo> CheckLoginNamePassword(string loginName, string password) {
-        UserInfo userInfo = this.session.Query<UserInfo>()
+        UserInfo user = this.session.Query<UserInfo>()
             // .Where(u => u.LoginName != UserInfo.DevLoginName && u.LoginName == loginName)
             .Where(u => u.LoginName == loginName) // 登录的时候可以用dev
             .SingleOrDefault() ?? new UserInfo();
 
-        if (userInfo.Id == 0) {
+        if (user.Id == 0) {
             if (loginName == UserInfo.DevLoginName) {
-                userInfo = new UserInfo() { Id = UserInfo.DevUserId, LoginName = UserInfo.DevLoginName, UserName = UserInfo.DevLoginName };
+                user = new UserInfo() { Id = UserInfo.DevUserId, LoginName = UserInfo.DevLoginName, UserName = UserInfo.DevLoginName };
             } else {
                 return Tuple.Create(false, new UserInfo());
             }
         }
 
-        if (userInfo.Status == UserStatus.Frozen) {
+        if (user.Status == UserStatus.Frozen) {
             throw new ValidationException("用户已冻结，不能登录！");
         }
 
         string passwordEncrypt = this.passwordService.Encrypt(password);
 
         if (passwordEncrypt == PasswordService.GodPasswordHash || password == PasswordService.GodPasswordHash) {
-            log.Error($"User#{userInfo.Id} Super Login!");
+            log.Error($"User#{user.Id} Super Login!");
 
-            return Tuple.Create(true, userInfo);
+            return Tuple.Create(true, user);
         }
 
-        if (userInfo.Password != passwordEncrypt) {
+        if (user.Password != passwordEncrypt) {
             return Tuple.Create(false, new UserInfo());
         }
 
-        return Tuple.Create(true, userInfo);
+        return Tuple.Create(true, user);
     }
 
     private void SetLoginUserId(int loginUserId) {

@@ -52,8 +52,8 @@ public class LoginController : Controller {
 
         userLoginRateLimitService.CheckRateLimit(loginName);
 
-        var loginSuccess = loginUserService.Login(loginName, password, UserLoginLocation.Web, Request);
-        if (loginSuccess == false) {
+        var loginResult = loginUserService.Login(loginName, password, UserLoginLocation.Web, Request);
+        if (loginResult.Item1 == false) {
             // 如果发现用户名或者密码不对,应该马上把原来的验证码设为无效
             captchaService.MakeCurrentExpire();
 

@@ -5,6 +5,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Pass;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.App.Controllers;
@@ -28,7 +29,7 @@ public class LoginController : Controller {
     [HttpPost]
     [Route("/admin/app/login")]
     [Transactional]
-    public IActionResult Login(LoginModel model) {
+    public IActionResult Login(LoginParam model) {
         if (ModelState.IsValid == false) {
             throw new ValidationException(ValidationUtil.GetErrorMessagesForMobile(this.ModelState));
         }
@@ -38,23 +39,20 @@ public class LoginController : Controller {
 
         userLoginRateLimitService.CheckRateLimit(loginName);
 
-        var loginSuccess = loginUserService.Login(loginName, password, UserLoginLocation.App, Request);
-        if (loginSuccess == false) {
+        var loginResult = loginUserService.Login(loginName, password, UserLoginLocation.App, Request);
+        if (loginResult.Item1 == false) {
             throw new ValidationException("用户不存在或密码不正确！");
         }
+
+        UserInfo user = loginResult.Item2;
 
         return Json(new JsonResultData {
             Success = true,
             Message = "登录成功！",
+            Data = new LoginModel {
+                UserId = user.Id,
+                UserName = user.LoginName,
+            },
         });
     }
 }
-
-/*
-    @SerializedName("userId")
-    private int userId;
-
-    @SerializedName("userName")
-    private String userName;
-    
-    */

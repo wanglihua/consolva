@@ -57,7 +57,7 @@ public class BaseActivity extends AppCompatActivity {
                 ResponseInfo respData = response.body();
 
                 if (respData == null) {
-                    SoundUtil.playError(BaseActivity.this);
+                    // SoundUtil.playError(BaseActivity.this);
 
                     // Toast.makeText(BaseActivity.this, "未能接收到服务器返回数据！", Toast.LENGTH_SHORT).show();
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(BaseActivity.this);
