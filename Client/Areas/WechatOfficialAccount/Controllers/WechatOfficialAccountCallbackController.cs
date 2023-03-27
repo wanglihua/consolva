@@ -23,10 +23,24 @@ public class WechatOfficialAccountCallbackController : Controller {
 
     private readonly ISession session;
     private readonly WechatCallbackService wechatCallbackService;
+    private readonly WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService;
+    private readonly WechatOfficialAccountReplyService wechatOfficialAccountReplyService;
+    private readonly WechatOfficialAccountReplyKeywordService wechatOfficialAccountReplyKeywordService;
+    private readonly WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService;
 
-    public WechatOfficialAccountCallbackController(ISession session, WechatCallbackService wechatCallbackService) {
+    public WechatOfficialAccountCallbackController(
+        ISession session,
+        WechatCallbackService wechatCallbackService,
+        WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService,
+        WechatOfficialAccountReplyService wechatOfficialAccountReplyService,
+        WechatOfficialAccountReplyKeywordService wechatOfficialAccountReplyKeywordService,
+        WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService) {
         this.session = session;
         this.wechatCallbackService = wechatCallbackService;
+        this.wechatOfficialAccountFollowerService = wechatOfficialAccountFollowerService;
+        this.wechatOfficialAccountReplyService = wechatOfficialAccountReplyService;
+        this.wechatOfficialAccountReplyKeywordService = wechatOfficialAccountReplyKeywordService;
+        this.wechatOfficialAccountAccessTokenService = wechatOfficialAccountAccessTokenService;
     }
 
     [HttpPost]
@@ -109,7 +123,15 @@ public class WechatOfficialAccountCallbackController : Controller {
             XDocument requestXmlDoc = XDocument.Parse(requestBody);
 
             MessageContextGlobalConfig.UseMessageContext = false;
-            var messageHandler = new WechatOfficialAccountCustomMessageHandler(session, requestXmlDoc, postModel);
+            var messageHandler = new WechatOfficialAccountCustomMessageHandler(
+                session,
+                wechatOfficialAccountFollowerService,
+                wechatOfficialAccountReplyService,
+                wechatOfficialAccountReplyKeywordService,
+                wechatOfficialAccountAccessTokenService,
+                requestXmlDoc,
+                postModel
+            );
 
             // 执行微信处理过程（关键）
             messageHandler.Execute();

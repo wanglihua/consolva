@@ -2,6 +2,7 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Coupon;
 using shunda.Domain.Customer;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Coupon;
@@ -10,13 +11,16 @@ namespace shunda.Service.Coupon;
 public class CouponFollowService {
     private readonly ISession session;
     private readonly CouponCodeService couponCodeService;
+    private readonly CustomerMessageCouponFollowService customerMessageCouponFollowService;
 
     public CouponFollowService(
         ISession session,
-        CouponCodeService couponCodeService
+        CouponCodeService couponCodeService,
+        CustomerMessageCouponFollowService customerMessageCouponFollowService
     ) {
         this.session = session;
         this.couponCodeService = couponCodeService;
+        this.customerMessageCouponFollowService = customerMessageCouponFollowService;
     }
 
     public void NewFollow(int customerId) {
@@ -85,5 +89,8 @@ public class CouponFollowService {
         }
 
         session.Flush();
+
+        // 发送新人优惠券消息
+        customerMessageCouponFollowService.SendMessage(customer);
     }
 }

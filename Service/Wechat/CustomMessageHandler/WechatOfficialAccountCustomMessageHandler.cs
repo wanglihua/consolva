@@ -12,9 +12,6 @@ using Senparc.Weixin.MP.MessageHandlers;
 using Senparc.Weixin.Tencent;
 using shunda.Domain.Customer;
 using shunda.Domain.Wechat;
-using shunda.Service.Coupon;
-using shunda.Service.Customer;
-using shunda.Service.Pass;
 
 namespace shunda.Service.Wechat.CustomMessageHandler;
 
@@ -38,17 +35,19 @@ public partial class WechatOfficialAccountCustomMessageHandler : MessageHandler<
     /// </summary>
     public static Dictionary<string, string> TemplateMessageCollection = new Dictionary<string, string>();
 
-    public WechatOfficialAccountCustomMessageHandler(ISession session, XDocument document, PostModel postModel, int maxRecordCount = 0)
-        : base(document, postModel, maxRecordCount) {
+    public WechatOfficialAccountCustomMessageHandler(
+        ISession session,
+        WechatOfficialAccountFollowerService wechatOfficialAccountFollowerService,
+        WechatOfficialAccountReplyService wechatOfficialAccountReplyService,
+        WechatOfficialAccountReplyKeywordService wechatOfficialAccountReplyKeywordService,
+        WechatOfficialAccountAccessTokenService wechatOfficialAccountAccessTokenService,
+        XDocument document,
+        PostModel postModel) : base(document, postModel, 0) {
         this.session = session;
-        this.wechatOfficialAccountFollowerService = new WechatOfficialAccountFollowerService(session,
-            new CustomerService(session, new CustomerCheckinCodeService(session), new PasswordService()),
-            new CustomerPromotionService(session),
-            new CouponFollowService(session, new CouponCodeService(session))
-        );
-        this.wechatOfficialAccountReplyService = new WechatOfficialAccountReplyService(session);
-        this.wechatOfficialAccountReplyKeywordService = new WechatOfficialAccountReplyKeywordService(session);
-        this.wechatOfficialAccountAccessTokenService = new WechatOfficialAccountAccessTokenService(session);
+        this.wechatOfficialAccountFollowerService = wechatOfficialAccountFollowerService;
+        this.wechatOfficialAccountReplyService = wechatOfficialAccountReplyService;
+        this.wechatOfficialAccountReplyKeywordService = wechatOfficialAccountReplyKeywordService;
+        this.wechatOfficialAccountAccessTokenService = wechatOfficialAccountAccessTokenService;
 
         this.OmitRepeatedMessage = true;
     }
