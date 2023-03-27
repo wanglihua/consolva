@@ -78,7 +78,7 @@ public class PalletListActivity extends BaseActivity {
 
                         PalletListDataResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PalletListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PalletListActivity.this)) {
                             return;
                         }
 

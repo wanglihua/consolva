@@ -105,7 +105,7 @@ public class StockMoveStockPlaceListActivity extends BaseActivity {
 
                         StockMoveStockPlaceListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockMoveStockPlaceListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockMoveStockPlaceListActivity.this)) {
                             return;
                         }
 

@@ -114,7 +114,7 @@ public class ExpressReturnOffShelfExpressListActivity extends BaseActivity {
 
                 ExpressReturnOffShelfExpressListResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressReturnOffShelfExpressListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressReturnOffShelfExpressListActivity.this)) {
                     return;
                 }
 
@@ -145,7 +145,7 @@ public class ExpressReturnOffShelfExpressListActivity extends BaseActivity {
 
                 ExpressReturnOffShelfExpressDetailResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressReturnOffShelfExpressListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressReturnOffShelfExpressListActivity.this)) {
                     return;
                 }
 
@@ -179,7 +179,7 @@ public class ExpressReturnOffShelfExpressListActivity extends BaseActivity {
 
                         ExpressImageShowImageListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressReturnOffShelfExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressReturnOffShelfExpressListActivity.this)) {
                             return;
                         }
 
@@ -240,7 +240,7 @@ public class ExpressReturnOffShelfExpressListActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressReturnOffShelfExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressReturnOffShelfExpressListActivity.this)) {
                             return;
                         }
 

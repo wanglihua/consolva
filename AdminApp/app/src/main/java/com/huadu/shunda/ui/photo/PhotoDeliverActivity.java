@@ -212,7 +212,7 @@ public class PhotoDeliverActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PhotoDeliverActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PhotoDeliverActivity.this)) {
                             return;
                         }
 
@@ -355,7 +355,7 @@ public class PhotoDeliverActivity extends BaseActivity {
 
                             ResponseInfo respData = response.body();
 
-                            if (!RetrofitUtil.checkResponse(respData, PhotoDeliverActivity.this)) {
+                            if (!RetrofitUtil.processResponse(response, PhotoDeliverActivity.this)) {
                                 return;
                             }
 
@@ -480,7 +480,7 @@ public class PhotoDeliverActivity extends BaseActivity {
 
                                 GetOrderCodeByPackBoxCodeResponseInfo respData = response.body();
 
-                                if (!RetrofitUtil.checkResponse(respData, PhotoDeliverActivity.this)) {
+                                if (!RetrofitUtil.processResponse(response, PhotoDeliverActivity.this)) {
                                     return;
                                 }
 

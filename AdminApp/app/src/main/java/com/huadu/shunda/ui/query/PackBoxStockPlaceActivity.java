@@ -116,7 +116,7 @@ public class PackBoxStockPlaceActivity extends BaseActivity {
 
                         PackBoxStockPlaceDataResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PackBoxStockPlaceActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PackBoxStockPlaceActivity.this)) {
                             return;
                         }
 

@@ -89,7 +89,7 @@ public class ExpressNoProcessDumpExpressListActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
-                int claimId= (int) map.get("id");
+                int claimId = (int) map.get("id");
 
                 ExpressNoProcessDumpRequest expressNoProcessDumpRequest = RetrofitUtil.createRequest(ExpressNoProcessDumpRequest.class);
                 Call<ExpressDumpNextExpressResponseInfo> express = expressNoProcessDumpRequest.express(shelfId, claimId);
@@ -100,11 +100,11 @@ public class ExpressNoProcessDumpExpressListActivity extends BaseActivity {
                     public void onResponse(Call<ExpressDumpNextExpressResponseInfo> call, Response<ExpressDumpNextExpressResponseInfo> response) {
                         mask.dismiss();
 
-                        ExpressDumpNextExpressResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpExpressListActivity.this)) {
                             return;
                         }
+
+                        ExpressDumpNextExpressResponseInfo respData = response.body();
 
                         ExpressDumpExpressItemInfo express = respData.getExpress();
                         if (express == null) {
@@ -133,11 +133,11 @@ public class ExpressNoProcessDumpExpressListActivity extends BaseActivity {
                             public void onResponse(Call<ExpressImageShowImageListResponseInfo> call, Response<ExpressImageShowImageListResponseInfo> response) {
                                 // mask.dismiss();
 
-                                ExpressImageShowImageListResponseInfo respData = response.body();
-
-                                if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpExpressListActivity.this)) {
+                                if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpExpressListActivity.this)) {
                                     return;
                                 }
+
+                                ExpressImageShowImageListResponseInfo respData = response.body();
 
                                 List<ExpressImageShowImageItemInfo> imageItemList = respData.getImageList();
                                 List<String> imageList = new ArrayList<>();
@@ -201,11 +201,11 @@ public class ExpressNoProcessDumpExpressListActivity extends BaseActivity {
             public void onResponse(Call<ExpressDumpExpressListResponseInfo> call, Response<ExpressDumpExpressListResponseInfo> response) {
                 // mask.dismiss();
 
-                ExpressDumpExpressListResponseInfo respData = response.body();
-
-                if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpExpressListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpExpressListActivity.this)) {
                     return;
                 }
+
+                ExpressDumpExpressListResponseInfo respData = response.body();
 
                 Message msg = new Message();
                 msg.what = REFRESH_EXPRESS_DATA_LIST;
@@ -233,7 +233,7 @@ public class ExpressNoProcessDumpExpressListActivity extends BaseActivity {
 
                 ExpressDumpNextExpressResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpExpressListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpExpressListActivity.this)) {
                     return;
                 }
 
@@ -266,7 +266,7 @@ public class ExpressNoProcessDumpExpressListActivity extends BaseActivity {
 
                         ExpressImageShowImageListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpExpressListActivity.this)) {
                             return;
                         }
 
@@ -329,7 +329,7 @@ public class ExpressNoProcessDumpExpressListActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpExpressListActivity.this)) {
                             return;
                         }
 

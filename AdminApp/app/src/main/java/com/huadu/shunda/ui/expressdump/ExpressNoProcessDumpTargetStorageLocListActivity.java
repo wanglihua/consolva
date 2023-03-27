@@ -68,7 +68,7 @@ public class ExpressNoProcessDumpTargetStorageLocListActivity extends BaseActivi
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpTargetStorageLocListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpTargetStorageLocListActivity.this)) {
                             return;
                         }
 
@@ -123,7 +123,7 @@ public class ExpressNoProcessDumpTargetStorageLocListActivity extends BaseActivi
 
                         ExpressDumpStorageLocListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpTargetStorageLocListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpTargetStorageLocListActivity.this)) {
                             return;
                         }
 

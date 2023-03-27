@@ -126,11 +126,11 @@ public class LoginActivity extends BaseActivity {
                 public void onResponse(Call<LoginResponseInfo> call, Response<LoginResponseInfo> response) {
                     mask.dismiss();
 
-                    LoginResponseInfo respData = response.body();
-
-                    if (!RetrofitUtil.checkResponse(respData, LoginActivity.this)) {
+                    if (!RetrofitUtil.processResponse(response, LoginActivity.this)) {
                         return;
                     }
+
+                    LoginResponseInfo respData = response.body();
 
                     LoginCache.setUserId(respData.getUserId());
                     LoginCache.setLoginName(loginNameFinal);

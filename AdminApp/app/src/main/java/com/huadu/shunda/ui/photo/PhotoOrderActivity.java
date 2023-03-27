@@ -295,7 +295,7 @@ public class PhotoOrderActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PhotoOrderActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PhotoOrderActivity.this)) {
                             return;
                         }
 
@@ -485,7 +485,7 @@ public class PhotoOrderActivity extends BaseActivity {
 
                             ResponseInfo respData = response.body();
 
-                            if (!RetrofitUtil.checkResponse(respData, PhotoOrderActivity.this)) {
+                            if (!RetrofitUtil.processResponse(response, PhotoOrderActivity.this)) {
                                 return;
                             }
 
@@ -609,7 +609,7 @@ public class PhotoOrderActivity extends BaseActivity {
 
                                 GetOrderCodeByPackBoxCodeResponseInfo respData = response.body();
 
-                                if (!RetrofitUtil.checkResponse(respData, PhotoOrderActivity.this)) {
+                                if (!RetrofitUtil.processResponse(response, PhotoOrderActivity.this)) {
                                     return;
                                 }
 

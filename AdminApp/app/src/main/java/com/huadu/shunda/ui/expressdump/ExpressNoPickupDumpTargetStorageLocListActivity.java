@@ -65,12 +65,11 @@ public class ExpressNoPickupDumpTargetStorageLocListActivity extends BaseActivit
                     @Override
                     public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
                         // mask.dismiss();
-
-                        ResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpTargetStorageLocListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpTargetStorageLocListActivity.this)) {
                             return;
                         }
+
+                        ResponseInfo respData = response.body();
 
                         Toast.makeText(ExpressNoPickupDumpTargetStorageLocListActivity.this, respData.getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -121,11 +120,11 @@ public class ExpressNoPickupDumpTargetStorageLocListActivity extends BaseActivit
                     public void onResponse(Call<ExpressDumpStorageLocListResponseInfo> call, Response<ExpressDumpStorageLocListResponseInfo> response) {
                         // mask.dismiss();
 
-                        ExpressDumpStorageLocListResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpTargetStorageLocListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpTargetStorageLocListActivity.this)) {
                             return;
                         }
+
+                        ExpressDumpStorageLocListResponseInfo respData = response.body();
 
                         Message msg = new Message();
                         msg.what = REFRESH_SHELF_DATA_LIST;

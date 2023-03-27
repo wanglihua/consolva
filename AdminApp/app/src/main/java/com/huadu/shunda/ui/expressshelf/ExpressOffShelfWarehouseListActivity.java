@@ -72,7 +72,7 @@ public class ExpressOffShelfWarehouseListActivity extends BaseActivity {
 
                         ExpressShelfOffShelfWarehouseListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressOffShelfWarehouseListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressOffShelfWarehouseListActivity.this)) {
                             return;
                         }
 

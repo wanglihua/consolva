@@ -89,7 +89,7 @@ public class ExpressNoProcessDumpTargetShelfListActivity extends BaseActivity {
 
                         ExpressDumpShelfListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpTargetShelfListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpTargetShelfListActivity.this)) {
                             return;
                         }
 

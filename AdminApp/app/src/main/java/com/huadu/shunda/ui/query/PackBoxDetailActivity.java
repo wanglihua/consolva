@@ -141,7 +141,7 @@ public class PackBoxDetailActivity extends BaseActivity {
 
                         PackBoxDetailDataResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PackBoxDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PackBoxDetailActivity.this)) {
                             return;
                         }
 

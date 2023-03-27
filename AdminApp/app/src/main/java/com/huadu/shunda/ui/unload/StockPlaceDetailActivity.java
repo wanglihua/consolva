@@ -106,7 +106,7 @@ public class StockPlaceDetailActivity extends BaseActivity {
 
                         StockPlaceDetailResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockPlaceDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockPlaceDetailActivity.this)) {
                             return;
                         }
 
@@ -164,7 +164,7 @@ public class StockPlaceDetailActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockPlaceDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockPlaceDetailActivity.this)) {
                             return;
                         }
 

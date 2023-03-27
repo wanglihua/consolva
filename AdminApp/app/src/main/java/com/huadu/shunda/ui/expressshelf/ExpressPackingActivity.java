@@ -238,7 +238,7 @@ public class ExpressPackingActivity extends BaseActivity {
 
                 ExpressShelfPackingQueryResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressPackingActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressPackingActivity.this)) {
                     return;
                 }
 
@@ -335,7 +335,7 @@ public class ExpressPackingActivity extends BaseActivity {
 
                 ResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressPackingActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressPackingActivity.this)) {
                     return;
                 }
 

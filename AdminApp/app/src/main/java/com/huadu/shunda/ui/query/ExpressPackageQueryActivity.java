@@ -105,7 +105,7 @@ public class ExpressPackageQueryActivity extends BaseActivity {
 
                         GoodsExpressQueryResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressPackageQueryActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressPackageQueryActivity.this)) {
                             return;
                         }
 

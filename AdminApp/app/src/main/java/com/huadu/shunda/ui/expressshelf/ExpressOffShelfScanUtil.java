@@ -40,7 +40,7 @@ public class ExpressOffShelfScanUtil {
 
                 ExpressShelfOffShelfNextExpressResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, activity)) {
+                if (!RetrofitUtil.processResponse(response, activity)) {
                     return;
                 }
 
@@ -73,7 +73,7 @@ public class ExpressOffShelfScanUtil {
 
                         ExpressImageShowImageListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, activity)) {
+                        if (!RetrofitUtil.processResponse(response, activity)) {
                             return;
                         }
 
@@ -127,7 +127,7 @@ public class ExpressOffShelfScanUtil {
 
                 ResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, activity)) {
+                if (!RetrofitUtil.processResponse(response, activity)) {
                     return;
                 }
 

@@ -71,7 +71,7 @@ public class StockMoveWarehouseListActivity extends BaseActivity {
 
                         StockMoveWarehouseListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockMoveWarehouseListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockMoveWarehouseListActivity.this)) {
                             return;
                         }
 

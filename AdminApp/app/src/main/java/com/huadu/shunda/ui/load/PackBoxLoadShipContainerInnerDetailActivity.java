@@ -111,7 +111,7 @@ public class PackBoxLoadShipContainerInnerDetailActivity extends BaseActivity {
 
                 ShipContainerInnerLoadDetailDataResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, PackBoxLoadShipContainerInnerDetailActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, PackBoxLoadShipContainerInnerDetailActivity.this)) {
                     return;
                 }
 
@@ -165,7 +165,7 @@ public class PackBoxLoadShipContainerInnerDetailActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PackBoxLoadShipContainerInnerDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PackBoxLoadShipContainerInnerDetailActivity.this)) {
                             return;
                         }
 

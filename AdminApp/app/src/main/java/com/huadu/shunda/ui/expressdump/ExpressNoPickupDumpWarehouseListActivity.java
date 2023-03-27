@@ -74,12 +74,11 @@ public class ExpressNoPickupDumpWarehouseListActivity extends BaseActivity {
                     @Override
                     public void onResponse(Call<ExpressDumpWarehouseListResponseInfo> call, Response<ExpressDumpWarehouseListResponseInfo> response) {
                         // mask.dismiss();
-
-                        ExpressDumpWarehouseListResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpWarehouseListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpWarehouseListActivity.this)) {
                             return;
                         }
+
+                        ExpressDumpWarehouseListResponseInfo respData = response.body();
 
                         Message msg = new Message();
                         msg.what = REFRESH_WAREHOUSE_DATA_LIST;

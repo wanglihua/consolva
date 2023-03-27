@@ -70,7 +70,7 @@ public class PackBoxLoadShipContainerInnerListActivity extends BaseActivity {
 
                         ShipContainerInnerLoadListDataResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PackBoxLoadShipContainerInnerListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PackBoxLoadShipContainerInnerListActivity.this)) {
                             return;
                         }
 

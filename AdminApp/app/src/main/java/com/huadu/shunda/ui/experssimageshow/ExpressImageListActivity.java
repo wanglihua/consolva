@@ -75,12 +75,11 @@ public class ExpressImageListActivity extends BaseActivity {
             @Override
             public void onResponse(Call<ExpressImageShowImageListResponseInfo> call, Response<ExpressImageShowImageListResponseInfo> response) {
                 // mask.dismiss();
-
-                ExpressImageShowImageListResponseInfo respData = response.body();
-
-                if (!RetrofitUtil.checkResponse(respData, ExpressImageListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressImageListActivity.this)) {
                     return;
                 }
+
+                ExpressImageShowImageListResponseInfo respData = response.body();
 
                 Message msg = new Message();
                 msg.what = REFRESH_EXPRESS_IMAGE_LIST;
@@ -120,9 +119,11 @@ public class ExpressImageListActivity extends BaseActivity {
 
                     // 填充静态变量
                     ExpressImageListActivity.imageList = new ArrayList<>();
-                    for (ExpressImageShowImageItemInfo imageItem : imageItemList) { {
-                        ExpressImageListActivity.imageList.add(imageItem.getBigImageUrl());
-                    }}
+                    for (ExpressImageShowImageItemInfo imageItem : imageItemList) {
+                        {
+                            ExpressImageListActivity.imageList.add(imageItem.getBigImageUrl());
+                        }
+                    }
 
                     ExpressImageListAdapter adapter = new ExpressImageListAdapter(ExpressImageListActivity.this, imageItemList);
 

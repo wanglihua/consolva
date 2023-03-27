@@ -77,7 +77,7 @@ public class ExpressNoProcessDumpWarehouseListActivity extends BaseActivity {
 
                         ExpressDumpWarehouseListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoProcessDumpWarehouseListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoProcessDumpWarehouseListActivity.this)) {
                             return;
                         }
 

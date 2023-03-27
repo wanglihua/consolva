@@ -123,7 +123,7 @@ public class ExpressWarehouseCheckDetailActivity extends BaseActivity {
 
                                 ResponseInfo respData = response.body();
 
-                                if (!RetrofitUtil.checkResponse(respData, ExpressWarehouseCheckDetailActivity.this)) {
+                                if (!RetrofitUtil.processResponse(response, ExpressWarehouseCheckDetailActivity.this)) {
                                     return;
                                 }
 
@@ -235,7 +235,7 @@ public class ExpressWarehouseCheckDetailActivity extends BaseActivity {
                 // mask.dismiss();
                 WarehouseCheckDetailResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressWarehouseCheckDetailActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressWarehouseCheckDetailActivity.this)) {
                     return;
                 }
 
@@ -280,7 +280,7 @@ public class ExpressWarehouseCheckDetailActivity extends BaseActivity {
 
                 ExpressImageShowImageListResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressWarehouseCheckDetailActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressWarehouseCheckDetailActivity.this)) {
                     return;
                 }
 

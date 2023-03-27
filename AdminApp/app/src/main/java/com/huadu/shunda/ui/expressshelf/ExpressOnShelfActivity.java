@@ -235,7 +235,7 @@ public class ExpressOnShelfActivity extends BaseActivity {
 
                 ExpressShelfOnShelfQueryResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressOnShelfActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressOnShelfActivity.this)) {
                     return;
                 }
 
@@ -324,7 +324,7 @@ public class ExpressOnShelfActivity extends BaseActivity {
 
                 ResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressOnShelfActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressOnShelfActivity.this)) {
                     return;
                 }
 

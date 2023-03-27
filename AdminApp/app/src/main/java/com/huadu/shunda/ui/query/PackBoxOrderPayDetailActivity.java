@@ -108,7 +108,7 @@ public class PackBoxOrderPayDetailActivity extends BaseActivity {
 
                         PackBoxOrderPayDetailResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PackBoxOrderPayDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PackBoxOrderPayDetailActivity.this)) {
                             return;
                         }
 

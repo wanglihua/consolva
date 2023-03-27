@@ -98,7 +98,7 @@ public class ExpressOffShelfShelfListActivity extends BaseActivity {
 
                         ExpressShelfOffShelfShelfListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, ExpressOffShelfShelfListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressOffShelfShelfListActivity.this)) {
                             return;
                         }
 

@@ -71,7 +71,7 @@ public class PackBoxUnloadShipContainerInnerListActivity extends BaseActivity {
 
                         ShipContainerInnerUnloadListDataResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PackBoxUnloadShipContainerInnerListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PackBoxUnloadShipContainerInnerListActivity.this)) {
                             return;
                         }
 

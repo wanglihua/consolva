@@ -319,7 +319,7 @@ public class PhotoExpressActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, PhotoExpressActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PhotoExpressActivity.this)) {
                             return;
                         }
 
@@ -513,7 +513,7 @@ public class PhotoExpressActivity extends BaseActivity {
 
                             ResponseInfo respData = response.body();
 
-                            if (!RetrofitUtil.checkResponse(respData, PhotoExpressActivity.this)) {
+                            if (!RetrofitUtil.processResponse(response, PhotoExpressActivity.this)) {
                                 return;
                             }
 

@@ -75,7 +75,7 @@ public class ExpressWarehouseCheckShelfListActivity extends BaseActivity {
 
                 WarehouseCheckShelfListResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressWarehouseCheckShelfListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressWarehouseCheckShelfListActivity.this)) {
                     return;
                 }
 

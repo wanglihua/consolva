@@ -89,7 +89,7 @@ public class ExpressNoPickupDumpExpressListActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
-                int claimId= (int) map.get("id");
+                int claimId = (int) map.get("id");
 
                 ExpressNoPickupDumpRequest expressNoPickupDumpRequest = RetrofitUtil.createRequest(ExpressNoPickupDumpRequest.class);
                 Call<ExpressDumpNextExpressResponseInfo> express = expressNoPickupDumpRequest.express(shelfId, claimId);
@@ -100,11 +100,11 @@ public class ExpressNoPickupDumpExpressListActivity extends BaseActivity {
                     public void onResponse(Call<ExpressDumpNextExpressResponseInfo> call, Response<ExpressDumpNextExpressResponseInfo> response) {
                         mask.dismiss();
 
-                        ExpressDumpNextExpressResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpExpressListActivity.this)) {
                             return;
                         }
+
+                        ExpressDumpNextExpressResponseInfo respData = response.body();
 
                         ExpressDumpExpressItemInfo express = respData.getExpress();
                         if (express == null) {
@@ -132,12 +132,11 @@ public class ExpressNoPickupDumpExpressListActivity extends BaseActivity {
                             @Override
                             public void onResponse(Call<ExpressImageShowImageListResponseInfo> call, Response<ExpressImageShowImageListResponseInfo> response) {
                                 // mask.dismiss();
-
-                                ExpressImageShowImageListResponseInfo respData = response.body();
-
-                                if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpExpressListActivity.this)) {
+                                if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpExpressListActivity.this)) {
                                     return;
                                 }
+
+                                ExpressImageShowImageListResponseInfo respData = response.body();
 
                                 List<ExpressImageShowImageItemInfo> imageItemList = respData.getImageList();
                                 List<String> imageList = new ArrayList<>();
@@ -201,11 +200,11 @@ public class ExpressNoPickupDumpExpressListActivity extends BaseActivity {
             public void onResponse(Call<ExpressDumpExpressListResponseInfo> call, Response<ExpressDumpExpressListResponseInfo> response) {
                 // mask.dismiss();
 
-                ExpressDumpExpressListResponseInfo respData = response.body();
-
-                if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpExpressListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpExpressListActivity.this)) {
                     return;
                 }
+
+                ExpressDumpExpressListResponseInfo respData = response.body();
 
                 Message msg = new Message();
                 msg.what = REFRESH_EXPRESS_DATA_LIST;
@@ -231,11 +230,11 @@ public class ExpressNoPickupDumpExpressListActivity extends BaseActivity {
             public void onResponse(Call<ExpressDumpNextExpressResponseInfo> call, Response<ExpressDumpNextExpressResponseInfo> response) {
                 mask.dismiss();
 
-                ExpressDumpNextExpressResponseInfo respData = response.body();
-
-                if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpExpressListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpExpressListActivity.this)) {
                     return;
                 }
+
+                ExpressDumpNextExpressResponseInfo respData = response.body();
 
                 ExpressDumpExpressItemInfo express = respData.getExpress();
                 if (express == null) {
@@ -264,11 +263,11 @@ public class ExpressNoPickupDumpExpressListActivity extends BaseActivity {
                     public void onResponse(Call<ExpressImageShowImageListResponseInfo> call, Response<ExpressImageShowImageListResponseInfo> response) {
                         // mask.dismiss();
 
-                        ExpressImageShowImageListResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpExpressListActivity.this)) {
                             return;
                         }
+
+                        ExpressImageShowImageListResponseInfo respData = response.body();
 
                         List<ExpressImageShowImageItemInfo> imageItemList = respData.getImageList();
                         List<String> imageList = new ArrayList<>();
@@ -327,11 +326,11 @@ public class ExpressNoPickupDumpExpressListActivity extends BaseActivity {
                     public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
                         mask.dismiss();
 
-                        ResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpExpressListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpExpressListActivity.this)) {
                             return;
                         }
+
+                        ResponseInfo respData = response.body();
 
                         SoundUtil.playSuccess(ExpressNoPickupDumpExpressListActivity.this);
                         Toast.makeText(ExpressNoPickupDumpExpressListActivity.this, respData.getMessage(), Toast.LENGTH_SHORT).show();

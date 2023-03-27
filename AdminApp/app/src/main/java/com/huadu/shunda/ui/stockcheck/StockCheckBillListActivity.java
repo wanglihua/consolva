@@ -138,7 +138,7 @@ public class StockCheckBillListActivity extends BaseActivity {
 
                         StockCheckBillListResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockCheckBillListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockCheckBillListActivity.this)) {
                             return;
                         }
 
@@ -179,7 +179,7 @@ public class StockCheckBillListActivity extends BaseActivity {
 
                         StockCheckBillAddResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockCheckBillListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockCheckBillListActivity.this)) {
                             return;
                         }
 

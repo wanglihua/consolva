@@ -80,7 +80,7 @@ public class CustomerPackBoxStockPlaceActivity extends BaseActivity {
 
                     CustomerPackBoxStockPlaceListResponseInfo respData = response.body();
 
-                    if (!RetrofitUtil.checkResponse(respData, CustomerPackBoxStockPlaceActivity.this)) {
+                    if (!RetrofitUtil.processResponse(response, CustomerPackBoxStockPlaceActivity.this)) {
                         return;
                     }
 

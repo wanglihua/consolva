@@ -84,7 +84,7 @@ public class ExpressWarehouseCheckListActivity extends BaseActivity {
 
                 WarehouseCheckListResponseInfo respData = response.body();
 
-                if (!RetrofitUtil.checkResponse(respData, ExpressWarehouseCheckListActivity.this)) {
+                if (!RetrofitUtil.processResponse(response, ExpressWarehouseCheckListActivity.this)) {
                     return;
                 }
 

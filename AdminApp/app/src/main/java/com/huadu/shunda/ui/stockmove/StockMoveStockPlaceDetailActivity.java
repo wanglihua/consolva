@@ -85,7 +85,7 @@ public class StockMoveStockPlaceDetailActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockMoveStockPlaceDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockMoveStockPlaceDetailActivity.this)) {
                             return;
                         }
 
@@ -134,7 +134,7 @@ public class StockMoveStockPlaceDetailActivity extends BaseActivity {
 
                         StockMoveStockPlaceDetailResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockMoveStockPlaceDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockMoveStockPlaceDetailActivity.this)) {
                             return;
                         }
 
@@ -195,7 +195,7 @@ public class StockMoveStockPlaceDetailActivity extends BaseActivity {
 
                         ResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.checkResponse(respData, StockMoveStockPlaceDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, StockMoveStockPlaceDetailActivity.this)) {
                             return;
                         }
 

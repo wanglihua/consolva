@@ -86,12 +86,11 @@ public class ExpressNoPickupDumpTargetShelfListActivity extends BaseActivity {
                     @Override
                     public void onResponse(Call<ExpressDumpShelfListResponseInfo> call, Response<ExpressDumpShelfListResponseInfo> response) {
                         // mask.dismiss();
-
-                        ExpressDumpShelfListResponseInfo respData = response.body();
-
-                        if (!RetrofitUtil.checkResponse(respData, ExpressNoPickupDumpTargetShelfListActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, ExpressNoPickupDumpTargetShelfListActivity.this)) {
                             return;
                         }
+
+                        ExpressDumpShelfListResponseInfo respData = response.body();
 
                         Message msg = new Message();
                         msg.what = REFRESH_SHELF_DATA_LIST;

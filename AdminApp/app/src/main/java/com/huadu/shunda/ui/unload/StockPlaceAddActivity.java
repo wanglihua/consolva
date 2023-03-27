@@ -63,7 +63,7 @@ public class StockPlaceAddActivity extends BaseActivity {
 
                     StockPlaceAddResponseInfo respData = response.body();
 
-                    if (!RetrofitUtil.checkResponse(respData, StockPlaceAddActivity.this)) {
+                    if (!RetrofitUtil.processResponse(response, StockPlaceAddActivity.this)) {
                         return;
                     }
 
