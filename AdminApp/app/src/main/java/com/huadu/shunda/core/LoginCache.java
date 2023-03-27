@@ -10,8 +10,6 @@ public class LoginCache {
 
     private static String password;
 
-    private static String token;
-
     private static LoginResponseInfo loginResponse;
 
     public static int getUserId() {
@@ -38,14 +36,6 @@ public class LoginCache {
         LoginCache.password = password;
     }
 
-    public static String getToken() {
-        return token;
-    }
-
-    public static void setToken(String token) {
-        LoginCache.token = token;
-    }
-
     public static LoginResponseInfo getLoginResponse() {
         return loginResponse;
     }
@@ -58,7 +48,6 @@ public class LoginCache {
         userId = 0;
         loginName = "";
         password = "";
-        token = "";
         loginResponse = null;
     }
 }

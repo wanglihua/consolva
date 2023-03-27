@@ -136,7 +136,6 @@ public class LoginActivity extends BaseActivity {
                     LoginCache.setLoginName(loginNameFinal);
                     LoginCache.setPassword(passwordFinal);
                     LoginCache.setLoginResponse(respData);
-                    LoginCache.setToken(respData.getToken());
 
                     if (BuildConfig.DEBUG) {
                         SettingUtil.saveLoginName(loginNameFinal);

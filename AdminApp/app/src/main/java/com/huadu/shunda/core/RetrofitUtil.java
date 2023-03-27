@@ -64,13 +64,13 @@ public class RetrofitUtil {
                             @Override
                             public Response intercept(Interceptor.Chain chain) throws IOException {
 
-                                String token = LoginCache.getToken();
-                                if (token == null) {
-                                    token = "";
+                                String sessionId = WebSession.getSessionId();
+                                if (sessionId == null) {
+                                    sessionId = "";
                                 }
 
                                 Request.Builder builder = chain.request().newBuilder()
-                                        .header("user_api_token", token)
+                                        .header("session_id", sessionId)
                                         .header("User-Agent", "shunda app " + versionName + " " + deviceData);
 
                                 Request build = builder.build();
