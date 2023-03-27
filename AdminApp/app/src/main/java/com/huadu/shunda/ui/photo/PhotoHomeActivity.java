@@ -19,11 +19,9 @@ public class PhotoHomeActivity extends BaseActivity {
     private TextView tvPhotoSignIn = null;
     private TextView tvPhotoCheckIn = null;
     private TextView tvPhotoIssue = null;
-    private TextView tvPhotoCnDamage = null;
+    private TextView tvPhotoPack = null;
     private TextView tvPhotoReturn = null;
     private TextView tvPhotoShip = null;
-    private TextView tvPhotoAuDamage = null;
-    private TextView tvPhotoDeliver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +37,14 @@ public class PhotoHomeActivity extends BaseActivity {
         tvPhotoIssue = findViewById(R.id.tvPhotoIssue);
         tvPhotoIssue.setOnClickListener(new TextViewPhotoIssueClickListener());
 
-        tvPhotoCnDamage = findViewById(R.id.tvPhotoCnDamage);
-        tvPhotoCnDamage.setOnClickListener(new TextViewPhotoCnDamageClickListener());
+        tvPhotoPack = findViewById(R.id.tvPhotoPack);
+        tvPhotoPack.setOnClickListener(new TextViewPhotoPackClickListener());
 
         tvPhotoReturn = findViewById(R.id.tvPhotoReturn);
         tvPhotoReturn.setOnClickListener(new TextViewPhotoReturnClickListener());
 
         tvPhotoShip = findViewById(R.id.tvPhotoShip);
         tvPhotoShip.setOnClickListener(new TextViewPhotoShipClickListener());
-
-        tvPhotoAuDamage = findViewById(R.id.tvPhotoAuDamage);
-        tvPhotoAuDamage.setOnClickListener(new TextViewPhotoAuDamageClickListener());
-
-        tvPhotoDeliver = findViewById(R.id.tvPhotoDeliver);
-        tvPhotoDeliver.setOnClickListener(new TextViewPhotoDeliverClickListener());
 
         checkGrantExternalRW();
     }
@@ -64,58 +56,44 @@ public class PhotoHomeActivity extends BaseActivity {
         tvPhotoSignIn.setVisibility(View.GONE);
         tvPhotoCheckIn.setVisibility(View.GONE);
         tvPhotoIssue.setVisibility(View.GONE);
-        tvPhotoCnDamage.setVisibility(View.GONE);
+        tvPhotoPack.setVisibility(View.GONE);
         tvPhotoReturn.setVisibility(View.GONE);
         tvPhotoShip.setVisibility(View.GONE);
-        tvPhotoAuDamage.setVisibility(View.GONE);
-        tvPhotoDeliver.setVisibility(View.GONE);
 
-        if (LoginCache.getLoginResponse().getCanOrderPhotoSignIn()) {
+        if (LoginCache.getLoginResponse().getCanPhotoSignIn()) {
             tvPhotoSignIn.setVisibility(View.VISIBLE);
         } else {
             tvPhotoSignIn.setVisibility(View.GONE);
         }
 
-        if (LoginCache.getLoginResponse().getCanOrderPhotoCheckIn()) {
+        if (LoginCache.getLoginResponse().getCanPhotoCheckIn()) {
             tvPhotoCheckIn.setVisibility(View.VISIBLE);
         } else {
             tvPhotoCheckIn.setVisibility(View.GONE);
         }
 
-        if (LoginCache.getLoginResponse().getCanOrderPhotoIssue()) {
+        if (LoginCache.getLoginResponse().getCanPhotoIssue()) {
             tvPhotoIssue.setVisibility(View.VISIBLE);
         } else {
             tvPhotoIssue.setVisibility(View.GONE);
         }
 
-        if (LoginCache.getLoginResponse().getCanOrderPhotoCnDamage()) {
-            tvPhotoCnDamage.setVisibility(View.VISIBLE);
+        if (LoginCache.getLoginResponse().getCanPhotoCnDamage()) {
+            tvPhotoPack.setVisibility(View.VISIBLE);
         } else {
-            tvPhotoCnDamage.setVisibility(View.GONE);
+            tvPhotoPack.setVisibility(View.GONE);
         }
 
-        if (LoginCache.getLoginResponse().getCanOrderPhotoReturn()) {
+        if (LoginCache.getLoginResponse().getCanPhotoReturn()) {
             tvPhotoReturn.setVisibility(View.VISIBLE);
         } else {
             tvPhotoReturn.setVisibility(View.GONE);
         }
 
-        if (LoginCache.getLoginResponse().getCanOrderPhotoShip()) {
+        if (LoginCache.getLoginResponse().getCanPhotoShip()) {
             tvPhotoShip.setVisibility(View.VISIBLE);
         } else {
             tvPhotoShip.setVisibility(View.GONE);
-        }
-
-        if (LoginCache.getLoginResponse().getCanOrderPhotoAuDamage()) {
-            tvPhotoAuDamage.setVisibility(View.VISIBLE);
-        } else {
-            tvPhotoAuDamage.setVisibility(View.GONE);
-        }
-
-        if (LoginCache.getLoginResponse().getCanOrderPhotoDeliver()) {
-            tvPhotoDeliver.setVisibility(View.VISIBLE);
-        } else {
-            tvPhotoDeliver.setVisibility(View.GONE);
         }
     }
 
@@ -146,7 +124,7 @@ public class PhotoHomeActivity extends BaseActivity {
         }
     }
 
-    private class TextViewPhotoCnDamageClickListener implements View.OnClickListener {
+    private class TextViewPhotoPackClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(PhotoHomeActivity.this, PhotoExpressActivity.class);
@@ -169,15 +147,6 @@ public class PhotoHomeActivity extends BaseActivity {
         public void onClick(View view) {
             Intent intent = new Intent(PhotoHomeActivity.this, PhotoOrderActivity.class);
             intent.putExtra("photoTypeId", OrderPhotoType.Ship.getId());
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewPhotoAuDamageClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(PhotoHomeActivity.this, PhotoOrderActivity.class);
-            intent.putExtra("photoTypeId", OrderPhotoType.AuDamage.getId());
             startActivity(intent);
         }
     }

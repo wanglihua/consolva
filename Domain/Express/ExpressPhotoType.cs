@@ -40,11 +40,6 @@ public class ExpressPhotoType : CodeTypeBase
     public static readonly ExpressPhotoType Return = new ExpressPhotoType(7000, "退运照片", "退运照片");
 
     /// <summary>
-    /// 澳洲损毁照片
-    /// </summary>
-    public static readonly ExpressPhotoType AuDamage = new ExpressPhotoType(8000, "澳洲损毁照片", "澳洲损毁照片");
-
-    /// <summary>
     /// 客服核对照片
     /// </summary>
     public static readonly ExpressPhotoType CustomerServiceCheck = new ExpressPhotoType(9000, "客服核对照片", "客服核对照片");
@@ -82,7 +77,6 @@ public class ExpressPhotoType : CodeTypeBase
         Ship,
         CnDamage,
         Return,
-        AuDamage,
         CustomerServiceCheck,
         CustomerServicePostSale,
         CustomerServiceAppeal,

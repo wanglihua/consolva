@@ -240,12 +240,12 @@ public class PhotoUploadController : Controller {
         LogisticsOrderInfo? order = express?.Order; // 可能为空
         string orderCode = order?.Code ?? string.Empty;
 
-        ExpressPhotoType orderPhotoType = ExpressPhotoType.CheckIn;
+        ExpressPhotoType photoType = ExpressPhotoType.CheckIn;
 
         ExpressPhotoInfo orderPhoto = new ExpressPhotoInfo();
         orderPhoto.TrackingNo = trackingNo;
 
-        orderPhoto.Type = orderPhotoType;
+        orderPhoto.Type = photoType;
         orderPhoto.StorePath = storePath;
         orderPhoto.StoreName = storeFileName;
         orderPhoto.Status = ExpressPhotoStatus.None;
@@ -261,7 +261,7 @@ public class PhotoUploadController : Controller {
         session.Save(orderPhoto);
         session.Flush();
 
-        expressLogService.UserLog(orderPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{orderPhotoType.Name}", orderPhoto.User?.Id ?? 0);
+        expressLogService.UserLog(orderPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{photoType.Name}", orderPhoto.User?.Id ?? 0);
 
         // 同快递单号图片视频绑定
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()

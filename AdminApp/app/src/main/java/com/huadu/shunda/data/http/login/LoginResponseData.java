@@ -9,32 +9,32 @@ public class LoginResponseData {
     @SerializedName("userName")
     private String userName;
 
-    @SerializedName("canOrderPhotoSignIn")
-    private boolean canOrderPhotoSignIn;
+    @SerializedName("canPhotoSignIn")
+    private boolean canPhotoSignIn;
 
-    @SerializedName("canOrderPhotoCheckIn")
-    private boolean canOrderPhotoCheckIn;
+    @SerializedName("canPhotoCheckIn")
+    private boolean canPhotoCheckIn;
 
-    @SerializedName("canOrderPhotoIssue")
-    private boolean canOrderPhotoIssue;
+    @SerializedName("canPhotoIssue")
+    private boolean canPhotoIssue;
 
-    @SerializedName("canOrderPhotoCnDamage")
-    private boolean canOrderPhotoCnDamage;
+    @SerializedName("canPhotoCnDamage")
+    private boolean canPhotoCnDamage;
 
-    @SerializedName("canOrderPhotoReturn")
-    private boolean canOrderPhotoReturn;
+    @SerializedName("canPhotoReturn")
+    private boolean canPhotoReturn;
 
-    @SerializedName("canOrderPhotoShip")
-    private boolean canOrderPhotoShip;
+    @SerializedName("canPhotoShip")
+    private boolean canPhotoShip;
 
-    @SerializedName("canOrderPhotoAuDamage")
-    private boolean canOrderPhotoAuDamage;
+    @SerializedName("canPhotoAuDamage")
+    private boolean canPhotoAuDamage;
 
-    @SerializedName("canOrderPhotoDeliver")
-    private boolean canOrderPhotoDeliver;
+    @SerializedName("canPhotoDeliver")
+    private boolean canPhotoDeliver;
 
-    @SerializedName("canOrderPhoto")
-    private boolean canOrderPhoto;
+    @SerializedName("canPhoto")
+    private boolean canPhoto;
 
     public int getUserId() {
         return userId;
@@ -52,75 +52,75 @@ public class LoginResponseData {
         this.userName = userName;
     }
 
-    public boolean getCanOrderPhotoSignIn() {
-        return canOrderPhotoSignIn;
+    public boolean getCanPhotoSignIn() {
+        return canPhotoSignIn;
     }
 
-    public void setCanOrderPhotoSignIn(boolean canOrderPhotoSignIn) {
-        this.canOrderPhotoSignIn = canOrderPhotoSignIn;
+    public void setCanPhotoSignIn(boolean canPhotoSignIn) {
+        this.canPhotoSignIn = canPhotoSignIn;
     }
 
-    public boolean getCanOrderPhotoCheckIn() {
-        return canOrderPhotoCheckIn;
+    public boolean getCanPhotoCheckIn() {
+        return canPhotoCheckIn;
     }
 
-    public void setCanOrderPhotoCheckIn(boolean canOrderPhotoCheckIn) {
-        this.canOrderPhotoCheckIn = canOrderPhotoCheckIn;
+    public void setCanPhotoCheckIn(boolean canPhotoCheckIn) {
+        this.canPhotoCheckIn = canPhotoCheckIn;
     }
 
-    public boolean getCanOrderPhotoIssue() {
-        return canOrderPhotoIssue;
+    public boolean getCanPhotoIssue() {
+        return canPhotoIssue;
     }
 
-    public void setCanOrderPhotoIssue(boolean canOrderPhotoIssue) {
-        this.canOrderPhotoIssue = canOrderPhotoIssue;
+    public void setCanPhotoIssue(boolean canPhotoIssue) {
+        this.canPhotoIssue = canPhotoIssue;
     }
 
-    public boolean getCanOrderPhotoCnDamage() {
-        return canOrderPhotoCnDamage;
+    public boolean getCanPhotoCnDamage() {
+        return canPhotoCnDamage;
     }
 
-    public void setCanOrderPhotoCnDamage(boolean canOrderPhotoCnDamage) {
-        this.canOrderPhotoCnDamage = canOrderPhotoCnDamage;
+    public void setCanPhotoCnDamage(boolean canPhotoCnDamage) {
+        this.canPhotoCnDamage = canPhotoCnDamage;
     }
 
-    public boolean getCanOrderPhotoReturn() {
-        return canOrderPhotoReturn;
+    public boolean getCanPhotoReturn() {
+        return canPhotoReturn;
     }
 
-    public void setCanOrderPhotoReturn(boolean canOrderPhotoReturn) {
-        this.canOrderPhotoReturn = canOrderPhotoReturn;
+    public void setCanPhotoReturn(boolean canPhotoReturn) {
+        this.canPhotoReturn = canPhotoReturn;
     }
 
-    public boolean getCanOrderPhotoShip() {
-        return canOrderPhotoShip;
+    public boolean getCanPhotoShip() {
+        return canPhotoShip;
     }
 
-    public void setCanOrderPhotoShip(boolean canOrderPhotoShip) {
-        this.canOrderPhotoShip = canOrderPhotoShip;
+    public void setCanPhotoShip(boolean canPhotoShip) {
+        this.canPhotoShip = canPhotoShip;
     }
 
-    public boolean getCanOrderPhotoAuDamage() {
-        return canOrderPhotoAuDamage;
+    public boolean getCanPhotoAuDamage() {
+        return canPhotoAuDamage;
     }
 
-    public void setCanOrderPhotoAuDamage(boolean canOrderPhotoAuDamage) {
-        this.canOrderPhotoAuDamage = canOrderPhotoAuDamage;
+    public void setCanPhotoAuDamage(boolean canPhotoAuDamage) {
+        this.canPhotoAuDamage = canPhotoAuDamage;
     }
 
-    public boolean getCanOrderPhotoDeliver() {
-        return canOrderPhotoDeliver;
+    public boolean getCanPhotoDeliver() {
+        return canPhotoDeliver;
     }
 
-    public void setCanOrderPhotoDeliver(boolean canOrderPhotoDeliver) {
-        this.canOrderPhotoDeliver = canOrderPhotoDeliver;
+    public void setCanPhotoDeliver(boolean canPhotoDeliver) {
+        this.canPhotoDeliver = canPhotoDeliver;
     }
 
-    public boolean getCanOrderPhoto() {
-        return canOrderPhoto;
+    public boolean getCanPhoto() {
+        return canPhoto;
     }
 
-    public void setCanOrderPhoto(boolean canOrderPhoto) {
-        this.canOrderPhoto = canOrderPhoto;
+    public void setCanPhoto(boolean canPhoto) {
+        this.canPhoto = canPhoto;
     }
 }
