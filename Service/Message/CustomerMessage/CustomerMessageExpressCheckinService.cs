@@ -54,7 +54,7 @@ public class CustomerMessageExpressCheckinService {
 
     private string TransferMessage(string message, string trackingNo) {
         if (string.IsNullOrWhiteSpace(message)) {
-            return message;
+            return string.Empty;
         }
 
         message = message.Replace("{tracking_no}", trackingNo);

@@ -56,6 +56,17 @@ public class CustomerMessageOrderDeliveredService {
         }
     }
 
+    private string TransferMessage(string message, string orderCode) {
+        if (string.IsNullOrWhiteSpace(message)) {
+            return string.Empty;
+        }
+
+        // setting.Placeholders = "订单编码：{order_code}";
+        message = message.Replace("{order_code}", orderCode);
+
+        return message;
+    }    
+
     private string GetUrl(int orderId) {
         return $"pages/order/order_detail?id={orderId}";
     }
@@ -138,16 +149,5 @@ public class CustomerMessageOrderDeliveredService {
 
             session.Flush();
         }
-    }
-
-    private string TransferMessage(string message, string orderCode) {
-        if (string.IsNullOrWhiteSpace(message)) {
-            return message;
-        }
-
-        // setting.Placeholders = "订单编码：{order_code}";
-        message = message.Replace("{order_code}", orderCode);
-
-        return message;
     }
 }

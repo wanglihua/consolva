@@ -17,6 +17,7 @@ public class CustomerMessageRealTimeSendSettingService {
     /// </summary>
     public void InitSetting() {
         CustomerMessageAccountChangeService.InitSetting(session);
+        CustomerMessageCouponFollowService.InitSetting(session);
         CustomerMessageExpressCheckinService.InitSetting(session);
         CustomerMessageExpressExpectEnterService.InitSetting(session);
         CustomerMessageMoneyEarnedService.InitSetting(session);

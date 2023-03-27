@@ -55,7 +55,7 @@ public class CustomerMessageMoneyEarnedService {
 
     private string TransferMessage(string message, decimal score) {
         if (string.IsNullOrWhiteSpace(message)) {
-            return message;
+            return string.Empty;
         }
 
         message = message.Replace("{score}", score.ToString("#0.00"));

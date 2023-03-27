@@ -56,7 +56,7 @@ public class CustomerMessagePackedService {
 
     private string TransferMessage(string message, string orderCode, string totalFee, string feeCalDesc) {
         if (string.IsNullOrWhiteSpace(message)) {
-            return message;
+            return string.Empty;
         }
 
         message = message.Replace("{order_code}", orderCode);

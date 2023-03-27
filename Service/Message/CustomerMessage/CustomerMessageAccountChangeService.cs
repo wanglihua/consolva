@@ -54,7 +54,7 @@ public class CustomerMessageAccountChangeService {
 
     private string TransferMessage(string message, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount) {
         if (string.IsNullOrWhiteSpace(message)) {
-            return message;
+            return string.Empty;
         }
 
         message = message.Replace("{change_reason}", changeReason);

@@ -56,7 +56,7 @@ public class CustomerMessageTransferedService {
 
     private string TransferMessage(string message, string orderCode) {
         if (string.IsNullOrWhiteSpace(message)) {
-            return message;
+            return string.Empty;
         }
 
         // setting.Placeholders = "订单编码：{order_code}";
