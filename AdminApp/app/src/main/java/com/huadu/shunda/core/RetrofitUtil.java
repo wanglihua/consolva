@@ -5,10 +5,14 @@ import android.content.Context;
 import androidx.appcompat.app.AlertDialog;
 
 import com.huadu.shunda.data.http.ResponseInfo;
+import com.huadu.shunda.data.http.login.LoginResponseInfo;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,6 +26,8 @@ public class RetrofitUtil {
     public static String versionName = "version name";
 
     public static String deviceData = "device data";
+
+    private static final String WEB_SESSION_KEY = "session-id";
 
     /*
 
@@ -70,7 +76,7 @@ public class RetrofitUtil {
                                 }
 
                                 Request.Builder builder = chain.request().newBuilder()
-                                        .header("session_id", sessionId)
+                                        .header(WEB_SESSION_KEY, sessionId)
                                         .header("User-Agent", "shunda app " + versionName + " " + deviceData);
 
                                 Request build = builder.build();
@@ -119,5 +125,62 @@ public class RetrofitUtil {
         }
 
         return true;
+    }
+
+    public static <T extends ResponseInfo> boolean processResponse(retrofit2.Response<T> response, Context context) {
+        if (response.code() != 200) {
+            String message = "服务器返回状态码错误，状态码" + response.code() + "！";
+            showError(message, context);
+            return false;
+        }
+
+        Headers headers = response.headers();
+        if (headers == null) {
+            showError("未能接收到服务器返回 http header！", context);
+            return false;
+        }
+
+        // 保存返回的 session id
+        String sessionId = "";
+        List<String> sessionIdList = headers.values(WEB_SESSION_KEY);
+        if (sessionIdList != null && sessionIdList.size() != 0) {
+            if (sessionIdList.size() == 1) {
+                sessionId = sessionIdList.get(0);
+            } else {
+                for (String s : sessionIdList) {
+                    if (sessionId.compareTo(s) < 0) { // 取值最大的一个
+                        sessionId = s;
+                    }
+                }
+            }
+        }
+
+        WebSession.setSessionId(sessionId);
+
+
+        ResponseInfo responseData = response.body();
+        if (responseData == null) {
+            showError("未能接收到服务器返回数据！", context);
+            return false;
+        }
+
+        if (!responseData.getSuccess()) {
+            showError(responseData.getMessage(), context);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void showError(String message, Context context) {
+        SoundUtil.playError(context);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setTitle("错误提示");
+        alertDialogBuilder.setMessage(message);
+        alertDialogBuilder.setPositiveButton("确定", null);
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
