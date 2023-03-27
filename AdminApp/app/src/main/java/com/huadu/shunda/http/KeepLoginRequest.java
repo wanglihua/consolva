@@ -7,6 +7,6 @@ import retrofit2.http.POST;
 
 public interface KeepLoginRequest {
 
-    @POST("/user/api/keep/login/check")
+    @POST("/admin/app/keep/login/check")
     Call<ResponseInfo> check();
 }
