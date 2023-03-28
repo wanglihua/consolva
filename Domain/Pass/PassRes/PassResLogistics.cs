@@ -5,12 +5,8 @@ public partial class PassRes {
     /// 物流设置
     /// </summary>
     public class Logistics {
-        /// <summary>
-        /// 物流设置类别
-        /// </summary>
-        public const int CateId = 10000_00000;
-
-        public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "物流设置" };
+        public const int CateId = PassResCate.LogisticsCateId;
+        public static readonly PassResCateInfo Cate = PassResCate.Logistics;
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
             new PassResInfo { Id = LogisticsModeSetting, Name = "物流配置", Cate = Cate },

@@ -5,12 +5,8 @@ public partial class PassRes {
     /// 系统配置
     /// </summary>
     public class Setting {
-        /// <summary>
-        /// 类别
-        /// </summary>
-        public const int CateId = 09000_00000;
-
-        public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "系统配置" };
+        public const int CateId = PassResCate.SettingCateId;
+        public static readonly PassResCateInfo Cate = PassResCate.Setting;
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
             new PassResInfo { Id = ClientNotice, Name = "客户端公告", Cate = Cate },
