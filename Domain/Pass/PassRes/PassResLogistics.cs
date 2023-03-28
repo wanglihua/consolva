@@ -26,36 +26,36 @@ public partial class PassRes {
         /// <summary>
         /// 物流配置
         /// </summary>
-        public const int LogisticsModeSetting = CateId + 02000;
+        public const int LogisticsModeSetting = CateId + 0200;
 
         /// <summary>
         /// 通用费率
         /// </summary>
-        public const int LogisticsFeeRate = CateId + 04000;
+        public const int LogisticsFeeRate = CateId + 0400;
 
         /// <summary>
         /// 物流列表
         /// </summary>
-        public const int LogisticsModeList = CateId + 06000;
+        public const int LogisticsModeList = CateId + 0600;
 
         /// <summary>
         /// 保险
         /// </summary>
-        public const int Insurance = CateId + 08000;
+        public const int Insurance = CateId + 0800;
 
         /// <summary>
         /// GST
         /// </summary>
-        public const int Gst = CateId + 10000;
+        public const int Gst = CateId + 1000;
 
         /// <summary>
         /// 退运费率
         /// </summary>
-        public const int ExpressReturnFeeRate = CateId + 12000;
+        public const int ExpressReturnFeeRate = CateId + 1200;
 
         /// <summary>
         /// 打包方式设置
         /// </summary>
-        public const int LogisticsRepackTypeSetting = CateId + 14000;
+        public const int LogisticsRepackTypeSetting = CateId + 1400;
     }
 }

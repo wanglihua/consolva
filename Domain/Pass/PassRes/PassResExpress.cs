@@ -26,52 +26,52 @@ public partial class PassRes {
         /// <summary>
         /// 快递列表
         /// </summary>
-        public const int ExpressList = CateId + 10000;
+        public const int ExpressList = CateId + 0200;
 
         /// <summary>
         /// 快递单备注维护
         /// 包括增加修改删除
         /// </summary>
-        public const int ExpressRemarkEdit = CateId + 20000;
+        public const int ExpressRemarkEdit = CateId + 0400;
 
         /// <summary>
         /// 快递强制删除
         /// </summary>
-        public const int ExpressForceDelete = CateId + 30000;
+        public const int ExpressForceDelete = CateId + 0600;
 
         /// <summary>
         /// 快递单丢弃
         /// </summary>
-        public const int ExpressThrowAway = CateId + 40000;
+        public const int ExpressThrowAway = CateId + 0800;
 
         /// <summary>
         /// 预报单号
         /// </summary>
-        public const int ExpressExpect = CateId + 50000;
+        public const int ExpressExpect = CateId + 1000;
 
         /// <summary>
         /// 快递单图片
         /// </summary>
-        public const int ExpressPhoto = CateId + 60000;
+        public const int ExpressPhoto = CateId + 1200;
 
         /// <summary>
         /// 快递单图片删除
         /// </summary>
-        public const int ExpressPhotoDelete = CateId + 70000;
+        public const int ExpressPhotoDelete = CateId + 1400;
 
         /// <summary>
         /// 退运池
         /// </summary>
-        public const int ExpressReturn = CateId + 80000;
+        public const int ExpressReturn = CateId + 1600;
 
         /// <summary>
         /// 快递单尺寸重量
         /// </summary>
-        public const int ExpressSizeWeight = CateId + 90000;
+        public const int ExpressSizeWeight = CateId + 1800;
 
         /// <summary>
         /// 快递单备注预设
         /// </summary>
-        public const int ExpressRemarkPresetSelect = CateId + 10_0000;
+        public const int ExpressRemarkPresetSelect = CateId + 2000;
     }
 }

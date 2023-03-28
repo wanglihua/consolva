@@ -32,22 +32,22 @@ public partial class PassRes {
         /// <summary>
         /// 会员列表
         /// </summary>
-        public const int CustomerList = CateId + 02000;
+        public const int CustomerList = CateId + 0200;
 
         /// <summary>
         /// 测试账号导入
         /// </summary>
-        public const int ImportTestCustomer = CateId + 04000;
+        public const int ImportTestCustomer = CateId + 0400;
 
         /// <summary>
         /// 会员冻结解冻
         /// </summary>
-        public const int CustomerFreeze = CateId + 06000;
+        public const int CustomerFreeze = CateId + 0600;
 
         /// <summary>
         /// 会员重设密码
         /// </summary>
-        public const int CustomerResetPassword = CateId + 08000;
+        public const int CustomerResetPassword = CateId + 0800;
 
         /// <summary>
         /// 会员性质
@@ -57,41 +57,41 @@ public partial class PassRes {
         /// <summary>
         /// 客户推广
         /// </summary>
-        public const int CustomerPromotion = CateId + 12000;
+        public const int CustomerPromotion = CateId + 1200;
 
         /// <summary>
         /// 超级密码
         /// </summary>
-        public const int SupperPassword = CateId + 14000;
+        public const int SupperPassword = CateId + 1400;
 
         /// <summary>
         /// 积分规则
         /// </summary>
-        public const int CustomerScoreRule = CateId + 16000;
+        public const int CustomerScoreRule = CateId + 1600;
 
         /// <summary>
         /// 推广图片
         /// </summary>
-        public const int CustomerPromotionImage = CateId + 18000;
+        public const int CustomerPromotionImage = CateId + 1800;
 
         /// <summary>
         /// 账户余额变动
         /// </summary>
-        public const int CustomerAccountEntry = CateId + 20000;
+        public const int CustomerAccountEntry = CateId + 2000;
 
         /// <summary>
         /// 会员积分日志
         /// </summary>
-        public const int CustomerScoreLog = CateId + 22000;
+        public const int CustomerScoreLog = CateId + 2200;
 
         /// <summary>
         /// VIP折扣设置
         /// </summary>
-        public const int CustomerVipDiscount = CateId + 24000;
+        public const int CustomerVipDiscount = CateId + 2400;
 
         /// <summary>
         /// 超级VIP折扣
         /// </summary>
-        public const int CustomerSuperVipDiscount = CateId + 26000;
+        public const int CustomerSuperVipDiscount = CateId + 2600;
     }
 }

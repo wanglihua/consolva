@@ -21,11 +21,11 @@ public partial class PassRes {
         /// <summary>
         /// 仓库
         /// </summary>
-        public const int Warehouse = CateId + 02000;
+        public const int Warehouse = CateId + 0200;
 
         /// <summary>
         /// 仓位规格
         /// </summary>
-        public const int StorageLocSpec = CateId + 04000;
+        public const int StorageLocSpec = CateId + 0400;
     }
 }

@@ -23,21 +23,21 @@ public partial class PassRes {
         /// <summary>
         /// 手动推送
         /// </summary>
-        public const int ManualSend = CateId + 02000;
+        public const int ManualSend = CateId + 0200;
 
         /// <summary>
         /// 全员推送
         /// </summary>
-        public const int ManualSendAll = CateId + 04000;
+        public const int ManualSendAll = CateId + 0400;
 
         /// <summary>
         /// 消息设置
         /// </summary>
-        public const int MessageSetting = CateId + 06000;
+        public const int MessageSetting = CateId + 0600;
 
         /// <summary>
         /// 消息查看
         /// </summary>
-        public const int MessageView = CateId + 8000;
+        public const int MessageView = CateId + 0800;
     }
 }

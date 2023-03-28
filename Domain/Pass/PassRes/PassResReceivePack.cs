@@ -27,41 +27,41 @@ public partial class PassRes {
         /// <summary>
         /// 收货入库
         /// </summary>
-        public const int ExpressCheckin = CateId + 0100;
+        public const int ExpressCheckin = CateId + 0200;
 
         /// <summary>
         /// 订单打包
         /// </summary>
-        public const int OrderPack = CateId + 0200;
+        public const int OrderPack = CateId + 0400;
 
         /// <summary>
         /// 快递单入库配置
         /// </summary>
-        public const int ExpressCheckinConfig = CateId + 0390;
+        public const int ExpressCheckinConfig = CateId + 0600;
 
         /// <summary>
         /// 订单打包配置
         /// </summary>
-        public const int OrderPackConfig = CateId + 0400;
+        public const int OrderPackConfig = CateId + 0800;
 
         /// <summary>
         /// 订单仓位
         /// </summary>
-        public const int OrderStorageLoc = CateId + 0420;
+        public const int OrderStorageLoc = CateId + 1000;
 
         /// <summary>
         /// 打包统计
         /// </summary>
-        public const int PackReport = CateId + 0500;
+        public const int PackReport = CateId + 1200;
 
         /// <summary>
         /// 催打包订单
         /// </summary>
-        public const int OrderShouldSubmitPack = CateId + 0600;
+        public const int OrderShouldSubmitPack = CateId + 1400;
 
         /// <summary>
         /// 订单打包排班
         /// </summary>
-        public const int OrderPackSchedule = CateId + 0800;
+        public const int OrderPackSchedule = CateId + 1600;
     }
 }

@@ -25,31 +25,31 @@ public partial class PassRes {
         /// <summary>
         /// 客户端公告
         /// </summary>
-        public const int ClientNotice = CateId + 02000;
+        public const int ClientNotice = CateId + 0200;
 
         /// <summary>
         /// 汇率设置
         /// </summary>
-        public const int ExchangeRate = CateId + 04000;
+        public const int ExchangeRate = CateId + 0400;
 
         /// <summary>
         /// 客户端协议
         /// </summary>
-        public const int ClientAgreement = CateId + 06000;
+        public const int ClientAgreement = CateId + 0600;
 
         /// <summary>
         /// 客户端文本菜单
         /// </summary>
-        public const int ClientInstruction = CateId + 08000;
+        public const int ClientInstruction = CateId + 0800;
 
         /// <summary>
         /// 自动秤设备
         /// </summary>
-        public const int AutoMeasureMachine = CateId + 10000;
+        public const int AutoMeasureMachine = CateId + 1000;
 
         /// <summary>
         /// 广告横幅
         /// </summary>
-        public const int AdvertBanner = CateId + 12000;
+        public const int AdvertBanner = CateId + 1200;
     }
 }

@@ -35,63 +35,63 @@ public partial class PassRes {
         /// <summary>
         /// 订单列表-活动订单
         /// </summary>
-        public const int OrderListActive = CateId + 02000;
+        public const int OrderListActive = CateId + 0200;
 
         /// <summary>
         /// 订单列表-正常结束订单
         /// </summary>
-        public const int OrderListComplete = CateId + 04000;
+        public const int OrderListComplete = CateId + 0400;
 
         /// <summary>
         /// 导入订单
         /// </summary>
-        public const int ImportOrder = CateId + 06000;
+        public const int ImportOrder = CateId + 0600;
 
         /// <summary>
         /// 导入订单时登记快递单
         /// </summary>
-        public const int ImportOrderCheckinExpress = CateId + 08000;
+        public const int ImportOrderCheckinExpress = CateId + 0800;
 
         /// <summary>
         /// 作废订单
         /// </summary>
-        public const int OrderListCancel = CateId + 10000;
+        public const int OrderListCancel = CateId + 1000;
 
         /// <summary>
         /// 箱号跟踪
         /// </summary>
-        public const int OrderPackBox = CateId + 12000;
+        public const int OrderPackBox = CateId + 1200;
 
         /// <summary>
         /// 国际单号
         /// </summary>
-        public const int OrderAirExpress = CateId + 14000;
+        public const int OrderAirExpress = CateId + 1400;
 
         /// <summary>
         /// 修改订单收货地址
         /// </summary>
-        public const int OrderModifyReceiverAddress = CateId + 16000;
+        public const int OrderModifyReceiverAddress = CateId + 1600;
 
         /// <summary>
         /// 设置订单作废
         /// </summary>
-        public const int OrderSetCancel = CateId + 18000;
+        public const int OrderSetCancel = CateId + 1800;
 
         /// <summary>
         /// 修改订单物流方式
         /// </summary>
-        public const int OrderLogisticsModeChange = CateId + 20000;
+        public const int OrderLogisticsModeChange = CateId + 2000;
 
         /// <summary>
         /// 订单取消打包提交
         /// </summary>
-        public const int OrderRollbackSubmitPack = CateId + 22000;
+        public const int OrderRollbackSubmitPack = CateId + 2200;
 
         /// <summary>
         /// 订单快递单号维护
         /// 订单快递单号添加修改删除
         /// </summary>
-        public const int OrderExpressEdit = CateId + 24000;
+        public const int OrderExpressEdit = CateId + 2400;
 
         /// <summary>
         /// 订单物品维护
