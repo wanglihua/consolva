@@ -14,17 +14,7 @@ public class PassResCateDataInitService {
     }
 
     public void InitData() {
-        IList<PassResCateInfo> cateList = new List<PassResCateInfo>() {
-            PassRes.Customer.Cate,
-            PassRes.CustomerMessage.Cate,
-            PassRes.Express.Cate,
-            PassRes.Fee.Cate,
-            PassRes.Goods.Cate,
-            PassRes.Logistics.Cate,
-            PassRes.ReceivePack.Cate,
-            PassRes.Setting.Cate,
-            PassRes.Storage.Cate,
-        };
+        var cateList = PassResCate.GetLst();
 
         // 检查 cate id 唯一性
         Dictionary<int, PassResCateInfo> cateIdMap = new Dictionary<int, PassResCateInfo>();

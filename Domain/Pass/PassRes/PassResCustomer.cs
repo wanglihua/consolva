@@ -1,18 +1,12 @@
 namespace shunda.Domain.Pass.PassRes;
 
-public partial class PassRes
-{
+public partial class PassRes {
     /// <summary>
     ///会员管理
     /// </summary>
-    public class Customer
-    {
-        /// <summary>
-        /// 会员管理类别
-        /// </summary>
-        public const int CateId = 07000_00000;
-
-        public static readonly PassResCateInfo Cate = new PassResCateInfo() { Id = CateId, Name = "会员管理" };
+    public class Customer {
+        private const int CateId = PassResCate.CustomerCateId;
+        private static readonly PassResCateInfo Cate = PassResCate.Customer;
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
             new PassResInfo { Id = CustomerList, Name = "会员列表", Cate = Cate },

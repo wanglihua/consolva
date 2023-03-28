@@ -6,8 +6,7 @@ namespace shunda.Domain.Pass;
 /// <summary>
 /// 资源类别
 /// </summary>
-public class PassResCateInfo : EntityNoCreateNoUpdate
-{
+public class PassResCateInfo : EntityNoCreateNoUpdate {
     /// <summary>
     /// 名称
     /// </summary>
