@@ -91,7 +91,7 @@ public class PhotoUtil {
         Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, newOpts);
         newOpts.inJustDecodeBounds = false;
 
-        double baseLength = 1280d;
+        double baseLength = 1024d;
         // 缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
         int imageBigSideLength = Math.max(newOpts.outWidth, newOpts.outHeight);
         double scaleRatio = (Math.round(imageBigSideLength / baseLength));
