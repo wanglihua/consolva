@@ -33,7 +33,6 @@ import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.google.zxing.Result;
 import com.huadu.shunda.R;
-import com.huadu.shunda.core.ClientTimeUtil;
 import com.huadu.shunda.core.Config;
 import com.huadu.shunda.core.PdaUtil;
 import com.huadu.shunda.core.PermissionUtil;

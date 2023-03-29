@@ -30,7 +30,6 @@ import com.alibaba.sdk.android.oss.model.ObjectMetadata;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.huadu.shunda.R;
-import com.huadu.shunda.core.ClientTimeUtil;
 import com.huadu.shunda.core.Config;
 import com.huadu.shunda.core.MaskDialog;
 import com.huadu.shunda.core.PdaUtil;

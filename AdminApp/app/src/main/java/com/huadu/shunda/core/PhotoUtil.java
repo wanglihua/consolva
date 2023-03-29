@@ -61,8 +61,7 @@ public class PhotoUtil {
             bm = BitmapFactory.decodeStream(inputStream);
         }
 
-        if(bm == null)
-        {
+        if (bm == null) {
             Toast.makeText(activity, "bitmap null！", Toast.LENGTH_SHORT).show();
         }
 
@@ -92,14 +91,24 @@ public class PhotoUtil {
         Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, newOpts);
         newOpts.inJustDecodeBounds = false;
 
+        double baseLength = 1280d;
         // 缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
-        int be = (int) (Math.max(newOpts.outWidth, newOpts.outHeight) / 1024); // 以 880 * 880 为基准
+        int imageBigSideLength = Math.max(newOpts.outWidth, newOpts.outHeight);
+        double scaleRatio = (Math.round(imageBigSideLength / baseLength));
+        int ratioLogMin = (int) (Math.log(scaleRatio) / Math.log(2));
+        int ratioLogMax = ratioLogMin + 1;
+        int ratioMin = (int) Math.pow(2, ratioLogMin);
+        int ratioMax = (int) Math.pow(2, ratioLogMax);
 
-        // 至少压缩 4 倍
-        if (be < 4) {
-            be = 4;
+        int ratioMinDiffLength = (int) Math.abs(imageBigSideLength - ratioMin * baseLength);
+        int ratioMaxDiffLength = (int) Math.abs(imageBigSideLength - ratioMax * baseLength);
+
+        int be = ratioMin;
+        if (ratioMinDiffLength > ratioMaxDiffLength) {
+            be = ratioMax;
         }
 
+        // 这个值总是按2的n次方来的
         newOpts.inSampleSize = be; // 设置缩放比例
         // newOpts.inPreferredConfig = Config.RGB_565;//降低图片从ARGB888到RGB565
         // 重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
