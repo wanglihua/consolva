@@ -4,9 +4,11 @@ using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Hibernate;
+using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
+using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
 using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
@@ -14,6 +16,14 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.App.Controllers;
 
 [AppArea]
+[AdminAuth(
+    PassRes.PassResAdminApp.PhotoSignIn,
+    PassRes.PassResAdminApp.PhotoCheckIn,
+    PassRes.PassResAdminApp.PhotoIssue,
+    PassRes.PassResAdminApp.PhotoPack,
+    PassRes.PassResAdminApp.PhotoReturn,
+    PassRes.PassResAdminApp.PhotoShip
+)]
 public class LogisticsOrderPhotoController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
@@ -209,6 +219,29 @@ public class LogisticsOrderPhotoController : Controller {
         return Json(new Dictionary<string, object>() {
             { "success", true },
             { "message", "订单照片上传成功！" + checkResult },
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/app/express/photo/get/order/code/by/pack/box/code")]
+    public IActionResult GetOrderCodeByPackBoxCode(string packBoxCode) {
+        var packBox = logisticsOrderPackBoxService.ParseBoxCode(packBoxCode);
+
+        if (packBox == null) {
+            throw new ValidationException($"箱号{packBoxCode}不存在！");
+        }
+
+        int orderId = packBox.Order.Id;
+        LogisticsOrderInfo order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"箱号{packBoxCode}对应的订单不存在！");
+        }
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", "根据箱号获取订单编号成功！" },
+            { "orderPackBoxCode", logisticsOrderPackBoxService.GetBoxCode(packBox.Id) },
+            { "orderCode", order.Code }
         });
     }
 }
