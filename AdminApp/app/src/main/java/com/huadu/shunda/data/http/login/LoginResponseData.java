@@ -73,7 +73,7 @@ public class LoginResponseData {
         this.userName = userName;
     }
 
-    public boolean isCanExpressQuery() {
+    public boolean getCanExpressQuery() {
         return canExpressQuery;
     }
 
@@ -81,7 +81,7 @@ public class LoginResponseData {
         this.canExpressQuery = canExpressQuery;
     }
 
-    public boolean isCanExpressOnShelf() {
+    public boolean getCanExpressOnShelf() {
         return canExpressOnShelf;
     }
 
@@ -89,7 +89,7 @@ public class LoginResponseData {
         this.canExpressOnShelf = canExpressOnShelf;
     }
 
-    public boolean isCanExpressWarehouseCheck() {
+    public boolean getCanExpressWarehouseCheck() {
         return canExpressWarehouseCheck;
     }
 
@@ -97,7 +97,7 @@ public class LoginResponseData {
         this.canExpressWarehouseCheck = canExpressWarehouseCheck;
     }
 
-    public boolean isCanExpressOffShelf() {
+    public boolean getCanExpressOffShelf() {
         return canExpressOffShelf;
     }
 
@@ -105,7 +105,7 @@ public class LoginResponseData {
         this.canExpressOffShelf = canExpressOffShelf;
     }
 
-    public boolean isCanExpressReturnOffShelf() {
+    public boolean getCanExpressReturnOffShelf() {
         return canExpressReturnOffShelf;
     }
 
@@ -113,7 +113,7 @@ public class LoginResponseData {
         this.canExpressReturnOffShelf = canExpressReturnOffShelf;
     }
 
-    public boolean isCanExpressDump() {
+    public boolean getCanExpressDump() {
         return canExpressDump;
     }
 
@@ -121,7 +121,7 @@ public class LoginResponseData {
         this.canExpressDump = canExpressDump;
     }
 
-    public boolean isCanExpressPacking() {
+    public boolean getCanExpressPacking() {
         return canExpressPacking;
     }
 
@@ -129,7 +129,7 @@ public class LoginResponseData {
         this.canExpressPacking = canExpressPacking;
     }
 
-    public boolean isCanPackBoxQuery() {
+    public boolean getCanPackBoxQuery() {
         return canPackBoxQuery;
     }
 
@@ -137,7 +137,7 @@ public class LoginResponseData {
         this.canPackBoxQuery = canPackBoxQuery;
     }
 
-    public boolean isCanPackBoxShip() {
+    public boolean getCanPackBoxShip() {
         return canPackBoxShip;
     }
 
@@ -145,7 +145,7 @@ public class LoginResponseData {
         this.canPackBoxShip = canPackBoxShip;
     }
 
-    public boolean isCanPhotoSignIn() {
+    public boolean getCanPhotoSignIn() {
         return canPhotoSignIn;
     }
 
@@ -153,7 +153,7 @@ public class LoginResponseData {
         this.canPhotoSignIn = canPhotoSignIn;
     }
 
-    public boolean isCanPhotoCheckIn() {
+    public boolean getCanPhotoCheckIn() {
         return canPhotoCheckIn;
     }
 
@@ -161,7 +161,7 @@ public class LoginResponseData {
         this.canPhotoCheckIn = canPhotoCheckIn;
     }
 
-    public boolean isCanPhotoIssue() {
+    public boolean getCanPhotoIssue() {
         return canPhotoIssue;
     }
 
@@ -169,7 +169,7 @@ public class LoginResponseData {
         this.canPhotoIssue = canPhotoIssue;
     }
 
-    public boolean isCanPhotoPack() {
+    public boolean getCanPhotoPack() {
         return canPhotoPack;
     }
 
@@ -177,7 +177,7 @@ public class LoginResponseData {
         this.canPhotoPack = canPhotoPack;
     }
 
-    public boolean isCanPhotoReturn() {
+    public boolean getCanPhotoReturn() {
         return canPhotoReturn;
     }
 
@@ -185,7 +185,7 @@ public class LoginResponseData {
         this.canPhotoReturn = canPhotoReturn;
     }
 
-    public boolean isCanPhotoShip() {
+    public boolean getCanPhotoShip() {
         return canPhotoShip;
     }
 
@@ -193,7 +193,7 @@ public class LoginResponseData {
         this.canPhotoShip = canPhotoShip;
     }
 
-    public boolean isCanPhoto() {
+    public boolean getCanPhoto() {
         return canPhoto;
     }
 

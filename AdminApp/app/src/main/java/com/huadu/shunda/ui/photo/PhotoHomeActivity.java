@@ -78,7 +78,7 @@ public class PhotoHomeActivity extends BaseActivity {
             tvPhotoIssue.setVisibility(View.GONE);
         }
 
-        if (LoginCache.getLoginResponse().getCanPhotoCnDamage()) {
+        if (LoginCache.getLoginResponse().getCanPhotoPack()) {
             tvPhotoPack.setVisibility(View.VISIBLE);
         } else {
             tvPhotoPack.setVisibility(View.GONE);
@@ -128,7 +128,7 @@ public class PhotoHomeActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(PhotoHomeActivity.this, PhotoExpressActivity.class);
-            intent.putExtra("photoTypeId", OrderPhotoType.CnDamage.getId());
+            intent.putExtra("photoTypeId", OrderPhotoType.Pack.getId());
             startActivity(intent);
         }
     }
@@ -147,15 +147,6 @@ public class PhotoHomeActivity extends BaseActivity {
         public void onClick(View view) {
             Intent intent = new Intent(PhotoHomeActivity.this, PhotoOrderActivity.class);
             intent.putExtra("photoTypeId", OrderPhotoType.Ship.getId());
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewPhotoDeliverClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(PhotoHomeActivity.this, PhotoDeliverActivity.class);
-            intent.putExtra("photoTypeId", OrderPhotoType.Deliver.getId());
             startActivity(intent);
         }
     }

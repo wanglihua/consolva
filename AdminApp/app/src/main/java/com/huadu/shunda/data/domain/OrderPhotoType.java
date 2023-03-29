@@ -50,6 +50,11 @@ public class OrderPhotoType extends CodeType {
     public static final OrderPhotoType CustomerServicePostSale = new OrderPhotoType(10000, "客服售后照片", "客服售后照片");
 
     /**
+     * 客诉记录照片
+     */
+    public static final OrderPhotoType CustomerServiceAppeal = new OrderPhotoType(11000, "客诉记录照片", "客诉记录照片");
+
+    /**
      * 交付照片
      */
     public static final OrderPhotoType Deliver = new OrderPhotoType(88000, "交付照片", "交付照片");
@@ -79,6 +84,19 @@ public class OrderPhotoType extends CodeType {
     }
 
     public static List<OrderPhotoType> getList() {
-        return Arrays.asList(SignIn, CheckIn, Pack, Issue, Ship, CnDamage, Return, CustomerServiceCheck, CustomerServicePostSale, Deliver, DeliverFail);
+        return Arrays.asList(
+                SignIn,
+                CheckIn,
+                Pack,
+                Issue,
+                Ship,
+                CnDamage,
+                Return,
+                CustomerServiceCheck,
+                CustomerServicePostSale,
+                CustomerServiceAppeal,
+                Deliver,
+                DeliverFail
+        );
     }
 }
