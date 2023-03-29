@@ -239,7 +239,7 @@
             android:drawableStart="@drawable/order_photo"
             android:gravity="center_vertical|center_horizontal"
             android:padding="5dp"
-            android:text="订单图片"
+            android:text="包裹图片"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
             android:visibility="gone" />
