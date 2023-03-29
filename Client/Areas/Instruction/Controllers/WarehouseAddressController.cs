@@ -76,8 +76,8 @@ public class WarehouseAddressController : Controller {
         string addressDetail = $"{warehouse.Address}{customerCode}室";
 
         // 4月10后改正过来
-        addressDetail = "请在4月10之后邮寄至新地址，到时这里会显示新地址。";
-        fullAddress = "请在4月10之后邮寄至新地址，到时这里会显示新地址。";
+        // addressDetail = "请在4月10之后邮寄至新地址，到时这里会显示新地址。";
+        // fullAddress = "请在4月10之后邮寄至新地址，到时这里会显示新地址。";
 
         return Json(new JsonResultData {
             Success = true,
