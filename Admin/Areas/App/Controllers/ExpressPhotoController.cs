@@ -76,6 +76,10 @@ public class LogisticsOrderPhotoController : Controller {
         int loginUserId = loginUserService.GetLoginUserId();
         var loginUser = loginUserService.GetLoginUser();
 
+        if (string.IsNullOrWhiteSpace(trackingNo)) {
+            trackingNo = string.Empty;
+        }
+
         // 子母单号，子单号图片放在母单号下面
         if (string.IsNullOrWhiteSpace(trackingNo) == false) {
             int indexOfMinus = trackingNo.IndexOf("-");
@@ -161,7 +165,7 @@ public class LogisticsOrderPhotoController : Controller {
         string storeName = Path.GetFileName(imageFileName);
 
         var expressPhoto = new ExpressPhotoInfo {
-            Customer = order?.Customer,
+            Customer = express?.Customer,
             Order = order,
             OrderCode = order?.Code ?? string.Empty,
             Express = express,
