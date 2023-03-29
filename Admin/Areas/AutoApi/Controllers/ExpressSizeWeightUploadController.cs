@@ -38,6 +38,10 @@ public class ExpressSizeWeightUploadController : Controller {
             Transactional.Wrap(session, () => {
                 StreamReader reader = new StreamReader(Request.Body);
                 string requestBody = reader.ReadToEnd();
+
+                log.Error("ExpressSizeWeightUploadController.Upload requestBody");
+                log.Error(requestBody);
+
                 var param = JsonConvert.DeserializeObject<ExpressSizeWeightUploadParam>(requestBody);
 
                 if (param == null || param.Data == null) {
