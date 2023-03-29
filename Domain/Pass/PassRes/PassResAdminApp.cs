@@ -11,6 +11,20 @@ public partial class PassRes {
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
             new PassResInfo { Id = ExpressQuery, Name = "快递单号查询", Cate = Cate },
+            new PassResInfo { Id = ExpressOnShelf, Name = "快递上架", Cate = Cate },
+            new PassResInfo { Id = ExpressWarehouseCheck, Name = "仓库需核实", Cate = Cate },
+            new PassResInfo { Id = ExpressOffShelf, Name = "快递下架", Cate = Cate },
+            new PassResInfo { Id = ExpressReturnOffShelf, Name = "退运下架", Cate = Cate },
+            new PassResInfo { Id = ExpressDump, Name = "快递堆存", Cate = Cate },
+            new PassResInfo { Id = ExpressPacking, Name = "入流动仓", Cate = Cate },
+            new PassResInfo { Id = PackBoxQuery, Name = "箱号信息查询", Cate = Cate },
+            new PassResInfo { Id = PackBoxShip, Name = "箱号发货", Cate = Cate },
+            new PassResInfo { Id = PhotoSignIn, Name = "签收照片", Cate = Cate },
+            new PassResInfo { Id = PhotoCheckIn, Name = "入库照片", Cate = Cate },
+            new PassResInfo { Id = PhotoIssue, Name = "问题件照片", Cate = Cate },
+            new PassResInfo { Id = PhotoPack, Name = "打包照片", Cate = Cate },
+            new PassResInfo { Id = PhotoReturn, Name = "退运照片", Cate = Cate },
+            new PassResInfo { Id = PhotoShip, Name = "发货照片", Cate = Cate },
         };
 
         /// <summary>
