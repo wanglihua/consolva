@@ -9,6 +9,33 @@ public class LoginResponseData {
     @SerializedName("userName")
     private String userName;
 
+    @SerializedName("canExpressQuery")
+    private boolean canExpressQuery;
+
+    @SerializedName("canExpressOnShelf")
+    private boolean canExpressOnShelf;
+
+    @SerializedName("canExpressWarehouseCheck")
+    private boolean canExpressWarehouseCheck;
+
+    @SerializedName("canExpressOffShelf")
+    private boolean canExpressOffShelf;
+
+    @SerializedName("canExpressReturnOffShelf")
+    private boolean canExpressReturnOffShelf;
+
+    @SerializedName("canExpressDump")
+    private boolean canExpressDump;
+
+    @SerializedName("canExpressPacking")
+    private boolean canExpressPacking;
+
+    @SerializedName("canPackBoxQuery")
+    private boolean canPackBoxQuery;
+
+    @SerializedName("canPackBoxShip")
+    private boolean canPackBoxShip;
+
     @SerializedName("canPhotoSignIn")
     private boolean canPhotoSignIn;
 
@@ -18,20 +45,14 @@ public class LoginResponseData {
     @SerializedName("canPhotoIssue")
     private boolean canPhotoIssue;
 
-    @SerializedName("canPhotoCnDamage")
-    private boolean canPhotoCnDamage;
+    @SerializedName("canPhotoPack")
+    private boolean canPhotoPack;
 
     @SerializedName("canPhotoReturn")
     private boolean canPhotoReturn;
 
     @SerializedName("canPhotoShip")
     private boolean canPhotoShip;
-
-    @SerializedName("canPhotoAuDamage")
-    private boolean canPhotoAuDamage;
-
-    @SerializedName("canPhotoDeliver")
-    private boolean canPhotoDeliver;
 
     @SerializedName("canPhoto")
     private boolean canPhoto;
@@ -52,7 +73,79 @@ public class LoginResponseData {
         this.userName = userName;
     }
 
-    public boolean getCanPhotoSignIn() {
+    public boolean isCanExpressQuery() {
+        return canExpressQuery;
+    }
+
+    public void setCanExpressQuery(boolean canExpressQuery) {
+        this.canExpressQuery = canExpressQuery;
+    }
+
+    public boolean isCanExpressOnShelf() {
+        return canExpressOnShelf;
+    }
+
+    public void setCanExpressOnShelf(boolean canExpressOnShelf) {
+        this.canExpressOnShelf = canExpressOnShelf;
+    }
+
+    public boolean isCanExpressWarehouseCheck() {
+        return canExpressWarehouseCheck;
+    }
+
+    public void setCanExpressWarehouseCheck(boolean canExpressWarehouseCheck) {
+        this.canExpressWarehouseCheck = canExpressWarehouseCheck;
+    }
+
+    public boolean isCanExpressOffShelf() {
+        return canExpressOffShelf;
+    }
+
+    public void setCanExpressOffShelf(boolean canExpressOffShelf) {
+        this.canExpressOffShelf = canExpressOffShelf;
+    }
+
+    public boolean isCanExpressReturnOffShelf() {
+        return canExpressReturnOffShelf;
+    }
+
+    public void setCanExpressReturnOffShelf(boolean canExpressReturnOffShelf) {
+        this.canExpressReturnOffShelf = canExpressReturnOffShelf;
+    }
+
+    public boolean isCanExpressDump() {
+        return canExpressDump;
+    }
+
+    public void setCanExpressDump(boolean canExpressDump) {
+        this.canExpressDump = canExpressDump;
+    }
+
+    public boolean isCanExpressPacking() {
+        return canExpressPacking;
+    }
+
+    public void setCanExpressPacking(boolean canExpressPacking) {
+        this.canExpressPacking = canExpressPacking;
+    }
+
+    public boolean isCanPackBoxQuery() {
+        return canPackBoxQuery;
+    }
+
+    public void setCanPackBoxQuery(boolean canPackBoxQuery) {
+        this.canPackBoxQuery = canPackBoxQuery;
+    }
+
+    public boolean isCanPackBoxShip() {
+        return canPackBoxShip;
+    }
+
+    public void setCanPackBoxShip(boolean canPackBoxShip) {
+        this.canPackBoxShip = canPackBoxShip;
+    }
+
+    public boolean isCanPhotoSignIn() {
         return canPhotoSignIn;
     }
 
@@ -60,7 +153,7 @@ public class LoginResponseData {
         this.canPhotoSignIn = canPhotoSignIn;
     }
 
-    public boolean getCanPhotoCheckIn() {
+    public boolean isCanPhotoCheckIn() {
         return canPhotoCheckIn;
     }
 
@@ -68,7 +161,7 @@ public class LoginResponseData {
         this.canPhotoCheckIn = canPhotoCheckIn;
     }
 
-    public boolean getCanPhotoIssue() {
+    public boolean isCanPhotoIssue() {
         return canPhotoIssue;
     }
 
@@ -76,15 +169,15 @@ public class LoginResponseData {
         this.canPhotoIssue = canPhotoIssue;
     }
 
-    public boolean getCanPhotoCnDamage() {
-        return canPhotoCnDamage;
+    public boolean isCanPhotoPack() {
+        return canPhotoPack;
     }
 
-    public void setCanPhotoCnDamage(boolean canPhotoCnDamage) {
-        this.canPhotoCnDamage = canPhotoCnDamage;
+    public void setCanPhotoPack(boolean canPhotoPack) {
+        this.canPhotoPack = canPhotoPack;
     }
 
-    public boolean getCanPhotoReturn() {
+    public boolean isCanPhotoReturn() {
         return canPhotoReturn;
     }
 
@@ -92,7 +185,7 @@ public class LoginResponseData {
         this.canPhotoReturn = canPhotoReturn;
     }
 
-    public boolean getCanPhotoShip() {
+    public boolean isCanPhotoShip() {
         return canPhotoShip;
     }
 
@@ -100,23 +193,7 @@ public class LoginResponseData {
         this.canPhotoShip = canPhotoShip;
     }
 
-    public boolean getCanPhotoAuDamage() {
-        return canPhotoAuDamage;
-    }
-
-    public void setCanPhotoAuDamage(boolean canPhotoAuDamage) {
-        this.canPhotoAuDamage = canPhotoAuDamage;
-    }
-
-    public boolean getCanPhotoDeliver() {
-        return canPhotoDeliver;
-    }
-
-    public void setCanPhotoDeliver(boolean canPhotoDeliver) {
-        this.canPhotoDeliver = canPhotoDeliver;
-    }
-
-    public boolean getCanPhoto() {
+    public boolean isCanPhoto() {
         return canPhoto;
     }
 
