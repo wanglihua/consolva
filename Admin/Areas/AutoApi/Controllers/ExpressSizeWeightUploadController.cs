@@ -34,6 +34,7 @@ public class ExpressSizeWeightUploadController : Controller {
     [HttpPost]
     [Route("/admin/auto/api/express/size/weight/upload")]
     public IActionResult Upload() {
+        log.Error("ExpressSizeWeightUploadController.Upload begin");
         try {
             Transactional.Wrap(session, () => {
                 StreamReader reader = new StreamReader(Request.Body);
@@ -307,6 +308,8 @@ public class ExpressSizeWeightUploadController : Controller {
                 Data = false,
             });
         }
+
+        log.Error("ExpressSizeWeightUploadController.Upload end");
 
         return Json(new ExpressSizeWeightUploadResult {
             Flag = "success",
