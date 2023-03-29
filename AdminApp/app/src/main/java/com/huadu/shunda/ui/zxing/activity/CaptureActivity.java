@@ -50,7 +50,7 @@ import com.huadu.shunda.core.PhotoUtil;
 import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.data.domain.OrderPhotoType;
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.http.LogisticsOrderPhotoRequest;
+import com.huadu.shunda.http.ExpressPhotoRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.experssimageshow.ExpressImageViewActivity;
 import com.huadu.shunda.ui.zxing.QrScanConstants;
@@ -380,11 +380,10 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                         @Override
                         public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                            LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                            ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
                             String expressTrackingNo = resultString;
-                            String clientTime = ClientTimeUtil.getClientTime();
-                            Call<ResponseInfo> uploadBase64Call = photoRequest.create("", expressTrackingNo, photoTypeId, photoKey, clientTime);
+                            Call<ResponseInfo> uploadBase64Call = photoRequest.create("", expressTrackingNo, photoTypeId, photoKey);
                             uploadBase64Call.enqueue(new retrofit2.Callback<ResponseInfo>() {
                                 @Override
                                 public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
@@ -514,10 +513,9 @@ public class CaptureActivity extends BaseActivity implements Callback {
                     OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                         @Override
                         public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                            LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                            ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
-                            String clientTime = ClientTimeUtil.getClientTime();
-                            Call<ResponseInfo> uploadBase64Call = photoRequest.create(resultString, "", photoTypeId, photoKey, clientTime);
+                            Call<ResponseInfo> uploadBase64Call = photoRequest.create(resultString, "", photoTypeId, photoKey);
                             uploadBase64Call.enqueue(new retrofit2.Callback<ResponseInfo>() {
                                 @Override
                                 public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {

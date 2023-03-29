@@ -42,7 +42,7 @@ import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SoundUtil;
 import com.huadu.shunda.data.domain.OrderPhotoType;
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.http.LogisticsOrderPhotoRequest;
+import com.huadu.shunda.http.ExpressPhotoRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.pda.ScanActivity;
 import com.huadu.shunda.ui.zxing.QrScanConstants;
@@ -299,11 +299,10 @@ public class PhotoExpressActivity extends BaseActivity {
         OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
             @Override
             public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
                 String expressTrackingNo = etExpressTrackingNo.getText().toString();
-                String clientTime = ClientTimeUtil.getClientTime();
-                Call<ResponseInfo> uploadBase64Call = photoRequest.create("", expressTrackingNo, photoType.getId(), photoKey, clientTime);
+                Call<ResponseInfo> uploadBase64Call = photoRequest.create("", expressTrackingNo, photoType.getId(), photoKey);
                 // Dialog mask = MaskDialog.show(PhotoExpressActivity.this);
                 uploadBase64Call.enqueue(new Callback<ResponseInfo>() {
                     @Override
@@ -493,11 +492,10 @@ public class PhotoExpressActivity extends BaseActivity {
             OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                 @Override
                 public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                    LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                    ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
                     String expressTrackingNo = etExpressTrackingNo.getText().toString();
-                    String clientTime = ClientTimeUtil.getClientTime();
-                    Call<ResponseInfo> uploadBase64Call = photoRequest.create("", expressTrackingNo, photoType.getId(), photoKey, clientTime);
+                    Call<ResponseInfo> uploadBase64Call = photoRequest.create("", expressTrackingNo, photoType.getId(), photoKey);
                     // Dialog mask = MaskDialog.show(PhotoExpressActivity.this);
                     uploadBase64Call.enqueue(new Callback<ResponseInfo>() {
                         @Override

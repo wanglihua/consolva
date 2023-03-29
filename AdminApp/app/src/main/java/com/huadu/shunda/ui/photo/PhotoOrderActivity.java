@@ -30,7 +30,6 @@ import com.alibaba.sdk.android.oss.model.ObjectMetadata;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.huadu.shunda.R;
-import com.huadu.shunda.core.ClientTimeUtil;
 import com.huadu.shunda.core.Config;
 import com.huadu.shunda.core.MaskDialog;
 import com.huadu.shunda.core.PdaUtil;
@@ -41,7 +40,7 @@ import com.huadu.shunda.core.SoundUtil;
 import com.huadu.shunda.data.domain.OrderPhotoType;
 import com.huadu.shunda.data.http.ResponseInfo;
 import com.huadu.shunda.data.http.packbox.GetOrderCodeByPackBoxCodeResponseInfo;
-import com.huadu.shunda.http.LogisticsOrderPhotoRequest;
+import com.huadu.shunda.http.ExpressPhotoRequest;
 import com.huadu.shunda.http.PackBoxRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.pda.ScanActivity;
@@ -245,14 +244,6 @@ public class PhotoOrderActivity extends BaseActivity {
 
         // begin 上传至阿里云OSS
 
-        String bucketName = Config.getOssBucketName();
-        String endPoint = Config.getOssEndPoint();
-
-        if (photoType == OrderPhotoType.Deliver || photoType == OrderPhotoType.DeliverFail || photoType == OrderPhotoType.AuDamage) {
-            bucketName = Config.getOssBucketName();
-            endPoint = Config.getOssEndPoint();
-        }
-
         byte[] imageBytes = PhotoUtil.compressImageFileToBytes(imageCaptureUri.getPath(), PhotoOrderActivity.this);
 
         // 构造上传请求。
@@ -261,7 +252,7 @@ public class PhotoOrderActivity extends BaseActivity {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType("image/jpg");
 
-        PutObjectRequest put = new PutObjectRequest(bucketName, photoKey, imageBytes, objectMetadata);
+        PutObjectRequest put = new PutObjectRequest(Config.getOssBucketName(), photoKey, imageBytes, objectMetadata);
 
         // 异步上传时可以设置进度回调。
         put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
@@ -270,16 +261,15 @@ public class PhotoOrderActivity extends BaseActivity {
             }
         });
 
-        OSS oss = new OSSClient(getApplicationContext(), endPoint, new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
+        OSS oss = new OSSClient(getApplicationContext(), Config.getOssEndPoint(), new OSSStsTokenCredentialProvider(Config.getOssAccessKeyId(), Config.getOssAccessKeySecret(), ""));
 
         OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
             @Override
             public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
                 String orderCode = etOrderNo.getText().toString().trim();
-                String clientTime = ClientTimeUtil.getClientTime();
-                Call<ResponseInfo> uploadBase64Call = photoRequest.create(orderCode, "", photoType.getId(), photoKey, clientTime);
+                Call<ResponseInfo> uploadBase64Call = photoRequest.create(orderCode, "", photoType.getId(), photoKey);
                 // Dialog mask = MaskDialog.show(PhotoOrderActivity.this);
                 uploadBase64Call.enqueue(new Callback<ResponseInfo>() {
                     @Override
@@ -465,11 +455,10 @@ public class PhotoOrderActivity extends BaseActivity {
             OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                 @Override
                 public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                    LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                    ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
                     String orderCode = etOrderNo.getText().toString();
-                    String clientTime = ClientTimeUtil.getClientTime();
-                    Call<ResponseInfo> uploadBase64Call = photoRequest.create(orderCode, "", photoType.getId(), photoKey, clientTime);
+                    Call<ResponseInfo> uploadBase64Call = photoRequest.create(orderCode, "", photoType.getId(), photoKey);
                     // Dialog mask = MaskDialog.show(PhotoOrderActivity.this);
                     uploadBase64Call.enqueue(new Callback<ResponseInfo>() {
                         @Override

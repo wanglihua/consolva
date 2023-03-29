@@ -41,7 +41,7 @@ import com.huadu.shunda.core.SoundUtil;
 import com.huadu.shunda.data.domain.OrderPhotoType;
 import com.huadu.shunda.data.http.ResponseInfo;
 import com.huadu.shunda.data.http.packbox.GetOrderCodeByPackBoxCodeResponseInfo;
-import com.huadu.shunda.http.LogisticsOrderPhotoRequest;
+import com.huadu.shunda.http.ExpressPhotoRequest;
 import com.huadu.shunda.http.PackBoxRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.pda.ScanActivity;
@@ -192,11 +192,10 @@ public class PhotoDeliverActivity extends BaseActivity {
         OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
             @Override
             public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
                 String orderCode = etOrderNo.getText().toString().trim();
-                String clientTime = ClientTimeUtil.getClientTime();
-                Call<ResponseInfo> createCall = photoRequest.create(orderCode, "", photoType.getId(), photoKey, clientTime);
+                Call<ResponseInfo> createCall = photoRequest.create(orderCode, "", photoType.getId(), photoKey);
                 // Dialog mask = MaskDialog.show(PhotoDeliverActivity.this);
                 createCall.enqueue(new Callback<ResponseInfo>() {
                     @Override
@@ -335,11 +334,10 @@ public class PhotoDeliverActivity extends BaseActivity {
             OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                 @Override
                 public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                    LogisticsOrderPhotoRequest photoRequest = RetrofitUtil.createRequest(LogisticsOrderPhotoRequest.class);
+                    ExpressPhotoRequest photoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
 
                     String orderCode = etOrderNo.getText().toString();
-                    String clientTime = ClientTimeUtil.getClientTime();
-                    Call<ResponseInfo> createCall = photoRequest.create(orderCode, "", photoType.getId(), photoKey, clientTime);
+                    Call<ResponseInfo> createCall = photoRequest.create(orderCode, "", photoType.getId(), photoKey);
                     // Dialog mask = MaskDialog.show(PhotoDeliverActivity.this);
                     createCall.enqueue(new Callback<ResponseInfo>() {
                         @Override
