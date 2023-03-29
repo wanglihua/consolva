@@ -3,6 +3,7 @@ using NLog;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
@@ -70,6 +71,7 @@ public class LogisticsOrderPhotoController : Controller {
     /// <exception cref="ValidationException"></exception>
     [HttpPost]
     [Route("/admin/app/express/photo/create")]
+    [Transactional]
     public IActionResult Create(string orderCode, string trackingNo, int photoTypeId, string imageFileName, string clientTime) {
         int loginUserId = loginUserService.GetLoginUserId();
         var loginUser = loginUserService.GetLoginUser();
@@ -137,10 +139,10 @@ public class LogisticsOrderPhotoController : Controller {
                     order = orderPackBox.Order;
                 }
             }
-        }
 
-        if (order == null) {
-            throw new ValidationException($"指定的订单编号或箱号{orderCode}不存在！");
+            if (order == null) {
+                throw new ValidationException($"指定的订单编号或箱号{orderCode}不存在！");
+            }
         }
 
         var express = session.Query<ExpressInfo>().Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();

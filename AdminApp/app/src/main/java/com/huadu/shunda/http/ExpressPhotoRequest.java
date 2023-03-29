@@ -10,5 +10,5 @@ import retrofit2.http.POST;
 public interface ExpressPhotoRequest {
     @POST("/admin/app/express/photo/create")
     @FormUrlEncoded
-    Call<ResponseInfo> create(@Field("orderCode") String orderCode, @Field("expressTrackingNo") String expressTrackingNo, @Field("photoTypeId") int photoTypeId, @Field("imageFileName") String imageFileName);
+    Call<ResponseInfo> create(@Field("orderCode") String orderCode, @Field("trackingNo") String trackingNo, @Field("photoTypeId") int photoTypeId, @Field("imageFileName") String imageFileName);
 }
