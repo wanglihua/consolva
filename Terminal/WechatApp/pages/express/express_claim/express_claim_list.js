@@ -23,21 +23,39 @@ Page({
     loadExpressClaimList() {
         const that = this;
 
+        let lastId = this.data.lastId;
+        const query = this.data.query;
+
+        let hasQuery = false;
+        if (query && query !== "" && query !== " " && query !== "  ") {
+            hasQuery = true;
+        }
+
+        if (hasQuery === true) {
+            lastId = 0;
+        }
+
         app.post("/client/express/claim/list", {
             query: that.data.query,
-            lastId: that.data.lastId
+            lastId: lastId,
         }, function (res) {
             const expressClaimCount = res.data.expressClaimCount;
-            const expressClaimList = res.data.expressClaimList;
-            const lastId = res.data.lastId;
+            let expressClaimList = res.data.expressClaimList;
+            let lastId = res.data.lastId;
 
             for (const expressClaim of expressClaimList) {
                 // expressClaim.actions = "查看详细，认领";
                 expressClaim.actions = "认领";
             }
 
+            if (hasQuery === true) {
+                lastId = 0
+            } else {
+                expressClaimList = util.distinctConcat(that.data.expressClaimList, expressClaimList)
+            }
+
             that.setData({
-                expressClaimList: util.distinctConcat(that.data.expressClaimList, expressClaimList),
+                expressClaimList: expressClaimList,
                 expressClaimCount: expressClaimCount,
                 lastId: lastId,
             });

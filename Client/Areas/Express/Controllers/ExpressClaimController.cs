@@ -105,9 +105,7 @@ public class ExpressClaimController : Controller {
 
         if (string.IsNullOrWhiteSpace(param.Query) == false) {
             string queryStr = param.Query.Trim();
-            query = query.Where(e => e.TrackingNo == queryStr // 这个精确搜索
-                                     || e.CheckinTrackingNo.Contains(queryStr) // 这个模糊搜索
-            );
+            query = query.Where(e => e.TrackingNo == queryStr || e.CheckinTrackingNo == queryStr);
         }
 
         return query;
