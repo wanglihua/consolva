@@ -18,7 +18,7 @@ public class PassResCate {
     public static readonly PassResCateInfo Fee = new PassResCateInfo() { Id = FeeCateId, Name = "费用管理" };
 
     // 客户管理
-    public const int CustomerCateId = 10000_0000;
+    public const int CustomerCateId = 1000_0000;
     public static readonly PassResCateInfo Customer = new PassResCateInfo() { Id = CustomerCateId, Name = "客户管理" };
 
     // 仓储管理
