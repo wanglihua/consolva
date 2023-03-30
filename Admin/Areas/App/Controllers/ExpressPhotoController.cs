@@ -32,6 +32,7 @@ public class ExpressPhotoController : Controller {
     private readonly LoginUserService loginUserService;
     private readonly ExpressTrackingNoService expressTrackingNoService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
+    private readonly ExpressPhotoMessageService expressPhotoMessageService;
     private readonly ExpressLogService expressLogService;
 
     public ExpressPhotoController(
@@ -39,11 +40,13 @@ public class ExpressPhotoController : Controller {
         LoginUserService loginUserService,
         ExpressTrackingNoService expressTrackingNoService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
+        ExpressPhotoMessageService expressPhotoMessageService,
         ExpressLogService expressLogService) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.expressTrackingNoService = expressTrackingNoService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
+        this.expressPhotoMessageService = expressPhotoMessageService;
         this.expressLogService = expressLogService;
     }
 
@@ -209,8 +212,7 @@ public class ExpressPhotoController : Controller {
 
         if (order != null) {
             try {
-                // todo a 发送消息
-                // logisticsOrderPhotoService.SendAddOrderPhotoMessage(logisticsOrderPhoto);
+                expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
             }
             catch (Exception exp) {
                 log.Error(exp);
