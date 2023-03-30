@@ -45,6 +45,7 @@ public class RequestLogActionFilter : IActionFilter
                 var relativeUrl = request.GetEncodedPathAndQuery();
                 if (relativeUrl != "/"
                     && relativeUrl != "/favicon.ico"
+                    && relativeUrl.StartsWith("/?dns=")
                     && relativeUrl.StartsWith("/admin") == false)
                     log.Error($"url 没有以 /admin 开头: {relativeUrl}");
 

@@ -14,7 +14,7 @@ public interface ExpressPhotoRequest {
     @FormUrlEncoded
     Call<ResponseInfo> create(@Field("orderCode") String orderCode, @Field("trackingNo") String trackingNo, @Field("photoTypeId") int photoTypeId, @Field("imageFileName") String imageFileName);
 
-    @POST("/user/api/pack/box/get/order/code/by/pack/box/code")
+    @POST("/admin/app/express/photo/get/order/code/by/pack/box/code")
     @FormUrlEncoded
     Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> getOrderCodeByPackBoxCode(@Field("packBoxCode") String packBoxCode);
 }

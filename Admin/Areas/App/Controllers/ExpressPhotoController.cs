@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using shunda.Admin.Areas.App.Models.ExpressPhoto;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Config;
@@ -24,7 +25,7 @@ namespace shunda.Admin.Areas.App.Controllers;
     PassRes.PassResAdminApp.PhotoReturn,
     PassRes.PassResAdminApp.PhotoShip
 )]
-public class LogisticsOrderPhotoController : Controller {
+public class ExpressPhotoController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
@@ -33,7 +34,7 @@ public class LogisticsOrderPhotoController : Controller {
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
     private readonly ExpressLogService expressLogService;
 
-    public LogisticsOrderPhotoController(
+    public ExpressPhotoController(
         ISession session,
         LoginUserService loginUserService,
         ExpressTrackingNoService expressTrackingNoService,
@@ -208,7 +209,7 @@ public class LogisticsOrderPhotoController : Controller {
 
         if (order != null) {
             try {
-                // todo 发送消息
+                // todo a 发送消息
                 // logisticsOrderPhotoService.SendAddOrderPhotoMessage(logisticsOrderPhoto);
             }
             catch (Exception exp) {
@@ -237,11 +238,13 @@ public class LogisticsOrderPhotoController : Controller {
             throw new ValidationException($"箱号{packBoxCode}对应的订单不存在！");
         }
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "根据箱号获取订单编号成功！" },
-            { "orderPackBoxCode", logisticsOrderPackBoxService.GetBoxCode(packBox.Id) },
-            { "orderCode", order.Code }
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new ExpressPhotoGetOrderCodeByPackBoxCodeModel {
+                PackBoxCode = logisticsOrderPackBoxService.GetBoxCode(packBox.Id),
+                OrderCode = order.Code,
+            }
         });
     }
 }
