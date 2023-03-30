@@ -589,10 +589,10 @@ public class PhotoOrderActivity extends BaseActivity {
 
                          */
 
-                        ExpressPhotoRequest packBoxRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
-                        Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> orderPayDetailCall = packBoxRequest.getOrderCodeByPackBoxCode(orderPackBoxCode);
+                        ExpressPhotoRequest expressPhotoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
+                        Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> getOrderCodeByPackBoxCodeCall = expressPhotoRequest.getOrderCodeByPackBoxCode(orderPackBoxCode);
                         Dialog mask = MaskDialog.show(PhotoOrderActivity.this);
-                        orderPayDetailCall.enqueue(new Callback<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>>() {
+                        getOrderCodeByPackBoxCodeCall.enqueue(new Callback<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>>() {
                             @Override
                             public void onResponse(Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> call, Response<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> response) {
                                 mask.dismiss();
