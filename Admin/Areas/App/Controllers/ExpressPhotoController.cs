@@ -18,12 +18,12 @@ namespace shunda.Admin.Areas.App.Controllers;
 
 [AppArea]
 [AdminAuth(
-    PassRes.PassResAdminApp.PhotoSignIn,
-    PassRes.PassResAdminApp.PhotoCheckIn,
-    PassRes.PassResAdminApp.PhotoIssue,
-    PassRes.PassResAdminApp.PhotoPack,
-    PassRes.PassResAdminApp.PhotoReturn,
-    PassRes.PassResAdminApp.PhotoShip
+    PassRes.AdminApp.PhotoSignIn,
+    PassRes.AdminApp.PhotoCheckIn,
+    PassRes.AdminApp.PhotoIssue,
+    PassRes.AdminApp.PhotoPack,
+    PassRes.AdminApp.PhotoReturn,
+    PassRes.AdminApp.PhotoShip
 )]
 public class ExpressPhotoController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();

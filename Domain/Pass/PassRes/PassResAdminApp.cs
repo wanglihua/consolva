@@ -4,10 +4,9 @@ public partial class PassRes {
     /// <summary>
     /// 仓管APP
     /// </summary>
-    public class PassResAdminApp {
+    public class AdminApp {
         public const int CateId = PassResCate.AdminAppCateId;
         public static readonly PassResCateInfo Cate = PassResCate.AdminApp;
-
 
         public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
             new PassResInfo { Id = ExpressQuery, Name = "快递单号查询", Cate = Cate },

@@ -15,15 +15,17 @@ public class PassResDataInitService {
 
     public void InitData() {
         List<PassResInfo> passResList = new List<PassResInfo>();
-        passResList.AddRange(PassRes.Customer.AllData);
-        passResList.AddRange(PassRes.CustomerMessage.AllData);
+        passResList.AddRange(PassRes.LogisticsOrder.AllData);
         passResList.AddRange(PassRes.Express.AllData);
-        passResList.AddRange(PassRes.Fee.AllData);
-        passResList.AddRange(PassRes.Goods.AllData);
-        passResList.AddRange(PassRes.Logistics.AllData);
         passResList.AddRange(PassRes.ReceivePack.AllData);
-        passResList.AddRange(PassRes.Setting.AllData);
+        passResList.AddRange(PassRes.Fee.AllData);
+        passResList.AddRange(PassRes.Customer.AllData);
         passResList.AddRange(PassRes.Storage.AllData);
+        passResList.AddRange(PassRes.Logistics.AllData);
+        passResList.AddRange(PassRes.Goods.AllData);
+        passResList.AddRange(PassRes.CustomerMessage.AllData);
+        passResList.AddRange(PassRes.Setting.AllData);
+        passResList.AddRange(PassRes.AdminApp.AllData);
 
         // 检查 pass res id 唯一性
         Dictionary<int, PassResInfo> passResIdMap = new Dictionary<int, PassResInfo>();

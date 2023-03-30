@@ -51,22 +51,22 @@ public class LoginController : Controller {
         UserInfo user = loginResult.Item2;
 
         int userId = user.Id;
-        bool canExpressQuery = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.ExpressQuery);
-        bool canExpressOnShelf = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.ExpressOnShelf);
-        bool canExpressWarehouseCheck = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.ExpressWarehouseCheck);
-        bool canExpressOffShelf = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.ExpressOffShelf);
-        bool canExpressReturnOffShelf = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.ExpressReturnOffShelf);
-        bool canExpressDump = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.ExpressDump);
-        bool canExpressPacking = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.ExpressPacking);
-        bool canPackBoxQuery = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PackBoxQuery);
-        bool canPackBoxShip = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PackBoxShip);
+        bool canExpressQuery = passResService.UserHasPassRes(userId, PassRes.AdminApp.ExpressQuery);
+        bool canExpressOnShelf = passResService.UserHasPassRes(userId, PassRes.AdminApp.ExpressOnShelf);
+        bool canExpressWarehouseCheck = passResService.UserHasPassRes(userId, PassRes.AdminApp.ExpressWarehouseCheck);
+        bool canExpressOffShelf = passResService.UserHasPassRes(userId, PassRes.AdminApp.ExpressOffShelf);
+        bool canExpressReturnOffShelf = passResService.UserHasPassRes(userId, PassRes.AdminApp.ExpressReturnOffShelf);
+        bool canExpressDump = passResService.UserHasPassRes(userId, PassRes.AdminApp.ExpressDump);
+        bool canExpressPacking = passResService.UserHasPassRes(userId, PassRes.AdminApp.ExpressPacking);
+        bool canPackBoxQuery = passResService.UserHasPassRes(userId, PassRes.AdminApp.PackBoxQuery);
+        bool canPackBoxShip = passResService.UserHasPassRes(userId, PassRes.AdminApp.PackBoxShip);
 
-        bool canPhotoSignIn = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PhotoSignIn);
-        bool canPhotoCheckIn = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PhotoCheckIn);
-        bool canPhotoIssue = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PhotoIssue);
-        bool canPhotoPack = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PhotoPack);
-        bool canPhotoReturn = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PhotoReturn);
-        bool canPhotoShip = passResService.UserHasPassRes(userId, PassRes.PassResAdminApp.PhotoShip);
+        bool canPhotoSignIn = passResService.UserHasPassRes(userId, PassRes.AdminApp.PhotoSignIn);
+        bool canPhotoCheckIn = passResService.UserHasPassRes(userId, PassRes.AdminApp.PhotoCheckIn);
+        bool canPhotoIssue = passResService.UserHasPassRes(userId, PassRes.AdminApp.PhotoIssue);
+        bool canPhotoPack = passResService.UserHasPassRes(userId, PassRes.AdminApp.PhotoPack);
+        bool canPhotoReturn = passResService.UserHasPassRes(userId, PassRes.AdminApp.PhotoReturn);
+        bool canPhotoShip = passResService.UserHasPassRes(userId, PassRes.AdminApp.PhotoShip);
         bool canPhoto = canPhotoSignIn || canPhotoCheckIn || canPhotoIssue || canPhotoPack || canPhotoReturn || canPhotoShip;
 
         return Json(new JsonResultData {
