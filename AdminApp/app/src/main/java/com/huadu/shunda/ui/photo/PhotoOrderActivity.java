@@ -38,8 +38,9 @@ import com.huadu.shunda.core.PhotoUtil;
 import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SoundUtil;
 import com.huadu.shunda.data.domain.OrderPhotoType;
+import com.huadu.shunda.data.http.ResponseDataInfo;
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.data.http.packbox.GetOrderCodeByPackBoxCodeResponseInfo;
+import com.huadu.shunda.data.http.expressphoto.GetOrderCodeByPackBoxCodeResponseData;
 import com.huadu.shunda.http.ExpressPhotoRequest;
 import com.huadu.shunda.http.PackBoxRequest;
 import com.huadu.shunda.ui.BaseActivity;
@@ -588,19 +589,19 @@ public class PhotoOrderActivity extends BaseActivity {
 
                          */
 
-                        PackBoxRequest packBoxRequest = RetrofitUtil.createRequest(PackBoxRequest.class);
-                        Call<GetOrderCodeByPackBoxCodeResponseInfo> orderPayDetailCall = packBoxRequest.getOrderCodeByPackBoxCode(orderPackBoxCode);
+                        ExpressPhotoRequest packBoxRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
+                        Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> orderPayDetailCall = packBoxRequest.getOrderCodeByPackBoxCode(orderPackBoxCode);
                         Dialog mask = MaskDialog.show(PhotoOrderActivity.this);
-                        orderPayDetailCall.enqueue(new Callback<GetOrderCodeByPackBoxCodeResponseInfo>() {
+                        orderPayDetailCall.enqueue(new Callback<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>>() {
                             @Override
-                            public void onResponse(Call<GetOrderCodeByPackBoxCodeResponseInfo> call, Response<GetOrderCodeByPackBoxCodeResponseInfo> response) {
+                            public void onResponse(Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> call, Response<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> response) {
                                 mask.dismiss();
-
-                                GetOrderCodeByPackBoxCodeResponseInfo respData = response.body();
 
                                 if (!RetrofitUtil.processResponse(response, PhotoOrderActivity.this)) {
                                     return;
                                 }
+
+                                GetOrderCodeByPackBoxCodeResponseData respData = response.body().getData();
 
                                 SoundUtil.playSuccess(PhotoOrderActivity.this);
 
@@ -626,7 +627,7 @@ public class PhotoOrderActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<GetOrderCodeByPackBoxCodeResponseInfo> call, Throwable t) {
+                            public void onFailure(Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> call, Throwable t) {
                                 Toast.makeText(PhotoOrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });

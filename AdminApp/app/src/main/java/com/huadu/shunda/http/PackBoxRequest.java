@@ -2,7 +2,6 @@ package com.huadu.shunda.http;
 
 
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.data.http.packbox.GetOrderCodeByPackBoxCodeResponseInfo;
 import com.huadu.shunda.data.http.packbox.PackBoxDetailDataResponseInfo;
 import com.huadu.shunda.data.http.packbox.PackBoxOrderPayDetailResponseInfo;
 import com.huadu.shunda.data.http.packbox.PackBoxStockPlaceDataResponseInfo;
@@ -25,10 +24,6 @@ public interface PackBoxRequest {
     @POST("/user/api/pack/box/order/pay/detail")
     @FormUrlEncoded
     Call<PackBoxOrderPayDetailResponseInfo> orderPayDetail(@Field("packBoxCode") String packBoxCode);
-
-    @POST("/user/api/pack/box/get/order/code/by/pack/box/code")
-    @FormUrlEncoded
-    Call<GetOrderCodeByPackBoxCodeResponseInfo> getOrderCodeByPackBoxCode(@Field("packBoxCode") String packBoxCode);
 
     @POST("/user/api/pack/box/detail/data")
     @FormUrlEncoded

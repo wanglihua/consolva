@@ -156,14 +156,14 @@ public class RetrofitUtil {
         WebSession.setSessionId(sessionId);
 
 
-        ResponseInfo responseData = response.body();
-        if (responseData == null) {
+        ResponseInfo responseBody = response.body();
+        if (responseBody == null) {
             showError("未能接收到服务器返回数据！", context);
             return false;
         }
 
-        if (!responseData.getSuccess()) {
-            showError(responseData.getMessage(), context);
+        if (!responseBody.getSuccess()) {
+            showError(responseBody.getMessage(), context);
             return false;
         }
 
