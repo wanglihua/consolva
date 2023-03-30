@@ -282,16 +282,17 @@ public class CustomerMessageManualSendController : Controller {
                 }
 
                 if (sent == true) {
-                    CustomerMessageInfo customerMessage = new CustomerMessageInfo();
-                    customerMessage.SendType = CustomerMessageSendType.Manual;
-                    customerMessage.Type = CustomerMessageType.AllCustomer;
-                    customerMessage.Customer = session.Load<CustomerInfo>(customer.Id);
-                    customerMessage.Content = model.RemarkMessage;
-                    customerMessage.SmsSend = model.SendBySms;
-                    customerMessage.WechatSend = model.SendByWechat;
-                    customerMessage.SendTime = DateTime.Now;
-                    customerMessage.Status = CustomerMessageStatus.Success;
-                    customerMessage.Sender = loginUserName;
+                    CustomerMessageInfo customerMessage = new CustomerMessageInfo {
+                        SendType = CustomerMessageSendType.Manual,
+                        Type = CustomerMessageType.AllCustomer,
+                        Customer = session.Load<CustomerInfo>(customer.Id),
+                        Content = model.RemarkMessage,
+                        SmsSend = model.SendBySms,
+                        WechatSend = model.SendByWechat,
+                        SendTime = DateTime.Now,
+                        Status = CustomerMessageStatus.Success,
+                        Sender = loginUserName
+                    };
 
                     session.Save(customerMessage);
                 }
