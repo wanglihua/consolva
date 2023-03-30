@@ -171,8 +171,9 @@ func uploadFolderImage(imageFolder string) {
 			panic(err)
 		}
 
-		var newFileName = strings.Replace(guid.NewString(), "-", "", -1) + ".jpg"
-		var objectName = fmt.Sprintf("logistics/%s/%s/%s", now.Format("200601"), now.Format("20060102"), newFileName)
+		var storePath = fmt.Sprintf("logistics/%s/%s", now.Format("200601"), now.Format("20060102"))
+		var storeName = strings.Replace(guid.NewString(), "-", "", -1) + ".jpg"
+		var objectName = fmt.Sprintf("%s/%s", storePath, storeName)
 
 		// 改了文件 github.com/aliyun/aliyun-oss-go-sdk/oss/bucket.go 第 67， 68 行
 		err = bucket.PutObjectFromFile(objectName, localSmallFileFullName)
@@ -187,8 +188,9 @@ func uploadFolderImage(imageFolder string) {
 		}
 
 		var formData url.Values = make(url.Values)
-		formData.Add("fileName", fileNameWithoutExt)
-		formData.Add("photoUrl", objectName)
+		formData.Add("trackingNo", fileNameWithoutExt)
+		formData.Add("storePath", storePath)
+		formData.Add("storeName", storeName)
 		formData.Add("uploaderLoginName", uploadUserLoginName)
 		var response = util.PostForm(serverApiUrl, formData)
 		if response == "success" {

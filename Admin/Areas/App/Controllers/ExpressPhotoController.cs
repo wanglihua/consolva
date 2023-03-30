@@ -143,7 +143,6 @@ public class ExpressPhotoController : Controller {
 
         string checkResult = CheckExpressTrackingNoRepeat(trackingNo, photoType);
 
-
         LogisticsOrderInfo? order = null;
         if (string.IsNullOrWhiteSpace(orderCode) == false) {
             order = session.Query<LogisticsOrderInfo>()
