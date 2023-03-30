@@ -66,6 +66,8 @@ public class WarehouseAddressController : Controller {
 
         string customerCode = customerCodeService.GetCustomerCodeChinese(loginCustomerId);
 
+        customerCode = "舜达" + customerCode;
+
         // 这个格式基本上大多数系统都能识别
         string fullAddress = @$"收货人:{customerCode}
 手机号码:{warehouse.Phone}
@@ -83,7 +85,7 @@ public class WarehouseAddressController : Controller {
             Success = true,
             Message = "操作成功！",
             Data = new WarehouseAddressDetailModel {
-                CustomerCode = $"舜达{customerCode}",
+                CustomerCode = customerCode,
                 Area = warehouse.Area,
                 Address = addressDetail,
                 Phone = warehouse.Phone,
