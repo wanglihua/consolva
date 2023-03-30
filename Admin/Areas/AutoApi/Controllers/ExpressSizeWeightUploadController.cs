@@ -37,8 +37,8 @@ public class ExpressSizeWeightUploadController : Controller {
         log.Error("ExpressSizeWeightUploadController.Upload begin");
         try {
             Transactional.Wrap(session, () => {
-                StreamReader reader = new StreamReader(Request.Body);
-                string requestBody = reader.ReadToEnd();
+                StreamReader streamReader = new StreamReader(Request.Body);
+                string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
 
                 log.Error("ExpressSizeWeightUploadController.Upload requestBody");
                 log.Error(requestBody);
