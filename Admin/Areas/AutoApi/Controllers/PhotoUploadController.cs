@@ -35,20 +35,24 @@ public class PhotoUploadController : Controller {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="fileName"></param>
-    /// <param name="photoUrl"></param>
+    /// <param name="trackingNo"></param>
+    /// <param name="storePath"></param>
+    /// <param name="storeName"></param>
     /// <param name="uploaderLoginName"></param>
-    /// <param name="type">可以是 sign，可以是 load，默认是 sign</param>
     /// <returns></returns>
     /// <exception cref="ValidationException"></exception>
     [HttpPost]
     [Route("/admin/auto/api/photo/upload/create")]
-    public IActionResult Create(string fileName, string photoUrl, string uploaderLoginName, string type) {
+    public IActionResult Create(string trackingNo, string storePath, string storeName, string uploaderLoginName) {
         // 现在golang客户端也还没加上这个校验的
         // todo 参数使用 md5 校验，在这里做检查
 
-        if (string.IsNullOrWhiteSpace(photoUrl)) {
-            throw new ValidationException("图片URL不能为空！");
+        if (string.IsNullOrWhiteSpace(storePath)) {
+            throw new ValidationException("图片路径不能为空！");
+        }
+
+        if (string.IsNullOrWhiteSpace(storePath)) {
+            throw new ValidationException("图片名称不能为空！");
         }
 
         if (string.IsNullOrWhiteSpace(uploaderLoginName)) {
@@ -56,22 +60,7 @@ public class PhotoUploadController : Controller {
         }
 
         ExpressPhotoType expressPhotoType = ExpressPhotoType.SignIn;
-        if (string.IsNullOrWhiteSpace(type) == false) {
-            if (type == "sign") {
-                expressPhotoType = ExpressPhotoType.SignIn;
-            }
 
-            // if (type == "load") 当前只有sign一种情况
-            // {
-            //     expressPhotoType = ExpressPhotoType.Load;
-            // }
-        }
-
-        string storePath = Path.GetDirectoryName(photoUrl) ?? string.Empty;
-        string storeName = Path.GetFileName(photoUrl);
-
-
-        string trackingNo = fileName;
         if (string.IsNullOrWhiteSpace(trackingNo)) {
             throw new ValidationException("快递单号不能都为空！");
         }
@@ -142,19 +131,6 @@ public class PhotoUploadController : Controller {
             expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhotoType.Name}", expressPhoto.User?.Id ?? 0);
         }
 
-        // todo a  发送快递单号图片信息
-        // if (expressPhoto.Order != null)
-        // {
-        //     try
-        //     {
-        //         expressPhotoService.SendAddOrderPhotoMessage(expressPhoto);
-        //     }
-        //     catch (Exception exp)
-        //     {
-        //         log.Error(exp);
-        //     }
-        // }
-
         // 同快递单号图片视频绑定
 
         IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
@@ -190,7 +166,7 @@ public class PhotoUploadController : Controller {
 
     [HttpPost]
     [Route("/admin/auto/api/photo/upload/camera")]
-    public IActionResult uploadCamera(string storePath, string storeFileName, string trackingNo, string uploaderLoginName) {
+    public IActionResult uploadCamera(string storePath, string storeName, string trackingNo, string uploaderLoginName) {
         // 现在 C++ 客户端也还没加上这个校验的
         // todo 参数使用 md5 校验，在这里做检查
 
@@ -198,7 +174,7 @@ public class PhotoUploadController : Controller {
             throw new ValidationException("图片存储路径不能为空！");
         }
 
-        if (string.IsNullOrWhiteSpace(storeFileName)) {
+        if (string.IsNullOrWhiteSpace(storeName)) {
             throw new ValidationException("图片文件名不能为空！");
         }
 
@@ -247,7 +223,7 @@ public class PhotoUploadController : Controller {
 
         orderPhoto.Type = photoType;
         orderPhoto.StorePath = storePath;
-        orderPhoto.StoreName = storeFileName;
+        orderPhoto.StoreName = storeName;
         orderPhoto.Status = ExpressPhotoStatus.None;
         orderPhoto.ExpressCompany = String.Empty;
         orderPhoto.StoreLoc = ExpressPhotoStoreLoc.Oss;

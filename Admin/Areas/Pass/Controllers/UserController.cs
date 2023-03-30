@@ -141,7 +141,7 @@ public class UserController : Controller
 
         user.LoginName = model.LoginName;
         user.UserName = model.UserName;
-        // user.LastLoginTime = DateTime.Now;
+        user.LastLoginTime = DateTime.Now;
 
         if (string.IsNullOrWhiteSpace(model.Password) == false) user.Password = passwordService.Encrypt(model.Password.Trim()); //略去密码的前后端的空格
 
