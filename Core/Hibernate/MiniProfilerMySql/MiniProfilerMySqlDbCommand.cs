@@ -45,50 +45,56 @@ public class MiniProfilerMySqlDbCommand : ProfiledDbCommand {
     }
 
     protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior) {
-        if (this.Transaction == null) {
-            string commandText = this.CommandText.Trim();
-            commandText = commandText.ToLower();
-            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
-                throw new ValidationException("操作未启用数据库事务！");
-            }
+        if (this.Transaction == null && HasWriteOperation(this.CommandText)) {
+            throw new ValidationException("操作未启用数据库事务！");
         }
 
         return base.ExecuteDbDataReader(behavior)!;
     }
 
     protected override Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) {
-        if (this.Transaction == null) {
-            string commandText = this.CommandText.Trim();
-            commandText = commandText.ToLower();
-            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
-                throw new ValidationException("操作未启用数据库事务！");
-            }
+        if (this.Transaction == null && HasWriteOperation(this.CommandText)) {
+            throw new ValidationException("操作未启用数据库事务！");
         }
 
         return base.ExecuteDbDataReaderAsync(behavior, cancellationToken);
     }
 
     public override object ExecuteScalar() {
-        if (this.Transaction == null) {
-            string commandText = this.CommandText.Trim();
-            commandText = commandText.ToLower();
-            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
-                throw new ValidationException("操作未启用数据库事务！");
-            }
+        if (this.Transaction == null && HasWriteOperation(this.CommandText)) {
+            throw new ValidationException("操作未启用数据库事务！");
         }
 
         return base.ExecuteScalar();
     }
 
     public override Task<object> ExecuteScalarAsync(CancellationToken cancellationToken) {
-        if (this.Transaction == null) {
-            string commandText = this.CommandText.Trim();
-            commandText = commandText.ToLower();
-            if (commandText.StartsWith("insert") || commandText.StartsWith("update") || commandText.StartsWith("delete")) {
-                throw new ValidationException("操作未启用数据库事务！");
-            }
+        if (this.Transaction == null && HasWriteOperation(this.CommandText)) {
+            throw new ValidationException("操作未启用数据库事务！");
         }
 
         return base.ExecuteScalarAsync(cancellationToken);
+    }
+
+    private bool HasWriteOperation(string commandText) {
+        if (string.IsNullOrWhiteSpace(commandText)) {
+            commandText = string.Empty;
+        }
+
+        commandText = commandText.Trim().ToLower();
+
+        if (commandText.Contains("insert") && commandText.Contains("into") && (commandText.Contains("values") || commandText.Contains("value"))) {
+            return true;
+        }
+
+        if (commandText.Contains("update") && commandText.Contains("set") && commandText.Contains("where")) {
+            return true;
+        }
+
+        if (commandText.Contains("delete") && commandText.Contains("from") && commandText.Contains("where")) {
+            return true;
+        }
+
+        return false;
     }
 }
