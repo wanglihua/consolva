@@ -139,7 +139,7 @@ public class CustomerSuperVipDiscountExcelService {
 
             var customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerIdStr);
             if (customerId == 0) {
-                throw new ValidationException($"第{rowIndex}行数据 客户 数据格式有误，导入失败！");
+                throw new ValidationException($"第{rowIndex}行数据 客户 数据格式有误或客户不存在，导入失败！");
             }
 
             var customer = session.Get<CustomerInfo>(customerId);
