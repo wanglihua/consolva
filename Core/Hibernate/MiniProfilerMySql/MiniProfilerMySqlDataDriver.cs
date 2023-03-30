@@ -7,16 +7,13 @@ using StackExchange.Profiling;
 
 namespace shunda.Core.Hibernate.MiniProfilerMySql;
 
-public class MiniProfilerMySqlDataDriver : DriverBase, IEmbeddedBatcherFactoryProvider
-{
-    public override DbConnection CreateConnection()
-    {
+public class MiniProfilerMySqlDataDriver : DriverBase, IEmbeddedBatcherFactoryProvider {
+    public override DbConnection CreateConnection() {
         // return new MySqlConnection();
         return new MiniProfilerMySqlDbConnection(new MySqlConnection(), MiniProfiler.Current);
     }
 
-    public override DbCommand CreateCommand()
-    {
+    public override DbCommand CreateCommand() {
         // return new MySqlCommand();
         return new MiniProfilerMySqlDbCommand(new MySqlCommand(), new MySqlConnection(), MiniProfiler.Current);
     }
@@ -31,8 +28,7 @@ public class MiniProfilerMySqlDataDriver : DriverBase, IEmbeddedBatcherFactoryPr
 
     protected override bool SupportsPreparingCommands => false;
 
-    public override IResultSetsCommand GetResultSetsCommand(ISessionImplementor session)
-    {
+    public override IResultSetsCommand GetResultSetsCommand(ISessionImplementor session) {
         return new BasicResultSetsCommand(session);
     }
 
@@ -42,8 +38,7 @@ public class MiniProfilerMySqlDataDriver : DriverBase, IEmbeddedBatcherFactoryPr
 
     public override DateTime MinDate => new DateTime(1, 1, 1);
 
-    Type IEmbeddedBatcherFactoryProvider.BatcherFactoryClass
-    {
+    Type IEmbeddedBatcherFactoryProvider.BatcherFactoryClass {
         get { return typeof(MiniProfilerMySqlClientBatchingBatcherFactory); }
     }
 }
