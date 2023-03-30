@@ -53,3 +53,7 @@
 /AdminApp/build
 /AdminApp/app/build
 /AdminApp/app/release
+
+
+/PhotoUpload/bin
+/PhotoUpload/pkg
