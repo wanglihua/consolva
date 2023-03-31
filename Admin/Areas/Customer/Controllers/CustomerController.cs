@@ -12,6 +12,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.Fee;
+using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
 using shunda.Service.Pass;
@@ -32,6 +33,7 @@ public class CustomerController : Controller {
     private readonly PasswordService passwordService;
     private readonly PassResService passResService;
     private readonly CustomerVipDiscountService customerVipDiscountService;
+    private readonly CustomerAoPinIdExcelService customerAoPinIdExcelService;
 
     private readonly ISession session;
 
@@ -41,7 +43,8 @@ public class CustomerController : Controller {
         LoginUserService loginUserService,
         PasswordService passwordService,
         PassResService passResService,
-        CustomerVipDiscountService customerVipDiscountService) {
+        CustomerVipDiscountService customerVipDiscountService,
+        CustomerAoPinIdExcelService customerAoPinIdExcelService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.customerCheckinCodeService = customerCheckinCodeService;
@@ -49,6 +52,7 @@ public class CustomerController : Controller {
         this.passwordService = passwordService;
         this.passResService = passResService;
         this.customerVipDiscountService = customerVipDiscountService;
+        this.customerAoPinIdExcelService = customerAoPinIdExcelService;
     }
 
 
@@ -70,6 +74,7 @@ public class CustomerController : Controller {
 
         int loginUserId = loginUserService.GetLoginUserId();
         model.CanImportTestCustomer = passResService.UserHasPassRes(loginUserId, PassRes.Customer.ImportTestCustomer);
+        model.IsDev = loginUserId == UserInfo.DevUserId;
 
         return View("CustomerIndex", model);
     }
@@ -476,6 +481,17 @@ public class CustomerController : Controller {
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "更新客户VIP成功！" }
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/customer/import/ao/pin/id")]
+    public IActionResult ImportAoPinId(IFormFile excelFile) {
+        customerAoPinIdExcelService.Import(excelFile);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "导入成功！",
         });
     }
 

@@ -25,14 +25,69 @@
         手动更新客户VIP标识
     </button>
 
-    @if (Model.CanImportTestCustomer)
-    {
+    @if (Model.CanImportTestCustomer) {
         <button id="btnImportTestCustomer" class="btn btn-purple btn-sm">
             <i class="ace-icon fa fa-file-excel-o"></i>
             导入测试客户
         </button>
 
         <a style="margin-left: 20px; display: inline-block;" href="/static/excel-template/customer/customer_test_create_template.xlsx">下载测试客户导入模板</a>
+    }
+
+    @if (Model.IsDev) {
+        <button id="btnImportAoPinId" class="btn btn-purple btn-sm">
+            <i class="ace-icon fa fa-file-excel-o"></i>
+            导入澳拼ID
+        </button>
+
+        <script type="text/javascript">
+            $(function(){
+                initUploader();
+            });
+        
+            function initUploader() {
+        
+                var url = '@Url.Action("ImportAoPinId", "Customer")';
+        
+                var uploader = new plupload.Uploader({
+                    runtimes: 'html5,flash,html4',
+                    multi_selection: false,
+        
+                    browse_button: 'btnImportTestCustomer',
+                    file_data_name: "excelFile",
+                    url: url,
+                    max_file_size: '10000kb',
+        
+                    filters: [
+                        {title: "Excel文件", extensions: "xlsx"}
+                    ],
+        
+                    flash_swf_url: '/plupload/js/Moxie.swf',
+        
+                    init: {
+                        FilesAdded: function () {
+                            showMask("上传中，请稍候...");
+                            uploader.start();
+                        },
+                        FileUploaded: function (up, file, response) {
+                            hideMask();
+                            var result = JSON.parse(response.response);
+                            if (result.success !== true) {
+                                $.msg.error(result.message);
+                                return;
+                            } 
+                            loadCustomerList();
+                            $.msg.show(result.message);
+                        },
+                        Error: function (up, err) {
+                            $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                        }
+                    }
+                });
+        
+                uploader.init();
+            }
+        </script>
     }
 </div>
 
@@ -42,8 +97,7 @@
     <label for="vipLevelQuery">VIP</label>&nbsp;
     <select id="vipLevelQuery" name="stateQuery" style="width: 100px; height: 30px;">
         <option value="">VIP查询</option>
-        @foreach (var vip in Model.VipLevelList)
-        {
+        @foreach (var vip in Model.VipLevelList) {
             <option value="@(vip.Item1)">@(vip.Item2)</option>
         }
     </select>&nbsp;
@@ -51,8 +105,7 @@
     <label for="statusQuery">状态查询</label>&nbsp;
     <select id="statusQuery" name="statusQuery" style="width: 100px; height: 30px;">
         <option value="">状态查询</option>
-        @foreach (var status in Model.StatusList)
-        {
+        @foreach (var status in Model.StatusList) {
             <option value="@(status.Id)">@(status.Name)</option>
         }
     </select>&nbsp;
@@ -63,8 +116,7 @@
     <label for="characterQuery">客户性质</label>&nbsp;
     <select id="characterQuery" name="characterQuery" style="width: 100px; height: 30px;">
         <option value="">客户性质</option>
-        @foreach (var character in Model.CharacterList)
-        {
+        @foreach (var character in Model.CharacterList) {
             <option value="@(character.Content)">@(character.Content)</option>
         }
     </select>&nbsp;
@@ -228,6 +280,6 @@
         });
 
         uploader.init();
-    }       
+    }
 
 </script>

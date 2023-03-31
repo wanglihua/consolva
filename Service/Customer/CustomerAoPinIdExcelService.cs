@@ -110,6 +110,15 @@ public class CustomerAoPinIdExcelService {
 
             customerAoPinIdImportList.Add(customerAoPinId);
         }
+
+        foreach (var customerAoPinId in customerAoPinIdImportList) {
+            var customer = customerAoPinId.Customer;
+            customer.AoPinId = customerAoPinId.AoPinId;
+
+            session.Update(customer);
+        }
+
+        session.Flush();
     }
 
     private int GetNumberFromStr(string strValue) {

@@ -3,8 +3,7 @@ using shunda.Domain.Customer;
 
 namespace shunda.Admin.Areas.Customer.Models.Customer;
 
-public class CustomerIndexModel
-{
+public class CustomerIndexModel {
     [BindNever]
     public IList<Tuple<int, string>> VipLevelList { get; set; } = new List<Tuple<int, string>>();
 
@@ -16,4 +15,7 @@ public class CustomerIndexModel
 
     [BindNever]
     public bool CanImportTestCustomer { get; set; }
+
+    [BindNever]
+    public bool IsDev { get; set; }
 }
