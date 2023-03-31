@@ -7,7 +7,7 @@ namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
 public class CustomerCheckinCodeService {
-    private const int CODE_LENGTH = 6; // 5位+1位校验位
+    private const int CODE_LENGTH = 6;
 
     private readonly ISession session;
 
@@ -46,6 +46,7 @@ public class CustomerCheckinCodeService {
 
     /// <summary>
     /// 生成一个跟现有的不相重的入库校验码
+    /// 生成的是不以0开头的数字
     /// </summary>
     public string GenerateNewCheckinCode() {
         string newCheckinCode = string.Empty;

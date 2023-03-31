@@ -29,19 +29,19 @@ public class CustomerCodeService {
         // 解析数字部分，如果含有多个数字部分，取长度最长的数字部分
         MatchCollection matches = REGEX_CHECKIN_CODE.Matches(customerCode);
 
-        string maxLengthCheckiniCodeMatchValue = string.Empty;
+        string maxLengthCheckinCodeMatchValue = string.Empty;
         foreach (Match match in matches) {
             string matchValue = match.Value;
-            if (matchValue.Length > maxLengthCheckiniCodeMatchValue.Length) {
-                maxLengthCheckiniCodeMatchValue = matchValue;
+            if (matchValue.Length > maxLengthCheckinCodeMatchValue.Length) {
+                maxLengthCheckinCodeMatchValue = matchValue;
             }
         }
 
-        if (string.IsNullOrWhiteSpace(maxLengthCheckiniCodeMatchValue)) {
+        if (string.IsNullOrWhiteSpace(maxLengthCheckinCodeMatchValue)) {
             return PARSE_FAIL_CUSTOMER_ID;
         }
 
-        string checkinCode = maxLengthCheckiniCodeMatchValue;
+        string checkinCode = maxLengthCheckinCodeMatchValue;
 
         var customerCheckinCode = session.Query<CustomerCheckinCodeInfo>()
             .Where(e => e.CheckinCode == checkinCode)

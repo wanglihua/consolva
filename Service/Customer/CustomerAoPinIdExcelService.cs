@@ -4,6 +4,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Customer;
@@ -73,7 +74,64 @@ public class CustomerAoPinIdExcelService {
 
             cellIndex = 0;
 
-            string shundaIdStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+            string shundaCheckinCodeStr = (row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(shundaCheckinCodeStr)) {
+                break;
+            }
+
+            int checkinCodeNum = GetNumberFromStr(shundaCheckinCodeStr);
+            string checkinCode = checkinCodeNum.ToString(); // 生成时已经保证不会生成以0开头的，所以直接 ToString() 就可以了
+
+            string aoPinIdStr = (row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty).Trim();
+
+            // 如果澳拼ID是空的暂时略过
+            if (string.IsNullOrWhiteSpace(aoPinIdStr)) {
+                break;
+            }
+
+            int aoPinId = GetNumberFromStr(aoPinIdStr);
+            if (aoPinId == 0) {
+                throw new ValidationException($"指定的澳拼ID#{aoPinIdStr}格式不正确！");
+            }
+
+            var customer = session.Query<CustomerInfo>()
+                .Where(e => e.CheckinCode == checkinCode)
+                .Take(1)
+                .SingleOrDefault();
+            if (customer == null) {
+                throw new ValidationException($"指定的第{rowIndex}行客户#{shundaCheckinCodeStr}不存在！");
+            }
+
+            var customerAoPinId = new CustomerAoPinIdExcelImportItem {
+                CustomerId = customer.Id,
+                Customer = customer,
+                AoPinId = aoPinId,
+            };
+
+            customerAoPinIdImportList.Add(customerAoPinId);
         }
+    }
+
+    private int GetNumberFromStr(string strValue) {
+        // 解析数字部分，如果含有多个数字部分，取长度最长的数字部分
+        MatchCollection matches = REGEX_NUMBER.Matches(strValue);
+
+        string maxLengthNumberMatchValue = string.Empty;
+        foreach (Match match in matches) {
+            string matchValue = match.Value;
+            if (matchValue.Length > maxLengthNumberMatchValue.Length) {
+                maxLengthNumberMatchValue = matchValue;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(maxLengthNumberMatchValue)) {
+            return 0;
+        }
+
+        if (int.TryParse(maxLengthNumberMatchValue, out int number) == false) {
+            return 0;
+        }
+
+        return number;
     }
 }
