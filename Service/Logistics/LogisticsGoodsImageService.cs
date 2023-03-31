@@ -223,7 +223,7 @@ public class LogisticsGoodsImageService {
         }
 
         if (storeLoc == ExpressPhotoStoreLoc.Oss) {
-            string watermarkSafeBase64 = GetUrlSafeBase64($"【舜达集运】{createTime.ToString("yyyy-MM-dd HH:mm")} 拍摄");
+            string watermarkSafeBase64 = GetUrlSafeBase64($"【舜达全球】{createTime.ToString("yyyy-MM-dd HH:mm")} 拍摄");
 
             if (siteLocType == OssSiteLocType.HongKong) {
                 return $"{AliYunOssConfig.UrlPrefixHongKong}/{storePath}/{storeName}?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,size_20,text_{watermarkSafeBase64},color_FF0000,g_south,y_80";

@@ -195,7 +195,7 @@ public class ExpressPhotoFileService
 
             if (expressPhoto.Type != ExpressPhotoType.SignIn)
             {
-                watermarkSafeBase64 = GetUrlSafeBase64($"【舜达集运】【北京时间】{expressPhoto.CreateTime.ToString("yyyy-MM-dd HH:mm")} 拍摄");
+                watermarkSafeBase64 = GetUrlSafeBase64($"【舜达全球】【北京时间】{expressPhoto.CreateTime.ToString("yyyy-MM-dd HH:mm")} 拍摄");
             }
 
             if (siteLocType == OssSiteLocType.HongKong)
@@ -389,7 +389,7 @@ public class ExpressPhotoFileService
             }
             else
             {
-                graphics.DrawString($"【舜达集运】【北京时间】{DateTime.Now.ToString("yyyy-MM-dd HH:mm")} 拍摄", font, brush, new RectangleF(0f, imageHeight - textRectHeight, imageWidth, imageHeight), format);
+                graphics.DrawString($"【舜达全球】【北京时间】{DateTime.Now.ToString("yyyy-MM-dd HH:mm")} 拍摄", font, brush, new RectangleF(0f, imageHeight - textRectHeight, imageWidth, imageHeight), format);
             }
 
             font.Dispose();

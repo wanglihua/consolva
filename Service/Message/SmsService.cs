@@ -44,7 +44,7 @@ public class SmsService {
         }
 
         mobile = "61" + mobile;
-        message = "【舜达集运】" + message;
+        message = "【舜达全球】" + message;
 
 #if DEBUG
         log.Trace("SendSms: ");
