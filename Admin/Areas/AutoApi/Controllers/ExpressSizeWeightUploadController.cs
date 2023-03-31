@@ -34,14 +34,14 @@ public class ExpressSizeWeightUploadController : Controller {
     [HttpPost]
     [Route("/admin/auto/api/express/size/weight/upload")]
     public IActionResult Upload() {
-        log.Error("ExpressSizeWeightUploadController.Upload begin");
+        // log.Error("ExpressSizeWeightUploadController.Upload begin");
         try {
             Transactional.Wrap(session, () => {
                 StreamReader streamReader = new StreamReader(Request.Body);
                 string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
 
-                log.Error("ExpressSizeWeightUploadController.Upload requestBody");
-                log.Error(requestBody);
+                // log.Error("ExpressSizeWeightUploadController.Upload requestBody");
+                // log.Error(requestBody);
 
                 var param = JsonConvert.DeserializeObject<ExpressSizeWeightUploadParam>(requestBody);
 
@@ -309,7 +309,7 @@ public class ExpressSizeWeightUploadController : Controller {
             });
         }
 
-        log.Error("ExpressSizeWeightUploadController.Upload end");
+        // log.Error("ExpressSizeWeightUploadController.Upload end");
 
         return Json(new ExpressSizeWeightUploadResult {
             Flag = "success",
