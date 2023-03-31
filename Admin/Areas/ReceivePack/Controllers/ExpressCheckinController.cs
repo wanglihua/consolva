@@ -8,6 +8,7 @@ using NLog;
 using shunda.Admin.Areas.ReceivePack.Models.ExpressCheckin;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
@@ -951,15 +952,15 @@ public class ExpressCheckinController : Controller {
         return Json(new Dictionary<string, object>() {
             { "success", true },
             { "message", "获取数据成功！" },
-            { "expressTrackingNo", express.TrackingNo },
+            { "expressTrackingNo", express.TrackingNo + CheckinLabelConfig.ExpressTrackingNoShundaSuffix }, // 加上后缀让打包时不能扫描
             { "checkinTrackingNo", express.CheckinTrackingNo },
             { "customerCode", customerCode },
             { "warehouseNote", expressRemarkWarehouse?.Content ?? string.Empty },
-            { "description", expressRemarkCustomer?.Content ?? string.Empty }, // todo a 这里的 description 改成 customerNote 或 remark
+            { "customerNote", expressRemarkCustomer?.Content ?? string.Empty },
             { "checkinPackageCount", checkinPackageCount },
             { "orderCode", orderCode },
             { "storageLoc", storageLocName },
-            { "loginName", userName }, // todo a 这里的 json名称可以改掉
+            { "userName", userName },
             { "checkinTime", checkinTime },
             { "goodsTypeName", goodsTypeShortName },
         });
