@@ -42,10 +42,10 @@
 
         <script type="text/javascript">
             $(function(){
-                initUploader();
+                initUploaderImportAoPinId();
             });
         
-            function initUploader() {
+            function initUploaderImportAoPinId() {
         
                 var url = '@Url.Action("ImportAoPinId", "Customer")';
         
@@ -53,7 +53,7 @@
                     runtimes: 'html5,flash,html4',
                     multi_selection: false,
         
-                    browse_button: 'btnImportTestCustomer',
+                    browse_button: 'btnImportAoPinId',
                     file_data_name: "excelFile",
                     url: url,
                     max_file_size: '10000kb',
