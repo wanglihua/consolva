@@ -234,6 +234,15 @@ public class CustomerInfoMapping : EntityMapping<CustomerInfo> {
         );
 
         Property(
+            x => x.AoPinId,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("ao_pin_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Status,
             map => {
                 map.Type<CustomerStatusHibernateType>();

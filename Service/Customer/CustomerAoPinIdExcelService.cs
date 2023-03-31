@@ -1,0 +1,79 @@
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using shunda.Core;
+using shunda.Core.Service;
+using ISession = NHibernate.ISession;
+
+namespace shunda.Service.Customer;
+
+[Service(ServiceType.Scoped)]
+public class CustomerAoPinIdExcelService {
+    private static readonly Regex REGEX_NUMBER = new Regex(@"[0-9]+", RegexOptions.Compiled);
+
+    private readonly ISession session;
+
+    public CustomerAoPinIdExcelService(ISession session) {
+        this.session = session;
+    }
+
+    // 导入的Excel第一列是舜达ID，第二列是澳拼ID
+    public void Import(IFormFile excelFile) {
+        IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
+        var sheet = workbook.GetSheetAt(0);
+        if (sheet == null) {
+            throw new ValidationException("导入的Excel文件应该至少有一个工作表！");
+        }
+
+        var headerRow = sheet.GetRow(0);
+        if (headerRow == null) {
+            throw new ValidationException("Excel第一行标题行数据不存在！");
+        }
+
+        var shundaHeaderCell = headerRow.GetCell(0);
+        var aoPinHeaderCell = headerRow.GetCell(1);
+        if (shundaHeaderCell == null || aoPinHeaderCell == null) {
+            throw new ValidationException("Excel第一行第一列或第二列数据不存在！");
+        }
+
+        shundaHeaderCell.SetCellType(CellType.String);
+        aoPinHeaderCell.SetCellType(CellType.String);
+
+        string shundaHeaderCellValue = shundaHeaderCell.StringCellValue ?? string.Empty;
+        string aoPinHeaderCellValue = aoPinHeaderCell.StringCellValue ?? string.Empty;
+
+        if (shundaHeaderCellValue.Contains("舜达") == false || aoPinHeaderCellValue.Contains("舜达") == true) {
+            throw new ValidationException("请确认数据第一列是舜达ID！");
+        }
+
+        if (shundaHeaderCellValue.Contains("澳拼") == true || aoPinHeaderCellValue.Contains("澳拼") == false) {
+            throw new ValidationException("请确认数据第二列是澳拼ID！");
+        }
+
+        var customerAoPinIdImportList = new List<CustomerAoPinIdExcelImportItem>();
+        // 略过标题行，所以 rowIndex = 1 开始
+        var lastRowNum = sheet.LastRowNum;
+        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++) {
+            var row = sheet.GetRow(rowIndex);
+
+            if (row == null) {
+                break;
+            }
+
+            // 设置单元格的格式为 String，这样后面用 StringCellValue 取值的时候，就不会出错了
+            var cellIndex = 0;
+            int lastCellNum = row.LastCellNum;
+            for (cellIndex = 0; cellIndex < lastCellNum; cellIndex++) {
+                var cell = row.GetCell(cellIndex);
+                if (cell == null) cell = row.CreateCell(cellIndex);
+
+                cell.SetCellType(CellType.String);
+            }
+
+            cellIndex = 0;
+
+            string shundaIdStr = row.GetCell(cellIndex++)?.StringCellValue ?? string.Empty;
+        }
+    }
+}

@@ -197,6 +197,11 @@ public class CustomerInfo : Entity {
     public virtual bool Agreed { get; set; }
 
     /// <summary>
+    /// 澳拼客户ID
+    /// </summary>
+    public virtual int AoPinId { get; set; }
+
+    /// <summary>
     /// 状态，非空
     /// </summary>
     [Required(ErrorMessage = "状态不能为空！")]
