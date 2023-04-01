@@ -26,7 +26,10 @@ public class ExpressAoPinImportController : Controller {
     [Route("/admin/express/ao/pin/import/do")]
     public IActionResult Import(IFormFile formFile) {
         var streamReader = new StreamReader(formFile.OpenReadStream());
-        var expressList = JsonConvert.DeserializeObject<List<ExpressAoPinImportExpress>>(streamReader.ReadToEnd());
+        string json = streamReader.ReadToEnd();
+        var expressList = JsonConvert.DeserializeObject<List<ExpressAoPinImportExpress>>(json);
+
+        Console.WriteLine(json);
 
         return Json(new JsonResultData {
             Success = true,
