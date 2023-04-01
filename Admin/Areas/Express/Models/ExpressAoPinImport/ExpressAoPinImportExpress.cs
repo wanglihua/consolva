@@ -23,4 +23,10 @@ public class ExpressAoPinImportExpress {
 
     [JsonProperty("totalVolume")]
     public decimal TotalVolume { get; set; }
+
+    [JsonProperty("goodsList")]
+    public List<ExpressAoPinImportExpressGoods> GoodsList { get; set; } = new List<ExpressAoPinImportExpressGoods>();
+
+    [JsonProperty("sizeWeightList")]
+    public List<ExpressAoPinImportExpressSizeWeight> SizeWeightList { get; set; } = new List<ExpressAoPinImportExpressSizeWeight>();
 }
