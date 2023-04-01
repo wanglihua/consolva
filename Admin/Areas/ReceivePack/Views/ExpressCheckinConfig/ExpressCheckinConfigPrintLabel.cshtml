@@ -20,7 +20,8 @@
     <script type="text/javascript">
         @* type: 1 正常件, 2 申领件， 3 问题件， 这个 packageCount 也只是用来控制打印数量 *@
         function printCheckinLabelCommon(data, packageCount, printCount, type) {
-            // 暂时不打印
+            // 可以暂时不打印
+            @(printFunName)(data, packageCount, printCount, type);
         }
     </script>
 } else {

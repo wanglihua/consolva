@@ -994,6 +994,7 @@ public class ExpressCheckinController : Controller {
     [HttpPost]
     [Route("/admin/express/checkin/express/get/print/data/manual")]
     [NoLoginRequired]
+    [Transactional]
     public IActionResult GetPrintDataManual(string expressTrackingNo) {
         ExpressInfo? express = session.Query<ExpressInfo>()
             .Where(e => e.TrackingNo == expressTrackingNo)

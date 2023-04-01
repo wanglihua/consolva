@@ -32,8 +32,12 @@
             LODOP.ADD_PRINT_BARCODE("2.00mm","20.00mm","29.00mm","29.00mm", "QRCode", data.expressTrackingNo);
             LODOP.SET_PRINT_STYLEA(0,"FontSize", 10);
             LODOP.SET_PRINT_STYLEA(0,"DataCharset", "UTF-8");
+            
+            LODOP.ADD_PRINT_TEXT("27.00mm", "2.00mm", "46.00mm", "6.60mm", data.customerCode);
+            LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize", 10);            
 
-            LODOP.ADD_PRINT_TEXT("31.00mm", "2.00mm", "46.00mm", "6.60mm", data.expressTrackingNo);
+            LODOP.ADD_PRINT_TEXT("32.00mm", "2.00mm", "46.00mm", "6.60mm", data.expressTrackingNo);
             LODOP.SET_PRINT_STYLEA(0,"FontName", "微软雅黑");
             LODOP.SET_PRINT_STYLEA(0,"FontSize", 10);
 
