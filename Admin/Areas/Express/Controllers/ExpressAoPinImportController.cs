@@ -107,7 +107,11 @@ public class ExpressAoPinImportController : Controller {
                 // throw new ValidationException($"澳拼客户ID#{aoPinCustomerId}在系统中没有对应客户数据！");
             }
 
-            int aoPinBillCustomerId = customerAoPinIdExcelService.GetNumberFromStr(ei.BillCustomerCode);
+            int aoPinBillCustomerId = 0;
+            if (string.IsNullOrWhiteSpace(ei.BillCustomerCode) == false) {
+                aoPinBillCustomerId = customerAoPinIdExcelService.GetNumberFromStr(ei.BillCustomerCode);
+            }
+
             var billCustomer = aoPinCustomerList.Where(e => e.AoPinId == aoPinBillCustomerId).Take(1).SingleOrDefault();
             // if (billCustomer == null) {
             //     throw new ValidationException($"澳拼客户ID#{aoPinBillCustomerId}在系统中没有对应客户数据！");
@@ -115,7 +119,7 @@ public class ExpressAoPinImportController : Controller {
 
             int billCustomerId = 0;
             if (billCustomer != null) {
-                billCustomerId = billCustomer.Id;
+                billCustomerId = billCustomer?.Id ?? 0;
             }
 
             var express = new ExpressInfo {
