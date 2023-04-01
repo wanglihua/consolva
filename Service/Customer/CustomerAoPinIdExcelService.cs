@@ -121,7 +121,7 @@ public class CustomerAoPinIdExcelService {
         session.Flush();
     }
 
-    private int GetNumberFromStr(string strValue) {
+    public int GetNumberFromStr(string strValue) {
         // 解析数字部分，如果含有多个数字部分，取长度最长的数字部分
         MatchCollection matches = REGEX_NUMBER.Matches(strValue);
 
