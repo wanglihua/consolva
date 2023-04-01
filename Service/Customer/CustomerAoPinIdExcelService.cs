@@ -86,7 +86,7 @@ public class CustomerAoPinIdExcelService {
 
             // 如果澳拼ID是空的暂时略过
             if (string.IsNullOrWhiteSpace(aoPinIdStr)) {
-                break;
+                continue;
             }
 
             int aoPinId = GetNumberFromStr(aoPinIdStr);
