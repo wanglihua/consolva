@@ -480,6 +480,8 @@ public class ExpressCheckinController : Controller {
 
         ExpressInfo? express = null;
 
+        bool aoPinImportExpressStorageLocChanged = false;
+
         lock (ExpressCheckinLockObject) // lock 时，数据库事务应该放在 lock 区域之内
         {
             Transactional.Wrap(session, () => {
@@ -664,11 +666,26 @@ public class ExpressCheckinController : Controller {
                 express.BillCustomerCode = model.BillCustomerCode;
                 express.BillCustomerId = billCustomerId;
 
+                bool isStorageLocChanged = isCreate == false && (express.StorageLoc.Shelf.Id != model.ShelfId || express.StorageLoc.Spec.Id != model.StorageLocSpecId);
+
                 // 如果是新入库的，或者是 原来的但修改了货架, 或者是修改了仓位规格
-                if (isCreate == true || ( /* isCreate == false && */ express.StorageLoc.Shelf.Id != model.ShelfId || express.StorageLoc.Spec.Id != model.StorageLocSpecId)) {
+                if (isCreate == true || isStorageLocChanged) {
                     StorageLocInfo recommandStorage = expressCheckinService.GetRecommandStorage(shelf, storageLocSpec); // 从这里取到的仓位ID，已经保证是仓位上物品不超过限制了
                     // 检查仓位和货架是否可用
                     storageLocService.CheckStorageLoc((recommandStorage.Id), ShelfType.Normal);
+
+                    if (isStorageLocChanged) {
+                        editDescList.Add($"仓位：{express.StorageLoc.GetFullName()} => {recommandStorage.GetFullName()}");
+                    }
+
+                    // 457 是澳拼导入的临时仓位
+                    if (isStorageLocChanged && express.StorageLoc.Id == 457) {
+                        int aoPinImportExpressIdBegin = 1496;
+                        int aoPinImportExpressIdEnd = 2787;
+                        if (express.Id >= aoPinImportExpressIdBegin && express.Id <= aoPinImportExpressIdEnd) {
+                            aoPinImportExpressStorageLocChanged = true;
+                        }
+                    }
 
                     express.StorageLoc = recommandStorage;
                     express.Shelf = recommandStorage.Shelf;
@@ -837,6 +854,15 @@ public class ExpressCheckinController : Controller {
                     if (billCustomer != null) {
                         customerMessageExpressCheckinService.SendMessage(billCustomer, express!);
                     }
+                }
+            });
+        }
+
+        // 澳拼导入快递仓位有修改的发送通知消息
+        if (isCreate == false && aoPinImportExpressStorageLocChanged == true) {
+            Transactional.Wrap(session, () => {
+                if (express != null && express.Customer != null) {
+                    customerMessageExpressCheckinService.SendMessage(express.Customer, express!);
                 }
             });
         }
