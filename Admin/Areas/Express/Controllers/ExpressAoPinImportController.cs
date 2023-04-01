@@ -98,10 +98,6 @@ public class ExpressAoPinImportController : Controller {
         foreach (var ei in expressImportList) {
             foreach (var gi in ei.GoodsList) {
                 var goodsList = session.Query<LogisticsGoodsInfo>().Where(e => e.Name == gi.GoodsName).ToList();
-                if (goodsList.Count == 0) {
-                    throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
-                }
-
                 LogisticsGoodsType goodsType = GetGoodsType(gi.GoodsTypeId);
                 var goods = goodsList.Where(e => e.Type == goodsType).Take(1).SingleOrDefault();
                 if (goods == null) {
