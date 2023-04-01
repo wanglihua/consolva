@@ -141,14 +141,25 @@ public class ExpressAoPinImportController : Controller {
             session.Flush();
 
             foreach (var gi in ei.GoodsList) {
-                var goods = session.Query<LogisticsGoodsInfo>().Where(e => e.Name == gi.GoodsName).Take(1).SingleOrDefault();
+                var goodsList = session.Query<LogisticsGoodsInfo>().Where(e => e.Name == gi.GoodsName).ToList();
+                if (goodsList.Count == 0) {
+                    throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
+                }
+
+                LogisticsGoodsType goodsType = GetGoodsType(gi.GoodsTypeId);
+                var goods = goodsList.Where(e => e.Type == goodsType).Take(1).SingleOrDefault();
+                if (goods == null) {
+                    goods = goodsList.Take(1).SingleOrDefault();
+                }
+
                 if (goods == null) {
                     throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
                 }
 
                 var expressGoods = new ExpressGoodsInfo {
                     Express = express,
-                    GoodsType = GetGoodsType(gi.GoodsTypeId),
+                    Goods = goods,
+                    GoodsType = goodsType,
                     Quantity = gi.Quantity,
                     Unit = gi.Unit,
                 };
