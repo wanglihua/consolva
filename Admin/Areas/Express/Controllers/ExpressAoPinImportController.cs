@@ -24,19 +24,22 @@ public class ExpressAoPinImportController : Controller {
     private readonly CheckinTrackingNoService checkinTrackingNoService;
     private readonly CustomerAoPinIdExcelService customerAoPinIdExcelService;
     private readonly ExpressCompanyService expressCompanyService;
+    private readonly ExpressLogService expressLogService;
 
     public ExpressAoPinImportController(
         ISession session,
         LoginUserService loginUserService,
         CheckinTrackingNoService checkinTrackingNoService,
         CustomerAoPinIdExcelService customerAoPinIdExcelService,
-        ExpressCompanyService expressCompanyService
+        ExpressCompanyService expressCompanyService,
+        ExpressLogService expressLogService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.checkinTrackingNoService = checkinTrackingNoService;
         this.customerAoPinIdExcelService = customerAoPinIdExcelService;
         this.expressCompanyService = expressCompanyService;
+        this.expressLogService = expressLogService;
     }
 
     [HttpGet]
@@ -57,16 +60,31 @@ public class ExpressAoPinImportController : Controller {
             throw new ValidationException("未能解析接受数据！");
         }
 
+        int loginUserId = loginUserService.GetLoginUserId();
         var loginUser = loginUserService.GetLoginUser();
 
-// #if DEBUG
-// #else
-// #endif
+#if DEBUG
+        int storageLocId = 5;
+        int shelfId = 3;
+#else
+        int storageLocId = 457;
+        int shelfId = 6;
+#endif
 
         int warehouseId = 1;
         var warehouse = session.Get<WarehouseInfo>(warehouseId);
         if (warehouse == null) {
             throw new ValidationException($"仓库#{warehouseId}不存在！");
+        }
+
+        var shelf = session.Get<ShelfInfo>(shelfId);
+        if (shelf == null) {
+            throw new ValidationException($"指定的货架#{shelfId}不存在！");
+        }
+
+        var storageLoc = session.Get<StorageLocInfo>(storageLocId);
+        if (storageLoc == null) {
+            throw new ValidationException($"指定的仓位#{storageLocId}不存在！");
         }
 
         var aoPinCustomerList = session.Query<CustomerInfo>().Where(e => e.AoPinId != 0).ToList();
@@ -109,8 +127,57 @@ public class ExpressAoPinImportController : Controller {
                 GoodsType = GetGoodsType(ei.GoodsTypeId),
                 AddUser = loginUser,
                 PackageCount = ei.PackageCount,
-                
+                Shelf = shelf,
+                StorageLoc = storageLoc,
             };
+
+            session.Save(express);
+            session.Flush();
+
+            foreach (var gi in ei.GoodsList) {
+                var goods = session.Query<LogisticsGoodsInfo>().Where(e => e.Name == gi.GoodsName).Take(1).SingleOrDefault();
+                if (goods == null) {
+                    throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
+                }
+
+                var expressGoods = new ExpressGoodsInfo {
+                    Express = express,
+                    GoodsType = GetGoodsType(gi.GoodsTypeId),
+                    Quantity = gi.Quantity,
+                    Unit = gi.Unit,
+                };
+
+                session.Save(expressGoods);
+            }
+
+            session.Flush();
+
+            if (ei.SizeWeightList != null) {
+                foreach (var sw in ei.SizeWeightList) {
+                    var expressSizeWeight = new ExpressSizeWeightInfo();
+
+                    expressSizeWeight.TrackingNo = ei.TrackingNo; // trackingNoMain 母单号
+                    expressSizeWeight.TrackingNoSub = string.Empty;
+                    expressSizeWeight.Length = sw.Length;
+                    expressSizeWeight.Width = sw.Width;
+                    expressSizeWeight.Height = sw.Height;
+                    expressSizeWeight.Weight = sw.Weight;
+                    expressSizeWeight.PackageCount = sw.PackageCount;
+
+                    // 机器区分
+                    expressSizeWeight.Machine = null;
+
+                    expressSizeWeight.Express = express;
+                    expressSizeWeight.Order = null;
+                    expressSizeWeight.OrderCode = string.Empty;
+
+                    session.Save(expressSizeWeight);
+                }
+
+                session.Flush();
+            }
+
+            expressLogService.UserLog(express.Id, ExpressLogType.AoPinImport, loginUserId);
         }
 
         return Json(new JsonResultData {
