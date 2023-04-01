@@ -122,4 +122,11 @@
         </view>
     </van-popup>
 
+    <van-popup show="{{ showHomeNotePopup }}" custom-style="width: 90%;" closeable bind:close="onHomeNotePopupClose">
+        <view style="margin: 30px 15px 22px 15px;">
+            <view style="padding: 5px;">
+                <rich-text nodes="{{ homeData.homeNote }}"></rich-text>
+            </view>
+        </view>
+    </van-popup>
 </view>

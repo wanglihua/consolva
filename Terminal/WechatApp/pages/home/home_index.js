@@ -5,7 +5,9 @@ Page({
     data: {
         topImageHeight: 0,
         homeData: {},
+        topImageList: {},
         showFollowPopup: false,
+        showHomeNotePopup: false,
     },
     onShow() {
         app.globalData.homePageId = "home_index";
@@ -35,9 +37,36 @@ Page({
                     homeData: res.data.homeData,
                 });
 
-                if (res.data.homeData.hasFollowed === false) {
+                 // 这个 topImageList 单独从 homeData里面拿出来，这样就可以不用每次都更新这个值，造成页面晃动
+                if(app.globalData.topImageShowed !== true) {
+                    that.setData({
+                        topImageList: res.data.homeData.topImageList,
+                    });
+
+                    app.globalData.topImageShowed = true;
+                }
+
+                // 关注公众号提示
+                if (res.data.homeData.hasFollowed !== true) {
                     that.setData({
                         showFollowPopup: true,
+                    });
+                } else {
+                    that.setData({
+                        showFollowPopup: false,
+                    });
+                }
+                
+                // 首页一键复制地址提示
+                if(res.data.homeData.hasFollowed === true && app.globalData.homeNoteShowed === false) {
+                    that.setData({
+                        showHomeNotePopup: true,
+                    });
+
+                    app.globalData.homeNoteShowed = true;
+                } else {
+                    that.setData({
+                        showHomeNotePopup: false,
                     });
                 }
 
@@ -100,6 +129,12 @@ Page({
     onFollowPopupClose(e) {
         this.setData({
             showFollowPopup: false,
+        });
+    },
+
+    onHomeNotePopupClose(e) {
+        this.setData({
+            showHomeNotePopup: false,
         });
     },
 })
