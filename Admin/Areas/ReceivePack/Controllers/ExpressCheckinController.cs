@@ -52,6 +52,7 @@ public class ExpressCheckinController : Controller {
     private readonly ExpressPhotoService expressPhotoService;
     private readonly ExpressVideoService expressVideoService;
     private readonly LogisticsGoodsImageService logisticsGoodsImageService;
+    private readonly StorageLocExpressService storageLocExpressService;
 
     public ExpressCheckinController(
         ISession session,
@@ -70,7 +71,9 @@ public class ExpressCheckinController : Controller {
         ExpressSizeWeightService expressSizeWeightService,
         ExpressPhotoService expressPhotoService,
         ExpressVideoService expressVideoService,
-        LogisticsGoodsImageService logisticsGoodsImageService) {
+        LogisticsGoodsImageService logisticsGoodsImageService,
+        StorageLocExpressService storageLocExpressService
+    ) {
         this.session = session;
         this.expressCompanyService = expressCompanyService;
         this.expressTrackingNoService = expressTrackingNoService;
@@ -88,6 +91,7 @@ public class ExpressCheckinController : Controller {
         this.expressPhotoService = expressPhotoService;
         this.expressVideoService = expressVideoService;
         this.logisticsGoodsImageService = logisticsGoodsImageService;
+        this.storageLocExpressService = storageLocExpressService;
     }
 
     [HttpGet]
@@ -671,7 +675,11 @@ public class ExpressCheckinController : Controller {
                 }
 
                 session.SaveOrUpdate(express);
+
+                storageLocExpressService.UpdateSingle(express.StorageLoc.Id);
+
                 session.Flush();
+
 
                 // 入库跟踪号，这时生成，生成的号不会浪费
 
@@ -813,7 +821,7 @@ public class ExpressCheckinController : Controller {
                 // 后面 已经调用了，这里就不用了 expressSizeWeightService.BindAndSum(express.Id);
 
                 expressCheckinService.SaveUserShelfSelect(loginUserId, model.ShelfId ?? 0, model.StorageLocSpecId ?? 0);
-            });
+            }); // 事务结束
         }
 
         if (isCreate == true) // 只在首次入库的时候提醒，修改信息的时候不提醒
