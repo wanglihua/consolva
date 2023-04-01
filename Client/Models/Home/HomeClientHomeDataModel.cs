@@ -98,4 +98,7 @@ public class HomeClientHomeDataModel {
 
     [JsonProperty("scoreRemarkUrl")]
     public string ScoreRemarkUrl { get; set; } = string.Empty;
+
+    [JsonProperty("homeNote")]
+    public string HomeNote { get; set; } = string.Empty;
 }

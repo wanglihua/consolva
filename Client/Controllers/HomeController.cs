@@ -164,6 +164,11 @@ public class HomeController : Controller {
 
         var homeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
 
+        string homeNote = @"
+<div style='font-weight: bold; margin-bottom: 8px;'>亲爱的舜达全球集运用户</div>
+<div>你进入小程序后，请先点击或取仓库地址，一键复制所有信息，在淘宝/京东/拼多多等粘贴您的地址信息，请一定要将ID编号输入在收件人名字后面和地址结尾处，避免被快递公司隐藏。</div>
+";
+
         var model = new HomeClientHomeDataModel {
             TopImageList = topImageItemList,
             ExpressClaimBadge = homeData.ExpressClaimCount > 0 ? homeData.ExpressClaimCount.ToString() : string.Empty,
@@ -197,6 +202,7 @@ public class HomeController : Controller {
             BeginnerGuideUrl = homeData.BeginnerGuideUrl,
             FaqUrl = homeData.FaqUrl,
             ScoreRemarkUrl = homeData.ScoreRemarkUrl,
+            HomeNote = homeNote,
         };
 
         return Json(new JsonResultData {
