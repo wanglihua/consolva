@@ -160,7 +160,7 @@ LIMIT 1
             throw new ValidationException($"货架 {shelf.Name} 没有满足要求的 {storageLocSpec.Name} 仓位！");
         }
 
-        StorageLocInfo storageLoc = session.Get<StorageLocInfo>((storageLocId ?? 0));
+        var storageLoc = session.Get<StorageLocInfo>((storageLocId ?? 0));
         if (storageLoc == null) {
             throw new Exception($"推荐的仓位 #{storageLocId} 不存在！");
         }

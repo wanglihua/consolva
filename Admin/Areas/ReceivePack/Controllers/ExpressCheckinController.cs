@@ -952,7 +952,8 @@ public class ExpressCheckinController : Controller {
         return Json(new Dictionary<string, object>() {
             { "success", true },
             { "message", "获取数据成功！" },
-            { "expressTrackingNo", express.TrackingNo + CheckinLabelConfig.ExpressTrackingNoShundaSuffix }, // 加上后缀让打包时不能扫描
+            // { "expressTrackingNo", express.TrackingNo + CheckinLabelConfig.ExpressTrackingNoShundaSuffix }, // 加上后缀让打包时不能扫描
+            { "expressTrackingNo", express.TrackingNo }, // 不需要后缀
             { "checkinTrackingNo", express.CheckinTrackingNo },
             { "customerCode", customerCode },
             { "warehouseNote", expressRemarkWarehouse?.Content ?? string.Empty },

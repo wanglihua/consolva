@@ -106,9 +106,10 @@ public class ExpressPhotoController : Controller {
             throw new ValidationException("快递单号格式不符合规范！");
         }
 
-        if (string.IsNullOrWhiteSpace(trackingNo) == false && trackingNo.EndsWith(CheckinLabelConfig.ExpressTrackingNoShundaSuffix)) {
-            trackingNo = trackingNo.Substring(0, trackingNo.Length - CheckinLabelConfig.ExpressTrackingNoShundaSuffix.Length);
-        }
+        //  不需要后缀
+        // if (string.IsNullOrWhiteSpace(trackingNo) == false && trackingNo.EndsWith(CheckinLabelConfig.ExpressTrackingNoShundaSuffix)) {
+        //     trackingNo = trackingNo.Substring(0, trackingNo.Length - CheckinLabelConfig.ExpressTrackingNoShundaSuffix.Length);
+        // }
 
         if (string.IsNullOrWhiteSpace(trackingNo) == false) {
             trackingNo = expressTrackingNoService.RemoveUselessSuffix(trackingNo);
