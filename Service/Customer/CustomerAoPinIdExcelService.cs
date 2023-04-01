@@ -138,7 +138,7 @@ public class CustomerAoPinIdExcelService {
         }
 
         if (int.TryParse(maxLengthNumberMatchValue, out int number) == false) {
-            return 0;
+            return -1;
         }
 
         return number;
