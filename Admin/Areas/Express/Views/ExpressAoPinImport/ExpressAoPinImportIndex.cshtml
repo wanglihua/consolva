@@ -1,0 +1,62 @@
+@using shunda.Core.Web
+@{
+    ViewData[ViewDataKey.Title] = "快递导入";
+    Layout = "_AdminLayout";
+}
+
+<div class="gridToolBar clearfix">
+    <button id="btnImport" type="button" class="btn btn-success btn-sm">
+        <i class="ace-icon fa fa-plus"></i>
+        导入
+    </button>
+</div>
+
+<script type="text/javascript">
+
+    $(function(){
+        initUploader();
+    });
+
+    function initUploader() {
+        var url = '@Url.Action("Import", "ExpressAoPinImport")';
+
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
+            multi_selection: false,
+
+            browse_button: 'btnImport',
+            file_data_name: "formFile",
+            url: url,
+            max_file_size: '10000kb',
+
+            filters: [
+                {title: "Excel文件", extensions: "xlsx"}
+            ],
+
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                    } else {
+                        loadCustomerSuperVipDiscountList();
+                        $.msg.show(result.message);
+                    }
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
+                }
+            }
+        });
+
+        uploader.init();
+    }
+    
+</script>

@@ -10,8 +10,8 @@ public class ExpressAoPinImportExpressGoods {
     public int GoodsTypeId { get; set; }
 
     [JsonProperty("quantity")]
-    public virtual int Quantity { get; set; }
+    public int Quantity { get; set; }
 
     [JsonProperty("unit")]
-    public virtual string Unit { get; set; } = string.Empty;
+    public string Unit { get; set; } = string.Empty;
 }

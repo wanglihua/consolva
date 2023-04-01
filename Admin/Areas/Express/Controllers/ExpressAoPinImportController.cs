@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using shunda.Admin.Areas.Express.Models.ExpressAoPinImport;
 using shunda.Core.Web;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
@@ -14,20 +16,18 @@ public class ExpressAoPinImportController : Controller {
         this.session = session;
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/admin/express/ao/pin/import")]
     public IActionResult Index() {
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        return View("ExpressAoPinImportIndex");
     }
 
     [HttpPost]
     [Route("/admin/express/ao/pin/import/do")]
     public IActionResult Import(IFormFile formFile) {
-        
-        
+        var streamReader = new StreamReader(formFile.OpenReadStream());
+        var expressList = JsonConvert.DeserializeObject<List<ExpressAoPinImportExpress>>(streamReader.ReadToEnd());
+
         return Json(new JsonResultData {
             Success = true,
             Message = "操作成功！",
