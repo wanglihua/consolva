@@ -127,7 +127,7 @@ public class ExpressAoPinImportController : Controller {
         //     throw new ValidationException($"指定的物品名称#{goodsNamesNotExist}不存在！");
         // }
 
-        var goodsDefault = session.Get<LogisticsGoodsInfo>(32071l);
+        var goodsDefault = session.Get<LogisticsGoodsInfo>(32071);
 
         foreach (var ei in expressImportList) {
             string trackingNo = ei.TrackingNo;
