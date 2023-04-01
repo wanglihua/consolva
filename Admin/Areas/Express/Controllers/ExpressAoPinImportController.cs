@@ -104,13 +104,18 @@ public class ExpressAoPinImportController : Controller {
             int aoPinCustomerId = ei.CustomerId;
             var customer = aoPinCustomerList.Where(e => e.AoPinId == aoPinCustomerId).Take(1).SingleOrDefault();
             if (customer == null) {
-                throw new ValidationException($"澳拼客户ID#{aoPinCustomerId}在系统中没有对应客户数据！");
+                // throw new ValidationException($"澳拼客户ID#{aoPinCustomerId}在系统中没有对应客户数据！");
             }
 
             int aoPinBillCustomerId = customerAoPinIdExcelService.GetNumberFromStr(ei.BillCustomerCode);
             var billCustomer = aoPinCustomerList.Where(e => e.AoPinId == aoPinBillCustomerId).Take(1).SingleOrDefault();
-            if (billCustomer == null) {
-                throw new ValidationException($"澳拼客户ID#{aoPinBillCustomerId}在系统中没有对应客户数据！");
+            // if (billCustomer == null) {
+            //     throw new ValidationException($"澳拼客户ID#{aoPinBillCustomerId}在系统中没有对应客户数据！");
+            // }
+
+            int billCustomerId = 0;
+            if (billCustomer != null) {
+                billCustomerId = billCustomer.Id;
             }
 
             var express = new ExpressInfo {
@@ -120,8 +125,9 @@ public class ExpressAoPinImportController : Controller {
                 ShelfStatus = ExpressShelfStatus.ToOnShelf,
                 AddTime = ei.AddTime,
                 ClaimTime = ei.ClaimTime,
-                BillCustomerCode = ei.BillCustomerCode,
-                BillCustomerId = billCustomer.Id,
+                Customer = customer,
+                BillCustomerCode = "澳拼" + ei.BillCustomerCode,
+                BillCustomerId = billCustomerId,
                 Warehouse = warehouse,
                 ExpressCompany = expressCompanyService.GetExpressCompanyName(ei.TrackingNo),
                 GoodsType = GetGoodsType(ei.GoodsTypeId),
