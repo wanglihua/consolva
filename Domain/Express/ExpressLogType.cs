@@ -210,6 +210,11 @@ public class ExpressLogType : CodeTypeBase {
     public static readonly ExpressLogType CustomerIgnoreClaim = new ExpressLogType(39000, "客户忽略申领件", "客户忽略申领件");
 
     /// <summary>
+    /// 澳拼导入
+    /// </summary>
+    public static readonly ExpressLogType AoPinImport = new ExpressLogType(40000, "澳拼导入", "澳拼导入");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly ExpressLogType None = new ExpressLogType(0, "", "");
@@ -261,6 +266,8 @@ public class ExpressLogType : CodeTypeBase {
         ReturnOffShelf,
 
         CustomerIgnoreClaim,
+
+        AoPinImport,
     };
 
     private static readonly Dictionary<int, ExpressLogType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

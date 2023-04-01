@@ -6,6 +6,12 @@ public class ExpressAoPinImportExpress {
     [JsonProperty("trackingNo")]
     public string TrackingNo { get; set; } = string.Empty;
 
+    [JsonProperty("addTime")]
+    public DateTime AddTime { get; set; }
+
+    [JsonProperty("claimTime")]
+    public DateTime? ClaimTime { get; set; }
+
     [JsonProperty("goodsTypeId")]
     public int GoodsTypeId { get; set; }
 
