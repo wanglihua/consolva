@@ -191,7 +191,7 @@ public class ExpressPhotoFileService
 
         if (expressPhoto.StoreLoc == ExpressPhotoStoreLoc.Oss)
         {
-            string watermarkSafeBase64 = "5pys5b-r6YCS5bey562-5pS277yM562-5pS25Lq677ya5r6z5ou86ZuG6L-Q"; // 本快递已签收，签收人：舜达集运
+            string watermarkSafeBase64 = GetUrlSafeBase64("本快递已签收，签收人：舜达全球"); // 本快递已签收，签收人：舜达集运
 
             if (expressPhoto.Type != ExpressPhotoType.SignIn)
             {
@@ -385,7 +385,7 @@ public class ExpressPhotoFileService
 
             if (photoType == ExpressPhotoType.SignIn)
             {
-                graphics.DrawString($"本快递已签收，签收人：舜达集运", font, brush, new RectangleF(0f, imageHeight - textRectHeight, imageWidth, imageHeight), format);
+                graphics.DrawString($"本快递已签收，签收人：舜达全球", font, brush, new RectangleF(0f, imageHeight - textRectHeight, imageWidth, imageHeight), format);
             }
             else
             {
