@@ -4,8 +4,7 @@ using shunda.Domain.Storage;
 
 namespace shunda.Admin.Areas.Express.Models.ExpressList;
 
-public class ExpressIndexModel
-{
+public class ExpressIndexModel {
     [BindNever]
     public IList<WarehouseInfo> WarehouseList { get; set; } = new List<WarehouseInfo>();
 
@@ -14,4 +13,7 @@ public class ExpressIndexModel
 
     [BindNever]
     public bool CanExpressForceDelete { get; set; }
+
+    [BindNever]
+    public bool CanExpressThrowAway { get; set; }
 }

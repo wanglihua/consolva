@@ -26,8 +26,7 @@
         <i class="ace-icon fa fa-trash-o"></i>
         删除
     </button>
-    @if (Model.CanExpressForceDelete)
-    {
+    @if (Model.CanExpressForceDelete) {
         <button type="button" class="btn btn-danger btn-sm" onclick="forceDeleteExpress()">
             <i class="ace-icon fa fa-trash-o"></i>
             强制删除
@@ -63,7 +62,9 @@
                 );
             }
         </script>
+    }
 
+    @if (Model.CanExpressForceDelete) {
         <button type="button" class="btn btn-pink btn-sm" onclick="throwAwayExpress()">
             <i class="ace-icon fa fa-trash-o"></i>
             设置已丢弃
@@ -104,14 +105,13 @@
     <button class="btn btn-purple btn-sm" onclick="exportData()">
         <i class="ace-icon fa fa-file-excel-o"></i>
         导出
-    </button>    
+    </button>
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
     <select id="warehouseIdQuery" name="warehouseIdQuery" style="width: 130px; height: 30px;" onchange="loadExpressList(0);">
         <option value="">入库仓库</option>
-        @foreach (WarehouseInfo warehouse in Model.WarehouseList)
-        {
+        @foreach (WarehouseInfo warehouse in Model.WarehouseList) {
             <option value="@(warehouse.Id)">@(warehouse.Name)</option>
         }
     </select>
@@ -132,26 +132,24 @@
     <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" name="orderCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
     <select id="statusQuery" name="statusQuery" style="width: 110px; height: 30px;" onchange="loadExpressList(0);">
         <option value="">快递状态</option>
-        @foreach (ExpressStatus status in ExpressStatus.GetList())
-        {
+        @foreach (ExpressStatus status in ExpressStatus.GetList()) {
             <option value="@(status.Id)">@(status.Name)</option>
         }
     </select>
 
     <select id="shelfStatusQuery" name="shelfStatusQuery" style="width: 110px; height: 30px;" onchange="loadExpressList(0);">
         <option value="">上架状态</option>
-        @foreach (ExpressShelfStatus status in ExpressShelfStatus.GetList())
-        {
+        @foreach (ExpressShelfStatus status in ExpressShelfStatus.GetList()) {
             <option value="@(status.Id)">@(status.Name)</option>
         }
     </select>
     <label for="goodsNameQuery">扩展名查询</label>&nbsp;<input id="goodsNameQuery" name="goodsNameQuery" autocomplete="off" style="width: 120px; height: 30px;" placeholder="扩展名查询"/>&nbsp;
-    
+
     <select id="addDateTimeQueryMode" style="width: 120px; height: 30px;" onchange="changeAddDateTimeQueryMode()">
         <option value="queryByAddDate">按登记日期查询</option>
         <option value="queryByAddTime">按登记时间查询</option>
     </select>
-    
+
     <script type="text/javascript">
         function changeAddDateTimeQueryMode(x) {
             var addDateTimeQueryMode = $("#addDateTimeQueryMode").val();
@@ -184,11 +182,10 @@
 
     <label for="pickTimeBeginQuery">认领开始日期</label>&nbsp;<input id="pickTimeBeginQuery" name="pickTimeBeginQuery" style="width: 90px; height: 30px;" placeholder="认领开始日期" autocomplete="off"/>&nbsp;
     <label for="pickTimeEndQuery">认领截止日期</label>&nbsp;<input id="pickTimeEndQuery" name="pickTimeEndQuery" style="width: 90px; height: 30px;" placeholder="认领截止日期" autocomplete="off"/>&nbsp;
-    
+
     <select id="checkUserIdQuery" name="checkUserIdQuery" style="width: 150px; height: 30px; display: none;@*隐藏起来，这个查询条件暂时取消*@" onchange="loadExpressList(0);">
         <option value="">入库人员查询</option>
-        @foreach (UserInfo user in Model.CheckinUserList)
-        {
+        @foreach (UserInfo user in Model.CheckinUserList) {
             <option value="@(user.Id)">@(user.UserName)</option>
         }
     </select>

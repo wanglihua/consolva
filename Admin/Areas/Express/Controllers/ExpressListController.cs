@@ -80,6 +80,7 @@ public class ExpressListController : Controller {
 
         int loginUserId = loginUserService.GetLoginUserId();
         model.CanExpressForceDelete = passResService.UserHasPassRes(loginUserId, PassRes.Express.ExpressForceDelete);
+        model.CanExpressThrowAway = passResService.UserHasPassRes(loginUserId, PassRes.Express.ExpressThrowAway);
 
         return View("ExpressIndex", model);
     }
