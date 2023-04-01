@@ -93,39 +93,41 @@ public class ExpressAoPinImportController : Controller {
 
         var aoPinCustomerList = session.Query<CustomerInfo>().Where(e => e.AoPinId != 0).ToList();
 
-        StringBuilder sb = new StringBuilder();
+        // StringBuilder sb = new StringBuilder();
+        //
+        // foreach (var ei in expressImportList) {
+        //     foreach (var gi in ei.GoodsList) {
+        //         var goodsList = session.Query<LogisticsGoodsInfo>().Where(e => e.Name == gi.GoodsName).ToList();
+        //         LogisticsGoodsType goodsType = GetGoodsType(gi.GoodsTypeId);
+        //         var goods = goodsList.Where(e => e.Type == goodsType).Take(1).SingleOrDefault();
+        //         if (goods == null) {
+        //             goods = goodsList.Take(1).SingleOrDefault();
+        //         }
+        //
+        //         if (goods == null) {
+        //             sb.Append(gi.GoodsName);
+        //
+        //             string goodsTypeName = "普通类";
+        //             if (gi.GoodsTypeId == 380) {
+        //                 goodsTypeName = "特货";
+        //             } else {
+        //                 goodsTypeName = "禁止类";
+        //             }
+        //
+        //             sb.Append(" " + goodsTypeName);
+        //             sb.Append(Environment.NewLine);
+        //         }
+        //     }
+        // }
+        //
+        // string goodsNamesNotExist = sb.ToString();
+        // if (string.IsNullOrWhiteSpace(goodsNamesNotExist) == false) {
+        //     log.Error("指定的物品名称不存在！");
+        //     log.Error(goodsNamesNotExist);
+        //     throw new ValidationException($"指定的物品名称#{goodsNamesNotExist}不存在！");
+        // }
 
-        foreach (var ei in expressImportList) {
-            foreach (var gi in ei.GoodsList) {
-                var goodsList = session.Query<LogisticsGoodsInfo>().Where(e => e.Name == gi.GoodsName).ToList();
-                LogisticsGoodsType goodsType = GetGoodsType(gi.GoodsTypeId);
-                var goods = goodsList.Where(e => e.Type == goodsType).Take(1).SingleOrDefault();
-                if (goods == null) {
-                    goods = goodsList.Take(1).SingleOrDefault();
-                }
-
-                if (goods == null) {
-                    sb.Append(gi.GoodsName);
-
-                    string goodsTypeName = "普通类";
-                    if (gi.GoodsTypeId == 380) {
-                        goodsTypeName = "特货";
-                    } else {
-                        goodsTypeName = "禁止类";
-                    }
-
-                    sb.Append(" " + goodsTypeName);
-                    sb.Append(Environment.NewLine);
-                }
-            }
-        }
-
-        string goodsNamesNotExist = sb.ToString();
-        if (string.IsNullOrWhiteSpace(goodsNamesNotExist) == false) {
-            log.Error("指定的物品名称不存在！");
-            log.Error(goodsNamesNotExist);
-            throw new ValidationException($"指定的物品名称#{goodsNamesNotExist}不存在！");
-        }
+        var goodsDefault = session.Get<LogisticsGoodsInfo>(32071l);
 
         foreach (var ei in expressImportList) {
             string trackingNo = ei.TrackingNo;
@@ -184,9 +186,9 @@ public class ExpressAoPinImportController : Controller {
 
             foreach (var gi in ei.GoodsList) {
                 var goodsList = session.Query<LogisticsGoodsInfo>().Where(e => e.Name == gi.GoodsName).ToList();
-                if (goodsList.Count == 0) {
-                    throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
-                }
+                // if (goodsList.Count == 0) {
+                //     throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
+                // }
 
                 LogisticsGoodsType goodsType = GetGoodsType(gi.GoodsTypeId);
                 var goods = goodsList.Where(e => e.Type == goodsType).Take(1).SingleOrDefault();
@@ -195,7 +197,9 @@ public class ExpressAoPinImportController : Controller {
                 }
 
                 if (goods == null) {
-                    throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
+                    // throw new ValidationException($"指定的物品名称#{gi.GoodsName}不存在！");
+
+                    goods = goodsDefault;
                 }
 
                 var expressGoods = new ExpressGoodsInfo {
