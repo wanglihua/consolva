@@ -279,7 +279,7 @@ public class AlipayOrderService {
         PayStatus orderPayStatusAfter = order.PayStatus;
 
         // 记录日志
-        logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
+        logisticsOrderActionService.NewActionWithoutUserCustomer(order.Id, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"支付宝 金额:{payAmount:#0.00}，支付单号:{orderPay.OutTradeNo}");
 
         // 会员积分
         customerScoreService.AddScore(orderPay.Id);

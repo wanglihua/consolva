@@ -261,7 +261,7 @@ public class WechatPayOrderService {
             PayStatus orderPayStatusAfter = order.PayStatus;
 
             // 订单日志
-            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"金额:{payAmount:#0.00)}, 支付单号:{orderPay.OutTradeNo}");
+            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"微信支付 金额:{payAmount:#0.00)}, 支付单号:{orderPay.OutTradeNo}");
 
             // 会员积分
             customerScoreService.AddScore(orderPay.Id);
