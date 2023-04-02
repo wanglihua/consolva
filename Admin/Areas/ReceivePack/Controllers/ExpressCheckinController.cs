@@ -693,10 +693,10 @@ public class ExpressCheckinController : Controller {
 
                 session.SaveOrUpdate(express);
 
-                storageLocExpressService.UpdateSingle(express.StorageLoc.Id);
-
                 session.Flush();
 
+                // 放在上面的 session.Flush() 后面
+                storageLocExpressService.UpdateSingle(express.StorageLoc.Id);
 
                 // 入库跟踪号，这时生成，生成的号不会浪费
 
