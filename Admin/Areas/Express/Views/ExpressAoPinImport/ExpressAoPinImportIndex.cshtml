@@ -72,12 +72,10 @@
                 hideMask();
                 if (data.success === false) {
                     $.msg.error(data.message);
-                    // return;
+                    return;
                 }
-                else {
-                    $("#addGoodsTr").before(data);
-                    // return;
-                }
+                
+                $.msg.show(data.message);
             }
         });
     }    
