@@ -83,15 +83,15 @@ public class MiniProfilerMySqlDbCommand : ProfiledDbCommand {
 
         commandText = commandText.Trim().ToLower();
 
-        if (commandText.Contains("insert") && commandText.Contains("into") && (commandText.Contains("values") || commandText.Contains("value"))) {
+        if (commandText.Contains("insert ") && commandText.Contains("into ") && (commandText.Contains("values ") || commandText.Contains("value "))) {
             return true;
         }
 
-        if (commandText.Contains("update") && commandText.Contains("set") && commandText.Contains("where")) {
+        if (commandText.Contains("update ") && commandText.Contains("set ") && commandText.Contains("where ")) {
             return true;
         }
 
-        if (commandText.Contains("delete") && commandText.Contains("from") && commandText.Contains("where")) {
+        if (commandText.Contains("delete ") && commandText.Contains("from ") && commandText.Contains("where ")) {
             return true;
         }
 
