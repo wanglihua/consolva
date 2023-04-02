@@ -249,6 +249,7 @@ public class ExpressAoPinImportController : Controller {
         });
     }
 
+    [NonAction]
     private LogisticsGoodsType GetGoodsType(int aoPinGoodsTypeId) {
         if (aoPinGoodsTypeId == 100) {
             return LogisticsGoodsType.Common;
@@ -263,5 +264,43 @@ public class ExpressAoPinImportController : Controller {
         }
 
         return LogisticsGoodsType.None;
+    }
+
+    [HttpPost]
+    [Route("/admin/express/ao/pin/import/match/customer")]
+    public IActionResult MatchCustomer() {
+        var expressList = session.Query<ExpressInfo>().Where(e => e.Id >= 1496 && e.Id <= 2787 && e.Customer == null).ToList();
+
+        StringBuilder sb = new StringBuilder();
+
+        foreach (var e in expressList) {
+            if (string.IsNullOrWhiteSpace(e.BillCustomerCode) == false) {
+                int billCustomerAoPinId = customerAoPinIdExcelService.GetNumberFromStr(e.BillCustomerCode);
+                if (billCustomerAoPinId != 0) {
+                    var customer = session.Query<CustomerInfo>().Where(e => e.AoPinId == billCustomerAoPinId).Take(1).SingleOrDefault();
+                    if (customer == null) {
+                        sb.Append($"{billCustomerAoPinId}{Environment.NewLine}");
+                    } else {
+                        e.Customer = customer;
+                        e.Status = ExpressStatus.Checkin;
+                        e.BillCustomerCode = customer.CheckinCode;
+                        session.Update(e);
+                    }
+                }
+            }
+        }
+
+        session.Flush();
+
+        string str = sb.ToString();
+        if (string.IsNullOrWhiteSpace(str) == false) {
+            log.Error("下列澳拼ID没有对应的舜达ID");
+            log.Error(str);
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
     }
 }
