@@ -10,7 +10,7 @@
         导入
     </button>
 
-    <button type="button" class="btn btn-purple btn-sm">
+    <button type="button" class="btn btn-purple btn-sm" onclick="matchCustomer()">
         <i class="ace-icon fa fa-gears"></i>
         匹配客户
     </button>
@@ -62,5 +62,25 @@
 
         uploader.init();
     }
+    
+    function matchCustomer() {
+        $.ajax({
+            url: '@Url.Action("MatchCustomer", "ExpressAoPinImport")',
+            type: "POST",
+            data: {},
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    // return;
+                }
+                else {
+                    $("#addGoodsTr").before(data);
+                    // return;
+                }
+            }
+        });
+    }    
+        
     
 </script>
