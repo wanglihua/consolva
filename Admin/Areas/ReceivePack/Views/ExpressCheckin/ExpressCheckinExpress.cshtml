@@ -107,7 +107,11 @@
                                     <select id="shelfId" asp-for="ShelfId" class="input-sm form-control" onchange="shelfSelectChange()">
                                         <option value="0">选择入库货架</option>
                                         @foreach (ShelfInfo shelf in Model.ShelfList) {
-                                            <option value="@(shelf.Id)">@(shelf.Name)</option>
+                                            if (shelf.Id == Model.ShelfId) {
+                                                <option selected="selected" value="@(shelf.Id)">@(shelf.Name)</option>
+                                            } else {
+                                                <option value="@(shelf.Id)">@(shelf.Name)</option>
+                                            }
                                         }
                                     </select>
 
