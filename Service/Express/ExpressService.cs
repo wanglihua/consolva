@@ -100,20 +100,9 @@ public class ExpressService {
             throw new ValidationException("已创建转运单的快递单不能被删除！");
         }
 
-        var shelfScheduleList = session
-            .Query<ExpressShelfScheduleInfo>()
-            .Where(e => e.Express.Id == expressId)
-            .ToList();
-        if (shelfScheduleList.Count != 0) {
-            foreach (var shelfSchedule in shelfScheduleList) {
-                session.Delete(shelfSchedule);
-            }
-
-            session.Flush();
-        }
-
         expressLogService.UserLog(expressId, ExpressLogType.Delete, userId);
 
+        // 设置日志中的快递单关联为空
         var expressLogList = session.Query<ExpressLogInfo>()
             .Where(e => e.Express!.Id == expressId)
             .ToList();
@@ -126,6 +115,42 @@ public class ExpressService {
             session.Flush();
         }
 
+        // 设置尺寸重量中的快递单关联为空
+        var sizeWeightList = session.Query<ExpressSizeWeightInfo>()
+            .Where(e => e.Express!.Id == expressId)
+            .ToList();
+        foreach (var sw in sizeWeightList) {
+            sw.Express = null;
+            session.Update(sw);
+        }
+
+        session.Flush();
+
+        // 设置快递单图片中的快递单关联为空
+        var photoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => e.Express!.Id == expressId)
+            .ToList();
+        foreach (var p in photoList) {
+            p.Express = null;
+            session.Update(p);
+        }
+
+        session.Flush();
+
+        // 删除上下架排班
+        var shelfScheduleList = session
+            .Query<ExpressShelfScheduleInfo>()
+            .Where(e => e.Express.Id == expressId)
+            .ToList();
+        if (shelfScheduleList.Count != 0) {
+            foreach (var shelfSchedule in shelfScheduleList) {
+                session.Delete(shelfSchedule);
+            }
+
+            session.Flush();
+        }
+
+        // 快递单物品
         var expressGoodsList = session.Query<ExpressGoodsInfo>()
             .Where(e => e.Express.Id == expressId)
             .ToList();
