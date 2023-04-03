@@ -166,7 +166,17 @@ public class HomeController : Controller {
 
         string homeNote = @"
 <div style='font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #545556;'>亲爱的舜达全球集运用户</div>
-<div style='font-size: 14px; line-height: 22px; color: #545556;'>你进入小程序后，请点击仓库地址图标，并一键复制所有信息，在淘宝/京东/拼多多等粘贴您的地址信息，请一定要将ID编号输入在收件人名字后面和地址结尾处，避免被快递公司隐藏。</div>
+<div style='font-size: 14px; line-height: 22px; color: #545556;'>
+    <div>
+        你进入小程序后，请点击仓库地址图标，并一键复制所有信息，在淘宝/京东/拼多多等粘贴您的地址信息，请一定要将ID编号输入在收件人名字后面和地址结尾处，避免被快递公司隐藏。
+    </div>
+    <div>
+        邮寄包裹之后，请及时预报快递单号，可快速入库。
+    </div>
+    <div>
+        另外，即日起，促销价格已上线。详情可查看【运费说明】
+    </div>
+</div>
 ";
 
         var model = new HomeClientHomeDataModel {
