@@ -29,6 +29,7 @@ public class LogisticsOrderListController : Controller {
     private readonly LogisticsOrderRemarkService logisticsOrderRemarkService;
     private readonly WarehouseService warehouseService;
     private readonly PassResService passResService;
+    private readonly LogisticsOrderExcelService logisticsOrderExcelService;
 
     public LogisticsOrderListController(ISession session,
         LoginUserService loginUserService,
@@ -36,7 +37,8 @@ public class LogisticsOrderListController : Controller {
         LogisticsOrderStatusService logisticsOrderStatusService,
         LogisticsOrderRemarkService logisticsOrderRemarkService,
         WarehouseService warehouseService,
-        PassResService passResService
+        PassResService passResService,
+        LogisticsOrderExcelService logisticsOrderExcelService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -45,6 +47,7 @@ public class LogisticsOrderListController : Controller {
         this.logisticsOrderRemarkService = logisticsOrderRemarkService;
         this.warehouseService = warehouseService;
         this.passResService = passResService;
+        this.logisticsOrderExcelService = logisticsOrderExcelService;
     }
 
     [HttpGet]
@@ -299,13 +302,13 @@ public class LogisticsOrderListController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/excel/export")]
-    public IActionResult Export() {
-        // todo 导出的时候，加上实际打包的物流方式，不仅仅只有订单的物流方式
-        
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+    public IActionResult Export(LogisticsOrderListQueryParam queryParam) {
+        IList<LogisticsOrderInfo> orderList = GetListCriteria(queryParam)
+            .AddOrder(Order.Asc(nameof(Entity.Id)))
+            .List<LogisticsOrderInfo>();
+
+        byte[] excelContent = logisticsOrderExcelService.Export(orderList);
+        return File(excelContent, ContentType.Xlsx, "订单列表.xlsx");
     }
 
     [HttpPost]

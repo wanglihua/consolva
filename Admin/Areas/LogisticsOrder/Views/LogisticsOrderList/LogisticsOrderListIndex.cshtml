@@ -113,25 +113,28 @@
         <script type="text/javascript">
             function exportOrder() {
                 $.msg.confirm("确认要导出订单吗？", function() {
-                    var params = $.param({
-                        '@(nameof(LogisticsOrderListQueryParam.MenuType))': '@(Model.MenuType)',
-                        '@(nameof(LogisticsOrderListQueryParam.CountryQuery))': $('#countryQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.OrderIdQuery))': $('#orderIdQuery').val(),            
-                        '@(nameof(LogisticsOrderListQueryParam.CodeQuery))': $('#codeQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.MobileQuery))': $('#mobileQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.PayStatusQuery))': $('#payStatusQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.ReceivingWarehouseIdQuery))': $('#receivingWarehouseIdQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.FirstModeTypeQuery))': $('#firstModeTypeQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
-                        '@(nameof(LogisticsOrderListQueryParam.TimeRangeTypeQuery))': $('#timeRangeTypeQuery').val()
-                    });
-            
                     var url = '@Url.Action("Export", "LogisticsOrderList")?' + params;
                     $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+                    
+                    downloadFile({
+                        url: "@Url.Action("Export", "LogisticsOrderList")",
+                        data: {
+                            '@(nameof(LogisticsOrderListQueryParam.MenuType))': '@(Model.MenuType)',
+                            '@(nameof(LogisticsOrderListQueryParam.CountryQuery))': $('#countryQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.OrderIdQuery))': $('#orderIdQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.CodeQuery))': $('#codeQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.CustomerCodeQuery))': $('#customerCodeQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.MobileQuery))': $('#mobileQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.OrderStatusQuery))': $('#orderStatusQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.PayStatusQuery))': $('#payStatusQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.ReceivingWarehouseIdQuery))': $('#receivingWarehouseIdQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.FirstModeTypeQuery))': $('#firstModeTypeQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.EndDateQuery))': $('#endDateQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.TimeRangeTypeQuery))': $('#timeRangeTypeQuery').val(),
+                            }
+                        }); 
                 });
             }
         </script>
