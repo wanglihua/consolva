@@ -231,7 +231,7 @@ public class LogisticsOrderExcelService {
                 var orderExpressIdList = orderExpressList.Select(e => e.Id).ToList();
                 var orderExpressGoodsList = expressGoodsList.Where(e => orderExpressIdList.Contains(e.Express.Id)).ToList();
 
-                var thisOrderFirstModeList = orderFirstModeList.Where(e => orderIdList.Contains(e.Order.Id)).ToList();
+                var thisOrderFirstModeList = orderFirstModeList.Where(e => e.Order.Id == orderId).ToList();
 
                 row = sheet.CreateRow(rowIndex++);
                 row.HeightInPoints = rowHeight;
@@ -251,8 +251,12 @@ public class LogisticsOrderExcelService {
                 cell = row.CreateCell(cellIndex++);
                 cell.CellStyle = contentCenterCellStyle;
                 cell.SetCellType(CellType.String);
-                cell.SetCellValue(order.GoodsType?.Name);
+                cell.SetCellValue(order.GoodsType.Name);
 
+                cell = row.CreateCell(cellIndex++);
+                cell.CellStyle = contentCenterCellStyle;
+                cell.SetCellType(CellType.String);
+                cell.SetCellValue(order.Warehouse.Name);
 
                 cell = row.CreateCell(cellIndex++);
                 cell.CellStyle = contentCenterCellStyle;
