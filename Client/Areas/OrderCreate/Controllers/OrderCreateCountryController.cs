@@ -70,12 +70,20 @@ public class OrderCreateCountryController : Controller {
         }
 
         // 显示国家列表
-        var countryItemList = Country.GetNoChinaList()
-            .Select(e => new OrderCreateCountryListItem {
-                Id = e.Id,
-                Name = e.Name,
-            })
-            .ToList();
+        var countryItemList = new List<OrderCreateCountryListItem>();
+
+        var countryList = Country.GetNoChinaList();
+        foreach (var c in countryList) {
+            string name = c.Name;
+            if (c == Country.Australia || c == Country.America || c == Country.Canada) {
+                name = $"{name}(已开通)";
+            }
+
+            countryItemList.Add(new OrderCreateCountryListItem {
+                Id = c.Id,
+                Name = name,
+            });
+        }
 
         return Json(new JsonResultData {
             Success = true,

@@ -176,6 +176,9 @@ public class HomeController : Controller {
     <div>
         另外，即日起，促销价格已上线。详情可查看【运费说明】
     </div>
+    <div>
+        悉尼海运，已开启，可联系客服咨询价格。
+    </div>
 </div>
 ";
 
