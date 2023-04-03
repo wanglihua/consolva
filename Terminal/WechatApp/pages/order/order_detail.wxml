@@ -210,6 +210,27 @@
         </block>
 
         <!-- 订单图片 -->
+        <block wx:if="{{ orderDetail.photoTypeList && orderDetail.photoTypeList.length !== 0 }}">
+            <van-cell title="订单图片({{ orderDetail.totalPhotoCount }})" value="{{ photoShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onPhotoHeaderClick"/>
+            <van-tabs>
+                <block wx:for="{{ orderDetail.photoTypeList }}" wx:key="id" wx:for-item="photoType" wx:for-index="index">
+                    <van-tab title="{{ photoType.name }}({{ photoType.photoCount }}张)" type="card">
+                        <view style="margin: 18rpx 0;">
+                            <block wx:for="{{ photoType.photoList }}" wx:key="id" wx:for-item="photo" wx:for-index="index">
+                                <van-image height="160rpx" fit="heightFix" lazy-load src="{{ photo.smallUrl }}" bind:click="onSmallPhotoClick" data-item="{{ photo }}" use-loading-slot custom-class="express-detail-small-image">
+                                    <van-loading slot="loading" type="spinner" size="20" vertical/>
+                                </van-image>
+                            </block>
+                        </view>
+                    </van-tab>
+                </block>
+            </van-tabs>
+            <van-popup show="{{ showBigPhoto }}" closeable position="bottom" custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;" bind:close="onBigPhotoClose">
+                <van-image width="100%" height="100%" fit="contain" lazy-load src="{{ bigPhoto.bigUrl }}" use-loading-slot>
+                    <van-loading slot="loading" type="spinner" size="20" vertical/>
+                </van-image>
+            </van-popup>
+        </block>
 
     </van-cell-group>
 </view>

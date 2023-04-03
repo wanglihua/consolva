@@ -28,6 +28,10 @@ Page({
             show: false,
             text: "显示",
         },
+        photoShow: {
+            show: false,
+            text: "显示",
+        }
     },
 
     onLoad(options) {
@@ -149,10 +153,40 @@ Page({
         });
     },
 
+    onPhotoHeaderClick(e) {
+        const photoShow = this.data.photoShow;
+        if (photoShow.show) {
+            photoShow.show = false;
+            photoShow.text = "显示";
+        } else {
+            photoShow.show = true;
+            photoShow.text = "隐藏";
+        }
+
+        this.setData({
+            photoShow: photoShow,
+        });
+    },
+
     onViewExpressDetailClick(e) {
         const expressId = e.currentTarget.dataset.item.id;
         wx.navigateTo({
             url: '/pages/express/express_checkin/express_checkin_detail?id=' + expressId,
         });
-    }
+    },
+
+    onSmallPhotoClick(e) {
+        console.log(e);
+        const photo = e.currentTarget.dataset.item;
+        this.setData({
+            showBigPhoto: true,
+            bigPhoto: photo,
+        });
+    },
+
+    onBigPhotoClose(e) {
+        this.setData({
+            showBigPhoto: false,
+        });
+    },
 })
