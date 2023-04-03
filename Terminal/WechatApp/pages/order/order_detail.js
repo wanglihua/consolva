@@ -147,5 +147,12 @@ Page({
         this.setData({
             feeShow: feeShow,
         });
+    },
+
+    onViewExpressDetailClick(e) {
+        const expressId = e.currentTarget.dataset.item.id;
+        wx.navigateTo({
+            url: '/pages/express/express_checkin/express_checkin_detail?id=' + expressId,
+        });
     }
 })

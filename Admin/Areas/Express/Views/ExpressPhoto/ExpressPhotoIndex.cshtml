@@ -20,13 +20,6 @@
         刷新
     </button>
 
-    @*
-    <button type="button" class="btn btn-success btn-sm" onclick="showExpressPhotoDetail()">
-        <i class="ace-icon fa fa-plus"></i>
-        新增
-    </button>
-    *@
-
     @if (Model.CanExpressPhotoDelete)
     {
         <button type="button" class="btn btn-danger btn-sm" onclick="deleteExpressPhoto()">
@@ -159,32 +152,6 @@
                 $("#expressPhotoDetailDialog").modal(modalOptions);
             }
         });
-    }
-
-    @* todo a *@
-    function saveExpressPhoto() {
-        var form = $("#expressPhotoDetailForm");
-        var valid = validate(form);
-
-        if (valid) {
-            showMask("提交中...");
-            $.ajax({
-                url: '@Url.Action("Save", "ExpressPhoto")',
-                type: "POST",
-                data: form.serialize(),
-                success: function(data) {
-                    hideMask();
-                    if (data.success === false) {
-                        $.msg.error(data.message);
-                        return;
-                    }
-
-                    $.msg.show(data.message);
-                    $('#expressPhotoDetailDialog').modal('hide');
-                    loadExpressPhotoList();
-                }
-            });
-        }
     }
 
     function deleteExpressPhoto() {

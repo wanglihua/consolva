@@ -32,4 +32,14 @@ public class OrderDetailModel {
 
     [JsonProperty("fee")]
     public OrderDetailFeeItem Fee { get; set; } = new();
+
+    #region photo
+
+    [JsonProperty("totalPhotoCount")]
+    public int TotalPhotoCount { get; set; }
+
+    [JsonProperty("photoTypeList")]
+    public IList<OrderDetailPhotoTypeListItem> PhotoTypeList = new List<OrderDetailPhotoTypeListItem>();
+
+    #endregion
 }

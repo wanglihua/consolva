@@ -99,7 +99,13 @@
             <block wx:if="{{ expressListShow.show }}">
                 <block wx:for="{{ orderDetail.expressList }}" wx:key="id" wx:for-item="express" wx:for-index="expressIndex">
                     <view>
-                        <van-cell title="快递单#{{ expressIndex + 1 }}" border="{{ true }}" custom-class="express-item"/>
+                        <van-cell title="快递单#{{ expressIndex + 1 }}" border="{{ true }}" custom-class="express-item">
+                            <view slot="right-icon">
+                                <view style="padding-left: 5px; color: #1989fa;" bind:tap="onViewExpressDetailClick" data-item="{{ express }}">
+                                    <van-icon class-prefix="iconfont" name="view-detail" color="#1989fa"/>查看详细
+                                </view>
+                            </view>
+                        </van-cell>
                         <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="express-item" bind:click="onCopyClick" data-item="{{ express.trackingNo }}">
                             <view slot="right-icon">
                                 <view style="padding-left: 5px;">
@@ -130,6 +136,7 @@
                             <view class="express-goods-item-last-vspace"/>
                         </view>
                     </block>
+                    <view class="item-last-vspace"/>
                 </block>
             </block>
             <view class="item-last-vspace"/>

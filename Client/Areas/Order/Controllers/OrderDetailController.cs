@@ -20,17 +20,20 @@ public class OrderDetailController : Controller {
     private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressSizeWeightService expressSizeWeightService;
     private readonly ExpressService expressService;
+    private readonly ExpressPhotoFileService expressPhotoFileService;
 
     public OrderDetailController(
         ISession session,
         LoginCustomerService loginCustomerService,
         ExpressSizeWeightService expressSizeWeightService,
-        ExpressService expressService
+        ExpressService expressService,
+        ExpressPhotoFileService expressPhotoFileService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressSizeWeightService = expressSizeWeightService;
         this.expressService = expressService;
+        this.expressPhotoFileService = expressPhotoFileService;
     }
 
     [HttpPost]
@@ -331,6 +334,29 @@ public class OrderDetailController : Controller {
             ArrearsAmount = orderDetailItem.ArrearsAmount,
         };
 
+        // photo
+        var photoList = session.Query<ExpressPhotoInfo>().Where(e => e.Order!.Id == orderId).ToList();
+        var photoTypeList = photoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
+
+        var photoTypeItemList = photoTypeList
+            .Select(e => {
+                var typePhotoList = photoList
+                    .Where(p => p.Type.Id == e.Id).ToList();
+                return new OrderDetailPhotoTypeListItem {
+                    Id = e.Id,
+                    Name = e.Name,
+                    PhotoList = typePhotoList.OrderBy(p => p.Id)
+                        .Select(p => new OrderDetailPhotoListItem {
+                            Id = p.Id,
+                            SmallUrl = expressPhotoFileService.GetSmallImageFullUrlForApp(p, OssSiteLocType.HongKong),
+                            BigUrl = expressPhotoFileService.GetBigImageFullUrlForApp(p, OssSiteLocType.HongKong)
+                        })
+                        .ToList(),
+                    PhotoCount = typePhotoList.Count,
+                };
+            })
+            .ToList();
+
         // 订单详细数据
         var model = new OrderDetailModel {
             Order = orderDetailItem,
@@ -345,6 +371,8 @@ public class OrderDetailController : Controller {
             OrderPackData = orderPackDataItem,
             HasOrderFee = orderFeeList.Count > 0,
             Fee = feeItem,
+            TotalPhotoCount = photoList.Count,
+            PhotoTypeList = photoTypeItemList,
         };
 
         return Json(new JsonResultData {

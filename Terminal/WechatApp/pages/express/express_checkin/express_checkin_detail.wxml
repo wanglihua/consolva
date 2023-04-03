@@ -1,6 +1,6 @@
 <header />
 <view class="container">
-    <van-cell-group title="已入库快递单详细" />
+    <van-cell-group title="快递单详细" />
 
     <van-cell-group custom-class="items">
         <van-cell title="快递单详情" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
