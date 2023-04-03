@@ -176,7 +176,6 @@ Page({
     },
 
     onSmallPhotoClick(e) {
-        console.log(e);
         const photo = e.currentTarget.dataset.item;
         this.setData({
             showBigPhoto: true,
