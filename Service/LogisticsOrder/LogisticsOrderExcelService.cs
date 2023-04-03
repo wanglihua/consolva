@@ -22,8 +22,6 @@ public class LogisticsOrderExcelService {
     }
 
     public byte[] Export(IList<LogisticsOrderInfo> orderList) {
-        // 导出的时候，优先实际打包的物流方式，还没打包时取订单的创建物流方式
-
         if (orderList == null || orderList.Count == 0) {
             throw new ValidationException("订单列表不能为空！");
         }
