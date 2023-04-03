@@ -118,8 +118,16 @@ public class CouponService {
         }
 
         var today = DateTime.Today;
-        if ((coupon.Order?.Id ?? 0) != orderId && coupon.Batch.Expire < today) {
-            throw new ValidationException($"优惠券{coupon.Code}已过期！");
+        if ((coupon.Order?.Id ?? 0) != orderId) {
+            if (coupon.GetMethod == CouponGetMethod.Follow) {
+                if (coupon.Expire != null && coupon.Expire < today) {
+                    throw new ValidationException($"优惠券{coupon.Code}已过期！");
+                }
+            } else {
+                if (coupon.Batch.Expire < today) {
+                    throw new ValidationException($"优惠券{coupon.Code}已过期！");
+                }
+            }
         }
 
         // 检查客服所在VIP级别是否支持优惠券

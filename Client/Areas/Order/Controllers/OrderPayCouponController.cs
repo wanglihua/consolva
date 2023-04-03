@@ -90,7 +90,7 @@ public class OrderPayCouponController : Controller {
                 Type = e.Batch.Type.Name,
                 Rule = e.Batch.Rule,
                 RuleDesc = e.Batch.RuleDesc,
-                Expire = e.Batch.Expire.ToString("yyyy-MM-dd HH:mm")
+                Expire = (e.GetMethod == CouponGetMethod.Follow && e.Expire != null) ? e.Expire.Value.ToString("yyyy-MM-dd") : e.Batch.Expire.ToString("yyyy-MM-dd"),
             }).ToList();
 
         if (orderCoupon != null && couponIdList.Contains(orderCouponId) == false) {
