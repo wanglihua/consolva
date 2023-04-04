@@ -138,18 +138,18 @@ public class LogisticsOrderClientListService {
         if (param.Cate == LogisticsOrderStatusClientCate.Pay) {
             var orderStatusListMayPay = new List<LogisticsOrderStatus> {
                 LogisticsOrderStatus.Packed, // 一般也就这个状态
-                LogisticsOrderStatus.WaitTransfer,
-                LogisticsOrderStatus.Transferred,
+                LogisticsOrderStatus.WaitShip,
+                LogisticsOrderStatus.Shipped,
             };
             query = query.Where(e => (e.PayStatus != PayStatus.Paid || e.ArrearsAmountFormula > 0) && orderStatusListMayPay.Contains(e.OrderStatus));
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.WaitingTransport) {
-            query = query.Where(e => (e.OrderStatus == LogisticsOrderStatus.Packed || e.OrderStatus == LogisticsOrderStatus.WaitTransfer) && e.ArrearsAmountFormula <= 0);
+            query = query.Where(e => (e.OrderStatus == LogisticsOrderStatus.Packed || e.OrderStatus == LogisticsOrderStatus.WaitShip) && e.ArrearsAmountFormula <= 0);
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.Transporting) {
-            query = query.Where(e => e.OrderStatus == LogisticsOrderStatus.Transferred);
+            query = query.Where(e => e.OrderStatus == LogisticsOrderStatus.Shipped);
         }
 
         if (param.Cate == LogisticsOrderStatusClientCate.Delivered) {

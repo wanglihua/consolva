@@ -21,17 +21,23 @@ public class PackBoxController : Controller {
     private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
+    private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
+    private readonly LogisticsOrderActionService logisticsOrderActionService;
 
     public PackBoxController(
         ISession session,
         LoginUserService loginUserService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
-        LogisticsOrderPaySumService logisticsOrderPaySumService
+        LogisticsOrderPaySumService logisticsOrderPaySumService,
+        LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
+        LogisticsOrderActionService logisticsOrderActionService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
+        this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
+        this.logisticsOrderActionService = logisticsOrderActionService;
     }
 
     [AdminAuth(PassRes.AdminApp.PackBoxQuery)]
@@ -59,10 +65,9 @@ public class PackBoxController : Controller {
         // if (logisticsOrder.ArrearsAmountFormula > 0)
         // 这里不用 ArrearsAmountFormula 判断的原因是 ArrearsAmountFormula 是数据库表达式计算的结果，需要再查询一下数据库，才成让刚刚的合计起作用
         decimal arrearsAmount = order.OrderAmount - order.PaidAmount;
+        bool hasArrears = arrearsAmount > 0;
 
         string packBoxCode = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
-
-        bool hasArrears = arrearsAmount > 0;
 
         // todo 改成data方式，加上 物流方式，地址等等信息
 
@@ -80,40 +85,62 @@ public class PackBoxController : Controller {
     [AdminAuth(PassRes.AdminApp.PackBoxShip)]
     [HttpPost]
     [Route("/admin/app/pack/box/ship")]
-    public IActionResult Ship(int packBoxId) {
-        LogisticsOrderPackBoxInfo? packBox = session.Get<LogisticsOrderPackBoxInfo>(packBoxId);
+    public IActionResult Ship(PackBoxShipParam param) {
+        ValidationUtil.Validate<PackBoxShipParamValidator, PackBoxShipParam>(param);
+
+        int loginUserId = loginUserService.GetLoginUserId();
+        var loginUser = loginUserService.GetLoginUser();
+
+        LogisticsOrderPackBoxInfo? packBox = session.Get<LogisticsOrderPackBoxInfo>(param.PackBoxId);
         if (packBox == null) {
-            throw new ValidationException($"指定的箱号#{packBoxId}箱号不存在！");
+            throw new ValidationException($"指定的箱号#{param.PackBoxId}箱号不存在！");
         }
 
-        /*
-        if (hasArrearsAmount == false && logisticsOrder.Cate == LogisticsOrderCate.Air) {
-            // 不欠费的空运订单，相当于是进行了出库操作
-            int orderId = logisticsOrder.Id;
-            var orderExtra = session.Query<LogisticsOrderExtraInfo>()
-                .Where(e => e.LogisticsOrder.Id == orderId)
-                .Take(1)
-                .SingleOrDefault();
-            if (orderExtra != null) // 正常情况下，这个数据肯定是存在的。相当于这个判断是有点冗余的
-            {
-                orderExtra.CheckoutTime = DateTime.Now;
-                session.Update(orderExtra);
-                session.Flush();
+        DateTime now = DateTime.Now;
 
-                int loginUserId = userApiTokenService.User?.Id ?? 0;
-                logisticsOrderActionService.NewAction(logisticsOrder, LogisticsOrderActionType.AirOrderCheckout, loginUserId);
+        NHibernateUtil.Initialize(packBox.Order);
+        var order = packBox.Order;
+        int orderId = order.Id;
 
-                // 空运订单转运
-                if (logisticsOrder.OrderStatus == LogisticsOrderStatus.CnPacked || logisticsOrder.OrderStatus == LogisticsOrderStatus.CnWaitTransfer) {
-                    logisticsOrder.OrderStatus = LogisticsOrderStatus.CnTransferred;
-                    session.Update(logisticsOrder);
-                    session.Flush();
+        // 判断欠费前先做下合计
+        logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
 
-                    logisticsOrderActionService.NewAction(logisticsOrder, LogisticsOrderActionType.Transfer, loginUserId);
-                }
-            }
+        // 欠费检查
+        // if (logisticsOrder.ArrearsAmountFormula > 0)
+        // 这里不用 ArrearsAmountFormula 判断的原因是 ArrearsAmountFormula 是数据库表达式计算的结果，需要再查询一下数据库，才成让刚刚的合计起作用
+        decimal arrearsAmount = order.OrderAmount - order.PaidAmount;
+        bool hasArrears = arrearsAmount > 0;
+
+        if (hasArrears == true) {
+            throw new ValidationException("订单有欠费，不能设置箱号已发货！");
         }
-        */
+
+        var packBoxStatusBefor = packBox.Status;
+        packBox.Status = LogisticsOrderPackBoxStatus.Ship;
+        var packBoxStatusAfter = packBox.Status;
+
+        packBox.ShipTime = now;
+        packBox.ShipUser = loginUser;
+
+        session.Update(packBox);
+        session.Flush();
+
+        // 箱号日志还没有记录
+        logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Ship, packBoxStatusBefor, packBoxStatusAfter, loginUserId);
+
+        // 检查是不是订单所有箱号都已经发货
+        var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>().Where(e => e.Order.Id == orderId).ToList();
+
+        int notShipPackBoxCount = orderPackBoxList.Where(e => e.Status.IsShip() == false).Count();
+        // 如果所有箱号都已经发货了
+        if (notShipPackBoxCount == 0) {
+            order.OrderStatus = LogisticsOrderStatus.Shipped;
+            order.TransferTime = now;
+            session.Update(order);
+            session.Flush();
+        }
+
+        logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Transfer, loginUserId);
 
         return Json(new JsonResultData {
             Success = true,

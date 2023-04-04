@@ -22,14 +22,14 @@ public class LogisticsOrderStatus : CodeTypeBase {
     public static readonly LogisticsOrderStatus Packed = new LogisticsOrderStatus(3000, "已打包", "已打包");
 
     /// <summary>
-    /// 等待转运
+    /// 待发货
     /// </summary>
-    public static readonly LogisticsOrderStatus WaitTransfer = new LogisticsOrderStatus(4000, "待转运", "待转运");
+    public static readonly LogisticsOrderStatus WaitShip = new LogisticsOrderStatus(4000, "待发货", "待发货");
 
     /// <summary>
-    /// 已转运
+    /// 已发货
     /// </summary>
-    public static readonly LogisticsOrderStatus Transferred = new LogisticsOrderStatus(5000, "已转运", "已转运");
+    public static readonly LogisticsOrderStatus Shipped = new LogisticsOrderStatus(5000, "已发货", "已发货");
 
     /// <summary>
     /// 已妥投
@@ -55,8 +55,8 @@ public class LogisticsOrderStatus : CodeTypeBase {
         Create,
         WaitPack,
         Packed,
-        WaitTransfer,
-        Transferred,
+        WaitShip,
+        Shipped,
         Delivered,
         Completed,
         Canceled,

@@ -27,11 +27,11 @@ public class LogisticsOrderStatusService {
             return "#B1A0C7";
         }
 
-        if (status == LogisticsOrderStatus.WaitTransfer) {
+        if (status == LogisticsOrderStatus.WaitShip) {
             return "#C4D79B";
         }
 
-        if (status == LogisticsOrderStatus.Transferred) {
+        if (status == LogisticsOrderStatus.Shipped) {
             return "#C4D79B";
         }
 
