@@ -1299,6 +1299,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType.Name;
         string orderGoodsTypeName = orderPack.Order.GoodsType.Name;
+        string country = orderPack.Order.Country.Name;
 
         return Json(new Dictionary<string, object> {
             { "success", true },
@@ -1320,6 +1321,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "packTime", packTime },
             { "orderGoodsTypeName", orderGoodsTypeName },
             { "expressGoodsTypeName", expressGoodsTypeName },
+            { "country", country },
             { "printCount", printCount }
         });
     }
@@ -1377,6 +1379,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType.Code;
         string orderGoodsTypeName = orderPack.Order.GoodsType.Code;
+        string country = orderPack.Order.Country.Name;
 
         return Json(new Dictionary<string, object> {
             { "success", true },
@@ -1396,6 +1399,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "packTime", packTime },
             { "orderGoodsTypeName", orderGoodsTypeName },
             { "expressGoodsTypeName", expressGoodsTypeName },
+            { "country", country },
             { "printCount", printCount }
         });
     }
@@ -1452,6 +1456,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
         string expressGoodsTypeName = orderPack.GoodsType.Code;
         string orderGoodsTypeName = orderPack.Order.GoodsType.Code;
+        string country = orderPack.Order.Country.Name;
 
         return Json(new Dictionary<string, object> {
             { "success", true },
@@ -1471,6 +1476,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "packTime", packTime },
             { "orderGoodsTypeName", orderGoodsTypeName },
             { "expressGoodsTypeName", expressGoodsTypeName },
+            { "country", country },
             { "printCount", printCount }
         });
     }
@@ -1519,6 +1525,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             address = $"{receiveAddress.UnitLoc}, " + address;
         }
 
+        string country = orderPack.Order.Country.Name;
+
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "customerCode", customerCode },
@@ -1533,6 +1541,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "consignee", consignee },
             { "mobile", mobile },
             { "address", address },
+            { "country", country },
             { "printCount", printCount }
         });
     }

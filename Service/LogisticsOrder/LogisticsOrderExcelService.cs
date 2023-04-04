@@ -45,13 +45,6 @@ public class LogisticsOrderExcelService {
             .Where(e => expressIdList.Contains(e.Express.Id))
             .ToList();
 
-        // 仓位列表
-        var storageLocIdList = expressList.Select(e => e.StorageLoc.Id).ToList();
-        var storageLocList = session.Query<StorageLocInfo>()
-            .Fetch(e => e.Shelf)
-            .Where(e => storageLocIdList.Contains(e.Id))
-            .ToList();
-
         // 打包数据
         var packDataList = session.Query<LogisticsOrderPackDataInfo>()
             .Where(e => orderIdList.Contains(e.Order.Id))
@@ -205,8 +198,6 @@ public class LogisticsOrderExcelService {
                 }
 
                 var orderExpressList = expressList.Where(e => e.Order!.Id == orderId).ToList();
-                var orderStorageLocIdList = orderExpressList.Select(e => e.StorageLoc.Id).ToList();
-                var orderStorageLocList = storageLocList.Where(e => orderStorageLocIdList.Contains(e.Id)).ToList();
 
                 var orderExpressIdList = orderExpressList.Select(e => e.Id).ToList();
                 var orderExpressGoodsList = expressGoodsList.Where(e => orderExpressIdList.Contains(e.Express.Id)).ToList();
