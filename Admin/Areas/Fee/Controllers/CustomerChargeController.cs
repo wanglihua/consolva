@@ -81,9 +81,9 @@ public class CustomerChargeController : Controller
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CustomerChargeListQueryParam queryParam)
-    {
+    private ICriteria GetListCriteria(CustomerChargeListQueryParam queryParam) {
         var criteria = session.CreateCriteria<CustomerChargeInfo>();
+        criteria = criteria.CreateAlias($"{nameof(CustomerChargeInfo.Customer)}", $"{nameof(CustomerChargeInfo.Customer)}");
 
         criteria.SetReadOnly(true);
 
