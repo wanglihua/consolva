@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
+using shunda.Admin.Areas.App.Models.PackBox;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
@@ -35,8 +37,10 @@ public class PackBoxController : Controller {
     [AdminAuth(PassRes.AdminApp.PackBoxQuery)]
     [HttpPost]
     [Route("/admin/app/pack/box/query")]
-    public IActionResult Query(string packBoxCode) {
-        LogisticsOrderPackBoxInfo? packBox = logisticsOrderPackBoxService.ParseBoxCode(packBoxCode, throwException: false);
+    public IActionResult Query(PackBoxQueryParam param) {
+        ValidationUtil.Validate<PackBoxQueryParamValidator, PackBoxQueryParam>(param);
+
+        LogisticsOrderPackBoxInfo? packBox = logisticsOrderPackBoxService.ParseBoxCode(param.PackBoxCode, throwException: false);
         if (packBox == null) {
             throw new ValidationException("箱号格式不对或箱号不存在！");
         }
@@ -45,9 +49,8 @@ public class PackBoxController : Controller {
         var order = packBox.Order;
         int orderId = order.Id;
 
-        NHibernateUtil.Initialize(order.Customer);
-        CustomerInfo customer = order.Customer;
-
+        // NHibernateUtil.Initialize(order.Customer);
+        // CustomerInfo customer = order.Customer;
 
         // 判断欠费前先做下合计
         logisticsOrderPaySumService.SumFeeAndUpdatePayStatus(orderId);
@@ -57,20 +60,20 @@ public class PackBoxController : Controller {
         // 这里不用 ArrearsAmountFormula 判断的原因是 ArrearsAmountFormula 是数据库表达式计算的结果，需要再查询一下数据库，才成让刚刚的合计起作用
         decimal arrearsAmount = order.OrderAmount - order.PaidAmount;
 
-        string packBoxCodeGet = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
+        string packBoxCode = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
 
-        bool hasArrearsAmount = arrearsAmount > 0;
+        bool hasArrears = arrearsAmount > 0;
 
         // todo 改成data方式，加上 物流方式，地址等等信息
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
             { "message", "箱号信息获取成功！" },
-            { "packBoxCode", packBoxCodeGet },
+            { "packBoxCode", packBoxCode },
             { "orderCode", order.Code },
             { "customerCode", order.CustomerCode },
             { "arrearsAmount", arrearsAmount.ToString("#0.00") },
-            { "hasArrearsAmount", hasArrearsAmount },
+            { "hasArrears", hasArrears },
         });
     }
 
@@ -112,9 +115,9 @@ public class PackBoxController : Controller {
         }
         */
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "箱号发货成功！" },
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "箱号发货成功！",
         });
     }
 }
