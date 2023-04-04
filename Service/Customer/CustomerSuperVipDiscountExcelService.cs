@@ -182,8 +182,10 @@ public class CustomerSuperVipDiscountExcelService {
             }
 
             vipDiscountInDb.Discount = discount.Discount;
+            vipDiscountInDb.Description = discount.Description;
+            vipDiscountInDb.User = discount.User;
 
-            session.SaveOrUpdate(discount);
+            session.SaveOrUpdate(vipDiscountInDb);
         }
 
         session.Flush();
