@@ -59,15 +59,19 @@
             LODOP.SET_PRINT_STYLEA(0,"Horient",3);
             LODOP.SET_PRINT_STYLEA(0,"Vorient",3);
             
-            LODOP.ADD_PRINT_TEXT("85.00mm","4.60mm","80.00mm","7.01mm", "收件人： " + data.consignee);
+            LODOP.ADD_PRINT_TEXT("80.00mm","4.60mm","80.00mm","7.01mm", "国家： " + data.country);
+            LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
+            LODOP.SET_PRINT_STYLEA(0,"FontSize",16);   
+            
+            LODOP.ADD_PRINT_TEXT("90.00mm","4.60mm","80.00mm","7.01mm", "收件人： " + data.consignee);
             LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
             LODOP.SET_PRINT_STYLEA(0,"FontSize",14);   
             
-            LODOP.ADD_PRINT_TEXT("95.00mm","4.60mm","80.00mm","7.01mm", "电话： " + data.mobile);
+            LODOP.ADD_PRINT_TEXT("100.00mm","4.60mm","80.00mm","7.01mm", "电话： " + data.mobile);
             LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
             LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
             
-            LODOP.ADD_PRINT_TEXT("105.00mm","4.60mm","100.00mm","50.00mm", "地址： " + data.address);
+            LODOP.ADD_PRINT_TEXT("110.00mm","4.60mm","100.00mm","50.00mm", "地址： " + data.address);
             LODOP.SET_PRINT_STYLEA(0,"FontName","微软雅黑");
             LODOP.SET_PRINT_STYLEA(0,"FontSize",14);               
    
