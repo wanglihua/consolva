@@ -66,9 +66,9 @@
                     </a>
                 </div>
                 <div>
-                    <a field="@(nameof(LogisticsOrderInfo.FirstMode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">
+                    <span>
                         头程方式
-                    </a>
+                    </span>
                 </div>
             </th>
             <th style="width: 120px; text-align: center;">
@@ -192,7 +192,8 @@
                             @(logisticsOrder.FirstModeType.Name)
                         </div>
                         <div>
-                            @(logisticsOrder.FirstMode.Name)
+                            @* @(logisticsOrder.FirstMode.Name) *@
+                            @(logisticsOrder.FirstModeNameCache)
                         </div>
                     </td>
                     <td style="text-align: center;">

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
@@ -140,8 +141,20 @@ public class LogisticsOrderListController : Controller {
             .Where(e => orderIdList.Contains(e.Order.Id))
             .ToList();
 
+        var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Fetch(e => e.FirstMode)
+            .Where(e => orderIdList.Contains(e.Order.Id))
+            .ToList();
+
         foreach (var order in orderList) {
             int orderId = order.Id;
+
+            var thisOrderFirstModeList = orderFirstModeList.Where(e => e.Order.Id == orderId).ToList();
+            if (thisOrderFirstModeList.Count == 0 || thisOrderFirstModeList.Count > 1) {
+                order.FirstModeNameCache = order.FirstMode.Name;
+            } else {
+                order.FirstModeNameCache = thisOrderFirstModeList[0].FirstMode.Name;
+            }
 
             order.ListColorCache = logisticsOrderStatusService.GetOrderListColor(order.OrderStatus);
 

@@ -240,5 +240,13 @@ public class LogisticsOrderInfo : Entity {
     /// </summary>
     public virtual string PackScheduleUserNameCache { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 物流方式名称，用于列表显示
+    /// 如果还没打包就取订单创建物流方式
+    /// 如果打包后只有一个物流方式，就取打包后的物流方式
+    /// 如果打包后有多个物流方式，就取订单创建物流方式
+    /// </summary>
+    public virtual string FirstModeNameCache { get; set; } = string.Empty;
+
     #endregion
 }
