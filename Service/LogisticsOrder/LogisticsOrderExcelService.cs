@@ -50,6 +50,14 @@ public class LogisticsOrderExcelService {
             .Where(e => orderIdList.Contains(e.Order.Id))
             .ToList();
 
+        var orderPackList = session.Query<LogisticsOrderPackInfo>()
+            .Where(e => orderIdList.Contains(e.Order.Id))
+            .ToList();
+
+        var orderPackExpressList = session.Query<LogisticsOrderPackExpressInfo>()
+            .Where(e => orderIdList.Contains(e.Order.Id))
+            .ToList();
+
         // 头程列表, 优先取打包物流方式
         var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
             .Fetch(e => e.FirstMode)
@@ -238,12 +246,51 @@ public class LogisticsOrderExcelService {
 
                     lineList.Add(line);
                 } else {
+                    var thisOrderPackList = orderPackList.Where(e => e.Order.Id == orderId).ToList();
+                    var thisOrderPackExpressList = orderPackExpressList.Where(e => e.Order.Id == orderId).ToList();
+
+                    var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
+                    // 这种情况一般是不会发生的
+                    if (packData == null) {
+                        packData = new LogisticsOrderPackDataInfo {
+                            TotalVolumeWeight = 1,
+                            TotalVolume = 1,
+                        };
+                    }
+
+                    decimal volumeWeightRatio = packData.TotalVolumeWeight / packData.TotalVolume; // 相当与获得订单使用的体积重比例(通用费率体积重分母倒数一般是200)
+
                     bool first = true;
                     foreach (var ofm in thisOrderFirstModeList) {
+                        int orderFirstModeId = ofm.Id;
+                        var modePackList = thisOrderPackList.Where(e => e.OrderFirstMode.Id == orderFirstModeId).ToList();
+
+                        var modePackIdList = modePackList.Select(e => e.Id).ToList();
+                        var modeExpressIdList = thisOrderPackExpressList
+                            .Where(e => modePackIdList.Contains(e.OrderPack.Id))
+                            .Select(e => e.Express.Id)
+                            .ToList();
+                        var modeExpressGoodsList = expressGoodsList.Where(e => modeExpressIdList.Contains(e.Express.Id)).ToList();
+
                         double orderAmount = 0d;
                         if (first == true) {
                             orderAmount = (double)order.OrderAmount;
                         }
+
+                        int totalPackageCount = 0;
+                        decimal totalVolume = 0m;
+                        decimal totalActualWeight = 0m;
+                        decimal maxSideLength = 0m;
+
+                        foreach (var p in modePackList) {
+                            totalPackageCount += p.PackageCount;
+                            totalVolume += p.Length * p.Width * p.Height * p.PackageCount;
+                            totalActualWeight += p.Weight;
+
+                            maxSideLength = Math.Max(maxSideLength, Math.Max(p.Length, Math.Max(p.Width, p.Height)));
+                        }
+
+                        decimal totalVolumeWeight = (totalVolume / 100_00_00) * volumeWeightRatio;
 
                         LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
                             OrderCode = order.Code,
@@ -253,11 +300,11 @@ public class LogisticsOrderExcelService {
                             FirstModeName = $"{ofm.FirstMode.Code}({ofm.FirstMode.Name})",
 
                             OrderAmount = orderAmount,
-                            TotalVolumeWeight = 0d,
-                            TotalActualWeight = 0d,
-                            TotalPackageCount = 0d,
-                            MaxSideLength = 0d,
-                            GoodsNames = "",
+                            TotalVolumeWeight = (double)totalVolumeWeight,
+                            TotalActualWeight = (double)totalActualWeight,
+                            TotalPackageCount = (double)totalPackageCount,
+                            MaxSideLength = (double)maxSideLength,
+                            GoodsNames = string.Join(",", modeExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()),
 
                             Address = address,
                             Consignee = consignee,
