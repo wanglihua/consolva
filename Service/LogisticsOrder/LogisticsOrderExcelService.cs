@@ -120,25 +120,7 @@ public class LogisticsOrderExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = headerCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue("目的仓库");
-
-            sheet.SetColumnWidth(cellIndex, 20 * 256);
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = headerCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue("所在仓位");
-
-            sheet.SetColumnWidth(cellIndex, 20 * 256);
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = headerCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue("仓位数量");
-
-            sheet.SetColumnWidth(cellIndex, 20 * 256);
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = headerCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue("快递单数量");
+            cell.SetCellValue("国家");
 
             sheet.SetColumnWidth(cellIndex, 100 * 256);
             cell = row.CreateCell(cellIndex++);
@@ -254,22 +236,7 @@ public class LogisticsOrderExcelService {
                 cell = row.CreateCell(cellIndex++);
                 cell.CellStyle = contentCenterCellStyle;
                 cell.SetCellType(CellType.String);
-                cell.SetCellValue(order.Warehouse.Name);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(string.Join(",", orderStorageLocList.Select(e => e.GetFullName()).OrderBy(e => e).ToList()));
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = precision0Style;
-                cell.SetCellType(CellType.Numeric);
-                cell.SetCellValue(orderStorageLocList.Count);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = precision0Style;
-                cell.SetCellType(CellType.Numeric);
-                cell.SetCellValue(orderExpressList.Count);
+                cell.SetCellValue(order.Country.Name);
 
                 cell = row.CreateCell(cellIndex++);
                 cell.CellStyle = contentCenterCellStyle;
