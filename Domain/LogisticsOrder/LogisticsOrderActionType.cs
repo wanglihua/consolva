@@ -176,9 +176,9 @@ public class LogisticsOrderActionType : CodeTypeBase
     public static readonly LogisticsOrderActionType PackLoadManualComplete = new LogisticsOrderActionType(35000, "人工录箱号装箱完成", "人工录箱号装箱完成");
 
     /// <summary>
-    /// 订单转运
+    /// 订单发货
     /// </summary>
-    public static readonly LogisticsOrderActionType Transfer = new LogisticsOrderActionType(36000, "订单转运", "订单转运");
+    public static readonly LogisticsOrderActionType Ship = new LogisticsOrderActionType(36000, "订单发货", "订单发货");
 
     /// <summary>
     /// 空运订单出库
@@ -260,7 +260,7 @@ public class LogisticsOrderActionType : CodeTypeBase
         PackLoadComplete,
         PackLoadManual,
         PackLoadManualComplete,
-        Transfer,
+        Ship,
         AirOrderCheckout,
         OrderAirImportExpress,
         OrderStockCheck,

@@ -3,6 +3,7 @@ using NHibernate;
 using shunda.Admin.Areas.App.Models.PackBox;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -85,6 +86,7 @@ public class PackBoxController : Controller {
     [AdminAuth(PassRes.AdminApp.PackBoxShip)]
     [HttpPost]
     [Route("/admin/app/pack/box/ship")]
+    [Transactional]
     public IActionResult Ship(PackBoxShipParam param) {
         ValidationUtil.Validate<PackBoxShipParamValidator, PackBoxShipParam>(param);
 
@@ -128,6 +130,8 @@ public class PackBoxController : Controller {
         // 箱号日志还没有记录
         logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Ship, packBoxStatusBefor, packBoxStatusAfter, loginUserId);
 
+        string message = "箱号发货成功！";
+
         // 检查是不是订单所有箱号都已经发货
         var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>().Where(e => e.Order.Id == orderId).ToList();
 
@@ -137,14 +141,19 @@ public class PackBoxController : Controller {
             order.OrderStatus = LogisticsOrderStatus.Shipped;
             order.TransferTime = now;
             session.Update(order);
+
+            logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Ship, loginUserId);
+
             session.Flush();
+
+            message = "订单发货成功！";
         }
 
-        logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Transfer, loginUserId);
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "箱号发货成功！",
+            Message = message,
         });
     }
 }
