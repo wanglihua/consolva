@@ -70,16 +70,22 @@ public class PackBoxController : Controller {
 
         string packBoxCode = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
 
-        // todo 改成data方式，加上 物流方式，地址等等信息
+        NHibernateUtil.Initialize(order.FirstMode);
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "箱号信息获取成功！" },
-            { "packBoxCode", packBoxCode },
-            { "orderCode", order.Code },
-            { "customerCode", order.CustomerCode },
-            { "arrearsAmount", arrearsAmount.ToString("#0.00") },
-            { "hasArrears", hasArrears },
+        var model = new PackBoxQueryModel {
+            PackBoxCode = packBoxCode,
+            OrderCode = order.Code,
+            CustomerCode = order.CustomerCode,
+            CountryName = order.Country.Name,
+            FirstModeName = order.FirstMode.Name,
+            ArrearsAmount = arrearsAmount.ToString("#0.00"),
+            HasArrears = hasArrears,
+        };
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "箱号信息获取成功！",
+            Data = model,
         });
     }
 
