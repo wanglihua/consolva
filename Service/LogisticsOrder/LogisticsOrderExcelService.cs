@@ -192,116 +192,169 @@ public class LogisticsOrderExcelService {
                     throw new Exception($"订单#{order.Code}收货的地址不能为空！");
                 }
 
-                var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
-                if (packData == null) {
-                    packData = new LogisticsOrderPackDataInfo();
-                }
-
-                var orderExpressList = expressList.Where(e => e.Order!.Id == orderId).ToList();
-
-                var orderExpressIdList = orderExpressList.Select(e => e.Id).ToList();
-                var orderExpressGoodsList = expressGoodsList.Where(e => orderExpressIdList.Contains(e.Express.Id)).ToList();
-
-                var thisOrderFirstModeList = orderFirstModeList.Where(e => e.Order.Id == orderId).ToList();
-
-                row = sheet.CreateRow(rowIndex++);
-                row.HeightInPoints = rowHeight;
-
-                cellIndex = 0;
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(order.Code);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(order.CustomerCode);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(order.GoodsType.Name);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(order.Country.Name);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-
-                if (thisOrderFirstModeList.Count == 0) {
-                    cell.SetCellValue($"{order.FirstMode.Code}({order.FirstMode.Name})");
-                } else {
-                    cell.SetCellValue(string.Join(",", thisOrderFirstModeList.Select(e => $"{e.FirstMode.Code}({e.FirstMode.Name})")));
-                }
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = precision3Style;
-                cell.SetCellType(CellType.Numeric);
-                cell.SetCellValue((double)order.OrderAmount);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = precision3Style;
-                cell.SetCellType(CellType.Numeric);
-                cell.SetCellValue((double)(packData.TotalVolumeWeight));
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = precision3Style;
-                cell.SetCellType(CellType.Numeric);
-                cell.SetCellValue((double)(packData.TotalActualWeight));
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = precision0Style;
-                cell.SetCellType(CellType.Numeric);
-                cell.SetCellValue((double)(packData.TotalPackageCount));
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = precision2Style;
-                cell.SetCellType(CellType.Numeric);
-                cell.SetCellValue((double)(packData.MaxSideLength));
-
-                // 物品信息
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(string.Join(",", orderExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()));
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-
                 string address = $"{orderReceiveAddress.Address}, {orderReceiveAddress.City} {orderReceiveAddress.State} {orderReceiveAddress.Zipcode}";
 
                 if (string.IsNullOrWhiteSpace(orderReceiveAddress.UnitLoc) == false) {
                     address = $"{orderReceiveAddress.UnitLoc}, " + address;
                 }
 
-                cell.SetCellValue(address);
-
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-
                 string consignee = orderReceiveAddress.FirstName;
                 if (string.IsNullOrWhiteSpace(orderReceiveAddress.LastName) == false) {
                     consignee = consignee + " " + orderReceiveAddress.LastName;
                 }
 
-                cell.SetCellValue(consignee);
+                var thisOrderFirstModeList = orderFirstModeList.Where(e => e.Order.Id == orderId).ToList();
 
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(orderReceiveAddress.Mobile);
+                var lineList = new List<LogisticsOrderExcelExportLine>();
 
-                cell = row.CreateCell(cellIndex++);
-                cell.CellStyle = contentCenterCellStyle;
-                cell.SetCellType(CellType.String);
-                cell.SetCellValue(orderReceiveAddress.Company);
+                if (thisOrderFirstModeList.Count == 0) {
+                    var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
+                    if (packData == null) {
+                        packData = new LogisticsOrderPackDataInfo();
+                    }
+
+                    var orderExpressList = expressList.Where(e => e.Order!.Id == orderId).ToList();
+
+                    var orderExpressIdList = orderExpressList.Select(e => e.Id).ToList();
+                    var orderExpressGoodsList = expressGoodsList.Where(e => orderExpressIdList.Contains(e.Express.Id)).ToList();
+
+                    LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
+                        OrderCode = order.Code,
+                        CustomerCode = order.CustomerCode,
+                        GoodsTypeName = order.GoodsType.Name,
+                        CountryName = order.Country.Name,
+                        FirstModeName = $"{order.FirstMode.Code}({order.FirstMode.Name})",
+                        OrderAmount = (double)order.OrderAmount,
+                        TotalVolumeWeight = (double)(packData.TotalVolumeWeight),
+                        TotalActualWeight = (double)(packData.TotalActualWeight),
+                        TotalPackageCount = (double)(packData.TotalPackageCount),
+                        MaxSideLength = (double)(packData.MaxSideLength),
+                        GoodsNames = string.Join(",", orderExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()),
+                        Address = address,
+                        Consignee = consignee,
+                        Mobile = orderReceiveAddress.Mobile,
+                        Company = orderReceiveAddress.Company,
+                    };
+
+                    lineList.Add(line);
+                } else {
+                    bool first = true;
+                    foreach (var ofm in thisOrderFirstModeList) {
+                        double orderAmount = 0d;
+                        if (first == true) {
+                            orderAmount = (double)order.OrderAmount;
+                        }
+
+                        LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
+                            OrderCode = order.Code,
+                            CustomerCode = order.CustomerCode,
+                            GoodsTypeName = order.GoodsType.Name,
+                            CountryName = order.Country.Name,
+                            FirstModeName = $"{ofm.FirstMode.Code}({ofm.FirstMode.Name})",
+
+                            OrderAmount = orderAmount,
+                            TotalVolumeWeight = 0d,
+                            TotalActualWeight = 0d,
+                            TotalPackageCount = 0d,
+                            MaxSideLength = 0d,
+                            GoodsNames = "",
+
+                            Address = address,
+                            Consignee = consignee,
+                            Mobile = orderReceiveAddress.Mobile,
+                            Company = orderReceiveAddress.Company,
+                        };
+
+                        lineList.Add(line);
+
+                        if (first == true) {
+                            first = false;
+                        }
+                    }
+                }
+
+                foreach (var line in lineList) {
+                    row = sheet.CreateRow(rowIndex++);
+                    row.HeightInPoints = rowHeight;
+
+                    cellIndex = 0;
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.OrderCode);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.CustomerCode);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.GoodsTypeName);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.CountryName);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.FirstModeName);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = precision3Style;
+                    cell.SetCellType(CellType.Numeric);
+                    cell.SetCellValue(line.OrderAmount);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = precision3Style;
+                    cell.SetCellType(CellType.Numeric);
+                    cell.SetCellValue(line.TotalVolumeWeight);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = precision3Style;
+                    cell.SetCellType(CellType.Numeric);
+                    cell.SetCellValue(line.TotalActualWeight);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = precision0Style;
+                    cell.SetCellType(CellType.Numeric);
+                    cell.SetCellValue(line.TotalPackageCount);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = precision2Style;
+                    cell.SetCellType(CellType.Numeric);
+                    cell.SetCellValue(line.MaxSideLength);
+
+                    // 物品信息
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.GoodsNames);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.Address);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.Consignee);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.Mobile);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.Company);
+                }
             }
         }
 
