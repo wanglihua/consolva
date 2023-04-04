@@ -38,6 +38,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     private readonly ExpressLogService expressLogService;
     private readonly LogisticsOrderPackService logisticsOrderPackService;
     private readonly LogisticsModeSettingService logisticsModeSettingService;
+    private readonly StorageLocExpressService storageLocExpressService;
 
     public LogisticsOrderGoodsPackController(ISession session,
         LoginUserService loginUserService,
@@ -47,7 +48,8 @@ public class LogisticsOrderGoodsPackController : Controller {
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
         ExpressLogService expressLogService,
         LogisticsOrderPackService logisticsOrderPackService,
-        LogisticsModeSettingService logisticsModeSettingService
+        LogisticsModeSettingService logisticsModeSettingService,
+        StorageLocExpressService storageLocExpressService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -58,6 +60,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         this.expressLogService = expressLogService;
         this.logisticsOrderPackService = logisticsOrderPackService;
         this.logisticsModeSettingService = logisticsModeSettingService;
+        this.storageLocExpressService = storageLocExpressService;
     }
 
     [HttpGet]
@@ -923,6 +926,10 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         session.Flush();
+
+        // 释放仓位，快递单下架时也应该释放仓位
+        IList<int> storageLocIdList = expressList.Select(e => e.StorageLoc.Id).Distinct().ToList();
+        storageLocExpressService.UpdateBatch(storageLocIdList);
 
         return Json(new Dictionary<string, object> {
             { "success", true },
