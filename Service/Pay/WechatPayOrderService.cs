@@ -105,6 +105,7 @@ public class WechatPayOrderService {
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
+        string outTradeNo = payService.GenerateOutTradeNo();
         if (arrearsAmount <= 0) {
             // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了
             var orderPayZeroAmount = new LogisticsOrderPayInfo {
@@ -112,7 +113,7 @@ public class WechatPayOrderService {
                 OrderCode = order.Code,
                 Customer = order.Customer,
                 PayType = PayType.Wechat,
-                OutTradeNo = string.Empty,
+                OutTradeNo = outTradeNo,
                 Amount = 0, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。
                 ScoreDeductBaseAmount = scoreDeductBaseAmount,
                 Status = PayStatus.Paid
@@ -133,7 +134,6 @@ public class WechatPayOrderService {
             };
         }
 
-        string outTradeNo = payService.GenerateOutTradeNo();
         var orderPay = new LogisticsOrderPayInfo {
             Order = order,
             OrderCode = order.Code,

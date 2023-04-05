@@ -5,6 +5,7 @@ using PayPal;
 using PayPal.Api;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargePaypal;
 using shunda.Client.Services;
+using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
@@ -42,6 +43,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
     [HttpPost]
     [Route("/client/charge/paypal/create/url")]
     public IActionResult CreateUrl([FromBody] WechatOfficialAccountChargePaypalCreateUrlParam param) {
+    
         int customerId = loginCustomerService.GetLoginCustomerId();
         decimal amount = param.Amount;
         int amountInt = (int)(amount * 100); // 转成 int 分

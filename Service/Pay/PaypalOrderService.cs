@@ -110,6 +110,9 @@ public class PaypalOrderService {
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
+        // 外部订单号，商户网站订单系统中唯一的订单号
+        string outTradeNo = payService.GenerateOutTradeNo();
+
         if (arrearsAmount <= 0) {
             // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了
             var orderPayZeroAmount = new LogisticsOrderPayInfo {
@@ -117,7 +120,7 @@ public class PaypalOrderService {
                 OrderCode = order.Code,
                 Customer = order.Customer,
                 PayType = PayType.Paypal,
-                OutTradeNo = string.Empty,
+                OutTradeNo = outTradeNo,
                 Amount = 0, // 特殊情况的时候：订单用户原来支付过了一些，第二次支付的时候获得了优惠券折扣，这个折扣正好完全抵掉了欠款，这时就会生成一个支付金额为0的记录，同时把订单标记为已支付。
                 ScoreDeductBaseAmount = scoreDeductBaseAmount,
                 Status = PayStatus.Paid
@@ -132,9 +135,6 @@ public class PaypalOrderService {
         }
 
         string arrearsAmountCurrency = (arrearsAmount / exchangeRate).ToString("#0.00");
-
-        // 外部订单号，商户网站订单系统中唯一的订单号
-        string outTradeNo = payService.GenerateOutTradeNo();
 
         LogisticsOrderPayInfo orderPay = new LogisticsOrderPayInfo {
             Order = order,

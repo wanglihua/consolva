@@ -21,6 +21,8 @@ public class PaypalChargeCreateParam {
     /// 这个URL已经带有 域名 等信息
     /// </summary>
     public string CancelUrl { get; set; } = string.Empty;
+    
+    public string OutTradeNo { get; set; } = string.Empty;
 }
 
 public class PaypalChargeCreateParamValidator : AbstractValidator<PaypalChargeCreateParam> {
