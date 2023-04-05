@@ -91,7 +91,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
 
     [NoLoginRequired]
     [HttpGet]
-    [Route("/client/order/paypal/process")]
+    [Route("/client/charge/paypal/process")]
     [Transactional]
     public IActionResult Process() {
         string payerId = Request.Query["PayerID"];
