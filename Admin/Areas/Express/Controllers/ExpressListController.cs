@@ -29,10 +29,7 @@ namespace shunda.Admin.Areas.Express.Controllers;
 public class ExpressListController : Controller {
     private readonly ISession session;
     private readonly ExpressListService expressListService;
-    private readonly ExpressSizeWeightService expressSizeWeightService;
-    private readonly ExpressPhotoFileService expressPhotoFileService;
     private readonly LoginUserService loginUserService;
-    private readonly CustomerCodeService customerCodeService;
     private readonly ExpressExcelService expressExcelService;
     private readonly ExpressService expressService;
     private readonly WarehouseService warehouseService;
@@ -41,10 +38,7 @@ public class ExpressListController : Controller {
 
     public ExpressListController(ISession session,
         ExpressListService expressListService,
-        ExpressSizeWeightService expressSizeWeightService,
-        ExpressPhotoFileService expressPhotoFileService,
         LoginUserService loginUserService,
-        CustomerCodeService customerCodeService,
         ExpressExcelService expressExcelService,
         ExpressService expressService,
         WarehouseService warehouseService,
@@ -53,10 +47,7 @@ public class ExpressListController : Controller {
     ) {
         this.session = session;
         this.expressListService = expressListService;
-        this.expressSizeWeightService = expressSizeWeightService;
-        this.expressPhotoFileService = expressPhotoFileService;
         this.loginUserService = loginUserService;
-        this.customerCodeService = customerCodeService;
         this.expressExcelService = expressExcelService;
         this.expressService = expressService;
         this.warehouseService = warehouseService;
@@ -69,7 +60,7 @@ public class ExpressListController : Controller {
     public IActionResult Index() {
         ExpressIndexModel model = new ExpressIndexModel();
 
-        model.WarehouseList = warehouseService.GetWarehouseListForAdmin();
+        model.WarehouseList = warehouseService.GetWarehouseListWithCacheForAdmin();
 
         model.CheckinUserList = session.Query<WarehouseWorkerInfo>()
             .Fetch(e => e.User)
