@@ -90,8 +90,8 @@ public class PackBoxDetailActivity extends BaseActivity {
         tvVolume = findViewById(R.id.tvVolume);
         tvUserName = findViewById(R.id.tvUserName);
         tvPackTime = findViewById(R.id.tvPackTime);
-        tvCustomerMobile = findViewById(R.id.tvCustomerMobile);
-        tvOrderMobile = findViewById(R.id.tvOrderMobile);
+        tvCustomerMobile = findViewById(R.id.tvCountryName);
+        tvOrderMobile = findViewById(R.id.tvFirstModeName);
         tvConsignee = findViewById(R.id.tvConsignee);
         tvAddress = findViewById(R.id.tvAddress);
         tvZipcode = findViewById(R.id.tvZipcode);

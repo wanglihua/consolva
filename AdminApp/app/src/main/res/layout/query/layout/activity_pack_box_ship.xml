@@ -57,7 +57,7 @@
             android:textSize="16.0sp" />
 
         <TextView
-            android:id="@+id/tvCustomerMobile"
+            android:id="@+id/tvCountryName"
             android:layout_width="fill_parent"
             android:layout_height="40dip"
             android:paddingLeft="8.0dip"
@@ -68,7 +68,7 @@
             android:textSize="16.0sp" />
 
         <TextView
-            android:id="@+id/tvOrderMobile"
+            android:id="@+id/tvFirstModeName"
             android:layout_width="fill_parent"
             android:layout_height="40dip"
             android:paddingLeft="8.0dip"

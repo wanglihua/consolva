@@ -19,7 +19,8 @@ import com.huadu.shunda.core.PdaUtil;
 import com.huadu.shunda.core.PermissionUtil;
 import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SoundUtil;
-import com.huadu.shunda.data.http.packbox.PackBoxOrderPayDetailResponseInfo;
+import com.huadu.shunda.data.http.ResponseDataInfo;
+import com.huadu.shunda.data.http.packbox.PackBoxShipResponseData;
 import com.huadu.shunda.http.PackBoxRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.pda.ScanActivity;
@@ -37,8 +38,8 @@ public class PackBoxShipActivity extends BaseActivity {
     private TextView tvPackBoxCode = null;
     private TextView tvOrderCode = null;
     private TextView tvCustomerCode = null;
-    private TextView tvCustomerMobile = null;
-    private TextView tvOrderMobile = null;
+    private TextView tvCountryName = null;
+    private TextView tvFirstModeName = null;
     private TextView tvArrearsAmount = null;
 
     private Button btnScan = null;
@@ -53,8 +54,8 @@ public class PackBoxShipActivity extends BaseActivity {
         tvPackBoxCode = findViewById(R.id.tvPackBoxCode);
         tvOrderCode = findViewById(R.id.tvOrderCode);
         tvCustomerCode = findViewById(R.id.tvCustomerCode);
-        tvCustomerMobile = findViewById(R.id.tvCustomerMobile);
-        tvOrderMobile = findViewById(R.id.tvOrderMobile);
+        tvCountryName = findViewById(R.id.tvCountryName);
+        tvFirstModeName = findViewById(R.id.tvFirstModeName);
         tvArrearsAmount = findViewById(R.id.tvArrearsAmount);
 
         btnScan = findViewById(R.id.btnScan);
@@ -95,27 +96,27 @@ public class PackBoxShipActivity extends BaseActivity {
             if (requestCode == REQ_QR_CODE_PACK_BOX_CODE) {
 
                 PackBoxRequest packBoxRequest = RetrofitUtil.createRequest(PackBoxRequest.class);
-                Call<PackBoxOrderPayDetailResponseInfo> orderPayDetailCall = packBoxRequest.ship(packBoxCode);
+                Call<ResponseDataInfo<PackBoxShipResponseData>> orderPayDetailCall = packBoxRequest.ship(packBoxCode);
                 Dialog mask = MaskDialog.show(PackBoxShipActivity.this);
-                orderPayDetailCall.enqueue(new Callback<PackBoxOrderPayDetailResponseInfo>() {
+                orderPayDetailCall.enqueue(new Callback<ResponseDataInfo<PackBoxShipResponseData>>() {
                     @Override
-                    public void onResponse(Call<PackBoxOrderPayDetailResponseInfo> call, Response<PackBoxOrderPayDetailResponseInfo> response) {
+                    public void onResponse(Call<ResponseDataInfo<PackBoxShipResponseData>> call, Response<ResponseDataInfo<PackBoxShipResponseData>> response) {
                         mask.dismiss();
-
-                        PackBoxOrderPayDetailResponseInfo respData = response.body();
 
                         if (!RetrofitUtil.processResponse(response, PackBoxShipActivity.this)) {
                             return;
                         }
 
-                        tvPackBoxCode.setText("箱号：" + respData.getOrderPackBoxCode());
+                        PackBoxShipResponseData respData = response.body().getData();
+
+                        tvPackBoxCode.setText("箱号：" + respData.getPackBoxCode());
                         tvOrderCode.setText("订单编号：" + respData.getOrderCode());
                         tvCustomerCode.setText("客户ID：" + respData.getCustomerCode());
-                        tvCustomerMobile.setText("注册手机号：" + respData.getCustomerMobile());
-                        tvOrderMobile.setText("订单手机号：" + respData.getOrderMobile());
+                        tvCountryName.setText("国家：" + respData.getCountryName());
+                        tvFirstModeName.setText("物流：" + respData.getFirstModeName());
                         tvArrearsAmount.setText("欠费金额：" + respData.getArrearsAmount());
 
-                        if (respData.getHasArrearsAmount()) {
+                        if (respData.getHasArrears()) {
                             SoundUtil.playError(PackBoxShipActivity.this);
                             tvArrearsAmount.setTextColor(getResources().getColor(R.color.colorRed));
                         } else {
@@ -123,7 +124,7 @@ public class PackBoxShipActivity extends BaseActivity {
                             tvArrearsAmount.setTextColor(getResources().getColor(R.color.colorGreen));
 
                             if (swAutoContinueScan.isChecked()) {
-                                Toast.makeText(PackBoxShipActivity.this, "扫描订单 " + respData.getOrderCode() + " 无欠费！", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PackBoxShipActivity.this, "订单无欠费，扫描箱号发货成功！", Toast.LENGTH_SHORT).show();
 
                                 startQrCode(REQ_QR_CODE_PACK_BOX_CODE);
                             }
@@ -131,7 +132,7 @@ public class PackBoxShipActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<PackBoxOrderPayDetailResponseInfo> call, Throwable t) {
+                    public void onFailure(Call<ResponseDataInfo<PackBoxShipResponseData>> call, Throwable t) {
                         Toast.makeText(PackBoxShipActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -1,8 +1,9 @@
 package com.huadu.shunda.http;
 
 
+import com.huadu.shunda.data.http.ResponseDataInfo;
 import com.huadu.shunda.data.http.packbox.PackBoxDetailDataResponseInfo;
-import com.huadu.shunda.data.http.packbox.PackBoxOrderPayDetailResponseInfo;
+import com.huadu.shunda.data.http.packbox.PackBoxShipResponseData;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -13,7 +14,7 @@ public interface PackBoxRequest {
 
     @POST("/admin/app/pack/box/ship")
     @FormUrlEncoded
-    Call<PackBoxOrderPayDetailResponseInfo> ship(@Field("packBoxCode") String packBoxCode);
+    Call<ResponseDataInfo<PackBoxShipResponseData>> ship(@Field("packBoxCode") String packBoxCode);
 
     @POST("/user/api/pack/box/detail/data")
     @FormUrlEncoded
