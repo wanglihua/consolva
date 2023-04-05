@@ -20,7 +20,6 @@ public class PaypalOrderService {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
-    private readonly PayService payService;
     private readonly ExchangeRateService exchangeRateService;
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
@@ -31,7 +30,6 @@ public class PaypalOrderService {
 
     public PaypalOrderService(
         ISession session,
-        PayService payService,
         ExchangeRateService exchangeRateService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         LogisticsOrderActionService logisticsOrderActionService,
@@ -41,7 +39,6 @@ public class PaypalOrderService {
         CustomerScoreDeductService customerScoreDeductService
     ) {
         this.session = session;
-        this.payService = payService;
         this.exchangeRateService = exchangeRateService;
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.logisticsOrderActionService = logisticsOrderActionService;
@@ -56,6 +53,7 @@ public class PaypalOrderService {
 
         int orderId = param.OrderId;
         int couponId = param.CouponId;
+        string outTradeNo = param.OutTradeNo;
 
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
@@ -109,9 +107,6 @@ public class PaypalOrderService {
             var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }
-
-        // 外部订单号，商户网站订单系统中唯一的订单号
-        string outTradeNo = payService.GenerateOutTradeNo();
 
         if (arrearsAmount <= 0) {
             // 如果欠费金额是0，就不用生成微信支付了，直接成功支付就可以了

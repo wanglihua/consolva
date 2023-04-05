@@ -89,6 +89,7 @@ public class WechatOfficialAccountOrderPaypalController : Controller {
             CouponId = couponId,
             ScoreDeduct = scoreDeduct > 0,
             PaymentMethod = PaypalPaymentMethod.Paypal,
+            OutTradeNo = outTradeNo,
 
             ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Process", "WechatOfficialAccountOrderPaypal") + $"?{shundaKey}={outTradeNo}",
             CancelUrl = SiteConfig.SiteUrlBase + Url.Action("Cancel", "WechatOfficialAccountOrderPaypal"),

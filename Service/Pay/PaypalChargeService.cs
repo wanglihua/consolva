@@ -17,18 +17,15 @@ public class PaypalChargeService {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
-    private readonly PayService payService;
     private readonly CustomerChargeService customerChargeService;
     private readonly ExchangeRateService exchangeRateService;
 
     public PaypalChargeService(
         ISession session,
-        PayService payService,
         CustomerChargeService customerChargeService,
         ExchangeRateService exchangeRateService
     ) {
         this.session = session;
-        this.payService = payService;
         this.customerChargeService = customerChargeService;
         this.exchangeRateService = exchangeRateService;
     }
@@ -38,6 +35,7 @@ public class PaypalChargeService {
 
         int customerId = param.CustomerId;
         decimal amount = param.Amount;
+        string outTradeNo = param.OutTradeNo;
 
         CustomerInfo customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) {
@@ -51,8 +49,6 @@ public class PaypalChargeService {
         }
 
         string amountCurrency = (amount / exchangeRate).ToString("#0.00");
-
-        string outTradeNo = payService.GenerateOutTradeNo();
 
         var customerCharge = new CustomerChargeInfo {
             ChargeType = CustomerChargeType.PayPal,

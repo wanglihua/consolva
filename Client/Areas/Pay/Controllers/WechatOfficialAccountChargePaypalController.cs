@@ -43,7 +43,6 @@ public class WechatOfficialAccountChargePaypalController : Controller {
     [HttpPost]
     [Route("/client/charge/paypal/create/url")]
     public IActionResult CreateUrl([FromBody] WechatOfficialAccountChargePaypalCreateUrlParam param) {
-    
         int customerId = loginCustomerService.GetLoginCustomerId();
         decimal amount = param.Amount;
         int amountInt = (int)(amount * 100); // 转成 int 分
@@ -82,6 +81,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
             Amount = (decimal)amountInt / 100m,
             PaymentMethod = PaypalPaymentMethod.Paypal,
             Currency = currency,
+            OutTradeNo = outTradeNo,
 
             ReturnUrl = SiteConfig.SiteUrlBase + Url.Action("Process", "WechatOfficialAccountChargePaypal") + $"?{shundaKey}={outTradeNo}",
             CancelUrl = SiteConfig.SiteUrlBase + Url.Action("Cancel", "WechatOfficialAccountChargePaypal"),
