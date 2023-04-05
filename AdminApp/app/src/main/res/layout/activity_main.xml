@@ -105,34 +105,6 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/tvLoad"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="#ffef5973"
-            android:drawableStart="@drawable/packbox_load"
-            android:gravity="center_vertical|center_horizontal"
-            android:padding="5dp"
-            android:text="装箱"
-            android:textColor="#ffffffff"
-            android:textSize="28.0sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvUnload"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="#fff78221"
-            android:drawableStart="@drawable/packbox_unload"
-            android:gravity="center_vertical|center_horizontal"
-            android:padding="5dp"
-            android:text="卸货"
-            android:textColor="#ffffffff"
-            android:textSize="28.0sp"
-            android:visibility="gone" />
-
-        <TextView
             android:id="@+id/tvPackBoxDetail"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -142,20 +114,6 @@
             android:gravity="center_vertical|center_horizontal"
             android:padding="5dp"
             android:text="箱号信息查询"
-            android:textColor="#ffffffff"
-            android:textSize="28.0sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvPackBoxStockPlace"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="#ff00bece"
-            android:drawableStart="@drawable/packbox_storage_loc_query"
-            android:gravity="center_vertical|center_horizontal"
-            android:padding="5dp"
-            android:text="箱号仓位查询"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
             android:visibility="gone" />
@@ -184,34 +142,6 @@
             android:gravity="center_vertical|center_horizontal"
             android:padding="5dp"
             android:text="欠费查询"
-            android:textColor="#ffffffff"
-            android:textSize="28.0sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvStockCheck"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="#ffa650b5"
-            android:drawableStart="@drawable/stock_check"
-            android:gravity="center_vertical|center_horizontal"
-            android:padding="5dp"
-            android:text="盘点"
-            android:textColor="#ffffffff"
-            android:textSize="28.0sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvStockMove"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:background="#ffa650b5"
-            android:drawableStart="@drawable/stock_move"
-            android:gravity="center_vertical|center_horizontal"
-            android:padding="5dp"
-            android:text="托盘移动"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
             android:visibility="gone" />

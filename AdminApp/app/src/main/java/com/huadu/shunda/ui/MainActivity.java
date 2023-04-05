@@ -25,16 +25,11 @@ import com.huadu.shunda.ui.expressshelf.ExpressOnShelfActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressPackingActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressReturnOffShelfWarehouseListActivity;
 import com.huadu.shunda.ui.expressshelf.ExpressWarehouseCheckShelfListActivity;
-import com.huadu.shunda.ui.load.PackBoxLoadShipContainerInnerListActivity;
 import com.huadu.shunda.ui.photo.PhotoHomeActivity;
 import com.huadu.shunda.ui.query.CustomerPackBoxStockPlaceActivity;
 import com.huadu.shunda.ui.query.ExpressPackageQueryActivity;
 import com.huadu.shunda.ui.query.PackBoxDetailActivity;
 import com.huadu.shunda.ui.query.PackBoxShipActivity;
-import com.huadu.shunda.ui.query.PackBoxStockPlaceActivity;
-import com.huadu.shunda.ui.stockcheck.StockCheckWarehouseListActivity;
-import com.huadu.shunda.ui.stockmove.StockMoveWarehouseListActivity;
-import com.huadu.shunda.ui.unload.PackBoxUnloadShipContainerInnerListActivity;
 import com.huadu.shunda.update.UpdateManager;
 
 import java.util.ArrayList;
@@ -53,14 +48,9 @@ public class MainActivity extends BaseActivity {
     private TextView tvExpressReturnOffShelf = null;
     private TextView tvExpressDump = null;
     private TextView tvExpressPacking = null;
-    private TextView tvLoad = null;
-    private TextView tvUnload = null;
     private TextView tvOrderPayDetail = null;
     private TextView tvPackBoxDetail = null;
-    private TextView tvPackBoxStockPlace = null;
     private TextView tvCustomerPackBoxStockPlace = null;
-    private TextView tvStockCheck = null;
-    private TextView tvStockMove = null;
     private TextView tvExpressPackageQuery = null;
     private TextView tvOrderPhoto = null;
     private TextView tvSoftUpdate = null;
@@ -118,29 +108,14 @@ public class MainActivity extends BaseActivity {
         tvExpressPacking = findViewById(R.id.tvExpressPacking);
         tvExpressPacking.setOnClickListener(new TextViewExpressPackingClickListener());
 
-        tvLoad = findViewById(R.id.tvLoad);
-        tvLoad.setOnClickListener(new TextViewLoadClickListener());
-
-        tvUnload = findViewById(R.id.tvUnload);
-        tvUnload.setOnClickListener(new TextViewUnloadClickListener());
-
         tvPackBoxDetail = findViewById(R.id.tvPackBoxDetail);
         tvPackBoxDetail.setOnClickListener(new TextViewPackBoxDetailClickListener());
-
-        tvPackBoxStockPlace = findViewById(R.id.tvPackBoxStockPlace);
-        tvPackBoxStockPlace.setOnClickListener(new TextViewPackBoxStockPlaceClickListener());
 
         tvCustomerPackBoxStockPlace = findViewById(R.id.tvCustomerPackBoxStockPlace);
         tvCustomerPackBoxStockPlace.setOnClickListener(new TextViewCustomerPackBoxStockPlaceClickListener());
 
         tvOrderPayDetail = findViewById(R.id.tvOrderPayDetail);
         tvOrderPayDetail.setOnClickListener(new TextViewOrderPayDetailClickListener());
-
-        tvStockCheck = findViewById(R.id.tvStockCheck);
-        tvStockCheck.setOnClickListener(new TextViewStockCheckClickListener());
-
-        tvStockMove = findViewById(R.id.tvStockMove);
-        tvStockMove.setOnClickListener(new TextViewStockMoveClickListener());
 
         tvExpressPackageQuery = findViewById(R.id.tvExpressPackageQuery);
         tvExpressPackageQuery.setOnClickListener(new TextViewExpressPackageQueryClickListener());
@@ -253,14 +228,9 @@ public class MainActivity extends BaseActivity {
         tvExpressReturnOffShelf.setVisibility(View.GONE);
         tvExpressDump.setVisibility(View.GONE);
         tvExpressPacking.setVisibility(View.GONE);
-        tvLoad.setVisibility(View.GONE);
-        tvUnload.setVisibility(View.GONE);
         tvPackBoxDetail.setVisibility(View.GONE);
-        tvPackBoxStockPlace.setVisibility(View.GONE);
         tvCustomerPackBoxStockPlace.setVisibility(View.GONE);
         tvOrderPayDetail.setVisibility(View.GONE);
-        tvStockCheck.setVisibility(View.GONE);
-        tvStockMove.setVisibility(View.GONE);
         tvExpressPackageQuery.setVisibility(View.GONE);
         tvOrderPhoto.setVisibility(View.GONE);
          */
@@ -327,28 +297,10 @@ public class MainActivity extends BaseActivity {
             tvExpressPacking.setVisibility(View.GONE);
         }
 
-        if (respData.getCanLoad()) {
-            tvLoad.setVisibility(View.VISIBLE);
-        } else {
-            tvLoad.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanUnload()) {
-            tvUnload.setVisibility(View.VISIBLE);
-        } else {
-            tvUnload.setVisibility(View.GONE);
-        }
-
         if (respData.getCanPackBoxDetail()) {
             tvPackBoxDetail.setVisibility(View.VISIBLE);
         } else {
             tvPackBoxDetail.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanPackBoxStockPlace()) {
-            tvPackBoxStockPlace.setVisibility(View.VISIBLE);
-        } else {
-            tvPackBoxStockPlace.setVisibility(View.GONE);
         }
 
         if (respData.getCanCustomerPackBoxStockPlace()) {
@@ -361,18 +313,6 @@ public class MainActivity extends BaseActivity {
             tvOrderPayDetail.setVisibility(View.VISIBLE);
         } else {
             tvOrderPayDetail.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanStockCheck()) {
-            tvStockCheck.setVisibility(View.VISIBLE);
-        } else {
-            tvStockCheck.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanStockMove()) {
-            tvStockMove.setVisibility(View.VISIBLE);
-        } else {
-            tvStockMove.setVisibility(View.GONE);
         }
 
         if (respData.getCanExpressPackageQuery()) {
@@ -445,34 +385,10 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private class TextViewLoadClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PackBoxLoadShipContainerInnerListActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewUnloadClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PackBoxUnloadShipContainerInnerListActivity.class);
-            startActivity(intent);
-        }
-    }
-
     private class TextViewPackBoxDetailClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, PackBoxDetailActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewPackBoxStockPlaceClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PackBoxStockPlaceActivity.class);
             startActivity(intent);
         }
     }
@@ -489,22 +405,6 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, PackBoxShipActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewStockCheckClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, StockCheckWarehouseListActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private class TextViewStockMoveClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, StockMoveWarehouseListActivity.class);
             startActivity(intent);
         }
     }
