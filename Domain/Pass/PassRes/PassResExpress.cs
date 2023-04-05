@@ -19,6 +19,8 @@ public partial class PassRes {
             new PassResInfo { Id = ExpressReturn, Name = "退运池", Cate = Cate },
             new PassResInfo { Id = ExpressSizeWeight, Name = "快递单尺寸重量", Cate = Cate },
             new PassResInfo { Id = ExpressRemarkPresetSelect, Name = "快递单备注预设", Cate = Cate },
+            new PassResInfo { Id = ExpressListToOffShelf, Name = "待下架快递", Cate = Cate },
+            new PassResInfo { Id = ExpressOffShelfSchedule, Name = "快递下架排班", Cate = Cate },
         };
 
         public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
@@ -73,5 +75,15 @@ public partial class PassRes {
         /// 快递单备注预设
         /// </summary>
         public const int ExpressRemarkPresetSelect = CateId + 2000;
+
+        /// <summary>
+        /// 待下架快递
+        /// </summary>
+        public const int ExpressListToOffShelf = CateId + 2200;
+
+        /// <summary>
+        /// 快递下架排班
+        /// </summary>
+        public const int ExpressOffShelfSchedule = CateId + 2400;
     }
 }

@@ -70,7 +70,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Express.ExpressList)) {
+            @if (Model.HasPassRes(PassRes.Express.ExpressListToOffShelf)) {
                 <li id="express-list-to-off-shelf-menu">
                     <a asp-area="Express" asp-controller="ExpressListToOffShelf" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>待下架

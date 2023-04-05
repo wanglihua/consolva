@@ -15,7 +15,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Express.Controllers;
 
 [ExpressArea]
-[AdminAuth(PassRes.Express.ExpressList)]
+[AdminAuth(PassRes.Express.ExpressListToOffShelf)]
 public class ExpressListToOffShelfController : Controller {
     private readonly ISession session;
     private readonly ExpressListService expressListService;
