@@ -132,7 +132,7 @@ public class PackBoxShipActivity extends BaseActivity {
                             SoundUtil.playSuccess(PackBoxShipActivity.this);
                             tvArrearsAmount.setTextColor(getResources().getColor(R.color.colorGreen));
 
-                            Toast.makeText(PackBoxShipActivity.this, "订单无欠费，扫描箱号发货成功！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PackBoxShipActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                             if (swAutoContinueScan.isChecked()) {
                                 startQrCode(REQ_QR_CODE_PACK_BOX_CODE);

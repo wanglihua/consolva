@@ -10,10 +10,12 @@ namespace shunda.Service.Express;
 public class ExpressService {
     private readonly ISession session;
     private readonly ExpressLogService expressLogService;
+    private readonly StorageLocExpressService storageLocExpressService;
 
-    public ExpressService(ISession session, ExpressLogService expressLogService) {
+    public ExpressService(ISession session, ExpressLogService expressLogService, StorageLocExpressService storageLocExpressService) {
         this.session = session;
         this.expressLogService = expressLogService;
+        this.storageLocExpressService = storageLocExpressService;
     }
 
     /// <summary>
@@ -178,7 +180,11 @@ public class ExpressService {
 
         express.Status = ExpressStatus.ThrowAway;
         session.Update(express);
+        session.Flush();
 
+        // 释放仓位
+
+        storageLocExpressService.UpdateSingle(express.StorageLoc.Id);
         session.Flush();
     }
 }
