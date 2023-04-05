@@ -77,7 +77,7 @@
             android:label="箱号详细信息查询" />
         <activity
             android:name=".ui.query.PackBoxShipActivity"
-            android:label="订单欠费查询" />
+            android:label="箱号发货" />
         <activity
             android:name=".ui.query.CustomerPackBoxStockPlaceActivity"
             android:label="会员箱号仓位查询" />

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.huadu.shunda.R;
 import com.huadu.shunda.core.MaskDialog;
@@ -119,13 +120,21 @@ public class PackBoxShipActivity extends BaseActivity {
                         if (respData.getHasArrears()) {
                             SoundUtil.playError(PackBoxShipActivity.this);
                             tvArrearsAmount.setTextColor(getResources().getColor(R.color.colorRed));
+
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PackBoxShipActivity.this);
+                            alertDialogBuilder.setTitle("错误提示");
+                            alertDialogBuilder.setMessage(response.body().getMessage());
+                            alertDialogBuilder.setPositiveButton("确定", null);
+
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
                         } else {
                             SoundUtil.playSuccess(PackBoxShipActivity.this);
                             tvArrearsAmount.setTextColor(getResources().getColor(R.color.colorGreen));
 
-                            if (swAutoContinueScan.isChecked()) {
-                                Toast.makeText(PackBoxShipActivity.this, "订单无欠费，扫描箱号发货成功！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PackBoxShipActivity.this, "订单无欠费，扫描箱号发货成功！", Toast.LENGTH_SHORT).show();
 
+                            if (swAutoContinueScan.isChecked()) {
                                 startQrCode(REQ_QR_CODE_PACK_BOX_CODE);
                             }
                         }

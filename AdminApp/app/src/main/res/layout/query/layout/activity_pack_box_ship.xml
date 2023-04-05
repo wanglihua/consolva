@@ -29,7 +29,7 @@
             android:paddingRight="8.0dip"
             android:paddingBottom="8.0dip"
             android:singleLine="false"
-            android:text="扫描箱号设置已发货"
+            android:text="扫描箱号发货"
             android:textColor="@color/colorAccent"
             android:textSize="16.0sp" />
 
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20.0dip"
             android:background="@color/colorPrimary"
-            android:text="扫描箱号或订单编号"
+            android:text="扫描箱号"
             android:textColor="@android:color/white"
             android:textSize="20.0sp" />
 

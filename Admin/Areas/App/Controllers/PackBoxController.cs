@@ -125,7 +125,7 @@ public class PackBoxController : Controller {
         };
 
         return Json(new JsonResultData {
-            Success = hasArrears == false,
+            Success = true,
             Message = message,
             Data = model,
         });
