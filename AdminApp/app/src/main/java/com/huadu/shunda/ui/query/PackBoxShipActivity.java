@@ -95,7 +95,7 @@ public class PackBoxShipActivity extends BaseActivity {
             if (requestCode == REQ_QR_CODE_PACK_BOX_CODE) {
 
                 PackBoxRequest packBoxRequest = RetrofitUtil.createRequest(PackBoxRequest.class);
-                Call<PackBoxOrderPayDetailResponseInfo> orderPayDetailCall = packBoxRequest.orderPayDetail(packBoxCode);
+                Call<PackBoxOrderPayDetailResponseInfo> orderPayDetailCall = packBoxRequest.ship(packBoxCode);
                 Dialog mask = MaskDialog.show(PackBoxShipActivity.this);
                 orderPayDetailCall.enqueue(new Callback<PackBoxOrderPayDetailResponseInfo>() {
                     @Override
