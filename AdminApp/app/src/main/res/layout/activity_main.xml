@@ -133,15 +133,15 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/tvOrderPayDetail"
+            android:id="@+id/tvPackBoxShip"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
             android:background="#ff00bece"
-            android:drawableStart="@drawable/arrears_query"
+            android:drawableStart="@drawable/packbox_query"
             android:gravity="center_vertical|center_horizontal"
             android:padding="5dp"
-            android:text="欠费查询"
+            android:text="箱号发货"
             android:textColor="#ffffffff"
             android:textSize="28.0sp"
             android:visibility="gone" />

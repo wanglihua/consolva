@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity {
     private TextView tvExpressReturnOffShelf = null;
     private TextView tvExpressDump = null;
     private TextView tvExpressPacking = null;
-    private TextView tvOrderPayDetail = null;
+    private TextView tvPackBoxShip = null;
     private TextView tvPackBoxDetail = null;
     private TextView tvCustomerPackBoxStockPlace = null;
     private TextView tvExpressPackageQuery = null;
@@ -114,8 +114,8 @@ public class MainActivity extends BaseActivity {
         tvCustomerPackBoxStockPlace = findViewById(R.id.tvCustomerPackBoxStockPlace);
         tvCustomerPackBoxStockPlace.setOnClickListener(new TextViewCustomerPackBoxStockPlaceClickListener());
 
-        tvOrderPayDetail = findViewById(R.id.tvOrderPayDetail);
-        tvOrderPayDetail.setOnClickListener(new TextViewOrderPayDetailClickListener());
+        tvPackBoxShip = findViewById(R.id.tvPackBoxShip);
+        tvPackBoxShip.setOnClickListener(new TextViewPackBoxShipClickListener());
 
         tvExpressPackageQuery = findViewById(R.id.tvExpressPackageQuery);
         tvExpressPackageQuery.setOnClickListener(new TextViewExpressPackageQueryClickListener());
@@ -230,12 +230,12 @@ public class MainActivity extends BaseActivity {
         tvExpressPacking.setVisibility(View.GONE);
         tvPackBoxDetail.setVisibility(View.GONE);
         tvCustomerPackBoxStockPlace.setVisibility(View.GONE);
-        tvOrderPayDetail.setVisibility(View.GONE);
         tvExpressPackageQuery.setVisibility(View.GONE);
         tvOrderPhoto.setVisibility(View.GONE);
          */
 
-        tvOrderPhoto.setVisibility(View.VISIBLE);
+        tvPackBoxShip.setVisibility(View.GONE);
+        tvOrderPhoto.setVisibility(View.GONE);
 
         LoginResponseData respData = LoginCache.getLoginResponse();
 
@@ -310,9 +310,9 @@ public class MainActivity extends BaseActivity {
         }
 
         if (respData.getCanOrderPayDetail()) {
-            tvOrderPayDetail.setVisibility(View.VISIBLE);
+            tvPackBoxShip.setVisibility(View.VISIBLE);
         } else {
-            tvOrderPayDetail.setVisibility(View.GONE);
+            tvPackBoxShip.setVisibility(View.GONE);
         }
 
         if (respData.getCanExpressPackageQuery()) {
@@ -328,6 +328,18 @@ public class MainActivity extends BaseActivity {
         }
 
          */
+
+        if (respData.getCanPackBoxShip()) {
+            tvPackBoxShip.setVisibility(View.VISIBLE);
+        } else {
+            tvPackBoxShip.setVisibility(View.GONE);
+        }
+
+        if (respData.getCanPhoto()) {
+            tvOrderPhoto.setVisibility(View.VISIBLE);
+        } else {
+            tvOrderPhoto.setVisibility(View.GONE);
+        }
 
         UpdateManager.CheckNewVersionResult checkNewVersionResult = updateManager.checkNewVersion();
         if (checkNewVersionResult == UpdateManager.CheckNewVersionResult.ToUpdate) {
@@ -401,7 +413,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private class TextViewOrderPayDetailClickListener implements View.OnClickListener {
+    private class TextViewPackBoxShipClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(MainActivity.this, PackBoxShipActivity.class);
