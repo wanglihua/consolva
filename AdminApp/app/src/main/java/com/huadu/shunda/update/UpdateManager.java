@@ -278,7 +278,7 @@ public class UpdateManager {
                     // 获得存储卡的路径
                     String sdpath = Environment.getExternalStorageDirectory() + "/";
                     mSavePath = sdpath + "download";
-                    URL url = new URL(Config.getUrlBase() + "/static/apk/shunda-" + serverVersion + ".apk");
+                    URL url = new URL(Config.getUrlBase() + "/static/admin-app/shunda-" + serverVersion + ".apk");
                     // 创建连接
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.connect();
