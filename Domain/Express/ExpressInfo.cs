@@ -271,8 +271,6 @@ public class ExpressInfo : Entity {
 
     public virtual string CustomerCodeCache { get; set; } = string.Empty;
 
-    public virtual string OrderStatusNameCache { get; set; } = string.Empty;
-
     public virtual IList<ExpressSizeWeightInfo> ExpressSizeWeightListCache { get; set; } = new List<ExpressSizeWeightInfo>();
 
     public virtual IList<ExpressPhotoInfo> ExpressPhotoListCache { get; set; } = new List<ExpressPhotoInfo>();

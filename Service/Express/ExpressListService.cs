@@ -266,8 +266,6 @@ public class ExpressListService {
             criteria = criteria.Add(Restrictions.In(expressIdProp, expressIdList));
         }
 
-        string claimOrderIdProp = $"{nameof(ExpressInfo.Order)}.{nameof(LogisticsOrderInfo.Id)}";
-
         // 待下架
         if (expressListMenuCate == ExpressListMenuCate.ToOffShelf) {
             // criteria = criteria.Add(Restrictions.Where<ExpressInfo>(e => e.Status == ExpressStatus.WaitPack && e.ArchiveType == ExpressArchiveType.None));

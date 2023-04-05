@@ -280,6 +280,7 @@ public class LogisticsOrderCreateService {
         // 更新快递单状态
         foreach (var express in expressList) {
             express.Order = order;
+            express.OrderCode = order.Code;
             express.Status = ExpressStatus.Order;
 
             session.Update(express);

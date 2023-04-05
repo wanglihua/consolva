@@ -37,9 +37,6 @@
                 <div>
                     <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">所在订单</a>
                 </div>
-                <div>
-                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">订单状态</a>
-                </div>
             </th>
             <th style="width: 110px; text-align: center;">
                 <div>
@@ -54,6 +51,9 @@
             </th>
             <th style="width: 130px; text-align: center;">
                 <div>
+                    <a field="@(nameof(ExpressInfo.Customer)).@(nameof(ExpressInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">认领客户</a>
+                </div>
+                <div>
                     <a field="@(nameof(ExpressInfo.BillCustomerCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">面单客户</a>
                 </div>
                 <div>
@@ -61,9 +61,7 @@
                 </div>
             </th>
             <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(nameof(ExpressInfo.Customer)).@(nameof(ExpressInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">认领客户</a>
-                </div>
+
                 <div>
                     <a field="@(nameof(ExpressInfo.ClaimTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">认领时间</a>
                 </div>
@@ -81,32 +79,25 @@
                 <div>
                     <a field="@(nameof(ExpressInfo.StorageLoc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">当前仓位号</a>
                 </div>
-                <div>
-                    <span>入库仓库</span>
-                </div>
-                <div>
-                    <span>入库仓位号</span>
-                </div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(nameof(ExpressInfo.AddUser)).@(nameof(ExpressInfo.AddUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库人员</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库时间</a>
-                </div>
-                <div>是否打木架</div>
-                <div>是否清理树皮</div>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <div>
                     <a field="@(nameof(ExpressInfo.OnShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架人员</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.OnShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架时间</a>
+                    <a field="@(nameof(ExpressInfo.OffShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">下架人员</a>
+                </div>
+
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库时间</a>
                 </div>
                 <div>
-                    <a field="@(nameof(ExpressInfo.OffShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">下架人员</a>
+                    <a field="@(nameof(ExpressInfo.OnShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架时间</a>
                 </div>
                 <div>
                     <a field="@(nameof(ExpressInfo.OffShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">下架时间</a>
@@ -162,9 +153,6 @@
                                 <span>-</span>
                             }
                         </div>
-                        <div>
-                            @ListDataUtil.RenderStringWithDiv(express.OrderStatusNameCache)
-                        </div>
                     </td>
                     <td style="text-align: center;" class="break-word">
                         <div>
@@ -184,8 +172,15 @@
                         </div>
                     </td>
                     <td style="text-align: center;" class="break-word">
-                        @ListDataUtil.RenderStringWithDiv(express.BillCustomerCode)
                         <div style="color: blue;">
+                            @if (string.IsNullOrWhiteSpace(express.CustomerCodeCache) == false) {
+                                <span>@express.CustomerCodeCache</span>
+                            } else {
+                                <span>-</span>
+                            }
+                        </div>
+                        @ListDataUtil.RenderStringWithDiv(express.BillCustomerCode)
+                        <div>
                             @if (express.ExpressExpectCache != null) {
                                 <span>有预报</span>
                             } else {
@@ -194,25 +189,19 @@
                         </div>
                     </td>
                     <td style="text-align: center;">
+
                         <div style="color: blue;">
-                            @if (string.IsNullOrWhiteSpace(express.CustomerCodeCache) == false) {
-                                <span>@express.CustomerCodeCache</span>
-                            } else {
-                                <span>-</span>
-                            }
-                        </div>
-                        <div>
                             @if (express.ClaimTime.HasValue) {
                                 <span>@express.ClaimTime.Value.ToString("yyyy-MM-dd HH:mm")</span>
                             } else {
                                 <span>-</span>
                             }
                         </div>
-                        <div style="color: blue;">
-                            @(express.Status?.Name)
+                        <div style="color: darkred;">
+                            @(express.Status.Name)
                         </div>
                         <div>
-                            @(express.ShelfStatus?.Name)
+                            @(express.ShelfStatus.Name)
                         </div>
                     </td>
                     <td style="text-align: center;">
@@ -225,12 +214,12 @@
                     </td>
                     <td style="text-align: center;">
                         <div style="color: blue;">@express.AddUser.UserName</div>
-                        <div>@express.AddTime.ToString("yyyy-MM-dd HH:mm")</div>
+                        <div>@ListDataUtil.Render(express.OnShelfUser?.UserName)</div>
+                        <div>@ListDataUtil.Render(express.OffShelfUser?.UserName)</div>
                     </td>
                     <td style="text-align: center;">
-                        <div style="color: blue;">@ListDataUtil.Render(express.OnShelfUser?.UserName)</div>
+                        <div style="color: blue;">@express.AddTime.ToString("yyyy-MM-dd HH:mm")</div>
                         <div>@ListDataUtil.Render(express.OnShelfTime)</div>
-                        <div style="color: blue;">@ListDataUtil.Render(express.OffShelfUser?.UserName)</div>
                         <div>@ListDataUtil.Render(express.OffShelfTime)</div>
                     </td>
                     <td class="break-word">
