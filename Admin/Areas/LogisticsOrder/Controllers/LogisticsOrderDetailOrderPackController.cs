@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetailOrderPack;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Fee;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -15,13 +17,16 @@ namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
 public class LogisticsOrderDetailOrderPackController : Controller {
     private readonly ISession session;
     private readonly LogisticsOrderFeeService logisticsOrderFeeService;
+    private readonly LogisticsOrderPackService logisticsOrderPackService;
 
     public LogisticsOrderDetailOrderPackController(
         ISession session,
-        LogisticsOrderFeeService logisticsOrderFeeService
+        LogisticsOrderFeeService logisticsOrderFeeService,
+        LogisticsOrderPackService logisticsOrderPackService
     ) {
         this.session = session;
         this.logisticsOrderFeeService = logisticsOrderFeeService;
+        this.logisticsOrderPackService = logisticsOrderPackService;
     }
 
     [HttpPost]
@@ -55,6 +60,7 @@ public class LogisticsOrderDetailOrderPackController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/detail/save/order/pack")]
     [AdminAuth(PassRes.LogisticsOrder.OrderPackDataModify)]
+    [Transactional]
     public IActionResult SavePack(LogisticsOrderDetailOrderPackSavelModel model) {
         ValidationUtil.Validate<LogisticsOrderDetailOrderPackSavelModelValidator, LogisticsOrderDetailOrderPackSavelModel>(model);
 
@@ -81,6 +87,8 @@ public class LogisticsOrderDetailOrderPackController : Controller {
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
+
+        logisticsOrderPackService.SaveOrderPackData(orderId);
 
         // 重新计费
         logisticsOrderFeeService.CalculateAndSaveFee(orderId);

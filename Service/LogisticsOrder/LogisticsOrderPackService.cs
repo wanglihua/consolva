@@ -290,9 +290,9 @@ public class LogisticsOrderPackService {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
-        var packUser = session.Get<UserInfo>(packUserId);
-        if (packUser == null) {
-            throw new ValidationException($"指定的用户#{packUserId}不存在！");
+        UserInfo? packUser = null;
+        if (packUserId > 0) {
+            packUser = session.Get<UserInfo>(packUserId);
         }
 
         var orderPackList = session.Query<LogisticsOrderPackInfo>().Where(e => e.Order.Id == orderId).ToList();
@@ -301,7 +301,9 @@ public class LogisticsOrderPackService {
         }
 
         var orderPackData = session.Query<LogisticsOrderPackDataInfo>().Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
+        bool isCreate = false;
         if (orderPackData == null) {
+            isCreate = true;
             orderPackData = new LogisticsOrderPackDataInfo {
                 Order = order
             };
@@ -340,7 +342,18 @@ public class LogisticsOrderPackService {
         totalVolume = totalVolume / 100_00_00; // 单位转成立方米
         maxVolumeSinglePack = maxVolumeSinglePack / 100_00_00; // 单位转成立方米
 
-        orderPackData.PackUser = packUser;
+        if (isCreate) {
+            if (packUser == null) {
+                throw new ValidationException($"指定的用户#{packUserId}不存在！");
+            }
+
+            orderPackData.PackUser = packUser;
+        } else {
+            if (packUser != null) {
+                orderPackData.PackUser = packUser;
+            }
+        }
+
         orderPackData.TotalActualWeight = totalActualWeight;
         orderPackData.TotalVolumeWeight = totalVolumeWeight;
         orderPackData.TotalVolume = totalVolume;
@@ -351,5 +364,13 @@ public class LogisticsOrderPackService {
 
         session.SaveOrUpdate(orderPackData);
         session.Flush();
+    }
+
+    /// <summary>
+    /// 只保存数据，不保存打包工，一般用户后台修改打包数据
+    /// </summary>
+    /// <param name="orderId"></param>
+    public void SaveOrderPackData(int orderId) {
+        SaveOrderPackData(orderId, 0);
     }
 }
