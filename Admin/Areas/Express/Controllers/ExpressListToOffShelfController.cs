@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using NHibernate.Linq;
 using shunda.Admin.Areas.Express.Models.ExpressListToOffShelf;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.Express;
+using shunda.Domain.Pass;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
 using shunda.Service.Logistics;
@@ -39,6 +41,13 @@ public class ExpressListToOffShelfController : Controller {
     public IActionResult Index() {
         var model = new ExpressListToOffShelfIndexModel();
         model.WarehouseList = warehouseService.GetWarehouseListWithCacheForAdmin();
+
+        model.CheckinUserList = session.Query<WarehouseWorkerInfo>()
+            .Fetch(e => e.User)
+            .Where(e => e.Type == WarehouseWorkerType.Checkin)
+            .OrderBy(e => e.Id)
+            .Select(e => e.User)
+            .ToList();
 
         return View("ExpressListToOffShelfIndex", model);
     }

@@ -70,8 +70,16 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Express.ExpressRemarkPresetSelect))
-            {
+            @if (Model.HasPassRes(PassRes.Express.ExpressList)) {
+                <li id="express-list-to-off-shelf-menu">
+                    <a asp-area="Express" asp-controller="ExpressListToOffShelf" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>待下架
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.HasPassRes(PassRes.Express.ExpressRemarkPresetSelect)) {
                 <li id="express-express-remark-preset-select-menu">
                     <a asp-area="ReceivePack" asp-controller="ExpressRemarkPresetSelect" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>快递单备注预设

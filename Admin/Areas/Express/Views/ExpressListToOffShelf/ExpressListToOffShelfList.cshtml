@@ -1,16 +1,253 @@
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@using shunda.Service.Express
+@model shunda.Admin.Areas.Express.Models.ExpressListToOffShelf.ExpressListToOffShelfListModel
+
 @{
     Layout = null;
 }
 
-<!DOCTYPE html>
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressList" })
 
-<html>
-    <head>
-        <title>title</title>
-    </head>
-    <body>
-        <div>
+<table id="tblExpressList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="expressCheckAll"></label><input id="expressCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressInfo.CheckinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库跟踪号</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">快递单号</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.ExpressCompany))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">快递公司</a>
+                </div>
+            </th>
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">物品类型</a>
+                </div>
+                <div>
+                    扩展名
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.Order)).@(nameof(ExpressInfo.Order.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">所在订单</a>
+                </div>
+            </th>
+            <th style="width: 110px; text-align: center;">
+                <div>
+                    尺寸cm
+                </div>
+                <div>
+                    体积重,实际重kg
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.PackageCount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">包裹数量</a>
+                </div>
+            </th>
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressInfo.Customer)).@(nameof(ExpressInfo.Customer.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">认领客户</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.BillCustomerCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">面单客户</a>
+                </div>
+                <div>
+                    是否预报
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
 
-        </div>
-    </body>
-</html>
+                <div>
+                    <a field="@(nameof(ExpressInfo.ClaimTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">认领时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">快递状态</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.ShelfStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架状态</a>
+                </div>
+            </th>
+            <th style="width: 90px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">当前仓库</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.StorageLoc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">当前仓位号</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressInfo.AddUser)).@(nameof(ExpressInfo.AddUser.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库人员</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.OnShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架人员</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.OffShelfUser))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">下架人员</a>
+                </div>
+
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(ExpressInfo.AddTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">入库时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.OnShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">上架时间</a>
+                </div>
+                <div>
+                    <a field="@(nameof(ExpressInfo.OffShelfTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortExpressList">下架时间</a>
+                </div>
+            </th>
+            <th style="width: 150px;">
+                <div>
+                    <span>备注</span>
+                </div>
+            </th>
+            <th>
+                <div>快递图片</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ExpressList != null && Model.ExpressList.Count() != 0) {
+            int order = 1;
+            foreach (ExpressInfo express in Model.ExpressList) {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="expressCheck_@(express.Id)"></label><input id="expressCheck_@(express.Id)" type="checkbox" class="ace" value="@express.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <div>
+                            <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(express.Id)" target="_blank">
+                                @ListDataUtil.Render(express.CheckinTrackingNo)
+                            </a>
+                        </div>
+                        <div style="color: blue;">
+                            <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(express.Id)" target="_blank">
+                                @express.TrackingNo
+                            </a>
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(express.ExpressCompany)
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div style="color: blue;">
+                            @(express.GoodsType.Name)
+                        </div>
+                        <div>
+                            @(express.GoodsNamesCache)
+                        </div>
+                        <div style="color: blue;">
+                            @if (express.Order != null) {
+                                <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(express.Order?.Id ?? 0)" target="_blank">
+                                    <span>@express.OrderCode</span>
+                                </a>
+                            } else {
+                                <span>-</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            <div>
+                                @{
+                                    IList<string> expressItemStrList = express.ExpressSizeWeightListCache.Select(e => $"{e.Length}✕{e.Width}✕{e.Height}<br/>{e.GetVolumeWeightCache(Model.VolumeWeightDenominator)},{e.Weight}").ToList();
+                                    string lwh = string.Join("<br/>", expressItemStrList);
+                                    if (string.IsNullOrWhiteSpace(lwh)) {
+                                        lwh = "-";
+                                    }
+                                }
+                                @Html.Raw(lwh)
+                            </div>
+                        </div>
+                        <div style="font-weight: bold; color: blue;">
+                            @express.PackageCount
+                        </div>
+                    </td>
+                    <td style="text-align: center;" class="break-word">
+                        <div style="color: blue;">
+                            @if (string.IsNullOrWhiteSpace(express.CustomerCodeCache) == false) {
+                                <span>@express.CustomerCodeCache</span>
+                            } else {
+                                <span>-</span>
+                            }
+                        </div>
+                        @ListDataUtil.RenderStringWithDiv(express.BillCustomerCode)
+                        <div>
+                            @if (express.ExpressExpectCache != null) {
+                                <span>有预报</span>
+                            } else {
+                                <span>无预报</span>
+                            }
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+
+                        <div style="color: blue;">
+                            @if (express.ClaimTime.HasValue) {
+                                <span>@express.ClaimTime.Value.ToString("yyyy-MM-dd HH:mm")</span>
+                            } else {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div style="color: darkred;">
+                            @(express.Status.Name)
+                        </div>
+                        <div>
+                            @(express.ShelfStatus.Name)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(express.Warehouse.Name)
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.RenderStringWithDiv(express.StorageLoc.GetFullName())
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="color: blue;">@express.AddUser.UserName</div>
+                        <div>@ListDataUtil.Render(express.OnShelfUser?.UserName)</div>
+                        <div>@ListDataUtil.Render(express.OffShelfUser?.UserName)</div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="color: blue;">@express.AddTime.ToString("yyyy-MM-dd HH:mm")</div>
+                        <div>@ListDataUtil.Render(express.OnShelfTime)</div>
+                        <div>@ListDataUtil.Render(express.OffShelfTime)</div>
+                    </td>
+                    <td class="break-word">
+                        @foreach (ExpressRemarkInfo remark in express.ExpressRemarkListCache) {
+                            <div class="break-word">
+                                <span>@(remark.Type.Name):</span>
+                                <span>@(remark.Content)</span>
+                            </div>
+                        }
+
+                    </td>
+                    <td class="break-word">
+                        @foreach (ExpressPhotoInfo photo in express.ExpressPhotoListCache) {
+                            <a href="@(photo.BigImageFullUrlCache)" target="_blank">
+                                <img src="@(photo.SmallImageFullUrlCache)" alt="" style="max-height: 30px; margin: 0 3px 3px 0;"/>
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="12">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressList" })

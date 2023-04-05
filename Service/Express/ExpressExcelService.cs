@@ -89,11 +89,11 @@ public class ExpressExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("所在订单");
 
-        sheet.SetColumnWidth(cellIndex, 16 * 256);
-        cell = row.CreateCell(cellIndex++);
-        cell.CellStyle = headerCenterCellStyle;
-        cell.SetCellType(CellType.String);
-        cell.SetCellValue("订单状态");
+        // sheet.SetColumnWidth(cellIndex, 16 * 256);
+        // cell = row.CreateCell(cellIndex++);
+        // cell.CellStyle = headerCenterCellStyle;
+        // cell.SetCellType(CellType.String);
+        // cell.SetCellValue("订单状态");
 
         sheet.SetColumnWidth(cellIndex, 32 * 256);
         cell = row.CreateCell(cellIndex++);
@@ -265,11 +265,11 @@ public class ExpressExcelService {
             cell.SetCellType(CellType.String);
             cell.SetCellValue(express.OrderCode); // 这里不要用 express.Order.Code，会导致一次数据库访问
 
-            // 订单状态
-            cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(express.OrderStatusNameCache);
+            // // 订单状态
+            // cell = row.CreateCell(cellIndex++);
+            // cell.CellStyle = contentCenterCellStyle;
+            // cell.SetCellType(CellType.String);
+            // cell.SetCellValue(express.OrderStatusNameCache);
 
             // 尺寸cm
             cell = row.CreateCell(cellIndex++);
