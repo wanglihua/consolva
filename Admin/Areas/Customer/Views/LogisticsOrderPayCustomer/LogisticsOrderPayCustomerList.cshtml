@@ -49,7 +49,7 @@
                     <td style="text-align: center;">@logisticsOrderPay.CustomerCodeCache</td>
                     <td style="text-align: center;" class="break-word">
                         <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(logisticsOrderPay.Order.Id)" target="_blank">
-                            @logisticsOrderPay.Order?.Code
+                            @logisticsOrderPay.Order.Code
                         </a>
                     </td>
                     <td style="text-align: center;">@logisticsOrderPay.PayType.Name</td>

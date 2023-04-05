@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using shunda.Admin.Areas.Express.Models.ExpressListToOffShelf;
 using shunda.Admin.Services;
+using shunda.Core;
 using shunda.Core.Web;
+using shunda.Domain.Express;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
 using shunda.Service.Logistics;
-using shunda.Service.Pass;
 using shunda.Service.Storage;
 using ISession = NHibernate.ISession;
 
@@ -16,40 +18,44 @@ public class ExpressListToOffShelfController : Controller {
     private readonly ISession session;
     private readonly ExpressListService expressListService;
     private readonly LoginUserService loginUserService;
-    private readonly ExpressExcelService expressExcelService;
-    private readonly ExpressService expressService;
     private readonly WarehouseService warehouseService;
-    private readonly PassResService passResService;
     private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public ExpressListToOffShelfController(ISession session,
         ExpressListService expressListService,
         LoginUserService loginUserService,
-        ExpressExcelService expressExcelService,
-        ExpressService expressService,
         WarehouseService warehouseService,
-        PassResService passResService,
         LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.expressListService = expressListService;
         this.loginUserService = loginUserService;
-        this.expressExcelService = expressExcelService;
-        this.expressService = expressService;
         this.warehouseService = warehouseService;
-        this.passResService = passResService;
         this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpGet]
     [Route("/admin/express/to/off/shelf")]
     public IActionResult Index() {
-        return View("");
+        var model = new ExpressListToOffShelfIndexModel();
+        model.WarehouseList = warehouseService.GetWarehouseListWithCacheForAdmin();
+
+        return View("ExpressListToOffShelfIndex", model);
     }
 
     [HttpPost]
     [Route("/admin/express/to/off/shelf/list")]
-    public IActionResult List() {
-        return View("");
+    public IActionResult List(ExpressListQueryParam queryParam) {
+        int totalCount = expressListService.Count(ExpressListMenuCate.ToOffShelf, queryParam);
+        ListPager listPager = new ListPager(queryParam, totalCount);
+
+        IList<ExpressInfo> expressList = expressListService.List(ExpressListMenuCate.ToOffShelf, queryParam, listPager);
+
+        var model = new ExpressListToOffShelfListModel(listPager) {
+            ExpressList = expressList,
+            VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator
+        };
+
+        return View("ExpressListToOffShelfList", model);
     }
 }
