@@ -4,3 +4,19 @@
 }
 @using shunda.Core.Web
 @model shunda.Admin.Models.Home.HomeAdminIndexModel
+
+<div style="margin: 5px 0;">
+    <div id="apkDownloadWrapper"></div>
+    <script type="text/javascript">
+        $(function() {
+            $.ajax({
+                url: "/static/admin-app/download_link.html",
+                type: "GET",
+                data: {},
+                success: function(data) {
+                    $("#apkDownloadWrapper").html(data);        
+                }
+            }); 
+        });
+    </script>
+</div>
