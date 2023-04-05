@@ -82,6 +82,10 @@ public class PaypalOrderService {
 
         decimal discountAmount = 0;
         if (coupon != null) {
+            if (coupon.Customer.Id != order.Customer.Id) {
+                throw new ValidationException("优惠券持有客户和订单客户不一致！");
+            }
+
             var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
             if (discountResult.Success == false) {
                 discountAmount = 0;
