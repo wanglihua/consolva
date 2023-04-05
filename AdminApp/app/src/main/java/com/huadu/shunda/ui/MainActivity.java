@@ -30,7 +30,7 @@ import com.huadu.shunda.ui.photo.PhotoHomeActivity;
 import com.huadu.shunda.ui.query.CustomerPackBoxStockPlaceActivity;
 import com.huadu.shunda.ui.query.ExpressPackageQueryActivity;
 import com.huadu.shunda.ui.query.PackBoxDetailActivity;
-import com.huadu.shunda.ui.query.PackBoxOrderPayDetailActivity;
+import com.huadu.shunda.ui.query.PackBoxShipActivity;
 import com.huadu.shunda.ui.query.PackBoxStockPlaceActivity;
 import com.huadu.shunda.ui.stockcheck.StockCheckWarehouseListActivity;
 import com.huadu.shunda.ui.stockmove.StockMoveWarehouseListActivity;
@@ -488,7 +488,7 @@ public class MainActivity extends BaseActivity {
     private class TextViewOrderPayDetailClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, PackBoxOrderPayDetailActivity.class);
+            Intent intent = new Intent(MainActivity.this, PackBoxShipActivity.class);
             startActivity(intent);
         }
     }

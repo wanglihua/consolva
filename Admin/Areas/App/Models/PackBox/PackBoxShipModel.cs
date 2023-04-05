@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Admin.Areas.App.Models.PackBox;
 
-public class PackBoxQueryModel {
+public class PackBoxShipModel {
     [JsonProperty("packBoxCode")]
     public string PackBoxCode { get; set; } = string.Empty;
 

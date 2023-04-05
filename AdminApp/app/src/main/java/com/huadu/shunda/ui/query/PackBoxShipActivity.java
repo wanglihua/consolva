@@ -30,11 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * 原来是扫描箱号查询订单是否欠费，
- * 后来加上了也可以扫描订单编号查询订单是否欠费
- */
-public class PackBoxOrderPayDetailActivity extends BaseActivity {
+public class PackBoxShipActivity extends BaseActivity {
 
     private static final int REQ_QR_CODE_PACK_BOX_CODE = 1;
 
@@ -52,7 +48,7 @@ public class PackBoxOrderPayDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pack_box_order_pay_detail);
+        setContentView(R.layout.activity_pack_box_ship);
 
         tvPackBoxCode = findViewById(R.id.tvPackBoxCode);
         tvOrderCode = findViewById(R.id.tvOrderCode);
@@ -75,15 +71,15 @@ public class PackBoxOrderPayDetailActivity extends BaseActivity {
     private void startQrCode(int requestCode) {
         if (PdaUtil.hasPdaScanner(this)) {
             Intent intent = new Intent(this, ScanActivity.class);
-            intent.putExtra("labelText", "扫描箱号或订单二维码");
+            intent.putExtra("labelText", "扫描箱号二维码");
             startActivityForResult(intent, requestCode);
         } else {
-            if (PermissionUtil.checkCameraStoragePermissions(PackBoxOrderPayDetailActivity.this, requestCode) == false) {
+            if (PermissionUtil.checkCameraStoragePermissions(PackBoxShipActivity.this, requestCode) == false) {
                 return;
             }
 
             Intent intent = new Intent(this, CaptureActivity.class);
-            intent.putExtra("labelText", "扫描箱号或订单二维码");
+            intent.putExtra("labelText", "扫描箱号二维码");
             startActivityForResult(intent, requestCode);
         }
     }
@@ -100,7 +96,7 @@ public class PackBoxOrderPayDetailActivity extends BaseActivity {
 
                 PackBoxRequest packBoxRequest = RetrofitUtil.createRequest(PackBoxRequest.class);
                 Call<PackBoxOrderPayDetailResponseInfo> orderPayDetailCall = packBoxRequest.orderPayDetail(packBoxCode);
-                Dialog mask = MaskDialog.show(PackBoxOrderPayDetailActivity.this);
+                Dialog mask = MaskDialog.show(PackBoxShipActivity.this);
                 orderPayDetailCall.enqueue(new Callback<PackBoxOrderPayDetailResponseInfo>() {
                     @Override
                     public void onResponse(Call<PackBoxOrderPayDetailResponseInfo> call, Response<PackBoxOrderPayDetailResponseInfo> response) {
@@ -108,7 +104,7 @@ public class PackBoxOrderPayDetailActivity extends BaseActivity {
 
                         PackBoxOrderPayDetailResponseInfo respData = response.body();
 
-                        if (!RetrofitUtil.processResponse(response, PackBoxOrderPayDetailActivity.this)) {
+                        if (!RetrofitUtil.processResponse(response, PackBoxShipActivity.this)) {
                             return;
                         }
 
@@ -120,14 +116,14 @@ public class PackBoxOrderPayDetailActivity extends BaseActivity {
                         tvArrearsAmount.setText("欠费金额：" + respData.getArrearsAmount());
 
                         if (respData.getHasArrearsAmount()) {
-                            SoundUtil.playError(PackBoxOrderPayDetailActivity.this);
+                            SoundUtil.playError(PackBoxShipActivity.this);
                             tvArrearsAmount.setTextColor(getResources().getColor(R.color.colorRed));
                         } else {
-                            SoundUtil.playSuccess(PackBoxOrderPayDetailActivity.this);
+                            SoundUtil.playSuccess(PackBoxShipActivity.this);
                             tvArrearsAmount.setTextColor(getResources().getColor(R.color.colorGreen));
 
                             if (swAutoContinueScan.isChecked()) {
-                                Toast.makeText(PackBoxOrderPayDetailActivity.this, "扫描订单 " + respData.getOrderCode() + " 无欠费！", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PackBoxShipActivity.this, "扫描订单 " + respData.getOrderCode() + " 无欠费！", Toast.LENGTH_SHORT).show();
 
                                 startQrCode(REQ_QR_CODE_PACK_BOX_CODE);
                             }
@@ -136,7 +132,7 @@ public class PackBoxOrderPayDetailActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(Call<PackBoxOrderPayDetailResponseInfo> call, Throwable t) {
-                        Toast.makeText(PackBoxOrderPayDetailActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PackBoxShipActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

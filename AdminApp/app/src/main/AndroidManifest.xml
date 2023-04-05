@@ -73,62 +73,14 @@
             android:name=".ui.pda.ScanWithImagesActivity"
             android:label="PDA扫描" />
         <activity
-            android:name=".ui.unload.StockPlaceListActivity"
-            android:label="托盘列表" />
-        <activity
-            android:name=".ui.unload.StockPlaceDetailActivity"
-            android:label="托盘详细" />
-        <activity
-            android:name=".ui.unload.StockPlaceAddActivity"
-            android:label="新建托盘" />
-        <activity
-            android:name=".ui.unload.PalletListActivity"
-            android:label="托盘列表" />
-        <activity
-            android:name=".ui.load.PackBoxLoadShipContainerInnerListActivity"
-            android:label="船航批次装箱" />
-        <activity
-            android:name=".ui.load.PackBoxLoadShipContainerInnerDetailActivity"
-            android:label="船航批次装箱" />
-        <activity
-            android:name=".ui.unload.PackBoxUnloadShipContainerInnerListActivity"
-            android:label="船航批次卸货" />
-        <activity
             android:name=".ui.query.PackBoxDetailActivity"
             android:label="箱号详细信息查询" />
         <activity
-            android:name=".ui.query.PackBoxStockPlaceActivity"
-            android:label="箱号仓位查询" />
-        <activity
-            android:name=".ui.query.PackBoxOrderPayDetailActivity"
+            android:name=".ui.query.PackBoxShipActivity"
             android:label="订单欠费查询" />
         <activity
             android:name=".ui.query.CustomerPackBoxStockPlaceActivity"
             android:label="会员箱号仓位查询" />
-        <activity
-            android:name=".ui.stockcheck.StockCheckWarehouseListActivity"
-            android:label="盘点仓库列表" />
-        <activity
-            android:name=".ui.stockcheck.StockCheckBillListActivity"
-            android:label="盘点单列表" />
-        <activity
-            android:name=".ui.stockcheck.StockCheckStockPlaceListActivity"
-            android:label="盘点仓库托盘列表" />
-        <activity
-            android:name=".ui.stockcheck.StockCheckStockPlaceDetailActivity"
-            android:label="盘点托盘详细" />
-        <activity
-            android:name=".ui.stockcheck.StockCheckStockPlaceAddActivity"
-            android:label="盘点托盘添加" />
-        <activity
-            android:name=".ui.stockmove.StockMoveWarehouseListActivity"
-            android:label="托盘移动仓库列表" />
-        <activity
-            android:name=".ui.stockmove.StockMoveStockPlaceListActivity"
-            android:label="托盘移动托盘列表" />
-        <activity
-            android:name=".ui.stockmove.StockMoveStockPlaceDetailActivity"
-            android:label="托盘移动重命名" />
         <activity
             android:name=".ui.query.ExpressPackageQueryActivity"
             android:label="快递单号查询" />
