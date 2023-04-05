@@ -1534,6 +1534,18 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         string country = orderPack.Order.Country.Name;
 
+        IList<LogisticsOrderPackBoxInfo> orderPackBoxList = session
+            .Query<LogisticsOrderPackBoxInfo>()
+            .Where(e => e.OrderPack.Id == orderPackId)
+            .ToList();
+
+        IList<string> packBoxCodeList = new List<string>();
+        IList<int> packBoxNumList = new List<int>();
+        foreach (LogisticsOrderPackBoxInfo orderPackBox in orderPackBoxList) {
+            packBoxCodeList.Add(logisticsOrderPackBoxService.GetBoxCode(orderPackBox.Id));
+            packBoxNumList.Add(orderPackBox.BoxNum);
+        }
+
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "customerCode", customerCode },
@@ -1549,6 +1561,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             { "mobile", mobile },
             { "address", address },
             { "country", country },
+            { "packBoxCodeList", packBoxCodeList },
+            { "packBoxNumList", packBoxNumList },
             { "printCount", printCount }
         });
     }
