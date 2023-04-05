@@ -74,41 +74,47 @@ public class PackBoxController : Controller {
 
         DateTime now = DateTime.Now;
 
-        string message = "箱号发货成功！";
+        string message = "箱号信息查询成功！";
         if (hasArrears == true) {
             message = "订单有欠费，不能设置箱号已发货！";
         } else {
-            var packBoxStatusBefor = packBox.Status;
-            packBox.Status = LogisticsOrderPackBoxStatus.Ship;
-            var packBoxStatusAfter = packBox.Status;
+            if (packBox.Status == LogisticsOrderPackBoxStatus.Pack) {
+                var packBoxStatusBefor = packBox.Status;
+                packBox.Status = LogisticsOrderPackBoxStatus.Ship;
+                var packBoxStatusAfter = packBox.Status;
 
-            packBox.ShipTime = now;
-            packBox.ShipUser = loginUser;
+                packBox.ShipTime = now;
+                packBox.ShipUser = loginUser;
 
-            session.Update(packBox);
-            session.Flush();
-
-            // 箱号日志还没有记录
-            logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Ship, packBoxStatusBefor, packBoxStatusAfter, loginUserId);
-
-            // 检查是不是订单所有箱号都已经发货
-            var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>().Where(e => e.Order.Id == orderId).ToList();
-
-            int notShipPackBoxCount = orderPackBoxList.Where(e => e.Status.IsShip() == false).Count();
-            // 如果所有箱号都已经发货了
-            if (notShipPackBoxCount == 0) {
-                order.OrderStatus = LogisticsOrderStatus.Shipped;
-                order.TransferTime = now;
-                session.Update(order);
-
-                logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Ship, loginUserId);
-
+                session.Update(packBox);
                 session.Flush();
 
-                message = "订单发货成功！";
-            }
+                message = "箱号发货成功！";
 
-            session.Flush();
+                // 箱号日志还没有记录
+                logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Ship, packBoxStatusBefor, packBoxStatusAfter, loginUserId);
+
+                // 检查是不是订单所有箱号都已经发货
+                var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>().Where(e => e.Order.Id == orderId).ToList();
+
+                int notShipPackBoxCount = orderPackBoxList.Where(e => e.Status.IsShip() == false).Count();
+                // 如果所有箱号都已经发货了
+                if (notShipPackBoxCount == 0) {
+                    order.OrderStatus = LogisticsOrderStatus.Shipped;
+                    order.TransferTime = now;
+                    session.Update(order);
+
+                    logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.Ship, loginUserId);
+
+                    session.Flush();
+
+                    message = "订单发货成功！";
+                }
+
+                session.Flush();
+            } else {
+                message = "箱号之前已发货成功！";
+            }
         }
 
         string packBoxCode = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
