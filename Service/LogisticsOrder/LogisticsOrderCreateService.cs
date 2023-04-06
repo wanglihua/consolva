@@ -281,6 +281,8 @@ public class LogisticsOrderCreateService {
         foreach (var express in expressList) {
             express.Order = order;
             express.OrderCode = order.Code;
+            express.FirstType = order.FirstModeType;
+            express.FirstMode = order.FirstMode;
             express.Status = ExpressStatus.Order;
 
             session.Update(express);

@@ -4,6 +4,7 @@ using shunda.Core.Service;
 using shunda.Core.Util;
 using shunda.Domain.Coupon;
 using shunda.Domain.Express;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Coupon;
 using shunda.Service.Express;
@@ -84,6 +85,8 @@ public class LogisticsOrderService {
             foreach (var express in expressList) {
                 express.Order = null;
                 express.OrderCode = string.Empty;
+                express.FirstMode = null;
+                express.FirstType = LogisticsModeType.None;
                 express.Status = ExpressStatus.Checkin;
                 session.Update(express);
             }
