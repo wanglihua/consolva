@@ -78,6 +78,27 @@
                     <b class="arrow"></b>
                 </li>
             }
+            
+            @if (Model.HasPassRes(PassRes.Express.ExpressOffShelfSchedule)) {
+                <li id="express-off-shelf-schedule-index-menu">
+                    <a href="#" class="dropdown-toggle">
+                        <span class="menu-text">下架排班</span>
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+                    <b class="arrow"></b>
+                    <ul class="submenu">
+                        @foreach (var warehouse in Model.WarehouseList) {
+                            <li id="express-off-shelf-schedule-warehouse@(warehouse.Id)-index-menu">
+                                <a asp-area="Express" asp-controller="ExpressOffShelfSchedule" asp-action="Index" asp-route-warehouseId="@(warehouse.Id)">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    @(warehouse.Name)
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }            
 
             @if (Model.HasPassRes(PassRes.Express.ExpressRemarkPresetSelect)) {
                 <li id="express-express-remark-preset-select-menu">
