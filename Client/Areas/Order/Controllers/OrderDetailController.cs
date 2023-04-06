@@ -335,7 +335,9 @@ public class OrderDetailController : Controller {
         };
 
         // photo
-        var photoList = session.Query<ExpressPhotoInfo>().Where(e => e.Order!.Id == orderId).ToList();
+        var photoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo) || e.Order!.Id == orderId)
+            .ToList();
         var photoTypeList = photoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
 
         var photoTypeItemList = photoTypeList
