@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList
 @using shunda.Core.Web
+@using shunda.Domain.Express
 @using shunda.Domain.LogisticsOrder
 @using shunda.Service.Express
 @model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail.LogisticsOrderDetailIndexModel
@@ -1004,6 +1005,116 @@
                         </div>
                     </div>
                 }
+                
+                @* 订单图片 *@
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelPhoto').toggle();">
+                            <div style="float: left;">
+                                订单照片
+                            </div>
+                            <div style="float: right;">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="panelPhoto" style="display: none;">
+                            @{
+                                IList<ExpressPhotoType> photoTypeList = Model.PhotoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
+                            }
+
+                            @if (Model.PhotoList != null && Model.PhotoList.Count() != 0)
+                            {
+                                <ul id="orderPhotoList" class="nav nav-tabs">
+                                    @{
+                                        int index = 0;
+                                        foreach (ExpressPhotoType photoType in photoTypeList)
+                                        {
+                                            if (index == 0)
+                                            {
+                                                <li class="active">
+                                                    <a data-toggle="tab" href="#photoTab_@(photoType.Id)" aria-expanded="true">
+                                                        @(photoType.Name)
+                                                    </a>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    <a data-toggle="tab" href="#photoTab_@(photoType.Id)" aria-expanded="false">
+                                                        @(photoType.Name)
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            index += 1;
+                                        }
+                                    }
+                                </ul>
+
+                                <div class="tab-content">
+                                    @{
+                                        index = 0;
+                                        foreach (ExpressPhotoType photoType in photoTypeList)
+                                        {
+                                            string activeClass = "";
+                                            if (index == 0)
+                                            {
+                                                activeClass = " active in ";
+                                            }
+
+                                            <div id="photoTab_@(photoType.Id)" class="tab-pane fade @(activeClass)">
+
+                                                @{
+                                                    IList<ExpressPhotoInfo> typePhotoList = Model.PhotoList.Where(e => e.Type.Id == photoType.Id).ToList();
+                                                    IList<string> trackingNoList = typePhotoList.Select(e => e.Express?.TrackingNo ?? "").Distinct().ToList();
+
+                                                    int trackingNoIndex = 0;
+                                                    foreach (string trackingNo in trackingNoList)
+                                                    {
+                                                        string backgroundColorStyle = "";
+                                                        if (trackingNoIndex % 2 == 1)
+                                                        {
+                                                            backgroundColorStyle = " background-color: #f2f2f2; ";
+                                                        }
+
+                                                        <div style="@(backgroundColorStyle)">
+                                                            @if(string.IsNullOrWhiteSpace(trackingNo) == false) {
+                                                                <div style="margin: 0 5px; font-size: 18px; line-height: 20px; font-weight: bold; border-bottom: 1px solid gray;">@(trackingNo)</div>
+                                                            }
+                                                            <div>
+                                                                @{
+                                                                    IList<ExpressPhotoInfo> expressPhotoList = typePhotoList.Where(e => (e.Express?.TrackingNo ?? "") == trackingNo).ToList();
+                                                                    foreach (ExpressPhotoInfo photo in expressPhotoList)
+                                                                    {
+                                                                        <a href="@(photo.BigImageFullUrlCache)" target="_blank" style="display: inline-block; margin: 5px;">
+                                                                            <img alt="" src="@(photo.SmallImageFullUrlCache)" style="height: 100px;"/>
+                                                                        </a>
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        </div>
+
+                                                        trackingNoIndex += 1;
+                                                    }
+                                                }
+
+                                            </div>
+
+                                            index += 1;
+                                        }
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="padding: 5px;">
+                                    暂时没有数据！
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
 
                 @* 操作记录 *@
                 <div class="row">

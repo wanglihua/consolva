@@ -28,5 +28,8 @@ public class LogisticsOrderDetailIndexModel {
     public IList<LogisticsOrderPackBoxInfo> OrderPackBoxList { get; set; } = new List<LogisticsOrderPackBoxInfo>();
 
     [BindNever]
+    public IList<ExpressPhotoInfo> PhotoList { get; set; } = new List<ExpressPhotoInfo>();
+
+    [BindNever]
     public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
 }

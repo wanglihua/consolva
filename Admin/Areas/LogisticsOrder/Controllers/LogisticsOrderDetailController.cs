@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Linq;
+using Quartz.Xml.JobSchedulingData20;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
 using shunda.Core.Web;
+using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
@@ -24,18 +26,21 @@ public class LogisticsOrderDetailController : Controller {
     private readonly ExpressService expressService;
     private readonly PassResService passResService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
+    private readonly ExpressPhotoFileService expressPhotoFileService;
 
     public LogisticsOrderDetailController(ISession session,
         LoginUserService loginUserService,
         ExpressService expressService,
         PassResService passResService,
-        LogisticsOrderPackBoxService logisticsOrderPackBoxService
+        LogisticsOrderPackBoxService logisticsOrderPackBoxService,
+        ExpressPhotoFileService expressPhotoFileService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.expressService = expressService;
         this.passResService = passResService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
+        this.expressPhotoFileService = expressPhotoFileService;
     }
 
     [HttpGet]
@@ -119,6 +124,17 @@ public class LogisticsOrderDetailController : Controller {
             repackTypeTitle = repackTypeSetting.Title;
         }
 
+        // 订单图片
+        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+        var expressPhotoList = session.Query<ExpressPhotoInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo) || e.Order!.Id == orderId)
+            .ToList();
+
+        foreach (var p in expressPhotoList) {
+            p.BigImageFullUrlCache = expressPhotoFileService.GetBigImageFullUrlForSite(p, OssSiteLocType.China);
+            p.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(p, OssSiteLocType.China);
+        }
+
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             Order = order,
@@ -128,6 +144,7 @@ public class LogisticsOrderDetailController : Controller {
             ExpressList = expressList,
             OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,
+            PhotoList = expressPhotoList,
         };
 
         return View("LogisticsOrderDetailIndex", model);
