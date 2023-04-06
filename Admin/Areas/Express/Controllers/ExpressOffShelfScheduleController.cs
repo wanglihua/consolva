@@ -62,158 +62,145 @@ public class ExpressOffShelfScheduleController : Controller {
         return View("ExpressOffShelfScheduleIndex", model);
     }
 
-        [HttpPost]
-        [Route("/admin/express/off/shelf/scheduling/list")]
-        public IActionResult SchedulingList(ExpressListQueryParam queryParam)
-        {
-            int totalCount = expressListService.Count(ExpressListMenuCate.ToOffShelfSchedule, queryParam);
-            ListPager listPager = new ListPager(queryParam, totalCount);
+    [HttpPost]
+    [Route("/admin/express/off/shelf/scheduling/list")]
+    public IActionResult SchedulingList(ExpressListQueryParam queryParam) {
+        int totalCount = expressListService.Count(ExpressListMenuCate.ToOffShelfSchedule, queryParam);
+        ListPager listPager = new ListPager(queryParam, totalCount);
 
-            IList<ExpressInfo> schedulingList = expressListService.List(ExpressListMenuCate.ToOffShelfSchedule, queryParam, listPager);
+        IList<ExpressInfo> schedulingList = expressListService.List(ExpressListMenuCate.ToOffShelfSchedule, queryParam, listPager);
 
-            ExpressOffShelfSchedulingListModel model = new ExpressOffShelfSchedulingListModel(listPager);
-            model.SchedulingList = schedulingList;
+        ExpressOffShelfSchedulingListModel model = new ExpressOffShelfSchedulingListModel(listPager);
+        model.SchedulingList = schedulingList;
 
-            // IList<ShelfInfo> shelfList = expressClaimService.GetShelfList(ExpressClaimCate.ToOffShelfSchedule, queryParam);
-            // model.ShelfList = shelfList;
+        // IList<ShelfInfo> shelfList = expressListService.GetShelfList(ExpressListMenuCate.ToOffShelfSchedule, queryParam);
+        // model.ShelfList = shelfList;
 
-            return View("ExpressOffShelfSchedulingList", model);
-        }    
-        
-        [HttpPost]
-        [Route("/admin/express/off/shelf/scheduled/list")]
-        public IActionResult ScheduledList(ExpressListQueryParam queryParam)
-        {
-            int totalCount = expressShelfScheduleService.Count(ExpressShelfScheduleType.OffShelf, queryParam);
-            ListPager listPager = new ListPager(queryParam, totalCount);
+        return View("ExpressOffShelfSchedulingList", model);
+    }
 
-            IList<ExpressShelfScheduleInfo> scheduledList = expressShelfScheduleService.List(ExpressShelfScheduleType.OffShelf, queryParam, listPager);
+    [HttpPost]
+    [Route("/admin/express/off/shelf/scheduled/list")]
+    public IActionResult ScheduledList(ExpressListQueryParam queryParam) {
+        int totalCount = expressShelfScheduleService.Count(ExpressShelfScheduleType.OffShelf, queryParam);
+        ListPager listPager = new ListPager(queryParam, totalCount);
 
-            ExpressOffShelfScheduledListModel model = new ExpressOffShelfScheduledListModel(listPager);
-            model.ScheduledList = scheduledList;
+        IList<ExpressShelfScheduleInfo> scheduledList = expressShelfScheduleService.List(ExpressShelfScheduleType.OffShelf, queryParam, listPager);
 
-            return View("ExpressOffShelfScheduledList", model);
-        }        
-}
+        ExpressOffShelfScheduledListModel model = new ExpressOffShelfScheduledListModel(listPager);
+        model.ScheduledList = scheduledList;
 
-/*
+        return View("ExpressOffShelfScheduledList", model);
+    }
 
-        [HttpPost]
-        [Route("/admin/express/off/shelf/scheduling")]
-        public IActionResult Scheduling(IList<int> idList)
-        {
-            if (idList == null || idList.Count == 0)
-            {
-                throw new ValidationException("请选择要移除排班的数据！");
-            }
-
-            session.Query<ExpressShelfScheduleInfo>()
-                .Where(e => e.ScheduleType == ExpressShelfScheduleType.OffShelf && idList.Contains(e.Id))
-                .Delete();
-
-            return Json(new Dictionary<string, object>() {
-                {"success", true},
-                {"message", "移除排班成功！"},
-            });
+    [HttpPost]
+    [Route("/admin/express/off/shelf/scheduling")]
+    public IActionResult Scheduling(IList<int> idList) {
+        if (idList == null || idList.Count == 0) {
+            throw new ValidationException("请选择要移除排班的数据！");
         }
 
-        [HttpPost]
-        [Route("/admin/express/off/shelf/scheduling/by/query")]
-        public IActionResult SchedulingByQuery(ExpressClaimListQueryParam queryParam)
-        {
-            IList<ExpressShelfScheduleInfo> scheduledList = expressShelfScheduleService.List(ExpressShelfScheduleType.OffShelf, queryParam);
+        var scheduleList = session.Query<ExpressShelfScheduleInfo>()
+            .Where(e => e.ScheduleType == ExpressShelfScheduleType.OffShelf && idList.Contains(e.Id))
+            .ToList();
 
-            if (scheduledList.Count == 0)
-            {
-                throw new ValidationException("指定查询条件的排班数据不存在！");
-            }
-
-            foreach (ExpressShelfScheduleInfo schedule in scheduledList)
-            {
-                session.Delete(schedule);
-            }
-
-            session.Flush();
-
-            return Json(new Dictionary<string, object>() {
-                {"success", true},
-                {"message", "移除排班成功！"},
-            });
+        foreach (var schedule in scheduleList) {
+            session.Delete(schedule);
         }
 
-        [HttpPost]
-        [Route("/admin/express/off/shelf/scheduled")]
-        public IActionResult Scheduled(IList<int> idList, int userId)
-        {
-            if (idList == null || idList.Count == 0)
-            {
-                throw new ValidationException("请选择要排班的数据！");
-            }
+        session.Flush();
 
-            UserInfo user = session.Get<UserInfo>(userId);
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "移除排班成功！",
+        });
+    }
 
-            if (user == null)
-            {
-                throw new ValidationException("指定的用户不存在！");
-            }
+    [HttpPost]
+    [Route("/admin/express/off/shelf/scheduling/by/query")]
+    public IActionResult SchedulingByQuery(ExpressListQueryParam queryParam) {
+        IList<ExpressShelfScheduleInfo> scheduledList = expressShelfScheduleService.List(ExpressShelfScheduleType.OffShelf, queryParam);
 
-            IList<LogisticsClaimGoodsInfo> schedulingList = session.Query<LogisticsClaimGoodsInfo>()
-                .Where(e => idList.Contains(e.Id))
-                .ToList();
-
-            foreach (LogisticsClaimGoodsInfo cg in schedulingList)
-            {
-                ExpressShelfScheduleInfo schedule = new ExpressShelfScheduleInfo();
-                schedule.Claim = cg;
-                schedule.User = user;
-                schedule.ScheduleType = ExpressShelfScheduleType.OffShelf;
-
-                session.Save(schedule);
-            }
-
-            session.Flush();
-
-            return Json(new Dictionary<string, object>() {
-                {"success", true},
-                {"message", "排班成功！"},
-            });
+        if (scheduledList.Count == 0) {
+            throw new ValidationException("指定查询条件的排班数据不存在！");
         }
 
-        [HttpPost]
-        [Route("/admin/express/off/shelf/scheduled/by/query")]
-        public IActionResult ScheduledByQuery(ExpressClaimListQueryParam queryParam, int userId)
-        {
-            IList<LogisticsClaimGoodsInfo> schedulingList = expressClaimService.List(ExpressClaimCate.ToOffShelfSchedule, queryParam);
-
-            if (schedulingList.Count == 0)
-            {
-                throw new ValidationException("指定查询条件的待排班数据不存在！");
-            }
-
-            UserInfo user = session.Get<UserInfo>(userId);
-            if (user == null)
-            {
-                throw new ValidationException("指定的用户不存在！");
-            }
-
-            foreach (LogisticsClaimGoodsInfo cg in schedulingList)
-            {
-                ExpressShelfScheduleInfo schedule = new ExpressShelfScheduleInfo();
-                schedule.Claim = cg;
-                schedule.User = user;
-                schedule.ScheduleType = ExpressShelfScheduleType.OffShelf;
-
-                session.Save(schedule);
-            }
-
-            session.Flush();
-
-            return Json(new Dictionary<string, object>() {
-                {"success", true},
-                {"message", "排班成功！"},
-            });
+        foreach (ExpressShelfScheduleInfo schedule in scheduledList) {
+            session.Delete(schedule);
         }
+
+        session.Flush();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "移除排班成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/express/off/shelf/scheduled")]
+    public IActionResult Scheduled(IList<int> idList, int userId) {
+        if (idList == null || idList.Count == 0) {
+            throw new ValidationException("请选择要排班的数据！");
+        }
+
+        UserInfo user = session.Get<UserInfo>(userId);
+
+        if (user == null) {
+            throw new ValidationException("指定的用户不存在！");
+        }
+
+        IList<ExpressInfo> schedulingList = session.Query<ExpressInfo>()
+            .Where(e => idList.Contains(e.Id))
+            .ToList();
+
+        foreach (var e in schedulingList) {
+            var schedule = new ExpressShelfScheduleInfo {
+                Express = e,
+                User = user,
+                ScheduleType = ExpressShelfScheduleType.OffShelf
+            };
+
+            session.Save(schedule);
+        }
+
+        session.Flush();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "排班成功！",
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/express/off/shelf/scheduled/by/query")]
+    public IActionResult ScheduledByQuery(ExpressListQueryParam queryParam, int userId) {
+        IList<ExpressInfo> schedulingList = expressListService.List(ExpressListMenuCate.ToOffShelfSchedule, queryParam);
+
+        if (schedulingList.Count == 0) {
+            throw new ValidationException("指定查询条件的待排班数据不存在！");
+        }
+
+        var user = session.Get<UserInfo>(userId);
+        if (user == null) {
+            throw new ValidationException($"指定的用户#{userId}不存在！");
+        }
+
+        foreach (var e in schedulingList) {
+            var schedule = new ExpressShelfScheduleInfo {
+                Express = e,
+                User = user,
+                ScheduleType = ExpressShelfScheduleType.OffShelf
+            };
+
+            session.Save(schedule);
+        }
+
+        session.Flush();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "排班成功！",
+        });
     }
 }
-
-*/
