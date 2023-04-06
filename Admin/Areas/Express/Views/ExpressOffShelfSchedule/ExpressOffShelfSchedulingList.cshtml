@@ -1,0 +1,200 @@
+@{
+    Layout = null;
+}
+@using Domain
+@using Domain.LogisticsOrder
+@using Domain.Warehouse
+@using Service.Express
+@model Web.Areas.Admin.Models.ExpressOffShelfSchedule.ExpressOffShelfSchedulingListModel
+
+@*
+<div>
+    <span style="font-size: 12px; font-weight: bold;">货架：</span>&nbsp;&nbsp;
+    <input id="scheduleShelfCheckAll" type="checkbox" class="ace scheduleShelfCheckBox"/><span class="lbl"></span><label for="scheduleShelfCheckAll" style="color: blue;">全选</label><span>&nbsp;&nbsp;</span>
+    <span id="scheduleShelfList">
+        @foreach (ShelfInfo scheduleShelf in Model.ShelfList)
+        {
+            <span>
+                <input id="scheduleShelf_@(scheduleShelf.Id)" type="checkbox" class="ace scheduleShelfCheckBox" value="@(scheduleShelf.Id)" data-shelfName="@(scheduleShelf.Name)" onclick="loadSchedulingList()"/><span class="lbl"></span><label for="scheduleShelf_@(scheduleShelf.Id)">@(scheduleShelf.Name)</label><span>&nbsp;&nbsp;</span>
+            </span>
+        }
+    </span>
+</div>
+*@
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadSchedulingList"})
+
+<table id="tblSchedulingList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <label for="schedulingCheckAll"></label><input id="schedulingCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+            <th style="width: 130px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.AoPinTrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">澳拼入库号</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">快递单号</a>
+                </div>
+            </th>
+            <th style="width: 90px; text-align: center;">
+                <div>
+                    <span>体积(M<sup>3</sup>)</span>
+                </div>
+                <div>
+                    <span>重量(KG)</span>
+                </div>
+                <div>
+                    <span>包裹数量</span>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.Warehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">当前仓库</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.StorageLoc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">当前仓位号</a>
+                </div>
+            </th>
+            <th style="width: 140px; text-align: center;">
+                <div>
+                    <a field="order.@(nameof(LogisticsOrderInfo.TargetWarehouse))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">目的仓</a>
+                </div>
+                <div>
+                    <a field="order.@(nameof(LogisticsOrderInfo.FirstLogisticsMode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">头程物流</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">物品类型</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.CustomerId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">认领客户</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsClaimGoodsInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">快递状态</a>
+                </div>
+            </th>
+            <th style="width: 125px; text-align: center;">
+                <div>
+                    <a field="order.@(nameof(LogisticsOrderInfo.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">所在订单</a>
+                </div>
+                <div>
+                    <a field="order.@(nameof(LogisticsOrderInfo.OrderStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">订单状态</a>
+                </div>
+                <div>
+                    <a field="order.@(nameof(LogisticsOrderInfo.SubmitPackTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSchedulingList">提交打包时间</a>
+                </div>                
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.SchedulingList != null && Model.SchedulingList.Count() != 0)
+        {
+            int order = 1;
+            foreach (LogisticsClaimGoodsInfo claimGoods in Model.SchedulingList)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="schedulingCheck_@(claimGoods.Id)"></label><input id="schedulingCheck_@(claimGoods.Id)" type="checkbox" class="ace" value="@claimGoods.Id"/><span class="lbl"></span>
+                    </td>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
+                    <td style="text-align: center;">
+                        <div>
+                            <a href="@Url.Action("Detail", "ExpressClaim", new {cateId = ExpressClaimCate.All.Id, id = claimGoods.Id})" target="_blank">
+                                @ListDataUtil.Render(claimGoods.AoPinTrackingNo)
+                            </a>
+                        </div>
+                        <div style="color: blue;">
+                            <a href="@Url.Action("Detail", "ExpressClaim", new {cateId = ExpressClaimCate.All.Id, id = claimGoods.Id})" target="_blank">
+                                @claimGoods.TrackingNo
+                            </a>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render((claimGoods.ExpressItemListCache == null || claimGoods.ExpressItemListCache.Count == 0) ? 0 : claimGoods.ExpressItemListCache.Sum(e => e.SingleVolume * e.Quantity), "#0.000000")
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.Render((claimGoods.ExpressItemListCache == null || claimGoods.ExpressItemListCache.Count == 0) ? 0 : claimGoods.ExpressItemListCache.Sum(e => e.SingleWeight * e.Quantity), "#0.000")
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(claimGoods.ExpressPackageCount)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.WarehouseNameCache)
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.StorageLocNameCache)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.orderTargetWarehouseNameCache)
+                        </div>
+                        <div style="color: blue;">
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.OrderFirstModeNameCache)
+                        </div>
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.GoodsType?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @if (string.IsNullOrWhiteSpace(claimGoods.CustomerNameCache) == false)
+                            {
+                                <span>@claimGoods.CustomerNameCache</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div>
+                            @(claimGoods.Status?.Name)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;" class="break-word">
+                        <div>
+                            @if (string.IsNullOrWhiteSpace(claimGoods.OrderCodeCache) == false)
+                            {
+                                <a target="_blank" href="@Url.Action("Detail", "LogisticsOrder", new {id = (claimGoods.Order?.Id ?? 0)})">
+                                    <span>@claimGoods.OrderCodeCache</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </div>
+                        <div>
+                            @ListDataUtil.RenderStringWithDiv(claimGoods.OrderStatusNameCache)
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(claimGoods.OrderSubmitPackTimeCache)
+                        </div>                        
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="9">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Component.InvokeAsync("ListPager", new {model = Model, loadListFunc = "loadSchedulingList"})

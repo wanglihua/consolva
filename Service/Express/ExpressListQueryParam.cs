@@ -19,11 +19,6 @@ public class ExpressListQueryParam : ListQueryParam
     /// </summary>
     public int FirstModeIdQuery { get; set; }
 
-    /// <summary>
-    /// 是否打印澳拼标签
-    /// </summary>
-    public bool? PackPrintQuery { get; set; }
-
     public string? CheckinTrackingNoQuery { get; set; }
 
     public string? TrackingNoQuery { get; set; }

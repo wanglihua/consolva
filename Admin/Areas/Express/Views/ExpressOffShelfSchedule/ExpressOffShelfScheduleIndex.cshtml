@@ -1,0 +1,404 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Express
+@using shunda.Domain.Pass
+@using shunda.Service.Express
+@model shunda.Admin.Areas.Express.Models.ExpressOffShelfSchedule.ExpressOffShelfScheduleIndexModel
+@{
+    ViewData[ViewDataKey.Title] = "下架排班";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="pparent" data-menu="express-menu">快递管理</li>
+    <li class="parent" data-menu="express-off-shelf-schedule-index-menu">@(ViewData[ViewDataKey.Title])</li>
+    <li class="active" data-menu="express-off-shelf-schedule-warehouse@(Model.Warehouse.Id)-index-menu">@(Model.Warehouse.Name)</li>
+}
+
+<div class="row">
+    <div class="col-xs-6" style="padding: 5px;">
+        <div id="schedulingQuery" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+            <label for="checkinTrackingNoQueryScheduling">澳拼入库号</label>&nbsp;<input id="checkinTrackingNoQueryScheduling" name="checkinTrackingNoQueryScheduling" style="width: 100px; height: 30px;" placeholder="澳拼入库号查询"/>&nbsp;
+            <label for="trackingNoQueryScheduling">快递单号</label>&nbsp;<input id="trackingNoQueryScheduling" name="trackingNoQueryScheduling" style="width: 100px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
+            <label for="orderCodeQueryScheduling">订单编号</label>&nbsp;<input id="orderCodeQueryScheduling" name="orderCodeQueryScheduling" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+            <select id="firstModeIdQueryScheduling" name="firstModeIdQueryScheduling" style="width: 120px; height: 30px;" onchange="loadSchedulingList()">
+                <option value="0">头程物流</option>
+                @foreach (var firstMode in Model.FirstModeList)
+                {
+                    <option value="@(firstMode.Id)">@(firstMode.Code)(@(firstMode.Name))</option>
+                }
+            </select> &nbsp;
+            <label for="submitPackTimeBeginQuery">提交打包起始日期</label>&nbsp;<input id="submitPackTimeBeginQuery" name="submitPackTimeBeginQuery" style="width: 120px; height: 30px;" placeholder="提交打包起始日期" autocomplete="off"/>&nbsp;
+            
+            <label for="submitPackTimeEndQuery">提交打包截止日期</label>&nbsp;<input id="submitPackTimeEndQuery" name="submitPackTimeEndQuery" style="width: 120px; height: 30px;" placeholder="提交打包截止日期" autocomplete="off"/>&nbsp;            
+
+            <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadSchedulingList(0)">
+                &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+            </button>
+            <button type="button" class="btn btn-mini btn-purple" style="margin-bottom: 3px; height: 30px;" onclick="scheduled()">
+                &nbsp;<i class="ace-icon fa fa-gears"></i>按选择数据排班
+            </button>
+            <button type="button" class="btn btn-mini btn-purple" style="margin-bottom: 3px; height: 30px;" onclick="scheduledByQuery()">
+                &nbsp;<i class="ace-icon fa fa-gears"></i>按查询数据排班
+            </button>
+        </div>
+
+        <div>
+            <span style="font-size: 12px; font-weight: bold;">货架：</span>&nbsp;&nbsp;
+            <input id="scheduleShelfCheckAll" type="checkbox" class="ace scheduleShelfCheckBox"/><span class="lbl"></span><label for="scheduleShelfCheckAll" style="color: blue;">全选</label><span>&nbsp;&nbsp;</span>
+            <span id="scheduleShelfList">
+                @foreach (var scheduleShelf in Model.ShelfList)
+                {
+                    <span>
+                        <input id="scheduleShelf_@(scheduleShelf.Id)" type="checkbox" class="ace scheduleShelfCheckBox" value="@(scheduleShelf.Id)" data-shelfName="@(scheduleShelf.Name)" onclick="loadSchedulingList()"/><span class="lbl"></span><label for="scheduleShelf_@(scheduleShelf.Id)">@(scheduleShelf.Name)</label><span>&nbsp;&nbsp;</span>
+                    </span>
+                }
+            </span>
+        </div>
+
+
+        <div id="schedulingList" data-page-index="0" data-sort-field="@(nameof(ExpressInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+        </div>
+    </div>
+    <div class="col-xs-6" style="padding: 5px;">
+        <div id="scheduledQuery" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+            <label for="checkinTrackingNoQueryScheduled">澳拼入库号</label>&nbsp;<input id="checkinTrackingNoQueryScheduled" name="checkinTrackingNoQueryScheduled" style="width: 100px; height: 30px;" placeholder="澳拼入库号查询"/>&nbsp;
+            <label for="trackingNoQueryScheduled">快递单号</label>&nbsp;<input id="trackingNoQueryScheduled" name="trackingNoQueryScheduled" style="width: 100px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
+            <label for="orderCodeQueryScheduled">订单编号</label>&nbsp;<input id="orderCodeQueryScheduled" name="orderCodeQueryScheduled" style="width: 100px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+            <select id="firstModeIdQueryScheduled" name="firstModeIdQueryScheduled" style="width: 120px; height: 30px;" onchange="loadScheduledList()">
+                <option value="0">头程物流</option>
+                @foreach (var firstMode in Model.FirstModeList)
+                {
+                    <option value="@(firstMode.Id)">@(firstMode.Code)(@(firstMode.Name))</option>
+                }
+            </select> &nbsp;
+            <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadScheduledList(0)">
+                &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+            </button>
+            <button type="button" class="btn btn-mini btn-pink" style="margin-bottom: 3px; height: 30px;" onclick="scheduling()">
+                &nbsp;<i class="ace-icon fa fa-gears"></i>按选择取消排班
+            </button>
+            <button type="button" class="btn btn-mini btn-pink" style="margin-bottom: 3px; height: 30px;" onclick="schedulingByQuery()">
+                &nbsp;<i class="ace-icon fa fa-gears"></i>按查询取消排班
+            </button>
+        </div>
+
+        <div>
+            <span style="font-size: 12px; font-weight: bold;">下架人员：</span>&nbsp;&nbsp;
+            <input id="scheduleUserCheckAll" type="checkbox" class="ace scheduleUserCheckBox"/><span class="lbl"></span><label for="scheduleUserCheckAll" style="color: blue;">全选</label><span>&nbsp;&nbsp;</span>
+            <span id="scheduleUserList">
+                @foreach (UserInfo scheduleUser in Model.OffShelfUserList)
+                {
+                    <span>
+                        <input id="scheduleUser_@(scheduleUser.Id)" type="checkbox" class="ace scheduleUserCheckBox" value="@(scheduleUser.Id)" data-userName="@(scheduleUser.LoginName)" onclick="loadScheduledList()"/><span class="lbl"></span><label for="scheduleUser_@(scheduleUser.Id)">@(scheduleUser.LoginName)</label><span>&nbsp;&nbsp;</span>
+                    </span>
+                }
+            </span>
+        </div>
+
+        <div id="scheduledList" data-page-index="0" data-sort-field="@(nameof(ExpressShelfScheduleInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(function() {
+        
+        $('#submitPackTimeBeginQuery').datetimepicker({
+            locale: "zh-cn"
+        });
+
+        $('#submitPackTimeEndQuery').datetimepicker({
+            locale: "zh-cn"
+        });        
+        
+        loadSchedulingList();
+        loadScheduledList();
+
+        $("#scheduleShelfCheckAll").click(function() {
+            var checkBoxAll = this;
+            $("#scheduleShelfList").find("input.scheduleShelfCheckBox").each(function () {
+                this.checked = checkBoxAll.checked;
+            });
+
+            loadSchedulingList();
+        });        
+        
+        $("#scheduleUserCheckAll").click(function() {
+            var checkBoxAll = this;
+            $("#scheduleUserList").find("input.scheduleUserCheckBox").each(function () {
+                this.checked = checkBoxAll.checked;
+            });
+
+            loadScheduledList();
+        });
+    });
+    
+    function getSelectedShelfIdList() {
+        var shelfIdList = [];
+        $("#scheduleShelfList").find("input.scheduleShelfCheckBox").each(function () {
+            if (this.checked) {
+                shelfIdList.push($(this).val());
+            }
+        });
+
+        return shelfIdList;  
+    }        
+    
+    function getSelectedUserIdList() {
+        var userIdList = [];
+        $("#scheduleUserList").find("input.scheduleUserCheckBox").each(function () {
+            if (this.checked) {
+                userIdList.push($(this).val());
+            }
+        });
+
+        return userIdList;  
+    }  
+    
+    function sortSchedulingList(sortField, sortDir) {
+        var list = $('#schedulingList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadSchedulingList();
+    }
+
+    function loadSchedulingList(pageIndex) {
+        var list = $('#schedulingList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+        
+        var shelfIdList = getSelectedShelfIdList();
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("SchedulingList", "ExpressOffShelfSchedule")",
+            type: "POST",
+            data: {
+                "@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))": $("#checkinTrackingNoQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.TrackingNoQuery))": $("#trackingNoQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.OrderCodeQuery))": $("#orderCodeQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.FirstModeIdQuery))": $("#firstModeIdQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.SubmitPackTimeBeginQuery))": $("#submitPackTimeBeginQuery").val(),
+                "@(nameof(ExpressListQueryParam.SubmitPackTimeEndQuery))": $("#submitPackTimeEndQuery").val(),
+                "@(nameof(ExpressListQueryParam.WarehouseIdQuery))": '@(Model.Warehouse?.Id ?? 0)',
+                "@(nameof(ExpressListQueryParam.ScheduleShelfIdListQuery))": shelfIdList,
+                "@(nameof(ExpressListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ExpressListQueryParam.SortField))": sortField,
+                "@(nameof(ExpressListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#schedulingList').html(data);
+
+                initListTable("#tblSchedulingList");
+            }
+        });
+    }    
+
+    function sortScheduledList(sortField, sortDir) {
+        var list = $('#scheduledList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadScheduledList();
+    }
+
+    function loadScheduledList(pageIndex) {
+        var list = $('#scheduledList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+        
+        var userIdList = getSelectedUserIdList();        
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("ScheduledList", "ExpressOffShelfSchedule")",
+            type: "POST",
+            data: {
+                "@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))": $("#checkinTrackingNoQueryScheduled").val(),
+                "@(nameof(ExpressListQueryParam.TrackingNoQuery))": $("#trackingNoQueryScheduled").val(),
+                "@(nameof(ExpressListQueryParam.OrderCodeQuery))": $("#orderCodeQueryScheduled").val(),
+                "@(nameof(ExpressListQueryParam.FirstModeIdQuery))": $("#firstModeIdQueryScheduled").val(),                
+                "@(nameof(ExpressListQueryParam.ScheduleUserIdListQuery))": userIdList,
+                "@(nameof(ExpressListQueryParam.WarehouseIdQuery))": '@(Model.Warehouse?.Id ?? 0)',
+                "@(nameof(ExpressListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(ExpressListQueryParam.SortField))": sortField,
+                "@(nameof(ExpressListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#scheduledList').html(data);
+
+                initListTable("#tblScheduledList");
+            }
+        });
+    }
+    
+    function scheduled() {
+        var idList = getSelectIdList('#tblSchedulingList');
+        if (idList.length === 0) {
+            $.msg.alert("请选择要排班的数据！");
+            return;
+        }
+        
+        var userIdList = getSelectedUserIdList();
+        if (userIdList.length !== 1) {
+            $.msg.alert("请选择一位要排班的下架人员！");
+            return;
+        }
+        
+        showMask("操作中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("Scheduled", "ExpressOffShelfSchedule")",
+            type: "POST",
+            data: {
+                "idList": idList,
+                "userId": userIdList[0]
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                loadSchedulingList();
+                loadScheduledList();
+            }
+        });
+    }
+    
+    function scheduledByQuery() {        
+        var userIdList = getSelectedUserIdList();
+        if (userIdList.length !== 1) {
+            $.msg.alert("请选择一位要排班的下架人员！");
+            return;
+        }
+        
+        var shelfIdList = getSelectedShelfIdList();
+        
+        showMask("操作中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("ScheduledByQuery", "ExpressOffShelfSchedule")",
+            type: "POST",
+            data: {
+                "@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))": $("#checkinTrackingNoQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.TrackingNoQuery))": $("#trackingNoQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.OrderCodeQuery))": $("#orderCodeQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.FirstModeIdQuery))": $("#firstModeIdQueryScheduling").val(),
+                "@(nameof(ExpressListQueryParam.SubmitPackTimeBeginQuery))": $("#submitPackTimeBeginQuery").val(),
+                "@(nameof(ExpressListQueryParam.SubmitPackTimeEndQuery))": $("#submitPackTimeEndQuery").val(),
+                "@(nameof(ExpressListQueryParam.WarehouseIdQuery))": '@(Model.Warehouse?.Id ?? 0)',
+                "@(nameof(ExpressListQueryParam.ScheduleShelfIdListQuery))": shelfIdList,
+                "userId": userIdList[0]
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                loadSchedulingList();
+                loadScheduledList();
+            }
+        });
+    }    
+    
+    function scheduling() {
+        var idList = getSelectIdList('#tblScheduledList');    
+        if (idList.length === 0) {
+            $.msg.alert("请选择要取消排班的数据！");
+            return;
+        }
+        
+        showMask("操作中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("Scheduling", "ExpressOffShelfSchedule")",
+            type: "POST",
+            data: {
+                "idList": idList
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                loadSchedulingList();
+                loadScheduledList();
+            }
+        });        
+    }
+    
+    function schedulingByQuery() {
+        var userIdList = getSelectedUserIdList();
+        
+        showMask("操作中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("SchedulingByQuery", "ExpressOffShelfSchedule")",
+            type: "POST",
+            data: {
+                "@(nameof(ExpressListQueryParam.CheckinTrackingNoQuery))": $("#checkinTrackingNoQueryScheduled").val(),
+                "@(nameof(ExpressListQueryParam.TrackingNoQuery))": $("#trackingNoQueryScheduled").val(),
+                "@(nameof(ExpressListQueryParam.OrderCodeQuery))": $("#orderCodeQueryScheduled").val(),
+                "@(nameof(ExpressListQueryParam.FirstModeIdQuery))": $("#firstModeIdQueryScheduled").val(),                
+                "@(nameof(ExpressListQueryParam.ScheduleUserIdListQuery))": userIdList,
+                "@(nameof(ExpressListQueryParam.WarehouseIdQuery))": '@(Model.Warehouse?.Id ?? 0)'
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                loadSchedulingList();
+                loadScheduledList();
+            }
+        });        
+    }    
+
+</script>
