@@ -13,9 +13,10 @@ import android.widget.Toast;
 
 import com.huadu.shunda.R;
 import com.huadu.shunda.core.RetrofitUtil;
-import com.huadu.shunda.data.http.expressimageshow.ExpressImageShowImageItemInfo;
-import com.huadu.shunda.data.http.expressimageshow.ExpressImageShowImageListResponseInfo;
-import com.huadu.shunda.http.ExpressImageShowRequest;
+import com.huadu.shunda.data.http.ResponseDataInfo;
+import com.huadu.shunda.data.http.expressphoto.ExpressPhotoExpressPhotoListItem;
+import com.huadu.shunda.data.http.expressphoto.ExpressPhotoExpressPhotoListResponseData;
+import com.huadu.shunda.http.ExpressPhotoRequest;
 import com.huadu.shunda.ui.BaseActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,7 @@ public class ExpressImageListActivity extends BaseActivity {
         lvImageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ExpressImageShowImageItemInfo imageItem = (ExpressImageShowImageItemInfo) parent.getItemAtPosition(position);
+                ExpressPhotoExpressPhotoListItem imageItem = (ExpressPhotoExpressPhotoListItem) parent.getItemAtPosition(position);
 
                 Intent intentImageView = new Intent(ExpressImageListActivity.this, ExpressImageViewActivity.class);
                 // intentImageView.putExtra("bigImageUrl", imageItem.getBigImageUrl());
@@ -68,18 +69,18 @@ public class ExpressImageListActivity extends BaseActivity {
     }
 
     private void loadImageList() {
-        ExpressImageShowRequest expressImageShowRequest = RetrofitUtil.createRequest(ExpressImageShowRequest.class);
-        Call<ExpressImageShowImageListResponseInfo> imageListCall = expressImageShowRequest.imageListCn(ExpressImageListActivity.this.trackingNo);
+        ExpressPhotoRequest expressPhotoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
+        Call<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> imageListCall = expressPhotoRequest.expressPhotoList(ExpressImageListActivity.this.trackingNo);
         // Dialog mask = MaskDialog.show(ExpressImageListActivity.this);
-        imageListCall.enqueue(new Callback<ExpressImageShowImageListResponseInfo>() {
+        imageListCall.enqueue(new Callback<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>>() {
             @Override
-            public void onResponse(Call<ExpressImageShowImageListResponseInfo> call, Response<ExpressImageShowImageListResponseInfo> response) {
+            public void onResponse(Call<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> call, Response<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> response) {
                 // mask.dismiss();
                 if (!RetrofitUtil.processResponse(response, ExpressImageListActivity.this)) {
                     return;
                 }
 
-                ExpressImageShowImageListResponseInfo respData = response.body();
+                ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData> respData = response.body();
 
                 Message msg = new Message();
                 msg.what = REFRESH_EXPRESS_IMAGE_LIST;
@@ -89,7 +90,7 @@ public class ExpressImageListActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ExpressImageShowImageListResponseInfo> call, Throwable t) {
+            public void onFailure(Call<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> call, Throwable t) {
                 Toast.makeText(ExpressImageListActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -103,23 +104,23 @@ public class ExpressImageListActivity extends BaseActivity {
         public void handleMessage(@NotNull Message msg) {
             super.handleMessage(msg);
             if (msg.what == REFRESH_EXPRESS_IMAGE_LIST) {
-                ExpressImageShowImageListResponseInfo imageListResponse = (ExpressImageShowImageListResponseInfo) msg.obj;
+                ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData> imageListResponse = (ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>) msg.obj;
 
                 if (imageListResponse.getSuccess()) {
 
                     // 待下架快递列表：
                     // tvNotOffShelfListLabel.setText("待下架快递列表 (" + warehouseListResponse.getItemCount() + ")：");
 
-                    List<ExpressImageShowImageItemInfo> imageItemList = imageListResponse.getImageList();
+                    List<ExpressPhotoExpressPhotoListItem> imageItemList = imageListResponse.getData().getPhotoList();
                     // 由于服务器端在这个地址上的错误处理，这里做个转换补偿，可以先不更新服务器也能行。以后这个转换可以去掉
-                    for (ExpressImageShowImageItemInfo imageItem : imageItemList) {
+                    for (ExpressPhotoExpressPhotoListItem imageItem : imageItemList) {
                         imageItem.setBigImageUrl(imageItem.getBigImageUrl().replace('\\', '/'));
                         imageItem.setSmallImageUrl(imageItem.getSmallImageUrl().replace('\\', '/'));
                     }
 
                     // 填充静态变量
                     ExpressImageListActivity.imageList = new ArrayList<>();
-                    for (ExpressImageShowImageItemInfo imageItem : imageItemList) {
+                    for (ExpressPhotoExpressPhotoListItem imageItem : imageItemList) {
                         {
                             ExpressImageListActivity.imageList.add(imageItem.getBigImageUrl());
                         }

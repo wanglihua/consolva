@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.huadu.shunda.R;
-import com.huadu.shunda.data.http.expressimageshow.ExpressImageShowImageItemInfo;
+import com.huadu.shunda.data.http.expressphoto.ExpressPhotoExpressPhotoListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.List;
 
 public class ExpressImageListAdapter extends BaseAdapter {
     private Context context;
-    private List<ExpressImageShowImageItemInfo> imageItemList;
+    private List<ExpressPhotoExpressPhotoListItem> imageItemList;
 
-    public ExpressImageListAdapter(Context context, List<ExpressImageShowImageItemInfo> imageItemList) {
+    public ExpressImageListAdapter(Context context, List<ExpressPhotoExpressPhotoListItem> imageItemList) {
         this.context = context;
 
         if (imageItemList != null) {
