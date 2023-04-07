@@ -1,7 +1,9 @@
 @{
     Layout = null;
 }
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Domain.Express
+@using shunda.Service.Express
 @model shunda.Admin.Areas.Express.Models.ExpressPhoto.ExpressPhotoListModel
 
 @await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadExpressPhotoList" })
@@ -60,7 +62,9 @@
                     </td>
                     <td style="text-align: center;" class="break-word">
                         @if (expressPhoto.Express != null) {
-                            <span>@expressPhoto.Express?.TrackingNo</span>
+                            <a asp-area="Express" asp-controller="ExpressDetail" asp-action="Index" asp-route-cateId="@(ExpressListMenuCate.All.Id)" asp-route-id="@(expressPhoto.Express.Id)" target="_blank">
+                                <span>@expressPhoto.TrackingNo</span>
+                            </a>
                         } else {
                             <span>@expressPhoto.TrackingNo</span>
                         }

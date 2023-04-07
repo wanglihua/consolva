@@ -88,11 +88,7 @@ public class ExpressPhotoService {
             expressPhoto.Express = express;
             expressPhoto.Customer = express.Customer; // 有可能为 null，也有可能不是
             expressPhoto.Order = express.Order; // 有可能为 null，也有可能不是
-            if (express.Order != null) {
-                expressPhoto.OrderCode = express.Order.Code ?? string.Empty;
-            } else {
-                expressPhoto.OrderCode = string.Empty;
-            }
+            expressPhoto.OrderCode = express.Order?.Code ?? string.Empty;
 
             session.Update(expressPhoto);
         }
