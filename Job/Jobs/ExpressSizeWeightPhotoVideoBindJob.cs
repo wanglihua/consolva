@@ -56,7 +56,7 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 .ToList();
 
             foreach (var photo in photoList) {
-                if (photo.Order == null && string.IsNullOrWhiteSpace(photo.OrderCode) == false) {
+                if (photo.Order == null && string.IsNullOrWhiteSpace(photo.OrderCode)) {
                     // 订单图片不用绑定
                     string trackingNo = photo.TrackingNo;
                     var express = session.Query<ExpressInfo>()
@@ -80,7 +80,7 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 .ToList();
 
             foreach (var video in vidoeList) {
-                if (video.Order == null && string.IsNullOrWhiteSpace(video.OrderCode) == false) {
+                if (video.Order == null && string.IsNullOrWhiteSpace(video.OrderCode)) {
                     string trackingNo = video.TrackingNo;
                     var express = session.Query<ExpressInfo>()
                         .Where(e => e.TrackingNo == trackingNo)
