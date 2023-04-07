@@ -56,7 +56,8 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 .ToList();
 
             foreach (var photo in photoList) {
-                if (photo.Order == null) {
+                if (photo.Order == null && string.IsNullOrWhiteSpace(photo.OrderCode) == false) {
+                    // 订单图片不用绑定
                     string trackingNo = photo.TrackingNo;
                     var express = session.Query<ExpressInfo>()
                         .Where(e => e.TrackingNo == trackingNo)
@@ -65,6 +66,7 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
 
                     photo.Express = express; // 可能为 null
                     photo.Order = express?.Order; // 可能为 null
+                    photo.OrderCode = express?.Order?.Code ?? string.Empty;
                     photo.Customer = express?.Customer;
 
                     session.Update(photo);
@@ -78,7 +80,7 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 .ToList();
 
             foreach (var video in vidoeList) {
-                if (video.Order != null) {
+                if (video.Order == null && string.IsNullOrWhiteSpace(video.OrderCode) == false) {
                     string trackingNo = video.TrackingNo;
                     var express = session.Query<ExpressInfo>()
                         .Where(e => e.TrackingNo == trackingNo)
@@ -87,6 +89,7 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
 
                     video.Express = express; // 可能为 null
                     video.Order = express?.Order; // 可能为 null
+                    video.OrderCode = express?.Order?.Code ?? string.Empty;
                     video.Customer = express?.Customer;
 
                     session.Update(video);
