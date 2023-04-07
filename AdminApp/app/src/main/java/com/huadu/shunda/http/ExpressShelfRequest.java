@@ -23,21 +23,26 @@ public interface ExpressShelfRequest {
     @FormUrlEncoded
     Call<ResponseInfo> onShelfComplete(@Field("TrackingNo") String trackingNo, @Field("StorageLocCode") String storageLocCode);
 
+    // 这个已经不使用了，放到ExpressOffShelfRequest里面去了
     @POST("/user/api/express/shelf/off/shelf/warehouse/list")
     Call<ExpressShelfOffShelfWarehouseListResponseInfo> offShelfWarehouseList();
 
+    // 这个已经不使用了，放到ExpressOffShelfRequest里面去了
     @POST("/user/api/express/shelf/off/shelf/shelf/list")
     @FormUrlEncoded
     Call<ExpressShelfOffShelfShelfListResponseInfo> offShelfShelfList(@Field("warehouseId") int warehouseId);
 
+    // 这个已经不使用了，放到ExpressOffShelfRequest里面去了
     @POST("/user/api/express/shelf/off/shelf/express/list")
     @FormUrlEncoded
     Call<ExpressShelfOffShelfExpressListResponseInfo> offShelfExpressList(@Field("shelfId") int shelfId);
 
+    // 这个已经不使用了，放到ExpressOffShelfRequest里面去了
     @POST("/user/api/express/shelf/off/shelf/next/express")
     @FormUrlEncoded
     Call<ExpressShelfOffShelfNextExpressResponseInfo> offShelfNextExpress(@Field("shelfId") int shelfId);
 
+    // 这个已经不使用了，放到ExpressOffShelfRequest里面去了
     @POST("/user/api/express/shelf/off/shelf/complete")
     @FormUrlEncoded
     Call<ResponseInfo> offShelfComplete(@Field("ShelfId") int shelfId, @Field("TrackingNo") String trackingNo);
