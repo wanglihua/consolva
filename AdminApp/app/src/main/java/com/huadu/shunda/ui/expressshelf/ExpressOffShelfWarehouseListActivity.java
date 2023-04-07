@@ -13,9 +13,10 @@ import android.widget.Toast;
 
 import com.huadu.shunda.R;
 import com.huadu.shunda.core.RetrofitUtil;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfWarehouseItemInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfWarehouseListResponseInfo;
-import com.huadu.shunda.http.ExpressShelfRequest;
+import com.huadu.shunda.data.http.ResponseDataInfo;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfWarehouseListItem;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfWarehouseListResponseData;
+import com.huadu.shunda.http.ExpressOffShelfRequest;
 import com.huadu.shunda.ui.BaseActivity;
 
 import java.util.ArrayList;
@@ -62,15 +63,15 @@ public class ExpressOffShelfWarehouseListActivity extends BaseActivity {
             @Override
             public void run() {
 
-                ExpressShelfRequest expressShelfRequest = RetrofitUtil.createRequest(ExpressShelfRequest.class);
-                Call<ExpressShelfOffShelfWarehouseListResponseInfo> warehouseListCall = expressShelfRequest.offShelfWarehouseList();
+                ExpressOffShelfRequest expressOffShelfRequest = RetrofitUtil.createRequest(ExpressOffShelfRequest.class);
+                Call<ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>> warehouseListCall = expressOffShelfRequest.warehouseList();
                 // Dialog mask = MaskDialog.show(ExpressOffShelfWarehouseListActivity.this);
-                warehouseListCall.enqueue(new Callback<ExpressShelfOffShelfWarehouseListResponseInfo>() {
+                warehouseListCall.enqueue(new Callback<ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>>() {
                     @Override
-                    public void onResponse(Call<ExpressShelfOffShelfWarehouseListResponseInfo> call, Response<ExpressShelfOffShelfWarehouseListResponseInfo> response) {
+                    public void onResponse(Call<ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>> call, Response<ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>> response) {
                         // mask.dismiss();
 
-                        ExpressShelfOffShelfWarehouseListResponseInfo respData = response.body();
+                        ResponseDataInfo<ExpressOffShelfWarehouseListResponseData> respData = response.body();
 
                         if (!RetrofitUtil.processResponse(response, ExpressOffShelfWarehouseListActivity.this)) {
                             return;
@@ -84,7 +85,7 @@ public class ExpressOffShelfWarehouseListActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ExpressShelfOffShelfWarehouseListResponseInfo> call, Throwable t) {
+                    public void onFailure(Call<ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>> call, Throwable t) {
                         Toast.makeText(ExpressOffShelfWarehouseListActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -103,10 +104,10 @@ public class ExpressOffShelfWarehouseListActivity extends BaseActivity {
             switch (msg.what) {
                 case REFRESH_WAREHOUSE_DATA_LIST:
 
-                    ExpressShelfOffShelfWarehouseListResponseInfo warehouseListResponse = (ExpressShelfOffShelfWarehouseListResponseInfo) msg.obj;
+                    ResponseDataInfo<ExpressOffShelfWarehouseListResponseData> warehouseListResponse = (ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>) msg.obj;
 
                     List<Map<String, Object>> listDataMap = new ArrayList<Map<String, Object>>();
-                    for (ExpressShelfOffShelfWarehouseItemInfo item : warehouseListResponse.getItemList()) {
+                    for (ExpressOffShelfWarehouseListItem item : warehouseListResponse.getData().getWarehouseList()) {
                         Map<String, Object> dataMap = new HashMap<String, Object>();
                         dataMap.put("id", item.getId());
                         dataMap.put("code", item.getCode());

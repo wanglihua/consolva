@@ -1,10 +1,11 @@
 package com.huadu.shunda.http;
 
+import com.huadu.shunda.data.http.ResponseDataInfo;
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfExpressListResponseInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfNextExpressResponseInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfShelfListResponseInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfWarehouseListResponseInfo;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfExpressListResponseData;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfNextExpressResponseData;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfShelfListResponseData;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfWarehouseListResponseData;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -13,23 +14,20 @@ import retrofit2.http.POST;
 
 public interface ExpressOffShelfRequest {
 
-    @POST("/user/api/express/shelf/off/shelf/warehouse/list")
-    Call<ExpressShelfOffShelfWarehouseListResponseInfo> warehouseList();
+    @POST("/admin/app/express/off/shelf/warehouse/list")
+    Call<ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>> warehouseList();
 
     @POST("/user/api/express/shelf/off/shelf/shelf/list")
     @FormUrlEncoded
-    Call<ExpressShelfOffShelfShelfListResponseInfo> shelfList(@Field("warehouseId") int warehouseId);
-
+    Call<ResponseDataInfo<ExpressOffShelfShelfListResponseData>> shelfList(@Field("warehouseId") int warehouseId);
 
     @POST("/user/api/express/shelf/off/shelf/express/list")
     @FormUrlEncoded
-    Call<ExpressShelfOffShelfExpressListResponseInfo> expressList(@Field("shelfId") int shelfId);
-
+    Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> expressList(@Field("shelfId") int shelfId);
 
     @POST("/user/api/express/shelf/off/shelf/next/express")
     @FormUrlEncoded
-    Call<ExpressShelfOffShelfNextExpressResponseInfo> nextExpress(@Field("shelfId") int shelfId);
-
+    Call<ResponseDataInfo<ExpressOffShelfNextExpressResponseData>> nextExpress(@Field("shelfId") int shelfId);
 
     @POST("/user/api/express/shelf/off/shelf/complete")
     @FormUrlEncoded

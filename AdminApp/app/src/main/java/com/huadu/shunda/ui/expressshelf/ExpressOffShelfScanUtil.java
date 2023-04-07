@@ -10,12 +10,13 @@ import com.huadu.shunda.core.PdaUtil;
 import com.huadu.shunda.core.PermissionUtil;
 import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SoundUtil;
+import com.huadu.shunda.data.http.ResponseDataInfo;
 import com.huadu.shunda.data.http.ResponseInfo;
 import com.huadu.shunda.data.http.expressimageshow.ExpressImageShowImageItemInfo;
 import com.huadu.shunda.data.http.expressimageshow.ExpressImageShowImageListResponseInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfExpressItemInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfNextExpressResponseInfo;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfNextExpressResponseData;
 import com.huadu.shunda.http.ExpressImageShowRequest;
+import com.huadu.shunda.http.ExpressOffShelfRequest;
 import com.huadu.shunda.http.ExpressShelfRequest;
 import com.huadu.shunda.ui.pda.ScanWithImagesActivity;
 import com.huadu.shunda.ui.zxing.activity.CaptureActivity;
@@ -30,27 +31,27 @@ import retrofit2.Response;
 public class ExpressOffShelfScanUtil {
 
     public static void startScanTrackingNo(int requestCode, int shelfId, Activity activity) {
-        ExpressShelfRequest expressShelfRequest = RetrofitUtil.createRequest(ExpressShelfRequest.class);
-        Call<ExpressShelfOffShelfNextExpressResponseInfo> offShelfNextExpress = expressShelfRequest.offShelfNextExpress(shelfId);
+        ExpressOffShelfRequest expressOffShelfRequest = RetrofitUtil.createRequest(ExpressOffShelfRequest.class);
+        Call<ResponseDataInfo<ExpressOffShelfNextExpressResponseData>> offShelfNextExpress = expressOffShelfRequest.nextExpress(shelfId);
         Dialog mask = MaskDialog.show(activity);
-        offShelfNextExpress.enqueue(new Callback<ExpressShelfOffShelfNextExpressResponseInfo>() {
+        offShelfNextExpress.enqueue(new Callback<ResponseDataInfo<ExpressOffShelfNextExpressResponseData>>() {
             @Override
-            public void onResponse(Call<ExpressShelfOffShelfNextExpressResponseInfo> call, Response<ExpressShelfOffShelfNextExpressResponseInfo> response) {
+            public void onResponse(Call<ResponseDataInfo<ExpressOffShelfNextExpressResponseData>> call, Response<ResponseDataInfo<ExpressOffShelfNextExpressResponseData>> response) {
                 mask.dismiss();
 
-                ExpressShelfOffShelfNextExpressResponseInfo respData = response.body();
+                ResponseDataInfo<ExpressOffShelfNextExpressResponseData> respData = response.body();
 
                 if (!RetrofitUtil.processResponse(response, activity)) {
                     return;
                 }
 
-                ExpressShelfOffShelfExpressItemInfo express = respData.getExpress();
+                ExpressOffShelfNextExpressResponseData express = respData.getData();
                 if (express == null) {
                     return;
                 }
 
                 final String[] labelText = {"快递单号：<font color=green><big><big>" + express.getTrackingNo() + "</big></big></font>"
-                        + "\n舜达入库号：" + express.getAoPinTrackingNo()
+                        + "\n舜达入库号：" + express.getCheckinTrackingNo()
                         + "\n包裹数量：" + express.getPackageCount()
                         + "\n客户ID：" + express.getCustomerCode()
                         + "\n仓位：<font color=green><big><big>" + express.getStorageLocName() + "</big></big></font>"};
@@ -110,15 +111,15 @@ public class ExpressOffShelfScanUtil {
             }
 
             @Override
-            public void onFailure(Call<ExpressShelfOffShelfNextExpressResponseInfo> call, Throwable t) {
+            public void onFailure(Call<ResponseDataInfo<ExpressOffShelfNextExpressResponseData>> call, Throwable t) {
                 Toast.makeText(activity, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public static void finishScanTrackingNo(int requestCode, int shelfId, String trackingNo, Activity activity, boolean fromExpressList) {
-        ExpressShelfRequest expressShelfRequest = RetrofitUtil.createRequest(ExpressShelfRequest.class);
-        Call<ResponseInfo> offShelfComplete = expressShelfRequest.offShelfComplete(shelfId, trackingNo);
+        ExpressOffShelfRequest expressOffShelfRequest = RetrofitUtil.createRequest(ExpressOffShelfRequest.class);
+        Call<ResponseInfo> offShelfComplete = expressOffShelfRequest.complete(shelfId, trackingNo);
         Dialog mask = MaskDialog.show(activity);
         offShelfComplete.enqueue(new Callback<ResponseInfo>() {
             @Override

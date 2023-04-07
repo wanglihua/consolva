@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.huadu.shunda.R;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfExpressItemInfo;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfExpressListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.List;
 public class ExpressOffShelfExpressListAdapter extends BaseAdapter {
 
     private Context context;
-    private List<ExpressShelfOffShelfExpressItemInfo> expressItemList = null;
+    private List<ExpressOffShelfExpressListItem> expressItemList = null;
 
-    public ExpressOffShelfExpressListAdapter(Context context, List<ExpressShelfOffShelfExpressItemInfo> expressItemList) {
+    public ExpressOffShelfExpressListAdapter(Context context, List<ExpressOffShelfExpressListItem> expressItemList) {
         this.context = context;
 
         if (expressItemList != null) {
@@ -55,7 +55,7 @@ public class ExpressOffShelfExpressListAdapter extends BaseAdapter {
             linearLayout = (LinearLayout) convertView;
         }
 
-        ExpressShelfOffShelfExpressItemInfo item = expressItemList.get(position);
+        ExpressOffShelfExpressListItem item = expressItemList.get(position);
 
         TextView tvTrackingNo = linearLayout.findViewById(R.id.tvTrackingNo);
         TextView tvAoPinTrackingNo = linearLayout.findViewById(R.id.tvAoPinTrackingNo);
@@ -74,7 +74,7 @@ public class ExpressOffShelfExpressListAdapter extends BaseAdapter {
             tvTrackingNo.setTextColor(0xFF666666);
         }
 
-        tvAoPinTrackingNo.setText("舜达入库号：" + item.getAoPinTrackingNo());
+        tvAoPinTrackingNo.setText("舜达入库号：" + item.getCheckinTrackingNo());
         tvCustomerCode.setText("客户ID：" + item.getCustomerCode());
         tvPackageCount.setText("包裹数量：" + item.getPackageCount());
         tvStorageLocName.setText("仓位：" + item.getStorageLocName());

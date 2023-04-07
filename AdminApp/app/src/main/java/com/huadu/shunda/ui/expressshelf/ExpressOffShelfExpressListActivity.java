@@ -17,9 +17,10 @@ import androidx.annotation.NonNull;
 
 import com.huadu.shunda.R;
 import com.huadu.shunda.core.RetrofitUtil;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfExpressItemInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfExpressListResponseInfo;
-import com.huadu.shunda.http.ExpressShelfRequest;
+import com.huadu.shunda.data.http.ResponseDataInfo;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfExpressListItem;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfExpressListResponseData;
+import com.huadu.shunda.http.ExpressOffShelfRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.experssimageshow.ExpressImageListActivity;
 import com.huadu.shunda.ui.zxing.QrScanConstants;
@@ -79,7 +80,7 @@ public class ExpressOffShelfExpressListActivity extends BaseActivity {
                 startActivity(intent);
                  */
 
-                ExpressShelfOffShelfExpressItemInfo map = (ExpressShelfOffShelfExpressItemInfo) parent.getItemAtPosition(position);
+                ExpressOffShelfExpressListItem map = (ExpressOffShelfExpressListItem) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(ExpressOffShelfExpressListActivity.this, ExpressImageListActivity.class);
                 intent.putExtra("trackingNo", map.getTrackingNo());
@@ -102,15 +103,15 @@ public class ExpressOffShelfExpressListActivity extends BaseActivity {
     }
 
     public void loadExpressList() {
-        ExpressShelfRequest expressShelfRequest = RetrofitUtil.createRequest(ExpressShelfRequest.class);
-        Call<ExpressShelfOffShelfExpressListResponseInfo> warehouseListCall = expressShelfRequest.offShelfExpressList(ExpressOffShelfExpressListActivity.this.shelfId);
+        ExpressOffShelfRequest expressOffShelfRequest = RetrofitUtil.createRequest(ExpressOffShelfRequest.class);
+        Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> warehouseListCall = expressOffShelfRequest.expressList(ExpressOffShelfExpressListActivity.this.shelfId);
         // Dialog mask = MaskDialog.show(ExpressOffShelfExpressListActivity.this);
-        warehouseListCall.enqueue(new Callback<ExpressShelfOffShelfExpressListResponseInfo>() {
+        warehouseListCall.enqueue(new Callback<ResponseDataInfo<ExpressOffShelfExpressListResponseData>>() {
             @Override
-            public void onResponse(Call<ExpressShelfOffShelfExpressListResponseInfo> call, Response<ExpressShelfOffShelfExpressListResponseInfo> response) {
+            public void onResponse(Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> call, Response<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> response) {
                 // mask.dismiss();
 
-                ExpressShelfOffShelfExpressListResponseInfo respData = response.body();
+                ResponseDataInfo<ExpressOffShelfExpressListResponseData> respData = response.body();
 
                 if (!RetrofitUtil.processResponse(response, ExpressOffShelfExpressListActivity.this)) {
                     return;
@@ -124,7 +125,7 @@ public class ExpressOffShelfExpressListActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ExpressShelfOffShelfExpressListResponseInfo> call, Throwable t) {
+            public void onFailure(Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> call, Throwable t) {
                 Toast.makeText(ExpressOffShelfExpressListActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -166,7 +167,7 @@ public class ExpressOffShelfExpressListActivity extends BaseActivity {
             switch (msg.what) {
                 case REFRESH_EXPRESS_DATA_LIST:
 
-                    ExpressShelfOffShelfExpressListResponseInfo expressListResponse = (ExpressShelfOffShelfExpressListResponseInfo) msg.obj;
+                    ResponseDataInfo<ExpressOffShelfExpressListResponseData> expressListResponse = (ResponseDataInfo<ExpressOffShelfExpressListResponseData>) msg.obj;
 
                     if (expressListResponse.getSuccess()) {
                         /*
@@ -197,7 +198,7 @@ public class ExpressOffShelfExpressListActivity extends BaseActivity {
                         lvExpressList.setAdapter(adapter);
                          */
 
-                        ExpressOffShelfExpressListAdapter adapter = new ExpressOffShelfExpressListAdapter(ExpressOffShelfExpressListActivity.this, expressListResponse.getItemList());
+                        ExpressOffShelfExpressListAdapter adapter = new ExpressOffShelfExpressListAdapter(ExpressOffShelfExpressListActivity.this, expressListResponse.getData().getItemList());
                         lvExpressList.setAdapter(adapter);
                     } else {
                         Toast.makeText(ExpressOffShelfExpressListActivity.this, expressListResponse.getMessage(), Toast.LENGTH_SHORT).show();

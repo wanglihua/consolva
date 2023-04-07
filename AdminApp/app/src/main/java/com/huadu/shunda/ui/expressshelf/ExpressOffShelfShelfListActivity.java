@@ -15,9 +15,10 @@ import android.widget.Toast;
 import com.huadu.shunda.R;
 import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SettingUtil;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfShelfItemInfo;
-import com.huadu.shunda.data.http.expressshelf.ExpressShelfOffShelfShelfListResponseInfo;
-import com.huadu.shunda.http.ExpressShelfRequest;
+import com.huadu.shunda.data.http.ResponseDataInfo;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfShelfListItem;
+import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfShelfListResponseData;
+import com.huadu.shunda.http.ExpressOffShelfRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.zxing.QrScanConstants;
 
@@ -88,15 +89,15 @@ public class ExpressOffShelfShelfListActivity extends BaseActivity {
             @Override
             public void run() {
 
-                ExpressShelfRequest expressShelfRequest = RetrofitUtil.createRequest(ExpressShelfRequest.class);
-                Call<ExpressShelfOffShelfShelfListResponseInfo> warehouseListCall = expressShelfRequest.offShelfShelfList(ExpressOffShelfShelfListActivity.this.warehouseId);
+                ExpressOffShelfRequest expressOffShelfRequest = RetrofitUtil.createRequest(ExpressOffShelfRequest.class);
+                Call<ResponseDataInfo<ExpressOffShelfShelfListResponseData>> warehouseListCall = expressOffShelfRequest.shelfList(ExpressOffShelfShelfListActivity.this.warehouseId);
                 // Dialog mask = MaskDialog.show(ExpressOffShelfShelfListActivity.this);
-                warehouseListCall.enqueue(new Callback<ExpressShelfOffShelfShelfListResponseInfo>() {
+                warehouseListCall.enqueue(new Callback<ResponseDataInfo<ExpressOffShelfShelfListResponseData>>() {
                     @Override
-                    public void onResponse(Call<ExpressShelfOffShelfShelfListResponseInfo> call, Response<ExpressShelfOffShelfShelfListResponseInfo> response) {
+                    public void onResponse(Call<ResponseDataInfo<ExpressOffShelfShelfListResponseData>> call, Response<ResponseDataInfo<ExpressOffShelfShelfListResponseData>> response) {
                         // mask.dismiss();
 
-                        ExpressShelfOffShelfShelfListResponseInfo respData = response.body();
+                        ResponseDataInfo<ExpressOffShelfShelfListResponseData> respData = response.body();
 
                         if (!RetrofitUtil.processResponse(response, ExpressOffShelfShelfListActivity.this)) {
                             return;
@@ -110,7 +111,7 @@ public class ExpressOffShelfShelfListActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ExpressShelfOffShelfShelfListResponseInfo> call, Throwable t) {
+                    public void onFailure(Call<ResponseDataInfo<ExpressOffShelfShelfListResponseData>> call, Throwable t) {
                         Toast.makeText(ExpressOffShelfShelfListActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -143,10 +144,10 @@ public class ExpressOffShelfShelfListActivity extends BaseActivity {
             switch (msg.what) {
                 case REFRESH_SHELF_DATA_LIST:
 
-                    ExpressShelfOffShelfShelfListResponseInfo warehouseListResponse = (ExpressShelfOffShelfShelfListResponseInfo) msg.obj;
+                    ResponseDataInfo<ExpressOffShelfShelfListResponseData> warehouseListResponse = (ResponseDataInfo<ExpressOffShelfShelfListResponseData>) msg.obj;
 
                     List<Map<String, Object>> listDataMap = new ArrayList<Map<String, Object>>();
-                    for (ExpressShelfOffShelfShelfItemInfo item : warehouseListResponse.getItemList()) {
+                    for (ExpressOffShelfShelfListItem item : warehouseListResponse.getData().getShelfList()) {
                         Map<String, Object> dataMap = new HashMap<String, Object>();
                         dataMap.put("id", item.getId());
                         dataMap.put("name", item.getName());
