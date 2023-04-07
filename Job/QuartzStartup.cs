@@ -54,6 +54,9 @@ public class QuartzStartup {
 
             jobStartTime = jobStartTime.AddMinutes(jobIntervalMinutes);
             ExpressSizeWeightPhotoVideoBindJob.Schedule(scheduler, jobStartTime);
+
+            jobStartTime = jobStartTime.AddMinutes(jobIntervalMinutes);
+            ExpressScheduleDataCleanJob.Schedule(scheduler, jobStartTime);
         }
     }
 
