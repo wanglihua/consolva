@@ -983,10 +983,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException("指定的打包数据不存在！");
         }
 
-        if (orderPack.Order.Id != orderId || orderPack.GoodsType != goodsType) {
-            throw new ValidationException("指定的打包数据跟指定的订单或物品类型不匹配！");
-        }
-
         // 先删除订单打包管理关联快递单号
 
         IList<LogisticsOrderPackExpressInfo> orderPackExpressList = session
