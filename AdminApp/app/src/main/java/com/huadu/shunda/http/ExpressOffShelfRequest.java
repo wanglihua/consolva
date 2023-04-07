@@ -17,19 +17,19 @@ public interface ExpressOffShelfRequest {
     @POST("/admin/app/express/off/shelf/warehouse/list")
     Call<ResponseDataInfo<ExpressOffShelfWarehouseListResponseData>> warehouseList();
 
-    @POST("/user/api/express/shelf/off/shelf/shelf/list")
+    @POST("/admin/app/express/off/shelf/shelf/list")
     @FormUrlEncoded
     Call<ResponseDataInfo<ExpressOffShelfShelfListResponseData>> shelfList(@Field("warehouseId") int warehouseId);
 
-    @POST("/user/api/express/shelf/off/shelf/express/list")
+    @POST("/admin/app/express/off/shelf/express/list")
     @FormUrlEncoded
     Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> expressList(@Field("shelfId") int shelfId);
 
-    @POST("/user/api/express/shelf/off/shelf/next/express")
+    @POST("/admin/app/express/off/shelf/next/express")
     @FormUrlEncoded
     Call<ResponseDataInfo<ExpressOffShelfNextExpressResponseData>> nextExpress(@Field("shelfId") int shelfId);
 
-    @POST("/user/api/express/shelf/off/shelf/complete")
+    @POST("/admin/app/express/off/shelf/complete")
     @FormUrlEncoded
     Call<ResponseInfo> complete(@Field("shelfId") int shelfId, @Field("trackingNo") String trackingNo);
 }

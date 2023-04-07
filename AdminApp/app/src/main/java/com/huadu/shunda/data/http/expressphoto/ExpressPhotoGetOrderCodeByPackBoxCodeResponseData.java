@@ -3,7 +3,7 @@ package com.huadu.shunda.data.http.expressphoto;
 import com.google.gson.annotations.SerializedName;
 import com.huadu.shunda.data.http.ResponseInfo;
 
-public class GetOrderCodeByPackBoxCodeResponseData extends ResponseInfo {
+public class ExpressPhotoGetOrderCodeByPackBoxCodeResponseData extends ResponseInfo {
 
     @SerializedName("packBoxCode")
     private String packBoxCode;

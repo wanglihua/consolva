@@ -12,12 +12,11 @@ import com.huadu.shunda.core.RetrofitUtil;
 import com.huadu.shunda.core.SoundUtil;
 import com.huadu.shunda.data.http.ResponseDataInfo;
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.data.http.expressimageshow.ExpressImageShowImageItemInfo;
-import com.huadu.shunda.data.http.expressimageshow.ExpressImageShowImageListResponseInfo;
 import com.huadu.shunda.data.http.expressoffshelf.ExpressOffShelfNextExpressResponseData;
-import com.huadu.shunda.http.ExpressImageShowRequest;
+import com.huadu.shunda.data.http.expressphoto.ExpressPhotoExpressPhotoListItem;
+import com.huadu.shunda.data.http.expressphoto.ExpressPhotoExpressPhotoListResponseData;
 import com.huadu.shunda.http.ExpressOffShelfRequest;
-import com.huadu.shunda.http.ExpressShelfRequest;
+import com.huadu.shunda.http.ExpressPhotoRequest;
 import com.huadu.shunda.ui.pda.ScanWithImagesActivity;
 import com.huadu.shunda.ui.zxing.activity.CaptureActivity;
 
@@ -64,24 +63,24 @@ public class ExpressOffShelfScanUtil {
                     }
                 }
 
-                ExpressImageShowRequest expressImageShowRequest = RetrofitUtil.createRequest(ExpressImageShowRequest.class);
-                Call<ExpressImageShowImageListResponseInfo> imageListCall = expressImageShowRequest.imageListCn(express.getTrackingNo());
+                ExpressPhotoRequest expressPhotoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
+                Call<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> imageListCall = expressPhotoRequest.expressPhotoList(express.getTrackingNo());
                 // Dialog mask = MaskDialog.show(activity); 不显示这个
-                imageListCall.enqueue(new Callback<ExpressImageShowImageListResponseInfo>() {
+                imageListCall.enqueue(new Callback<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>>() {
                     @Override
-                    public void onResponse(Call<ExpressImageShowImageListResponseInfo> call, Response<ExpressImageShowImageListResponseInfo> response) {
+                    public void onResponse(Call<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> call, Response<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> response) {
                         // mask.dismiss();
 
-                        ExpressImageShowImageListResponseInfo respData = response.body();
+                        ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData> respData = response.body();
 
                         if (!RetrofitUtil.processResponse(response, activity)) {
                             return;
                         }
 
-                        List<ExpressImageShowImageItemInfo> imageItemList = respData.getImageList();
+                        List<ExpressPhotoExpressPhotoListItem> photoItemList = respData.getData().getPhotoList();
                         List<String> imageList = new ArrayList<>();
-                        for (ExpressImageShowImageItemInfo imageItem : imageItemList) {
-                            imageList.add(imageItem.getBigImageUrl());
+                        for (ExpressPhotoExpressPhotoListItem photoItem : photoItemList) {
+                            imageList.add(photoItem.getBigImageUrl());
                         }
 
                         if (hasPdaScanner) {
@@ -102,7 +101,7 @@ public class ExpressOffShelfScanUtil {
                     }
 
                     @Override
-                    public void onFailure(Call<ExpressImageShowImageListResponseInfo> call, Throwable t) {
+                    public void onFailure(Call<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> call, Throwable t) {
                         Toast.makeText(activity, t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

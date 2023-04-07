@@ -40,9 +40,8 @@ import com.huadu.shunda.core.SoundUtil;
 import com.huadu.shunda.data.domain.OrderPhotoType;
 import com.huadu.shunda.data.http.ResponseDataInfo;
 import com.huadu.shunda.data.http.ResponseInfo;
-import com.huadu.shunda.data.http.expressphoto.GetOrderCodeByPackBoxCodeResponseData;
+import com.huadu.shunda.data.http.expressphoto.ExpressPhotoGetOrderCodeByPackBoxCodeResponseData;
 import com.huadu.shunda.http.ExpressPhotoRequest;
-import com.huadu.shunda.http.PackBoxRequest;
 import com.huadu.shunda.ui.BaseActivity;
 import com.huadu.shunda.ui.pda.ScanActivity;
 import com.huadu.shunda.ui.zxing.QrScanConstants;
@@ -469,18 +468,18 @@ public class PhotoDeliverActivity extends BaseActivity {
                          */
 
                         ExpressPhotoRequest packBoxRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
-                        Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> getOrderCodeByPackBoxCodeCall = packBoxRequest.getOrderCodeByPackBoxCode(orderPackBoxCode);
+                        Call<ResponseDataInfo<ExpressPhotoGetOrderCodeByPackBoxCodeResponseData>> getOrderCodeByPackBoxCodeCall = packBoxRequest.getOrderCodeByPackBoxCode(orderPackBoxCode);
                         Dialog mask = MaskDialog.show(PhotoDeliverActivity.this);
-                        getOrderCodeByPackBoxCodeCall.enqueue(new Callback<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>>() {
+                        getOrderCodeByPackBoxCodeCall.enqueue(new Callback<ResponseDataInfo<ExpressPhotoGetOrderCodeByPackBoxCodeResponseData>>() {
                             @Override
-                            public void onResponse(Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> call, Response<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> response) {
+                            public void onResponse(Call<ResponseDataInfo<ExpressPhotoGetOrderCodeByPackBoxCodeResponseData>> call, Response<ResponseDataInfo<ExpressPhotoGetOrderCodeByPackBoxCodeResponseData>> response) {
                                 mask.dismiss();
 
                                 if (!RetrofitUtil.processResponse(response, PhotoDeliverActivity.this)) {
                                     return;
                                 }
 
-                                GetOrderCodeByPackBoxCodeResponseData respData = response.body().getData();
+                                ExpressPhotoGetOrderCodeByPackBoxCodeResponseData respData = response.body().getData();
 
                                 SoundUtil.playSuccess(PhotoDeliverActivity.this);
 
@@ -506,7 +505,7 @@ public class PhotoDeliverActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<ResponseDataInfo<GetOrderCodeByPackBoxCodeResponseData>> call, Throwable t) {
+                            public void onFailure(Call<ResponseDataInfo<ExpressPhotoGetOrderCodeByPackBoxCodeResponseData>> call, Throwable t) {
                                 Toast.makeText(PhotoDeliverActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });

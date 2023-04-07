@@ -1,9 +1,8 @@
-package com.huadu.shunda.data.http.expressimageshow;
+package com.huadu.shunda.data.http.expressphoto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ExpressImageShowImageItemInfo {
-
+public class ExpressPhotoExpressPhotoListItem {
     @SerializedName("id")
     private int id;
 
