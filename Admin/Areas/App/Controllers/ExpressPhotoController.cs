@@ -35,6 +35,7 @@ public class ExpressPhotoController : Controller {
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
     private readonly ExpressPhotoMessageService expressPhotoMessageService;
     private readonly ExpressLogService expressLogService;
+    private readonly ExpressPhotoFileService expressPhotoFileService;
 
     public ExpressPhotoController(
         ISession session,
@@ -42,13 +43,15 @@ public class ExpressPhotoController : Controller {
         ExpressTrackingNoService expressTrackingNoService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
         ExpressPhotoMessageService expressPhotoMessageService,
-        ExpressLogService expressLogService) {
+        ExpressLogService expressLogService,
+        ExpressPhotoFileService expressPhotoFileService) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.expressTrackingNoService = expressTrackingNoService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
         this.expressPhotoMessageService = expressPhotoMessageService;
         this.expressLogService = expressLogService;
+        this.expressPhotoFileService = expressPhotoFileService;
     }
 
     [NonAction]
@@ -255,6 +258,45 @@ public class ExpressPhotoController : Controller {
             Data = new ExpressPhotoGetOrderCodeByPackBoxCodeModel {
                 PackBoxCode = logisticsOrderPackBoxService.GetBoxCode(packBox.Id),
                 OrderCode = order.Code,
+            }
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/app/express/photo/express/photo/list")]
+    public IActionResult ExpressPhotoList(string trackingNo) {
+        if (string.IsNullOrWhiteSpace(trackingNo) == true) {
+            throw new ValidationException("快递单号不能为空！");
+        }
+
+        IList<ExpressPhotoInfo> photoList = session
+            .Query<ExpressPhotoInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        IList<IDictionary<string, object>> imageList = new List<IDictionary<string, object>>();
+        foreach (var photo in photoList) {
+            IDictionary<string, object> item = new Dictionary<string, object>();
+            item["id"] = photo.Id;
+
+            string smallImageUrl = expressPhotoFileService.GetSmallImageFullUrlForApp(photo, OssSiteLocType.China);
+            item["smallImageUrl"] = smallImageUrl;
+
+            string bigImageUrl = expressPhotoFileService.GetBigImageFullUrlForApp(photo, OssSiteLocType.China);
+            item["bigImageUrl"] = bigImageUrl;
+
+            // log.Trace(bigImageUrl);
+
+            imageList.Add(item);
+        }
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = $"快递单 {trackingNo} 图片获取成功！",
+            Data = new Dictionary<string, object>() {
+                { "trackingNo", trackingNo },
+                { "photoList", imageList }
             }
         });
     }
