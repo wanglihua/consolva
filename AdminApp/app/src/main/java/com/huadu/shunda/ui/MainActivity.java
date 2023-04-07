@@ -224,7 +224,7 @@ public class MainActivity extends BaseActivity {
         /*
         tvExpressOnShelf.setVisibility(View.GONE);
         tvExpressWarehouseCheck.setVisibility(View.GONE);
-        tvExpressOffShelf.setVisibility(View.GONE);
+
         tvExpressReturnOffShelf.setVisibility(View.GONE);
         tvExpressDump.setVisibility(View.GONE);
         tvExpressPacking.setVisibility(View.GONE);
@@ -234,6 +234,7 @@ public class MainActivity extends BaseActivity {
         tvOrderPhoto.setVisibility(View.GONE);
          */
 
+        tvExpressOffShelf.setVisibility(View.GONE);
         tvPackBoxShip.setVisibility(View.GONE);
         tvOrderPhoto.setVisibility(View.GONE);
 
@@ -271,12 +272,6 @@ public class MainActivity extends BaseActivity {
             tvExpressWarehouseCheck.setVisibility(View.VISIBLE);
         } else {
             tvExpressWarehouseCheck.setVisibility(View.GONE);
-        }
-
-        if (respData.getCanExpressOffShelf()) {
-            tvExpressOffShelf.setVisibility(View.VISIBLE);
-        } else {
-            tvExpressOffShelf.setVisibility(View.GONE);
         }
 
         if (respData.getCanExpressReturnOffShelf()) {
@@ -328,6 +323,12 @@ public class MainActivity extends BaseActivity {
         }
 
          */
+
+        if (respData.getCanExpressOffShelf()) {
+            tvExpressOffShelf.setVisibility(View.VISIBLE);
+        } else {
+            tvExpressOffShelf.setVisibility(View.GONE);
+        }
 
         if (respData.getCanPackBoxShip()) {
             tvPackBoxShip.setVisibility(View.VISIBLE);
