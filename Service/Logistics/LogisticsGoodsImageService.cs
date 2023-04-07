@@ -230,9 +230,9 @@ public class LogisticsGoodsImageService {
             } else {
                 return $"{AliYunOssConfig.UrlPrefixChina}/{storePath}/{storeName}?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,size_20,text_{watermarkSafeBase64},color_FF0000,g_south,y_80";
             }
-        } else {
-            return $"{ExpressPhotoFileService.ImageUploadUrl}/{storePath}/{storeName}";
         }
+
+        return "";
     }
 
     private string GetSmallImageFullUrl(ExpressPhotoStoreLoc storeLoc, string storePath, string storeName) {
@@ -250,9 +250,9 @@ public class LogisticsGoodsImageService {
             } else {
                 return $"{AliYunOssConfig.UrlPrefixChina}/{storePath}/{storeName}?x-oss-process=image/resize,h_30,m_lfit";
             }
-        } else {
-            return $"{ExpressPhotoFileService.ImageUploadUrl}/{storePath}/{storeName}";
         }
+
+        return "";
     }
 
     private string GetUrlSafeBase64(string source) {
