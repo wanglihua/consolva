@@ -99,26 +99,4 @@ public class ExpressPhotoService {
 
         session.Flush();
     }
-
-    // todo b 调用
-    /// <summary>
-    /// 给图片从快递单号解绑，用户快递单号删除的时候调用
-    /// </summary>
-    /// <param name="expressId"></param>
-    public void UnbindPhotoFromExpress(int expressId) {
-        IList<ExpressPhotoInfo> expressPhotoList = session.Query<ExpressPhotoInfo>()
-            .Where(e => e.Express!.Id == expressId)
-            .ToList();
-
-        foreach (ExpressPhotoInfo expressPhoto in expressPhotoList) {
-            expressPhoto.Express = null;
-            expressPhoto.Customer = null;
-            expressPhoto.Order = null;
-            expressPhoto.OrderCode = String.Empty;
-
-            session.Update(expressPhoto);
-        }
-
-        session.Flush();
-    }
 }
