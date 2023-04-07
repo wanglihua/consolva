@@ -5,6 +5,7 @@ using NHibernate.Linq;
 using shunda.Admin.Areas.App.Models.ExpressOffShelf;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -23,20 +24,23 @@ public class ExpressOffShelfController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly ExpressLogService expressLogService;
+    private readonly StorageLocExpressService storageLocExpressService;
 
     public ExpressOffShelfController(
         ISession session,
         LoginUserService loginUserService,
-        ExpressLogService expressLogService
+        ExpressLogService expressLogService,
+        StorageLocExpressService storageLocExpressService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.expressLogService = expressLogService;
+        this.storageLocExpressService = storageLocExpressService;
     }
 
     [HttpPost]
     [Route("/admin/app/express/off/shelf/warehouse/list")]
-    public IActionResult OffShelfWarehouseList() {
+    public IActionResult WarehouseList() {
         IList<WarehouseInfo> warehouseList = session.Query<WarehouseInfo>()
             .Where(e => e.InnerStatus == WarehouseStatus.Enabled)
             .OrderBy(e => e.Name)
@@ -267,7 +271,8 @@ public class ExpressOffShelfController : Controller {
     /// <returns></returns>
     [HttpPost]
     [Route("/user/api/express/shelf/off/shelf/complete")]
-    public IActionResult OffShelfComplete(ExpressOffShelfCompleteParam param) {
+    [Transactional]
+    public IActionResult Complete(ExpressOffShelfCompleteParam param) {
         ValidationUtil.Validate<ExpressOffShelfCompleteParamValidator, ExpressOffShelfCompleteParam>(param);
 
         int shelfId = param.ShelfId;
@@ -330,6 +335,9 @@ public class ExpressOffShelfController : Controller {
 
         // 4: 下架日志
         expressLogService.UserLog(express.Id, ExpressLogType.OffShelf, loginUserId);
+        
+        // 5: 释放仓位
+        storageLocExpressService.UpdateSingle(express.StorageLoc.Id);
 
         return Json(new JsonResultData {
             Success = true,

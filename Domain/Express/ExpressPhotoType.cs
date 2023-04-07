@@ -2,8 +2,7 @@ using shunda.Core.CodeType;
 
 namespace shunda.Domain.Express;
 
-public class ExpressPhotoType : CodeTypeBase
-{
+public class ExpressPhotoType : CodeTypeBase {
     /// <summary>
     /// 签收照片
     /// </summary>
@@ -13,11 +12,6 @@ public class ExpressPhotoType : CodeTypeBase
     /// 入库照片
     /// </summary>
     public static readonly ExpressPhotoType CheckIn = new ExpressPhotoType(2000, "入库照片", "入库照片");
-
-    /// <summary>
-    /// 打包照片
-    /// </summary>
-    public static readonly ExpressPhotoType Pack = new ExpressPhotoType(3000, "打包照片", "打包照片");
 
     /// <summary>
     /// 问题件照片
@@ -72,7 +66,6 @@ public class ExpressPhotoType : CodeTypeBase
     private static readonly IReadOnlyList<ExpressPhotoType> codeTypeList = new List<ExpressPhotoType>() {
         SignIn,
         CheckIn,
-        Pack,
         Issue,
         Ship,
         CnDamage,
@@ -86,10 +79,8 @@ public class ExpressPhotoType : CodeTypeBase
 
     private static readonly Dictionary<int, ExpressPhotoType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static ExpressPhotoType GetById(int id)
-    {
-        if (codeTypeMap.TryGetValue(id, out ExpressPhotoType? codeType))
-        {
+    public static ExpressPhotoType GetById(int id) {
+        if (codeTypeMap.TryGetValue(id, out ExpressPhotoType? codeType)) {
             return codeType;
         }
 
@@ -100,28 +91,22 @@ public class ExpressPhotoType : CodeTypeBase
     /// 返回所有图片类型列表
     /// </summary>
     /// <returns></returns>
-    public static IList<ExpressPhotoType> GetList()
-    {
+    public static IList<ExpressPhotoType> GetList() {
         return codeTypeList.ToList();
     }
 
-    private ExpressPhotoType(int id, string name, string description) : base(id, name, description)
-    {
+    private ExpressPhotoType(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class ExpressPhotoTypeHibernateType : CodeHibernateTypeBase<ExpressPhotoType>
-{
-    protected override ExpressPhotoType GetCodeTypeById(int id)
-    {
+public class ExpressPhotoTypeHibernateType : CodeHibernateTypeBase<ExpressPhotoType> {
+    protected override ExpressPhotoType GetCodeTypeById(int id) {
         return ExpressPhotoType.GetById(id);
     }
 }
 
-public class ExpressPhotoTypeModelBinder : CodeTypeModelBinderBase<ExpressPhotoType>
-{
-    protected override ExpressPhotoType GetCodeTypeById(int id)
-    {
+public class ExpressPhotoTypeModelBinder : CodeTypeModelBinderBase<ExpressPhotoType> {
+    protected override ExpressPhotoType GetCodeTypeById(int id) {
         return ExpressPhotoType.GetById(id);
     }
 }
