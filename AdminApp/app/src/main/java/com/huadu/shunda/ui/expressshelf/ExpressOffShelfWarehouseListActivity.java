@@ -62,8 +62,8 @@ public class ExpressOffShelfWarehouseListActivity extends BaseActivity {
             @Override
             public void run() {
 
-                ExpressShelfRequest warehousePickupRequest = RetrofitUtil.createRequest(ExpressShelfRequest.class);
-                Call<ExpressShelfOffShelfWarehouseListResponseInfo> warehouseListCall = warehousePickupRequest.offShelfWarehouseList();
+                ExpressShelfRequest expressShelfRequest = RetrofitUtil.createRequest(ExpressShelfRequest.class);
+                Call<ExpressShelfOffShelfWarehouseListResponseInfo> warehouseListCall = expressShelfRequest.offShelfWarehouseList();
                 // Dialog mask = MaskDialog.show(ExpressOffShelfWarehouseListActivity.this);
                 warehouseListCall.enqueue(new Callback<ExpressShelfOffShelfWarehouseListResponseInfo>() {
                     @Override
