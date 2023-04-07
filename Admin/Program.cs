@@ -137,7 +137,7 @@ public class Program {
 
 #if DEBUG
         services.AddMiniProfiler(options => {
-            options.RouteBasePath = "/profiler"; // /profiler/results-index   /profiler/results
+            options.RouteBasePath = "/admin/profiler"; // /admin/profiler/results-index   /admin/profiler/results
             options.TrackConnectionOpenClose = true;
             options.ColorScheme = ColorScheme.Auto;
             options.EnableMvcFilterProfiling = true;
