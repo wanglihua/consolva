@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate.Linq;
 using shunda.Admin.Areas.Express.Models.ExpressOffShelfSchedule;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
@@ -95,6 +96,7 @@ public class ExpressOffShelfScheduleController : Controller {
 
     [HttpPost]
     [Route("/admin/express/off/shelf/scheduling")]
+    [Transactional]
     public IActionResult Scheduling(IList<int> idList) {
         if (idList == null || idList.Count == 0) {
             throw new ValidationException("请选择要移除排班的数据！");
@@ -118,6 +120,7 @@ public class ExpressOffShelfScheduleController : Controller {
 
     [HttpPost]
     [Route("/admin/express/off/shelf/scheduling/by/query")]
+    [Transactional]
     public IActionResult SchedulingByQuery(ExpressListQueryParam queryParam) {
         IList<ExpressShelfScheduleInfo> scheduledList = expressShelfScheduleService.List(ExpressShelfScheduleType.OffShelf, queryParam);
 
@@ -139,6 +142,7 @@ public class ExpressOffShelfScheduleController : Controller {
 
     [HttpPost]
     [Route("/admin/express/off/shelf/scheduled")]
+    [Transactional]
     public IActionResult Scheduled(IList<int> idList, int userId) {
         if (idList == null || idList.Count == 0) {
             throw new ValidationException("请选择要排班的数据！");
@@ -174,6 +178,7 @@ public class ExpressOffShelfScheduleController : Controller {
 
     [HttpPost]
     [Route("/admin/express/off/shelf/scheduled/by/query")]
+    [Transactional]
     public IActionResult ScheduledByQuery(ExpressListQueryParam queryParam, int userId) {
         IList<ExpressInfo> schedulingList = expressListService.List(ExpressListMenuCate.ToOffShelfSchedule, queryParam);
 
