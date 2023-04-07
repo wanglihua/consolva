@@ -5,6 +5,7 @@ using NPOI.XSSF.UserModel;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Express;
+using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Storage;
 using ISession = NHibernate.ISession;
@@ -251,14 +252,21 @@ public class LogisticsOrderExcelService {
 
                     var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
                     // 这种情况一般是不会发生的
-                    if (packData == null) {
-                        packData = new LogisticsOrderPackDataInfo {
-                            TotalVolumeWeight = 1,
-                            TotalVolume = 1,
-                        };
-                    }
 
-                    decimal volumeWeightRatio = packData.TotalVolumeWeight / packData.TotalVolume; // 相当与获得订单使用的体积重比例(通用费率体积重分母倒数一般是200)
+                    int volumeWeightDenominator = 5000;
+
+                    if (packData == null || packData.TotalVolumeWeight <= 0) {
+                        int orderFirstModeId = order.FirstMode.Id;
+                        var orderFirstModeFeeRate = session.Query<LogisticsModeFeeRateInfo>()
+                            .Fetch(e => e.FeeRate)
+                            .Where(e => e.Mode.Id == orderFirstModeId)
+                            .Take(1)
+                            .SingleOrDefault();
+
+                        volumeWeightDenominator = orderFirstModeFeeRate?.FeeRate.VolumeWeightDenominator ?? 5000;
+                    } else {
+                        volumeWeightDenominator = (int)(packData.TotalVolume * 100_00_00 / packData.TotalVolumeWeight);
+                    }
 
                     bool first = true;
                     foreach (var ofm in thisOrderFirstModeList) {
@@ -290,7 +298,7 @@ public class LogisticsOrderExcelService {
                             maxSideLength = Math.Max(maxSideLength, Math.Max(p.Length, Math.Max(p.Width, p.Height)));
                         }
 
-                        decimal totalVolumeWeight = (totalVolume / 100_00_00) * volumeWeightRatio;
+                        decimal totalVolumeWeight = totalVolume / volumeWeightDenominator;
 
                         LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
                             OrderCode = order.Code,

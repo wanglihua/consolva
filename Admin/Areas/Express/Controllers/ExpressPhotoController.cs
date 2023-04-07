@@ -208,9 +208,6 @@ public class ExpressPhotoController : Controller {
                 catch (Exception exp) {
                     log.Error(exp);
                 }
-            else
-                // 如果是服务器图片就做服务器图片删除
-                expressPhotoFileService.DeleteFile(expressPhoto);
 
         return Json(new Dictionary<string, object> {
             { "success", true },
