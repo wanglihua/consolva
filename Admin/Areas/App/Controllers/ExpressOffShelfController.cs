@@ -112,27 +112,28 @@ public class ExpressOffShelfController : Controller {
 
         IList<object[]> shelfObjList = criteria.List<object[]>();
 
-        IList<IDictionary<string, object>> itemList = new List<IDictionary<string, object>>();
+        var itemList = new List<ExpressOffShelfShelfListItem>();
 
         foreach (object[] shelfObj in shelfObjList) {
-            IDictionary<string, object> item = new Dictionary<string, object>();
-            item["expressCount"] = (int)(shelfObj[0] ?? 0);
-            item["id"] = (int)(shelfObj[1] ?? 0);
-            item["name"] = (string)(shelfObj[2] ?? "");
-
-            itemList.Add(item);
+            itemList.Add(new ExpressOffShelfShelfListItem {
+                ExpressCount = (int)(shelfObj[0] ?? 0),
+                Id = (int)(shelfObj[1] ?? 0),
+                Name = (string)(shelfObj[2] ?? ""),
+            });
         }
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "获取数据成功！" },
-            { "itemList", itemList }
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "获取数据成功！",
+            Data = new ExpressOffShelfShelfListModel {
+                ShelfList = itemList,
+            },
         });
     }
 
     [HttpPost]
     [Route("/admin/app/express/off/shelf/express/list")]
-    public IActionResult OffShelfExpressList(int shelfId) {
+    public IActionResult ExpressList(int shelfId) {
         var shelf = session.Get<ShelfInfo>(shelfId);
         if (shelf == null) {
             throw new ValidationException("指定的货架不存在！");
@@ -328,9 +329,9 @@ public class ExpressOffShelfController : Controller {
         // 4: 下架日志
         expressLogService.UserLog(express.Id, ExpressLogType.OffShelf, loginUserId);
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "快递单下架成功！" },
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "快递单下架成功！",
         });
     }
 }
