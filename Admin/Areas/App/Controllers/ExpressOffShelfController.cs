@@ -154,7 +154,7 @@ public class ExpressOffShelfController : Controller {
             IDictionary<string, object> item = new Dictionary<string, object>();
             item["id"] = express.Id;
             item["trackingNo"] = express.TrackingNo;
-            item["aoPinTrackingNo"] = express.CheckinTrackingNo;
+            item["checkinTrackingNo"] = express.CheckinTrackingNo;
             item["packageCount"] = express.PackageCount;
             item["storageLocName"] = express.StorageLoc.GetFullName();
 
@@ -173,11 +173,13 @@ public class ExpressOffShelfController : Controller {
             itemList.Add(item);
         }
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "获取数据成功！" },
-            { "itemList", itemList },
-            { "itemCount", itemList.Count }
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = new Dictionary<string, object>() {
+                { "itemList", itemList },
+                { "itemCount", itemList.Count }
+            }
         });
     }
 
@@ -202,7 +204,7 @@ public class ExpressOffShelfController : Controller {
 
             item["id"] = cg.Id;
             item["trackingNo"] = cg.TrackingNo;
-            item["aoPinTrackingNo"] = cg.CheckinTrackingNo;
+            item["checkinTrackingNo"] = cg.CheckinTrackingNo;
             item["packageCount"] = cg.PackageCount;
             item["storageLocName"] = cg.StorageLoc.GetFullName();
 
@@ -210,10 +212,10 @@ public class ExpressOffShelfController : Controller {
             item["customerCode"] = customer?.CheckinCode ?? string.Empty;
         }
 
-        return Json(new Dictionary<string, object>() {
-            { "success", true },
-            { "message", "获取数据成功！" },
-            { "express", item }
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+            Data = item,
         });
     }
 
