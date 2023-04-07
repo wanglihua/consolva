@@ -119,6 +119,8 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 foreach (var photo in expressPhotoList) {
                     photo.Express = express;
                     photo.Order = express.Order; // 可能为 null
+                    photo.OrderCode = express.Order?.Code ?? string.Empty;
+                    photo.Customer = express.Customer;
 
                     session.Update(photo);
                 }
@@ -129,6 +131,8 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 foreach (var video in expressVideoList) {
                     video.Express = express;
                     video.Order = express.Order; // 可能为 null
+                    video.OrderCode = express.Order?.Code ?? string.Empty;
+                    video.Customer = express.Customer;
 
                     session.Update(video);
                 }

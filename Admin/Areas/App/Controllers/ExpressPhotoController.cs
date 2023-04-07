@@ -164,7 +164,10 @@ public class ExpressPhotoController : Controller {
             }
         }
 
-        var express = session.Query<ExpressInfo>().Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
+        ExpressInfo? express = null;
+        if (string.IsNullOrWhiteSpace(trackingNo) == false) {
+            express = session.Query<ExpressInfo>().Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
+        }
 
         // 订单和快递单号都提供了，并且快递单号的录入记录存在，但不匹配
         if (order != null && string.IsNullOrWhiteSpace(trackingNo) == false && (express?.Order?.Id ?? 0) != order.Id) {
