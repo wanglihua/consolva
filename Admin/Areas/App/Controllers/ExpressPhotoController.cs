@@ -6,6 +6,7 @@ using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
+using shunda.Domain.Customer;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
@@ -175,11 +176,16 @@ public class ExpressPhotoController : Controller {
             order = express.Order;
         }
 
+        CustomerInfo? customer = express?.Customer;
+        if (customer == null) {
+            customer = order?.Customer;
+        }
+
         string storePath = Path.GetDirectoryName(imageFileName) ?? string.Empty;
         string storeName = Path.GetFileName(imageFileName);
 
         var expressPhoto = new ExpressPhotoInfo {
-            Customer = express?.Customer,
+            Customer = customer,
             Order = order,
             OrderCode = order?.Code ?? string.Empty,
             Express = express,

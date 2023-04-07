@@ -56,16 +56,19 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 .ToList();
 
             foreach (var photo in photoList) {
-                string trackingNo = photo.TrackingNo;
-                var express = session.Query<ExpressInfo>()
-                    .Where(e => e.TrackingNo == trackingNo)
-                    .Take(1)
-                    .SingleOrDefault();
+                if (photo.Order == null) {
+                    string trackingNo = photo.TrackingNo;
+                    var express = session.Query<ExpressInfo>()
+                        .Where(e => e.TrackingNo == trackingNo)
+                        .Take(1)
+                        .SingleOrDefault();
 
-                photo.Express = express; // 可能为 null
-                photo.Order = express?.Order; // 可能为 null
+                    photo.Express = express; // 可能为 null
+                    photo.Order = express?.Order; // 可能为 null
+                    photo.Customer = express?.Customer;
 
-                session.Update(photo);
+                    session.Update(photo);
+                }
             }
 
             session.Flush();
@@ -75,16 +78,19 @@ public class ExpressSizeWeightPhotoVideoBindJob : IJob {
                 .ToList();
 
             foreach (var video in vidoeList) {
-                string trackingNo = video.TrackingNo;
-                var express = session.Query<ExpressInfo>()
-                    .Where(e => e.TrackingNo == trackingNo)
-                    .Take(1)
-                    .SingleOrDefault();
+                if (video.Order != null) {
+                    string trackingNo = video.TrackingNo;
+                    var express = session.Query<ExpressInfo>()
+                        .Where(e => e.TrackingNo == trackingNo)
+                        .Take(1)
+                        .SingleOrDefault();
 
-                video.Express = express; // 可能为 null
-                video.Order = express?.Order; // 可能为 null
+                    video.Express = express; // 可能为 null
+                    video.Order = express?.Order; // 可能为 null
+                    video.Customer = express?.Customer;
 
-                session.Update(video);
+                    session.Update(video);
+                }
             }
 
             session.Flush();

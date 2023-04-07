@@ -133,27 +133,6 @@
         });
     }
 
-    function showExpressPhotoDetail() {
-        $("#expressPhotoDetailDialogWrapper").html("");
-
-        showMask("加载中...");
-        $.ajax({
-            url: '@Url.Action("Detail", "ExpressPhoto")',
-            type: "POST",
-            data: {},
-            success: function(data) {
-                hideMask();
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $("#expressPhotoDetailDialogWrapper").html(data);
-                $("#expressPhotoDetailDialog").modal(modalOptions);
-            }
-        });
-    }
-
     function deleteExpressPhoto() {
         var idList = getSelectIdList('#tblExpressPhotoList');
 

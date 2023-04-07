@@ -182,44 +182,6 @@ public class ExpressPhotoController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/express/photo/detail")]
-    public IActionResult Detail() {
-        session.DefaultReadOnly = true;
-
-        var model = new ExpressPhotoDetailModel();
-        model.PhotoTypeList = ExpressPhotoType.GetList();
-
-        return View("ExpressPhotoDetail", model);
-    }
-
-    [HttpPost]
-    [Route("/admin/express/photo/upload")]
-    public IActionResult Upload(IFormFile imageFile) {
-        if (imageFile == null) throw new ValidationException("文件未能上传成功！");
-
-        var fileExt = expressPhotoFileService.GetFileExt(imageFile.FileName);
-        if (fileExt.ToLower() != ".png".ToLower() && fileExt.ToLower() != ".jpg".ToLower() && fileExt.ToLower() != ".jpeg".ToLower())
-            return Json(new Dictionary<string, object> {
-                { "success", false },
-                { "message", "只支持 png 和 jpg,jpeg 格式的图片文件！" }
-            });
-
-        var result = expressPhotoFileService.SaveImageFile(imageFile);
-
-        var imageFileUrl = result.Item1;
-        var storePath = result.Item2;
-        var storeName = result.Item3;
-
-        return Json(new Dictionary<string, object> {
-            { "success", true },
-            { "message", "上传成功！" },
-            { "imageFileUrl", imageFileUrl },
-            { "storePath", storePath },
-            { "storeName", storeName }
-        });
-    }
-
-    [HttpPost]
     [Route("/admin/express/photo/delete")]
     [AdminAuth(PassRes.Express.ExpressPhotoDelete)]
     public IActionResult Delete(int[] idList) {

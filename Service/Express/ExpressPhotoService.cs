@@ -79,6 +79,11 @@ public class ExpressPhotoService {
             throw new ValidationException($"指定的快递单号图片#{photoId}不存在！");
         }
 
+        // 可能是订单图片没有快递单号
+        if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo)) {
+            return;
+        }
+
         string trackingNo = expressPhoto.TrackingNo.Trim();
 
         ExpressInfo? express = session.Query<ExpressInfo>()
@@ -103,9 +108,12 @@ public class ExpressPhotoService {
 
         if (express == null) {
             expressPhoto.Express = null;
-            expressPhoto.Customer = null;
-            expressPhoto.Order = null;
-            expressPhoto.OrderCode = String.Empty;
+
+            if (expressPhoto.Order == null) {
+                //expressPhoto.Order = null;
+                expressPhoto.OrderCode = String.Empty;
+                expressPhoto.Customer = null;
+            }
         } else {
             expressPhoto.Express = express;
             expressPhoto.Customer = express.Customer; // 有可能为 null，也有可能不是

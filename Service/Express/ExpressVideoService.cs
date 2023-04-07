@@ -1,3 +1,4 @@
+using Org.BouncyCastle.Bcpg;
 using shunda.Core;
 using shunda.Core.Config;
 using shunda.Core.Service;
@@ -50,6 +51,11 @@ public class ExpressVideoService
         if (express == null)
         {
             throw new ValidationException($"指定的快递单号#{expressId}不存在！");
+        }
+
+        // 可能是订单视频没有快递单号
+        if (string.IsNullOrWhiteSpace(express.TrackingNo)) {
+            return;
         }
 
         string trackingNo = express.TrackingNo.Trim();
