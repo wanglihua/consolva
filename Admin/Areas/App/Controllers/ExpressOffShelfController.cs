@@ -196,23 +196,23 @@ public class ExpressOffShelfController : Controller {
         }
 
         ICriteria criteria = GetOffShelfCriteria(shelfId);
-        ExpressInfo cg = criteria
+        ExpressInfo express = criteria
             .SetMaxResults(1)
             .UniqueResult<ExpressInfo>();
 
         IDictionary<string, object> item = new Dictionary<string, object>();
-        if (cg != null) {
+        if (express != null) {
             item = new Dictionary<string, object>();
 
             // 和List里面的字段一致
 
-            item["id"] = cg.Id;
-            item["trackingNo"] = cg.TrackingNo;
-            item["checkinTrackingNo"] = cg.CheckinTrackingNo;
-            item["packageCount"] = cg.PackageCount;
-            item["storageLocName"] = cg.StorageLoc.GetFullName();
+            item["id"] = express.Id;
+            item["trackingNo"] = express.TrackingNo;
+            item["checkinTrackingNo"] = express.CheckinTrackingNo;
+            item["packageCount"] = express.PackageCount;
+            item["storageLocName"] = express.StorageLoc.GetFullName();
 
-            CustomerInfo customer = session.Get<CustomerInfo>((cg.Customer?.Id ?? 0));
+            CustomerInfo customer = session.Get<CustomerInfo>((express.Customer?.Id ?? 0));
             item["customerCode"] = customer?.CheckinCode ?? string.Empty;
         }
 

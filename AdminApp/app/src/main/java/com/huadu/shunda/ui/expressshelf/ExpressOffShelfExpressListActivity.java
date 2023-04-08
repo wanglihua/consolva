@@ -104,9 +104,9 @@ public class ExpressOffShelfExpressListActivity extends BaseActivity {
 
     public void loadExpressList() {
         ExpressOffShelfRequest expressOffShelfRequest = RetrofitUtil.createRequest(ExpressOffShelfRequest.class);
-        Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> warehouseListCall = expressOffShelfRequest.expressList(ExpressOffShelfExpressListActivity.this.shelfId);
+        Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> expressListCall = expressOffShelfRequest.expressList(ExpressOffShelfExpressListActivity.this.shelfId);
         // Dialog mask = MaskDialog.show(ExpressOffShelfExpressListActivity.this);
-        warehouseListCall.enqueue(new Callback<ResponseDataInfo<ExpressOffShelfExpressListResponseData>>() {
+        expressListCall.enqueue(new Callback<ResponseDataInfo<ExpressOffShelfExpressListResponseData>>() {
             @Override
             public void onResponse(Call<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> call, Response<ResponseDataInfo<ExpressOffShelfExpressListResponseData>> response) {
                 // mask.dismiss();

@@ -63,6 +63,10 @@ public class ExpressOffShelfScanUtil {
                     }
                 }
 
+                if (express.getTrackingNo() == null || "".equals(express.getTrackingNo())) {
+                    return;
+                }
+
                 ExpressPhotoRequest expressPhotoRequest = RetrofitUtil.createRequest(ExpressPhotoRequest.class);
                 Call<ResponseDataInfo<ExpressPhotoExpressPhotoListResponseData>> imageListCall = expressPhotoRequest.expressPhotoList(express.getTrackingNo());
                 // Dialog mask = MaskDialog.show(activity); 不显示这个
