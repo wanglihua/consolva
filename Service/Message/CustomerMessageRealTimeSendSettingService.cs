@@ -20,8 +20,11 @@ public class CustomerMessageRealTimeSendSettingService {
         CustomerMessageCouponFollowService.InitSetting(session);
         CustomerMessageExpressCheckinService.InitSetting(session);
         CustomerMessageExpressExpectEnterService.InitSetting(session);
+        CustomerMessageExpressPhotoCheckinService.InitSetting(session);
+        CustomerMessageExpressPhotoSignService.InitSetting(session);
         CustomerMessageMoneyEarnedService.InitSetting(session);
         CustomerMessageOrderDeliveredService.InitSetting(session);
+        CustomerMessageOrderPhotoShipService.InitSetting(session);
         CustomerMessagePackedService.InitSetting(session);
         CustomerMessageTransferedService.InitSetting(session);
 
@@ -53,29 +56,6 @@ public class CustomerMessageRealTimeSendSettingService {
                 session.Flush();
             }
         }
-
-        {
-            // 快递单号已入库提醒
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.KuaiDiDanHaoYiRuKuTiXing).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.KuaiDiDanHaoYiRuKuTiXing;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，您的{order_code}订单的{tracking_no}快递单号，现已在【{warehouse_name}收货仓库】入库完毕。该快递单号属于【{goods_type}物品类型】。友情提醒：请及时将所有快递单号录入订单，以确保快速入库，及早转运！";
-                setting.SmsMessageTemplate = "亲，您的{order_code}快递单号，现已入库，该快递是{goods_type}类产品";
-                setting.Placeholders = "订单编码：{order_code}，快递单号：{tracking_no}，仓库名称：{warehouse_name}，物品类型：{goods_type}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-
 
         {
             // 我的问题件提醒
@@ -112,27 +92,6 @@ public class CustomerMessageRealTimeSendSettingService {
 
                 setting.WechatMessageTemplate1 = "老板，您的{order_code}订单现已是【已全部入库】状态了呢。如您不再需要添加新的快递，请及时点击【提交打包】按钮哦。早打包，早收到宝贝呢！";
                 setting.SmsMessageTemplate = "老板，您的{order_code}订单已全部入库。请及时点击【提交打包】按钮，及早转运！";
-                setting.Placeholders = "订单编码：{order_code}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 自动打包预告
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.ZiDongDaBaoYuGao).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.ZiDongDaBaoYuGao;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，您的{order_code}订单，还有7天就距离创建订单30天了。7天后将不允许添加新快递单号，并在全部入库后自动提交打包。如您仍需要添加新快递单号，请尽快操作哦！";
-                setting.SmsMessageTemplate = "亲，您的{order_code}订单，还有7天就距离创建订单30天了。如您仍需添加新快递，请尽快操作";
                 setting.Placeholders = "订单编码：{order_code}";
 
                 session.Save(setting);
@@ -225,197 +184,6 @@ public class CustomerMessageRealTimeSendSettingService {
         }
 
         {
-            // 已到港提醒
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.YiDaoGangTiXing).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.YiDaoGangTiXing;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】已抵达目的港。二程取货方式已不能修改，暂不可取货。收到可取货通知后，才能按照您选择的取货方式取货/收货。如您仍未支付费用，请及时支付费用，如已支付请忽略！如遇海关查验、码头罢工，等不可抗力，时间顺延！";
-                setting.SmsMessageTemplate = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】已到港。二程取货方式已不能修改。请及时支付费用，如已支付请忽略！";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 已到目的仓提醒
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.YiDaoMuDiCangTiXing).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.YiDaoMuDiCangTiXing;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】已到达目的仓库。仓库小哥将马不停蹄卸货、理货。请等待可取货通知，暂时不要去取货。二程取货方式已不能修改。如您仍未支付费用，请及时支付费用，如已支付请忽略！";
-                setting.SmsMessageTemplate = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】已到目的仓库。请等待可取货通知，暂时不要去取货。请及时支付费用，如已支付请忽略！";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 订单状态回拨提醒
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.DingDanZhuangTaiHuiBoTiXing).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.DingDanZhuangTaiHuiBoTiXing;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 亲，【XXXXX】订单所在船航批次【0901BNE普通类】，因未能及时调整时间，原状态为【已抵达目的港】，先回滚到【上一个状态】，现预计【下一个状态】的时间是【年月日】
-
-                setting.WechatMessageTemplate1 = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】，因未能及时调整时间，原状态为【{order_old_status}】，先回滚到【{order_pre_status}】，现预计【{order_old_status}】的时间是【{order_status_next_time}】";
-                setting.SmsMessageTemplate = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】，因未能及时调整时间，原状态为【{order_old_status}】，先回滚到【{order_pre_status}】，现预计【{order_old_status}】的时间是【{order_status_next_time}】";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}，订单状态：{order_old_status}，订单上一个状态：{order_pre_status}，订单下次状态时间：{order_status_next_time}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 目的仓批次可自提推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.MuDiCangPiCiKeZiTiTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.MuDiCangPiCiKeZiTiTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】已可于仓库营业时间自提。对应订单支付费用后，请点击【猛戳取货码】获得取货二维码，凭取货二维码取货！地址及营业时间请见：公众号菜单【发货|取货】里对应仓库详情！→ →空运拼单 & 中澳快递业务 已全面开启，详情可咨询客服 ← ←。{warehouse_name}, {warehouse_address}";
-                setting.SmsMessageTemplate = "亲，【{order_code}】订单所在船航批次【{customer_container_code}】已可于仓库营业时间自提。请向仓库工作人员出示取货二维码，凭取货二维码取货！如有疑问请联系客服：+61 0449972818 / +86 18969345159";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}，仓库名称：{warehouse_name}，仓库地址：{warehouse_address}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 目的仓批次扫码异常推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.MuDiCangPiCiSaoMaYiChangTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.MuDiCangPiCiSaoMaYiChangTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = true;
-
-                setting.WechatMessageTemplate1 = "亲，实在抱歉。【{order_code}】订单（所在船航批次【{customer_container_code}】）的包裹还没有全部理货完毕。仓库小哥会尽快将货物理出，然后再通知您取货。请不要在未收到可取货通知前去仓库自提，以免耽误您的时间！如有疑问请联系客服：+61 0449972818 / +86 18969345159。{warehouse_name}, {warehouse_address}";
-                setting.SmsMessageTemplate = "亲，实在抱歉。【{order_code}】订单（所在船航批次【{customer_container_code}】）的包裹还没有全部理货完毕。仓库小哥会尽快将货物理出，然后再通知您取货。如有疑问请联系客服：+61 0449972818 / +86 18969345159";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}，仓库名称：{warehouse_name}，仓库地址：{warehouse_address}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 即将送货上门推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.JiJiangSongHuoShangMenTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.JiJiangSongHuoShangMenTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，【{order_code}】订单（所在船航批次【{customer_container_code}】）即将送货上门，请确认收货地址及电话，如需更改，请联系在线客服！";
-                setting.SmsMessageTemplate = "亲，【{order_code}】订单（所在船航批次【{customer_container_code}】）即将送货上门，请确认收货地址及电话，如需更改，请联系在线客服！";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 取货点可取货推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.QuHuoDianKeQuHuoTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.QuHuoDianKeQuHuoTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，【{order_code}】订单（所在船航批次【{customer_container_code}】）已到达【{pickup_station_name}】取货点。对应订单支付费用后，请点击【猛戳取货码】获得取货二维码。请向取货点人员出示取货二维码，凭取货二维码取货！请在取货点营业时间段内提货！取货点电话：【{pickup_station_phone}】，地址：【{pickup_station_address}】";
-                setting.SmsMessageTemplate = "亲，【{order_code}】订单（所在船航批次【{customer_container_code}】）已到达取货点。请向取货点人员出示取货二维码，凭取货二维码取货！取货点电话：【{pickup_station_phone}】";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}，取货点名称：{pickup_station_name}，取货点电话：{pickup_station_phone}，取货点地址：{pickup_station_address}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 取货点扫码异常推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.QuHuoDianSaoMaYiChangTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.QuHuoDianSaoMaYiChangTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = true;
-
-                setting.WechatMessageTemplate1 = "亲，实在抱歉。【{order_code}】订单（所在船航批次【{customer_container_code}】）的包裹还没有全部抵达【{pickup_station_name}】取货点。包裹全部抵达取货点后，会再次通知您取货。如果您想将已到达的包裹先取走，请联系取货点电话：【{pickup_station_phone}】，地址：【{pickup_station_address}】";
-                setting.SmsMessageTemplate = "亲，实在抱歉。【{order_code}】订单（所在船航批次【{customer_container_code}】）的包裹还没有全部抵达取货点。包裹全部抵达取货点后，会再次通知您取货。如果您想将已到达的包裹先取走，请联系取货点电话：【{pickup_station_phone}】";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}，取货点名称：{pickup_station_name}，取货点电话：{pickup_station_phone}，取货点地址：{pickup_station_address}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 取货盘点库存再次推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.QuHuoDianPanDianKuCunZaiCiTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.QuHuoDianPanDianKuCunZaiCiTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                setting.WechatMessageTemplate1 = "亲，您{order_code}订单的包裹一直在澳拼仓库等着您领回家呢。已在目的仓{stay_days}天了。再不取走，都快发霉了！如您是选择的送货上门或有其他特殊情况暂时不能取货/送货的，请告知仓库工作人员或客服！";
-                setting.SmsMessageTemplate = "亲，您{order_code}订单的包裹在目的仓很久了，请尽快取走！";
-                setting.Placeholders = "订单编号：{order_code}，滞留目的仓天数：{stay_days}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
             // VIP升级推送
 
             var setting = settingList.Where(e => e.Type == CustomerMessageType.VipShengJiTuiSong).Take(1).SingleOrDefault();
@@ -475,50 +243,6 @@ public class CustomerMessageRealTimeSendSettingService {
                 setting.WechatMessageTemplate1 = "您好，您的{order_code}订单，现在申报货值达到￥2500，货值达到或超过￥2500后，会按照货值的10%收取GST，澳洲进口时，交给澳洲海关哦。";
                 setting.SmsMessageTemplate = "您好，您的{order_code}订单，现在申报货值达到￥2500，货值达到或超过￥2500后，会按照货值的10%收取GST，澳洲进口时，交给澳洲海关哦。";
                 setting.Placeholders = "订单编码：{order_code}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 订单签收图片推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.OrderPhotoSignInTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.OrderPhotoSignInTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好，您的【{tracking_no}】快递单新增了【{photo_type}】照片，请点击对应入库快递单查看！
-                setting.WechatMessageTemplate1 = "您好，您的【{tracking_no}】快递单新增了【{photo_type}】照片，请点击对应入库快递单查看！";
-                setting.SmsMessageTemplate = "您好，您的【{tracking_no}】快递单新增了【{photo_type}】照片，请点击对应入库快递单查看！";
-                setting.Placeholders = "快递单号：{tracking_no}，图片类型：{photo_type}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 订单入库图片推送
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.OrderPhotoCheckInTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.OrderPhotoCheckInTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好，您的【{tracking_no}】快递单新增了【{photo_type}】照片，请点击对应入库快递单查看！
-                setting.WechatMessageTemplate1 = "您好，您的【{tracking_no}】快递单新增了【{photo_type}】照片，请点击对应入库快递单查看！";
-                setting.SmsMessageTemplate = "您好，您的【{tracking_no}】快递单新增了【{photo_type}】照片，请点击对应入库快递单查看！";
-                setting.Placeholders = "快递单号：{tracking_no}，图片类型：{photo_type}";
 
                 session.Save(setting);
                 session.Flush();
@@ -673,28 +397,6 @@ public class CustomerMessageRealTimeSendSettingService {
                 setting.WechatMessageTemplate1 = "您好，您的【{order_code}】订单新增了【{photo_type}】照片，请点击对应订单的【点击查看详情】里面的【录像/照片】查看！";
                 setting.SmsMessageTemplate = "您好，您的【{order_code}】订单新增了【{photo_type}】照片，请点击对应订单的【点击查看详情】里面的【录像/照片】查看！";
                 setting.Placeholders = "订单编码：{order_code}，图片类型：{photo_type}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 船航时间更改提醒
-
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.ShipContainerTimeChangeTiXing).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.ShipContainerTimeChangeTiXing;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // {order_code}所在的{customer_container_code}批次，现{change_time_type}更新为{time_after_change}，更新原因为{change_reason}！
-                setting.WechatMessageTemplate1 = "{order_code}所在的{customer_container_code}批次，现{change_time_type}更新为{time_after_change}，更新原因为{change_reason}！";
-                setting.SmsMessageTemplate = "{order_code}所在的{customer_container_code}批次，现{change_time_type}更新为{time_after_change}，更新原因为{change_reason}！";
-                setting.Placeholders = "订单编码：{order_code}，客户端船航批次：{customer_container_code}，变动时间类型：{change_time_type}，变动后时间：{time_after_change}，更新原因：{change_reason}";
 
                 session.Save(setting);
                 session.Flush();
@@ -870,153 +572,6 @@ public class CustomerMessageRealTimeSendSettingService {
                 setting.WechatMessageTemplate1 = "亲，您已入库的快递单号:【{tracking_no}】，将于 10 天后仓储达到 90 天，届时澳拼将不再有责保管，如遇丢件、损坏等，无法进行理赔，请尽快创建订单出运。";
                 setting.SmsMessageTemplate = "亲，您已入库的快递单号:【{tracking_no}】，将于 10 天后仓储达到 90 天，届时澳拼将不再有责保管，如遇丢件、损坏等，无法进行理赔，请尽快创建订单出运。";
                 setting.Placeholders = "快递单号：{tracking_no}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 送货上门第一次推送
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.HomeDeliverFirstTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.HomeDeliverFirstTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好。您的{order_code}订单，计划于{plan_date_begin}至{plan_date_end}送货上门。请确认是否可以在该日期范围内收货。如不能收货，请填写原因，且再次送货上门会延期至下个送货上门周期。如有疑问，请联系{phone}。
-                setting.WechatMessageTemplate1 = "您好。您的{order_code}订单，计划于{plan_date_begin}至{plan_date_end}送货上门。请确认是否可以在该日期范围内收货。如不能收货，请填写原因，且再次送货上门会延期至下个送货上门周期。如有疑问，请联系{phone}。";
-                setting.SmsMessageTemplate = "您好。您的{order_code}订单，计划于{plan_date_begin}至{plan_date_end}送货上门。请确认是否可以在该日期范围内收货。如不能收货，请填写原因，且再次送货上门会延期至下个送货上门周期。如有疑问，请联系{phone}。";
-                setting.Placeholders = "订单：{order_code}，订单数量：{order_count}，计划送货日期开始：{plan_date_begin}，计划送货日期结束：{plan_date_end}，联系电话：{phone}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 送货上门第二次推送
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.HomeDeliverSecondTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.HomeDeliverSecondTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好。此前通知计划送货的{order_code}订单，现安排将于{deliver_date}{deliver_time_begin}至{deliver_time_end}送货上门。请提前安排收货。如有疑问，请联系{phone}。
-                setting.WechatMessageTemplate1 = "您好。此前通知计划送货的{order_code}订单，现安排将于{deliver_date}{deliver_time_begin}至{deliver_time_end}送货上门。请提前安排收货。如有疑问，请联系{phone}。";
-                setting.SmsMessageTemplate = "您好。此前通知计划送货的{order_code}订单，现安排将于{deliver_date}{deliver_time_begin}至{deliver_time_end}送货上门。请提前安排收货。如有疑问，请联系{phone}。";
-                setting.Placeholders = "订单：{order_code}，订单数量：{order_count}，送货日期：{deliver_date}，送货时间开始：{deliver_time_begin}，送货时间结束：{deliver_time_end}，联系电话：{phone}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 送货上门第三次推送
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.HomeDeliverThirdTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.HomeDeliverThirdTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好。您的{order_code}订单，将于今日{deliver_time_begin}时至{deliver_time_end}时送货上门。送货司机{driver_name}，司机电话{driver_phone}。将于送货前30分钟，再次通知您。
-                setting.WechatMessageTemplate1 = "您好。您的{order_code}订单，将于今日{deliver_time_begin}时至{deliver_time_end}时送货上门。送货司机{driver_name}，司机电话{driver_phone}。将于送货前30分钟，再次通知您。";
-                setting.SmsMessageTemplate = "您好。您的{order_code}订单，将于今日{deliver_time_begin}时至{deliver_time_end}时送货上门。送货司机{driver_name}，司机电话{driver_phone}。将于送货前30分钟，再次通知您。";
-                setting.Placeholders = "订单：{order_code}，订单数量：{order_count}，送货时间开始：{deliver_time_begin}，送货时间结束：{deliver_time_end}，司机姓名：{driver_name}，司机电话：{driver_phone}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 送货上门第四次推送
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.HomeDeliverFourthTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.HomeDeliverFourthTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好。您的{order_code}订单，将于30分钟后送货上门。送货司机{driver_name}，司机电话{driver_phone}。请准备收货。
-                setting.WechatMessageTemplate1 = "您好。您的{order_code}订单，将于30分钟后送货上门。送货司机{driver_name}，司机电话{driver_phone}。请准备收货。";
-                setting.SmsMessageTemplate = "您好。您的{order_code}订单，将于30分钟后送货上门。送货司机{driver_name}，司机电话{driver_phone}。请准备收货。";
-                setting.Placeholders = "订单：{order_code}，订单数量：{order_count}，司机姓名：{driver_name}，司机电话：{driver_phone}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 送货上门时间推送
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.HomeDeliverTimeTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.HomeDeliverTimeTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好。您的{order_code}等{order_count}个订单，将于{time_begin}至{time_end}时间段送货上门。送货司机{driver_name}，司机电话{driver_phone}。请准备收货。
-                setting.WechatMessageTemplate1 = "您好。您的{order_code}等{order_count}个订单，将于{time_begin}至{time_end}时间段送货上门。送货司机{driver_name}，司机电话{driver_phone}。请准备收货。";
-                setting.SmsMessageTemplate = "您好。您的{order_code}等{order_count}个订单，将于{time_begin}至{time_end}时间段送货上门。送货司机{driver_name}，司机电话{driver_phone}。请准备收货。";
-                setting.Placeholders = "订单：{order_code}，订单数量：{order_count}，送货时间段开始：{time_begin}，送货时间段结束：{time_end}，司机姓名：{driver_name}，司机电话：{driver_phone}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 送货交付图片/评价推送
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.HomeDeliverPhotoRateTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.HomeDeliverPhotoRateTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好，您的{order_code}订单新增了【交付照片】，请在对应订单内查看！ 本次送货服务已完成，请点击本条消息，对本次派送小哥{driver_name}进行评价！
-                setting.WechatMessageTemplate1 = "您好，您的{order_code}订单新增了【交付照片】，请在对应订单内查看！ 本次送货服务已完成，请点击本条消息，对本次派送小哥{driver_name}进行评价！";
-                setting.SmsMessageTemplate = "您好，您的{order_code}订单新增了【交付照片】，请在对应订单内查看！ 本次送货服务已完成，请点击本条消息，对本次派送小哥{driver_name}进行评价！";
-                setting.Placeholders = "订单：{order_code}，司机姓名：{driver_name}";
-
-                session.Save(setting);
-                session.Flush();
-            }
-        }
-
-        {
-            // 取货点交付评价推送
-            var setting = settingList.Where(e => e.Type == CustomerMessageType.PickupStationDeliverRateTuiSong).Take(1).SingleOrDefault();
-            if (setting == null)
-            {
-                setting = new CustomerMessageRealTimeSendSettingInfo();
-                setting.Type = CustomerMessageType.PickupStationDeliverRateTuiSong;
-                setting.Status = CustomerMessageSettingStatus.Disabled;
-                setting.WechatSend = true;
-                setting.SmsSend = false;
-
-                // 您好，您的{order_code}订单现已在{pickup_station_name}取货点交付完毕！请点击本条消息，对本次取货点服务进行评价！
-                setting.WechatMessageTemplate1 = "您好，您的{order_code}订单现已在{pickup_station_name}取货点交付完毕！请点击本条消息，对本次取货点服务进行评价！";
-                setting.SmsMessageTemplate = "您好，您的{order_code}订单现已在{pickup_station_name}取货点交付完毕！请点击本条消息，对本次取货点服务进行评价！";
-                setting.Placeholders = "订单：{order_code}，取货点：{pickup_station_name}";
 
                 session.Save(setting);
                 session.Flush();
