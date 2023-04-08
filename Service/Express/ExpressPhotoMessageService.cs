@@ -113,7 +113,7 @@ public class ExpressPhotoMessageService {
         }
 
         if (photoType == ExpressPhotoType.Checkin) {
-            // customerMessageExpressPhotoCheckinService.SendMessage(expressPhoto.Customer, expressPhoto.TrackingNo);
+            customerMessageExpressPhotoCheckinService.SendMessage(expressPhoto);
         }
     }
 

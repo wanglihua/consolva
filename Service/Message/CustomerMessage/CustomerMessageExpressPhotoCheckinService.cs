@@ -66,16 +66,38 @@ public class CustomerMessageExpressPhotoCheckinService {
         return $"pages/express/express_checkin/express_checkin_detail?id={expressId}";
     }
 
-    public void SendMessage(CustomerInfo customer, ExpressInfo express) {
+    public void SendMessage(ExpressPhotoInfo expressPhoto) {
+        var customer = expressPhoto.Customer;
+        var express = expressPhoto.Express; // 这个主要用户获取快递详细URL
+
+        string trackingNo = expressPhoto.TrackingNo;
         if (customer == null) {
-            throw new ValidationException("消息发送指定的会员不能为空！");
+            express = session.Query<ExpressInfo>()
+                .Where(e => e.TrackingNo == trackingNo)
+                .Take(1)
+                .SingleOrDefault();
+            if (express != null) {
+                customer = express.Customer;
+            } else {
+                var expressExpect = session.Query<ExpressExpectInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+                if (expressExpect != null) {
+                    customer = expressExpect.Customer;
+                }
+            }
         }
 
-        if (express == null) {
-            throw new ValidationException("消息发送指定的快递单不能为空！");
+        // 快递单还没绑定快递单，就是快递单还没入库，并且也没预报
+        if (customer == null) {
+            // throw new ValidationException("消息发送指定的会员不能为空！");
+            return;
         }
 
-        string trackingNo = express.TrackingNo;
+        // if (express == null) {
+        //     throw new ValidationException("消息发送指定的快递单不能为空！");
+        // }
 
         if (customer.Status == CustomerStatus.Frozen) {
             return;
@@ -100,7 +122,10 @@ public class CustomerMessageExpressPhotoCheckinService {
                 if (setting.WechatSend) {
                     messageStatus = CustomerMessageStatus.Success;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = GetUrl(express.Id);
+                    string url = string.Empty;
+                    if (express != null) {
+                        url = GetUrl(express.Id);
+                    }
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customerCode, message1, processUser, url);

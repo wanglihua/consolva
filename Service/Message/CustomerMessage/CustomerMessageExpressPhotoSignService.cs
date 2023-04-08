@@ -72,12 +72,20 @@ public class CustomerMessageExpressPhotoSignService {
 
         string trackingNo = expressPhoto.TrackingNo;
         if (customer == null) {
-            var expressExpect = session.Query<ExpressExpectInfo>()
+            express = session.Query<ExpressInfo>()
                 .Where(e => e.TrackingNo == trackingNo)
                 .Take(1)
                 .SingleOrDefault();
-            if (expressExpect != null) {
-                customer = expressExpect.Customer;
+            if (express != null) {
+                customer = express.Customer;
+            } else {
+                var expressExpect = session.Query<ExpressExpectInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+                if (expressExpect != null) {
+                    customer = expressExpect.Customer;
+                }
             }
         }
 
