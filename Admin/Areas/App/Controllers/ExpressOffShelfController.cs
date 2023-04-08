@@ -270,7 +270,7 @@ public class ExpressOffShelfController : Controller {
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    [Route("/user/api/express/shelf/off/shelf/complete")]
+    [Route("/admin/app/express/off/shelf/complete")]
     [Transactional]
     public IActionResult Complete(ExpressOffShelfCompleteParam param) {
         ValidationUtil.Validate<ExpressOffShelfCompleteParamValidator, ExpressOffShelfCompleteParam>(param);
