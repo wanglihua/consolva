@@ -12,12 +12,12 @@ namespace shunda.Service.Message.CustomerMessage;
 /// 快递单签收图片推送
 /// </summary>
 [Service(ServiceType.Scoped)]
-public class CustomerMessageExpressPhotoSigninService {
+public class CustomerMessageExpressPhotoSignService {
     private readonly ISession session;
     private readonly CustomerMessageCommonService customerMessageCommonService;
     private readonly CustomerCodeService customerCodeService;
 
-    public CustomerMessageExpressPhotoSigninService(ISession session,
+    public CustomerMessageExpressPhotoSignService(ISession session,
         CustomerMessageCommonService customerMessageCommonService,
         CustomerCodeService customerCodeService) {
         this.session = session;
