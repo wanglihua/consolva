@@ -69,7 +69,7 @@ public class CustomerMessageType : CodeTypeBase {
     /// <summary>
     /// 快递单签收图片推送
     /// </summary>
-    public static readonly CustomerMessageType ExpressPhotoSign = new CustomerMessageType(1600, "快递单签收图片推送", "快递单签收图片推送");
+    public static readonly CustomerMessageType ExpressPhotoSign = new CustomerMessageType(16000, "签收图片推送", "签收图片推送");
 
     /// <summary>
     /// 快递单入库图片推送
