@@ -6,12 +6,12 @@ public class ExpressPhotoType : CodeTypeBase {
     /// <summary>
     /// 签收照片
     /// </summary>
-    public static readonly ExpressPhotoType SignIn = new ExpressPhotoType(1000, "签收照片", "签收照片");
+    public static readonly ExpressPhotoType Signin = new ExpressPhotoType(1000, "签收照片", "签收照片");
 
     /// <summary>
     /// 入库照片
     /// </summary>
-    public static readonly ExpressPhotoType CheckIn = new ExpressPhotoType(2000, "入库照片", "入库照片");
+    public static readonly ExpressPhotoType Checkin = new ExpressPhotoType(2000, "入库照片", "入库照片");
 
     /// <summary>
     /// 问题件照片
@@ -64,8 +64,8 @@ public class ExpressPhotoType : CodeTypeBase {
     public static readonly ExpressPhotoType None = new ExpressPhotoType(0, "", "");
 
     private static readonly IReadOnlyList<ExpressPhotoType> codeTypeList = new List<ExpressPhotoType>() {
-        SignIn,
-        CheckIn,
+        Signin,
+        Checkin,
         Issue,
         Ship,
         CnDamage,

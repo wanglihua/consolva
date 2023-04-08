@@ -67,14 +67,19 @@ public class CustomerMessageType : CodeTypeBase {
     public static readonly CustomerMessageType VipUpgrade = new CustomerMessageType(14000, "VIP升级推送", "VIP升级推送");
 
     /// <summary>
-    /// 订单入库图片推送
+    /// 快递单签收图片推送
     /// </summary>
-    public static readonly CustomerMessageType ExpressPhotoCheckIn = new CustomerMessageType(17000, "入库图片推送", "入库图片推送");
+    public static readonly CustomerMessageType ExpressPhotoSign = new CustomerMessageType(1600, "快递单签收图片推送", "快递单签收图片推送");
 
     /// <summary>
-    /// 订单入库视频推送
+    /// 快递单入库图片推送
     /// </summary>
-    public static readonly CustomerMessageType ExpressVideoCheckIn = new CustomerMessageType(18000, "入库视频推送", "入库视频推送");
+    public static readonly CustomerMessageType ExpressPhotoCheckin = new CustomerMessageType(17000, "入库图片推送", "入库图片推送");
+
+    /// <summary>
+    /// 快递单入库视频推送
+    /// </summary>
+    public static readonly CustomerMessageType ExpressVideoCheckin = new CustomerMessageType(18000, "入库视频推送", "入库视频推送");
 
     /// <summary>
     /// 订单问题图片推送
@@ -87,7 +92,7 @@ public class CustomerMessageType : CodeTypeBase {
     public static readonly CustomerMessageType ExpressPhotoCnDamage = new CustomerMessageType(20000, "中国损毁图片推送", "中国损毁图片推送");
 
     /// <summary>
-    /// 订单退运图片推送
+    /// 退运图片推送
     /// </summary>
     public static readonly CustomerMessageType ExpressPhotoReturn = new CustomerMessageType(21000, "退运图片推送", "退运图片推送");
 
@@ -156,8 +161,9 @@ public class CustomerMessageType : CodeTypeBase {
         Packed,
         Transfered,
         VipUpgrade,
-        ExpressPhotoCheckIn,
-        ExpressVideoCheckIn,
+        ExpressPhotoSign,
+        ExpressPhotoCheckin,
+        ExpressVideoCheckin,
         ExpressPhotoIssue,
         ExpressPhotoCnDamage,
         ExpressPhotoReturn,

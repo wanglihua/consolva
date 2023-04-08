@@ -241,19 +241,19 @@ LIMIT 1
         if (expressCheckinConfig.SigninPhotoMinQtyPerExpress > 0 || expressCheckinConfig.CheckinPhotoMinQtyPerExpress > 0) {
             // 检查快递单号图片
             IList<ExpressPhotoInfo> expressOrderPhotoList = session.Query<ExpressPhotoInfo>()
-                .Where(e => e.TrackingNo == expressTrackingNo && (e.Type == ExpressPhotoType.SignIn || e.Type == ExpressPhotoType.CheckIn)) // 当前只查询了 签收照片 和 入库照片
+                .Where(e => e.TrackingNo == expressTrackingNo && (e.Type == ExpressPhotoType.Signin || e.Type == ExpressPhotoType.Checkin)) // 当前只查询了 签收照片 和 入库照片
                 .OrderByDescending(e => e.Id)
                 .ToList();
 
             if (expressCheckinConfig.SigninPhotoMinQtyPerExpress > 0) {
-                int signInPhotoCount = expressOrderPhotoList.Where(e => e.Type == ExpressPhotoType.SignIn).Count();
+                int signInPhotoCount = expressOrderPhotoList.Where(e => e.Type == ExpressPhotoType.Signin).Count();
                 if (signInPhotoCount < expressCheckinConfig.SigninPhotoMinQtyPerExpress) {
                     throw new ValidationException($"快递单号对应的【签收图片】少于 {expressCheckinConfig.SigninPhotoMinQtyPerExpress} 张，不能入库！");
                 }
             }
 
             if (expressCheckinConfig.CheckinPhotoMinQtyPerExpress > 0) {
-                int checkinPhotoCount = expressOrderPhotoList.Where(e => e.Type == ExpressPhotoType.CheckIn).Count();
+                int checkinPhotoCount = expressOrderPhotoList.Where(e => e.Type == ExpressPhotoType.Checkin).Count();
                 if (checkinPhotoCount < expressCheckinConfig.CheckinPhotoMinQtyPerExpress) {
                     throw new ValidationException($"快递单号对应的【入库图片】少于 {expressCheckinConfig.CheckinPhotoMinQtyPerExpress} 张，请先拍照再入库！");
                 }

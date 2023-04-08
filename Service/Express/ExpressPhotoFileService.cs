@@ -47,7 +47,7 @@ public class ExpressPhotoFileService {
         if (expressPhoto.StoreLoc == ExpressPhotoStoreLoc.Oss) {
             string watermarkSafeBase64 = GetUrlSafeBase64("本快递已签收，签收人：舜达全球"); // 本快递已签收，签收人：舜达集运
 
-            if (expressPhoto.Type != ExpressPhotoType.SignIn) {
+            if (expressPhoto.Type != ExpressPhotoType.Signin) {
                 watermarkSafeBase64 = GetUrlSafeBase64($"【舜达全球】【北京时间】{expressPhoto.CreateTime.ToString("yyyy-MM-dd HH:mm")} 拍摄");
             }
 
