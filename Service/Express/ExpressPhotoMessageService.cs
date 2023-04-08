@@ -41,7 +41,10 @@ public class ExpressPhotoMessageService {
 
         // 快递单图片
         if (expressPhoto.Type == ExpressPhotoType.Sign || expressPhoto.Type == ExpressPhotoType.Checkin) {
-            if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) || expressPhoto.Customer == null || expressPhoto.Express == null) {
+            if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo)
+                // || expressPhoto.Customer == null 有预报的，这时是可以发送的
+                // || expressPhoto.Express == null 有预报的，这时是可以发送的
+               ) {
                 return;
             }
 
@@ -63,7 +66,10 @@ public class ExpressPhotoMessageService {
     /// </summary>
     /// <param name="expressPhoto"></param>
     private void SendAddExpressPhotoMessageOnce(ExpressPhotoInfo expressPhoto) {
-        if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) || expressPhoto.Customer == null || expressPhoto.Express == null) {
+        if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo)
+            // || expressPhoto.Customer == null 有预报的，这时是可以发送的
+            // || expressPhoto.Express == null 有预报的，这时是可以发送的
+           ) {
             return;
         }
 
@@ -122,7 +128,12 @@ public class ExpressPhotoMessageService {
     /// </summary>
     /// <param name="expressPhoto"></param>
     private void SendAddOrderPhotoMessageOnce(ExpressPhotoInfo expressPhoto) {
-        if (expressPhoto == null || expressPhoto.Order == null || expressPhoto.Customer == null || expressPhoto.Type == null) {
+        if (expressPhoto == null
+            || expressPhoto.Order == null
+            || expressPhoto.Customer == null
+            || expressPhoto.Type == null
+            || expressPhoto.Type == ExpressPhotoType.None
+           ) {
             return;
         }
 

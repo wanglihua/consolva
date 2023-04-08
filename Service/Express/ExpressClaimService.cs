@@ -73,5 +73,7 @@ public class ExpressClaimService {
         }
 
         expressLogService.CustomerLog(expressId, ExpressLogType.Claim, customerId);
+
+        // 发送可能的快递单图片
     }
 }
