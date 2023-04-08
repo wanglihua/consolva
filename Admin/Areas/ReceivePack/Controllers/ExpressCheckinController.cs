@@ -880,40 +880,42 @@ public class ExpressCheckinController : Controller {
         // 两个类型的消息，签收的和入库的
         // expressPhotoMessageService
 
-        Transactional.Wrap(session, () => {
-            int expressId = express?.Id ?? 0;
+        if (express?.Customer != null) {
+            Transactional.Wrap(session, () => {
+                int expressId = express?.Id ?? 0;
 
-            var expressPhotoSign = session.Query<ExpressPhotoInfo>()
-                .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Sign)
-                .Take(1)
-                .SingleOrDefault();
-            if (expressPhotoSign != null) {
-                // 这个是看有没发送过，不是看一个小时内有没发送
-                var expressSendTimeSign = session.Query<ExpressPhotoMessageSendTimeInfo>()
+                var expressPhotoSign = session.Query<ExpressPhotoInfo>()
                     .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Sign)
                     .Take(1)
                     .SingleOrDefault();
+                if (expressPhotoSign != null) {
+                    // 这个是看有没发送过，不是看一个小时内有没发送
+                    var expressSendTimeSign = session.Query<ExpressPhotoMessageSendTimeInfo>()
+                        .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Sign)
+                        .Take(1)
+                        .SingleOrDefault();
 
-                if (expressSendTimeSign == null) {
-                    expressPhotoMessageService.SendAddPhotoMessage(expressPhotoSign);
+                    if (expressSendTimeSign == null) {
+                        expressPhotoMessageService.SendAddPhotoMessage(expressPhotoSign);
+                    }
                 }
-            }
 
-            var expressPhotoCheckin = session.Query<ExpressPhotoInfo>()
-                .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Checkin)
-                .Take(1)
-                .SingleOrDefault();
-            if (expressPhotoCheckin == null) {
-                var expressSendTimeCheckin = session.Query<ExpressPhotoMessageSendTimeInfo>()
+                var expressPhotoCheckin = session.Query<ExpressPhotoInfo>()
                     .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Checkin)
                     .Take(1)
                     .SingleOrDefault();
+                if (expressPhotoCheckin != null) {
+                    var expressSendTimeCheckin = session.Query<ExpressPhotoMessageSendTimeInfo>()
+                        .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Checkin)
+                        .Take(1)
+                        .SingleOrDefault();
 
-                if (expressSendTimeCheckin == null) {
-                    expressPhotoMessageService.SendAddPhotoMessage(expressPhotoCheckin);
+                    if (expressSendTimeCheckin == null) {
+                        expressPhotoMessageService.SendAddPhotoMessage(expressPhotoCheckin);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         return Json(new JsonResultData {
             Success = true,
