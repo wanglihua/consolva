@@ -59,7 +59,7 @@ public class PhotoUploadController : Controller {
             throw new ValidationException("上传人登录名不能为空！");
         }
 
-        ExpressPhotoType expressPhotoType = ExpressPhotoType.Signin;
+        ExpressPhotoType expressPhotoType = ExpressPhotoType.Sign;
 
         if (string.IsNullOrWhiteSpace(trackingNo)) {
             throw new ValidationException("快递单号不能都为空！");

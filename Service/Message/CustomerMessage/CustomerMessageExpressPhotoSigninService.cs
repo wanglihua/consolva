@@ -25,7 +25,7 @@ public class CustomerMessageExpressPhotoSigninService {
         this.customerCodeService = customerCodeService;
     }
 
-    private static CustomerMessageType messageType => CustomerMessageType.ExpressPhotoCheckin;
+    private static CustomerMessageType messageType => CustomerMessageType.ExpressPhotoSign;
 
     public static void InitSetting(ISession session) {
         var setting = session.Query<CustomerMessageRealTimeSendSettingInfo>()

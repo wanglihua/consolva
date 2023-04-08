@@ -6,7 +6,7 @@ public class ExpressPhotoType : CodeTypeBase {
     /// <summary>
     /// 签收照片
     /// </summary>
-    public static readonly ExpressPhotoType Signin = new ExpressPhotoType(1000, "签收照片", "签收照片");
+    public static readonly ExpressPhotoType Sign = new ExpressPhotoType(1000, "签收照片", "签收照片");
 
     /// <summary>
     /// 入库照片
@@ -64,7 +64,7 @@ public class ExpressPhotoType : CodeTypeBase {
     public static readonly ExpressPhotoType None = new ExpressPhotoType(0, "", "");
 
     private static readonly IReadOnlyList<ExpressPhotoType> codeTypeList = new List<ExpressPhotoType>() {
-        Signin,
+        Sign,
         Checkin,
         Issue,
         Ship,
