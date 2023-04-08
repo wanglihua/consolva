@@ -19,17 +19,17 @@ public class PhotoUploadController : Controller {
 
     private readonly ISession session;
     private readonly ExpressTrackingNoService expressTrackingNoService;
-    private readonly ExpressPhotoService expressPhotoService;
     private readonly ExpressLogService expressLogService;
+    private readonly ExpressPhotoMessageService expressPhotoMessageService;
 
     public PhotoUploadController(ISession session,
         ExpressTrackingNoService expressTrackingNoService,
-        ExpressPhotoService expressPhotoService,
-        ExpressLogService expressLogService) {
+        ExpressLogService expressLogService,
+        ExpressPhotoMessageService expressPhotoMessageService) {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
-        this.expressPhotoService = expressPhotoService;
         this.expressLogService = expressLogService;
+        this.expressPhotoMessageService = expressPhotoMessageService;
     }
 
     /// <summary>
@@ -160,6 +160,9 @@ public class PhotoUploadController : Controller {
         }
 
         session.Flush();
+
+        // 调用的内部已经处理消息重复发送问题
+        expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
 
         return Content("success"); // 方便客户端 golang 处理
     }

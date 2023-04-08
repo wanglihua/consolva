@@ -47,11 +47,11 @@ public class ExpressCheckinController : Controller {
     private readonly ExpressCheckinConfigService expressCheckinConfigService;
     private readonly CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService;
     private readonly CustomerMessageExpressCheckinService customerMessageExpressCheckinService;
+    private readonly ExpressPhotoMessageService expressPhotoMessageService;
     private readonly ExpressLogService expressLogService;
     private readonly ExpressSizeWeightService expressSizeWeightService;
     private readonly ExpressPhotoService expressPhotoService;
     private readonly ExpressVideoService expressVideoService;
-    private readonly LogisticsGoodsImageService logisticsGoodsImageService;
     private readonly StorageLocExpressService storageLocExpressService;
 
     public ExpressCheckinController(
@@ -67,11 +67,11 @@ public class ExpressCheckinController : Controller {
         ExpressCheckinConfigService expressCheckinConfigService,
         CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService,
         CustomerMessageExpressCheckinService customerMessageExpressCheckinService,
+        ExpressPhotoMessageService expressPhotoMessageService,
         ExpressLogService expressLogService,
         ExpressSizeWeightService expressSizeWeightService,
         ExpressPhotoService expressPhotoService,
         ExpressVideoService expressVideoService,
-        LogisticsGoodsImageService logisticsGoodsImageService,
         StorageLocExpressService storageLocExpressService
     ) {
         this.session = session;
@@ -86,11 +86,11 @@ public class ExpressCheckinController : Controller {
         this.expressCheckinConfigService = expressCheckinConfigService;
         this.customerMessageExpressExpectEnterService = customerMessageExpressExpectEnterService;
         this.customerMessageExpressCheckinService = customerMessageExpressCheckinService;
+        this.expressPhotoMessageService = expressPhotoMessageService;
         this.expressLogService = expressLogService;
         this.expressSizeWeightService = expressSizeWeightService;
         this.expressPhotoService = expressPhotoService;
         this.expressVideoService = expressVideoService;
-        this.logisticsGoodsImageService = logisticsGoodsImageService;
         this.storageLocExpressService = storageLocExpressService;
     }
 
@@ -873,6 +873,12 @@ public class ExpressCheckinController : Controller {
             expressPhotoService.BindExpressByTrackingNo(expressId);
             expressVideoService.BindExpressByTrackingNo(expressId);
         });
+
+        // 消息发送, 放在上面的图片快递绑定后面
+        // 没用发送过的才需要发送，从发送时间表里面查询
+        // 两个类型的消息，签收的和入库的
+        // expressPhotoMessageService
+        
 
         return Json(new JsonResultData {
             Success = true,

@@ -222,14 +222,7 @@ public class ExpressPhotoController : Controller {
             }
         }
 
-        if (order != null) {
-            try {
-                expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
-            }
-            catch (Exception exp) {
-                log.Error(exp);
-            }
-        }
+        expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
 
         return Json(new Dictionary<string, object>() {
             { "success", true },

@@ -62,7 +62,7 @@ public class ExpressPhotoMessageService {
     /// 发送图片快递添加消息通知
     /// </summary>
     /// <param name="expressPhoto"></param>
-    public void SendAddExpressPhotoMessageOnce(ExpressPhotoInfo expressPhoto) {
+    private void SendAddExpressPhotoMessageOnce(ExpressPhotoInfo expressPhoto) {
         if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) || expressPhoto.Customer == null || expressPhoto.Express == null) {
             return;
         }
