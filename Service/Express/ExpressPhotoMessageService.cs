@@ -1,86 +1,64 @@
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.Message;
+using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
 public class ExpressPhotoMessageService {
-    // todo a 完成图片消息发送
-    public void SendAddPhotoMessage(ExpressPhotoInfo expressPhoto) {
+    private readonly ISession session;
+
+    public ExpressPhotoMessageService(ISession session) {
+        this.session = session;
     }
 
     /// <summary>
-    /// 发送订单图片添加消息通知
+    /// 添加图片时发送消息推送
     /// </summary>
     /// <param name="expressPhoto"></param>
-    public void SendAddOrderPhotoMessage(ExpressPhotoInfo expressPhoto) {
-        /*
-         todo a 后面补上
-        if (expressPhoto == null || expressPhoto.Order == null || expressPhoto.Customer == null || expressPhoto.Type == null)
-        {
+    public void SendAddPhotoMessage(ExpressPhotoInfo expressPhoto) {
+        if (expressPhoto == null) {
             return;
         }
 
-        int orderId = expressPhoto.Order.Id;
-        ExpressPhotoType photoType = expressPhoto.Type;
-
-        // 一个订单，一个图片类型，同一时间段，只发送一个消息
-        LogisticsOrderPhotoMessageSendTimeInfo messageSendTimeRecord = session.QueryOver<LogisticsOrderPhotoMessageSendTimeInfo>()
-            .Where(e => e.Order != null && e.Order.Id == orderId && e.Type == photoType)
-            .OrderBy(e => e.LastSendTime).Desc
-            .Take(1)
-            .SingleOrDefault();
-
-        if (messageSendTimeRecord == null || messageSendTimeRecord.LastSendTime < DateTime.Now.AddHours(-1)) // 没发送过，或者一个小时前发送过
-        {
-            CustomerMessageType customerMessageType = GetMessageType(expressPhoto.Type);
-            if (customerMessageType != null && customerMessageType != CustomerMessageType.None)
-            {
-                if (messageSendTimeRecord == null)
-                {
-                    messageSendTimeRecord = new LogisticsOrderPhotoMessageSendTimeInfo();
-                    messageSendTimeRecord.TrackingNo = null;
-                    messageSendTimeRecord.Order = expressPhoto.Order;
-                    messageSendTimeRecord.Express = expressPhoto.Express;
-                    messageSendTimeRecord.Type = photoType;
-                }
-
-                messageSendTimeRecord.LastSendTime = DateTime.Now;
-
-                session.SaveOrUpdate(messageSendTimeRecord);
-                session.Flush();
-
-                // 先保存messageSendTimeRecord，再发送消息，否则发送消息比较费时容易造成上面的保存出错
-                SendMessageOrderPhoto(photoType, expressPhoto);
-            }
+        if (expressPhoto.Type == null || expressPhoto.Type == ExpressPhotoType.None) {
+            return;
         }
-        */
+
+        // 快递单图片
+        if (expressPhoto.Type == ExpressPhotoType.Sign || expressPhoto.Type == ExpressPhotoType.Checkin) {
+            if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) || expressPhoto.Customer == null || expressPhoto.Express == null) {
+                return;
+            }
+
+            SendAddExpressPhotoMessageOnce(expressPhoto);
+        }
+
+        // 订单图片
+        if (expressPhoto.Type == ExpressPhotoType.Ship) {
+            if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) || expressPhoto.Customer == null || expressPhoto.Order == null) {
+                return;
+            }
+
+            SendAddOrderPhotoMessageOnce(expressPhoto);
+        }
     }
 
     /// <summary>
     /// 发送图片快递添加消息通知
     /// </summary>
     /// <param name="expressPhoto"></param>
-    public void SendAddExpressPhotoMessage(ExpressPhotoInfo expressPhoto) {
-        /*
-        todo a 后面补上
-        
-        // 这里的订单是可以为空的，发送消息时，可能订单都还没创建
-        if (expressPhoto == null
-            || string.IsNullOrWhiteSpace(expressPhoto.ExpressTrackingNo)
-            // ||expressPhoto.Order == null
-            || expressPhoto.Customer == null
-            || expressPhoto.Type == null)
-        {
+    public void SendAddExpressPhotoMessageOnce(ExpressPhotoInfo expressPhoto) {
+        if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) || expressPhoto.Customer == null || expressPhoto.Express == null) {
             return;
         }
 
-        string trackingNo = expressPhoto.ExpressTrackingNo;
+        string trackingNo = expressPhoto.TrackingNo;
         ExpressPhotoType photoType = expressPhoto.Type;
 
         // 一个快递单，一个图片类型，同一时间段，只发送一个消息  
-        LogisticsOrderPhotoMessageSendTimeInfo messageSendTimeRecord = session.QueryOver<LogisticsOrderPhotoMessageSendTimeInfo>()
+        var messageSendTimeRecord = session.QueryOver<ExpressPhotoMessageSendTimeInfo>()
             .Where(e => e.TrackingNo == trackingNo && e.Type == photoType)
             .OrderBy(e => e.LastSendTime).Desc
             .Take(1)
@@ -93,10 +71,79 @@ public class ExpressPhotoMessageService {
             {
                 if (messageSendTimeRecord == null)
                 {
-                    messageSendTimeRecord = new LogisticsOrderPhotoMessageSendTimeInfo();
-                    messageSendTimeRecord.TrackingNo = trackingNo;
-                    messageSendTimeRecord.Order = null;
-                    messageSendTimeRecord.Express = null;
+                    messageSendTimeRecord = new ExpressPhotoMessageSendTimeInfo {
+                        TrackingNo = trackingNo,
+                        Order = null,
+                        Express = expressPhoto.Express,
+                        Type = photoType
+                    };
+                }
+
+                messageSendTimeRecord.LastSendTime = DateTime.Now;
+
+                session.SaveOrUpdate(messageSendTimeRecord);
+                session.Flush();
+
+                SendAddExpressPhotoMessage(photoType, expressPhoto);
+            }
+        }
+    }
+
+    private void SendAddExpressPhotoMessage(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto) {
+        /*
+        if (photoType == ExpressPhotoType.SignIn)
+        {
+            if (expressPhoto.User?.LoginName == AutoPhotoConfig.AutoPhotoLoginName)
+            {
+                string sendUserName = expressPhoto.User?.UserName;
+
+                // 使用智能机器人作为发送人
+                customerMessageService.SendMessageOrderPhotoSignIn(expressPhoto.Customer, expressPhoto.ExpressTrackingNo, sendUserName);
+            }
+            else
+            {
+                customerMessageService.SendMessageOrderPhotoSignIn(expressPhoto.Customer, expressPhoto.ExpressTrackingNo);
+            }
+        }
+
+        if (photoType == ExpressPhotoType.CheckIn)
+        {
+            customerMessageService.SendMessageOrderPhotoCheckIn(expressPhoto.Customer, expressPhoto.ExpressTrackingNo);
+        }
+        */
+    }
+
+    /// <summary>
+    /// 发送订单图片添加消息通知
+    /// </summary>
+    /// <param name="expressPhoto"></param>
+    private void SendAddOrderPhotoMessageOnce(ExpressPhotoInfo expressPhoto) {
+        if (expressPhoto == null || expressPhoto.Order == null || expressPhoto.Customer == null || expressPhoto.Type == null)
+        {
+            return;
+        }
+
+        int orderId = expressPhoto.Order.Id;
+        ExpressPhotoType photoType = expressPhoto.Type;
+
+        // 一个订单，一个图片类型，同一时间段，只发送一个消息
+        var messageSendTimeRecord = session.QueryOver<ExpressPhotoMessageSendTimeInfo>()
+            .Where(e => e.Order != null && e.Order.Id == orderId && e.Type == photoType)
+            .OrderBy(e => e.LastSendTime).Desc
+            .Take(1)
+            .SingleOrDefault();
+
+        if (messageSendTimeRecord == null || messageSendTimeRecord.LastSendTime < DateTime.Now.AddHours(-1)) // 没发送过，或者一个小时前发送过
+        {
+            CustomerMessageType customerMessageType = GetMessageType(expressPhoto.Type);
+            if (customerMessageType != null && customerMessageType != CustomerMessageType.None)
+            {
+                if (messageSendTimeRecord == null)
+                {
+                    messageSendTimeRecord = new ExpressPhotoMessageSendTimeInfo();
+                    messageSendTimeRecord.TrackingNo = null;
+                    messageSendTimeRecord.Order = expressPhoto.Order;
+                    messageSendTimeRecord.Express = expressPhoto.Express;
                     messageSendTimeRecord.Type = photoType;
                 }
 
@@ -105,61 +152,12 @@ public class ExpressPhotoMessageService {
                 session.SaveOrUpdate(messageSendTimeRecord);
                 session.Flush();
 
-                // 先保存messageSendTimeRecord，再发送消息，否则发送消息比较费时容易造成上面的保存出错
-                SendMessageExpressPhoto(photoType, expressPhoto);
+                SendAddOrderPhotoMessage(photoType, expressPhoto);
             }
         }
-        */
     }
 
-    private CustomerMessageType GetMessageType(ExpressPhotoType photoType) {
-        /*
-         todo a 后面补上
-        if (photoType == ExpressPhotoType.SignIn)
-        {
-            return CustomerMessageType.OrderPhotoSignInTuiSong;
-        }
-
-        if (photoType == ExpressPhotoType.CheckIn)
-        {
-            return CustomerMessageType.OrderPhotoCheckInTuiSong;
-        }
-
-        if (photoType == ExpressPhotoType.Issue)
-        {
-            return CustomerMessageType.OrderPhotoIssueTuiSong;
-        }
-
-        if (photoType == ExpressPhotoType.CnDamage)
-        {
-            return CustomerMessageType.OrderPhotoCnDamageTuiSong;
-        }
-
-        if (photoType == ExpressPhotoType.Return)
-        {
-            return CustomerMessageType.OrderPhotoReturnTuiSong;
-        }
-
-        if (photoType == ExpressPhotoType.Ship)
-        {
-            return CustomerMessageType.OrderPhotoShipTuiSong;
-        }
-
-        if (photoType == ExpressPhotoType.AuDamage)
-        {
-            return CustomerMessageType.OrderPhotoAuDamageTuiSong;
-        }
-
-        if (photoType == ExpressPhotoType.Deliver)
-        {
-            return CustomerMessageType.OrderPhotoDeliverTuiSong;
-        }
-        */
-
-        return CustomerMessageType.None;
-    }
-
-    private void SendMessageOrderPhoto(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto) {
+    private void SendAddOrderPhotoMessage(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto) {
         /*
         if (photoType == ExpressPhotoType.None)
         {
@@ -227,26 +225,45 @@ public class ExpressPhotoMessageService {
         */
     }
 
-    private void SendMessageExpressPhoto(ExpressPhotoType photoType, ExpressPhotoInfo expressPhoto) {
-        /*
-        if (photoType == ExpressPhotoType.SignIn)
-        {
-            if (expressPhoto.User?.LoginName == AutoPhotoConfig.AutoPhotoLoginName)
-            {
-                string sendUserName = expressPhoto.User?.UserName;
-
-                // 使用智能机器人作为发送人
-                customerMessageService.SendMessageOrderPhotoSignIn(expressPhoto.Customer, expressPhoto.ExpressTrackingNo, sendUserName);
-            }
-            else
-            {
-                customerMessageService.SendMessageOrderPhotoSignIn(expressPhoto.Customer, expressPhoto.ExpressTrackingNo);
-            }
+    private CustomerMessageType GetMessageType(ExpressPhotoType photoType) {
+        if (photoType == ExpressPhotoType.Sign) {
+            return CustomerMessageType.ExpressPhotoSign;
         }
 
-        if (photoType == ExpressPhotoType.CheckIn)
+        if (photoType == ExpressPhotoType.Checkin) {
+            return CustomerMessageType.ExpressCheckin;
+        }
+
+        if (photoType == ExpressPhotoType.Ship) {
+            return CustomerMessageType.OrderPhotoShip;
+        }
+
+        return CustomerMessageType.None;
+
+        /*
+        if (photoType == ExpressPhotoType.Issue)
         {
-            customerMessageService.SendMessageOrderPhotoCheckIn(expressPhoto.Customer, expressPhoto.ExpressTrackingNo);
+            return CustomerMessageType.OrderPhotoIssueTuiSong;
+        }
+
+        if (photoType == ExpressPhotoType.CnDamage)
+        {
+            return CustomerMessageType.OrderPhotoCnDamageTuiSong;
+        }
+
+        if (photoType == ExpressPhotoType.Return)
+        {
+            return CustomerMessageType.OrderPhotoReturnTuiSong;
+        }
+
+        if (photoType == ExpressPhotoType.AuDamage)
+        {
+            return CustomerMessageType.OrderPhotoAuDamageTuiSong;
+        }
+
+        if (photoType == ExpressPhotoType.Deliver)
+        {
+            return CustomerMessageType.OrderPhotoDeliverTuiSong;
         }
         */
     }
