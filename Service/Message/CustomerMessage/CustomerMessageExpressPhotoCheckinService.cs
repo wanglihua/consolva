@@ -9,7 +9,7 @@ using shunda.Service.Customer;
 namespace shunda.Service.Message.CustomerMessage;
 
 /// <summary>
-/// 快递单入库提醒
+/// 快递单入库图片推送
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class CustomerMessageExpressPhotoCheckinService {
