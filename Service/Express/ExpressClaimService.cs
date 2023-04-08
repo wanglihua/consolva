@@ -1,8 +1,8 @@
+using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Domain.Express;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.Express;
 
@@ -12,15 +12,18 @@ public class ExpressClaimService {
     private readonly ExpressTrackingNoService expressTrackingNoService;
     private readonly ExpressExpectService expressExpectService;
     private readonly ExpressLogService expressLogService;
+    private readonly ExpressPhotoMessageService expressPhotoMessageService;
 
     public ExpressClaimService(ISession session,
         ExpressTrackingNoService expressTrackingNoService,
         ExpressExpectService expressExpectService,
-        ExpressLogService expressLogService) {
+        ExpressLogService expressLogService,
+        ExpressPhotoMessageService expressPhotoMessageService) {
         this.session = session;
         this.expressTrackingNoService = expressTrackingNoService;
         this.expressExpectService = expressExpectService;
         this.expressLogService = expressLogService;
+        this.expressPhotoMessageService = expressPhotoMessageService;
     }
 
     /// <summary>
@@ -75,5 +78,6 @@ public class ExpressClaimService {
         expressLogService.CustomerLog(expressId, ExpressLogType.Claim, customerId);
 
         // 发送可能的快递单图片
+        expressPhotoMessageService.SendSignAndCheckinMessageIfNotSentWhenCheckinOrPick(expressId);
     }
 }

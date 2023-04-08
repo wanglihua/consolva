@@ -216,12 +216,13 @@ public class ExpressPhotoController : Controller {
 
         if (string.IsNullOrWhiteSpace(trackingNo) == false) {
             if (expressPhoto.User == null) {
-                expressLogService.Log(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhoto.Type?.Name}");
+                expressLogService.Log(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhoto.Type.Name}");
             } else {
-                expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhoto.Type?.Name}", expressPhoto.User?.Id ?? 0);
+                expressLogService.UserLog(expressPhoto.TrackingNo, ExpressLogType.PhotoUpload, $"类型:{expressPhoto.Type.Name}", expressPhoto.User?.Id ?? 0);
             }
         }
 
+        // 调用的内部已经处理消息重复发送问题，也已经处理是否快递单已入库问题
         expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
 
         return Json(new Dictionary<string, object>() {

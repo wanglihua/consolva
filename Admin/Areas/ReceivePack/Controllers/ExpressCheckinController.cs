@@ -878,42 +878,11 @@ public class ExpressCheckinController : Controller {
         // 消息发送, 放在上面的图片快递绑定后面
         // 没用发送过的才需要发送，从发送时间表里面查询
         // 两个类型的消息，签收的和入库的
-        // expressPhotoMessageService
 
         if (express?.Customer != null) {
             Transactional.Wrap(session, () => {
                 int expressId = express?.Id ?? 0;
-
-                var expressPhotoSign = session.Query<ExpressPhotoInfo>()
-                    .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Sign)
-                    .Take(1)
-                    .SingleOrDefault();
-                if (expressPhotoSign != null) {
-                    // 这个是看有没发送过，不是看一个小时内有没发送
-                    var expressSendTimeSign = session.Query<ExpressPhotoMessageSendTimeInfo>()
-                        .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Sign)
-                        .Take(1)
-                        .SingleOrDefault();
-
-                    if (expressSendTimeSign == null) {
-                        expressPhotoMessageService.SendAddPhotoMessage(expressPhotoSign);
-                    }
-                }
-
-                var expressPhotoCheckin = session.Query<ExpressPhotoInfo>()
-                    .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Checkin)
-                    .Take(1)
-                    .SingleOrDefault();
-                if (expressPhotoCheckin != null) {
-                    var expressSendTimeCheckin = session.Query<ExpressPhotoMessageSendTimeInfo>()
-                        .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Checkin)
-                        .Take(1)
-                        .SingleOrDefault();
-
-                    if (expressSendTimeCheckin == null) {
-                        expressPhotoMessageService.SendAddPhotoMessage(expressPhotoCheckin);
-                    }
-                }
+                expressPhotoMessageService.SendSignAndCheckinMessageIfNotSentWhenCheckinOrPick(expressId);
             });
         }
 

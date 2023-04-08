@@ -26,6 +26,40 @@ public class ExpressPhotoMessageService {
         this.customerMessageOrderPhotoShipService = customerMessageOrderPhotoShipService;
     }
 
+    public void SendSignAndCheckinMessageIfNotSentWhenCheckinOrPick(int expressId) {
+        // 发送可能的快递单图片
+        var expressPhotoSign = session.Query<ExpressPhotoInfo>()
+            .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Sign)
+            .Take(1)
+            .SingleOrDefault();
+        if (expressPhotoSign != null) {
+            // 这个是看有没发送过，不是看一个小时内有没发送
+            var expressSendTimeSign = session.Query<ExpressPhotoMessageSendTimeInfo>()
+                .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Sign)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (expressSendTimeSign == null) {
+                SendAddPhotoMessage(expressPhotoSign);
+            }
+        }
+
+        var expressPhotoCheckin = session.Query<ExpressPhotoInfo>()
+            .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Checkin)
+            .Take(1)
+            .SingleOrDefault();
+        if (expressPhotoCheckin != null) {
+            var expressSendTimeCheckin = session.Query<ExpressPhotoMessageSendTimeInfo>()
+                .Where(e => e.Express!.Id == expressId && e.Type == ExpressPhotoType.Checkin)
+                .Take(1)
+                .SingleOrDefault();
+
+            if (expressSendTimeCheckin == null) {
+                SendAddPhotoMessage(expressPhotoCheckin);
+            }
+        }
+    }
+
     /// <summary>
     /// 添加图片时发送消息推送
     /// </summary>

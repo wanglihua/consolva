@@ -41,7 +41,6 @@ public class CustomerScoreService {
         // this.customerMessageClientUrlService = customerMessageClientUrlService;
     }
 
-    // todo 这里面要优化，特别是跟数据库事务相关的方面的。
     /// <summary>
     /// 添加支付产生积分
     /// 同时添加  集运消费积分 和 会员推广积分
@@ -55,7 +54,6 @@ public class CustomerScoreService {
 
         NHibernateUtil.Initialize(orderPay.Order);
 
-        // todo 重命名
         var logisticsConsumeRule = session.Query<CustomerScoreRuleInfo>()
             .Where(e => e.Type == CustomerScoreType.LogisticsConsume)
             .OrderBy(e => e.Id)
