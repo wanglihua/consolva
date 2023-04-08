@@ -107,6 +107,11 @@ public class CustomerMessageType : CodeTypeBase {
     public static readonly CustomerMessageType AccountChange = new CustomerMessageType(23000, "账户余额变动提醒", "账户余额变动提醒");
 
     /// <summary>
+    /// 积分变动提醒
+    /// </summary>
+    public static readonly CustomerMessageType ScoreChange = new CustomerMessageType(23500, "积分变动提醒", "积分变动提醒");
+
+    /// <summary>
     /// 订单交付图片推送
     /// </summary>
     public static readonly CustomerMessageType OrderPhotoDeliver = new CustomerMessageType(24000, "订单交付图片推送", "订单交付图片推送");
@@ -169,6 +174,7 @@ public class CustomerMessageType : CodeTypeBase {
         ExpressPhotoReturn,
         OrderPhotoShip,
         AccountChange,
+        ScoreChange,
         OrderPhotoDeliver,
         InternationalExpressTrackingNo,
         InternationalExpressStateUpdate,

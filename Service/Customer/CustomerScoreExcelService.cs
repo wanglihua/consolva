@@ -192,8 +192,8 @@ public class CustomerScoreExcelService {
             // decimal validScoreBefore = customer.ValidScore;
             // decimal totalScoreBefore = customer.TotalScore;
 
-            customer.ValidScore += customerImportItem.ValidScoreDelta;
-            customer.TotalScore += customerImportItem.TotalScoreDelta;
+            customer.ValidScore = customer.ValidScore + customerImportItem.ValidScoreDelta;
+            customer.TotalScore = customer.TotalScore + customerImportItem.TotalScoreDelta;
 
             // decimal validScoreAfter = customer.ValidScore;
             // decimal totalScoreAfter = customer.TotalScore;

@@ -85,7 +85,7 @@ public class CustomerScoreDeductService {
 
         var deductResult = GetDeduction(orderId, baseAmount);
 
-        customer.ValidScore -= deductResult.Score;
+        customer.ValidScore = customer.ValidScore - deductResult.Score;
         session.Update(customer);
 
         // 插入积分抵扣费用，负的费用

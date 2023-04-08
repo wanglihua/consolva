@@ -26,6 +26,7 @@ public class CustomerMessageRealTimeSendSettingService {
         CustomerMessageOrderDeliveredService.InitSetting(session);
         CustomerMessageOrderPhotoShipService.InitSetting(session);
         CustomerMessagePackedService.InitSetting(session);
+        CustomerMessageScoreChangeService.InitSetting(session);
         CustomerMessageTransferedService.InitSetting(session);
 
         session.Flush();

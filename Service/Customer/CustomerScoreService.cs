@@ -14,8 +14,7 @@ public class CustomerScoreService {
     private readonly ISession session;
 
     // private readonly CustomerService customerService;
-    // private readonly CustomerMessageService customerMessageService;
-    // private readonly CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService;
+    private readonly CustomerMessageScoreChangeService customerMessageScoreChangeService;
     private readonly CustomerMessageMoneyEarnedService customerMessageMoneyEarnedService;
     private readonly CustomerVipDiscountService customerVipDiscountService;
 
@@ -24,8 +23,7 @@ public class CustomerScoreService {
 
     public CustomerScoreService(ISession session,
             // CustomerService customerService,
-            // CustomerMessageService customerMessageService,
-            // CustomerMessageWoZhuanDaoDeQianService customerMessageWoZhuanDaoDeQianService,
+            CustomerMessageScoreChangeService customerMessageScoreChangeService,
             CustomerMessageMoneyEarnedService customerMessageMoneyEarnedService,
             CustomerVipDiscountService customerVipDiscountService,
             CustomerAccountService customerAccountService)
@@ -33,8 +31,7 @@ public class CustomerScoreService {
     {
         this.session = session;
         // this.customerService = customerService;
-        // this.customerMessageService = customerMessageService;
-        // this.customerMessageWoZhuanDaoDeQianService = customerMessageWoZhuanDaoDeQianService;
+        this.customerMessageScoreChangeService = customerMessageScoreChangeService;
         this.customerMessageMoneyEarnedService = customerMessageMoneyEarnedService;
         this.customerVipDiscountService = customerVipDiscountService;
         this.customerAccountService = customerAccountService;
@@ -150,8 +147,8 @@ public class CustomerScoreService {
         session.Save(scoreLog);
         session.Flush();
 
+        // 有效积分时才发送
         if (isValidScoreLogisticsConsume) {
-            // 有效积分时才发送
             customerMessageMoneyEarnedService.SendMessage(orderCustomer, logisticsConsumeScore);
         }
 
@@ -264,7 +261,7 @@ public class CustomerScoreService {
 
             if (isValidScorePromotion) // 有效积分时才发送
             {
-                customerMessageWoZhuanDaoDeQianService.SendMessage(directParentCustomer, orderCate, promotionDirectScore, 1);
+                customerMessageMoneyEarnedService.SendMessage(directParentCustomer, orderCate, promotionDirectScore, 1);
             }
         }
 
@@ -342,7 +339,7 @@ public class CustomerScoreService {
         decimal amount = (score / scoreToBalanceRule.Score) * scoreToBalanceRule.Amount;
 
         // 减少积分
-        customer.ValidScore -= score;
+        customer.ValidScore = customer.ValidScore - score;
 
         session.Update(customer);
         session.Flush();
