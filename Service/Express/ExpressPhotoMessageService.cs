@@ -106,9 +106,9 @@ public class ExpressPhotoMessageService {
                 string sendUserName = expressPhoto.User?.UserName ?? string.Empty;
 
                 // 使用智能机器人作为发送人
-                // customerMessageExpressPhotoSignService.SendMessage(expressPhoto.Customer, expressPhoto.TrackingNo, sendUserName);
+                customerMessageExpressPhotoSignService.SendMessage(expressPhoto, sendUserName);
             } else {
-                // customerMessageExpressPhotoSignService.SendMessage(expressPhoto.Customer, expressPhoto.TrackingNo);
+                customerMessageExpressPhotoSignService.SendMessage(expressPhoto);
             }
         }
 
