@@ -6,7 +6,7 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Domain.Message;
 
-public class ExpressPhotoMessageSendTimeInfoMapping : EntityMapping<ExpressPhotoMessageSendTimeInfo> {
+public class ExpressPhotoMessageSendTimeInfoMapping : EntityNoUpdateMapping<ExpressPhotoMessageSendTimeInfo> {
     public ExpressPhotoMessageSendTimeInfoMapping() {
         Table("tbl_express_photo_message_send_time");
 

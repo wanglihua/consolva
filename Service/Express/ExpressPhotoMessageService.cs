@@ -87,7 +87,7 @@ public class ExpressPhotoMessageService {
 
         // 订单图片
         if (expressPhoto.Type == ExpressPhotoType.Ship) {
-            if (string.IsNullOrWhiteSpace(expressPhoto.TrackingNo) || expressPhoto.Customer == null || expressPhoto.Order == null) {
+            if (expressPhoto.Customer == null || expressPhoto.Order == null) {
                 return;
             }
 

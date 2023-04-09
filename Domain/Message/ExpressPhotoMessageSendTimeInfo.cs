@@ -8,7 +8,7 @@ namespace shunda.Domain.Message;
 /// <summary>
 /// 快递图片消息发送时间
 /// </summary>
-public class ExpressPhotoMessageSendTimeInfo : Entity {
+public class ExpressPhotoMessageSendTimeInfo : EntityNoUpdate {
     /// <summary>
     /// 快递单号，可空
     /// </summary>
