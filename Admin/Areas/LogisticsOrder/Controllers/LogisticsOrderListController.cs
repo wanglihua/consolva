@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
+using NHibernate.SqlCommand;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
@@ -301,13 +302,6 @@ public class LogisticsOrderListController : Controller {
             } else {
                 criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateTime < endDateQueryValue));
             }
-        }
-
-        if (queryParam.OrderIdQuery == 0
-            && string.IsNullOrWhiteSpace(queryParam.CodeQuery)
-            && string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery)
-            && string.IsNullOrWhiteSpace(queryParam.MobileQuery)) {
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateMethod == LogisticsOrderCreateMethod.CustomerCreate));
         }
 
         return criteria;
