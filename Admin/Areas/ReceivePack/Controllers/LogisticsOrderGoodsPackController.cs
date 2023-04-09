@@ -703,18 +703,6 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Where(e => e.Order!.Id == orderId)
             .ToList();
 
-        // 获取物品类型快递单号列表
-        IList<ExpressInfo> goodsTypeGoodsExpressList = expressList; // 默认取所有，一般空运时就是所有
-
-        IList<string> goodsTypeExpressTrackingNoList = goodsTypeGoodsExpressList
-            .Select(e => e.TrackingNo)
-            .ToList();
-
-        int expressCountNotInGoodsType = param.TrackingNoList.Where(e => goodsTypeExpressTrackingNoList.Contains(e) == false).Count();
-        if (expressCountNotInGoodsType != 0) {
-            throw new ValidationException("快递单号不全属于当前订单当前物品类型！");
-        }
-
         // 检查是不是有已经打包状态的
         IList<ExpressInfo> orderExpressToPackList = expressList
             .Where(e => trackingNoList.Contains(e.TrackingNo))
@@ -959,24 +947,7 @@ public class LogisticsOrderGoodsPackController : Controller {
             throw new ValidationException("指定的订单不存在！");
         }
 
-        LogisticsGoodsType goodsType = param.GoodsType;
-
         int orderPackId = param.PackId;
-
-        // 获取订单快递单号列表
-        IList<ExpressInfo> goodsTypeExpressList = session
-            .Query<ExpressInfo>()
-            .Where(e => e.Order!.Id == orderId && e.GoodsType == goodsType)
-            .ToList();
-
-        IList<string> goodsTypeTrackingNoList = goodsTypeExpressList
-            .Select(e => e.TrackingNo)
-            .ToList();
-
-        int expressCountNotInGoodsType = param.TrackingNoList.Where(e => goodsTypeTrackingNoList.Contains(e) == false).Count();
-        if (expressCountNotInGoodsType != 0) {
-            throw new ValidationException("快递单号不全属于当前物品类型！");
-        }
 
         LogisticsOrderPackInfo orderPack = session.Get<LogisticsOrderPackInfo>(orderPackId);
         if (orderPack == null) {
@@ -989,6 +960,8 @@ public class LogisticsOrderGoodsPackController : Controller {
             .Query<LogisticsOrderPackExpressInfo>()
             .Where(e => e.Order.Id == orderId && e.OrderPack.Id == orderPackId)
             .ToList();
+
+        IList<int> expressIdList = orderPackExpressList.Select(e => e.Express.Id).ToList();
 
         foreach (LogisticsOrderPackExpressInfo orderPackExpress in orderPackExpressList) {
             session.Delete(orderPackExpress);
@@ -1047,8 +1020,8 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 快递单号日志
         int loginUserId = loginUserService.GetLoginUserId();
-        foreach (ExpressInfo orderExpress in goodsTypeExpressList) {
-            expressLogService.UserLog(orderExpress.Id, ExpressLogType.RemovePack, loginUserId);
+        foreach (var expressId in expressIdList) {
+            expressLogService.UserLog(expressId, ExpressLogType.RemovePack, loginUserId);
         }
 
         return Json(new Dictionary<string, object> {

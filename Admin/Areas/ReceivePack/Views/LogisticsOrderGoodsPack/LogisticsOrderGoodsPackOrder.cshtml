@@ -485,7 +485,6 @@
                     data: {
                         "@(nameof(LogisticsOrderGoodsPackRemovePackParam.PackId))": $("#" + packBoxId +" input.pack-id").val(),
                         "@(nameof(LogisticsOrderGoodsPackRemovePackParam.OrderId))": @(Model.Order.Id),
-                        "@(nameof(LogisticsOrderGoodsPackRemovePackParam.GoodsType))": goodsTypeId,
                         "@(nameof(LogisticsOrderGoodsPackRemovePackParam.TrackingNoList))": scannedExpressTrackingNoList[goodsTypeId]
                     },
                     success: function(data) {
