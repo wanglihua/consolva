@@ -35,6 +35,7 @@ public class ExpressListController : Controller {
     private readonly WarehouseService warehouseService;
     private readonly PassResService passResService;
     private readonly LogisticsModeSettingService logisticsModeSettingService;
+    private readonly StorageLocExpressService storageLocExpressService;
 
     public ExpressListController(ISession session,
         ExpressListService expressListService,
@@ -43,7 +44,8 @@ public class ExpressListController : Controller {
         ExpressService expressService,
         WarehouseService warehouseService,
         PassResService passResService,
-        LogisticsModeSettingService logisticsModeSettingService
+        LogisticsModeSettingService logisticsModeSettingService,
+        StorageLocExpressService storageLocExpressService
     ) {
         this.session = session;
         this.expressListService = expressListService;
@@ -53,6 +55,7 @@ public class ExpressListController : Controller {
         this.warehouseService = warehouseService;
         this.passResService = passResService;
         this.logisticsModeSettingService = logisticsModeSettingService;
+        this.storageLocExpressService = storageLocExpressService;
     }
 
     [HttpGet]
@@ -135,6 +138,8 @@ public class ExpressListController : Controller {
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
+        var storageLocIdList = expressList.Select(e => e.StorageLoc.Id).Distinct().ToList();
+
         foreach (int id in idList) {
             var express = expressList.Where(e => e.Id == id).Take(1).SingleOrDefault();
             if (express == null) {
@@ -143,6 +148,8 @@ public class ExpressListController : Controller {
 
             expressService.ForceDelete(id, loginUserId);
         }
+
+        storageLocExpressService.UpdateBatch(storageLocIdList);
 
         return Json(new JsonResultData {
             Success = true,
@@ -165,6 +172,8 @@ public class ExpressListController : Controller {
             .Where(e => idList.Contains(e.Id))
             .ToList();
 
+        var storageLocIdList = expressList.Select(e => e.StorageLoc.Id).Distinct().ToList();
+
         foreach (int id in idList) {
             var express = expressList.Where(e => e.Id == id).Take(1).SingleOrDefault();
             if (express == null) {
@@ -173,6 +182,8 @@ public class ExpressListController : Controller {
 
             expressService.ThrowAway(id, loginUserId);
         }
+
+        storageLocExpressService.UpdateBatch(storageLocIdList);
 
         return Json(new JsonResultData {
             Success = true,
