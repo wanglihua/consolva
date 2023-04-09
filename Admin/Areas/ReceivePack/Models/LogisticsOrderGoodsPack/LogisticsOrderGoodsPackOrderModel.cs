@@ -22,6 +22,12 @@ public class LogisticsOrderGoodsPackOrderModel {
     public IList<ExpressInfo> ExpressList { get; set; } = new List<ExpressInfo>();
 
     [BindNever]
+    public decimal TotalVolumeWeight { get; set; }
+
+    [BindNever]
+    public decimal TotalActualWeight { get; set; }
+
+    [BindNever]
     public IDictionary<LogisticsGoodsType, bool> GoodsTypePackCompleteDict { get; set; } = new Dictionary<LogisticsGoodsType, bool>();
 
     [BindNever]

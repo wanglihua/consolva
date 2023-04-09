@@ -23,6 +23,14 @@ public class ExpressSizeWeightService {
         var expressList = session.Query<ExpressInfo>().Where(e => e.Order!.Id == orderId).ToList();
         var trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
 
+        return GetSizeWeightList(trackingNoList);
+    }
+
+    public IList<ExpressSizeWeightInfo> GetSizeWeightList(IList<string> trackingNoList) {
+        if (trackingNoList == null || trackingNoList.Count == 0) {
+            return new List<ExpressSizeWeightInfo>();
+        }
+
         return session.Query<ExpressSizeWeightInfo>()
             .Where(e => trackingNoList.Contains(e.TrackingNo))
             .OrderBy(e => e.Id)

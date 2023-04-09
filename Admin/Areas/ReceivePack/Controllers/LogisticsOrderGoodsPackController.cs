@@ -39,6 +39,7 @@ public class LogisticsOrderGoodsPackController : Controller {
     private readonly LogisticsOrderPackService logisticsOrderPackService;
     private readonly LogisticsModeSettingService logisticsModeSettingService;
     private readonly StorageLocExpressService storageLocExpressService;
+    private readonly ExpressSizeWeightService expressSizeWeightService;
 
     public LogisticsOrderGoodsPackController(ISession session,
         LoginUserService loginUserService,
@@ -49,7 +50,8 @@ public class LogisticsOrderGoodsPackController : Controller {
         ExpressLogService expressLogService,
         LogisticsOrderPackService logisticsOrderPackService,
         LogisticsModeSettingService logisticsModeSettingService,
-        StorageLocExpressService storageLocExpressService
+        StorageLocExpressService storageLocExpressService,
+        ExpressSizeWeightService expressSizeWeightService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -61,6 +63,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         this.logisticsOrderPackService = logisticsOrderPackService;
         this.logisticsModeSettingService = logisticsModeSettingService;
         this.storageLocExpressService = storageLocExpressService;
+        this.expressSizeWeightService = expressSizeWeightService;
     }
 
     [HttpGet]
@@ -487,6 +490,17 @@ public class LogisticsOrderGoodsPackController : Controller {
 
             model.ExpressList = expressList;
             model.OrderTotalExpressPackageCount = expressList.Sum(e => e.PackageCount);
+
+            IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+            IList<ExpressSizeWeightInfo> sizeWeightList = expressSizeWeightService.GetSizeWeightList(trackingNoList);
+
+            model.TotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(sizeWeightList);
+            model.TotalActualWeight = expressSizeWeightService.GetTotalActualWeight(sizeWeightList);
+
+            foreach (var express in expressList) {
+                string trackingNo = express.TrackingNo;
+                express.ExpressSizeWeightListCache = sizeWeightList.Where(e => e.TrackingNo == trackingNo).ToList();
+            }
 
             // Common count
             var expressCommonTypeList = expressList
