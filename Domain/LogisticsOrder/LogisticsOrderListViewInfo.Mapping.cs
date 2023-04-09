@@ -7,7 +7,7 @@ namespace shunda.Domain.LogisticsOrder;
 
 public class LogisticsOrderListViewInfoMapping : EntityMapping<LogisticsOrderListViewInfo> {
     public LogisticsOrderListViewInfoMapping() {
-        Table("tbl_logistics_order");
+        Table("tbl_logistics_order_list_view");
 
         Mutable(false);
 
