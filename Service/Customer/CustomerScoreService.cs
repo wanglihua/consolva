@@ -105,9 +105,12 @@ public class CustomerScoreService {
 
         orderCustomer.TotalScore = orderCustomer.TotalScore + logisticsConsumeScore;
 
+        decimal validScoreBefore = orderCustomer.ValidScore;
         if (isValidScoreLogisticsConsume) {
             orderCustomer.ValidScore = orderCustomer.ValidScore + logisticsConsumeScore;
         }
+
+        decimal validScoreAfter = orderCustomer.ValidScore;
 
         session.Update(orderCustomer);
         session.Flush();
@@ -149,7 +152,7 @@ public class CustomerScoreService {
 
         // 有效积分时才发送
         if (isValidScoreLogisticsConsume) {
-            customerMessageMoneyEarnedService.SendMessage(orderCustomer, logisticsConsumeScore);
+            customerMessageScoreChangeService.SendMessage(orderCustomer, $"集运消费支付{amount:#0.00}元", logisticsConsumeScore, validScoreBefore, validScoreAfter);
         }
 
         #endregion
