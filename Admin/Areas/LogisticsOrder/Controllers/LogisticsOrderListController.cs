@@ -125,18 +125,14 @@ public class LogisticsOrderListController : Controller {
 
         ListPager listPager = new ListPager(queryParam, totalCount);
 
-        IList<LogisticsOrderInfo> orderList = GetListCriteria(queryParam)
+        IList<LogisticsOrderListViewInfo> orderList = GetListCriteria(queryParam)
             .AddOrder(new Order(listPager.SortField, listPager.IsAscending))
             .AddOrder(Order.Desc(nameof(Entity.Id)))
             .SetFirstResult(listPager.PageIndex * listPager.PageSize)
             .SetMaxResults(listPager.PageSize)
-            .List<LogisticsOrderInfo>();
+            .List<LogisticsOrderListViewInfo>();
 
         IList<int> orderIdList = orderList.Select(e => e.Id).ToList();
-
-        var packDataList = session.Query<LogisticsOrderPackDataInfo>()
-            .Where(e => orderIdList.Contains(e.Order.Id))
-            .ToList();
 
         var orderRemarkListForAll = session.Query<LogisticsOrderRemarkInfo>()
             .Where(e => orderIdList.Contains(e.Order.Id))
@@ -152,15 +148,12 @@ public class LogisticsOrderListController : Controller {
 
             var thisOrderFirstModeList = orderFirstModeList.Where(e => e.Order.Id == orderId).ToList();
             if (thisOrderFirstModeList.Count == 0 || thisOrderFirstModeList.Count > 1) {
-                order.FirstModeNameCache = order.FirstMode.Name;
+                order.FirstModeNameCache = order.FirstModeName;
             } else {
                 order.FirstModeNameCache = thisOrderFirstModeList[0].FirstMode.Name;
             }
 
             order.ListColorCache = logisticsOrderStatusService.GetOrderListColor(order.OrderStatus);
-
-            var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
-            order.PackDataCache = packData;
 
             var orderRemarkList = orderRemarkListForAll.Where(e => e.Order.Id == orderId).ToList();
             order.OrderRemarkCache = logisticsOrderRemarkService.GetOrderRemarkForList(orderRemarkList);
@@ -175,39 +168,36 @@ public class LogisticsOrderListController : Controller {
 
     [NonAction]
     private ICriteria GetListCriteria(LogisticsOrderListQueryParam queryParam) {
-        ICriteria criteria = session.CreateCriteria<LogisticsOrderInfo>();
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderInfo.Customer), nameof(LogisticsOrderInfo.Customer));
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderInfo.Warehouse), nameof(LogisticsOrderInfo.Warehouse));
-        criteria = criteria.CreateAlias(nameof(LogisticsOrderInfo.FirstMode), nameof(LogisticsOrderInfo.FirstMode));
+        ICriteria criteria = session.CreateCriteria<LogisticsOrderListViewInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
         if (queryParam.MenuType == OrderListMenuType.Complete) {
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.OrderStatus == LogisticsOrderStatus.Completed));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.OrderStatus == LogisticsOrderStatus.Completed));
         }
 
         if (queryParam.MenuType == OrderListMenuType.Cancel) {
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.OrderStatus == LogisticsOrderStatus.Canceled));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.OrderStatus == LogisticsOrderStatus.Canceled));
         }
 
         if (queryParam.MenuType == OrderListMenuType.Active) {
             var activeStatusList = LogisticsOrderStatus.GetActiveList();
-            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.OrderStatus).IsInG(activeStatusList));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderListViewInfo>(e => e.OrderStatus).IsInG(activeStatusList));
         }
 
         if (queryParam.CountryQuery != null && queryParam.CountryQuery != Country.None) {
             var country = queryParam.CountryQuery;
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Country == country));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.Country == country));
         }
 
         if (queryParam.OrderIdQuery != 0) {
             int orderIdQuery = queryParam.OrderIdQuery;
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Id == orderIdQuery));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.Id == orderIdQuery));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CodeQuery) == false) {
             string codeQuery = queryParam.CodeQuery.Trim();
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Code == codeQuery));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.Code == codeQuery));
         }
 
         /*
@@ -219,7 +209,7 @@ public class LogisticsOrderListController : Controller {
                 .Where(e => e.TrackingNo.StartsWith(trackingNoQuery) && e.Order != null)
                 .Select(e => e.Order!.Id)
                 .ToList();
-            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG(orderIdList));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderListViewInfo>(e => e.Id).IsInG(orderIdList));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.MobileQuery) == false) {
@@ -228,59 +218,59 @@ public class LogisticsOrderListController : Controller {
                 .Where(e => e.Mobile.Contains(mobileQuery))
                 .Select(e => e.Order.Id)
                 .ToList();
-            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG(orderIdList));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderListViewInfo>(e => e.Id).IsInG(orderIdList));
         }
 
         */
 
         if (queryParam.OrderIdList.Count != 0) {
             IList<int> orderIdList = queryParam.OrderIdList;
-            criteria = criteria.Add(Restrictions.On<LogisticsOrderInfo>(e => e.Id).IsInG(orderIdList));
+            criteria = criteria.Add(Restrictions.On<LogisticsOrderListViewInfo>(e => e.Id).IsInG(orderIdList));
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
             string customerCodeQuery = queryParam.CustomerCodeQuery;
             int customerId = customerCodeService.GetCustomerIdFromCustomerCode(customerCodeQuery);
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Customer.Id == customerId));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.CustomerId == customerId));
         }
 
         if (queryParam.OrderStatusQuery != null && queryParam.OrderStatusQuery != LogisticsOrderStatus.None) {
             var orderStatusQuery = queryParam.OrderStatusQuery;
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.OrderStatus == orderStatusQuery));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.OrderStatus == orderStatusQuery));
         }
 
         if (queryParam.PayStatusQuery != null && queryParam.PayStatusQuery != PayStatus.None) {
             var payStatusQuery = queryParam.PayStatusQuery;
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.PayStatus == payStatusQuery));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.PayStatus == payStatusQuery));
         }
 
         int receivingWarehouseIdQuery = queryParam.ReceivingWarehouseIdQuery;
         if (receivingWarehouseIdQuery != 0) {
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.Warehouse.Id == receivingWarehouseIdQuery));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.WarehouseId == receivingWarehouseIdQuery));
         }
 
         if (queryParam.FirstModeTypeQuery != null && queryParam.FirstModeTypeQuery != LogisticsModeType.None) {
             var firstModeTypeQuery = queryParam.FirstModeTypeQuery;
-            criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.FirstModeType == firstModeTypeQuery));
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.FirstModeType == firstModeTypeQuery));
         }
 
         if (queryParam.BeginDateQuery != null) {
             DateTime beginDateQueryValue = queryParam.BeginDateQuery.Value;
 
             if (queryParam.TimeRangeTypeQuery == TimeRangeType.OrderCreate) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateTime >= beginDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.CreateTime >= beginDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.SubmitPack) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.SubmitPackTime >= beginDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.SubmitPackTime >= beginDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.CompletePack) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CompletePackTime >= beginDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.CompletePackTime >= beginDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Pay) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.PayTime >= beginDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.PayTime >= beginDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Transfer) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.TransferTime >= beginDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.TransferTime >= beginDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Deliver) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.DeliverTime >= beginDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.DeliverTime >= beginDateQueryValue));
             } else {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateTime >= beginDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.CreateTime >= beginDateQueryValue));
             }
         }
 
@@ -288,19 +278,19 @@ public class LogisticsOrderListController : Controller {
             DateTime endDateQueryValue = queryParam.EndDateQuery.Value.AddDays(1);
 
             if (queryParam.TimeRangeTypeQuery == TimeRangeType.OrderCreate) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateTime < endDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.CreateTime < endDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.SubmitPack) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.SubmitPackTime < endDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.SubmitPackTime < endDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.CompletePack) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CompletePackTime < endDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.CompletePackTime < endDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Pay) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.PayTime < endDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.PayTime < endDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Transfer) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.TransferTime < endDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.TransferTime < endDateQueryValue));
             } else if (queryParam.TimeRangeTypeQuery == TimeRangeType.Deliver) {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.DeliverTime < endDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.DeliverTime < endDateQueryValue));
             } else {
-                criteria = criteria.Add(Restrictions.Where<LogisticsOrderInfo>(e => e.CreateTime < endDateQueryValue));
+                criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.CreateTime < endDateQueryValue));
             }
         }
 

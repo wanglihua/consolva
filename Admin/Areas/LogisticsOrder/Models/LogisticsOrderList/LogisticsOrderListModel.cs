@@ -9,5 +9,5 @@ public class LogisticsOrderListModel : ListModel {
     }
 
     [BindNever]
-    public IList<LogisticsOrderInfo> OrderList { get; set; } = new List<LogisticsOrderInfo>();
+    public IList<LogisticsOrderListViewInfo> OrderList { get; set; } = new List<LogisticsOrderListViewInfo>();
 }
