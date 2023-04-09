@@ -208,7 +208,7 @@ public class ExpressPhotoMessageService {
             return;
         }
 
-        if (photoType == ExpressPhotoType.Issue) {
+        if (photoType == ExpressPhotoType.Ship) {
             customerMessageOrderPhotoShipService.SendMessage(expressPhoto.Customer, expressPhoto.Order);
         }
 
