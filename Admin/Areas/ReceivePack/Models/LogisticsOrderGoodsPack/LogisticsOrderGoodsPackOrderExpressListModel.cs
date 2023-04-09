@@ -13,6 +13,12 @@ public class LogisticsOrderGoodsPackOrderExpressListModel {
 
     [BindNever]
     public IDictionary<LogisticsGoodsType, bool> GoodsTypePackCompleteDict { get; set; } = new Dictionary<LogisticsGoodsType, bool>();
+    
+    [BindNever]
+    public decimal TotalVolumeWeight { get; set; }
+
+    [BindNever]
+    public decimal TotalActualWeight { get; set; }    
 
     [BindNever]
     public bool Debug { get; set; }

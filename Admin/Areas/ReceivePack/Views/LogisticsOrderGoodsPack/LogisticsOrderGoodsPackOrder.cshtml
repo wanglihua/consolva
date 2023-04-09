@@ -204,6 +204,8 @@
                     Debug = Model.Debug,
                     GoodsType = Model.Order.GoodsType,
                     GoodsTypeExpressList = Model.ExpressList,
+                    TotalVolumeWeight = Model.TotalVolumeWeight,
+                    TotalActualWeight = Model.TotalActualWeight,
                     GoodsTypePackCompleteDict = Model.GoodsTypePackCompleteDict,
                 };
 
@@ -413,6 +415,14 @@
             $('#goodsTypeIdToSavePack').val(0);
 
             $("#packConfirmDialog").modal("hide");
+        }
+        
+        function useSizeWeightData(goodsType, length, width, height, weight, packageCount) {
+            $("#packBox" + goodsType + "New input.pack-length").val(length);
+            $("#packBox" + goodsType + "New input.pack-width").val(width);
+            $("#packBox" + goodsType + "New input.pack-height").val(height);
+            $("#packBox" + goodsType + "New input.pack-weight").val(weight);
+            $("#packBox" + goodsType + "New input.pack-package-count").val(packageCount);
         }
 
         var preSavePackSumitTime = new Date(); 

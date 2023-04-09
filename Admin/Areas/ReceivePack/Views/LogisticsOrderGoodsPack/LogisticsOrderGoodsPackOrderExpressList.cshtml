@@ -84,6 +84,12 @@
                     <td style="width: 80px; text-align: center;">物品类型</td>
                     <td class="break-word" style="text-align: center;">
                         <span>物品</span>
+                        <span>&nbsp;</span>
+                        <span style="color: red;">
+                            <span>体积重:@(Model.TotalVolumeWeight.ToString("#0.000"))Kg</span>
+                            <span>&nbsp;</span>
+                            <span>实际重:@(Model.TotalActualWeight.ToString("#0.000"))Kg</span>
+                        </span>
                     </td>
                     <td class="break-word" style="width: 150px; text-align: center;">仓位/入库时间</td>
                     <td style="width: 80px;text-align: center;">
@@ -124,6 +130,14 @@
                             <td style="text-align: center;" class="break-word">
                                 <div>
                                     @express.GoodsNamesCache
+                                </div>
+                                <div>
+                                    @foreach (var sizeWeight in express.ExpressSizeWeightListCache)
+                                    {
+                                        <div>
+                                            <a href="javascript:useSizeWeightData('@(goodsType.Id)', '@(sizeWeight.Length)', '@(sizeWeight.Width)', '@(sizeWeight.Height)', '@(sizeWeight.Weight)', '@(sizeWeight.PackageCount)');">@(sizeWeight.Length)<span>&nbsp;</span>×<span>&nbsp;</span>@(sizeWeight.Width)<span>&nbsp;</span>×<span>&nbsp;</span>@(sizeWeight.Height)cm<span>&nbsp;</span>@(sizeWeight.Weight) kg</a>
+                                        </div>
+                                    }
                                 </div>
                             </td>
                             <td class="break-word" style="text-align: center;">

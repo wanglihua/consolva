@@ -535,7 +535,7 @@ public class LogisticsOrderGoodsPackController : Controller {
                     .SingleOrDefault();
 
                 if (orderPackSchedule != null) {
-                    model.PackScheduleUserName = $"{orderPackSchedule.User?.LoginName}({orderPackSchedule.User?.UserName})";
+                    model.PackScheduleUserName = $"{orderPackSchedule.User.LoginName}({orderPackSchedule.User.UserName})";
                 } else {
                     model.PackScheduleUserName = "未排班";
                 }
