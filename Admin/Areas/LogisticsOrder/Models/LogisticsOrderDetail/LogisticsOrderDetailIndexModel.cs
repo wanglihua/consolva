@@ -47,4 +47,7 @@ public class LogisticsOrderDetailIndexModel {
 
     [BindNever]
     public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
+
+    [BindNever]
+    public decimal VolumeWeightDenominator { get; set; }    
 }

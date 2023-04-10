@@ -78,12 +78,6 @@
                         <div>
                             @(expressSizeWeight.TrackingNo)
                         </div>
-                        @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache) {
-                            <div>
-                                @(expressChild.TrackingNo)
-                            </div>
-                        }
-
                     </td>
 
                     <td style="text-align: right;">
@@ -93,14 +87,6 @@
                         <div>
                             @(expressSizeWeight.Weight)
                         </div>
-                        @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache) {
-                            <div>
-                                @(expressChild.Length)<span>&nbsp;</span>×<span>&nbsp;</span>@(expressChild.Width)<span>&nbsp;</span>×<span>&nbsp;</span>@(expressChild.Height)
-                            </div>
-                            <div>
-                                @(expressChild.Weight)
-                            </div>
-                        }
                     </td>
 
                     <td style="text-align: right;">
@@ -110,15 +96,6 @@
                         <div>
                             @ListDataUtil.Render(expressSizeWeight.GetVolumeWeightActualWeightRatioCache(Model.VolumeWeightDenominator), "#0.00")
                         </div>
-
-                        @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache) {
-                            <div>
-                                @ListDataUtil.Render(expressChild.GetSingleVolumeWeightCache(Model.VolumeWeightDenominator), "#0.000")
-                            </div>
-                            <div>
-                                @ListDataUtil.Render(expressChild.GetVolumeWeightActualWeightRatioCache(Model.VolumeWeightDenominator), "#0.00")
-                            </div>
-                        }
                     </td>
 
                     <td>
@@ -133,19 +110,6 @@
                     <td style="text-align: center;">
                         <div>
                             @(expressSizeWeight.PackageCount)
-                            @{
-                                int rowTotalCount = expressSizeWeight.PackageCount;
-                            }
-                            @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache) {
-                                rowTotalCount += expressChild.PackageCount;
-
-                                <span>+</span>
-                                <span>@(expressChild.PackageCount)</span>
-                            }
-                            @if (expressSizeWeight.ExpressSizeWeightChildListCache.Count > 0) {
-                                <span>=</span>
-                                <span>@(rowTotalCount)</span>
-                            }
                         </div>
                     </td>
 

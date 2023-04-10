@@ -12,6 +12,7 @@ using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using shunda.Service.LogisticsOrder;
 using shunda.Service.Pass;
 using ISession = NHibernate.ISession;
@@ -28,6 +29,7 @@ public class LogisticsOrderDetailController : Controller {
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
     private readonly ExpressPhotoFileService expressPhotoFileService;
     private readonly ExpressSizeWeightService expressSizeWeightService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public LogisticsOrderDetailController(ISession session,
         LoginUserService loginUserService,
@@ -35,7 +37,8 @@ public class LogisticsOrderDetailController : Controller {
         PassResService passResService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
         ExpressPhotoFileService expressPhotoFileService,
-        ExpressSizeWeightService expressSizeWeightService
+        ExpressSizeWeightService expressSizeWeightService,
+        LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -44,6 +47,7 @@ public class LogisticsOrderDetailController : Controller {
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
         this.expressPhotoFileService = expressPhotoFileService;
         this.expressSizeWeightService = expressSizeWeightService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpGet]
@@ -156,6 +160,7 @@ public class LogisticsOrderDetailController : Controller {
             OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,
             PhotoList = expressPhotoList,
+            VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator,
         };
 
         return View("LogisticsOrderDetailIndex", model);
