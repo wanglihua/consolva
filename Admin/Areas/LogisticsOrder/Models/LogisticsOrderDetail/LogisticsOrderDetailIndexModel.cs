@@ -25,6 +25,21 @@ public class LogisticsOrderDetailIndexModel {
     public IList<ExpressInfo> ExpressList { get; set; } = new List<ExpressInfo>();
 
     [BindNever]
+    public IList<ExpressSizeWeightInfo> ExpressSizeWeightList { get; set; } = new List<ExpressSizeWeightInfo>();
+
+    [BindNever]
+    public decimal ExpressTotalVolume { get; set; }
+
+    [BindNever]
+    public decimal ExpressTotalVolumeWeight { get; set; }
+
+    [BindNever]
+    public decimal ExpressTotalActualWeight { get; set; }
+
+    [BindNever]
+    public int ExpressTotalPackageCount { get; set; }
+
+    [BindNever]
     public IList<LogisticsOrderPackBoxInfo> OrderPackBoxList { get; set; } = new List<LogisticsOrderPackBoxInfo>();
 
     [BindNever]

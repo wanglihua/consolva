@@ -281,7 +281,7 @@ public class ExpressExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.GetVolumeWeightCache(volumeWeightDenominator)}")));
+            cell.SetCellValue(string.Join(",", express.ExpressSizeWeightListCache.Select(e => $"{e.GetSingleVolumeWeightCache(volumeWeightDenominator)}")));
 
             // 实际重kg
             cell = row.CreateCell(cellIndex++);

@@ -199,8 +199,8 @@ public class ExpressClaimController : Controller {
 
         var expressSizeWeightItemList = new List<ExpressClaimDetailModel.ExpressSizeWeightItem>();
         foreach (ExpressSizeWeightInfo sizeWeight in expressSizeWeightList) {
-            totalVolume += sizeWeight.GetVolumeCache();
-            totalVolumeWeight += sizeWeight.GetVolumeWeightCache(volumeWeightDenominator);
+            totalVolume += sizeWeight.GetSingleVolumeCache();
+            totalVolumeWeight += sizeWeight.GetSingleVolumeWeightCache(volumeWeightDenominator);
             totalActualWeight += sizeWeight.Weight;
             totalPackageCount += sizeWeight.PackageCount;
 
@@ -210,8 +210,8 @@ public class ExpressClaimController : Controller {
                 Width = sizeWeight.Width.ToString("#0.00"),
                 Height = sizeWeight.Height.ToString("#0.00"),
                 Weight = sizeWeight.Weight.ToString("#0.000"),
-                Volume = sizeWeight.GetVolumeCache().ToString("#0.000"),
-                VolumeWeight = sizeWeight.GetVolumeCache().ToString("#0.000"),
+                Volume = sizeWeight.GetSingleVolumeCache().ToString("#0.000"),
+                VolumeWeight = sizeWeight.GetSingleVolumeCache().ToString("#0.000"),
                 PackageCount = sizeWeight.PackageCount,
             });
         }

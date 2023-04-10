@@ -105,7 +105,7 @@
 
                     <td style="text-align: right;">
                         <div>
-                            @ListDataUtil.Render(expressSizeWeight.GetVolumeWeightCache(Model.VolumeWeightDenominator), "#0.000")
+                            @ListDataUtil.Render(expressSizeWeight.GetSingleVolumeWeightCache(Model.VolumeWeightDenominator), "#0.000")
                         </div>
                         <div>
                             @ListDataUtil.Render(expressSizeWeight.GetVolumeWeightActualWeightRatioCache(Model.VolumeWeightDenominator), "#0.00")
@@ -113,7 +113,7 @@
 
                         @foreach (ExpressSizeWeightInfo expressChild in expressSizeWeight.ExpressSizeWeightChildListCache) {
                             <div>
-                                @ListDataUtil.Render(expressChild.GetVolumeWeightCache(Model.VolumeWeightDenominator), "#0.000")
+                                @ListDataUtil.Render(expressChild.GetSingleVolumeWeightCache(Model.VolumeWeightDenominator), "#0.000")
                             </div>
                             <div>
                                 @ListDataUtil.Render(expressChild.GetVolumeWeightActualWeightRatioCache(Model.VolumeWeightDenominator), "#0.00")

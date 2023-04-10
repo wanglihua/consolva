@@ -703,6 +703,133 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#expressSizeWeight').toggle();">
+                            <div style="float: left;">
+                                快递尺寸重量
+                            </div>
+                            <div style="float: right">
+                                显示/隐藏
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div id="expressSizeWeight" style="display: none;">
+                            <table id="tblExpressSizeWeightList" class="data-list-table table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px; text-align: center;">序号</th>
+                                        <th style="width: 160px; text-align: center;">
+                                            快递单号
+                                        </th>
+                                        <th style="width: 90px; text-align: right;">
+                                            长(CM)
+                                        </th>
+                                        <th style="width: 90px; text-align: right;">
+                                            宽(CM)
+                                        </th>
+                                        <th style="width: 90px; text-align: right;">
+                                            高(CM)
+                                        </th>
+                                        <th style="width: 100px; text-align: right;">
+                                            体积(M<sup>3</sup>)
+                                        </th>
+                                        <th style="width: 110px; text-align: right;">
+                                            体积重(KG)
+                                        </th>
+                                        <th style="width: 110px; text-align: right;">
+                                            实际重(KG)
+                                        </th>
+                                        <th style="width: 90px; text-align: right;">
+                                            箱数
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.ExpressSizeWeightList != null && Model.ExpressSizeWeightList.Count() != 0)
+                                    {
+                                        int order = 1;
+                                        foreach (var item in Model.ExpressSizeWeightList)
+                                        {
+                                            <tr>
+                                                <td style="text-align: center;">@(order++)</td>
+                                                <td style="text-align: center;">@item.TrackingNo</td>
+                                                <td style="text-align: right;">
+                                                    @(item.Length.ToString("#0.0"))
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    @(item.Width.ToString("#0.0"))
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    @(item.Height.ToString("#0.0"))
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    @item.GetSingleVolumeCache().ToString("#0.000000")
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    @item.GetSingleVolumeWeightCache().ToString("#0.000")
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    @item.Weight.ToString("#0.000")
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    @item.PackageCount
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td style="text-align: center;"></td>
+                                            <td style="text-align: center;">
+                                                <span style="font-weight: bold;">合计</span>
+                                            </td>
+                                            <td style="text-align: center;">
+                                            </td>
+                                            <td style="text-align: right;">
+
+                                            </td>
+                                            <td style="text-align: right;">
+
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <span style="font-weight: bold;">
+                                                    @(Model.ExpressTotalVolume.ToString("#0.000000"))
+                                                </span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <span style="font-weight: bold;">
+                                                    @(Model.ExpressTotalVolumeWeight.ToString("#0.000"))
+                                                </span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <span style="font-weight: bold;">
+                                                    @(Model.ExpressTotalActualWeight.ToString("#0.000"))
+                                                </span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <span style="font-weight: bold;">
+                                                    @(Model.ExpressTotalPackageCount)
+                                                </span>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="11">
+                                                暂时没有数据！
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>                
+
                 @if (Model.Order.OrderStatus.HasPacked()) {
                 @* 打包明细 *@
                     <div class="row">

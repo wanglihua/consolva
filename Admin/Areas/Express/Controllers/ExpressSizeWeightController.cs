@@ -58,22 +58,6 @@ public class ExpressSizeWeightController : Controller {
             .SetMaxResults(listPager.PageSize)
             .List<ExpressSizeWeightInfo>();
 
-        IList<string> trackingNoList = expressSizeWeightList.Select(e => e.TrackingNo).ToList();
-        IList<ExpressSizeWeightInfo> expressSizeWeightChildList = session.Query<ExpressSizeWeightInfo>()
-            .Where(e => trackingNoList.Contains(e.TrackingNo) && e.TrackingNoSub != string.Empty)
-            .OrderBy(e => e.Id)
-            .ToList();
-
-        foreach (ExpressSizeWeightInfo child in expressSizeWeightChildList) {
-            // child.VolumeWeightCache = child.Length * child.Width * child.Height / LogisticsConfig.VolumeWeightDenominator; 自动计算了
-        }
-
-        foreach (ExpressSizeWeightInfo expressSizeWeight in expressSizeWeightList) {
-            // expressSizeWeight.VolumeWeightCache = expressSizeWeight.Length * expressSizeWeight.Width * expressSizeWeight.Height / LogisticsConfig.VolumeWeightDenominator; 自动计算了
-
-            expressSizeWeight.ExpressSizeWeightChildListCache = expressSizeWeightChildList.Where(e => e.TrackingNo == expressSizeWeight.TrackingNo).OrderBy(e => e.Id).ToList();
-        }
-
         ExpressSizeWeightListModel model = new ExpressSizeWeightListModel(listPager);
         model.ExpressSizeWeightList = expressSizeWeightList;
         model.VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;

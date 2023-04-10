@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using shunda.Core;
-using shunda.Core.Config;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass;
 
@@ -108,14 +107,14 @@ public class ExpressSizeWeightInfo : Entity {
     /// <summary>
     /// 单箱体积
     /// </summary>
-    public virtual decimal GetVolumeCache() {
+    public virtual decimal GetSingleVolumeCache() {
         return decimal.Round(Length * Width * Height / 100_00_00, 6, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>
     /// 单箱体积重
     /// </summary>
-    public virtual decimal GetVolumeWeightCache(decimal volumeWeightDenominator) {
+    public virtual decimal GetSingleVolumeWeightCache(decimal volumeWeightDenominator) {
         return decimal.Round(Length * Width * Height / volumeWeightDenominator, 3, MidpointRounding.AwayFromZero); // 这里的体积重分母，只能用系统默认的了
     }
 
@@ -127,13 +126,8 @@ public class ExpressSizeWeightInfo : Entity {
             return null;
         }
 
-        return GetVolumeWeightCache(volumeWeightDenominator) / Weight;
+        return GetSingleVolumeWeightCache(volumeWeightDenominator) / Weight;
     }
-
-    /// <summary>
-    /// 子单号尺寸重量列表
-    /// </summary>
-    public virtual IList<ExpressSizeWeightInfo> ExpressSizeWeightChildListCache { get; set; } = new List<ExpressSizeWeightInfo>();
 
     #endregion
 }

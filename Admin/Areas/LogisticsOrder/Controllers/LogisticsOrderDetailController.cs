@@ -27,13 +27,15 @@ public class LogisticsOrderDetailController : Controller {
     private readonly PassResService passResService;
     private readonly LogisticsOrderPackBoxService logisticsOrderPackBoxService;
     private readonly ExpressPhotoFileService expressPhotoFileService;
+    private readonly ExpressSizeWeightService expressSizeWeightService;
 
     public LogisticsOrderDetailController(ISession session,
         LoginUserService loginUserService,
         ExpressService expressService,
         PassResService passResService,
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
-        ExpressPhotoFileService expressPhotoFileService
+        ExpressPhotoFileService expressPhotoFileService,
+        ExpressSizeWeightService expressSizeWeightService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -41,6 +43,7 @@ public class LogisticsOrderDetailController : Controller {
         this.passResService = passResService;
         this.logisticsOrderPackBoxService = logisticsOrderPackBoxService;
         this.expressPhotoFileService = expressPhotoFileService;
+        this.expressSizeWeightService = expressSizeWeightService;
     }
 
     [HttpGet]
@@ -96,6 +99,10 @@ public class LogisticsOrderDetailController : Controller {
 
         // 订单商品
         var expressList = expressService.GetExpressListForOrderDetail(orderId);
+        
+        // 快递单尺寸重量
+        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
+        var expressSizeWeightList = expressSizeWeightService.GetSizeWeightList(trackingNoList);
 
         // 箱号
         IList<LogisticsOrderPackBoxInfo> orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
@@ -125,7 +132,6 @@ public class LogisticsOrderDetailController : Controller {
         }
 
         // 订单图片
-        IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
         var expressPhotoList = session.Query<ExpressPhotoInfo>()
             .Where(e => trackingNoList.Contains(e.TrackingNo) || e.Order!.Id == orderId)
             .ToList();
@@ -142,6 +148,11 @@ public class LogisticsOrderDetailController : Controller {
             ReceiveAddress = receiveAddress,
             // SendAddress = sendAddress,
             ExpressList = expressList,
+            ExpressSizeWeightList = expressSizeWeightList,
+            ExpressTotalVolume = expressSizeWeightService.GetTotalVolume(expressSizeWeightList),
+            ExpressTotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(expressSizeWeightList),
+            ExpressTotalActualWeight = expressSizeWeightService.GetTotalActualWeight(expressSizeWeightList),
+            ExpressTotalPackageCount = expressSizeWeightService.GetTotalPackageCount(expressSizeWeightList),
             OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,
             PhotoList = expressPhotoList,
