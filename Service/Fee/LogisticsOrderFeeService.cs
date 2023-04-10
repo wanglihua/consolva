@@ -361,6 +361,12 @@ public class LogisticsOrderFeeService {
     /// </summary>
     public void RemovePreviousSavedFee(int orderId) {
         IList<LogisticsOrderFeeType> feeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
+
+        // 这三个费用也不能忘了清除，否则会造成重新打包，重新计算费用时重复计算
+        feeTypeList.Add(LogisticsOrderFeeType.ExtraPackageFee);
+        feeTypeList.Add(LogisticsOrderFeeType.SuperVipDiscount);
+        feeTypeList.Add(LogisticsOrderFeeType.VipDiscount);
+
         feeTypeList.Add(LogisticsOrderFeeType.InsuranceFee);
         feeTypeList.Add(LogisticsOrderFeeType.GstFee);
         feeTypeList.Add(LogisticsOrderFeeType.CouponDiscountFee);
@@ -370,7 +376,7 @@ public class LogisticsOrderFeeService {
             .Where(e => e.Order.Id == orderId && feeTypeList.Contains(e.Type))
             .ToList();
 
-        // 清除坑的优惠券上记录的实际折扣数据
+        // 清除可能的优惠券上记录的实际折扣数据
         var couponFeeEntry = orderFeeListToRemove
             .Where(e => e.Type == LogisticsOrderFeeType.CouponDiscountFee)
             .Take(1)
