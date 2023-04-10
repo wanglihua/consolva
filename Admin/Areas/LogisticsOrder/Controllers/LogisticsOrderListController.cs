@@ -300,9 +300,9 @@ public class LogisticsOrderListController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/excel/export")]
     public IActionResult Export(LogisticsOrderListQueryParam queryParam) {
-        IList<LogisticsOrderInfo> orderList = GetListCriteria(queryParam)
+        IList<LogisticsOrderListViewInfo> orderList = GetListCriteria(queryParam)
             .AddOrder(Order.Asc(nameof(Entity.Id)))
-            .List<LogisticsOrderInfo>();
+            .List<LogisticsOrderListViewInfo>();
 
         byte[] excelContent = logisticsOrderExcelService.Export(orderList);
         return File(excelContent, ContentType.Xlsx, "订单列表.xlsx");

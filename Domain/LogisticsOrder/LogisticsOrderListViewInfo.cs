@@ -119,6 +119,12 @@ public class LogisticsOrderListViewInfo : Entity {
     /// <summary>
     /// 物流方式，非空
     /// </summary>
+    [JsonProperty("firstModeCode")]
+    public virtual string FirstModeCode { get; set; } = string.Empty;    
+
+    /// <summary>
+    /// 物流方式，非空
+    /// </summary>
     [JsonProperty("firstModeName")]
     public virtual string FirstModeName { get; set; } = string.Empty;
 

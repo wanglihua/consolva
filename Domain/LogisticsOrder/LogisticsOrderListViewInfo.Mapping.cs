@@ -156,6 +156,15 @@ public class LogisticsOrderListViewInfoMapping : EntityMapping<LogisticsOrderLis
         );
 
         Property(
+            x => x.FirstModeCode,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("first_mode_code");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.FirstModeName,
             map => {
                 map.Type(NHibernateUtil.String);

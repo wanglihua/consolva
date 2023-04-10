@@ -1,3 +1,4 @@
+using NHibernate;
 using NHibernate.Linq;
 using NLog;
 using NPOI.SS.UserModel;
@@ -7,8 +8,6 @@ using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
-using shunda.Domain.Storage;
-using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
 
@@ -22,7 +21,7 @@ public class LogisticsOrderExcelService {
         this.session = session;
     }
 
-    public byte[] Export(IList<LogisticsOrderInfo> orderList) {
+    public byte[] Export(IList<LogisticsOrderListViewInfo> orderList) {
         if (orderList == null || orderList.Count == 0) {
             throw new ValidationException("订单列表不能为空！");
         }
@@ -190,7 +189,7 @@ public class LogisticsOrderExcelService {
             cell.SetCellType(CellType.String);
             cell.SetCellValue("公司/店铺名");
 
-            foreach (LogisticsOrderInfo order in orderList) {
+            foreach (var order in orderList) {
                 int orderId = order.Id;
                 var orderReceiveAddress = orderReceiveAddressList
                     .Where(e => e.Order.Id == orderId)
@@ -232,7 +231,7 @@ public class LogisticsOrderExcelService {
                         CustomerCode = order.CustomerCode,
                         GoodsTypeName = order.GoodsType.Name,
                         CountryName = order.Country.Name,
-                        FirstModeName = $"{order.FirstMode.Code}({order.FirstMode.Name})",
+                        FirstModeName = $"{order.FirstModeCode}({order.FirstModeName})",
                         OrderAmount = (double)order.OrderAmount,
                         TotalVolumeWeight = (double)(packData.TotalVolumeWeight),
                         TotalActualWeight = (double)(packData.TotalActualWeight),
@@ -251,12 +250,11 @@ public class LogisticsOrderExcelService {
                     var thisOrderPackExpressList = orderPackExpressList.Where(e => e.Order.Id == orderId).ToList();
 
                     var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
-                    // 这种情况一般是不会发生的
 
                     int volumeWeightDenominator = 5000;
 
                     if (packData == null || packData.TotalVolumeWeight <= 0) {
-                        int orderFirstModeId = order.FirstMode.Id;
+                        int orderFirstModeId = order.FirstModeId;
                         var orderFirstModeFeeRate = session.Query<LogisticsModeFeeRateInfo>()
                             .Fetch(e => e.FeeRate)
                             .Where(e => e.Mode.Id == orderFirstModeId)
@@ -512,7 +510,7 @@ public class LogisticsOrderExcelService {
             cell.SetCellValue("公司");
 
 
-            foreach (LogisticsOrderInfo order in orderList) {
+            foreach (var order in orderList) {
                 int orderId = order.Id;
                 var orderReceiveAddress = orderReceiveAddressList
                     .Where(e => e.Order.Id == orderId)
