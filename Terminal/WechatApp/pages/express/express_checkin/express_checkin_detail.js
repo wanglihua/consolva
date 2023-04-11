@@ -21,6 +21,13 @@ Page({
         });
     },
 
+    onGoodsValueClick(e) {
+        let expressId = e.currentTarget.dataset.item.id;
+        wx.navigateTo({
+            url: './express_checkin_price?id=' + expressId,
+        })
+    },
+
     onCopyClick(e) {
         const copyText = e.currentTarget.dataset.item;
         wx.setClipboardData({

@@ -20,7 +20,7 @@
         </van-cell>
         <!--<van-cell title="快递公司" value="{{ express.expressCompany }}" border="{{ false }}" custom-class="item" />-->
         <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="item" />
-        <van-cell title="货品总值" value="{{ express.goodsValue }} RMB" border="{{ false }}" custom-class="item" />
+        <van-cell title="货品总值" value="{{ express.goodsValue }} RMB" border="{{ false }}" custom-class="item" is-link bind:click="onGoodsValueClick" data-item="{{ express }}" />
         <van-cell title="登记日期" value="{{ express.addDate }}" border="{{ false }}" custom-class="item" />
         <block wx:if="{{ express.customerRemark && express.customerRemark !== '' }}">
             <van-cell title="客户备注" value="{{express.customerRemark}}" border="{{ false }}" custom-class="item" />
