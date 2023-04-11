@@ -22,11 +22,9 @@
 
 <div id="customerAddressList">
 
-    @if (Model.CustomerReceiveAddressList != null && Model.CustomerReceiveAddressList.Count != 0)
-    {
+    @if (Model.CustomerReceiveAddressList != null && Model.CustomerReceiveAddressList.Count != 0) {
         int index = 1;
-        foreach (CustomerReceiveAddressInfo customerAddress in Model.CustomerReceiveAddressList)
-        {
+        foreach (CustomerReceiveAddressInfo customerAddress in Model.CustomerReceiveAddressList) {
             <div class="addressBox">
                 <div class="order-num">
                     <span>#@(index++)&nbsp;</span>
@@ -81,8 +79,7 @@
                             <span>地址</span>
                         </td>
                         <td class="addressDetail" style="width: 250px">
-                            @if (string.IsNullOrWhiteSpace(customerAddress.UnitLoc) == false)
-                            {
+                            @if (string.IsNullOrWhiteSpace(customerAddress.UnitLoc) == false) {
                                 <span>@(customerAddress.UnitLoc), </span>
                             }
                             <span>@customerAddress.Address</span>
@@ -117,12 +114,9 @@
                             <span>默认地址</span>
                         </td>
                         <td class="addressDetail">
-                            @if (customerAddress.IsDefault)
-                            {
+                            @if (customerAddress.IsDefault) {
                                 <span class="default-address">是</span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>否</span>
                             }
                         </td>
@@ -137,18 +131,10 @@
             </div>
         }
     }
-    else
-    {
-        <div class="addressBox">
-            <span>暂时没有数据！</span>
-        </div>
-    }
 
-    @if (Model.CustomerSendAddressList != null && Model.CustomerSendAddressList.Count() != 0)
-    {
+    @if (Model.CustomerSendAddressList != null && Model.CustomerSendAddressList.Count() != 0) {
         int index = 1;
-        foreach (CustomerSendAddressInfo address in Model.CustomerSendAddressList)
-        {
+        foreach (CustomerSendAddressInfo address in Model.CustomerSendAddressList) {
             <div class="addressBox">
                 <div class="order-num">#@(index++)&nbsp;<span style="background-color: red; color: white;">中</span></div>
                 <table class="addressTable">
@@ -227,12 +213,9 @@
                             <span>默认地址</span>
                         </td>
                         <td class="addressDetail">
-                            @if (address.IsDefault)
-                            {
+                            @if (address.IsDefault) {
                                 <span class="default-address">是</span>
-                            }
-                            else
-                            {
+                            } else {
                                 <span>否</span>
                             }
                         </td>
@@ -240,9 +223,14 @@
                 </table>
             </div>
         }
+    } else {
+        <div class="addressBox">
+            <span>暂时没有数据！</span>
+        </div>
     }
-    else
-    {
+
+    @if ((Model.CustomerReceiveAddressList == null || Model.CustomerReceiveAddressList.Count == 0) 
+            && (Model.CustomerSendAddressList == null || Model.CustomerSendAddressList.Count == 0)) {
         <div class="addressBox">
             <span>暂时没有数据！</span>
         </div>
