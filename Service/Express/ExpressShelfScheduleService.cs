@@ -46,7 +46,7 @@ public class ExpressShelfScheduleService {
         IList<int> orderIdList = scheduleList.Where(e => e.Express.Order != null).Select(e => e.Express.Order!.Id).Distinct().ToList();
         List<int> storageLocIdList = scheduleList.Where(e => e.Express.StorageLoc != null).Select(e => e.Express.StorageLoc.Id).Distinct().ToList();
 
-        // 就当时预加载了
+        // 就当是预加载了
         IList<UserInfo> userList = session.Query<UserInfo>().Where(e => e.LoginName != UserInfo.DevLoginName && userIdList.Contains(e.Id)).ToList();
         IList<CustomerInfo> customerList = session.Query<CustomerInfo>().Where(e => customerIdList.Contains(e.Id)).ToList();
         IList<LogisticsOrderInfo> orderList = session.Query<LogisticsOrderInfo>().Where(e => orderIdList.Contains(e.Id)).ToList();
@@ -110,6 +110,7 @@ public class ExpressShelfScheduleService {
         criteria = criteria.SetReadOnly(true);
 
         criteria = criteria.CreateAlias(nameof(ExpressShelfScheduleInfo.Express), "express");
+        criteria = criteria.CreateAlias($"express.{nameof(ExpressInfo.Order)}", "order");
 
         string storageLoc = $"express.{nameof(ExpressInfo.StorageLoc)}";
         criteria = criteria.CreateAlias(storageLoc, "sl");
