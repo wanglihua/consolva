@@ -21,15 +21,18 @@ public class Transactional {
             // 执行业务代码
             action();
 
+            session.Flush();
+
             if (transactionBegin == true) {
-                session.Flush();
                 transaction.Commit();
             }
         }
         catch (Exception exp) {
-            transaction?.Rollback();
-
             log.Error(exp);
+
+            if (transactionBegin) {
+                transaction?.Rollback();
+            }
 
             throw;
         }
