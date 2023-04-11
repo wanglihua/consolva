@@ -222,12 +222,15 @@ public class ExpressPhotoController : Controller {
             }
         }
 
-        // 调用的内部已经处理消息重复发送问题，也已经处理是否快递单已入库问题
-        expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
+        // 只有已入库快递单的图片，才发送消息
+        if (expressPhoto.Order != null || expressPhoto.Express != null) {
+            // 调用的内部已经处理消息重复发送问题
+            expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
+        }
 
         return Json(new Dictionary<string, object>() {
             { "success", true },
-            { "message", "订单照片上传成功！" + checkResult },
+            { "message", "照片上传成功！" + checkResult },
         });
     }
 

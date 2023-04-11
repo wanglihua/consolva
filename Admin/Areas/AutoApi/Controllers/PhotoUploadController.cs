@@ -161,8 +161,8 @@ public class PhotoUploadController : Controller {
 
         session.Flush();
 
-        // 调用的内部已经处理消息重复发送问题，也已经处理是否快递单已入库问题
-        expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
+        // 这里图片不发送了
+        // expressPhotoMessageService.SendAddPhotoMessage(expressPhoto);
 
         return Content("success"); // 方便客户端 golang 处理
     }
