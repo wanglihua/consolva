@@ -601,7 +601,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/goods/pack/order/pack/list")]
-    public IActionResult OrderPackList(int orderId, int goodsTypeId, bool expressRepeatPack, bool repack) {
+    public IActionResult OrderPackList(int orderId, int goodsTypeId, bool expressCanPackAgain, bool repack) {
         var order = session.Get<LogisticsOrderInfo>(orderId);
         if (order == null) {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
@@ -624,7 +624,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         // 后面应该改成判断是不是所有快递单号都已经是打包状态
 
-        if (expressRepeatPack == true) {
+        if (expressCanPackAgain == true) {
             var packedStatusList = LogisticsOrderStatus.GetPackedStatusList();
             if (packedStatusList.Contains(order.OrderStatus)) {
                 model.OrderExpressPackComplete = true;
