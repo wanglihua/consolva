@@ -12,7 +12,7 @@
         <tr>
             <th style="width: 40px; text-align: center;">
                 <div>
-                    <label for="seventeenTrackCarrierCheckAll"></label><input id="seventeenTrackCarrierCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                    <label for="seventeenTrackCarrierCheckAll"></label><input id="seventeenTrackCarrierCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
                 </div>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
@@ -22,7 +22,7 @@
                     <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CarrierKey))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">编号</a>
                 </div>
             </th>
-            
+
             <th style="width: 100px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CarrierName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">名称</a>
@@ -39,7 +39,7 @@
                 <div>
                     <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.NameZhHk))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">中文名称2</a>
                 </div>
-            </th>            
+            </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
@@ -55,24 +55,6 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.Email))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">email</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.Tel))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">电话</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.Url))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">网址</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
                     <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CarrierGroup))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">分组编号</a>
                 </div>
             </th>
@@ -82,63 +64,48 @@
     <tbody>
         @if (Model.SeventeenTrackCarrierList.Count != 0) {
             int index = 0;
-            foreach (SeventeenTrackCarrierInfo seventeenTrackCarrier in Model.SeventeenTrackCarrierList) {
-                <tr ondblclick="showSeventeenTrackCarrierDetail(@(seventeenTrackCarrier.Id));">
+            foreach (SeventeenTrackCarrierInfo carrier in Model.SeventeenTrackCarrierList) {
+                <tr ondblclick="showSeventeenTrackCarrierDetail(@(carrier.Id));">
                     <td style="text-align: center;">
                         <div>
-                            <label for="seventeenTrackCarrierCheck_@(seventeenTrackCarrier.Id)"></label><input id="seventeenTrackCarrierCheck_@(seventeenTrackCarrier.Id)" type="checkbox" class="ace" value="@seventeenTrackCarrier.Id" /><span class="lbl"></span>
+                            <label for="seventeenTrackCarrierCheck_@(carrier.Id)"></label><input id="seventeenTrackCarrierCheck_@(carrier.Id)" type="checkbox" class="ace" value="@carrier.Id"/><span class="lbl"></span>
                         </div>
                     </td>
                     <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
 
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.CarrierKey)
+                            @ListDataUtil.Render(carrier.CarrierKey)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.CarrierName)
+                            @ListDataUtil.Render(carrier.CarrierName)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.NameZhCn)
+                            @ListDataUtil.Render(carrier.NameZhCn)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.NameZhHk)
+                            @ListDataUtil.Render(carrier.NameZhHk)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.CountryCode)
+                            @ListDataUtil.Render(carrier.CountryCode)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.CountryIso)
+                            @ListDataUtil.Render(carrier.CountryIso)
                         </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.Email)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.Tel)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.Url)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(seventeenTrackCarrier.CarrierGroup)
+                            @ListDataUtil.Render(carrier.CarrierGroup)
                         </div>
                     </td>
                     <td></td>
@@ -146,7 +113,7 @@
             }
         } else {
             <tr>
-                <td colspan="15">
+                <td colspan="10">
                     暂时没有数据！
                 </td>
             </tr>

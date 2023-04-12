@@ -3,7 +3,7 @@ using shunda.Domain;
 using NLog;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service;
+namespace shunda.Service.LogisticsOrder;
 
 /// <summary>
 /// 17track运输商 服务类

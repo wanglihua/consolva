@@ -3,7 +3,7 @@ using shunda.Domain;
 using NLog;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service;
+namespace shunda.Service.Logistics;
 
 /// <summary>
 /// 物品类型介绍 服务类

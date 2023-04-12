@@ -54,7 +54,7 @@ public class SeventeenTrackCarrierController : Controller {
         }
 
         listQuery = listQuery.ThenByAlias(() => seventeenTrackCarrierAlias!.Id).Desc;
-            
+
         IList<SeventeenTrackCarrierInfo> seventeenTrackCarrierList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -67,8 +67,8 @@ public class SeventeenTrackCarrierController : Controller {
 
         SeventeenTrackCarrierListModel model = new SeventeenTrackCarrierListModel(listPager);
         model.SeventeenTrackCarrierList = seventeenTrackCarrierList;
-        
-        model.SeventeenTrackCarrierAlias = nameof(seventeenTrackCarrierAlias);        
+
+        model.SeventeenTrackCarrierAlias = nameof(seventeenTrackCarrierAlias);
 
         return View("SeventeenTrackCarrierList", model);
     }
