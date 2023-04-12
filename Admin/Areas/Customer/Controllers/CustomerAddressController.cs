@@ -22,10 +22,15 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 public class CustomerAddressController : Controller {
     private readonly ISession session;
     private readonly CustomerCodeService customerCodeService;
+    private readonly CustomerReceiveAddressService customerReceiveAddressService;
 
-    public CustomerAddressController(ISession session, CustomerCodeService customerCodeService) {
+    public CustomerAddressController(
+        ISession session,
+        CustomerCodeService customerCodeService,
+        CustomerReceiveAddressService customerReceiveAddressService) {
         this.session = session;
         this.customerCodeService = customerCodeService;
+        this.customerReceiveAddressService = customerReceiveAddressService;
     }
 
     [HttpGet]
@@ -101,6 +106,8 @@ public class CustomerAddressController : Controller {
         address.Company = addressFromUi.Company;
         // address.IsDefault = addressFromUi.IsDefault;
         // address.Status = addressFromUi.Status;
+
+        customerReceiveAddressService.CheckAddress(address);
 
         session.Update(address);
         session.Flush();
