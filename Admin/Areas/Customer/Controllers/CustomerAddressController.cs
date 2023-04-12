@@ -66,46 +66,59 @@ public class CustomerAddressController : Controller {
     [HttpPost]
     [Route("/admin/customer/address/receive/detail")]
     public IActionResult ReceiveDetail(int id) {
-        CustomerReceiveAddressInfo? customerAddress = session.Get<CustomerReceiveAddressInfo>(id);
-        if (customerAddress == null) {
+        var address = session.Get<CustomerReceiveAddressInfo>(id);
+        if (address == null) {
             throw new ValidationException($"指定的客户地址#{id}不存在！");
         }
 
-        CustomerAddressReceiveDetailModel model = new CustomerAddressReceiveDetailModel();
-
-        model.CustomerAddress = customerAddress;
+        CustomerAddressReceiveDetailModel model = new CustomerAddressReceiveDetailModel {
+            Id = address.Id,
+            CustomerId = address.Customer.Id,
+            Country = address.Country,
+            FirstName = address.FirstName,
+            LastName = address.LastName,
+            Mobile = address.Mobile,
+            State = address.State,
+            City = address.City,
+            Address = address.Address,
+            UnitLoc = address.UnitLoc,
+            Zipcode = address.Zipcode,
+            Tfn = address.Tfn,
+            Company = address.Company,
+        };
 
         return View("CustomerAddressReceiveDetail", model);
     }
 
     [HttpPost]
     [Route("/admin/customer/address/receive/save")]
-    public IActionResult ReceiveSave(CustomerAddressReceiveDetailModel model) {
-        CustomerReceiveAddressInfo addressFromUi = model.CustomerAddress;
+    public IActionResult ReceiveSave(CustomerAddressReceiveSaveModel model) {
+        ValidationUtil.Validate<CustomerAddressReceiveSaveModelValidator, CustomerAddressReceiveSaveModel>(model);
 
-        if (!this.ModelState.IsValid) {
-            throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
-        }
-
-        int addressId = addressFromUi.Id;
+        int addressId = model.Id;
         CustomerReceiveAddressInfo? address = session.Get<CustomerReceiveAddressInfo>(addressId);
         if (address == null) {
             throw new ValidationException($"指定的客户地址#{addressId}不存在！");
         }
 
-        address.Country = addressFromUi.Country;
-        address.FirstName = addressFromUi.FirstName;
-        address.LastName = addressFromUi.LastName;
-        address.Mobile = addressFromUi.Mobile;
-        address.UnitLoc = addressFromUi.UnitLoc;
-        address.Address = addressFromUi.Address;
-        address.City = addressFromUi.City;
-        address.State = addressFromUi.State;
-        address.Zipcode = addressFromUi.Zipcode;
-        address.Tfn = addressFromUi.Tfn;
-        address.Company = addressFromUi.Company;
-        // address.IsDefault = addressFromUi.IsDefault;
-        // address.Status = addressFromUi.Status;
+        int customerId = model.CustomerId;
+        var customer = session.Get<CustomerInfo>(customerId);
+        if (customer == null) {
+            throw new ValidationException($"指定的客户#{customerId}不存在！");
+        }
+
+        address.Customer = customer;
+        address.Country = model.Country;
+        address.FirstName = model.FirstName;
+        address.LastName = model.LastName;
+        address.Mobile = model.Mobile;
+        address.UnitLoc = model.UnitLoc;
+        address.Address = model.Address;
+        address.City = model.City;
+        address.State = model.State;
+        address.Zipcode = model.Zipcode;
+        address.Tfn = model.Tfn;
+        address.Company = model.Company;
 
         customerReceiveAddressService.CheckAddress(address);
 

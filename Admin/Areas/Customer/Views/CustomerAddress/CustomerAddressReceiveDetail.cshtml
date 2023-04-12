@@ -15,37 +15,25 @@
             <div class="modal-body clearfix">
 
                 <form id="customerAddressReceiverDetailForm" action="" method="post" class="form-horizontal" role="form">
-                    <input asp-for="CustomerAddress.Id" type="hidden"/>
+                    <input asp-for="Id" type="hidden"/>
+                    <input asp-for="CustomerId" type="hidden"/>
                     <div class="col-xs-12">
                         <div class="row">
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.FirstName" class="col-xs-4 control-label">名(first name)</label>
+                                    <label asp-for="FirstName" class="col-xs-4 control-label">名(first name)</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.FirstName" type="text" class="input-sm form-control"/>
+                                        <input asp-for="FirstName" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.LastName" class="col-xs-4 control-label">姓(last name)</label>
+                                    <label asp-for="LastName" class="col-xs-4 control-label">姓(last name)</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.LastName" type="text" class="input-sm form-control"/>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-xs-6">
-                                <div class="form-group">
-                                    <label asp-for="CustomerAddress.Mobile" class="col-xs-4 control-label">手机号码</label>
-                                    <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.Mobile" type="text" class="input-sm form-control"/>
+                                        <input asp-for="LastName" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -56,9 +44,22 @@
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.UnitLoc" class="col-xs-4 control-label">Unit号</label>
+                                    <label asp-for="Mobile" class="col-xs-4 control-label">手机号码</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.UnitLoc" type="text" class="input-sm form-control"/>
+                                        <input asp-for="Mobile" type="text" class="input-sm form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label asp-for="UnitLoc" class="col-xs-4 control-label">Unit号</label>
+                                    <div class="col-xs-8">
+                                        <input asp-for="UnitLoc" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -68,9 +69,9 @@
 
                             <div class="col-xs-12">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.Address" class="col-xs-2 control-label">门牌号/路名</label>
+                                    <label asp-for="Address" class="col-xs-2 control-label">门牌号/路名</label>
                                     <div class="col-xs-10">
-                                        <input asp-for="CustomerAddress.Address" type="text" class="input-sm form-control"/>
+                                        <input asp-for="Address" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -79,9 +80,9 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.City" class="col-xs-2 control-label">区/Suburb</label>
+                                    <label asp-for="City" class="col-xs-2 control-label">区/Suburb</label>
                                     <div class="col-xs-10">
-                                        <input asp-for="CustomerAddress.City" type="text" class="input-sm form-control"/>
+                                        <input asp-for="City" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -90,18 +91,18 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.State" class="col-xs-4 control-label">省/州</label>
+                                    <label asp-for="State" class="col-xs-4 control-label">省/州</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.State" type="text" />
+                                        <input asp-for="State" type="text"/>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.Zipcode" class="col-xs-4 control-label">邮编</label>
+                                    <label asp-for="Zipcode" class="col-xs-4 control-label">邮编</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.Zipcode" type="text" class="input-sm form-control"/>
+                                        <input asp-for="Zipcode" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -110,18 +111,18 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.Tfn" class="col-xs-4 control-label">ABN/ACN</label>
+                                    <label asp-for="Tfn" class="col-xs-4 control-label">ABN/ACN</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.Tfn" type="text" class="input-sm form-control"/>
+                                        <input asp-for="Tfn" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label asp-for="CustomerAddress.Company" class="col-xs-4 control-label">公司</label>
+                                    <label asp-for="Company" class="col-xs-4 control-label">公司</label>
                                     <div class="col-xs-8">
-                                        <input asp-for="CustomerAddress.Company" type="text" class="input-sm form-control"/>
+                                        <input asp-for="Company" type="text" class="input-sm form-control"/>
                                     </div>
                                 </div>
                             </div>
