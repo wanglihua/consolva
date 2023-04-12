@@ -622,11 +622,12 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         LogisticsOrderGoodsPackOrderPackListModel model = new LogisticsOrderGoodsPackOrderPackListModel();
 
+        // 后面应该改成判断是不是所有快递单号都已经是打包状态
         var packedStatusList = LogisticsOrderStatus.GetPackedStatusList();
-        if (packedStatusList.Contains(order.OrderStatus)) {
-            model.OrderPackComplete = true;
+        if (packedStatusList.Contains(order.OrderStatus)) { 
+            model. OrderExpressPackComplete = true;
         } else {
-            model.OrderPackComplete = false;
+            model.OrderExpressPackComplete = false;
         }
 
         model.GoodsType = goodsType;
