@@ -185,6 +185,9 @@ public class CustomerReceiveAddressController : Controller {
         address.Company = model.Company;
         address.UnitLoc = model.UnitLoc;
 
+        // 判断是否有非英文字符 等
+        customerReceiveAddressService.CheckAddress(address);
+
         session.SaveOrUpdate(address);
         session.Flush();
 

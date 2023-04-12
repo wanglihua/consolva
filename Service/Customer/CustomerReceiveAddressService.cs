@@ -1,4 +1,6 @@
+using shunda.Core;
 using shunda.Core.Service;
+using shunda.Core.Util;
 using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
@@ -60,5 +62,32 @@ public class CustomerReceiveAddressService {
         }
 
         return $"{unitLocStr}{receiveAddress.Address}, {receiveAddress.City} {receiveAddress.State} {receiveAddress.Zipcode}";
-    }    
+    }
+
+    public void CheckAddress(CustomerReceiveAddressInfo receiveAddress) {
+        // 判断是否有非英文字符
+        if (StringUtil.AllEnglish(receiveAddress.FirstName) == false) {
+            throw new ValidationException("[first name] 有非英文字符，请更正！");
+        }
+
+        if (StringUtil.HasDigit(receiveAddress.FirstName) == true) {
+            throw new ValidationException("[first name] 有数字字符，请更正！");
+        }
+
+        if (StringUtil.AllEnglish(receiveAddress.LastName) == false) {
+            throw new ValidationException("[last name] 有非英文字符，请更正！");
+        }
+
+        if (StringUtil.HasDigit(receiveAddress.LastName) == true) {
+            throw new ValidationException("[last name] 有数字字符，请更正！");
+        }
+
+        if (StringUtil.AllEnglish(receiveAddress.Address) == false) {
+            throw new ValidationException("[门牌号/路名] 中有非英文字符，请更正！");
+        }
+
+        if (StringUtil.AllEnglish(receiveAddress.City) == false) {
+            throw new ValidationException("[区/Suburb] 中有非英文字符，请更正！");
+        }
+    }
 }

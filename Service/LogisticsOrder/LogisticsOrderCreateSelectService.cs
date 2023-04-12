@@ -6,15 +6,21 @@ using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
+using shunda.Service.Customer;
 
 namespace shunda.Service.LogisticsOrder;
 
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderCreateSelectService {
     private readonly ISession session;
+    private readonly CustomerReceiveAddressService customerReceiveAddressService;
 
-    public LogisticsOrderCreateSelectService(ISession session) {
+    public LogisticsOrderCreateSelectService(
+        ISession session,
+        CustomerReceiveAddressService customerReceiveAddressService
+    ) {
         this.session = session;
+        this.customerReceiveAddressService = customerReceiveAddressService;
     }
 
     public void SaveCountry(int customerId, Country country) {
@@ -92,30 +98,8 @@ public class LogisticsOrderCreateSelectService {
             throw new ValidationException($"指定的收货地址#{receiveAddressId}不属于当前客户#{customerId}！");
         }
 
-        // 判断是否有非英文字符
-        if (StringUtil.AllEnglish(receiveAddress.FirstName) == false) {
-            throw new ValidationException("[first name] 有非英文字符，请更正！");
-        }
-
-        if (StringUtil.HasDigit(receiveAddress.FirstName) == true) {
-            throw new ValidationException("[first name] 有数字字符，请更正！");
-        }
-
-        if (StringUtil.AllEnglish(receiveAddress.LastName) == false) {
-            throw new ValidationException("[last name] 有非英文字符，请更正！");
-        }
-
-        if (StringUtil.HasDigit(receiveAddress.LastName) == true) {
-            throw new ValidationException("[last name] 有数字字符，请更正！");
-        }
-
-        if (StringUtil.AllEnglish(receiveAddress.Address) == false) {
-            throw new ValidationException("[门牌号/路名] 中有非英文字符，请更正！");
-        }
-
-        if (StringUtil.AllEnglish(receiveAddress.City) == false) {
-            throw new ValidationException("[区/Suburb] 中有非英文字符，请更正！");
-        }
+        // 判断是否有非英文字符 等
+        customerReceiveAddressService.CheckAddress(receiveAddress);
 
         var createSelect = session.Get<LogisticsOrderCreateSelectInfo>(customerId);
         if (createSelect == null) {
