@@ -17,6 +17,7 @@
             <label class="col-xs-1 control-label label-primary" style="text-align: center !important;font-weight: bold;color: white; height: 32px;">
                 @goodsType.Name
             </label>
+            <input id="orderGoodsTypeId" type="hidden" value="@(goodsType.Id)" /> @* 现在打包时只显示一个类型 *@
             <div class="col-xs-5">
                 <div class="input-group">
                     @if (Model.Debug) {
