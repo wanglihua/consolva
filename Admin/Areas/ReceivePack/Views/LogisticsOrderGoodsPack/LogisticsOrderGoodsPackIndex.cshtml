@@ -67,10 +67,18 @@
             }
         </script>
     </div>
-    <select id="expressCanPackAgain" style="width: 150px; height: 35px;">
+    <select id="expressCanPackAgain" style="width: 150px; height: 35px;" onchange="expressCanPackAgainClick()">
         <option value="@(false.ToString())">快递单不能重复打包</option>
         <option value="@(true.ToString())">快递单可以重复打包</option>
     </select>
+    
+    <script type="text/javascript">
+        function expressCanPackAgainClick() {
+           if(loadOrderPackList) {
+               loadOrderPackList();
+           }
+        }
+    </script>
 </div>
 
 <div id="packOrderWrapper"></div>
