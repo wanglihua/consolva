@@ -1,0 +1,160 @@
+@using shunda.Domain
+@model shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier.SeventeenTrackCarrierDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="seventeenTrackCarrierDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">17track运输商详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="seventeenTrackCarrierDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="SeventeenTrackCarrierId" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CarrierKey" class="col-xs-2 control-label">编号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CarrierKey" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CarrierName" class="col-xs-2 control-label">名称</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CarrierName" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="NameZhCn" class="col-xs-2 control-label">中文名称1</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="NameZhCn" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="NameZhHk" class="col-xs-2 control-label">中文名称2</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="NameZhHk" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CountryCode" class="col-xs-2 control-label">国家编号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CountryCode" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CountryIso" class="col-xs-2 control-label">国家代码</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CountryIso" type="text" required="required" maxlength="10" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Email" class="col-xs-2 control-label">email</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Email" type="text" required="required" maxlength="200" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Tel" class="col-xs-2 control-label">电话</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Tel" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Url" class="col-xs-2 control-label">网址</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="Url" type="text" required="required" maxlength="300" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="CarrierGroup" class="col-xs-2 control-label">分组编号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="CarrierGroup" type="text" required="required" maxlength="10" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

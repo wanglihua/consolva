@@ -1,0 +1,157 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.LogisticsOrder
+@model shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier.SeventeenTrackCarrierListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadSeventeenTrackCarrierList" }))
+
+<table id="tblSeventeenTrackCarrierList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="seventeenTrackCarrierCheckAll"></label><input id="seventeenTrackCarrierCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CarrierKey))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">编号</a>
+                </div>
+            </th>
+            
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CarrierName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">名称</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.NameZhCn))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">中文名称1</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.NameZhHk))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">中文名称2</a>
+                </div>
+            </th>            
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CountryCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">国家编号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CountryIso))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">国家代码</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.Email))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">email</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.Tel))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">电话</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.Url))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">网址</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CarrierGroup))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">分组编号</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.SeventeenTrackCarrierList.Count != 0) {
+            int index = 0;
+            foreach (SeventeenTrackCarrierInfo seventeenTrackCarrier in Model.SeventeenTrackCarrierList) {
+                <tr ondblclick="showSeventeenTrackCarrierDetail(@(seventeenTrackCarrier.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="seventeenTrackCarrierCheck_@(seventeenTrackCarrier.Id)"></label><input id="seventeenTrackCarrierCheck_@(seventeenTrackCarrier.Id)" type="checkbox" class="ace" value="@seventeenTrackCarrier.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.CarrierKey)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.CarrierName)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.NameZhCn)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.NameZhHk)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.CountryCode)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.CountryIso)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.Email)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.Tel)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.Url)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackCarrier.CarrierGroup)
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="15">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadSeventeenTrackCarrierList" }))
