@@ -149,6 +149,31 @@ public class ExpressStatus : CodeTypeBase {
         };
     }
 
+    public static IList<ExpressStatus> GetNotPackedList() {
+        return new List<ExpressStatus>() {
+            WaitPick,
+            Checkin,
+            // WaitReturn,
+            // Returned,
+            // ThrowAway,
+            Order,
+            WaitPack,
+            PartOffShelf,
+            OffShelf,
+            PartPacking,
+            Packing,
+        };
+    }
+
+    public static IList<ExpressStatus> GetPackedList() {
+        return new List<ExpressStatus>() {
+            Pack,
+            WaitTransport,
+            Transporting,
+            Complete,
+        };
+    }
+
     /// <summary>
     /// 退运状态列表
     /// </summary>

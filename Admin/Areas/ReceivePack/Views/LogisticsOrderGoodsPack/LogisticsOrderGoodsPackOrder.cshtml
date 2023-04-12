@@ -182,6 +182,7 @@
                         data: {
                             "orderId": @(Model.Order.Id),
                             "goodsTypeId": goodsTypeId,
+                            "expressRepeatPack": $("#expressCanPackAgain").val(),
                             'repack': $("#repack"+goodsTypeId).val()
                         },
                         success: function(data) {
