@@ -9,7 +9,7 @@ public class LogisticsOrderGoodsPackOrderPackListModel {
     public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 
     [BindNever]
-    public bool GoodsTypePackComplete { get; set; }
+    public bool OrderPackComplete { get; set; }
 
     [BindNever]
     public IList<LogisticsOrderPackInfo> OrderPackList { get; set; } = new List<LogisticsOrderPackInfo>();

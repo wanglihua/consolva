@@ -622,16 +622,11 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         LogisticsOrderGoodsPackOrderPackListModel model = new LogisticsOrderGoodsPackOrderPackListModel();
 
-        // 判断该类型是不是都是打包状态
-        var goodsTypeNotPackedCountQuery = session.Query<ExpressInfo>()
-            .Where(e => e.Order!.Id == orderId && e.Status != ExpressStatus.Pack);
-
-        int goodsTypeNotPackedCount = goodsTypeNotPackedCountQuery.Count();
-
-        if (goodsTypeNotPackedCount == 0) {
-            model.GoodsTypePackComplete = true;
+        var packedStatusList = LogisticsOrderStatus.GetPackedStatusList();
+        if (packedStatusList.Contains(order.OrderStatus)) {
+            model.OrderPackComplete = true;
         } else {
-            model.GoodsTypePackComplete = false;
+            model.OrderPackComplete = false;
         }
 
         model.GoodsType = goodsType;

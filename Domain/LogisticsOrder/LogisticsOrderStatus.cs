@@ -98,6 +98,16 @@ public class LogisticsOrderStatus : CodeTypeBase {
             Packed,
         };
     }
+    
+    public static IList<LogisticsOrderStatus> GetPackedStatusList() {
+        return new List<LogisticsOrderStatus>() {
+            Packed,
+            WaitShip,
+            Shipped,
+            Delivered,
+            Completed,
+        };
+    }    
 
     /// <summary>
     /// 构造函数
