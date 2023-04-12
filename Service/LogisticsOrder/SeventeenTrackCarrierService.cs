@@ -17,4 +17,8 @@ public class SeventeenTrackCarrierService {
     public SeventeenTrackCarrierService(ISession session) {
         this.session = session;
     }
+
+    public void SyncData() {
+        
+    }
 }
