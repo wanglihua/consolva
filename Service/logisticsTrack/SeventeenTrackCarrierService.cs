@@ -33,6 +33,7 @@ public class SeventeenTrackCarrierService {
         var request = new RestRequest("");
 
         // var response = client.Get(request);
+        // response.StatusCode;
 
         IList<SeventeenTrackCarrierItem>? carrierList = null;
         try {
