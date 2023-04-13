@@ -1,16 +1,17 @@
-namespace shunda.Service.logisticsTrack; 
+using Newtonsoft.Json;
+
+namespace shunda.Service.logisticsTrack;
 
 public class SevenTrackRegisterAcceptedItem {
-    
+    [JsonProperty("origin")]
+    public int Origin { get; set; }
+
+    [JsonProperty("number")]
+    public string Number { get; set; } = string.Empty;
+
+    [JsonProperty("tag")]
+    public string Tag { get; set; } = string.Empty;
+
+    [JsonProperty("carrier")]
+    public int Carrier { get; set; }
 }
-
-/*
-
-      {
-        "origin": 1,
-        "number": "RR123456789CN",
-        "tag": "MyOrderID",
-        "carrier": 3011
-      }
-
-*/
