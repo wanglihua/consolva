@@ -37,7 +37,7 @@
 }
 
 <div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-purple btn-sm" onclick="loadSeventeenTrackCarrierList(0)">
+    <button type="button" class="btn btn-purple btn-sm" onclick="syncCarrierList()">
         <i class="ace-icon fa fa-gears"></i>
         同步数据
     </button>
@@ -124,6 +124,24 @@
 
                 $("#seventeenTrackCarrierDetailDialogWrapper").html(data);
                 $("#seventeenTrackCarrierDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+    
+    function syncCarrierList() {
+        showMask("数据同步中...");
+
+        $.ajax({
+            url: '@Url.Action("Sync", "SeventeenTrackCarrier")',
+            type: "POST",
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+                
+                loadSeventeenTrackCarrierList();
             }
         });
     }

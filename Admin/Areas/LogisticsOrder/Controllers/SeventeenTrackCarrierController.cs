@@ -1,15 +1,14 @@
-using shunda.Core;
-using shunda.Core.Hibernate;
-using shunda.Core.Util;
-using shunda.Core.Web;
-using shunda.Domain.LogisticsOrder;
-using shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.SqlCommand;
 using NLog;
+using shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier;
+using shunda.Core;
+using shunda.Core.Hibernate;
+using shunda.Core.Web;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -23,13 +22,18 @@ public class SeventeenTrackCarrierController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
 
-    public SeventeenTrackCarrierController(ISession session) {
+    public SeventeenTrackCarrierController(
+        ISession session,
+        SeventeenTrackCarrierService seventeenTrackCarrierService
+    ) {
         this.session = session;
+        this.seventeenTrackCarrierService = seventeenTrackCarrierService;
     }
 
     [HttpGet]
-    [Route("/admin/logistics/order/seventeen/track/carrier")]
+    [Route("/admin/seventeen/track/carrier")]
     public IActionResult Index() {
         SeventeenTrackCarrierIndexModel model = new SeventeenTrackCarrierIndexModel();
 
@@ -37,7 +41,7 @@ public class SeventeenTrackCarrierController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/logistics/order/seventeen/track/carrier/list")]
+    [Route("/admin/seventeen/track/carrier/list")]
     public IActionResult List(SeventeenTrackCarrierListQueryParam queryParam) {
         int totalCount = GetQueryOver(queryParam)
             // .Select(Projections.Count<SeventeenTrackCarrierInfo>(e => seventeenTrackCarrierAlias!.Id))
@@ -83,7 +87,7 @@ public class SeventeenTrackCarrierController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/logistics/order/seventeen/track/carrier/detail")]
+    [Route("/admin/seventeen/track/carrier/detail")]
     public IActionResult Detail(IdParam param) {
         var id = param.Id;
 
@@ -114,5 +118,17 @@ public class SeventeenTrackCarrierController : Controller {
 
 
         return View("SeventeenTrackCarrierDetail", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/seventeen/track/carrier/sync")]
+    [Transactional]
+    public IActionResult Sync() {
+        seventeenTrackCarrierService.SyncData();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "运输上数据同步成功！",
+        });
     }
 }

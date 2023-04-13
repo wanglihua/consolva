@@ -1,7 +1,10 @@
-using shunda.Core.Service;
-using shunda.Domain;
+using NHibernate;
 using NLog;
-using ISession = NHibernate.ISession;
+using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
+using shunda.Core;
+using shunda.Core.Service;
+using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.LogisticsOrder;
 
@@ -19,6 +22,48 @@ public class SeventeenTrackCarrierService {
     }
 
     public void SyncData() {
-        
+        // https://carrierlist.17track.net
+        var client = new RestClient(
+            new RestClientOptions {
+                BaseUrl = new Uri("https://res.17track.net/asset/carrier/info/apicarrier.all.json"),
+            },
+            configureSerialization: c => c.UseNewtonsoftJson()
+        );
+
+        var request = new RestRequest("");
+
+        // var response = client.Get(request);
+
+        var carrierList = client.Get<IList<SeventeenTrackCarrierItem>>(request);
+        if (carrierList == null) {
+            throw new ValidationException("下载17track运输商数据失败！");
+        }
+
+        var carrierListInDb = session.Query<SeventeenTrackCarrierInfo>().ToList();
+        var carrierDict = carrierListInDb.ToDictionary(e => e.CarrierKey, e => e);
+
+        foreach (var c in carrierList) {
+            SeventeenTrackCarrierInfo carrier;
+            if (carrierDict.ContainsKey(c.CarrierKey)) {
+                carrier = carrierDict[c.CarrierKey];
+            } else {
+                carrier = new SeventeenTrackCarrierInfo();
+                carrier.CarrierKey = c.CarrierKey;
+            }
+
+            carrier.CountryCode = c.CountryCode;
+            carrier.CountryIso = c.CountryIso;
+            carrier.Email = c.Email;
+            carrier.Tel = c.Tel;
+            carrier.Url = c.Url;
+            carrier.CarrierName = c.CarrierName;
+            carrier.NameZhCn = c.NameZhCn;
+            carrier.NameZhHk = c.NameZhHk;
+            carrier.CarrierGroup = c.CarrierGroup;
+
+            session.SaveOrUpdate(carrier);
+        }
+
+        session.Flush();
     }
 }

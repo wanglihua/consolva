@@ -24,7 +24,7 @@ public class SeventeenTrackCarrierInfoValidator : AbstractValidator<SeventeenTra
         RuleFor(e => e.Url).MaximumLength(300).WithMessage("网址长度不能大于300！");
 
         RuleFor(e => e.CarrierName).NotNull().WithMessage("名称不能为空！");
-        RuleFor(e => e.CarrierName).MaximumLength(30).WithMessage("名称长度不能大于30！");
+        RuleFor(e => e.CarrierName).MaximumLength(100).WithMessage("名称长度不能大于100！");
 
         RuleFor(e => e.NameZhCn).NotNull().WithMessage("中文名称1不能为空！");
         RuleFor(e => e.NameZhCn).MaximumLength(30).WithMessage("中文名称1长度不能大于30！");
@@ -34,6 +34,5 @@ public class SeventeenTrackCarrierInfoValidator : AbstractValidator<SeventeenTra
 
         RuleFor(e => e.CarrierGroup).NotNull().WithMessage("分组编号不能为空！");
         RuleFor(e => e.CarrierGroup).MaximumLength(10).WithMessage("分组编号长度不能大于10！");
-
     }
 }
