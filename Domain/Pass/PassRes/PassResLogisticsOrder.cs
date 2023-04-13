@@ -25,7 +25,6 @@ public partial class PassRes {
             new PassResInfo { Id = OrderPackDataModify, Name = "订单打包信息修改", Cate = Cate },
             new PassResInfo { Id = OrderRemarkEdit, Name = "订单备注维护", Cate = Cate },
             new PassResInfo { Id = CustomerOrderCount, Name = "会员订单统计", Cate = Cate },
-            new PassResInfo { Id = SeventeenTrackCarrier, Name = "17track运输商", Cate = Cate },
         };
 
         /// <summary>
@@ -114,10 +113,5 @@ public partial class PassRes {
         /// 会员订单统计
         /// </summary>
         public const int CustomerOrderCount = CateId + 32000;
-
-        /// <summary>
-        /// 17track运输商
-        /// </summary>
-        public const int SeventeenTrackCarrier = CateId + 3400;
     }
 }

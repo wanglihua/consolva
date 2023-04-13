@@ -9,6 +9,10 @@ public class PassResCate {
     public const int ExpressCateId = 0400_0000;
     public static readonly PassResCateInfo Express = new PassResCateInfo() { Id = ExpressCateId, Name = "快递管理" };
 
+    // 物流跟踪
+    public const int LogisticsTrackCateId = 0300_0000;
+    public static readonly PassResCateInfo LogisticsTrack = new PassResCateInfo() { Id = LogisticsTrackCateId, Name = "物流跟踪" };
+
     // 收货打包
     public const int ReceivePackCateId = 0600_0000;
     public static readonly PassResCateInfo ReceivePack = new PassResCateInfo() { Id = ReceivePackCateId, Name = "收货打包" };
@@ -49,6 +53,7 @@ public class PassResCate {
         return new List<PassResCateInfo>() {
             LogisticsOrder,
             Express,
+            LogisticsTrack,
             ReceivePack,
             Fee,
             Customer,
