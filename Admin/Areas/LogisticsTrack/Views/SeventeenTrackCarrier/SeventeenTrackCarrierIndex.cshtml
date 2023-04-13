@@ -1,8 +1,8 @@
+@using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackCarrier
 @using shunda.Core
 @using shunda.Core.Web
-@using shunda.Domain.LogisticsOrder
-@model SeventeenTrackCarrierIndexModel
-@using shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier
+@using shunda.Domain.LogisticsTrack
+@model shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackCarrier.SeventeenTrackCarrierIndexModel
 @{
     ViewData[ViewDataKey.Title] = "17track运输商";
     Layout = "_AdminLayout";
@@ -32,8 +32,8 @@
 *@
 
 @section Breadcrumb {
-    <li class="parent" data-menu="logistics-order-menu">物流订单</li>
-    <li class="active" data-menu="logistics-order-seventeen-track-carrier-menu">@(ViewData[ViewDataKey.Title])</li>
+    <li class="parent" data-menu="logistics-track-menu">物流跟踪</li>
+    <li class="active" data-menu="logistics-track-seventeen-track-carrier-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div class="gridToolBar clearfix">

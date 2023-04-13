@@ -1,12 +1,12 @@
 using FluentValidation;
 
-namespace shunda.Domain.LogisticsOrder;
+namespace shunda.Domain.LogisticsTrack;
 
 /// <summary>
 /// 17track运输商 实体验证器
 /// </summary>
 public class SeventeenTrackCarrierInfoValidator : AbstractValidator<SeventeenTrackCarrierInfo> {
-    public SeventeenTrackCarrierInfoValidator() { 
+    public SeventeenTrackCarrierInfoValidator() {
         RuleFor(e => e.CarrierKey).Must(p => p > 0).WithMessage("编号不能为空！");
 
         // RuleFor(e => e.CountryCode).Must(p => p > 0).WithMessage("国家编号不能为空！");

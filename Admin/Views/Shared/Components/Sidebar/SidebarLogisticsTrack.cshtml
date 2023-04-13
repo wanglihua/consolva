@@ -6,9 +6,9 @@
     Layout = null;
 }
 @if (Model.HasOneOfPassRes(PassRes.LogisticsTrack.All)) {
-    <li id="logistics-order-menu">
+    <li id="logistics-track-menu">
         <a href="#" class="dropdown-toggle">
-            <i class="menu-icon fa fa-copy"></i>
+            <i class="menu-icon iconfont icon-logistics-track-airplane"></i>
             <span class="menu-text">物流跟踪</span>
             <b class="arrow fa fa-angle-down"></b>
         </a>
@@ -16,8 +16,8 @@
         <ul class="submenu">
 
             @if (Model.HasPassRes(PassRes.LogisticsTrack.SeventeenTrackCarrier)) {
-                <li id="logistics-order-seventeen-track-carrier-menu">
-                    <a asp-area="LogisticsOrder" asp-controller="SeventeenTrackCarrier" asp-action="Index">
+                <li id="logistics-track-seventeen-track-carrier-menu">
+                    <a asp-area="LogisticsTrack" asp-controller="SeventeenTrackCarrier" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         17track运输商
                     </a>

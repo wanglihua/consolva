@@ -45,4 +45,15 @@
         <ProjectReference Include="..\Service\P02_Service.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\LogisticsTrack\Models" />
+      <Folder Include="Areas\LogisticsTrack\Views" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\SeventeenTrackCarrier\SeventeenTrackCarrierDetail.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\SeventeenTrackCarrier\SeventeenTrackCarrierIndex.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\SeventeenTrackCarrier\SeventeenTrackCarrierList.cshtml" />
+    </ItemGroup>
+
 </Project>

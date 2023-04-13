@@ -1,7 +1,7 @@
 using shunda.Core;
 using shunda.Core.Util;
 
-namespace shunda.Domain.LogisticsOrder;
+namespace shunda.Domain.LogisticsTrack;
 
 /// <summary>
 /// 17track运输商

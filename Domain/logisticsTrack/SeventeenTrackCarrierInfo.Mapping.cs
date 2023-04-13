@@ -1,7 +1,7 @@
 using shunda.Core;
 using NHibernate;
 
-namespace shunda.Domain.LogisticsOrder;
+namespace shunda.Domain.LogisticsTrack;
 
 public class SeventeenTrackCarrierInfoMapping : EntityMapping<SeventeenTrackCarrierInfo> {
     public SeventeenTrackCarrierInfoMapping() {

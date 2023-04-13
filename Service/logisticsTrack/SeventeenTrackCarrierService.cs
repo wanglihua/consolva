@@ -4,9 +4,9 @@ using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 using shunda.Core;
 using shunda.Core.Service;
-using shunda.Domain.LogisticsOrder;
+using shunda.Domain.LogisticsTrack;
 
-namespace shunda.Service.LogisticsOrder;
+namespace shunda.Service.logisticsTrack;
 
 /// <summary>
 /// 17track运输商 服务类

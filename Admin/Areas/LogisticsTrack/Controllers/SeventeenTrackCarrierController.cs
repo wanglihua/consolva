@@ -2,22 +2,22 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
 using NLog;
-using shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier;
+using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackCarrier;
 using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
-using shunda.Domain.LogisticsOrder;
+using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass.PassRes;
-using shunda.Service.LogisticsOrder;
+using shunda.Service.logisticsTrack;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
+namespace shunda.Admin.Areas.LogisticsTrack.Controllers;
 
 /// <summary>
 /// 17track运输商 控制器
 /// </summary>
-[LogisticsOrderArea]
-[AdminAuth(PassRes.LogisticsOrder.SeventeenTrackCarrier)]
+[LogisticsTrackArea]
+[AdminAuth(PassRes.LogisticsTrack.SeventeenTrackCarrier)]
 public class SeventeenTrackCarrierController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 

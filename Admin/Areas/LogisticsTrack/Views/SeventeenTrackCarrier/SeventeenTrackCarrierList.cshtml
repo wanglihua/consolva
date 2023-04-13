@@ -2,8 +2,8 @@
     Layout = null;
 }
 @using shunda.Core.Web
-@using shunda.Domain.LogisticsOrder
-@model shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier.SeventeenTrackCarrierListModel
+@using shunda.Domain.LogisticsTrack
+@model shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackCarrier.SeventeenTrackCarrierListModel
 
 @(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadSeventeenTrackCarrierList" }))
 

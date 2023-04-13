@@ -1,8 +1,8 @@
-using shunda.Core;
-using shunda.Domain.LogisticsOrder;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Core;
+using shunda.Domain.LogisticsTrack;
 
-namespace shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier;
+namespace shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackCarrier;
 
 public class SeventeenTrackCarrierListModel : ListModel {
     public SeventeenTrackCarrierListModel(ListPager listPager) : base(listPager) {

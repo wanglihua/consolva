@@ -1,4 +1,4 @@
-namespace shunda.Admin.Areas.LogisticsOrder.Models.SeventeenTrackCarrier;
+namespace shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackCarrier;
 
 public class SeventeenTrackCarrierDetailModel {
     /// <summary>
