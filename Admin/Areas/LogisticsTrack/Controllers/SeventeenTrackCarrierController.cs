@@ -8,7 +8,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass.PassRes;
-using shunda.Service.logisticsTrack;
+using shunda.Service.logisticsTrack.Carrier;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsTrack.Controllers;

@@ -6,7 +6,7 @@ using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.LogisticsTrack;
 
-namespace shunda.Service.logisticsTrack;
+namespace shunda.Service.logisticsTrack.Carrier;
 
 /// <summary>
 /// 17track运输商 服务类

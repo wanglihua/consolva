@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Service.logisticsTrack;
+namespace shunda.Service.logisticsTrack.Carrier;
 
 public class SeventeenTrackCarrierItem {
     /// <summary>

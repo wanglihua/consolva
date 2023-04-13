@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Service.logisticsTrack;
 
-public class SevenTrackRegisterAcceptedItem {
+public class SeventeenTrackRegisterAcceptedItem {
     [JsonProperty("origin")]
     public int Origin { get; set; }
 
