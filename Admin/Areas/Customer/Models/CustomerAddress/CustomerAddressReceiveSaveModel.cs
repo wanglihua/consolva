@@ -95,20 +95,20 @@ public class CustomerAddressReceiveSaveModelValidator : AbstractValidator<Custom
     public CustomerAddressReceiveSaveModelValidator() {
         RuleFor(e => e.CustomerId).Must(p => p > 0).WithMessage("客户id不能为空！");
         RuleFor(e => e.Country).Must(p => p != null && p != Country.None).WithMessage("国家不能为空！");
-        RuleFor(e => e.FirstName).NotNull().NotEmpty().WithMessage("收货人名不能为空！");
+        RuleFor(e => e.FirstName).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("收货人名不能为空！");
         RuleFor(e => e.FirstName).MaximumLength(60).WithMessage("收货人名长度不能大于60！");
-        RuleFor(e => e.LastName).NotNull().NotEmpty().WithMessage("收货人姓不能为空！");
+        RuleFor(e => e.LastName).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("收货人姓不能为空！");
         RuleFor(e => e.LastName).MaximumLength(60).WithMessage("收货人姓长度不能大于60！");
-        RuleFor(e => e.Mobile).NotNull().NotEmpty().WithMessage("手机不能为空！");
+        RuleFor(e => e.Mobile).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("手机不能为空！");
         RuleFor(e => e.Mobile).MaximumLength(60).WithMessage("手机长度不能大于60！");
-        RuleFor(e => e.State).NotNull().NotEmpty().WithMessage("省份不能为空！");
+        RuleFor(e => e.State).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("省份不能为空！");
         RuleFor(e => e.State).MaximumLength(50).WithMessage("省份长度不能大于50！");
-        RuleFor(e => e.City).NotNull().NotEmpty().WithMessage("城市不能为空！");
+        RuleFor(e => e.City).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("城市不能为空！");
         RuleFor(e => e.City).MaximumLength(50).WithMessage("城市长度不能大于50！");
-        RuleFor(e => e.Address).NotNull().NotEmpty().WithMessage("地址不能为空！");
+        RuleFor(e => e.Address).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("地址不能为空！");
         RuleFor(e => e.Address).MaximumLength(200).WithMessage("地址长度不能大于200！");
         RuleFor(e => e.UnitLoc).MaximumLength(20).WithMessage("Unit号长度不能大于20！");
-        RuleFor(e => e.Zipcode).NotNull().NotEmpty().WithMessage("邮政编码不能为空！");
+        RuleFor(e => e.Zipcode).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("邮政编码不能为空！");
         RuleFor(e => e.Zipcode).MaximumLength(10).WithMessage("邮政编码长度不能大于10！");
         RuleFor(e => e.Tfn).MaximumLength(100).WithMessage("ABN/ACN长度不能大于100！");
         RuleFor(e => e.Company).MaximumLength(100).WithMessage("公司长度不能大于100！");

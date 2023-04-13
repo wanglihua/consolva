@@ -14,7 +14,7 @@ public class CustomerSuperVipDiscountSaveModel {
 
 public class CustomerSuperVipDiscountSaveModelValidator : AbstractValidator<CustomerSuperVipDiscountSaveModel> {
     public CustomerSuperVipDiscountSaveModelValidator() {
-        RuleFor(e => e.CustomerCode).NotNull().NotEmpty().WithMessage("客户ID不能为空！");
+        RuleFor(e => e.CustomerCode).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("客户ID不能为空！");
         RuleFor(e => e.Discount).Must(p => p > 0).WithMessage("折扣不能为空且应大于0！");
         RuleFor(e => e.Discount).Must(p => p <= 10m).WithMessage("折扣不能大于10%！");
         RuleFor(e => e.Description).MaximumLength(500).WithMessage("描述不能最长不能超过500！");

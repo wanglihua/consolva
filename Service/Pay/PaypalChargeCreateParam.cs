@@ -31,8 +31,8 @@ public class PaypalChargeCreateParamValidator : AbstractValidator<PaypalChargeCr
         RuleFor(e => e.Amount).Must(p => p > 0).WithMessage("充值金额不能为空或小于0！");
         RuleFor(e => e.Currency).Must(p => p != null && p != CurrencyType.None).WithMessage("货币类型不能为空！");
         RuleFor(e => e.PaymentMethod).Must(p => p != null && p != PaypalPaymentMethod.None).WithMessage("支付方式不能为空！");
-        RuleFor(e => e.ReturnUrl).NotNull().NotEmpty().WithMessage("return url 不能为空！");
-        RuleFor(e => e.CancelUrl).NotNull().NotEmpty().WithMessage("cancel url 不能为空！");
-        RuleFor(e => e.OutTradeNo).NotNull().NotEmpty().WithMessage("out trade no 不能为空！");
+        RuleFor(e => e.ReturnUrl).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("return url 不能为空！");
+        RuleFor(e => e.CancelUrl).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("cancel url 不能为空！");
+        RuleFor(e => e.OutTradeNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("out trade no 不能为空！");
     }
 }

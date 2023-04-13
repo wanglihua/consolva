@@ -14,6 +14,6 @@ public class ExpressOffShelfCompleteParam {
 public class ExpressOffShelfCompleteParamValidator : AbstractValidator<ExpressOffShelfCompleteParam> {
     public ExpressOffShelfCompleteParamValidator() {
         RuleFor(e => e.ShelfId).Must(p => p > 0).WithMessage("货架不能为空！");
-        RuleFor(e => e.TrackingNo).NotNull().NotEmpty().WithMessage("快递单号或入库跟踪号不能为空！");
+        RuleFor(e => e.TrackingNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("快递单号或入库跟踪号不能为空！");
     }
 }

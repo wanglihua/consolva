@@ -28,8 +28,8 @@ public class PaypalOrderCreateParamValidator : AbstractValidator<PaypalOrderCrea
     public PaypalOrderCreateParamValidator() {
         RuleFor(e => e.OrderId).Must(p => p > 0).WithMessage("订单ID不能为空！");
         RuleFor(e => e.PaymentMethod).Must(p => p != null && p != PaypalPaymentMethod.None).WithMessage("支付方式不能为空！");
-        RuleFor(e => e.ReturnUrl).NotNull().NotEmpty().WithMessage("return url 不能为空！");
-        RuleFor(e => e.CancelUrl).NotNull().NotEmpty().WithMessage("cancel url 不能为空！");
-        RuleFor(e => e.OutTradeNo).NotNull().NotEmpty().WithMessage("out trade no 不能为空！");
+        RuleFor(e => e.ReturnUrl).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("return url 不能为空！");
+        RuleFor(e => e.CancelUrl).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("cancel url 不能为空！");
+        RuleFor(e => e.OutTradeNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("out trade no 不能为空！");
     }
 }

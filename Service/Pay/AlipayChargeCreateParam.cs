@@ -24,7 +24,7 @@ public class AlipayChargeCreateParamValidator : AbstractValidator<AlipayChargeCr
     public AlipayChargeCreateParamValidator() {
         RuleFor(e => e.CustomerId).Must(p => p > 0).WithMessage("客户ID不能为空！");
         RuleFor(e => e.Amount).Must(p => p > 0).WithMessage("充值金额不能为空或小于0！");
-        RuleFor(e => e.ReturnUrl).NotNull().NotEmpty().WithMessage("return url 不能为空！");
-        RuleFor(e => e.NotifyUrl).NotNull().NotEmpty().WithMessage("notify url 不能为空！");
+        RuleFor(e => e.ReturnUrl).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("return url 不能为空！");
+        RuleFor(e => e.NotifyUrl).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("notify url 不能为空！");
     }
 }

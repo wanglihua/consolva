@@ -10,6 +10,6 @@ public class PackBoxShipParam {
 
 public class PackBoxShipParamValidator : AbstractValidator<PackBoxShipParam> {
     public PackBoxShipParamValidator() {
-        RuleFor(e => e.PackBoxCode).NotNull().NotEmpty().WithMessage("箱号不能为空！");
+        RuleFor(e => e.PackBoxCode).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("箱号不能为空！");
     }
 }

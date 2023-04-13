@@ -10,7 +10,7 @@ public class PaypalOrderProcessParam {
 
 public class PaypalOrderProcessParamValidator : AbstractValidator<PaypalOrderProcessParam> {
     public PaypalOrderProcessParamValidator() {
-        RuleFor(e => e.PayerId).NotNull().NotEmpty().WithMessage("PayerId 不能为空！");
-        RuleFor(e => e.OutTradeNo).NotNull().NotEmpty().WithMessage("OutTradeNo 不能为空！");
+        RuleFor(e => e.PayerId).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("PayerId 不能为空！");
+        RuleFor(e => e.OutTradeNo).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("OutTradeNo 不能为空！");
     }
 }
