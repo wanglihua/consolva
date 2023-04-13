@@ -2,7 +2,7 @@ using NLog;
 using shunda.Core.Service;
 using ISession = NHibernate.ISession;
 
-namespace shunda.Service.logisticsTrack;
+namespace shunda.Service.logisticsTrack.SeventeenTrack.Register;
 
 /// <summary>
 /// 17track单号注册

@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Service.logisticsTrack;
+namespace shunda.Service.logisticsTrack.SeventeenTrack.Register;
 
 public class SevenTrackRegisterRequestItem {
     [JsonProperty("number")]
@@ -24,17 +24,3 @@ public class SevenTrackRegisterRequestItem {
     [JsonProperty("tag", NullValueHandling = NullValueHandling.Ignore)]
     public string? Tag { get; set; }
 }
-
-/*
-
-{
-  "number": "RR123456789CN",
-  "email":"email@example.com",
-  "param": "",
-  "carrier": 3011,
-  "final_carrier": 21051,
-  "auto_detection": true,
-  "tag": "MyOrderId"
-},
-
-*/

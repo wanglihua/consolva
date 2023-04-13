@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace shunda.Service.logisticsTrack;
+namespace shunda.Service.logisticsTrack.SeventeenTrack;
 
-public class SevenTrackRegisterRejectedItemError {
+public class SevenTrackResponseDataError {
     [JsonProperty("code")]
     public int Code { get; set; }
 
