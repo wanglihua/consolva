@@ -83,6 +83,21 @@ public class SeventeenTrackCarrierController : Controller {
     private IQueryOver<SeventeenTrackCarrierInfo, SeventeenTrackCarrierInfo> GetQueryOver(SeventeenTrackCarrierListQueryParam queryParam) {
         var query = session.QueryOver<SeventeenTrackCarrierInfo>(() => seventeenTrackCarrierAlias!);
 
+        if (string.IsNullOrWhiteSpace(queryParam.CarrierKeyQuery) == false) {
+            string carrierKeyQuery = queryParam.CarrierKeyQuery.Trim();
+            int.TryParse(carrierKeyQuery, out int carrierKeyQueryInt);
+
+            query = query.Where(e => e.CarrierKey == carrierKeyQueryInt);
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.CarrierNameQuery) == false) {
+            string carrierNameQuery = queryParam.CarrierNameQuery.Trim();
+            query = query.Where(e => e.CarrierName.IsInsensitiveLike(carrierNameQuery, MatchMode.Anywhere)
+                                     || e.NameZhCn.IsInsensitiveLike(carrierNameQuery, MatchMode.Anywhere)
+                                     || e.NameZhHk.IsInsensitiveLike(carrierNameQuery, MatchMode.Anywhere)
+            );
+        }
+
         return query;
     }
 
