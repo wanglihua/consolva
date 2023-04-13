@@ -23,19 +23,19 @@
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 250px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.CarrierName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">名称</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 250px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.NameZhCn))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">中文名称1</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 250px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackCarrierAlias).@(nameof(SeventeenTrackCarrierInfo.NameZhHk))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackCarrierList">中文名称2</a>
                 </div>
@@ -78,17 +78,17 @@
                             @ListDataUtil.Render(carrier.CarrierKey)
                         </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" class="break-word">
                         <div>
                             @ListDataUtil.Render(carrier.CarrierName)
                         </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" class="break-word">
                         <div>
                             @ListDataUtil.Render(carrier.NameZhCn)
                         </div>
                     </td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" class="break-word">
                         <div>
                             @ListDataUtil.Render(carrier.NameZhHk)
                         </div>

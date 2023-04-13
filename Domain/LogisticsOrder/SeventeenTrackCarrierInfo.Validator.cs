@@ -18,7 +18,7 @@ public class SeventeenTrackCarrierInfoValidator : AbstractValidator<SeventeenTra
         RuleFor(e => e.Email).MaximumLength(200).WithMessage("email长度不能大于200！");
 
         RuleFor(e => e.Tel).NotNull().WithMessage("电话不能为空！");
-        RuleFor(e => e.Tel).MaximumLength(30).WithMessage("电话长度不能大于30！");
+        RuleFor(e => e.Tel).MaximumLength(100).WithMessage("电话长度不能大于100！");
 
         RuleFor(e => e.Url).NotNull().WithMessage("网址不能为空！");
         RuleFor(e => e.Url).MaximumLength(300).WithMessage("网址长度不能大于300！");
