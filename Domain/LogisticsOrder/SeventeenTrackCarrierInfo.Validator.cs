@@ -9,7 +9,7 @@ public class SeventeenTrackCarrierInfoValidator : AbstractValidator<SeventeenTra
     public SeventeenTrackCarrierInfoValidator() { 
         RuleFor(e => e.CarrierKey).Must(p => p > 0).WithMessage("编号不能为空！");
 
-        RuleFor(e => e.CountryCode).Must(p => p > 0).WithMessage("国家编号不能为空！");
+        // RuleFor(e => e.CountryCode).Must(p => p > 0).WithMessage("国家编号不能为空！");
 
         RuleFor(e => e.CountryIso).NotNull().WithMessage("国家代码不能为空！");
         RuleFor(e => e.CountryIso).MaximumLength(10).WithMessage("国家代码长度不能大于10！");
@@ -27,10 +27,10 @@ public class SeventeenTrackCarrierInfoValidator : AbstractValidator<SeventeenTra
         RuleFor(e => e.CarrierName).MaximumLength(100).WithMessage("名称长度不能大于100！");
 
         RuleFor(e => e.NameZhCn).NotNull().WithMessage("中文名称1不能为空！");
-        RuleFor(e => e.NameZhCn).MaximumLength(30).WithMessage("中文名称1长度不能大于30！");
+        RuleFor(e => e.NameZhCn).MaximumLength(100).WithMessage("中文名称1长度不能大于100！");
 
         RuleFor(e => e.NameZhHk).NotNull().WithMessage("中文名称2不能为空！");
-        RuleFor(e => e.NameZhHk).MaximumLength(30).WithMessage("中文名称2长度不能大于30！");
+        RuleFor(e => e.NameZhHk).MaximumLength(100).WithMessage("中文名称2长度不能大于100！");
 
         RuleFor(e => e.CarrierGroup).NotNull().WithMessage("分组编号不能为空！");
         RuleFor(e => e.CarrierGroup).MaximumLength(10).WithMessage("分组编号长度不能大于10！");
