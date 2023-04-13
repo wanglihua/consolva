@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4013209 */
+  src: url('iconfont.woff2?t=1681356992546') format('woff2'),
+       url('iconfont.woff?t=1681356992546') format('woff'),
+       url('iconfont.ttf?t=1681356992546') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-express:before {
+  content: "\e6dc";
+}
+
+.icon-logistics-track-airplane:before {
+  content: "\e638";
+}
+
+.icon-logistics-track-truck:before {
+  content: "\e611";
+}
+
