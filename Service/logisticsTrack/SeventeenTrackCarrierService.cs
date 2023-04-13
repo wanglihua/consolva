@@ -34,7 +34,15 @@ public class SeventeenTrackCarrierService {
 
         // var response = client.Get(request);
 
-        var carrierList = client.Get<IList<SeventeenTrackCarrierItem>>(request);
+        IList<SeventeenTrackCarrierItem>? carrierList = null;
+        try {
+            carrierList = client.Get<IList<SeventeenTrackCarrierItem>>(request);
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+            throw new Exception($"下载17track运输商数据出现异常: {exp.Message}");
+        }
+
         if (carrierList == null) {
             throw new ValidationException("下载17track运输商数据失败！");
         }
