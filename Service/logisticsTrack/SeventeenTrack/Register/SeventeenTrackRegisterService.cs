@@ -4,6 +4,7 @@ using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.LogisticsTrack;
 
 namespace shunda.Service.logisticsTrack.SeventeenTrack.Register;
 
@@ -82,7 +83,55 @@ public class SeventeenTrackRegisterService {
             throw new ValidationException(errorMessage);
         }
 
-
         // 将返回结果放入数据库
+
+        var acceptedList = responseData.Data.AcceptedList;
+        if (acceptedList != null && acceptedList.Count != 0) {
+            var carrierKeyList = acceptedList.Select(e => e.Carrier).Distinct().ToList();
+            var carrierList = session.Query<SeventeenTrackCarrierInfo>()
+                .Where(e => carrierKeyList.Contains(e.CarrierKey))
+                .ToList();
+
+            foreach (var accepted in acceptedList) {
+                int carrierKey = accepted.Carrier;
+                var carrier = carrierList
+                    .Where(e => e.CarrierKey == carrierKey)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                var seventeenTrackNumber = new SeventeenTrackNumberInfo {
+                    TrackingNo = accepted.Number,
+                    CarrierKey = carrierKey,
+                    CarrierName = carrier?.CarrierName ?? "未知运输商",
+                    Origin = SeventeenTrackNumberOrigin.GetById(accepted.Origin),
+                    ErrorCode = 0,
+                    ErrorMessage = string.Empty,
+                    Status = SeventeenTrackNumberStatus.Accepted,
+                };
+
+                session.Save(seventeenTrackNumber);
+            }
+
+            session.Flush();
+        }
+
+        var rejectedList = responseData.Data.RejectedList;
+        if (rejectedList != null && rejectedList.Count != 0) {
+            foreach (var rejected in rejectedList) {
+                var seventeenTrackNumber = new SeventeenTrackNumberInfo {
+                    TrackingNo = rejected.Number,
+                    CarrierKey = 0,
+                    CarrierName = string.Empty,
+                    Origin = SeventeenTrackNumberOrigin.None,
+                    ErrorCode = rejected.Error.Code,
+                    ErrorMessage = rejected.Error.Message,
+                    Status = SeventeenTrackNumberStatus.Rejected,
+                };
+                
+                session.Save(seventeenTrackNumber);
+            }
+            
+            session.Flush();
+        }
     }
 }
