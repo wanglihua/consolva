@@ -42,7 +42,7 @@ public class SeventeenTrackRegisterService {
         }
     }
 
-    public void RegisterInternal(List<SevenTrackRegisterRequestItem> requestDataItemList) {
+    private void RegisterInternal(List<SevenTrackRegisterRequestItem> requestDataItemList) {
         if (requestDataItemList.Count == 0) {
             throw new ValidationException("注册单号列表不能为空！");
         }

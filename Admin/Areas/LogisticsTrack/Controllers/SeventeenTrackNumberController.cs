@@ -10,6 +10,7 @@ using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.logisticsTrack.SeventeenTrack.Register;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsTrack.Controllers;
@@ -23,9 +24,14 @@ public class SeventeenTrackNumberController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
 
-    public SeventeenTrackNumberController(ISession session) {
+    public SeventeenTrackNumberController(
+        ISession session,
+        SeventeenTrackRegisterService seventeenTrackRegisterService
+    ) {
         this.session = session;
+        this.seventeenTrackRegisterService = seventeenTrackRegisterService;
     }
 
     [HttpGet]
@@ -37,6 +43,21 @@ public class SeventeenTrackNumberController : Controller {
         model.StatusList = SeventeenTrackNumberStatus.GetList();
 
         return View("SeventeenTrackNumberIndex", model);
+    }
+
+    [HttpGet]
+    [Route("/admin/logistics/track/seventeen/track/number/register/{trackingNo}")]
+    public IActionResult RegisterForTest(string trackingNo) {
+        seventeenTrackRegisterService.Register(new List<SevenTrackRegisterRequestItem> {
+            new SevenTrackRegisterRequestItem {
+                Number = trackingNo,
+            }
+        });
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
     }
 
     [HttpPost]
