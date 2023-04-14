@@ -63,6 +63,9 @@ public class SeventeenTrackRegisterService {
 
         var request = new RestRequest("/track/v2/register");
         request.AddHeader("17token", LogisticsTrackConfig.SeventeenTrackToken);
+        request.AddHeader("Content-Type", "application/json");
+
+        request.AddJsonBody(requestDataItemList);
 
         SevenTrackResponse<SevenTrackRegisterResponseData>? responseData = null;
 
