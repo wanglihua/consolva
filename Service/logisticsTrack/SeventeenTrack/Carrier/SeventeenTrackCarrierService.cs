@@ -22,15 +22,14 @@ public class SeventeenTrackCarrierService {
     }
 
     public void SyncData() {
-        // https://carrierlist.17track.net
-        var client = new RestClient(
+        using var client = new RestClient(
             new RestClientOptions {
-                BaseUrl = new Uri("https://res.17track.net/asset/carrier/info/apicarrier.all.json"),
+                BaseUrl = new Uri("https://res.17track.net"),
             },
             configureSerialization: c => c.UseNewtonsoftJson()
         );
 
-        var request = new RestRequest("");
+        var request = new RestRequest("/asset/carrier/info/apicarrier.all.json");
 
         // var response = client.Get(request);
         // response.StatusCode;

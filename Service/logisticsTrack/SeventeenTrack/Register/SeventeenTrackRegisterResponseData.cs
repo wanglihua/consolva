@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Service.logisticsTrack.SeventeenTrack.Register;
 
-public class SevenTrackRegisterResponseData {
+public class SevenTrackRegisterResponseData : SevenTrackResponseData {
     [JsonProperty("accepted", NullValueHandling = NullValueHandling.Ignore)]
     public IList<SeventeenTrackRegisterAcceptedItem>? AcceptedList { get; set; }
 
