@@ -8,50 +8,24 @@
     Layout = "_AdminLayout";
 }
 
-@*
-
-        <li id="logistics-track-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">物流跟踪</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="logistics-track-seventeen-track-number-menu">
-                    <a asp-area="LogisticsTrack" asp-controller="SeventeenTrackNumber" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>17TRACK注册单号
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
-
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-track-menu">物流跟踪</li>
     <li class="active" data-menu="logistics-track-seventeen-track-number-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
-<div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadSeventeenTrackNumberList(0)">
-        <i class="ace-icon fa fa-refresh"></i>
-        刷新
-    </button>
-    <button type="button" class="btn btn-success btn-sm" onclick="showSeventeenTrackNumberDetail(0)">
-        <i class="ace-icon fa fa-plus"></i>
-        新增
-    </button>
-    <button type="button" class="btn btn-danger btn-sm" onclick="deleteSeventeenTrackNumber()">
-        <i class="ace-icon fa fa-trash-o"></i>
-        删除
-    </button>
-</div>
-
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <label for="trackingNoQuery">快递单号</label>&nbsp;<input id="trackingNoQuery" autocomplete="off" style="width: 150px; height: 30px;" placeholder="快递单号查询"/>&nbsp;
+    <label for="carrierKeyQuery">运输商代码</label>&nbsp;<input id="carrierKeyQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="运输商代码查询"/>&nbsp;
+    <label for="carrierNameQuery">运输商名称</label>&nbsp;<input id="carrierNameQuery" autocomplete="off" style="width: 150px; height: 30px;" placeholder="运输商名称模糊查询"/>&nbsp;
+    
+    <label for="statusQuery">状态</label>&nbsp;
+    <select id="statusQuery" style="width: 100px; height: 30px;">
+        <option value="0">状态查询</option>
+        @foreach (var status in Model.StatusList) {
+            <option value="@status.Id">@status.Name</option>
+        }
+    </select>&nbsp;    
 
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadSeventeenTrackNumberList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
@@ -94,6 +68,10 @@
             url: "@Url.Action("List", "SeventeenTrackNumber")",
             type: "POST",
             data: {
+                "@(nameof(SeventeenTrackNumberListQueryParam.TrackingNoQuery))": $("#trackingNoQuery").val(),
+                "@(nameof(SeventeenTrackNumberListQueryParam.CarrierKeyQuery))": $("#carrierKeyQuery").val(),
+                "@(nameof(SeventeenTrackNumberListQueryParam.CarrierNameQuery))": $("#carrierNameQuery").val(),
+                "@(nameof(SeventeenTrackNumberListQueryParam.StatusQuery))": $("#statusQuery").val(),
                 "@(nameof(SeventeenTrackNumberListQueryParam.PageIndex))": pageIndex,
                 "@(nameof(SeventeenTrackNumberListQueryParam.SortField))": sortField,
                 "@(nameof(SeventeenTrackNumberListQueryParam.SortDir))": sortDir
@@ -134,61 +112,6 @@
                 $("#seventeenTrackNumberDetailDialog").modal(modalOptions);
             }
         });
-    }
-
-    function saveSeventeenTrackNumber() {
-        var form = $("#seventeenTrackNumberDetailForm");
-        var valid = validate(form);
-
-        if (valid) {
-            showMask("提交中...");
-            $.ajax({
-                url: '@Url.Action("Save", "SeventeenTrackNumber")',
-                type: "POST",
-                data: form.serialize(),
-                success: function(data) {
-                    hideMask();
-                    if (data.success === false) {
-                        $.msg.error(data.message);
-                        return;
-                    }
-
-                    $.msg.show(data.message);
-                    $('#seventeenTrackNumberDetailDialog').modal('hide');
-                    loadSeventeenTrackNumberList();
-                }
-            });
-        }
-    }
-
-    function deleteSeventeenTrackNumber() {
-        var idList = getSelectIdList('#tblSeventeenTrackNumberList');
-
-        if (idList.length === 0) {
-            $.msg.alert("请选择数据！");
-            return;
-        }
-
-        $.msg.confirm("确认要删除吗？",
-            function() {
-                showMask("提交中...");
-                $.ajax({
-                    url: '@Url.Action("Delete", "SeventeenTrackNumber")',
-                    type: "POST",
-                    data: { "idList": idList },
-                    success: function(data) {
-                        hideMask();
-                        if (data.success === false) {
-                            $.msg.error(data.message);
-                            return;
-                        }
-
-                        $.msg.show(data.message);
-                        loadSeventeenTrackNumberList();
-                    }
-                });
-            }
-        );
     }
 
 </script>

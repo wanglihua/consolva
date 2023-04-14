@@ -57,7 +57,7 @@ public class SeventeenTrackNumberController : Controller {
         }
 
         listQuery = listQuery.ThenByAlias(() => seventeenTrackNumberAlias!.Id).Desc;
-            
+
         IList<SeventeenTrackNumberInfo> seventeenTrackNumberList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -70,8 +70,8 @@ public class SeventeenTrackNumberController : Controller {
 
         SeventeenTrackNumberListModel model = new SeventeenTrackNumberListModel(listPager);
         model.SeventeenTrackNumberList = seventeenTrackNumberList;
-        
-        model.SeventeenTrackNumberAlias = nameof(seventeenTrackNumberAlias);        
+
+        model.SeventeenTrackNumberAlias = nameof(seventeenTrackNumberAlias);
 
         return View("SeventeenTrackNumberList", model);
     }
@@ -82,6 +82,26 @@ public class SeventeenTrackNumberController : Controller {
     private IQueryOver<SeventeenTrackNumberInfo, SeventeenTrackNumberInfo> GetQueryOver(SeventeenTrackNumberListQueryParam queryParam) {
         var query = session.QueryOver<SeventeenTrackNumberInfo>(() => seventeenTrackNumberAlias!);
 
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
+            string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
+            query = query.Where(e => e.TrackingNo == trackingNoQuery);
+        }
+
+        if (queryParam.CarrierKeyQuery != null) {
+            int carrierKeyQuery = queryParam.CarrierKeyQuery.Value;
+            query = query.Where(e => e.CarrierKey == carrierKeyQuery);
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.CarrierNameQuery) == false) {
+            string carrierNameQuery = queryParam.CarrierNameQuery.Trim();
+            query = query.Where(e => e.CarrierName.IsInsensitiveLike(carrierNameQuery, MatchMode.Anywhere));
+        }
+
+        if (queryParam.StatusQuery != null && queryParam.StatusQuery != SeventeenTrackNumberStatus.None) {
+            var statusQuery = queryParam.StatusQuery;
+            query = query.Where(e => e.Status == statusQuery);
+        }
+
         return query;
     }
 
@@ -90,95 +110,24 @@ public class SeventeenTrackNumberController : Controller {
     public IActionResult Detail(IdParam param) {
         var id = param.Id;
 
-        SeventeenTrackNumberInfo? seventeenTrackNumber;
-
-        if (id <= 0) {
-            seventeenTrackNumber = new SeventeenTrackNumberInfo();
-        } else {
-            seventeenTrackNumber = session.Get<SeventeenTrackNumberInfo>(id);
-            if (seventeenTrackNumber == null) {
-                throw new ValidationException($"指定的 17TRACK注册单号#{id} 不存在！");
-            }
+        var seventeenTrackNumber = session.Get<SeventeenTrackNumberInfo>(id);
+        if (seventeenTrackNumber == null) {
+            throw new ValidationException($"指定的 17TRACK注册单号#{id} 不存在！");
         }
 
-        SeventeenTrackNumberDetailModel model = new SeventeenTrackNumberDetailModel();
-        model.SeventeenTrackNumberId = seventeenTrackNumber.Id;
-
-        model.TrackingNo = seventeenTrackNumber.TrackingNo;
-        model.CarrierKey = seventeenTrackNumber.CarrierKey;
-        model.CarrierName = seventeenTrackNumber.CarrierName;
-        model.Origin = seventeenTrackNumber.Origin;
-        model.ErrorCode = seventeenTrackNumber.ErrorCode;
-        model.ErrorMessage = seventeenTrackNumber.ErrorMessage;
-        model.Status = seventeenTrackNumber.Status;
-
-        model.OriginList = SeventeenTrackNumberOrigin.GetList();
-        model.StatusList = SeventeenTrackNumberStatus.GetList();
+        SeventeenTrackNumberDetailModel model = new SeventeenTrackNumberDetailModel {
+            SeventeenTrackNumberId = seventeenTrackNumber.Id,
+            TrackingNo = seventeenTrackNumber.TrackingNo,
+            CarrierKey = seventeenTrackNumber.CarrierKey,
+            CarrierName = seventeenTrackNumber.CarrierName,
+            Origin = seventeenTrackNumber.Origin,
+            ErrorCode = seventeenTrackNumber.ErrorCode,
+            ErrorMessage = seventeenTrackNumber.ErrorMessage,
+            Status = seventeenTrackNumber.Status,
+            OriginList = SeventeenTrackNumberOrigin.GetList(),
+            StatusList = SeventeenTrackNumberStatus.GetList()
+        };
 
         return View("SeventeenTrackNumberDetail", model);
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/track/seventeen/track/number/save")]
-    [Transactional]
-    public IActionResult Save(SeventeenTrackNumberSaveModel model) {
-        ValidationUtil.Validate<SeventeenTrackNumberSaveModelValidator, SeventeenTrackNumberSaveModel>(model);
-
-        int seventeenTrackNumberId = model.SeventeenTrackNumberId;
-
-        bool isCreate = seventeenTrackNumberId <= 0;
-
-        SeventeenTrackNumberInfo seventeenTrackNumber;
-
-        if (isCreate) {
-            seventeenTrackNumber = new SeventeenTrackNumberInfo();
-        } else {
-            seventeenTrackNumber = session.Get<SeventeenTrackNumberInfo>(seventeenTrackNumberId);
-            if (seventeenTrackNumber == null){
-                throw new ValidationException($"指定的 17TRACK注册单号#{seventeenTrackNumberId} 不存在！");
-            }
-        }
-
-        seventeenTrackNumber.TrackingNo = model.TrackingNo;
-        seventeenTrackNumber.CarrierKey = model.CarrierKey;
-        seventeenTrackNumber.CarrierName = model.CarrierName;
-        seventeenTrackNumber.Origin = model.Origin;
-        seventeenTrackNumber.ErrorCode = model.ErrorCode;
-        seventeenTrackNumber.ErrorMessage = model.ErrorMessage;
-        seventeenTrackNumber.Status = model.Status;
-
-        if (isCreate) {
-            session.Save(seventeenTrackNumber);
-        } else {
-            session.Update(seventeenTrackNumber);
-        }
-
-        session.Flush();
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "保存成功！",
-        });
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/track/seventeen/track/number/delete")]
-    [Transactional]
-    public IActionResult Delete(IdListParam param) {
-        param.Validate("请选择要删除的17TRACK注册单号！");
-
-        var idList = param.IdList;
-
-        foreach (int id in idList) {
-            SeventeenTrackNumberInfo seventeenTrackNumber = session.Load<SeventeenTrackNumberInfo>(id);
-            session.Delete(seventeenTrackNumber);
-        }
-
-        session.Flush();
-
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "删除成功！",
-        });
     }
 }

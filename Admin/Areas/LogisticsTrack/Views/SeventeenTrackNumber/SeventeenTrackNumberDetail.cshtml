@@ -22,7 +22,7 @@
                             <div class="form-group">
                                 <label asp-for="TrackingNo" class="col-xs-2 control-label">快递单号</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="TrackingNo" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off"/>
+                                    <input asp-for="TrackingNo" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -33,9 +33,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="CarrierKey" class="col-xs-2 control-label">服务商代码</label>
+                                <label asp-for="CarrierKey" class="col-xs-2 control-label">运输商代码</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="CarrierKey" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+                                    <input asp-for="CarrierKey" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
 
                                 </div>
                             </div>
@@ -47,9 +47,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="CarrierName" class="col-xs-2 control-label">服务商名称</label>
+                                <label asp-for="CarrierName" class="col-xs-2 control-label">运输商名称</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="CarrierName" type="text" required="required" maxlength="100" class="input-sm form-control" autocomplete="off"/>
+                                    <input asp-for="CarrierName" type="text" required="required" maxlength="100" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +62,7 @@
                             <div class="form-group">
                                 <label asp-for="Origin" class="col-xs-2 control-label">运输商识别</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="Origin" required="required" digits="true" class="input-sm form-control">
+                                    <select asp-for="Origin" required="required" digits="true" class="input-sm form-control" disabled="disabled">
                                         <option value=""></option>
                                         @foreach(SeventeenTrackNumberOrigin type in Model.OriginList) {
                                             <option value="@(type.Id)">@(type.Name)</option>
@@ -80,7 +80,7 @@
                             <div class="form-group">
                                 <label asp-for="ErrorCode" class="col-xs-2 control-label">错误代码</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="ErrorCode" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+                                    <input asp-for="ErrorCode" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
 
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                             <div class="form-group">
                                 <label asp-for="ErrorMessage" class="col-xs-2 control-label">错误描述</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="ErrorMessage" type="text" required="required" maxlength="300" class="input-sm form-control" autocomplete="off"/>
+                                    <input asp-for="ErrorMessage" type="text" required="required" maxlength="300" class="input-sm form-control" autocomplete="off" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +107,7 @@
                             <div class="form-group">
                                 <label asp-for="Status" class="col-xs-2 control-label">状态</label>
                                 <div class="col-xs-10">
-                                    <select asp-for="Status" required="required" digits="true" class="input-sm form-control">
+                                    <select asp-for="Status" required="required" digits="true" class="input-sm form-control" disabled="disabled">
                                         <option value=""></option>
                                         @foreach(SeventeenTrackNumberStatus type in Model.StatusList) {
                                             <option value="@(type.Id)">@(type.Name)</option>
@@ -122,10 +122,6 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-sm" onclick="saveSeventeenTrackNumber();">
-                    <i class="ace-icon fa fa-floppy-o"></i>
-                    保存
-                </button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
                     <i class="ace-icon fa fa-times"></i>
                     关闭

@@ -1,4 +1,3 @@
-
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using shunda.Domain.Pass.PassRes
 @model shunda.Admin.Models.Sidebar.SidebarModel
@@ -15,11 +14,19 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
+            @if (Model.HasPassRes(PassRes.LogisticsTrack.SeventeenTrackNumber)) {
+                <li id="logistics-track-seventeen-track-number-menu">
+                    <a asp-area="LogisticsTrack" asp-controller="SeventeenTrackNumber" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>17TRACK注册单号
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
             @if (Model.HasPassRes(PassRes.LogisticsTrack.SeventeenTrackCarrier)) {
                 <li id="logistics-track-seventeen-track-carrier-menu">
                     <a asp-area="LogisticsTrack" asp-controller="SeventeenTrackCarrier" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>
-                        17TRACK运输商
+                        <i class="menu-icon fa fa-caret-right"></i>17TRACK运输商
                     </a>
                     <b class="arrow"></b>
                 </li>

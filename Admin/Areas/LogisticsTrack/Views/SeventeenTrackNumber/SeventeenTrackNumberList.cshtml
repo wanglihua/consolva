@@ -17,7 +17,7 @@
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 180px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">快递单号</a>
                 </div>
@@ -25,13 +25,13 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CarrierKey))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">服务商代码</a>
+                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CarrierKey))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">运输商代码</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 250px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CarrierName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">服务商名称</a>
+                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CarrierName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">运输商名称</a>
                 </div>
             </th>
 
@@ -43,30 +43,13 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.ErrorCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">错误代码</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.ErrorMessage))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">错误描述</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
                     <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.Status))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">状态</a>
                 </div>
             </th>
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">创建时间</a>
-                </div>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">修改时间</a>
+                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">注册时间</a>
                 </div>
             </th>
             <th></th>
@@ -106,16 +89,6 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackNumber.ErrorCode)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(seventeenTrackNumber.ErrorMessage)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
                             @ListDataUtil.Render(seventeenTrackNumber.Status.Name)
                         </div>
                     </td>
@@ -125,11 +98,7 @@
                             @seventeenTrackNumber.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @seventeenTrackNumber.UpdateTime.ToString("yyyy-MM-dd HH:mm")
-                        </div>
-                    </td>
+
                     <td></td>
                 </tr>
             }
