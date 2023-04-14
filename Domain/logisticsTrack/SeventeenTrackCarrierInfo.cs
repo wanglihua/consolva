@@ -4,7 +4,7 @@ using shunda.Core.Util;
 namespace shunda.Domain.LogisticsTrack;
 
 /// <summary>
-/// 17track运输商
+/// 17TRACK运输商
 /// </summary>
 public class SeventeenTrackCarrierInfo : Entity {
     /// <summary>

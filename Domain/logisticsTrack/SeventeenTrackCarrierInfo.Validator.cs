@@ -3,7 +3,7 @@ using FluentValidation;
 namespace shunda.Domain.LogisticsTrack;
 
 /// <summary>
-/// 17track运输商 实体验证器
+/// 17TRACK运输商 实体验证器
 /// </summary>
 public class SeventeenTrackCarrierInfoValidator : AbstractValidator<SeventeenTrackCarrierInfo> {
     public SeventeenTrackCarrierInfoValidator() {

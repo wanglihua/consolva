@@ -9,7 +9,7 @@ using shunda.Domain.LogisticsTrack;
 namespace shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
 
 /// <summary>
-/// 17track运输商 服务类
+/// 17TRACK运输商 服务类
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class SeventeenTrackCarrierService {
@@ -40,11 +40,11 @@ public class SeventeenTrackCarrierService {
         }
         catch (Exception exp) {
             log.Error(exp);
-            throw new Exception($"下载17track运输商数据出现异常: {exp.Message}");
+            throw new Exception($"下载17TRACK运输商数据出现异常: {exp.Message}");
         }
 
         if (carrierList == null) {
-            throw new ValidationException("下载17track运输商数据失败！");
+            throw new ValidationException("下载17TRACK运输商数据失败！");
         }
 
         var carrierListInDb = session.Query<SeventeenTrackCarrierInfo>().ToList();

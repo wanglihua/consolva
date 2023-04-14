@@ -14,7 +14,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.LogisticsTrack.Controllers;
 
 /// <summary>
-/// 17track运输商 控制器
+/// 17TRACK运输商 控制器
 /// </summary>
 [LogisticsTrackArea]
 [AdminAuth(PassRes.LogisticsTrack.SeventeenTrackCarrier)]
@@ -113,7 +113,7 @@ public class SeventeenTrackCarrierController : Controller {
         } else {
             seventeenTrackCarrier = session.Get<SeventeenTrackCarrierInfo>(id);
             if (seventeenTrackCarrier == null) {
-                throw new ValidationException($"指定的 17track运输商#{id} 不存在！");
+                throw new ValidationException($"指定的 17TRACK运输商#{id} 不存在！");
             }
         }
 

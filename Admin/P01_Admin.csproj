@@ -46,6 +46,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Areas\LogisticsOrder\Models\SeventeenTrackCarrier" />
+      <Folder Include="Areas\LogisticsOrder\Views\SeventeenTrackCarrier" />
       <Folder Include="Areas\LogisticsTrack\Models" />
       <Folder Include="Areas\LogisticsTrack\Views" />
     </ItemGroup>
@@ -54,6 +56,10 @@
       <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\SeventeenTrackCarrier\SeventeenTrackCarrierDetail.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\SeventeenTrackCarrier\SeventeenTrackCarrierIndex.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\LogisticsOrder\Views\SeventeenTrackCarrier\SeventeenTrackCarrierList.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Areas\LogisticsOrder\Controllers\SeventeenTrackCarrierController.cs" />
     </ItemGroup>
 
 </Project>
