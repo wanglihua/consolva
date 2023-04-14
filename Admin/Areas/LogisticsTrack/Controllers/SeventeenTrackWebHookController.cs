@@ -1,5 +1,8 @@
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using shunda.Core.Config;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using ISession = NHibernate.ISession;
 
@@ -19,20 +22,22 @@ public class SeventeenTrackWebHookController : Controller {
     [HttpPost]
     [Route("/admin/seventeen/track/web/hook/notify")]
     public IActionResult Notify() {
-        if (Request.Headers.ContainsKey("sign") && Request.Headers["sign"].Count != 0) {
-            log.Error("sign:");
-            log.Error(Request.Headers["sign"][0]);
+        if (Request.Headers.ContainsKey("sign") == false || Request.Headers["sign"].Count == 0) {
+            return StatusCode((int)HttpStatusCode.NotAcceptable);
         }
+
+        string sign = Request.Headers["sign"][0];
 
         StreamReader streamReader = new StreamReader(Request.Body);
         string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
 
-        log.Error("requestBody:");
-        log.Error(requestBody);
+        // 签名验证
+        if (sign != SHA256Util.Encrypt($"{requestBody}/{LogisticsTrackConfig.SeventeenTrackToken}")) {
+            return StatusCode((int)HttpStatusCode.NotAcceptable);
+        }
+        
+        
 
-        return Json(new JsonResultData {
-            Success = true,
-            Message = "操作成功！",
-        });
+        return StatusCode((int)HttpStatusCode.OK);
     }
 }
