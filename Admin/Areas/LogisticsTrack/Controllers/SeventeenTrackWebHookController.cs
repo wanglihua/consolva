@@ -27,16 +27,20 @@ public class SeventeenTrackWebHookController : Controller {
         }
 
         string sign = Request.Headers["sign"][0];
+        log.Error("sign:");
+        log.Error(sign);
 
         StreamReader streamReader = new StreamReader(Request.Body);
         string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
+
+        log.Error("requestBody:");
+        log.Error(requestBody);
 
         // 签名验证
         if (sign != SHA256Util.Encrypt($"{requestBody}/{LogisticsTrackConfig.SeventeenTrackToken}")) {
             return StatusCode((int)HttpStatusCode.NotAcceptable);
         }
-        
-        
+
 
         return StatusCode((int)HttpStatusCode.OK);
     }
