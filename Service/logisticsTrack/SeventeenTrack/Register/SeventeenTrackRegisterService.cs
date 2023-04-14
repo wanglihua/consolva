@@ -3,6 +3,7 @@ using NLog;
 using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.LogisticsTrack;
 
@@ -61,6 +62,7 @@ public class SeventeenTrackRegisterService {
         );
 
         var request = new RestRequest("/track/v2/register");
+        request.AddHeader("17token", LogisticsTrackConfig.SeventeenTrackToken);
 
         SevenTrackResponse<SevenTrackRegisterResponseData>? responseData = null;
 
@@ -127,10 +129,10 @@ public class SeventeenTrackRegisterService {
                     ErrorMessage = rejected.Error.Message,
                     Status = SeventeenTrackNumberStatus.Rejected,
                 };
-                
+
                 session.Save(seventeenTrackNumber);
             }
-            
+
             session.Flush();
         }
     }
