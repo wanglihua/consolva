@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -481,6 +482,36 @@ public class CustomerController : Controller {
         return Json(new Dictionary<string, object> {
             { "success", true },
             { "message", "更新客户VIP成功！" }
+        });
+    }
+
+    [AdminAuth(AdminOnly = true)]
+    [HttpPost]
+    [Route("/admin/customer/all/set/agree")]
+    public IActionResult AllSetAgree() {
+        session.Query<CustomerInfo>()
+            .UpdateBuilder()
+            .Set(e => e.Agreed, true)
+            .Update();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    [AdminAuth(AdminOnly = true)]
+    [HttpPost]
+    [Route("/admin/customer/all/set/disagree")]
+    public IActionResult AllSetDisagree() {
+        session.Query<CustomerInfo>()
+            .UpdateBuilder()
+            .Set(e => e.Agreed, false)
+            .Update();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
         });
     }
 

@@ -89,6 +89,62 @@
             }
         </script>
     }
+
+    @if (Model.IsDev) {
+        <button class="btn btn-purple btn-sm" onclick="setAllAgree()">
+            <i class="ace-icon fa fa-gear"></i>
+            设置客户端登录协议全部【同意】
+        </button>
+
+        <button class="btn btn-purple btn-sm" onclick="setAllDisagree()">
+            <i class="ace-icon fa fa-gear"></i>
+            设置客户端登录协议全部【不同意】
+        </button>
+
+        <script type="text/javascript">
+            function setAllAgree() {
+                showMask("处理中，请稍候");
+        
+                $.ajax({
+                    url: "@Url.Action("AllSetAgree", "Customer")",
+                    type: "POST",
+                    data: {
+                    },
+                    success: function(data) {
+                        hideMask();
+        
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+        
+                        $.msg.show(data.message);
+                    }
+                });
+            }
+            
+            function setAllDisagree() {
+                showMask("处理中，请稍候");
+        
+                $.ajax({
+                    url: "@Url.Action("AllSetDisagree", "Customer")",
+                    type: "POST",
+                    data: {
+                    },
+                    success: function(data) {
+                        hideMask();
+        
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+        
+                        $.msg.show(data.message);
+                    }
+                });
+            }
+        </script>
+    }
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
