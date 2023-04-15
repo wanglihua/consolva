@@ -6,7 +6,7 @@ namespace shunda.Domain.LogisticsTrack;
 /// 17TRACK注册快递单 实体验证器
 /// </summary>
 public class SeventeenTrackNumberInfoValidator : AbstractValidator<SeventeenTrackNumberInfo> {
-    public SeventeenTrackNumberInfoValidator() { 
+    public SeventeenTrackNumberInfoValidator() {
         RuleFor(e => e.TrackingNo).NotNull().WithMessage("快递单号不能为空！");
         RuleFor(e => e.TrackingNo).MaximumLength(30).WithMessage("快递单号长度不能大于30！");
 
@@ -20,5 +20,7 @@ public class SeventeenTrackNumberInfoValidator : AbstractValidator<SeventeenTrac
 
         RuleFor(e => e.Status).NotNull().WithMessage("状态不能为空！");
 
+        RuleFor(e => e.TrackStatus).NotNull().WithMessage("跟踪状态不能为空！");
+        RuleFor(e => e.TrackSubStatus).NotNull().WithMessage("跟踪子状态不能为空！");
     }
 }

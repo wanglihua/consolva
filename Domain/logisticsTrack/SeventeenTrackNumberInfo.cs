@@ -42,6 +42,16 @@ public class SeventeenTrackNumberInfo : Entity {
     /// </summary>
     public virtual SeventeenTrackNumberStatus Status { get; set; } = SeventeenTrackNumberStatus.None;
 
+    /// <summary>
+    /// 跟踪状态
+    /// </summary>
+    public virtual string TrackStatus { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 跟踪子状态
+    /// </summary>
+    public virtual string TrackSubStatus { get; set; } = string.Empty;
+
     public override void Validate() {
         ValidationUtil.ValidateEntity<SeventeenTrackNumberInfoValidator, SeventeenTrackNumberInfo>(this);
     }

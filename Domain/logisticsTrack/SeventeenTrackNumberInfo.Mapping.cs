@@ -70,5 +70,23 @@ public class SeventeenTrackNumberInfoMapping : EntityMapping<SeventeenTrackNumbe
             }
         );
 
+        Property(
+            x => x.TrackStatus,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("track_status");
+                map.NotNullable(true);
+            }
+        );
+        
+        Property(
+            x => x.TrackSubStatus,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("track_sub_status");
+                map.NotNullable(true);
+            }
+        );        
+
     }
 }
