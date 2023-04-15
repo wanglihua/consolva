@@ -68,8 +68,13 @@ public class SeventeenTrackRegisterService {
         request.AddJsonBody(requestDataItemList);
 
         request.OnBeforeDeserialization = response => {
-            log.Error(response.ContentType ?? string.Empty);
-            log.Error(response.Content ?? string.Empty);
+            string contentType = response.ContentType ?? string.Empty;
+            if (contentType != "application/json") {
+                string content = response.Content ?? string.Empty;
+                log.Error($"contentType: {contentType}");
+                log.Error($"content: {content}");
+                throw new ValidationException(content);
+            }
         };
 
         SevenTrackResponse<SevenTrackRegisterResponseData>? responseData = null;
