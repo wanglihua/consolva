@@ -10,6 +10,7 @@ using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Express;
+using shunda.Service.Logistics;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Order.Controllers;
@@ -21,19 +22,22 @@ public class OrderDetailController : Controller {
     private readonly ExpressSizeWeightService expressSizeWeightService;
     private readonly ExpressService expressService;
     private readonly ExpressPhotoFileService expressPhotoFileService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public OrderDetailController(
         ISession session,
         LoginCustomerService loginCustomerService,
         ExpressSizeWeightService expressSizeWeightService,
         ExpressService expressService,
-        ExpressPhotoFileService expressPhotoFileService
+        ExpressPhotoFileService expressPhotoFileService,
+        LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressSizeWeightService = expressSizeWeightService;
         this.expressService = expressService;
         this.expressPhotoFileService = expressPhotoFileService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpPost]
@@ -228,6 +232,22 @@ public class OrderDetailController : Controller {
             expressItemList.Add(expressItem);
         }
 
+        var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
+
+        // 快递单尺寸重量
+        var sizeWeightItemList = sizeWeightList
+            .OrderBy(e => e.Id)
+            .Select(e => new OrderDetailExpressSizeWeightListItem {
+                Id = e.Id,
+                Length = e.Length.ToString("#0.00"),
+                Width = e.Width.ToString("#0.00"),
+                Height = e.Height.ToString("#0.00"),
+                VolumeWeight = (e.Length * e.Width * e.Height / volumeWeightDenominator).ToString("#0.000"), // 这里的体积重分母，只能用系统默认的了
+                ActualWeight = e.Weight.ToString("#0.000"),
+                PackageCount = e.PackageCount,
+            })
+            .ToList();
+
         // 订单打包
         var orderPackList = session.Query<LogisticsOrderPackInfo>()
             .Where(e => e.Order.Id == orderId)
@@ -368,6 +388,7 @@ public class OrderDetailController : Controller {
             ReceiveAddress = receiveAddressItem,
             // SendAddress = sendAddressItem,
             ExpressList = expressItemList,
+            ExpressSizeWeightList = sizeWeightItemList,
             OrderPackList = orderPackItemList,
             HasOrderPackData = orderPackData != null,
             OrderPackData = orderPackDataItem,

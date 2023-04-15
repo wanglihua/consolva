@@ -20,6 +20,10 @@ Page({
             show: false,
             text: "显示",
         },
+        expressSizeWeightListShow: {
+            show: false,
+            text: "显示",
+        },
         orderPackListShow: {
             show: false,
             text: "显示",
@@ -120,6 +124,21 @@ Page({
 
         this.setData({
             expressListShow: expressListShow,
+        });
+    },
+
+    onExpressSizeWeightListHeaderClick(e) {
+        const expressSizeWeightListShow = this.data.expressSizeWeightListShow;
+        if (expressSizeWeightListShow.show) {
+            expressSizeWeightListShow.show = false;
+            expressSizeWeightListShow.text = "显示";
+        } else {
+            expressSizeWeightListShow.show = true;
+            expressSizeWeightListShow.text = "隐藏";
+        }
+
+        this.setData({
+            expressSizeWeightListShow: expressSizeWeightListShow,
         });
     },
 

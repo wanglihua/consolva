@@ -21,17 +21,17 @@ public class ExpressCheckinDetailController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly ExpressPhotoFileService expressPhotoFileService;
-    private readonly LogisticsModeSettingService LogisticsModeSettingService;
+    private readonly LogisticsModeSettingService logisticsModeSettingService;
 
     public ExpressCheckinDetailController(ISession session,
         LoginCustomerService loginCustomerService,
         ExpressPhotoFileService expressPhotoFileService,
-        LogisticsModeSettingService LogisticsModeSettingService
+        LogisticsModeSettingService logisticsModeSettingService
     ) {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.expressPhotoFileService = expressPhotoFileService;
-        this.LogisticsModeSettingService = LogisticsModeSettingService;
+        this.logisticsModeSettingService = logisticsModeSettingService;
     }
 
     [HttpPost]
@@ -93,7 +93,7 @@ public class ExpressCheckinDetailController : Controller {
             packageCount = sizeWeightList.Sum(e => e.PackageCount);
         }
 
-        var volumeWeightDenominator = LogisticsModeSettingService.GetSetting().VolumeWeightDenominator;
+        var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         totalVolumeWeight = totalVolume / volumeWeightDenominator; // 这里的体积重分母，只能用系统默认的了
         totalVolume = totalVolume / 100_00_00; // 转成立方米

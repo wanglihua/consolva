@@ -18,6 +18,9 @@ public class OrderDetailModel {
     [JsonProperty("expressList")]
     public IList<OrderDetailExpressItem> ExpressList { get; set; } = new List<OrderDetailExpressItem>();
 
+    [JsonProperty("expressSizeWeightList")]
+    public IList<OrderDetailExpressSizeWeightListItem> ExpressSizeWeightList { get; set; } = new List<OrderDetailExpressSizeWeightListItem>();
+
     [JsonProperty("orderPackList")]
     public IList<OrderDetailOrderPackItem> OrderPackList { get; set; } = new List<OrderDetailOrderPackItem>();
 
