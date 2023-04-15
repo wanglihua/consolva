@@ -18,7 +18,7 @@
     </button>
     <button type="button" class="btn btn-pink btn-sm" onclick="initData()">
         <i class="ace-icon fa fa-plus"></i>
-        初始化数据
+        初始化最新数据
     </button>
     <button type="button" class="btn btn-purple btn-sm" onclick="refreshCache()">
         <i class="ace-icon fa fa-gears"></i>
@@ -94,7 +94,7 @@
     }
 
     function initData() {
-        $.msg.confirm("确认要初始化数据吗？",
+        $.msg.confirm("确认要初始化最新数据吗？",
             function() {
                 $.ajax({
                     url: '@Url.Action("InitData", "PassRes")',
