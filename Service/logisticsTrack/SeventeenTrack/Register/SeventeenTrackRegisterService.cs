@@ -37,7 +37,7 @@ public class SeventeenTrackRegisterService {
 
         while (requestDataItemListRemind.Count != 0) {
             List<SevenTrackRegisterRequestItem> requestDataItemListOnce = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
-            requestDataItemListRemind = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
+            requestDataItemListRemind = requestDataItemListRemind.Skip(MAX_TRACKING_NO_COUNT_ONCE).Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
 
             RegisterInternal(requestDataItemListOnce);
         }
@@ -67,6 +67,11 @@ public class SeventeenTrackRegisterService {
 
         request.AddJsonBody(requestDataItemList);
 
+        request.OnBeforeDeserialization = response => {
+            log.Error(response.ContentType ?? string.Empty);
+            log.Error(response.Content ?? string.Empty);
+        };
+
         SevenTrackResponse<SevenTrackRegisterResponseData>? responseData = null;
 
         try {
@@ -89,6 +94,10 @@ public class SeventeenTrackRegisterService {
         }
 
         // 将返回结果放入数据库
+        var trackingNoList = requestDataItemList.Select(e => e.Number).ToList();
+        var seventeenTrackNumberList = session.Query<SeventeenTrackNumberInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo))
+            .ToList();
 
         var acceptedList = responseData.Data.AcceptedList;
         if (acceptedList != null && acceptedList.Count != 0) {
@@ -104,17 +113,28 @@ public class SeventeenTrackRegisterService {
                     .Take(1)
                     .SingleOrDefault();
 
-                var seventeenTrackNumber = new SeventeenTrackNumberInfo {
-                    TrackingNo = accepted.Number,
-                    CarrierKey = carrierKey,
-                    CarrierName = carrier?.CarrierName ?? "未知运输商",
-                    Origin = SeventeenTrackNumberOrigin.GetById(accepted.Origin),
-                    ErrorCode = 0,
-                    ErrorMessage = string.Empty,
-                    Status = SeventeenTrackNumberStatus.Accepted,
-                };
+                string trackingNo = accepted.Number;
 
-                session.Save(seventeenTrackNumber);
+                var seventeenTrackNumber = seventeenTrackNumberList
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                if (seventeenTrackNumber == null) {
+                    seventeenTrackNumber = new SeventeenTrackNumberInfo {
+                        TrackingNo = trackingNo,
+                    };
+                }
+
+                seventeenTrackNumber.TrackingNo = trackingNo;
+                seventeenTrackNumber.CarrierKey = carrierKey;
+                seventeenTrackNumber.CarrierName = carrier?.CarrierName ?? "未知运输商";
+                seventeenTrackNumber.Origin = SeventeenTrackNumberOrigin.GetById(accepted.Origin);
+                seventeenTrackNumber.ErrorCode = 0;
+                seventeenTrackNumber.ErrorMessage = string.Empty;
+                seventeenTrackNumber.Status = SeventeenTrackNumberStatus.Accepted;
+
+                session.SaveOrUpdate(seventeenTrackNumber);
             }
 
             session.Flush();
@@ -123,17 +143,39 @@ public class SeventeenTrackRegisterService {
         var rejectedList = responseData.Data.RejectedList;
         if (rejectedList != null && rejectedList.Count != 0) {
             foreach (var rejected in rejectedList) {
-                var seventeenTrackNumber = new SeventeenTrackNumberInfo {
-                    TrackingNo = rejected.Number,
-                    CarrierKey = 0,
-                    CarrierName = string.Empty,
-                    Origin = SeventeenTrackNumberOrigin.None,
-                    ErrorCode = rejected.Error.Code,
-                    ErrorMessage = rejected.Error.Message,
-                    Status = SeventeenTrackNumberStatus.Rejected,
-                };
+                string trackingNo = rejected.Number;
 
-                session.Save(seventeenTrackNumber);
+                var seventeenTrackNumber = seventeenTrackNumberList
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                if (seventeenTrackNumber == null) {
+                    seventeenTrackNumber = new SeventeenTrackNumberInfo {
+                        TrackingNo = trackingNo,
+                        CarrierKey = 0,
+                        CarrierName = string.Empty,
+                        Origin = SeventeenTrackNumberOrigin.None,
+                        ErrorCode = rejected.Error.Code,
+                        ErrorMessage = rejected.Error.Message,
+                        Status = SeventeenTrackNumberStatus.Rejected,
+                    };
+
+                    session.Save(seventeenTrackNumber);
+                } else {
+                    // 之前被拒绝的才有可能要更新最新的错误相关信息等，其他的状态不需要更新。比如重复注册了，更不用更新。
+                    if (seventeenTrackNumber.Status == SeventeenTrackNumberStatus.Rejected) {
+                        // seventeenTrackNumber.TrackingNo = trackingNo;
+                        seventeenTrackNumber.CarrierKey = 0;
+                        seventeenTrackNumber.CarrierName = string.Empty;
+                        seventeenTrackNumber.Origin = SeventeenTrackNumberOrigin.None;
+                        seventeenTrackNumber.ErrorCode = rejected.Error.Code;
+                        seventeenTrackNumber.ErrorMessage = rejected.Error.Message;
+                        seventeenTrackNumber.Status = SeventeenTrackNumberStatus.Rejected;
+
+                        session.Update(seventeenTrackNumber);
+                    }
+                }
             }
 
             session.Flush();
