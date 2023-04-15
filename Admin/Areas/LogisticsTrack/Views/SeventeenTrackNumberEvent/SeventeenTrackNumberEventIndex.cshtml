@@ -1,0 +1,194 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.LogisticsTrack
+@model SeventeenTrackNumberEventIndexModel
+@using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackNumberEvent
+@{
+    ViewData[ViewDataKey.Title] = "17TRACK快递单事件";
+    Layout = "_AdminLayout";
+}
+
+@*
+
+        <li id="logistics-track-menu">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-copy"></i>
+                <span class="menu-text">物流跟踪</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+
+                <li id="logistics-track-seventeen-track-number-event-menu">
+                    <a asp-area="LogisticsTrack" asp-controller="SeventeenTrackNumberEvent" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>17TRACK快递单事件
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+
+*@
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-track-menu">物流跟踪</li>
+    <li class="active" data-menu="logistics-track-seventeen-track-number-event-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadSeventeenTrackNumberEventList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showSeventeenTrackNumberEventDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteSeventeenTrackNumberEvent()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadSeventeenTrackNumberEventList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="seventeenTrackNumberEventList" data-page-index="0" data-sort-field="@(nameof(SeventeenTrackNumberEventInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="seventeenTrackNumberEventDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadSeventeenTrackNumberEventList();
+    });
+
+    function sortSeventeenTrackNumberEventList(sortField, sortDir) {
+        var list = $('#seventeenTrackNumberEventList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadSeventeenTrackNumberEventList();
+    }
+
+    function loadSeventeenTrackNumberEventList(pageIndex) {
+        var list = $('#seventeenTrackNumberEventList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "SeventeenTrackNumberEvent")",
+            type: "POST",
+            data: {
+                "@(nameof(SeventeenTrackNumberEventListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(SeventeenTrackNumberEventListQueryParam.SortField))": sortField,
+                "@(nameof(SeventeenTrackNumberEventListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#seventeenTrackNumberEventList').html(data);
+
+                initListTable("#tblSeventeenTrackNumberEventList");
+            }
+        });
+    }
+
+    function showSeventeenTrackNumberEventDetail(id) {
+        $("#seventeenTrackNumberEventDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#seventeenTrackNumberEventDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "SeventeenTrackNumberEvent")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#seventeenTrackNumberEventDetailDialogWrapper").html(data);
+                $("#seventeenTrackNumberEventDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveSeventeenTrackNumberEvent() {
+        var form = $("#seventeenTrackNumberEventDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "SeventeenTrackNumberEvent")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#seventeenTrackNumberEventDetailDialog').modal('hide');
+                    loadSeventeenTrackNumberEventList();
+                }
+            });
+        }
+    }
+
+    function deleteSeventeenTrackNumberEvent() {
+        var idList = getSelectIdList('#tblSeventeenTrackNumberEventList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "SeventeenTrackNumberEvent")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadSeventeenTrackNumberEventList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
