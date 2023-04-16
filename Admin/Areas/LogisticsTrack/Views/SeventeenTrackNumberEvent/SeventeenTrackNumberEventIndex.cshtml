@@ -14,8 +14,7 @@
     <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
-<div id="seventeenTrackNumberEventList" data-page-index="0" data-sort-field="@(nameof(SeventeenTrackNumberEventInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
-</div>
+<div id="seventeenTrackNumberEventList"></div>
 
 <div id="seventeenTrackNumberEventDetailDialogWrapper"></div>
 <script type="text/javascript">
@@ -32,18 +31,7 @@
         loadSeventeenTrackNumberEventList();
     }
 
-    function loadSeventeenTrackNumberEventList(pageIndex) {
-        var list = $('#seventeenTrackNumberEventList');
-
-        if (pageIndex === null || pageIndex === undefined) {
-            pageIndex = list.data("page-index");
-        } else {
-            list.data("page-index", pageIndex);
-        }
-
-        var sortField = list.data('sort-field');
-        var sortDir = list.data('sort-dir');
-
+    function loadSeventeenTrackNumberEventList() {
         showMask("数据加载中，请稍候");
 
         $.ajax({

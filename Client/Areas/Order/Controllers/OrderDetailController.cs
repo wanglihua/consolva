@@ -239,6 +239,7 @@ public class OrderDetailController : Controller {
             .OrderBy(e => e.Id)
             .Select(e => new OrderDetailExpressSizeWeightListItem {
                 Id = e.Id,
+                TrackingNo = e.TrackingNo,
                 Length = e.Length.ToString("#0.00"),
                 Width = e.Width.ToString("#0.00"),
                 Height = e.Height.ToString("#0.00"),
