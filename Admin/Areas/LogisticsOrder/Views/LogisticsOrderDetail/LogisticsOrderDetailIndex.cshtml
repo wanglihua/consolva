@@ -694,7 +694,7 @@
 
                                         </div>
                                     }
-                                    
+
                                     <div style="width: 100%; height: 5px; background-color: white;"></div>
                                 }
                             }
@@ -707,7 +707,7 @@
                     <div class="col-xs-12">
                         <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#expressSizeWeight').toggle();">
                             <div style="float: left;">
-                                快递尺寸重量
+                                快递尺寸重量(合箱打包前)
                             </div>
                             <div style="float: right">
                                 显示/隐藏
@@ -747,11 +747,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (Model.ExpressSizeWeightList != null && Model.ExpressSizeWeightList.Count() != 0)
-                                    {
+                                    @if (Model.ExpressSizeWeightList != null && Model.ExpressSizeWeightList.Count() != 0) {
                                         int order = 1;
-                                        foreach (var item in Model.ExpressSizeWeightList)
-                                        {
+                                        foreach (var item in Model.ExpressSizeWeightList) {
                                             <tr>
                                                 <td style="text-align: center;">@(order++)</td>
                                                 <td style="text-align: center;">@item.TrackingNo</td>
@@ -814,9 +812,7 @@
                                             </td>
                                             <td></td>
                                         </tr>
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         <tr>
                                             <td colspan="11">
                                                 暂时没有数据！
@@ -828,7 +824,7 @@
 
                         </div>
                     </div>
-                </div>                
+                </div>
 
                 @if (Model.Order.OrderStatus.HasPacked()) {
                 @* 打包明细 *@
@@ -836,7 +832,7 @@
                         <div class="col-xs-12">
                             <div class="detailSubTitle" style="cursor: pointer;" onclick="$('#panelPack').toggle();">
                                 <div style="float: left;">
-                                    打包明细
+                                    打包明细(合箱打包后)
                                 </div>
                                 <div style="float: right">
                                     显示/隐藏
@@ -1132,7 +1128,7 @@
                         </div>
                     </div>
                 }
-                
+
                 @* 订单图片 *@
                 <div class="row">
                     <div class="col-xs-12">
@@ -1150,23 +1146,18 @@
                                 IList<ExpressPhotoType> photoTypeList = Model.PhotoList.Select(e => e.Type).Distinct().OrderBy(e => e.Id).ToList();
                             }
 
-                            @if (Model.PhotoList != null && Model.PhotoList.Count() != 0)
-                            {
+                            @if (Model.PhotoList != null && Model.PhotoList.Count() != 0) {
                                 <ul id="orderPhotoList" class="nav nav-tabs">
                                     @{
                                         int index = 0;
-                                        foreach (ExpressPhotoType photoType in photoTypeList)
-                                        {
-                                            if (index == 0)
-                                            {
+                                        foreach (ExpressPhotoType photoType in photoTypeList) {
+                                            if (index == 0) {
                                                 <li class="active">
                                                     <a data-toggle="tab" href="#photoTab_@(photoType.Id)" aria-expanded="true">
                                                         @(photoType.Name)
                                                     </a>
                                                 </li>
-                                            }
-                                            else
-                                            {
+                                            } else {
                                                 <li>
                                                     <a data-toggle="tab" href="#photoTab_@(photoType.Id)" aria-expanded="false">
                                                         @(photoType.Name)
@@ -1182,11 +1173,9 @@
                                 <div class="tab-content">
                                     @{
                                         index = 0;
-                                        foreach (ExpressPhotoType photoType in photoTypeList)
-                                        {
+                                        foreach (ExpressPhotoType photoType in photoTypeList) {
                                             string activeClass = "";
-                                            if (index == 0)
-                                            {
+                                            if (index == 0) {
                                                 activeClass = " active in ";
                                             }
 
@@ -1197,23 +1186,20 @@
                                                     IList<string> trackingNoList = typePhotoList.Select(e => e.Express?.TrackingNo ?? "").Distinct().ToList();
 
                                                     int trackingNoIndex = 0;
-                                                    foreach (string trackingNo in trackingNoList)
-                                                    {
+                                                    foreach (string trackingNo in trackingNoList) {
                                                         string backgroundColorStyle = "";
-                                                        if (trackingNoIndex % 2 == 1)
-                                                        {
+                                                        if (trackingNoIndex % 2 == 1) {
                                                             backgroundColorStyle = " background-color: #f2f2f2; ";
                                                         }
 
                                                         <div style="@(backgroundColorStyle)">
-                                                            @if(string.IsNullOrWhiteSpace(trackingNo) == false) {
+                                                            @if (string.IsNullOrWhiteSpace(trackingNo) == false) {
                                                                 <div style="margin: 0 5px; font-size: 18px; line-height: 20px; font-weight: bold; border-bottom: 1px solid gray;">@(trackingNo)</div>
                                                             }
                                                             <div>
                                                                 @{
                                                                     IList<ExpressPhotoInfo> expressPhotoList = typePhotoList.Where(e => (e.Express?.TrackingNo ?? "") == trackingNo).ToList();
-                                                                    foreach (ExpressPhotoInfo photo in expressPhotoList)
-                                                                    {
+                                                                    foreach (ExpressPhotoInfo photo in expressPhotoList) {
                                                                         <a href="@(photo.BigImageFullUrlCache)" target="_blank" style="display: inline-block; margin: 5px;">
                                                                             <img alt="" src="@(photo.SmallImageFullUrlCache)" style="height: 100px;"/>
                                                                         </a>
@@ -1232,9 +1218,7 @@
                                         }
                                     }
                                 </div>
-                            }
-                            else
-                            {
+                            } else {
                                 <div style="padding: 5px;">
                                     暂时没有数据！
                                 </div>

@@ -19,36 +19,31 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.TrackNumberAlias).@(nameof(SeventeenTrackNumberEventInfo.TrackNumber.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberEventList">17TRACK注册快递单</a>
+                    <span>17TRACK注册快递单</span>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberEventAlias).@(nameof(SeventeenTrackNumberEventInfo.EventTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberEventList">时间</a>
+                    <span>时间</span>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberEventAlias).@(nameof(SeventeenTrackNumberEventInfo.EventDesc))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberEventList">描述</a>
+                    <span>描述</span>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberEventAlias).@(nameof(SeventeenTrackNumberEventInfo.Stage))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberEventList">里程碑状态</a>
+                    <span>里程碑状态</span>
                 </div>
             </th>
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.SeventeenTrackNumberEventAlias).@(nameof(SeventeenTrackNumberEventInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberEventList">创建时间</a>
-                </div>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(Model.SeventeenTrackNumberEventAlias).@(nameof(SeventeenTrackNumberEventInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberEventList">修改时间</a>
+                    <span>创建时间</span>
                 </div>
             </th>
             <th></th>
@@ -56,7 +51,7 @@
     </thead>
     <tbody>
         @if (Model.SeventeenTrackNumberEventList.Count != 0) {
-            int index = 0;
+            int orderNumber = 1;
             foreach (SeventeenTrackNumberEventInfo seventeenTrackNumberEvent in Model.SeventeenTrackNumberEventList) {
                 <tr ondblclick="showSeventeenTrackNumberEventDetail(@(seventeenTrackNumberEvent.Id));">
                     <td style="text-align: center;">
@@ -64,7 +59,7 @@
                             <label for="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)"></label><input id="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)" type="checkbox" class="ace" value="@seventeenTrackNumberEvent.Id" /><span class="lbl"></span>
                         </div>
                     </td>
-                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+                    <td style="text-align: center;">@(orderNumber++)</td>
 
                     <td style="text-align: center;">
                         <div>
@@ -90,11 +85,6 @@
                     <td style="text-align: center;">
                         <div>
                             @seventeenTrackNumberEvent.CreateTime.ToString("yyyy-MM-dd HH:mm")
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @seventeenTrackNumberEvent.UpdateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
                     <td></td>
