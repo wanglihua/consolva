@@ -5,14 +5,12 @@
 @using shunda.Domain.LogisticsTrack
 @model shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackNumberEvent.SeventeenTrackNumberEventListModel
 
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadSeventeenTrackNumberEventList" }))
-
 <table id="tblSeventeenTrackNumberEventList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
             <th style="width: 40px; text-align: center;">
                 <div>
-                    <label for="seventeenTrackNumberEventCheckAll"></label><input id="seventeenTrackNumberEventCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                    <label for="seventeenTrackNumberEventCheckAll"></label><input id="seventeenTrackNumberEventCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
                 </div>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
@@ -56,7 +54,7 @@
                 <tr ondblclick="showSeventeenTrackNumberEventDetail(@(seventeenTrackNumberEvent.Id));">
                     <td style="text-align: center;">
                         <div>
-                            <label for="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)"></label><input id="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)" type="checkbox" class="ace" value="@seventeenTrackNumberEvent.Id" /><span class="lbl"></span>
+                            <label for="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)"></label><input id="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)" type="checkbox" class="ace" value="@seventeenTrackNumberEvent.Id"/><span class="lbl"></span>
                         </div>
                     </td>
                     <td style="text-align: center;">@(orderNumber++)</td>
@@ -99,5 +97,3 @@
         }
     </tbody>
 </table>
-
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadSeventeenTrackNumberEventList" }))
