@@ -23,15 +23,16 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <span>描述</span>
+                    <span>里程碑状态</span>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <span>里程碑状态</span>
+                    <span>描述</span>
                 </div>
             </th>
+
             <th></th>
         </tr>
     </thead>
@@ -52,16 +53,19 @@
                             @ListDataUtil.Render(seventeenTrackNumberEvent.EventTime)
                         </div>
                     </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(seventeenTrackNumberEvent.EventDesc)
-                        </div>
-                    </td>
+
                     <td style="text-align: center;">
                         <div>
                             @ListDataUtil.Render(seventeenTrackNumberEvent.Stage)
                         </div>
                     </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackNumberEvent.EventDesc)
+                        </div>
+                    </td>
+
                     <td></td>
                 </tr>
             }
