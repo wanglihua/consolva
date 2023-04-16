@@ -4,36 +4,14 @@
 @model SeventeenTrackNumberEventIndexModel
 @using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackNumberEvent
 @{
-    ViewData[ViewDataKey.Title] = "17TRACK快递单事件";
+    ViewData[ViewDataKey.Title] = "17TRACK快递单跟踪明细";
     Layout = "_AdminLayout";
 }
 
-@*
-
-        <li id="logistics-track-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">物流跟踪</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="logistics-track-seventeen-track-number-event-menu">
-                    <a asp-area="LogisticsTrack" asp-controller="SeventeenTrackNumberEvent" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>17TRACK快递单事件
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
-
 @section Breadcrumb {
     <li class="parent" data-menu="logistics-track-menu">物流跟踪</li>
-    <li class="active" data-menu="logistics-track-seventeen-track-number-event-menu">@(ViewData[ViewDataKey.Title])</li>
+    <li class="active" data-menu="logistics-track-seventeen-track-number-menu">快递单号:@(Model.TrackNumber.TrackingNo)</li>
+    <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
 <div id="seventeenTrackNumberEventList" data-page-index="0" data-sort-field="@(nameof(SeventeenTrackNumberEventInfo.Id))" data-sort-dir="@(SortDirection.Desc)">

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 using NLog;
 using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackNumberEvent;
+using shunda.Core;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass.PassRes;
@@ -28,6 +29,13 @@ public class SeventeenTrackNumberEventController : Controller {
     public IActionResult Index(int trackNumberId) {
         SeventeenTrackNumberEventIndexModel model = new SeventeenTrackNumberEventIndexModel();
         model.TrackNumberId = trackNumberId;
+
+        var trackNumber = session.Get<SeventeenTrackNumberInfo>(trackNumberId);
+        if (trackNumber == null) {
+            throw new ValidationException($"指定的17TRACK跟踪单号#{trackNumberId}不存在！");
+        }
+
+        model.TrackNumber = trackNumber;
 
         return View("SeventeenTrackNumberEventIndex", model);
     }

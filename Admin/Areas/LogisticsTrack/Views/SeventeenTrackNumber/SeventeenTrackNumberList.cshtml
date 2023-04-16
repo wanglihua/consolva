@@ -12,7 +12,7 @@
         <tr>
             <th style="width: 40px; text-align: center;">
                 <div>
-                    <label for="seventeenTrackNumberCheckAll"></label><input id="seventeenTrackNumberCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                    <label for="seventeenTrackNumberCheckAll"></label><input id="seventeenTrackNumberCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
                 </div>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
@@ -52,6 +52,12 @@
                     <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">注册时间</a>
                 </div>
             </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <span>操作</span>
+                </div>
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -62,7 +68,7 @@
                 <tr ondblclick="showSeventeenTrackNumberDetail(@(seventeenTrackNumber.Id));">
                     <td style="text-align: center;">
                         <div>
-                            <label for="seventeenTrackNumberCheck_@(seventeenTrackNumber.Id)"></label><input id="seventeenTrackNumberCheck_@(seventeenTrackNumber.Id)" type="checkbox" class="ace" value="@seventeenTrackNumber.Id" /><span class="lbl"></span>
+                            <label for="seventeenTrackNumberCheck_@(seventeenTrackNumber.Id)"></label><input id="seventeenTrackNumberCheck_@(seventeenTrackNumber.Id)" type="checkbox" class="ace" value="@seventeenTrackNumber.Id"/><span class="lbl"></span>
                         </div>
                     </td>
                     <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
@@ -99,12 +105,18 @@
                         </div>
                     </td>
 
+                    <td style="text-align: center;">
+                        <div>
+                            <a target="_blank" asp-area="LogisticsTrack" asp-controller="SeventeenTrackNumberEvent" asp-action="Index" asp-route-trackNumberId="@(seventeenTrackNumber.Id)">跟踪明细</a>
+                        </div>
+                    </td>
+
                     <td></td>
                 </tr>
             }
         } else {
             <tr>
-                <td colspan="12">
+                <td colspan="13">
                     暂时没有数据！
                 </td>
             </tr>
