@@ -1,14 +1,9 @@
-using shunda.Core;
-using shunda.Core.Hibernate;
-using shunda.Core.Util;
-using shunda.Core.Web;
-using shunda.Domain.LogisticsTrack;
-using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackNumberEvent;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
-using NHibernate.Criterion;
-using NHibernate.SqlCommand;
 using NLog;
+using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackNumberEvent;
+using shunda.Core.Web;
+using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
@@ -29,10 +24,10 @@ public class SeventeenTrackNumberEventController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/track/seventeen/track/number/event")]
-    public IActionResult Index() {
+    [Route("/admin/logistics/track/seventeen/track/number/event/{trackNumberId}")]
+    public IActionResult Index(int trackNumberId) {
         SeventeenTrackNumberEventIndexModel model = new SeventeenTrackNumberEventIndexModel();
-
+        model.TrackNumberId = trackNumberId;
 
         return View("SeventeenTrackNumberEventIndex", model);
     }
@@ -40,25 +35,10 @@ public class SeventeenTrackNumberEventController : Controller {
     [HttpPost]
     [Route("/admin/logistics/track/seventeen/track/number/event/list")]
     public IActionResult List(SeventeenTrackNumberEventListQueryParam queryParam) {
-        int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<SeventeenTrackNumberEventInfo>(e => seventeenTrackNumberEventAlias!.Id))
-            .Select(Projections.RowCount())
-            .SingleOrDefault<int>();
-
-        ListPager listPager = new ListPager(queryParam, totalCount);
-
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending) {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        } else {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
-
-        listQuery = listQuery.ThenByAlias(() => seventeenTrackNumberEventAlias!.Id).Desc;
+        listQuery = listQuery.OrderByAlias(() => seventeenTrackNumberEventAlias!.Id).Asc;
 
         IList<SeventeenTrackNumberEventInfo> seventeenTrackNumberEventList = listQuery
-            .Skip(listPager.Skip())
-            .Take(listPager.Take())
             .List<SeventeenTrackNumberEventInfo>();
 
         /*
@@ -66,7 +46,7 @@ public class SeventeenTrackNumberEventController : Controller {
         }
         */
 
-        SeventeenTrackNumberEventListModel model = new SeventeenTrackNumberEventListModel(listPager);
+        SeventeenTrackNumberEventListModel model = new SeventeenTrackNumberEventListModel();
         model.SeventeenTrackNumberEventList = seventeenTrackNumberEventList;
 
         model.SeventeenTrackNumberEventAlias = nameof(seventeenTrackNumberEventAlias);
@@ -80,8 +60,11 @@ public class SeventeenTrackNumberEventController : Controller {
 
     [NonAction]
     private IQueryOver<SeventeenTrackNumberEventInfo, SeventeenTrackNumberEventInfo> GetQueryOver(SeventeenTrackNumberEventListQueryParam queryParam) {
-        var query = session.QueryOver<SeventeenTrackNumberEventInfo>(() => seventeenTrackNumberEventAlias!)
-            .JoinAlias(() => seventeenTrackNumberEventAlias!.TrackNumber, () => trackNumberAlias);
+        var query = session.QueryOver<SeventeenTrackNumberEventInfo>(() => seventeenTrackNumberEventAlias!);
+        // .JoinAlias(() => seventeenTrackNumberEventAlias!.TrackNumber, () => trackNumberAlias);
+
+        int trackNumberId = queryParam.TrackNumberId;
+        query = query.Where(e => e.TrackNumber.Id == trackNumberId);
 
         return query;
     }
