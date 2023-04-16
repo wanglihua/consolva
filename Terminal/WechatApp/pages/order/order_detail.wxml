@@ -27,7 +27,8 @@
                 <block wx:if="{{ orderDetail.order.hasCheckinSizeWeightData === true }}">
                     <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
                     <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="入库总重量" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="入库总体积重" value="{{ orderDetail.order.checkinTotalVolumeWeight }} KG" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="入库总实际重" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
                 </block>
                 <block wx:if="{{ orderDetail.order.hasPacked === true && orderDetail.hasOrderPackData === true && orderDetail.orderPackData }}">
                     <van-cell title="打包包裹数" value="{{ orderDetail.orderPackData.totalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
@@ -145,7 +146,7 @@
 
         <!-- 快递单尺寸重量 -->
         <block wx:if="{{ orderDetail.order && orderDetail.order.hasCheckinSizeWeightData && orderDetail.expressSizeWeightList && orderDetail.expressSizeWeightList.length > 0 }}">
-            <van-cell title="快递单尺寸重量" value="{{ expressSizeWeightListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onExpressSizeWeightListHeaderClick"/>
+            <van-cell title="快递单尺寸重量(合箱打包前)" value="{{ expressSizeWeightListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onExpressSizeWeightListHeaderClick"/>
             <block wx:if="{{ expressSizeWeightListShow.show }}">
                 <block wx:for="{{ orderDetail.expressSizeWeightList }}" wx:key="id" wx:for-item="sizeWeight" wx:for-index="index">
                     <van-cell title="{{ index + 1 }}、快递单号:{{ sizeWeight.trackingNo }}，单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}CM，单箱体积重：{{ sizeWeight.volumeWeight }}KG，单箱实际重：{{ sizeWeight.actualWeight }}KG，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}" custom-class="item" />
@@ -163,7 +164,7 @@
 
         <!-- 订单打包 -->
         <block wx:if="{{ orderDetail.order &&  orderDetail.order.hasPacked && orderDetail.orderPackList && orderDetail.orderPackList.length > 0 }}">
-            <van-cell title="订单打包" value="{{ orderPackListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderPackListHeaderClick"/>
+            <van-cell title="订单打包(合箱打包后)" value="{{ orderPackListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderPackListHeaderClick"/>
             <block wx:if="{{ orderPackListShow.show }}">
                 <block wx:for="{{ orderDetail.orderPackList }}" wx:key="id" wx:for-item="orderPack" wx:for-index="index">
                     <view>
