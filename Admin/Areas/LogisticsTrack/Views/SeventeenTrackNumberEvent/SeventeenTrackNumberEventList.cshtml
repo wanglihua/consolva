@@ -17,12 +17,6 @@
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <span>17TRACK注册快递单</span>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
                     <span>时间</span>
                 </div>
             </th>
@@ -36,12 +30,6 @@
             <th style="width: 100px; text-align: center;">
                 <div>
                     <span>里程碑状态</span>
-                </div>
-            </th>
-
-            <th style="width: 120px; text-align: center;">
-                <div>
-                    <span>创建时间</span>
                 </div>
             </th>
             <th></th>
@@ -61,11 +49,6 @@
 
                     <td style="text-align: center;">
                         <div>
-                            @ListDataUtil.Render(seventeenTrackNumberEvent.TrackNumber?.Id)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
                             @ListDataUtil.Render(seventeenTrackNumberEvent.EventTime)
                         </div>
                     </td>
@@ -77,12 +60,6 @@
                     <td style="text-align: center;">
                         <div>
                             @ListDataUtil.Render(seventeenTrackNumberEvent.Stage)
-                        </div>
-                    </td>
-
-                    <td style="text-align: center;">
-                        <div>
-                            @seventeenTrackNumberEvent.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
                     <td></td>
