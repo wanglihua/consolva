@@ -36,9 +36,20 @@ public class SeventeenTrackWebHookRequestModel {
 
             public class TrackingModel {
                 [JsonProperty("providers")]
-                public IList<ProviderModel> ProviderList { get; set; } = new List<ProviderModel>();
+                public IList<ProviderListItem> ProviderList { get; set; } = new List<ProviderListItem>();
 
-                public class ProviderModel {
+                public class ProviderListItem {
+                    [JsonProperty("provider")]
+                    public ProviderModel Provider { get; set; } = new();
+
+                    public class ProviderModel {
+                        [JsonProperty("key")]
+                        public int Key { get; set; }
+
+                        [JsonProperty("name")]
+                        public string Name { get; set; } = string.Empty;
+                    }
+
                     [JsonProperty("events")]
                     public IList<EventModel> EventList { get; set; } = new List<EventModel>();
 
