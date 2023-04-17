@@ -1,0 +1,141 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.LogisticsOrder
+@model LogisticsOrderFirstModeIndexModel
+@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderFirstMode
+@{
+    ViewData[ViewDataKey.Title] = "国际单号";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="logistics-order-menu">物流订单</li>
+    <li class="active" data-menu="logistics-order-logistics-order-first-mode-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadLogisticsOrderFirstModeList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-purple btn-sm">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
+    </button>
+    <button id="btnImport" type="button" class="btn btn-pink btn-sm">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导入单号
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderFirstModeList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="logisticsOrderFirstModeList" data-page-index="0" data-sort-field="@(nameof(LogisticsOrderFirstModeInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="logisticsOrderFirstModeDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadLogisticsOrderFirstModeList();
+    });
+
+    function sortLogisticsOrderFirstModeList(sortField, sortDir) {
+        var list = $('#logisticsOrderFirstModeList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadLogisticsOrderFirstModeList();
+    }
+
+    function loadLogisticsOrderFirstModeList(pageIndex) {
+        var list = $('#logisticsOrderFirstModeList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "LogisticsOrderFirstMode")",
+            type: "POST",
+            data: {
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.SortField))": sortField,
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#logisticsOrderFirstModeList').html(data);
+
+                initListTable("#tblLogisticsOrderFirstModeList");
+            }
+        });
+    }
+
+    function showLogisticsOrderFirstModeDetail(id) {
+        $("#logisticsOrderFirstModeDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#logisticsOrderFirstModeDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "LogisticsOrderFirstMode")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#logisticsOrderFirstModeDetailDialogWrapper").html(data);
+                $("#logisticsOrderFirstModeDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveLogisticsOrderFirstMode() {
+        var form = $("#logisticsOrderFirstModeDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "LogisticsOrderFirstMode")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#logisticsOrderFirstModeDetailDialog').modal('hide');
+                    loadLogisticsOrderFirstModeList();
+                }
+            });
+        }
+    }
+
+</script>

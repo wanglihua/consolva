@@ -1,0 +1,153 @@
+@using shunda.Domain
+@model shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderFirstMode.LogisticsOrderFirstModeDetailModel
+@{
+    Layout = null;
+}
+<div class="modal fade" id="logisticsOrderFirstModeDetailDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">物流订单头程详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="logisticsOrderFirstModeDetailForm" class="form-horizontal" role="form">
+                    <input asp-for="OrderFirstModeId" type="hidden"/>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="OrderId" class="col-xs-2 control-label">物流订单</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="OrderId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="OrderCode" class="col-xs-2 control-label">订单编号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="OrderCode" type="text" required="required" maxlength="100" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="GoodsType" class="col-xs-2 control-label">物品类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="GoodsType" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(LogisticsGoodsType type in Model.GoodsTypeList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FirstType" class="col-xs-2 control-label">物流方式类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="FirstType" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(LogisticsModeType type in Model.FirstTypeList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FirstModeId" class="col-xs-2 control-label">物流方式</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="FirstModeId" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="Channel" class="col-xs-2 control-label">渠道类型</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="Channel" required="required" digits="true" class="input-sm form-control">
+                                        <option value=""></option>
+                                        @foreach(LogisticsModeChannel type in Model.ChannelList) {
+                                            <option value="@(type.Id)">@(type.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="VolumeWeightDenominator" class="col-xs-2 control-label">体积重分母</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="VolumeWeightDenominator" type="number" required="required" digits="true" class="input-sm form-control" autocomplete="off"/>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="TrackingNo" class="col-xs-2 control-label">快递单号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="TrackingNo" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveLogisticsOrderFirstMode();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
