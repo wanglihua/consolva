@@ -6,6 +6,7 @@ public class SeventeenTrackWebHookRequestModel {
     [JsonProperty("event")]
     public string Event { get; set; } = string.Empty;
 
+    [JsonProperty("data")]
     public DataModel Data { get; set; } = new();
 
     public class DataModel {
@@ -29,29 +30,28 @@ public class SeventeenTrackWebHookRequestModel {
                 [JsonProperty("sub_status")]
                 public string SubStatus { get; set; } = string.Empty;
             }
-        }
 
-        [JsonProperty("tracking")]
-        public TrackingModel Tracking { get; set; } = new ();
+            [JsonProperty("tracking")]
+            public TrackingModel Tracking { get; set; } = new();
 
-        public class TrackingModel {
-            
-            [JsonProperty("providers")]
-            public IList<ProviderModel> ProviderList { get; set; } = new List<ProviderModel>();
+            public class TrackingModel {
+                [JsonProperty("providers")]
+                public IList<ProviderModel> ProviderList { get; set; } = new List<ProviderModel>();
 
-            public class ProviderModel {
-                [JsonProperty("events")]
-                public IList<EventModel> EventList { get; set; } = new List<EventModel>();
+                public class ProviderModel {
+                    [JsonProperty("events")]
+                    public IList<EventModel> EventList { get; set; } = new List<EventModel>();
 
-                public class EventModel {
-                    [JsonProperty("time_iso")]
-                    public string TimeIso { get; set; }  = string.Empty;
+                    public class EventModel {
+                        [JsonProperty("time_iso")]
+                        public string TimeIso { get; set; } = string.Empty;
 
-                    [JsonProperty("description")]
-                    public string Description { get; set; } = string.Empty;
+                        [JsonProperty("description")]
+                        public string Description { get; set; } = string.Empty;
 
-                    [JsonProperty("stage")]
-                    public string? Stage { get; set; } 
+                        [JsonProperty("stage")]
+                        public string? Stage { get; set; }
+                    }
                 }
             }
         }
