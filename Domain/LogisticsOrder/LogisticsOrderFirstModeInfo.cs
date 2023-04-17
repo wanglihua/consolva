@@ -10,7 +10,7 @@ namespace shunda.Domain.LogisticsOrder;
 /// 物流订单头程
 /// 一个物流方式方式，如果一个订单打包时取有多个物品类型的话，会有多条记录
 /// </summary>
-public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
+public class LogisticsOrderFirstModeInfo : Entity {
     /// <summary>
     /// 物流订单，非空
     /// </summary>
@@ -57,9 +57,13 @@ public class LogisticsOrderFirstModeInfo : EntityNoUpdate {
 
     /// <summary>
     /// 体积重分母，非空
-    /// 存储时判断是否 > 0, 如果不是就用 LogisticsConfig.VolumeWeightDenominator 中的值
     /// </summary>
     public virtual int VolumeWeightDenominator { get; set; }
+
+    /// <summary>
+    /// 快递单号，这个是国际快递单号
+    /// </summary>
+    public virtual string TrackingNo { get; set; } = string.Empty;
 
     #region Cache
 

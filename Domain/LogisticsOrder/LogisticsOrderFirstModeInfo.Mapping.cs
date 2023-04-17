@@ -5,7 +5,7 @@ using shunda.Domain.Logistics;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderFirstModeInfoMapping : EntityNoUpdateMapping<LogisticsOrderFirstModeInfo> {
+public class LogisticsOrderFirstModeInfoMapping : EntityMapping<LogisticsOrderFirstModeInfo> {
     public LogisticsOrderFirstModeInfoMapping() {
         Table("tbl_logistics_order_first_mode");
 
@@ -72,6 +72,15 @@ public class LogisticsOrderFirstModeInfoMapping : EntityNoUpdateMapping<Logistic
             map => {
                 map.Type(NHibernateUtil.Int32);
                 map.Column("volume_weight_denominator");
+                map.NotNullable(true);
+            }
+        );
+        
+        Property(
+            x => x.TrackingNo,
+            map => {
+                map.Type(NHibernateUtil.String);
+                map.Column("tracking_no");
                 map.NotNullable(true);
             }
         );
