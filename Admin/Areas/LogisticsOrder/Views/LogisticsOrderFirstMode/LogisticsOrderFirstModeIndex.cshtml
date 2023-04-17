@@ -18,7 +18,7 @@
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    <button type="button" class="btn btn-purple btn-sm">
+    <button type="button" class="btn btn-purple btn-sm" onclick="exportData()">
         <i class="ace-icon fa fa-file-excel-o"></i>
         导出
     </button>
@@ -154,6 +154,18 @@
                 }
             });
         }
+    }
+    
+    function exportData() {
+        downloadFile({
+            url: "@Url.Action("Export", "LogisticsOrderFirstMode")",
+            data: {
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackingNoQuery))": $("#trackingNoQuery").val()              
+            }
+        });            
     }
 
 </script>

@@ -11,6 +11,7 @@ using NHibernate.SqlCommand;
 using NLog;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -24,9 +25,14 @@ public class LogisticsOrderFirstModeController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService;
 
-    public LogisticsOrderFirstModeController(ISession session) {
+    public LogisticsOrderFirstModeController(
+        ISession session,
+        LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService
+    ) {
         this.session = session;
+        this.logisticsOrderFirstModeExcelService = logisticsOrderFirstModeExcelService;
     }
 
     [HttpGet]
@@ -170,5 +176,29 @@ public class LogisticsOrderFirstModeController : Controller {
             Success = true,
             Message = "保存成功！",
         });
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/order/logistics/order/first/mode/export")]
+    public IActionResult Export(LogisticsOrderFirstModeListQueryParam queryParam) {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            var order = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Take(1)
+                .SingleOrDefault();
+            queryParam.OrderIdQuery = order?.Id ?? 0;
+        }
+
+        var listQuery = GetQueryOver(queryParam);
+        listQuery = listQuery.OrderByAlias(() => orderFirstModeAlias!.Id).Asc;
+
+        IList<LogisticsOrderFirstModeInfo> orderFirstModeList = listQuery
+            .List<LogisticsOrderFirstModeInfo>();
+
+        var excel = logisticsOrderFirstModeExcelService.Export(orderFirstModeList);
+
+        string fileName = $"国际单号导出.xlsx";
+        return File(excel, ContentType.Xlsx, fileName);
     }
 }
