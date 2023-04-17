@@ -31,18 +31,21 @@ public class SeventeenTrackWebHookController : Controller {
     [HttpPost]
     [Route("/admin/seventeen/track/web/hook/notify")]
     public IActionResult Notify() {
+        string requestBody = string.Empty;
+
         try {
             if (Request.Headers.ContainsKey("sign") == false || Request.Headers["sign"].Count == 0) {
                 return StatusCode((int)HttpStatusCode.NotAcceptable);
             }
 
             string sign = Request.Headers["sign"][0];
-            log.Error("sign:");
-            log.Error(sign);
+            // log.Error("sign:");
+            // log.Error(sign);
 
             StreamReader streamReader = new StreamReader(Request.Body);
-            string requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
+            requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
 
+            // 过段时间后，把这个去掉
             log.Error("requestBody:");
             log.Error(requestBody);
 
@@ -54,6 +57,7 @@ public class SeventeenTrackWebHookController : Controller {
             var model = JsonConvert.DeserializeObject<SeventeenTrackWebHookRequestModel>(requestBody);
             if (model == null) {
                 log.Error("model == null");
+                log.Error(requestBody);
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
@@ -74,6 +78,7 @@ public class SeventeenTrackWebHookController : Controller {
                     .SingleOrDefault();
                 if (carrier == null) {
                     log.Error($"17TRACK运输商#{carrierKey}不存在！");
+                    log.Error(requestBody);
                     return StatusCode((int)HttpStatusCode.InternalServerError);
                 }
             }
@@ -106,10 +111,47 @@ public class SeventeenTrackWebHookController : Controller {
 
             session.Flush();
 
-            // 
+            // 更新 tracking number events
+            int trackNumberId = trackNumber.Id;
+            var trackNumberEventList = session.Query<SeventeenTrackNumberEventInfo>()
+                .Where(e => e.TrackNumber.Id == trackNumberId)
+                .ToList();
+            var trackNumberEventDict = trackNumberEventList.ToDictionary(e => e.EventTime, e => e);
+
+            var provider = model.Data.TrackInfo.Tracking.ProviderList
+                .Where(e => e.Provider.Key == carrierKey)
+                .Take(1)
+                .SingleOrDefault();
+            if (provider == null) {
+                log.Error("provider == null");
+                log.Error(requestBody);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+
+            foreach (var evt in provider.EventList) {
+                if (DateTime.TryParse(evt.TimeIso, out DateTime eventTime) == false) {
+                    log.Error($"{evt.TimeIso}不是正确的时间格式！");
+                    log.Error(requestBody);
+                    return StatusCode((int)HttpStatusCode.InternalServerError);
+                }
+
+                if (trackNumberEventDict.ContainsKey(eventTime) == false) {
+                    var trackNumberEvent = new SeventeenTrackNumberEventInfo {
+                        TrackNumber = trackNumber,
+                        EventTime = eventTime,
+                        EventDesc = evt.Description,
+                        Stage = evt.Stage ?? string.Empty,
+                    };
+
+                    session.Save(trackNumberEvent);
+                }
+            }
+
+            session.Flush();
         }
         catch (Exception exp) {
             log.Error(exp);
+            log.Error(requestBody);
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
 
