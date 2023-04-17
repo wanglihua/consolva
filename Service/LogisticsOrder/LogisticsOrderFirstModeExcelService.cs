@@ -12,9 +12,14 @@ namespace shunda.Service.LogisticsOrder;
 [Service(ServiceType.Scoped)]
 public class LogisticsOrderFirstModeExcelService {
     private readonly ISession session;
+    private readonly LogisticsOrderActionService logisticsOrderActionService;
 
-    public LogisticsOrderFirstModeExcelService(ISession session) {
+    public LogisticsOrderFirstModeExcelService(
+        ISession session,
+        LogisticsOrderActionService logisticsOrderActionService
+    ) {
         this.session = session;
+        this.logisticsOrderActionService = logisticsOrderActionService;
     }
 
     /// <summary>
@@ -58,7 +63,7 @@ public class LogisticsOrderFirstModeExcelService {
 
         int cellIndex = 0;
 
-        sheet.SetColumnWidth(cellIndex, 25 * 256);
+        sheet.SetColumnWidth(cellIndex, 20 * 256);
         ICell cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -70,7 +75,7 @@ public class LogisticsOrderFirstModeExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("订单编号");
 
-        sheet.SetColumnWidth(cellIndex, 45 * 256);
+        sheet.SetColumnWidth(cellIndex, 60 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -97,8 +102,8 @@ public class LogisticsOrderFirstModeExcelService {
             // 数据ID
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCenterCellStyle;
-            cell.SetCellType(CellType.Numeric);
-            cell.SetCellValue(orderFirstMode.Id);
+            cell.SetCellType(CellType.String);
+            cell.SetCellValue($"{orderFirstMode.Id}#{orderFirstMode.Order.Id}#{orderFirstMode.FirstMode.Id}");
 
             // 订单编号
             cell = row.CreateCell(cellIndex++);
@@ -108,7 +113,7 @@ public class LogisticsOrderFirstModeExcelService {
 
             // 物流方式
             cell = row.CreateCell(cellIndex++);
-            cell.CellStyle = contentCenterCellStyle;
+            cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.String);
             cell.SetCellValue(orderFirstMode.FirstMode.Name);
 

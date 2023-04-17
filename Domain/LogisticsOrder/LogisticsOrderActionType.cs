@@ -188,7 +188,7 @@ public class LogisticsOrderActionType : CodeTypeBase
     /// <summary>
     /// 空运订单导入国际跟踪单号 
     /// </summary>
-    public static readonly LogisticsOrderActionType OrderAirImportExpress = new LogisticsOrderActionType(38000, "导入国际跟踪单号", "导入国际跟踪单号");
+    public static readonly LogisticsOrderActionType OrderFirstModeImportTrackingNo = new LogisticsOrderActionType(38000, "导入国际单号", "导入国际单号");
 
     /// <summary>
     /// 订单盘点
@@ -262,7 +262,7 @@ public class LogisticsOrderActionType : CodeTypeBase
         PackLoadManualComplete,
         Ship,
         AirOrderCheckout,
-        OrderAirImportExpress,
+        OrderFirstModeImportTrackingNo,
         OrderStockCheck,
         AirOrderManualComplete,
         PackBoxPickup,
