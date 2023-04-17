@@ -20,7 +20,7 @@
                             <div class="form-group">
                                 <label asp-for="OrderCode" class="col-xs-2 control-label">订单编号</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="OrderCode" type="text" required="required" class="input-sm form-control" disabled="disabled"/>
+                                    <input asp-for="OrderCode" type="text" class="input-sm form-control" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                             <div class="form-group">
                                 <label asp-for="FirstModeName" class="col-xs-2 control-label">物流方式</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="FirstModeName" type="text" required="required" class="input-sm form-control" disabled="disabled"/>
+                                    <input asp-for="FirstModeName" type="text" class="input-sm form-control" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                             <div class="form-group">
                                 <label asp-for="GoodsType" class="col-xs-2 control-label">物品类型</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="GoodsType" type="text" value="@(Model.GoodsType.Name)" required="required" class="input-sm form-control" disabled="disabled"/>
+                                    <input asp-for="GoodsType" type="text" value="@(Model.GoodsType.Name)" class="input-sm form-control" disabled="disabled"/>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                             <div class="form-group">
                                 <label asp-for="TrackingNo" class="col-xs-2 control-label">国际单号</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="TrackingNo" type="text" required="required" maxlength="30" class="input-sm form-control" autocomplete="off"/>
+                                    <input asp-for="TrackingNo" type="text" maxlength="30" class="input-sm form-control" autocomplete="off"/>
                                 </div>
                             </div>
                         </div>

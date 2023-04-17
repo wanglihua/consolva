@@ -127,7 +127,12 @@ public class LogisticsOrderFirstModeController : Controller {
             throw new ValidationException($"指定的 物流订单头程#{orderFirstModeId} 不存在！");
         }
 
-        orderFirstMode.TrackingNo = model.TrackingNo;
+        string trackingNo = model.TrackingNo;
+        if (string.IsNullOrWhiteSpace(trackingNo)) {
+            trackingNo = string.Empty;
+        }
+
+        orderFirstMode.TrackingNo = trackingNo;
 
         session.Update(orderFirstMode);
         session.Flush();
