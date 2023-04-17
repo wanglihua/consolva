@@ -56,7 +56,7 @@
 
             @if (Model.HasPassRes(PassRes.LogisticsOrder.LogisticsOrderFirstMode)) {
                 <li id="logistics-order-air-order-index-menu">
-                    <a href="#">
+                    <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderFirstMode" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         国际单号
                     </a>

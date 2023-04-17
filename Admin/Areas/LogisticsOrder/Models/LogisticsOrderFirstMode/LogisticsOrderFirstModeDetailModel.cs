@@ -5,11 +5,11 @@ namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderFirstMode;
 
 public class LogisticsOrderFirstModeDetailModel : LogisticsOrderFirstModeSaveModel {
     [BindNever]
-    public IList<LogisticsGoodsType> GoodsTypeList { get; set; } = new List<LogisticsGoodsType>();
+    public string OrderCode { get; set; } = string.Empty;
 
     [BindNever]
-    public IList<LogisticsModeType> FirstTypeList { get; set; } = new List<LogisticsModeType>();
+    public string FirstModeName { get; set; } = string.Empty;
 
     [BindNever]
-    public IList<LogisticsModeChannel> ChannelList { get; set; } = new List<LogisticsModeChannel>();
+    public LogisticsGoodsType GoodsType { get; set; } = LogisticsGoodsType.None;
 }

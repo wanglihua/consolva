@@ -58,7 +58,7 @@ public class LogisticsOrderFirstModeController : Controller {
             listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
         }
 
-        listQuery = listQuery.ThenByAlias(() => logisticsOrderFirstModeAlias!.Id).Desc;
+        listQuery = listQuery.ThenByAlias(() => orderFirstModeAlias!.Id).Desc;
 
         IList<LogisticsOrderFirstModeInfo> logisticsOrderFirstModeList = listQuery
             .Skip(listPager.Skip())
@@ -73,22 +73,22 @@ public class LogisticsOrderFirstModeController : Controller {
         LogisticsOrderFirstModeListModel model = new LogisticsOrderFirstModeListModel(listPager);
         model.LogisticsOrderFirstModeList = logisticsOrderFirstModeList;
 
-        model.LogisticsOrderFirstModeAlias = nameof(logisticsOrderFirstModeAlias);
+        model.OrderFirstModeAlias = nameof(orderFirstModeAlias);
         model.OrderAlias = nameof(orderAlias);
         model.FirstModeAlias = nameof(firstModeAlias);
 
         return View("LogisticsOrderFirstModeList", model);
     }
 
-    private LogisticsOrderFirstModeInfo? logisticsOrderFirstModeAlias = null;
+    private LogisticsOrderFirstModeInfo? orderFirstModeAlias = null;
     private LogisticsOrderInfo? orderAlias = null;
     private LogisticsModeInfo? firstModeAlias = null;
 
     [NonAction]
     private IQueryOver<LogisticsOrderFirstModeInfo, LogisticsOrderFirstModeInfo> GetQueryOver(LogisticsOrderFirstModeListQueryParam queryParam) {
-        var query = session.QueryOver<LogisticsOrderFirstModeInfo>(() => logisticsOrderFirstModeAlias!)
-            .JoinAlias(() => logisticsOrderFirstModeAlias!.Order, () => orderAlias)
-            .JoinAlias(() => logisticsOrderFirstModeAlias!.FirstMode, () => firstModeAlias);
+        var query = session.QueryOver<LogisticsOrderFirstModeInfo>(() => orderFirstModeAlias!)
+            // .JoinAlias(() => orderFirstModeAlias!.Order, () => orderAlias)
+            .JoinAlias(() => orderFirstModeAlias!.FirstMode, () => firstModeAlias);
 
         return query;
     }
@@ -98,32 +98,18 @@ public class LogisticsOrderFirstModeController : Controller {
     public IActionResult Detail(IdParam param) {
         var id = param.Id;
 
-        LogisticsOrderFirstModeInfo? logisticsOrderFirstMode;
-
-        if (id <= 0) {
-            logisticsOrderFirstMode = new LogisticsOrderFirstModeInfo();
-        } else {
-            logisticsOrderFirstMode = session.Get<LogisticsOrderFirstModeInfo>(id);
-            if (logisticsOrderFirstMode == null) {
-                throw new ValidationException($"指定的 物流订单头程#{id} 不存在！");
-            }
+        var orderFirstMode = session.Get<LogisticsOrderFirstModeInfo>(id);
+        if (orderFirstMode == null) {
+            throw new ValidationException($"指定的 物流订单头程#{id} 不存在！");
         }
 
         LogisticsOrderFirstModeDetailModel model = new LogisticsOrderFirstModeDetailModel();
-        model.OrderFirstModeId = logisticsOrderFirstMode.Id;
+        model.OrderFirstModeId = orderFirstMode.Id;
 
-        model.OrderId = logisticsOrderFirstMode.Order?.Id ?? 0;
-        model.OrderCode = logisticsOrderFirstMode.OrderCode;
-        model.GoodsType = logisticsOrderFirstMode.GoodsType;
-        model.FirstType = logisticsOrderFirstMode.FirstType;
-        model.FirstModeId = logisticsOrderFirstMode.FirstMode?.Id ?? 0;
-        model.Channel = logisticsOrderFirstMode.Channel;
-        model.VolumeWeightDenominator = logisticsOrderFirstMode.VolumeWeightDenominator;
-        model.TrackingNo = logisticsOrderFirstMode.TrackingNo;
-
-        model.GoodsTypeList = LogisticsGoodsType.GetInnerList();
-        model.FirstTypeList = LogisticsModeType.GetList();
-        model.ChannelList = LogisticsModeChannel.GetList();
+        model.OrderCode = orderFirstMode.OrderCode;
+        model.FirstModeName = orderFirstMode.FirstMode.Name;
+        model.GoodsType = orderFirstMode.GoodsType;
+        model.TrackingNo = orderFirstMode.TrackingNo;
 
         return View("LogisticsOrderFirstModeDetail", model);
     }

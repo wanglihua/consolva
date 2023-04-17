@@ -9,7 +9,7 @@ public class LogisticsOrderFirstModeListModel : ListModel {
     }
 
     [BindNever]
-    public string LogisticsOrderFirstModeAlias { get; set; } = string.Empty;
+    public string OrderFirstModeAlias { get; set; } = string.Empty;
 
     [BindNever]
     public string OrderAlias { get; set; } = string.Empty;
