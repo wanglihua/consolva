@@ -44,6 +44,15 @@ public class LogisticsOrderFirstModeController : Controller {
     [HttpPost]
     [Route("/admin/logistics/order/logistics/order/first/mode/list")]
     public IActionResult List(LogisticsOrderFirstModeListQueryParam queryParam) {
+        if (string.IsNullOrWhiteSpace(queryParam.OrderCodeQuery) == false) {
+            string orderCodeQuery = queryParam.OrderCodeQuery.Trim();
+            var order = session.Query<LogisticsOrderInfo>()
+                .Where(e => e.Code == orderCodeQuery)
+                .Take(1)
+                .SingleOrDefault();
+            queryParam.OrderIdQuery = order?.Id ?? 0;
+        }
+
         int totalCount = GetQueryOver(queryParam)
             // .Select(Projections.Count<LogisticsOrderFirstModeInfo>(e => logisticsOrderFirstModeAlias!.Id))
             .Select(Projections.RowCount())
@@ -89,6 +98,26 @@ public class LogisticsOrderFirstModeController : Controller {
         var query = session.QueryOver<LogisticsOrderFirstModeInfo>(() => orderFirstModeAlias!)
             // .JoinAlias(() => orderFirstModeAlias!.Order, () => orderAlias)
             .JoinAlias(() => orderFirstModeAlias!.FirstMode, () => firstModeAlias);
+
+        if (queryParam.OrderIdQuery != null) {
+            int orderIdQuery = queryParam.OrderIdQuery ?? 0;
+            query = query.Where(e => e.Order.Id == orderIdQuery);
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.FirstModeNameQuery) == false) {
+            string firstModeNameQuery = queryParam.FirstModeNameQuery.Trim();
+            query = query.Where(e => firstModeAlias!.Name.IsInsensitiveLike(firstModeNameQuery, MatchMode.Anywhere));
+        }
+
+        if (queryParam.GoodsTypeQuery != null && queryParam.GoodsTypeQuery != LogisticsGoodsType.None) {
+            LogisticsGoodsType goodsTypeQuery = queryParam.GoodsTypeQuery;
+            query = query.Where(e => e.GoodsType == goodsTypeQuery);
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
+            string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
+            query = query.Where(e => e.TrackingNo == trackingNoQuery);
+        }
 
         return query;
     }

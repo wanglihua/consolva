@@ -30,6 +30,20 @@
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
 
+    <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" autocomplete="off" style="width: 150px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+
+    <label for="firstModeNameQuery">物流方式</label>&nbsp;<input id="firstModeNameQuery" autocomplete="off" style="width: 120px; height: 30px;" placeholder="物流方式模糊查询"/>&nbsp;
+
+    <label for="goodsTypeQuery">物品类型</label>&nbsp;
+    <select id="goodsTypeQuery" style="width: 100px; height: 30px;">
+        <option value="0">物品类型查询</option>
+        @foreach (var goodsType in Model.GoodsTypeList) {
+            <option value="@goodsType.Id">@goodsType.Name</option>
+        }
+    </select>&nbsp;
+
+    <label for="trackingNoQuery">国际单号</label>&nbsp;<input id="trackingNoQuery" autocomplete="off" style="width: 220px; height: 30px;" placeholder="国际单号查询"/>&nbsp;
+
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderFirstModeList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
@@ -71,6 +85,10 @@
             url: "@Url.Action("List", "LogisticsOrderFirstMode")",
             type: "POST",
             data: {
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackingNoQuery))": $("#trackingNoQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.PageIndex))": pageIndex,
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.SortField))": sortField,
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.SortDir))": sortDir
