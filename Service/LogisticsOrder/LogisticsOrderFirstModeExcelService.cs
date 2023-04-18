@@ -5,7 +5,9 @@ using NPOI.XSSF.UserModel;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.LogisticsOrder;
+using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass;
+using shunda.Service.logisticsTrack.SeventeenTrack.Register;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
@@ -17,13 +19,16 @@ namespace shunda.Service.LogisticsOrder;
 public class LogisticsOrderFirstModeExcelService {
     private readonly ISession session;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
+    private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
 
     public LogisticsOrderFirstModeExcelService(
         ISession session,
-        LogisticsOrderActionService logisticsOrderActionService
+        LogisticsOrderActionService logisticsOrderActionService,
+        SeventeenTrackRegisterService seventeenTrackRegisterService
     ) {
         this.session = session;
         this.logisticsOrderActionService = logisticsOrderActionService;
+        this.seventeenTrackRegisterService = seventeenTrackRegisterService;
     }
 
     /// <summary>
@@ -268,5 +273,45 @@ public class LogisticsOrderFirstModeExcelService {
 
             importItem.OrderFirstMode = orderFirstMode;
         }
+
+        foreach (var importItem in importItemList) {
+            var orderFirstMode = importItem.OrderFirstMode;
+
+            orderFirstMode.TrackingNo = importItem.TrackingNo;
+            session.Update(orderFirstMode);
+        }
+
+        session.Flush();
+
+        // 订单日志
+        foreach (var importItem in importItemList) {
+            logisticsOrderActionService.NewActionUser(importItem.OrderId, LogisticsOrderActionType.OrderFirstModeImportTrackingNo, importItem.TrackingNo, loginUserId);
+        }
+
+        session.Flush();
+
+        // 如果已经存在了就不用注册了
+        var trackingNoList = importItemList.Select(e => e.TrackingNo).ToList();
+        var trackNumberList = session.Query<SeventeenTrackNumberInfo>()
+            .Where(e => trackingNoList.Contains(e.TrackingNo)
+                        && (e.Status == SeventeenTrackNumberStatus.Accepted || e.Status == SeventeenTrackNumberStatus.Completed))
+            .ToList();
+        var trackNumberDict = trackNumberList.ToDictionary(e => e.TrackingNo, e => e);
+
+        var trackingNoListToRegister = new List<string>();
+        foreach (string trackingNo in trackingNoList) {
+            if (trackNumberDict.ContainsKey(trackingNo) == false) {
+                trackingNoListToRegister.Add(trackingNo);
+            }
+        }
+
+        // 注册单号
+        seventeenTrackRegisterService.Register(
+            trackingNoListToRegister
+                .Select(e => new SeventeenTrackRegisterRequestItem() {
+                    Number = e,
+                })
+                .ToList()
+        );
     }
 }

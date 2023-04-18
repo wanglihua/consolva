@@ -49,8 +49,8 @@ public class SeventeenTrackNumberController : Controller {
     [Route("/admin/logistics/track/seventeen/track/number/register/{trackingNo}")]
     [Transactional]
     public IActionResult RegisterForTest(string trackingNo) {
-        seventeenTrackRegisterService.Register(new List<SevenTrackRegisterRequestItem> {
-            new SevenTrackRegisterRequestItem {
+        seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem> {
+            new SeventeenTrackRegisterRequestItem {
                 Number = trackingNo,
             }
         });

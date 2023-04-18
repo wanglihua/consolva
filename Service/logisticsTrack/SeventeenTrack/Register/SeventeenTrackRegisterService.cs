@@ -24,28 +24,25 @@ public class SeventeenTrackRegisterService {
         this.session = session;
     }
 
-    public void Register(List<SevenTrackRegisterRequestItem> requestDataItemList) {
+    public void Register(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
         if (requestDataItemList.Count == 0) {
             throw new ValidationException("注册单号列表不能为空！");
         }
 
-        if (requestDataItemList.Count > MAX_TRACKING_NO_COUNT_ONCE) {
-            throw new ValidationException("一次注册单号数量不能超过40，请分批次注册！");
-        }
-
-        List<SevenTrackRegisterRequestItem> requestDataItemListRemind = requestDataItemList;
+        List<SeventeenTrackRegisterRequestItem> requestDataItemListRemind = requestDataItemList;
 
         while (requestDataItemListRemind.Count != 0) {
-            List<SevenTrackRegisterRequestItem> requestDataItemListOnce = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
+            List<SeventeenTrackRegisterRequestItem> requestDataItemListOnce = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
             requestDataItemListRemind = requestDataItemListRemind.Skip(MAX_TRACKING_NO_COUNT_ONCE).Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
 
             RegisterInternal(requestDataItemListOnce);
         }
     }
 
-    private void RegisterInternal(List<SevenTrackRegisterRequestItem> requestDataItemList) {
+    private void RegisterInternal(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
         if (requestDataItemList.Count == 0) {
-            throw new ValidationException("注册单号列表不能为空！");
+            // throw new ValidationException("注册单号列表不能为空！");
+            return;
         }
 
         if (requestDataItemList.Count > MAX_TRACKING_NO_COUNT_ONCE) {
@@ -77,10 +74,10 @@ public class SeventeenTrackRegisterService {
             }
         };
 
-        SevenTrackResponse<SevenTrackRegisterResponseData>? responseData = null;
+        SevenTrackResponse<SeventeenTrackRegisterResponseData>? responseData = null;
 
         try {
-            responseData = client.Post<SevenTrackResponse<SevenTrackRegisterResponseData>>(request);
+            responseData = client.Post<SevenTrackResponse<SeventeenTrackRegisterResponseData>>(request);
         }
         catch (Exception exp) {
             log.Error(exp);

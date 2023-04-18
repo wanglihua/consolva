@@ -17,7 +17,7 @@ public class SeventeenTrackNumberStatus : CodeTypeBase {
     public static readonly SeventeenTrackNumberStatus Rejected = new SeventeenTrackNumberStatus(2000, "注册被拒", "注册被拒");
 
     /// <summary>
-    /// 跟踪完结, 3000
+    /// 跟踪完结, 3000，这个状态是不是可以去掉
     /// </summary>
     public static readonly SeventeenTrackNumberStatus Completed = new SeventeenTrackNumberStatus(3000, "跟踪完结", "跟踪完结");
 

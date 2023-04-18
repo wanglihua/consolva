@@ -2,8 +2,8 @@ using shunda.Core.CodeType;
 
 namespace shunda.Domain.LogisticsOrder;
 
-public class LogisticsOrderActionType : CodeTypeBase
-{
+// todo 这里许多已经用不着了，可以去掉
+public class LogisticsOrderActionType : CodeTypeBase {
     /// <summary>
     /// 客户创建订单
     /// </summary>
@@ -274,38 +274,30 @@ public class LogisticsOrderActionType : CodeTypeBase
 
     private static readonly Dictionary<int, LogisticsOrderActionType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);
 
-    public static LogisticsOrderActionType GetById(int typeId)
-    {
-        if (codeTypeMap.TryGetValue(typeId, out LogisticsOrderActionType? actionType))
-        {
+    public static LogisticsOrderActionType GetById(int typeId) {
+        if (codeTypeMap.TryGetValue(typeId, out LogisticsOrderActionType? actionType)) {
             return actionType;
         }
 
         return None;
     }
 
-    public static IList<LogisticsOrderActionType> GetList()
-    {
+    public static IList<LogisticsOrderActionType> GetList() {
         return codeTypeList.ToList();
     }
 
-    private LogisticsOrderActionType(int id, string name, string description) : base(id, name, description)
-    {
+    private LogisticsOrderActionType(int id, string name, string description) : base(id, name, description) {
     }
 }
 
-public class LogisticsOrderActionTypeHibernateType : CodeHibernateTypeBase<LogisticsOrderActionType>
-{
-    protected override LogisticsOrderActionType GetCodeTypeById(int id)
-    {
+public class LogisticsOrderActionTypeHibernateType : CodeHibernateTypeBase<LogisticsOrderActionType> {
+    protected override LogisticsOrderActionType GetCodeTypeById(int id) {
         return LogisticsOrderActionType.GetById(id);
     }
 }
 
-public class LogisticsOrderActionTypeModelBinder : CodeTypeModelBinderBase<LogisticsOrderActionType>
-{
-    protected override LogisticsOrderActionType GetCodeTypeById(int id)
-    {
+public class LogisticsOrderActionTypeModelBinder : CodeTypeModelBinderBase<LogisticsOrderActionType> {
+    protected override LogisticsOrderActionType GetCodeTypeById(int id) {
         return LogisticsOrderActionType.GetById(id);
     }
 }

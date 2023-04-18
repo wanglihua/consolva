@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Service.logisticsTrack.SeventeenTrack.Register;
 
-public class SevenTrackRegisterRequestItem {
+public class SeventeenTrackRegisterRequestItem {
     [JsonProperty("number")]
     public string Number { get; set; } = string.Empty;
 

@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Service.logisticsTrack.SeventeenTrack;
 
-public class SevenTrackResponseDataError {
+public class SeventeenTrackResponseDataError {
     [JsonProperty("code")]
     public int Code { get; set; }
 

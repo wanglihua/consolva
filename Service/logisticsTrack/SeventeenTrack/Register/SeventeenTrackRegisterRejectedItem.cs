@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace shunda.Service.logisticsTrack.SeventeenTrack.Register;
 
-public class SevenTrackRegisterRejectedItem {
+public class SeventeenTrackRegisterRejectedItem {
     [JsonProperty("number")]
     public string Number { get; set; } = string.Empty;
 
@@ -10,5 +10,5 @@ public class SevenTrackRegisterRejectedItem {
     public string Tag { get; set; } = string.Empty;
 
     [JsonProperty("error")]
-    public SevenTrackRegisterRejectedItemError Error { get; set; } = new SevenTrackRegisterRejectedItemError();
+    public SeventeenTrackRegisterRejectedItemError Error { get; set; } = new SeventeenTrackRegisterRejectedItemError();
 }
