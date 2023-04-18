@@ -9,6 +9,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
+using shunda.Admin.Services;
 using shunda.Domain.Logistics;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.LogisticsOrder;
@@ -25,13 +26,16 @@ public class LogisticsOrderFirstModeController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
+    private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService;
 
     public LogisticsOrderFirstModeController(
         ISession session,
+        LoginUserService loginUserService,
         LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService
     ) {
         this.session = session;
+        this.loginUserService = loginUserService;
         this.logisticsOrderFirstModeExcelService = logisticsOrderFirstModeExcelService;
     }
 
@@ -200,5 +204,17 @@ public class LogisticsOrderFirstModeController : Controller {
 
         string fileName = $"国际单号导出.xlsx";
         return File(excel, ContentType.Xlsx, fileName);
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/order/logistics/order/first/mode/import")]
+    public IActionResult Import(IFormFile excelFile) {
+        int loginUserId = loginUserService.GetLoginUserId();
+        logisticsOrderFirstModeExcelService.Import(excelFile, loginUserId);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "导入成功！",
+        });
     }
 }
