@@ -209,6 +209,8 @@ public class LogisticsOrderFirstModeController : Controller {
                 }
             }
         }
+        
+        session.Flush();
 
         return Json(new JsonResultData {
             Success = true,
