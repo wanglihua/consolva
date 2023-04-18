@@ -103,10 +103,15 @@ public class LogisticsOrderDetailController : Controller {
 
         // 订单商品
         var expressList = expressService.GetExpressListForOrderDetail(orderId);
-        
+
         // 快递单尺寸重量
         IList<string> trackingNoList = expressList.Select(e => e.TrackingNo).ToList();
         var expressSizeWeightList = expressSizeWeightService.GetSizeWeightList(trackingNoList);
+
+        // 头程物流
+        var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Fetch(e => e.FirstMode)
+            .Where(e => e.Order.Id == orderId).ToList();
 
         // 箱号
         IList<LogisticsOrderPackBoxInfo> orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
@@ -157,6 +162,7 @@ public class LogisticsOrderDetailController : Controller {
             ExpressTotalVolumeWeight = expressSizeWeightService.GetTotalVolumeWeight(expressSizeWeightList),
             ExpressTotalActualWeight = expressSizeWeightService.GetTotalActualWeight(expressSizeWeightList),
             ExpressTotalPackageCount = expressSizeWeightService.GetTotalPackageCount(expressSizeWeightList),
+            OrderFirstModeList = orderFirstModeList,
             OrderPackBoxList = orderPackBoxList,
             LogisticsOrderActionList = orderActionList,
             PhotoList = expressPhotoList,

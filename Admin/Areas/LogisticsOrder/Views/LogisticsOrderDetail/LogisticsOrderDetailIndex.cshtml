@@ -331,26 +331,73 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label for="LogisticsOrder.FirstMode.Code" class="col-xs-2 control-label">头程物流编号</label>
-                                        <div class="col-xs-10">
-                                            <input id="LogisticsOrder.FirstMode.Code" type="text" value="@(Model.Order.FirstMode.Code)" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label asp-for="Order.FirstMode" class="col-xs-2 control-label">头程物流方式</label>
-                                        <div class="col-xs-10">
-                                            <input asp-for="Order.FirstMode" type="text" value="@(Model.Order.FirstMode.Name)" disabled="disabled" class="input-sm form-control"/>
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
+
+                            @if (Model.OrderFirstModeList.Count == 0) {
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="Order.FirstMode" class="col-xs-2 control-label">头程物流方式</label>
+                                            <div class="col-xs-10">
+                                                <input asp-for="Order.FirstMode" type="text" value="@(Model.Order.FirstMode.Name)" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label asp-for="Order.GoodsType" class="col-xs-4 control-label">物品类型</label>
+                                            <div class="col-xs-8">
+                                                <input asp-for="Order.GoodsType" type="text" value="@(Model.Order.GoodsType.Name)" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label for="InterTrackingNo" class="col-xs-4 control-label">国际单号</label>
+                                            <div class="col-xs-8">
+                                                <input id="InterTrackingNo" type="text" value="" disabled="disabled" class="input-sm form-control"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            } else {
+                                foreach (var orderFirstMode in Model.OrderFirstModeList) {
+                                    <div class="row">
+
+                                        <div class="col-xs-6">
+                                            <div class="form-group">
+                                                <label for="orderFirstModeName@(orderFirstMode.Id)" class="col-xs-2 control-label">头程物流方式</label>
+                                                <div class="col-xs-10">
+                                                    <input id="orderFirstModeName@(orderFirstMode.Id)" type="text" value="@(orderFirstMode.FirstMode.Name)" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="orderFirstModeGoodsType@(orderFirstMode.Id)" class="col-xs-4 control-label">物品类型</label>
+                                                <div class="col-xs-8">
+                                                    <input id="orderFirstModeGoodsType@(orderFirstMode.Id)" type="text" value="@(orderFirstMode.GoodsType.Name)" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label for="orderFirstModeTrackingNo@(orderFirstMode.Id)" class="col-xs-4 control-label">国际单号</label>
+                                                <div class="col-xs-8">
+                                                    <input id="orderFirstModeTrackingNo@(orderFirstMode.Id)" type="text" value="@(orderFirstMode.TrackingNo)" disabled="disabled" class="input-sm form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                }
+                            }
 
                         </div>
                     </div>

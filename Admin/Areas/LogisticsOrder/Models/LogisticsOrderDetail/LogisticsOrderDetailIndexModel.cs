@@ -40,6 +40,9 @@ public class LogisticsOrderDetailIndexModel {
     public int ExpressTotalPackageCount { get; set; }
 
     [BindNever]
+    public IList<LogisticsOrderFirstModeInfo> OrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeInfo>();
+
+    [BindNever]
     public IList<LogisticsOrderPackBoxInfo> OrderPackBoxList { get; set; } = new List<LogisticsOrderPackBoxInfo>();
 
     [BindNever]
@@ -49,5 +52,5 @@ public class LogisticsOrderDetailIndexModel {
     public IList<LogisticsOrderActionInfo> LogisticsOrderActionList { get; set; } = new List<LogisticsOrderActionInfo>();
 
     [BindNever]
-    public decimal VolumeWeightDenominator { get; set; }    
+    public decimal VolumeWeightDenominator { get; set; }
 }
