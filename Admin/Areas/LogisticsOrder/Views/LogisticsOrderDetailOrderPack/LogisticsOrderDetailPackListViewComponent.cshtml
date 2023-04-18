@@ -8,7 +8,14 @@
 @if (Model.OrderFirstModeList.Count > 0) {
     foreach (var orderFirstMode in Model.OrderFirstModeList) {
         <table id="tblLogisticsOrderPackList" class="data-list-table table table-striped table-bordered table-hover">
-            <caption style="padding: 8px; font-weight: bold; color: #2a62bc;">@(orderFirstMode.FirstMode.Name)(@(orderFirstMode.GoodsType.Name))</caption>
+            <caption style="padding: 8px; font-weight: bold; color: #2a62bc;">
+            @(orderFirstMode.FirstMode.Name)(@(orderFirstMode.GoodsType.Name))
+            
+            @if(string.IsNullOrWhiteSpace(orderFirstMode.TrackingNo) == false) {
+                <span>(@(orderFirstMode.TrackingNo))</span>
+            }
+            
+            </caption>
             <thead>
                 <tr>
                     <th style="width: 50px; text-align: center;">序号</th>
