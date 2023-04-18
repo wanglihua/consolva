@@ -47,9 +47,27 @@
                 </div>
             </th>
 
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.TrackStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">跟踪状态</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.TrackSubStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">跟踪子状态</a>
+                </div>
+            </th>
+
             <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">注册时间</a>
+                </div>
+            </th>
+            
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.ErrorMessage))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">注册错误</a>
                 </div>
             </th>
 
@@ -101,7 +119,25 @@
 
                     <td style="text-align: center;">
                         <div>
+                            @ListDataUtil.Render(seventeenTrackNumber.TrackStatus)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackNumber.TrackSubStatus)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
                             @seventeenTrackNumber.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    
+                    <td style="text-align: left;" class="break-word">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackNumber.ErrorMessage)
                         </div>
                     </td>
 
