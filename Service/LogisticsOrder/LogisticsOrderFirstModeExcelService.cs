@@ -311,6 +311,8 @@ public class LogisticsOrderFirstModeExcelService {
             }
         }
 
+        trackingNoListToRegister = trackingNoListToRegister.Distinct().ToList(); // 防止重复
+
         // 注册单号
         seventeenTrackRegisterService.Register(
             trackingNoListToRegister
