@@ -244,8 +244,29 @@ public class LogisticsOrderFirstModeExcelService {
             string orderCode = importItem.OrderCode;
 
             // 判断数据ID是否存在
+            var orderFirstMode = orderFirstModeList.Where(e => e.Id == orderFirstModeId).Take(1).SingleOrDefault();
+            if (orderFirstMode == null) {
+                throw new ValidationException($"第{index + 1}行数据 数据ID不存在#1，导入失败！");
+            }
 
             // 判断数据ID之间，以及订单编号等是否匹配
+            if (orderFirstMode.Order.Id != orderId) {
+                throw new ValidationException($"第{index + 1}行数据 数据ID不存在#2，导入失败！");
+            }
+
+            if (orderFirstMode.FirstMode.Id != firstModeId) {
+                throw new ValidationException($"第{index + 1}行数据 数据ID不存在#3，导入失败！");
+            }
+
+            if (orderFirstMode.OrderCode != orderCode) {
+                throw new ValidationException($"第{index + 1}行数据 订单编号和数据ID不匹配，导入失败！");
+            }
+
+            if (string.IsNullOrWhiteSpace(importItem.TrackingNo)) {
+                throw new ValidationException($"第{index + 1}行数据 国际单号不能为空，导入失败！");
+            }
+
+            importItem.OrderFirstMode = orderFirstMode;
         }
     }
 }
