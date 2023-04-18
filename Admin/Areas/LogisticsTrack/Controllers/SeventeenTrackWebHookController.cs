@@ -46,8 +46,8 @@ public class SeventeenTrackWebHookController : Controller {
             requestBody = streamReader.ReadToEndAsync().GetAwaiter().GetResult();
 
             // 过段时间后，把这个去掉
-            log.Error("requestBody:");
-            log.Error(requestBody);
+            // log.Error("requestBody:");
+            // log.Error(requestBody);
 
             // 签名验证
             if (sign != SHA256Util.Encrypt($"{requestBody}/{LogisticsTrackConfig.SeventeenTrackToken}")) {
