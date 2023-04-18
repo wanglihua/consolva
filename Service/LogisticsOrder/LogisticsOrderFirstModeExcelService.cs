@@ -314,12 +314,14 @@ public class LogisticsOrderFirstModeExcelService {
         trackingNoListToRegister = trackingNoListToRegister.Distinct().ToList(); // 防止重复
 
         // 注册单号
-        seventeenTrackRegisterService.Register(
-            trackingNoListToRegister
-                .Select(e => new SeventeenTrackRegisterRequestItem() {
-                    Number = e,
-                })
-                .ToList()
-        );
+        if (trackingNoListToRegister.Count != 0) {
+            seventeenTrackRegisterService.Register(
+                trackingNoListToRegister
+                    .Select(e => new SeventeenTrackRegisterRequestItem() {
+                        Number = e,
+                    })
+                    .ToList()
+            );
+        }
     }
 }
