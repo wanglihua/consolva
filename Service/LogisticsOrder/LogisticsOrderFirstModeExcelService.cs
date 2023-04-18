@@ -274,24 +274,30 @@ public class LogisticsOrderFirstModeExcelService {
             importItem.OrderFirstMode = orderFirstMode;
         }
 
+        IList<LogisticsOrderFirstModeExcelImportItem> actualImportItemList = new List<LogisticsOrderFirstModeExcelImportItem>();
+
         foreach (var importItem in importItemList) {
             var orderFirstMode = importItem.OrderFirstMode;
 
-            orderFirstMode.TrackingNo = importItem.TrackingNo;
-            session.Update(orderFirstMode);
+            if (orderFirstMode.TrackingNo != importItem.TrackingNo) {
+                orderFirstMode.TrackingNo = importItem.TrackingNo;
+                session.Update(orderFirstMode);
+
+                actualImportItemList.Add(importItem);
+            }
         }
 
         session.Flush();
 
         // 订单日志
-        foreach (var importItem in importItemList) {
+        foreach (var importItem in actualImportItemList) {
             logisticsOrderActionService.NewActionUser(importItem.OrderId, LogisticsOrderActionType.OrderFirstModeImportTrackingNo, importItem.TrackingNo, loginUserId);
         }
 
         session.Flush();
 
         // 如果已经存在了就不用注册了
-        var trackingNoList = importItemList.Select(e => e.TrackingNo).ToList();
+        var trackingNoList = actualImportItemList.Select(e => e.TrackingNo).ToList();
         var trackNumberList = session.Query<SeventeenTrackNumberInfo>()
             .Where(e => trackingNoList.Contains(e.TrackingNo)
                         && (e.Status == SeventeenTrackNumberStatus.Accepted || e.Status == SeventeenTrackNumberStatus.Completed))
