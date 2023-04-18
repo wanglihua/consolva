@@ -126,6 +126,8 @@ public class SeventeenTrackRegisterService {
                     seventeenTrackNumber = new SeventeenTrackNumberInfo {
                         TrackingNo = trackingNo,
                     };
+
+                    seventeenTrackNumberList.Add(seventeenTrackNumber); // 要加进去，否则当前列表有重复的，就会报错了                    
                 }
 
                 seventeenTrackNumber.TrackingNo = trackingNo;
@@ -164,6 +166,8 @@ public class SeventeenTrackRegisterService {
                     };
 
                     session.Save(seventeenTrackNumber);
+
+                    seventeenTrackNumberList.Add(seventeenTrackNumber); // 要加进去，否则当前列表有重复的，就会报错了
                 } else {
                     // 之前被拒绝的才有可能要更新最新的错误相关信息等，其他的状态不需要更新。比如重复注册了，更不用更新。
                     if (seventeenTrackNumber.Status == SeventeenTrackNumberStatus.Rejected) {

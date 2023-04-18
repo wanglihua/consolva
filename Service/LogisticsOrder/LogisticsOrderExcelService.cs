@@ -303,7 +303,7 @@ public class LogisticsOrderExcelService {
                             CustomerCode = order.CustomerCode,
                             GoodsTypeName = order.GoodsType.Name,
                             CountryName = order.Country.Name,
-                            FirstModeName = $"{ofm.FirstMode.Code}({ofm.FirstMode.Name})",
+                            FirstModeName = ofm.FirstMode.Name,
 
                             OrderAmount = orderAmount,
                             TotalVolumeWeight = (double)totalVolumeWeight,

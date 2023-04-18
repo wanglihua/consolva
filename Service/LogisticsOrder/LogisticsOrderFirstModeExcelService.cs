@@ -124,7 +124,7 @@ public class LogisticsOrderFirstModeExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue($"{orderFirstMode.FirstMode.Code}({orderFirstMode.FirstMode.Name})");
+            cell.SetCellValue(orderFirstMode.FirstMode.Name);
 
             // 物品类型
             cell = row.CreateCell(cellIndex++);
