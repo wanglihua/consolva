@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using NHibernate.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Core;
@@ -226,11 +227,25 @@ public class LogisticsOrderFirstModeExcelService {
         }
 
         IList<int> orderFirstModeIdList = importItemList.Select(e => e.OrderFirstModeId).ToList();
-        IList<int> orderIdList = importItemList.Select(e => e.OrderId).Distinct().ToList();
-        IList<int> firstModeIdList = importItemList.Select(e => e.FirstModeId).Distinct().ToList();
+        // IList<int> orderIdList = importItemList.Select(e => e.OrderId).Distinct().ToList();
+        // IList<int> firstModeIdList = importItemList.Select(e => e.FirstModeId).Distinct().ToList();
+
+        var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Where(e => orderFirstModeIdList.Contains(e.Id))
+            .ToList();
 
         int importItemCount = importItemList.Count;
         for (int index = 0; index < importItemCount; index++) {
+            var importItem = importItemList[index];
+
+            int orderFirstModeId = importItem.OrderFirstModeId;
+            int orderId = importItem.OrderId;
+            int firstModeId = importItem.FirstModeId;
+            string orderCode = importItem.OrderCode;
+
+            // 判断数据ID是否存在
+
+            // 判断数据ID之间，以及订单编号等是否匹配
         }
     }
 }
