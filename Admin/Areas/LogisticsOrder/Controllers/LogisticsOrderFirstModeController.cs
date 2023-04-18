@@ -188,23 +188,25 @@ public class LogisticsOrderFirstModeController : Controller {
 
         trackingNo = trackingNo.Trim();
 
-        if (string.IsNullOrWhiteSpace(trackingNo) == false && orderFirstMode.TrackingNo != trackingNo) {
+        if (orderFirstMode.TrackingNo != trackingNo) {
             orderFirstMode.TrackingNo = trackingNo;
 
             session.Update(orderFirstMode);
             session.Flush();
 
-            var trackNumber = session.Query<SeventeenTrackNumberInfo>()
-                .Where(e => e.TrackingNo == trackingNo
-                            && (e.Status == SeventeenTrackNumberStatus.Accepted || e.Status == SeventeenTrackNumberStatus.Completed))
-                .Take(1)
-                .SingleOrDefault();
-            if (trackNumber == null) {
-                seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem>() {
-                    new SeventeenTrackRegisterRequestItem() {
-                        Number = trackingNo,
-                    }
-                });
+            if (string.IsNullOrWhiteSpace(trackingNo) == false) {
+                var trackNumber = session.Query<SeventeenTrackNumberInfo>()
+                    .Where(e => e.TrackingNo == trackingNo
+                                && (e.Status == SeventeenTrackNumberStatus.Accepted || e.Status == SeventeenTrackNumberStatus.Completed))
+                    .Take(1)
+                    .SingleOrDefault();
+                if (trackNumber == null) {
+                    seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem>() {
+                        new SeventeenTrackRegisterRequestItem() {
+                            Number = trackingNo,
+                        }
+                    });
+                }
             }
         }
 
