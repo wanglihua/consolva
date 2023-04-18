@@ -33,7 +33,7 @@ public class SeventeenTrackRegisterService {
 
         while (requestDataItemListRemind.Count != 0) {
             List<SeventeenTrackRegisterRequestItem> requestDataItemListOnce = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
-            requestDataItemListRemind = requestDataItemListRemind.Skip(MAX_TRACKING_NO_COUNT_ONCE).Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
+            requestDataItemListRemind = requestDataItemListRemind.Skip(MAX_TRACKING_NO_COUNT_ONCE).ToList();
 
             RegisterInternal(requestDataItemListOnce);
         }
