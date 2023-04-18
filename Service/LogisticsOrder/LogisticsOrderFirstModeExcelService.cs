@@ -84,7 +84,7 @@ public class LogisticsOrderFirstModeExcelService {
         cell.SetCellType(CellType.String);
         cell.SetCellValue("订单编号");
 
-        sheet.SetColumnWidth(cellIndex, 60 * 256);
+        sheet.SetColumnWidth(cellIndex, 100 * 256);
         cell = row.CreateCell(cellIndex++);
         cell.CellStyle = headerCenterCellStyle;
         cell.SetCellType(CellType.String);
@@ -124,7 +124,7 @@ public class LogisticsOrderFirstModeExcelService {
             cell = row.CreateCell(cellIndex++);
             cell.CellStyle = contentCellStyle;
             cell.SetCellType(CellType.String);
-            cell.SetCellValue(orderFirstMode.FirstMode.Name);
+            cell.SetCellValue($"{orderFirstMode.FirstMode.Code}({orderFirstMode.FirstMode.Name})");
 
             // 物品类型
             cell = row.CreateCell(cellIndex++);

@@ -353,7 +353,7 @@ public class LogisticsOrderExcelService {
                     cell.SetCellValue(line.CountryName);
 
                     cell = row.CreateCell(cellIndex++);
-                    cell.CellStyle = contentCenterCellStyle;
+                    cell.CellStyle = contentCellStyle;
                     cell.SetCellType(CellType.String);
                     cell.SetCellValue(line.FirstModeName);
 
