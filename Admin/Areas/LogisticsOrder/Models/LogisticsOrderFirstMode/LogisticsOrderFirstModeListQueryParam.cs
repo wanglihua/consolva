@@ -17,4 +17,8 @@ public class LogisticsOrderFirstModeListQueryParam : ListQueryParam {
     public LogisticsGoodsType? GoodsTypeQuery { get; set; }
 
     public string? TrackingNoQuery { get; set; }
+
+    public DateTime? BeginDateQuery { get; set; }
+
+    public DateTime? EndDateQuery { get; set; }
 }

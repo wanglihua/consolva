@@ -44,7 +44,7 @@ public class SeventeenTrackNumberEventController : Controller {
     [Route("/admin/logistics/track/seventeen/track/number/event/list")]
     public IActionResult List(SeventeenTrackNumberEventListQueryParam queryParam) {
         var listQuery = GetQueryOver(queryParam);
-        listQuery = listQuery.OrderByAlias(() => seventeenTrackNumberEventAlias!.Id).Asc;
+        listQuery = listQuery.OrderByAlias(() => seventeenTrackNumberEventAlias!.EventTime).Asc;
 
         IList<SeventeenTrackNumberEventInfo> seventeenTrackNumberEventList = listQuery
             .List<SeventeenTrackNumberEventInfo>();

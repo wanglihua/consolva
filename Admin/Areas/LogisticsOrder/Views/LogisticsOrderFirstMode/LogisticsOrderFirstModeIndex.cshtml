@@ -43,6 +43,10 @@
     </select>&nbsp;
 
     <label for="trackingNoQuery">国际单号</label>&nbsp;<input id="trackingNoQuery" autocomplete="off" style="width: 220px; height: 30px;" placeholder="国际单号查询"/>&nbsp;
+    
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;    
 
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadLogisticsOrderFirstModeList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
@@ -56,6 +60,17 @@
 <script type="text/javascript">
 
     $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
         loadLogisticsOrderFirstModeList();
     });
 
@@ -89,6 +104,8 @@
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackingNoQuery))": $("#trackingNoQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.BeginDateQuery))": $("#beginDateQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.EndDateQuery))": $("#endDateQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.PageIndex))": pageIndex,
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.SortField))": sortField,
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.SortDir))": sortDir

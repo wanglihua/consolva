@@ -129,6 +129,16 @@ public class LogisticsOrderFirstModeController : Controller {
             query = query.Where(e => e.TrackingNo == trackingNoQuery);
         }
 
+        if (queryParam.BeginDateQuery != null) {
+            DateTime beginDateQueryValue = queryParam.BeginDateQuery.Value;
+            query = query.Where(e => e.CreateTime >= beginDateQueryValue);
+        }
+
+        if (queryParam.EndDateQuery != null) {
+            DateTime endDateQueryValue = queryParam.EndDateQuery.Value.AddDays(1);
+            query = query.Where(e => e.CreateTime < endDateQueryValue);
+        }
+
         return query;
     }
 
