@@ -11,8 +11,10 @@ using NHibernate.SqlCommand;
 using NLog;
 using shunda.Admin.Services;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.LogisticsOrder;
+using shunda.Service.logisticsTrack.SeventeenTrack.Register;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -28,15 +30,18 @@ public class LogisticsOrderFirstModeController : Controller {
     private readonly ISession session;
     private readonly LoginUserService loginUserService;
     private readonly LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService;
+    private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
 
     public LogisticsOrderFirstModeController(
         ISession session,
         LoginUserService loginUserService,
-        LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService
+        LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService,
+        SeventeenTrackRegisterService seventeenTrackRegisterService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderFirstModeExcelService = logisticsOrderFirstModeExcelService;
+        this.seventeenTrackRegisterService = seventeenTrackRegisterService;
     }
 
     [HttpGet]
@@ -181,10 +186,27 @@ public class LogisticsOrderFirstModeController : Controller {
             trackingNo = string.Empty;
         }
 
-        orderFirstMode.TrackingNo = trackingNo;
+        trackingNo = trackingNo.Trim();
 
-        session.Update(orderFirstMode);
-        session.Flush();
+        if (string.IsNullOrWhiteSpace(trackingNo) == false && orderFirstMode.TrackingNo != trackingNo) {
+            orderFirstMode.TrackingNo = trackingNo;
+
+            session.Update(orderFirstMode);
+            session.Flush();
+
+            var trackNumber = session.Query<SeventeenTrackNumberInfo>()
+                .Where(e => e.TrackingNo == trackingNo
+                            && (e.Status == SeventeenTrackNumberStatus.Accepted || e.Status == SeventeenTrackNumberStatus.Completed))
+                .Take(1)
+                .SingleOrDefault();
+            if (trackNumber == null) {
+                seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem>() {
+                    new SeventeenTrackRegisterRequestItem() {
+                        Number = trackingNo,
+                    }
+                });
+            }
+        }
 
         return Json(new JsonResultData {
             Success = true,
