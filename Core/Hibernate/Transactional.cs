@@ -28,7 +28,9 @@ public class Transactional {
             }
         }
         catch (Exception exp) {
-            log.Error(exp);
+            if (exp is ValidationException == false) {
+                log.Error(exp);
+            }
 
             if (transactionBegin) {
                 transaction?.Rollback();
