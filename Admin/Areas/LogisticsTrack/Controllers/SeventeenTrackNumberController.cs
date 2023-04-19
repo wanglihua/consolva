@@ -10,6 +10,7 @@ using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
 using shunda.Domain.Pass.PassRes;
+using shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
 using shunda.Service.logisticsTrack.SeventeenTrack.Register;
 using ISession = NHibernate.ISession;
 
@@ -25,13 +26,16 @@ public class SeventeenTrackNumberController : Controller {
 
     private readonly ISession session;
     private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
+    private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
 
     public SeventeenTrackNumberController(
         ISession session,
-        SeventeenTrackRegisterService seventeenTrackRegisterService
+        SeventeenTrackRegisterService seventeenTrackRegisterService,
+        SeventeenTrackCarrierService seventeenTrackCarrierService
     ) {
         this.session = session;
         this.seventeenTrackRegisterService = seventeenTrackRegisterService;
+        this.seventeenTrackCarrierService = seventeenTrackCarrierService;
     }
 
     [HttpGet]
@@ -52,6 +56,7 @@ public class SeventeenTrackNumberController : Controller {
         seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem> {
             new SeventeenTrackRegisterRequestItem {
                 Number = trackingNo,
+                Carrier = seventeenTrackCarrierService.GetKeyByTrackingNo(trackingNo),
             }
         });
 

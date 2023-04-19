@@ -7,6 +7,7 @@ using shunda.Core.Service;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass;
+using shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
 using shunda.Service.logisticsTrack.SeventeenTrack.Register;
 using ISession = NHibernate.ISession;
 
@@ -20,15 +21,18 @@ public class LogisticsOrderFirstModeExcelService {
     private readonly ISession session;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
+    private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
 
     public LogisticsOrderFirstModeExcelService(
         ISession session,
         LogisticsOrderActionService logisticsOrderActionService,
-        SeventeenTrackRegisterService seventeenTrackRegisterService
+        SeventeenTrackRegisterService seventeenTrackRegisterService,
+        SeventeenTrackCarrierService seventeenTrackCarrierService
     ) {
         this.session = session;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.seventeenTrackRegisterService = seventeenTrackRegisterService;
+        this.seventeenTrackCarrierService = seventeenTrackCarrierService;
     }
 
     /// <summary>
@@ -319,6 +323,7 @@ public class LogisticsOrderFirstModeExcelService {
                 trackingNoListToRegister
                     .Select(e => new SeventeenTrackRegisterRequestItem() {
                         Number = e,
+                        Carrier = seventeenTrackCarrierService.GetKeyByTrackingNo(e),
                     })
                     .ToList()
             );
