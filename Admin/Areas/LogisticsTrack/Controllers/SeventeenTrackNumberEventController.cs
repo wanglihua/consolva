@@ -25,14 +25,50 @@ public class SeventeenTrackNumberEventController : Controller {
     }
 
     [HttpPost]
-    [Route("/admin/logistics/track/seventeen/track/number/event")]
-    public IActionResult Index(int trackNumberId) {
+    [Route("/admin/logistics/track/seventeen/track/number/event/by/track/number/id")]
+    public IActionResult DialogByTrackNumberId(int trackNumberId) {
         SeventeenTrackNumberEventIndexModel model = new SeventeenTrackNumberEventIndexModel();
 
         var trackNumber = session.Get<SeventeenTrackNumberInfo>(trackNumberId);
         if (trackNumber == null) {
             throw new ValidationException($"指定的17TRACK跟踪单号#{trackNumberId}不存在！");
         }
+
+        model.TrackNumber = trackNumber;
+
+        SeventeenTrackNumberEventInfo? eventAlias = null;
+        IList<SeventeenTrackNumberEventInfo> eventList = session
+            .QueryOver<SeventeenTrackNumberEventInfo>(() => eventAlias!)
+            .Where(e => eventAlias!.TrackNumber.Id == trackNumberId)
+            .List<SeventeenTrackNumberEventInfo>();
+
+        eventList = eventList.OrderBy(e => e.EventTime).ThenBy(e => e.Id).ToList();
+
+        model.SeventeenTrackNumberEventList = eventList;
+
+        return View("SeventeenTrackNumberEventIndex", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/logistics/track/seventeen/track/number/event/by/tracking/no")]
+    public IActionResult DialogByTrackingNo(string trackingNo) {
+        if (string.IsNullOrWhiteSpace(trackingNo)) {
+            throw new ValidationException("查看跟踪明细，国际单号不能为空！");
+        }
+
+        trackingNo = trackingNo.Trim();
+
+        SeventeenTrackNumberEventIndexModel model = new SeventeenTrackNumberEventIndexModel();
+
+        var trackNumber = session.Query<SeventeenTrackNumberInfo>()
+            .Where(e => e.TrackingNo == trackingNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (trackNumber == null) {
+            throw new ValidationException($"指定的17TRACK跟踪国际单号#{trackingNo}不存在！");
+        }
+
+        int trackNumberId = trackNumber.Id;
 
         model.TrackNumber = trackNumber;
 

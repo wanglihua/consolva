@@ -5,7 +5,7 @@
 
         showMask("加载中...");
         $.ajax({
-            url: '@Url.Action("Index", "SeventeenTrackNumberEvent")',
+            url: '@Url.Action("DialogByTrackNumberId", "SeventeenTrackNumberEvent")',
             type: "POST",
             data: { "trackNumberId": trackNumberId },
             success: function(data) {

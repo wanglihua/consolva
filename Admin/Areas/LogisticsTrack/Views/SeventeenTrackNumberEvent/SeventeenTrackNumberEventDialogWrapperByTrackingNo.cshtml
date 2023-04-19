@@ -1,0 +1,23 @@
+<div id="seventeenTrackNumberEventDialogWrapper"></div>
+<script type="text/javascript">
+    function showSeventeenTrackNumberEvent(trackingNo) {
+        $("#seventeenTrackNumberEventDialogWrapper").html("");
+
+        showMask("加载中...");
+        $.ajax({
+            url: '@Url.Action("DialogByTrackingNo", "SeventeenTrackNumberEvent")',
+            type: "POST",
+            data: { "trackingNo": trackingNo },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#seventeenTrackNumberEventDialogWrapper").html(data);
+                $("#seventeenTrackNumberEventDialog").modal(modalOptions);
+            }
+        });
+    }
+</script>
