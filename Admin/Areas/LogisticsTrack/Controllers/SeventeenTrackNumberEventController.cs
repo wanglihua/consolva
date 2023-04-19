@@ -44,10 +44,14 @@ public class SeventeenTrackNumberEventController : Controller {
     [Route("/admin/logistics/track/seventeen/track/number/event/list")]
     public IActionResult List(SeventeenTrackNumberEventListQueryParam queryParam) {
         var listQuery = GetQueryOver(queryParam);
-        listQuery = listQuery.OrderByAlias(() => seventeenTrackNumberEventAlias!.EventTime).Asc;
+        // listQuery = listQuery 
+        //     .OrderByAlias(() => seventeenTrackNumberEventAlias!.EventTime).Asc 这个排序用LINQ排序
+        //     .ThenByAlias(() => seventeenTrackNumberEventAlias!.Id).Asc;
 
         IList<SeventeenTrackNumberEventInfo> seventeenTrackNumberEventList = listQuery
             .List<SeventeenTrackNumberEventInfo>();
+
+        seventeenTrackNumberEventList = seventeenTrackNumberEventList.OrderBy(e => e.EventTime).ThenBy(e => e.Id).ToList();
 
         /*
         foreach (SeventeenTrackNumberEventInfo seventeenTrackNumberEvent in seventeenTrackNumberEventList) {

@@ -128,7 +128,9 @@ public class SeventeenTrackWebHookController : Controller {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
-            foreach (var evt in provider.EventList) {
+            var eventList = provider.EventList.Reverse(); // 这里是按时间倒序排列的
+
+            foreach (var evt in eventList) {
                 if (DateTime.TryParse(evt.TimeIso, out DateTime eventTime) == false) {
                     log.Error($"{evt.TimeIso}不是正确的时间格式！");
                     log.Error(requestBody);
