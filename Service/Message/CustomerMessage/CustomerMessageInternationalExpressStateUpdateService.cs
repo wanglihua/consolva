@@ -37,7 +37,7 @@ public class CustomerMessageInternationalExpressStateUpdateService {
             .SingleOrDefault();
         if (setting == null) {
             setting = new CustomerMessageRealTimeSendSettingInfo {
-                Type = CustomerMessageType.OrderDelivered,
+                Type = messageType,
                 Status = CustomerMessageSettingStatus.Disabled,
                 WechatSend = true,
                 SmsSend = false,
