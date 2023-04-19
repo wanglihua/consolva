@@ -390,7 +390,11 @@
                                             <div class="form-group">
                                                 <label for="orderFirstModeTrackingNo@(orderFirstMode.Id)" class="col-xs-4 control-label">国际单号</label>
                                                 <div class="col-xs-8">
-                                                    <input id="orderFirstModeTrackingNo@(orderFirstMode.Id)" type="text" value="@(orderFirstMode.TrackingNo)" disabled="disabled" class="input-sm form-control"/>
+                                                    @if(string.IsNullOrWhiteSpace(orderFirstMode.TrackingNo)) {
+                                                        <input id="orderFirstModeTrackingNo@(orderFirstMode.Id)" type="text" value="@(orderFirstMode.TrackingNo)" disabled="disabled" class="input-sm form-control"/>
+                                                    } else {
+                                                        <a style="cursor: pointer; line-height: 28px;" onclick="showSeventeenTrackNumberEvent('@(orderFirstMode.TrackingNo)')">@ListDataUtil.Render(orderFirstMode.TrackingNo)</a>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -1337,3 +1341,4 @@
 
 <div id="logisticsOrderRemarkDetailDialogWrapper"></div>
 <div id="orderPackDetailDialogWrapper"></div>
+<partial name="~/Areas/LogisticsTrack/Views/SeventeenTrackNumberEvent/SeventeenTrackNumberEventDialogWrapperByTrackingNo.cshtml"/>
