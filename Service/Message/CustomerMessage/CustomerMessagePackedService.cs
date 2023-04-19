@@ -113,15 +113,15 @@ public class CustomerMessagePackedService {
                     string url = GetUrl(order.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customerCode, message1, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customerCode, message2, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customerCode, message3, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message3, processUser, url);
                     }
                 }
 

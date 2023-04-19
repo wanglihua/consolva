@@ -51,3 +51,102 @@ public class CustomerMessageInternationalExpressStateUpdateService {
         }
     }
 }
+
+/*
+
+
+        #region 国际快递状态更新提醒
+
+        /// <summary>
+        /// 
+        /// 国际快递状态更新提醒
+        /// 
+        /// </summary>
+        public void SendMessageInternationalExpressStateUpdate(CustomerInfo customer, LogisticsOrderInfo order, string trackingNo, string trackingContent) {
+            if (customer?.Status == CustomerStatus.Frozen) {
+                return;
+            }
+
+            CustomerMessageType messageType = CustomerMessageType.InternationalExpressStateUpdateTiXing;
+            CustomerMessageRealTimeSendSettingInfo setting = GetCustomerMessageRealTimeSendSetting(messageType);
+            if (setting.Status == CustomerMessageSettingStatus.Enabled) {
+                if (customer == null) {
+                    throw new ValidationException("消息发送指定的会员不能为空！");
+                }
+
+                if (order == null) {
+                    throw new ValidationException("消息发送指定的物流订单不能为空！");
+                }
+
+                string orderCode = order?.Code;
+
+                string message1 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate1, orderCode, trackingNo, trackingContent);
+                string message2 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate2, orderCode, trackingNo, trackingContent);
+                string message3 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate3, orderCode, trackingNo, trackingContent);
+
+                bool isSent = false;
+
+                bool clientShouldSend = true;
+                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend)) {
+                    clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.InternationalExpressStateUpdateTiXing);
+                }
+
+                if (setting.WeiXinSend) {
+                    if (clientShouldSend) {
+                        isSent = true;
+
+                        string orderDetailUrl = customerClientUrlService.GetTransportingOrderDetailUrl(order.Customer, order.Id);
+
+                        if (string.IsNullOrWhiteSpace(message1) == false) {
+                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message1, defaultProcessUser, orderDetailUrl);
+                        }
+
+                        if (string.IsNullOrWhiteSpace(message2) == false) {
+                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message2, defaultProcessUser, orderDetailUrl);
+                        }
+
+                        if (string.IsNullOrWhiteSpace(message3) == false) {
+                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message3, defaultProcessUser, orderDetailUrl);
+                        }
+                    }
+                }
+
+                if (setting.SmsSend) {
+                    if (clientShouldSend) {
+                        isSent = true;
+                        smsService.SendSms(customer.Mobile, TransferMessageInternationalExpressStateUpdate(setting.SmsMessageTemplate, orderCode, trackingNo, trackingContent));
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(message1) == false) {
+                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message1, isSent, setting);
+                }
+
+                if (string.IsNullOrWhiteSpace(message2) == false) {
+                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message2, isSent, setting);
+                }
+
+                if (string.IsNullOrWhiteSpace(message3) == false) {
+                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message3, isSent, setting);
+                }
+
+                session.Flush();
+            }
+        }
+
+        private string TransferMessageInternationalExpressStateUpdate(string message, string orderCode, string trackingNo, string trackingContent) {
+            if (string.IsNullOrWhiteSpace(message)) {
+                return message;
+            }
+
+            // setting.Placeholders = "订单编码：{order_code}，国际快递单号：{tracking_no}，状态更新内容：{tracking_content}";
+            message = message.Replace("{order_code}", orderCode);
+            message = message.Replace("{tracking_no}", trackingNo);
+            message = message.Replace("{tracking_content}", trackingContent);
+
+            return message;
+        }
+
+        #endregion
+        
+*/
