@@ -16,6 +16,7 @@ using shunda.Domain.Pass.PassRes;
 using shunda.Service.LogisticsOrder;
 using shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
 using shunda.Service.logisticsTrack.SeventeenTrack.Register;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Controllers;
@@ -33,19 +34,22 @@ public class LogisticsOrderFirstModeController : Controller {
     private readonly LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService;
     private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
     private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
+    private readonly CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService;
 
     public LogisticsOrderFirstModeController(
         ISession session,
         LoginUserService loginUserService,
         LogisticsOrderFirstModeExcelService logisticsOrderFirstModeExcelService,
         SeventeenTrackRegisterService seventeenTrackRegisterService,
-        SeventeenTrackCarrierService seventeenTrackCarrierService
+        SeventeenTrackCarrierService seventeenTrackCarrierService,
+        CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
         this.logisticsOrderFirstModeExcelService = logisticsOrderFirstModeExcelService;
         this.seventeenTrackRegisterService = seventeenTrackRegisterService;
         this.seventeenTrackCarrierService = seventeenTrackCarrierService;
+        this.customerMessageInternationalExpressTrackingNoService = customerMessageInternationalExpressTrackingNoService;
     }
 
     [HttpGet]
@@ -205,16 +209,24 @@ public class LogisticsOrderFirstModeController : Controller {
                     .Take(1)
                     .SingleOrDefault();
                 if (trackNumber == null) {
-                    seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem>() {
+                    var successList = seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem>() {
                         new SeventeenTrackRegisterRequestItem() {
                             Number = trackingNo,
                             Carrier = seventeenTrackCarrierService.GetKeyByTrackingNo(trackingNo),
                         }
                     });
+
+                    var successTrackNumber = successList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
+                    if (successTrackNumber != null) {
+                        int carrierKey = successTrackNumber.CarrierKey;
+                        var carrier = session.Query<SeventeenTrackCarrierInfo>().Where(e => e.CarrierKey == carrierKey).Take(1).SingleOrDefault();
+
+                        customerMessageInternationalExpressTrackingNoService.SendMessage(orderFirstMode.Order.Customer, orderFirstMode.Order, trackingNo, carrier?.CarrierName ?? string.Empty, carrier?.Url ?? string.Empty);
+                    }
                 }
             }
         }
-        
+
         session.Flush();
 
         return Json(new JsonResultData {

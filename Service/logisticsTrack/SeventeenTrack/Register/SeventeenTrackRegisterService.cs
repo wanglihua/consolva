@@ -24,10 +24,12 @@ public class SeventeenTrackRegisterService {
         this.session = session;
     }
 
-    public void Register(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
+    public IList<SeventeenTrackNumberInfo> Register(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
         if (requestDataItemList.Count == 0) {
             throw new ValidationException("注册单号列表不能为空！");
         }
+
+        var successTrackNumberList = new List<SeventeenTrackNumberInfo>();
 
         List<SeventeenTrackRegisterRequestItem> requestDataItemListRemind = requestDataItemList;
 
@@ -35,14 +37,17 @@ public class SeventeenTrackRegisterService {
             List<SeventeenTrackRegisterRequestItem> requestDataItemListOnce = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
             requestDataItemListRemind = requestDataItemListRemind.Skip(MAX_TRACKING_NO_COUNT_ONCE).ToList();
 
-            RegisterInternal(requestDataItemListOnce);
+            var successTrackNumberListThisTime = RegisterInternal(requestDataItemListOnce);
+            successTrackNumberList.AddRange(successTrackNumberListThisTime);
         }
+
+        return successTrackNumberList;
     }
 
-    private void RegisterInternal(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
+    private IList<SeventeenTrackNumberInfo> RegisterInternal(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
         if (requestDataItemList.Count == 0) {
             // throw new ValidationException("注册单号列表不能为空！");
-            return;
+            return new List<SeventeenTrackNumberInfo>();
         }
 
         if (requestDataItemList.Count > MAX_TRACKING_NO_COUNT_ONCE) {
@@ -101,6 +106,8 @@ public class SeventeenTrackRegisterService {
             .Where(e => trackingNoList.Contains(e.TrackingNo))
             .ToList();
 
+        var successTrackNumberList = new List<SeventeenTrackNumberInfo>();
+
         var acceptedList = responseData.Data.AcceptedList;
         if (acceptedList != null && acceptedList.Count != 0) {
             var carrierKeyList = acceptedList.Select(e => e.Carrier).Distinct().ToList();
@@ -139,6 +146,8 @@ public class SeventeenTrackRegisterService {
                 seventeenTrackNumber.Status = SeventeenTrackNumberStatus.Accepted;
 
                 session.SaveOrUpdate(seventeenTrackNumber);
+
+                successTrackNumberList.Add(seventeenTrackNumber);
             }
 
             session.Flush();
@@ -186,5 +195,7 @@ public class SeventeenTrackRegisterService {
 
             session.Flush();
         }
+
+        return successTrackNumberList;
     }
 }
