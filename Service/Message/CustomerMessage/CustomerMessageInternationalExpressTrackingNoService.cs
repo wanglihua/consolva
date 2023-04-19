@@ -1,5 +1,8 @@
 using NHibernate;
+using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
 
@@ -46,6 +49,94 @@ public class CustomerMessageInternationalExpressTrackingNoService {
             };
 
             session.Save(setting);
+            session.Flush();
+        }
+    }
+
+    private string TransferMessage(string message, string orderCode, string trackingNo, string expressCompany, string trackingUrl) {
+        if (string.IsNullOrWhiteSpace(message)) {
+            return message;
+        }
+
+        message = message.Replace("{order_code}", orderCode);
+        message = message.Replace("{tracking_no}", trackingNo);
+        message = message.Replace("{express_company}", expressCompany);
+        message = message.Replace("{tracking_url}", trackingUrl);
+
+        return message;
+    }
+
+    private string GetUrl(int orderId) {
+        return $"pages/order/order_detail?id={orderId}";
+    }
+
+    public void SendMessage(CustomerInfo customer, LogisticsOrderInfo order, string trackingNo, string expressCompany, string trackingUrl) {
+        if (customer.Status == CustomerStatus.Frozen) {
+            return;
+        }
+
+        CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
+        if (setting.Status == CustomerMessageSettingStatus.Enabled) {
+            if (customer == null) {
+                throw new ValidationException("消息发送指定的会员不能为空！");
+            }
+
+            if (order == null) {
+                throw new ValidationException("消息发送指定的物流订单不能为空！");
+            }
+
+            string customerCode = customerCodeService.GetCustomerCode(customer.Id);
+            string orderCode = order.Code;
+
+            string message1 = TransferMessage(setting.WechatMessageTemplate1, orderCode, trackingNo, expressCompany, trackingUrl);
+            string message2 = TransferMessage(setting.WechatMessageTemplate2, orderCode, trackingNo, expressCompany, trackingUrl);
+            string message3 = TransferMessage(setting.WechatMessageTemplate3, orderCode, trackingNo, expressCompany, trackingUrl);
+
+            CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
+
+            bool clientShouldSend = true;
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
+                clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
+            }
+
+            string processUser = CustomerMessageCommonService.ShundaSecretary;
+
+            if (clientShouldSend) {
+                if (setting.WechatSend) {
+                    messageStatus = CustomerMessageStatus.Success;
+                    string url = GetUrl(order.Id);
+
+                    if (string.IsNullOrWhiteSpace(message1) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customerCode, message1, processUser, url);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(message2) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customerCode, message2, processUser, url);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(message3) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", orderCode, customerCode, message3, processUser, url);
+                    }
+                }
+
+                if (setting.SmsSend) {
+                    messageStatus = CustomerMessageStatus.Success;
+                    customerMessageCommonService.SendSms(customer.Mobile, TransferMessage(setting.SmsMessageTemplate, orderCode, trackingNo, expressCompany, trackingUrl));
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(message1) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message1, messageStatus, setting, processUser);
+            }
+
+            if (string.IsNullOrWhiteSpace(message2) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message2, messageStatus, setting, processUser);
+            }
+
+            if (string.IsNullOrWhiteSpace(message3) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message3, messageStatus, setting, processUser);
+            }
+
             session.Flush();
         }
     }

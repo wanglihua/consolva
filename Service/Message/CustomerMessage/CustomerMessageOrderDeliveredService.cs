@@ -65,7 +65,7 @@ public class CustomerMessageOrderDeliveredService {
         message = message.Replace("{order_code}", orderCode);
 
         return message;
-    }    
+    }
 
     private string GetUrl(int orderId) {
         return $"pages/order/order_detail?id={orderId}";
@@ -83,8 +83,6 @@ public class CustomerMessageOrderDeliveredService {
             return;
         }
 
-        string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-
         CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
         if (setting.Status == CustomerMessageSettingStatus.Enabled) {
             if (customer == null) {
@@ -95,6 +93,7 @@ public class CustomerMessageOrderDeliveredService {
                 throw new ValidationException("消息发送指定的物流订单不能为空！");
             }
 
+            string customerCode = customerCodeService.GetCustomerCode(customer.Id);
             string orderCode = order.Code;
 
             string message1 = TransferMessage(setting.WechatMessageTemplate1, orderCode);
@@ -108,8 +107,7 @@ public class CustomerMessageOrderDeliveredService {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
 
-            var orderPackData = session.Query<LogisticsOrderPackDataInfo>().Where(e => e.Order.Id == order.Id).Take(1).SingleOrDefault();
-            string processUser = orderPackData?.PackUser.UserName ?? string.Empty;
+            string processUser = CustomerMessageCommonService.ShundaSecretary;
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
