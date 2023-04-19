@@ -146,8 +146,6 @@ public class CustomerMessageType : CodeTypeBase {
     /// </summary>
     public static readonly CustomerMessageType OrderDelivered = new CustomerMessageType(30000, "空运包裹签收提醒", "空运包裹签收提醒");
 
-    // 这里改了后，记得客户端对应的类型也更新下
-
     /// <summary>
     /// None
     /// </summary>

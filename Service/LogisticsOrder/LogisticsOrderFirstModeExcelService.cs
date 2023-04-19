@@ -9,6 +9,7 @@ using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass;
 using shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
 using shunda.Service.logisticsTrack.SeventeenTrack.Register;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Service.LogisticsOrder;
@@ -22,17 +23,20 @@ public class LogisticsOrderFirstModeExcelService {
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
     private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
+    private readonly CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService;
 
     public LogisticsOrderFirstModeExcelService(
         ISession session,
         LogisticsOrderActionService logisticsOrderActionService,
         SeventeenTrackRegisterService seventeenTrackRegisterService,
-        SeventeenTrackCarrierService seventeenTrackCarrierService
+        SeventeenTrackCarrierService seventeenTrackCarrierService,
+        CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService
     ) {
         this.session = session;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.seventeenTrackRegisterService = seventeenTrackRegisterService;
         this.seventeenTrackCarrierService = seventeenTrackCarrierService;
+        this.customerMessageInternationalExpressTrackingNoService = customerMessageInternationalExpressTrackingNoService;
     }
 
     /// <summary>
@@ -319,7 +323,7 @@ public class LogisticsOrderFirstModeExcelService {
 
         // 注册单号
         if (trackingNoListToRegister.Count != 0) {
-            seventeenTrackRegisterService.Register(
+            var successTrackNumberList = seventeenTrackRegisterService.Register(
                 trackingNoListToRegister
                     .Select(e => new SeventeenTrackRegisterRequestItem() {
                         Number = e,
@@ -327,6 +331,24 @@ public class LogisticsOrderFirstModeExcelService {
                     })
                     .ToList()
             );
+
+            var carierKeyList = successTrackNumberList.Select(e => e.CarrierKey).Distinct().ToList();
+            var carrierList = session.Query<SeventeenTrackCarrierInfo>().Where(e => carierKeyList.Contains(e.CarrierKey)).ToList();
+
+            foreach (var successTrackNumber in successTrackNumberList) {
+                string trackingNo = successTrackNumber.TrackingNo;
+                var actualImportItem = actualImportItemList
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                if (actualImportItem != null) {
+                    var orderFirstMode = actualImportItem.OrderFirstMode;
+                    int carrierKey = successTrackNumber.CarrierKey;
+                    var carrier = carrierList.Where(e => e.CarrierKey == carrierKey).Take(1).SingleOrDefault();
+                    customerMessageInternationalExpressTrackingNoService.SendMessage(orderFirstMode.Order.Customer, orderFirstMode.Order, trackingNo, carrier?.CarrierName ?? string.Empty, carrier?.Url ?? string.Empty);
+                }
+            }
         }
     }
 }
