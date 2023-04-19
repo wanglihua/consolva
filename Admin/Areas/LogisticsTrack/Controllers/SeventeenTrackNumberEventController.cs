@@ -24,8 +24,8 @@ public class SeventeenTrackNumberEventController : Controller {
         this.session = session;
     }
 
-    [HttpGet]
-    [Route("/admin/logistics/track/seventeen/track/number/event/{trackNumberId}")]
+    [HttpPost]
+    [Route("/admin/logistics/track/seventeen/track/number/event")]
     public IActionResult Index(int trackNumberId) {
         SeventeenTrackNumberEventIndexModel model = new SeventeenTrackNumberEventIndexModel();
 
@@ -41,6 +41,9 @@ public class SeventeenTrackNumberEventController : Controller {
             .QueryOver<SeventeenTrackNumberEventInfo>(() => eventAlias!)
             .Where(e => eventAlias!.TrackNumber.Id == trackNumberId)
             .List<SeventeenTrackNumberEventInfo>();
+
+        eventList = eventList.OrderBy(e => e.EventTime).ThenBy(e => e.Id).ToList();
+
         model.SeventeenTrackNumberEventList = eventList;
 
         return View("SeventeenTrackNumberEventIndex", model);
