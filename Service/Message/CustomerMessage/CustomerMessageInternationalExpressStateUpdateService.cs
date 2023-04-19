@@ -1,5 +1,8 @@
 using NHibernate;
+using shunda.Core;
 using shunda.Core.Service;
+using shunda.Domain.Customer;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Message;
 using shunda.Service.Customer;
 
@@ -50,103 +53,91 @@ public class CustomerMessageInternationalExpressStateUpdateService {
             session.Flush();
         }
     }
-}
 
-/*
+    private string TransferMessage(string message, string orderCode, string trackingNo, string trackingContent) {
+        if (string.IsNullOrWhiteSpace(message)) {
+            return message;
+        }
 
+        message = message.Replace("{order_code}", orderCode);
+        message = message.Replace("{tracking_no}", trackingNo);
+        message = message.Replace("{tracking_content}", trackingContent);
 
-        #region 国际快递状态更新提醒
+        return message;
+    }
 
-        /// <summary>
-        /// 
-        /// 国际快递状态更新提醒
-        /// 
-        /// </summary>
-        public void SendMessageInternationalExpressStateUpdate(CustomerInfo customer, LogisticsOrderInfo order, string trackingNo, string trackingContent) {
-            if (customer?.Status == CustomerStatus.Frozen) {
-                return;
+    private string GetUrl(int orderId) {
+        return $"pages/order/order_detail?id={orderId}";
+    }
+
+    public void SendMessage(CustomerInfo customer, LogisticsOrderInfo order, string trackingNo, string trackingContent) {
+        if (customer.Status == CustomerStatus.Frozen) {
+            return;
+        }
+
+        CustomerMessageRealTimeSendSettingInfo setting = customerMessageCommonService.GetCustomerMessageRealTimeSendSetting(messageType);
+        if (setting.Status == CustomerMessageSettingStatus.Enabled) {
+            if (customer == null) {
+                throw new ValidationException("消息发送指定的会员不能为空！");
             }
 
-            CustomerMessageType messageType = CustomerMessageType.InternationalExpressStateUpdateTiXing;
-            CustomerMessageRealTimeSendSettingInfo setting = GetCustomerMessageRealTimeSendSetting(messageType);
-            if (setting.Status == CustomerMessageSettingStatus.Enabled) {
-                if (customer == null) {
-                    throw new ValidationException("消息发送指定的会员不能为空！");
-                }
+            if (order == null) {
+                throw new ValidationException("消息发送指定的物流订单不能为空！");
+            }
 
-                if (order == null) {
-                    throw new ValidationException("消息发送指定的物流订单不能为空！");
-                }
+            string orderCode = order.Code;
 
-                string orderCode = order?.Code;
+            string message1 = TransferMessage(setting.WechatMessageTemplate1, orderCode, trackingNo, trackingContent);
+            string message2 = TransferMessage(setting.WechatMessageTemplate2, orderCode, trackingNo, trackingContent);
+            string message3 = TransferMessage(setting.WechatMessageTemplate3, orderCode, trackingNo, trackingContent);
 
-                string message1 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate1, orderCode, trackingNo, trackingContent);
-                string message2 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate2, orderCode, trackingNo, trackingContent);
-                string message3 = TransferMessageInternationalExpressStateUpdate(setting.WeiXinMessageTemplate3, orderCode, trackingNo, trackingContent);
+            CustomerMessageStatus messageStatus = CustomerMessageStatus.NotSend;
 
-                bool isSent = false;
+            bool clientShouldSend = true;
+            if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
+                clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
+            }
 
-                bool clientShouldSend = true;
-                if (setting.ClientCustomizable && (setting.WeiXinSend || setting.SmsSend)) {
-                    clientShouldSend = customerMessageClientCustomizeService.ShouldSend(customer?.Id ?? 0, CustomerMessageType.InternationalExpressStateUpdateTiXing);
-                }
+            string processUser = CustomerMessageCommonService.ShundaSecretary;
 
-                if (setting.WeiXinSend) {
-                    if (clientShouldSend) {
-                        isSent = true;
+            if (clientShouldSend) {
+                if (setting.WechatSend) {
+                    messageStatus = CustomerMessageStatus.Success;
+                    string customerCode = customerCodeService.GetCustomerCode(customer.Id);
+                    string url = GetUrl(order.Id);
 
-                        string orderDetailUrl = customerClientUrlService.GetTransportingOrderDetailUrl(order.Customer, order.Id);
+                    if (string.IsNullOrWhiteSpace(message1) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message1, processUser, url);
+                    }
 
-                        if (string.IsNullOrWhiteSpace(message1) == false) {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message1, defaultProcessUser, orderDetailUrl);
-                        }
+                    if (string.IsNullOrWhiteSpace(message2) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message2, processUser, url);
+                    }
 
-                        if (string.IsNullOrWhiteSpace(message2) == false) {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message2, defaultProcessUser, orderDetailUrl);
-                        }
-
-                        if (string.IsNullOrWhiteSpace(message3) == false) {
-                            weiXinMessageService.SendOrderNoticeTemplateMessage(customer, "", "国际快递状态更新提醒", customer.CustomerCode, message3, defaultProcessUser, orderDetailUrl);
-                        }
+                    if (string.IsNullOrWhiteSpace(message3) == false) {
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message3, processUser, url);
                     }
                 }
 
                 if (setting.SmsSend) {
-                    if (clientShouldSend) {
-                        isSent = true;
-                        smsService.SendSms(customer.Mobile, TransferMessageInternationalExpressStateUpdate(setting.SmsMessageTemplate, orderCode, trackingNo, trackingContent));
-                    }
+                    messageStatus = CustomerMessageStatus.Success;
+                    customerMessageCommonService.SendSms(customer.Mobile, TransferMessage(setting.SmsMessageTemplate, orderCode, trackingNo, trackingContent));
                 }
-
-                if (string.IsNullOrWhiteSpace(message1) == false) {
-                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message1, isSent, setting);
-                }
-
-                if (string.IsNullOrWhiteSpace(message2) == false) {
-                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message2, isSent, setting);
-                }
-
-                if (string.IsNullOrWhiteSpace(message3) == false) {
-                    SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message3, isSent, setting);
-                }
-
-                session.Flush();
-            }
-        }
-
-        private string TransferMessageInternationalExpressStateUpdate(string message, string orderCode, string trackingNo, string trackingContent) {
-            if (string.IsNullOrWhiteSpace(message)) {
-                return message;
             }
 
-            // setting.Placeholders = "订单编码：{order_code}，国际快递单号：{tracking_no}，状态更新内容：{tracking_content}";
-            message = message.Replace("{order_code}", orderCode);
-            message = message.Replace("{tracking_no}", trackingNo);
-            message = message.Replace("{tracking_content}", trackingContent);
+            if (string.IsNullOrWhiteSpace(message1) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message1, messageStatus, setting, processUser);
+            }
 
-            return message;
+            if (string.IsNullOrWhiteSpace(message2) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message2, messageStatus, setting, processUser);
+            }
+
+            if (string.IsNullOrWhiteSpace(message3) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message3, messageStatus, setting, processUser);
+            }
+
+            session.Flush();
         }
-
-        #endregion
-        
-*/
+    }
+}
