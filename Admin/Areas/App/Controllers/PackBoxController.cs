@@ -10,6 +10,7 @@ using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Fee;
 using shunda.Service.LogisticsOrder;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.App.Controllers;
@@ -23,6 +24,7 @@ public class PackBoxController : Controller {
     private readonly LogisticsOrderPaySumService logisticsOrderPaySumService;
     private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
+    private readonly CustomerMessageTransferedService customerMessageTransferedService;
 
     public PackBoxController(
         ISession session,
@@ -30,7 +32,8 @@ public class PackBoxController : Controller {
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
         LogisticsOrderPaySumService logisticsOrderPaySumService,
         LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService,
-        LogisticsOrderActionService logisticsOrderActionService
+        LogisticsOrderActionService logisticsOrderActionService,
+        CustomerMessageTransferedService customerMessageTransferedService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -38,6 +41,7 @@ public class PackBoxController : Controller {
         this.logisticsOrderPaySumService = logisticsOrderPaySumService;
         this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
         this.logisticsOrderActionService = logisticsOrderActionService;
+        this.customerMessageTransferedService = customerMessageTransferedService;
     }
 
     [AdminAuth(PassRes.AdminApp.PackBoxShip)]
@@ -74,7 +78,7 @@ public class PackBoxController : Controller {
 
         DateTime now = DateTime.Now;
 
-        string message = "箱号信息查询成功！";
+        string message = "";
         if (hasArrears == true) {
             message = "订单有欠费，不能设置箱号已发货！";
         } else {
@@ -109,6 +113,8 @@ public class PackBoxController : Controller {
                     session.Flush();
 
                     message = "订单发货成功！";
+
+                    customerMessageTransferedService.SendMessage(order.Customer, order);
                 }
 
                 session.Flush();
