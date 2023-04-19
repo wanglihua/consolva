@@ -116,7 +116,7 @@ public class SeventeenTrackWebHookController : Controller {
             var trackNumberEventList = session.Query<SeventeenTrackNumberEventInfo>()
                 .Where(e => e.TrackNumber.Id == trackNumberId)
                 .ToList();
-            var trackNumberEventDict = trackNumberEventList.ToDictionary(e => e.EventTime, e => e);
+            // var trackNumberEventDict = trackNumberEventList.ToDictionary(e => e.EventTime, e => e); 他同一个时间会有多个事件，这里只假设了一个，会报错
 
             var provider = model.Data.TrackInfo.Tracking.ProviderList
                 .Where(e => e.Provider.Key == carrierKey)
@@ -135,12 +135,20 @@ public class SeventeenTrackWebHookController : Controller {
                     return StatusCode((int)HttpStatusCode.InternalServerError);
                 }
 
-                if (trackNumberEventDict.ContainsKey(eventTime) == false) {
+                string eventDesc = evt.Description ?? string.Empty;
+                string stage = evt.Stage ?? string.Empty;
+
+                var trackNumberEventInDb = trackNumberEventList
+                    .Where(e => e.EventTime == eventTime && e.EventDesc == eventDesc && e.Stage == stage)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                if (trackNumberEventInDb == null) {
                     var trackNumberEvent = new SeventeenTrackNumberEventInfo {
                         TrackNumber = trackNumber,
                         EventTime = eventTime,
-                        EventDesc = evt.Description,
-                        Stage = evt.Stage ?? string.Empty,
+                        EventDesc = eventDesc,
+                        Stage = stage,
                     };
 
                     session.Save(trackNumberEvent);
