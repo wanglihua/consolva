@@ -74,4 +74,34 @@ public class SeventeenTrackCarrierService {
 
         session.Flush();
     }
+
+    /// <summary>
+    /// 根据快递单号特征确定运输商
+    /// </summary>
+    /// <param name="trackingNo"></param>
+    /// <returns></returns>
+    public int? GetKeyByTrackingNo(string trackingNo) {
+        if (string.IsNullOrWhiteSpace(trackingNo)) {
+            return null;
+        }
+
+        trackingNo = trackingNo.Trim().ToUpper();
+
+        if (trackingNo.StartsWith("ACWL")) {
+            // ac logistics
+            return 190512;
+        }
+
+        if (trackingNo.StartsWith("33X")) {
+            //UBI
+            return 190112;
+        }
+
+        if (trackingNo.StartsWith("34Q")) {
+            // ASIAFLY
+            return 190303;
+        }
+
+        return null;
+    }
 }
