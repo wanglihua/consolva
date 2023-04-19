@@ -22,6 +22,8 @@ public class CustomerMessageRealTimeSendSettingService {
         CustomerMessageExpressExpectEnterService.InitSetting(session);
         CustomerMessageExpressPhotoCheckinService.InitSetting(session);
         CustomerMessageExpressPhotoSignService.InitSetting(session);
+        CustomerMessageInternationalExpressStateUpdateService.InitSetting(session);
+        CustomerMessageInternationalExpressTrackingNoService.InitSetting(session);
         CustomerMessageMoneyEarnedService.InitSetting(session);
         CustomerMessageOrderDeliveredService.InitSetting(session);
         CustomerMessageOrderPhotoShipService.InitSetting(session);
