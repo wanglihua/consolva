@@ -14,45 +14,76 @@
     <li>@(ViewData[ViewDataKey.Title])</li>
 }
 
-<div id="seventeenTrackNumberEventList"></div>
+<table id="tblSeventeenTrackNumberEventList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="seventeenTrackNumberEventCheckAll"></label><input id="seventeenTrackNumberEventCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
 
-<div id="seventeenTrackNumberEventDetailDialogWrapper"></div>
-<script type="text/javascript">
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <span>时间</span>
+                </div>
+            </th>
 
-    $(function() {
-        loadSeventeenTrackNumberEventList();
-    });
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <span>里程碑状态</span>
+                </div>
+            </th>
 
-    function sortSeventeenTrackNumberEventList(sortField, sortDir) {
-        var list = $('#seventeenTrackNumberEventList');
-        list.data('sort-field', sortField);
-        list.data('sort-dir', sortDir);
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <span>描述</span>
+                </div>
+            </th>
 
-        loadSeventeenTrackNumberEventList();
-    }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.SeventeenTrackNumberEventList.Count != 0) {
+            int orderNumber = 1;
+            foreach (SeventeenTrackNumberEventInfo seventeenTrackNumberEvent in Model.SeventeenTrackNumberEventList) {
+                <tr ondblclick="showSeventeenTrackNumberEventDetail(@(seventeenTrackNumberEvent.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)"></label><input id="seventeenTrackNumberEventCheck_@(seventeenTrackNumberEvent.Id)" type="checkbox" class="ace" value="@seventeenTrackNumberEvent.Id"/><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(orderNumber++)</td>
 
-    function loadSeventeenTrackNumberEventList() {
-        showMask("数据加载中，请稍候");
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackNumberEvent.EventTime)
+                        </div>
+                    </td>
 
-        $.ajax({
-            url: "@Url.Action("List", "SeventeenTrackNumberEvent")",
-            type: "POST",
-            data: {
-                "@(nameof(SeventeenTrackNumberEventListQueryParam.TrackNumberId))": "@(Model.TrackNumberId)"
-            },
-            success: function(data) {
-                hideMask();
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackNumberEvent.Stage)
+                        </div>
+                    </td>
 
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(seventeenTrackNumberEvent.EventDesc)
+                        </div>
+                    </td>
 
-                $('#seventeenTrackNumberEventList').html(data);
-
-                initListTable("#tblSeventeenTrackNumberEventList");
+                    <td></td>
+                </tr>
             }
-        });
-    }
-
-</script>
+        } else {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

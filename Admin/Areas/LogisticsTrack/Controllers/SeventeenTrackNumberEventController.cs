@@ -28,7 +28,6 @@ public class SeventeenTrackNumberEventController : Controller {
     [Route("/admin/logistics/track/seventeen/track/number/event/{trackNumberId}")]
     public IActionResult Index(int trackNumberId) {
         SeventeenTrackNumberEventIndexModel model = new SeventeenTrackNumberEventIndexModel();
-        model.TrackNumberId = trackNumberId;
 
         var trackNumber = session.Get<SeventeenTrackNumberInfo>(trackNumberId);
         if (trackNumber == null) {
@@ -37,47 +36,13 @@ public class SeventeenTrackNumberEventController : Controller {
 
         model.TrackNumber = trackNumber;
 
-        return View("SeventeenTrackNumberEventIndex", model);
-    }
-
-    [HttpPost]
-    [Route("/admin/logistics/track/seventeen/track/number/event/list")]
-    public IActionResult List(SeventeenTrackNumberEventListQueryParam queryParam) {
-        var listQuery = GetQueryOver(queryParam);
-        // listQuery = listQuery 
-        //     .OrderByAlias(() => seventeenTrackNumberEventAlias!.EventTime).Asc 这个排序用LINQ排序
-        //     .ThenByAlias(() => seventeenTrackNumberEventAlias!.Id).Asc;
-
-        IList<SeventeenTrackNumberEventInfo> seventeenTrackNumberEventList = listQuery
+        SeventeenTrackNumberEventInfo? eventAlias = null;
+        IList<SeventeenTrackNumberEventInfo> eventList = session
+            .QueryOver<SeventeenTrackNumberEventInfo>(() => eventAlias!)
+            .Where(e => eventAlias!.TrackNumber.Id == trackNumberId)
             .List<SeventeenTrackNumberEventInfo>();
+        model.SeventeenTrackNumberEventList = eventList;
 
-        seventeenTrackNumberEventList = seventeenTrackNumberEventList.OrderBy(e => e.EventTime).ThenBy(e => e.Id).ToList();
-
-        /*
-        foreach (SeventeenTrackNumberEventInfo seventeenTrackNumberEvent in seventeenTrackNumberEventList) {
-        }
-        */
-
-        SeventeenTrackNumberEventListModel model = new SeventeenTrackNumberEventListModel();
-        model.SeventeenTrackNumberEventList = seventeenTrackNumberEventList;
-
-        model.SeventeenTrackNumberEventAlias = nameof(seventeenTrackNumberEventAlias);
-        model.TrackNumberAlias = nameof(trackNumberAlias);
-
-        return View("SeventeenTrackNumberEventList", model);
-    }
-
-    private SeventeenTrackNumberEventInfo? seventeenTrackNumberEventAlias = null;
-    private SeventeenTrackNumberInfo? trackNumberAlias = null;
-
-    [NonAction]
-    private IQueryOver<SeventeenTrackNumberEventInfo, SeventeenTrackNumberEventInfo> GetQueryOver(SeventeenTrackNumberEventListQueryParam queryParam) {
-        var query = session.QueryOver<SeventeenTrackNumberEventInfo>(() => seventeenTrackNumberEventAlias!);
-        // .JoinAlias(() => seventeenTrackNumberEventAlias!.TrackNumber, () => trackNumberAlias);
-
-        int trackNumberId = queryParam.TrackNumberId;
-        query = query.Where(e => e.TrackNumber.Id == trackNumberId);
-
-        return query;
+        return View("SeventeenTrackNumberEventIndex", model);
     }
 }

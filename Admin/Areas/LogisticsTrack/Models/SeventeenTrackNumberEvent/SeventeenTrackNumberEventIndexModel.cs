@@ -5,8 +5,8 @@ namespace shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackNumberEvent;
 
 public class SeventeenTrackNumberEventIndexModel {
     [BindNever]
-    public int TrackNumberId { get; set; }
+    public SeventeenTrackNumberInfo TrackNumber { get; set; } = new SeventeenTrackNumberInfo();
 
     [BindNever]
-    public SeventeenTrackNumberInfo TrackNumber { get; set; } = new SeventeenTrackNumberInfo();
+    public IList<SeventeenTrackNumberEventInfo> SeventeenTrackNumberEventList { get; set; } = new List<SeventeenTrackNumberEventInfo>();
 }
