@@ -116,26 +116,4 @@
 
 </script>
 
-<div id="seventeenTrackNumberEventDialogWrapper"></div>
-<script type="text/javascript">
-    function showSeventeenTrackNumberEvent(trackNumberId) {
-        $("#seventeenTrackNumberEventDialogWrapper").html("");
-
-        showMask("加载中...");
-        $.ajax({
-            url: '@Url.Action("Index", "SeventeenTrackNumberEvent")',
-            type: "POST",
-            data: { "trackNumberId": trackNumberId },
-            success: function(data) {
-                hideMask();
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $("#seventeenTrackNumberEventDialogWrapper").html(data);
-                $("#seventeenTrackNumberEventDialog").modal(modalOptions);
-            }
-        });
-    }
-</script>
+<partial name="~/Areas/LogisticsTrack/Views/SeventeenTrackNumberEvent/SeventeenTrackNumberEventDialogWrapperByTrackNumberId.cshtml"/>
