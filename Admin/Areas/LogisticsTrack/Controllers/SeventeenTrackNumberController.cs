@@ -67,6 +67,7 @@ public class SeventeenTrackNumberController : Controller {
             int? newCarrierKey = seventeenTrackCarrierService.GetKeyByTrackingNo(trackNumber.TrackingNo);
             if (newCarrierKey != null && newCarrierKey != trackNumber.CarrierKey) {
                 changeCarrierItemList.Add(new SeventeenTrackChangeCarrierRequestItem {
+                    Number = trackNumber.TrackingNo,
                     CarrierOld = trackNumber.CarrierKey,
                     CarrierNew = newCarrierKey.Value,
                 });
