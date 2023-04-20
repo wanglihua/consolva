@@ -11,6 +11,7 @@ using NHibernate.SqlCommand;
 using NLog;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
+using shunda.Service.logisticsTrack.SeventeenTrack.ChangeCarrier;
 using shunda.Service.logisticsTrack.SeventeenTrack.Register;
 using ISession = NHibernate.ISession;
 
@@ -27,15 +28,18 @@ public class SeventeenTrackNumberController : Controller {
     private readonly ISession session;
     private readonly SeventeenTrackRegisterService seventeenTrackRegisterService;
     private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
+    private readonly SeventeenTrackChangeCarrierService seventeenTrackChangeCarrierService;
 
     public SeventeenTrackNumberController(
         ISession session,
         SeventeenTrackRegisterService seventeenTrackRegisterService,
-        SeventeenTrackCarrierService seventeenTrackCarrierService
+        SeventeenTrackCarrierService seventeenTrackCarrierService,
+        SeventeenTrackChangeCarrierService seventeenTrackChangeCarrierService
     ) {
         this.session = session;
         this.seventeenTrackRegisterService = seventeenTrackRegisterService;
         this.seventeenTrackCarrierService = seventeenTrackCarrierService;
+        this.seventeenTrackChangeCarrierService = seventeenTrackChangeCarrierService;
     }
 
     [HttpGet]
@@ -50,15 +54,26 @@ public class SeventeenTrackNumberController : Controller {
     }
 
     [HttpGet]
-    [Route("/admin/logistics/track/seventeen/track/number/register/{trackingNo}")]
+    [Route("/admin/logistics/track/seventeen/track/number/change/carrier/test")]
     [Transactional]
-    public IActionResult RegisterForTest(string trackingNo) {
-        seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem> {
-            new SeventeenTrackRegisterRequestItem {
-                Number = trackingNo,
-                Carrier = seventeenTrackCarrierService.GetKeyByTrackingNo(trackingNo),
+    public IActionResult ChangeCarrierTest() {
+        var trackNumberList = session.Query<SeventeenTrackNumberInfo>()
+            .Where(e => e.TrackStatus != "Delivered"
+                        && e.Status != SeventeenTrackNumberStatus.Rejected)
+            .ToList();
+
+        var changeCarrierItemList = new List<SeventeenTrackChangeCarrierRequestItem>();
+        foreach (var trackNumber in trackNumberList) {
+            int? newCarrierKey = seventeenTrackCarrierService.GetKeyByTrackingNo(trackNumber.TrackingNo);
+            if (newCarrierKey != null && newCarrierKey != trackNumber.CarrierKey) {
+                changeCarrierItemList.Add(new SeventeenTrackChangeCarrierRequestItem {
+                    CarrierOld = trackNumber.CarrierKey,
+                    CarrierNew = newCarrierKey.Value,
+                });
             }
-        });
+        }
+
+        seventeenTrackChangeCarrierService.ChangeCarrier(changeCarrierItemList);
 
         return Json(new JsonResultData {
             Success = true,
