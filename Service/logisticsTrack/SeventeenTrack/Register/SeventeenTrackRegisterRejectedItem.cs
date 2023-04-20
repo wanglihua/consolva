@@ -10,5 +10,5 @@ public class SeventeenTrackRegisterRejectedItem {
     public string Tag { get; set; } = string.Empty;
 
     [JsonProperty("error")]
-    public SeventeenTrackRegisterRejectedItemError Error { get; set; } = new SeventeenTrackRegisterRejectedItemError();
+    public SeventeenTrackRegisterRejectedItemError Error { get; set; } = new();
 }

@@ -24,14 +24,14 @@ public class SeventeenTrackRegisterService {
         this.session = session;
     }
 
-    public IList<SeventeenTrackNumberInfo> Register(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
+    public IList<SeventeenTrackNumberInfo> Register(IList<SeventeenTrackRegisterRequestItem> requestDataItemList) {
         if (requestDataItemList.Count == 0) {
             throw new ValidationException("注册单号列表不能为空！");
         }
 
         var successTrackNumberList = new List<SeventeenTrackNumberInfo>();
 
-        List<SeventeenTrackRegisterRequestItem> requestDataItemListRemind = requestDataItemList;
+        List<SeventeenTrackRegisterRequestItem> requestDataItemListRemind = requestDataItemList.ToList();
 
         while (requestDataItemListRemind.Count != 0) {
             List<SeventeenTrackRegisterRequestItem> requestDataItemListOnce = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
@@ -44,7 +44,7 @@ public class SeventeenTrackRegisterService {
         return successTrackNumberList;
     }
 
-    private IList<SeventeenTrackNumberInfo> RegisterInternal(List<SeventeenTrackRegisterRequestItem> requestDataItemList) {
+    private IList<SeventeenTrackNumberInfo> RegisterInternal(IList<SeventeenTrackRegisterRequestItem> requestDataItemList) {
         if (requestDataItemList.Count == 0) {
             // throw new ValidationException("注册单号列表不能为空！");
             return new List<SeventeenTrackNumberInfo>();
