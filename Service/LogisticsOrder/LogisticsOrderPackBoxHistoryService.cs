@@ -18,9 +18,12 @@ public class LogisticsOrderPackBoxHistoryService {
     /// 添加箱号历史
     /// </summary>
     public void AddHistory(LogisticsOrderPackBoxInfo orderPackBox, LogisticsOrderPackBoxHistoryType type, LogisticsOrderPackBoxStatus statusBefore, LogisticsOrderPackBoxStatus statusAfter, int userId, string description) {
-        var user = session.Get<UserInfo>(userId);
-        if (user == null) {
-            throw new ValidationException("箱号历史操作用户不能为空！");
+        UserInfo? user = null;
+        if (userId > 0) {
+            user = session.Get<UserInfo>(userId);
+            if (user == null) {
+                throw new ValidationException($"指定的箱号历史操作用户#{userId}不存在！");
+            }
         }
 
         LogisticsOrderPackBoxHistoryInfo packBoxHistory = new LogisticsOrderPackBoxHistoryInfo {
@@ -43,5 +46,9 @@ public class LogisticsOrderPackBoxHistoryService {
     /// </summary>
     public void AddHistory(LogisticsOrderPackBoxInfo orderPackBox, LogisticsOrderPackBoxHistoryType type, LogisticsOrderPackBoxStatus statusBefore, LogisticsOrderPackBoxStatus statusAfter, int userId) {
         AddHistory(orderPackBox, type, statusBefore, statusAfter, userId, string.Empty);
+    }
+
+    public void AddHistory(LogisticsOrderPackBoxInfo orderPackBox, LogisticsOrderPackBoxHistoryType type, LogisticsOrderPackBoxStatus statusBefore, LogisticsOrderPackBoxStatus statusAfter) {
+        AddHistory(orderPackBox, type, statusBefore, statusAfter, 0, string.Empty);
     }
 }

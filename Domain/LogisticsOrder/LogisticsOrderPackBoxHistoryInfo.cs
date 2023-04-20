@@ -41,7 +41,7 @@ public class LogisticsOrderPackBoxHistoryInfo : EntityNoUpdate {
     /// <summary>
     /// 操作用户
     /// </summary>
-    public virtual UserInfo User { get; set; } = new();
+    public virtual UserInfo? User { get; set; } = null;
 
     /// <summary>
     /// 描述

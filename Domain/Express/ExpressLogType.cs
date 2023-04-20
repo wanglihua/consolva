@@ -163,18 +163,6 @@ public class ExpressLogType : CodeTypeBase {
     public static readonly ExpressLogType RemovePack = new ExpressLogType(30000, "取消打包", "取消打包");
 
     /// <summary>
-    /// 装箱
-    /// </summary>
-    public static readonly ExpressLogType Load = new ExpressLogType(31000, "装箱", "装箱");
-
-
-    /// <summary>
-    /// 卸货
-    /// </summary>
-    public static readonly ExpressLogType Unload = new ExpressLogType(32000, "卸货", "卸货");
-
-
-    /// <summary>
     /// 打印外箱标签
     /// </summary>
     public static readonly ExpressLogType PrintLabel = new ExpressLogType(33000, "打印外箱标签", "打印外箱标签");
@@ -254,8 +242,6 @@ public class ExpressLogType : CodeTypeBase {
         Pack,
         AutoPack,
         RemovePack,
-        Load,
-        Unload,
         PrintLabel,
 
         NoPickupPartDump,

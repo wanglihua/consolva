@@ -72,7 +72,7 @@ public class LogisticsOrderPackBoxHistoryInfoMapping : EntityNoUpdateMapping<Log
             map => {
                 map.Class(typeof(UserInfo));
                 map.Column("user_id");
-                map.NotNullable(true);
+                map.NotNullable(false);
                 map.Cascade(Cascade.None);
                 map.Fetch(FetchKind.Select);
             }

@@ -6,6 +6,7 @@ using shunda.Domain.Coupon;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsOrder;
+using shunda.Domain.Pass;
 using shunda.Service.Coupon;
 using shunda.Service.Express;
 
@@ -17,16 +18,19 @@ public class LogisticsOrderService {
     private readonly CouponService couponService;
     private readonly LogisticsOrderActionService logisticsOrderActionService;
     private readonly ExpressLogService expressLogService;
+    private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
 
     public LogisticsOrderService(ISession session,
         CouponService couponService,
         LogisticsOrderActionService logisticsOrderActionService,
-        ExpressLogService expressLogService
+        ExpressLogService expressLogService,
+        LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService
     ) {
         this.session = session;
         this.couponService = couponService;
         this.logisticsOrderActionService = logisticsOrderActionService;
         this.expressLogService = expressLogService;
+        this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
     }
 
     /// <summary>
@@ -118,5 +122,69 @@ public class LogisticsOrderService {
                 expressLogService.UserLog(expressId, ExpressLogType.CancelOrder, userId);
             }
         }
+    }
+
+    /// <summary>
+    /// 完成订单
+    /// </summary>
+    public void CompleteOrder(LogisticsOrderCompleteParam param) {
+        int orderId = param.OrderId;
+        int userId = param.UserId;
+
+        var order = session.Get<LogisticsOrderInfo>(orderId);
+        if (order == null) {
+            throw new ValidationException($"指定的订单#{orderId}不存在！");
+        }
+
+        if (userId != 0) {
+            var user = session.Get<UserInfo>(userId);
+            if (user == null) {
+                throw new ValidationException($"指定的用户#{userId}不存在！");
+            }
+        }
+
+        if (order.OrderStatus == LogisticsOrderStatus.Completed) {
+            throw new ValidationException($"指定的订单#{orderId}当前已经是完结状态！");
+        }
+
+        // 更新订单状态
+        order.OrderStatus = LogisticsOrderStatus.Completed;
+        session.Update(order);
+
+        logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.DeliverComplete);
+
+        session.Flush();
+
+        // 更新快递单状态
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => e.Order!.Id == orderId)
+            .ToList();
+
+        foreach (var express in expressList) {
+            if (express.Status != ExpressStatus.Complete) {
+                express.Status = ExpressStatus.Complete;
+                session.Update(express);
+            }
+        }
+
+        session.Flush();
+
+        // 更新订单打包状态
+        var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+        foreach (var packBox in orderPackBoxList) {
+            if (packBox.Status != LogisticsOrderPackBoxStatus.Deliver) {
+                var packBoxStatusBefore = packBox.Status;
+                packBox.Status = LogisticsOrderPackBoxStatus.Deliver;
+                session.Update(packBox);
+
+                var packBoxStatusAfter = packBox.Status;
+
+                logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Deliver, packBoxStatusBefore, packBoxStatusAfter, userId);
+            }
+        }
+
+        session.Flush();
     }
 }
