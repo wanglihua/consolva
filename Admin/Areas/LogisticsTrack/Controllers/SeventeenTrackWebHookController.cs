@@ -4,10 +4,13 @@ using Newtonsoft.Json;
 using NLog;
 using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackWebHook;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.LogisticsTrack;
 using shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.LogisticsTrack.Controllers;
@@ -19,17 +22,21 @@ public class SeventeenTrackWebHookController : Controller {
 
     private readonly ISession session;
     private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
+    private readonly CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService;
 
     public SeventeenTrackWebHookController(
         ISession session,
-        SeventeenTrackCarrierService seventeenTrackCarrierService
+        SeventeenTrackCarrierService seventeenTrackCarrierService,
+        CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService
     ) {
         this.session = session;
         this.seventeenTrackCarrierService = seventeenTrackCarrierService;
+        this.customerMessageInternationalExpressStateUpdateService = customerMessageInternationalExpressStateUpdateService;
     }
 
     [HttpPost]
     [Route("/admin/seventeen/track/web/hook/notify")]
+    // 这里不加事务也行的
     public IActionResult Notify() {
         string requestBody = string.Empty;
 
@@ -128,8 +135,11 @@ public class SeventeenTrackWebHookController : Controller {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
-            var eventList = provider.EventList.Reverse(); // 这里是按时间倒序排列的
+            SeventeenTrackNumberEventInfo? latestNumberEvent = null;
 
+            var eventList = provider.EventList.Reverse(); // 这里原来是按时间倒序排列的
+
+            // 假设按时间正序循环
             foreach (var evt in eventList) {
                 if (DateTime.TryParse(evt.TimeIso, out DateTime eventTime) == false) {
                     log.Error($"{evt.TimeIso}不是正确的时间格式！");
@@ -154,10 +164,27 @@ public class SeventeenTrackWebHookController : Controller {
                     };
 
                     session.Save(trackNumberEvent);
+
+                    latestNumberEvent = trackNumberEvent;
                 }
             }
 
             session.Flush();
+
+            // 可能的发送消息
+            if (latestNumberEvent != null) {
+                var orderFirstMode = session.Query<LogisticsOrderFirstModeInfo>()
+                    .Where(e => e.TrackingNo == trackingNo)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                if (orderFirstMode != null) {
+                    var customer = orderFirstMode.Order.Customer;
+                    var order = orderFirstMode.Order;
+                    string trackingContent = latestNumberEvent.EventDesc;
+                    customerMessageInternationalExpressStateUpdateService.SendMessage(customer, order, trackingNo, trackingContent);
+                }
+            }
         }
         catch (Exception exp) {
             log.Error(exp);
