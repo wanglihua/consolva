@@ -248,6 +248,9 @@ public class LogisticsOrderFirstModeController : Controller {
         }
 
         var listQuery = GetQueryOver(queryParam);
+
+        listQuery = listQuery.Where(e => e.TrackingNo == ""); // 只导出当前快递单号为空的
+
         listQuery = listQuery.OrderByAlias(() => orderFirstModeAlias!.Id).Asc;
 
         IList<LogisticsOrderFirstModeInfo> orderFirstModeList = listQuery

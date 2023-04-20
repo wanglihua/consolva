@@ -33,12 +33,20 @@ public class SeventeenTrackRegisterService {
 
         List<SeventeenTrackRegisterRequestItem> requestDataItemListRemind = requestDataItemList.ToList();
 
+        bool first = true;
         while (requestDataItemListRemind.Count != 0) {
+            // 不能请求太频繁
+            if (first == false) {
+                Thread.Sleep(250);
+            }
+
             List<SeventeenTrackRegisterRequestItem> requestDataItemListOnce = requestDataItemListRemind.Take(MAX_TRACKING_NO_COUNT_ONCE).ToList();
             requestDataItemListRemind = requestDataItemListRemind.Skip(MAX_TRACKING_NO_COUNT_ONCE).ToList();
 
             var successTrackNumberListThisTime = RegisterInternal(requestDataItemListOnce);
             successTrackNumberList.AddRange(successTrackNumberListThisTime);
+
+            first = false;
         }
 
         return successTrackNumberList;
