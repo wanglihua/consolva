@@ -1,7 +1,6 @@
 using NHibernate;
 using shunda.Core;
 using shunda.Core.Service;
-using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Message;
@@ -11,7 +10,6 @@ namespace shunda.Service.Message.CustomerMessage;
 
 /// <summary>
 /// 空运包裹签收提醒
-/// todo a 还没调用
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class CustomerMessageOrderDeliveredService {

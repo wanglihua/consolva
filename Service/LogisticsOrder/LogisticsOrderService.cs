@@ -79,20 +79,17 @@ public class LogisticsOrderService {
             .Where(e => e.Order!.Id == orderId)
             .ToList();
 
-        // 前台取消的才需要更新快递单状态
-        if (backend == false) {
-            // 更新快递单状态
-            foreach (var express in expressList) {
-                express.Order = null;
-                express.OrderCode = string.Empty;
-                express.FirstMode = null;
-                express.FirstType = LogisticsModeType.None;
-                express.Status = ExpressStatus.Checkin;
-                session.Update(express);
-            }
-
-            session.Flush();
+        // 更新快递单状态
+        foreach (var express in expressList) {
+            express.Order = null;
+            express.OrderCode = string.Empty;
+            express.FirstMode = null;
+            express.FirstType = LogisticsModeType.None;
+            express.Status = ExpressStatus.Checkin;
+            session.Update(express);
         }
+
+        session.Flush();
 
         // 如果有使用优惠券的，把优惠券还回去
         var couponId = session.Query<CouponInfo>()

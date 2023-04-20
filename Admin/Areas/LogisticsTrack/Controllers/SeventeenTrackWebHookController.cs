@@ -23,15 +23,18 @@ public class SeventeenTrackWebHookController : Controller {
     private readonly ISession session;
     private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
     private readonly CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService;
+    private readonly CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService;
 
     public SeventeenTrackWebHookController(
         ISession session,
         SeventeenTrackCarrierService seventeenTrackCarrierService,
-        CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService
+        CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService,
+        CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService
     ) {
         this.session = session;
         this.seventeenTrackCarrierService = seventeenTrackCarrierService;
         this.customerMessageInternationalExpressStateUpdateService = customerMessageInternationalExpressStateUpdateService;
+        this.customerMessageOrderDeliveredService = customerMessageOrderDeliveredService;
     }
 
     [HttpPost]
@@ -182,7 +185,16 @@ public class SeventeenTrackWebHookController : Controller {
                     var customer = orderFirstMode.Order.Customer;
                     var order = orderFirstMode.Order;
                     string trackingContent = latestNumberEvent.EventDesc;
+
+                    // 快递单动态有更新
                     customerMessageInternationalExpressStateUpdateService.SendMessage(customer, order, trackingNo, trackingContent);
+
+                    // Delivered
+                    if (latestNumberEvent.Stage == "Delivered") {
+                        customerMessageOrderDeliveredService.SendMessage(customer, order);
+
+                        // todo 结束订单
+                    }
                 }
             }
         }
