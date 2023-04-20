@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NHibernate.Linq;
 using NLog;
 using shunda.Admin.Areas.LogisticsTrack.Models.SeventeenTrackWebHook;
 using shunda.Core.Config;
@@ -9,6 +10,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.LogisticsTrack;
+using shunda.Service.LogisticsOrder;
 using shunda.Service.logisticsTrack.SeventeenTrack.Carrier;
 using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
@@ -24,17 +26,23 @@ public class SeventeenTrackWebHookController : Controller {
     private readonly SeventeenTrackCarrierService seventeenTrackCarrierService;
     private readonly CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService;
     private readonly CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService;
+    private readonly LogisticsOrderService logisticsOrderService;
+    private readonly LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService;
 
     public SeventeenTrackWebHookController(
         ISession session,
         SeventeenTrackCarrierService seventeenTrackCarrierService,
         CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService,
-        CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService
+        CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService,
+        LogisticsOrderService logisticsOrderService,
+        LogisticsOrderPackBoxHistoryService logisticsOrderPackBoxHistoryService
     ) {
         this.session = session;
         this.seventeenTrackCarrierService = seventeenTrackCarrierService;
         this.customerMessageInternationalExpressStateUpdateService = customerMessageInternationalExpressStateUpdateService;
         this.customerMessageOrderDeliveredService = customerMessageOrderDeliveredService;
+        this.logisticsOrderService = logisticsOrderService;
+        this.logisticsOrderPackBoxHistoryService = logisticsOrderPackBoxHistoryService;
     }
 
     [HttpPost]
@@ -191,12 +199,46 @@ public class SeventeenTrackWebHookController : Controller {
 
                     // Delivered
                     if (latestNumberEvent.Stage == "Delivered") {
-                        customerMessageOrderDeliveredService.SendMessage(customer, order);
+                        int orderId = order.Id;
+                        var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
+                            .Fetch(e => e.OrderPack)
+                            .Where(e => e.Order.Id == orderId)
+                            .ToList();
 
-                        // todo 结束订单
+                        int orderFirstModeId = orderFirstMode.Id;
+                        var orderFirstModePackBoxList = orderPackBoxList
+                            .Where(e => e.OrderPack.OrderFirstMode.Id == orderFirstModeId)
+                            .ToList();
+
+                        foreach (var packBox in orderFirstModePackBoxList) {
+                            if (packBox.Status != LogisticsOrderPackBoxStatus.Deliver) {
+                                var packBoxStatusBefore = packBox.Status;
+
+                                packBox.Status = LogisticsOrderPackBoxStatus.Deliver;
+                                session.Update(packBox);
+
+                                var packBoxStatusAfter = packBox.Status;
+
+                                logisticsOrderPackBoxHistoryService.AddHistory(packBox, LogisticsOrderPackBoxHistoryType.Deliver, packBoxStatusBefore, packBoxStatusAfter);
+                            }
+                        }
+
+                        int notDeliverPackBoxCount = orderPackBoxList.Where(e => e.Status != LogisticsOrderPackBoxStatus.Deliver).Count();
+
+                        if (notDeliverPackBoxCount == 0) {
+                            customerMessageOrderDeliveredService.SendMessage(customer, order);
+
+                            // 结束订单
+                            logisticsOrderService.CompleteOrder(new LogisticsOrderCompleteParam {
+                                OrderId = orderId,
+                                UserId = 0,
+                            });
+                        }
                     }
                 }
             }
+
+            session.Flush();
         }
         catch (Exception exp) {
             log.Error(exp);
