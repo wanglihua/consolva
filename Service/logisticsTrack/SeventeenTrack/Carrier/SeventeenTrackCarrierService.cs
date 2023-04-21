@@ -102,6 +102,11 @@ public class SeventeenTrackCarrierService {
             return 190303;
         }
 
+        if (trackingNo.StartsWith("397") && trackingNo.Length == 12) {
+            // FedEx
+            return 100003;
+        }
+
         return null;
     }
 }
