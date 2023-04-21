@@ -90,10 +90,17 @@ Page({
                             const prevPage = pages[pages.length - 2];
                             if (prevPage.loadExpressCheckinList) {
                                 prevPage.loadExpressCheckinList();
+                                return;
                             }
 
                             if (prevPage.loadExpressExpectList) {
                                 prevPage.loadExpressExpectList();
+                                return;
+                            }
+
+                            if (prevPage.loadExpressDetail) {
+                                prevPage.loadExpressDetail();
+                                return;
                             }
                         }
                     }

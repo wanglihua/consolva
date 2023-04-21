@@ -3,6 +3,7 @@ const util = app.require('utils/util.js');
 
 Page({
     data: {
+        id: 0,
         express: {},
         showBigPhoto: false,
         bigPhoto: {},
@@ -10,7 +11,15 @@ Page({
 
     onLoad(options) {
         const id = options.id;
+        this.setData({
+            id: id,
+        });
 
+        this.loadExpressDetail();
+    },
+
+    loadExpressDetail() {
+        const id = this.data.id;
         const that = this;
         app.post('/client/express/checkin/detail', {
             id: id,
