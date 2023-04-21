@@ -117,8 +117,6 @@ public class OrderDetailController : Controller {
             Paid = order.PayStatus == PayStatus.Paid,
             CanCancel = order.PayStatus == PayStatus.NotPaid,
 
-            AirExpressTrackingNo = string.Empty, // todo 暂时为空，后面还要改      
-
             Insurance = insurance,
             Gst = gst,
 
@@ -145,6 +143,7 @@ public class OrderDetailController : Controller {
                 GoodsType = e.GoodsType.Name,
                 ModeType = e.FirstMode.Type.Name,
                 Channel = e.FirstMode.Channel.Name,
+                TrackingNo = e.TrackingNo,
             })
             .ToList();
 

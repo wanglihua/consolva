@@ -76,9 +76,6 @@ public class OrderDetailOrderItem {
     [JsonProperty("canCancel")]
     public bool CanCancel { get; set; }
 
-    [JsonProperty("airExpressTrackingNo")]
-    public string AirExpressTrackingNo { get; set; } = string.Empty;
-
     [JsonProperty("insurance")]
     public string Insurance { get; set; } = string.Empty;
 

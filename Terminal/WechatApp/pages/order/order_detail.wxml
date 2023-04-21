@@ -55,12 +55,14 @@
                     <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item"/>
                     <van-cell title="物品类型" value="{{ orderDetail.firstMode.firstModeList[0].goodsType }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="国际单号" value="{{ orderDetail.firstMode.firstModeList[0].trackingNo }}" border="{{ false }}" custom-class="item"/>
                 </block>
                 <block wx:else>
                     <block wx:for="{{ orderDetail.firstMode.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
                         <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item"/>
                         <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
                         <van-cell title="物品类型{{ index + 1 }}" value="{{ firstMode.goodsType }}" border="{{ false }}" custom-class="item"/>
+                        <van-cell title="国际单号{{ index + 1 }}" value="{{ orderDetail.firstMode.firstModeList[0].trackingNo }}" border="{{ false }}" custom-class="item"/>
                     </block>
                 </block>
             </block>

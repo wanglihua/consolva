@@ -28,4 +28,10 @@ public class OrderDetailFirstModeListItem {
     /// </summary>
     [JsonProperty("modeName")]
     public string ModeName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 国际单号
+    /// </summary>
+    [JsonProperty("trackingNo")]
+    public string TrackingNo { get; set; } = string.Empty;
 }
