@@ -14,7 +14,13 @@ namespace shunda.Admin.Areas.LogisticsTrack.Controllers;
 /// 17TRACK快递单事件 控制器
 /// </summary>
 [LogisticsTrackArea]
-[AdminAuth(PassRes.LogisticsTrack.SeventeenTrackNumber)]
+[AdminAuth(
+    PassRes.LogisticsTrack.SeventeenTrackNumber,
+    PassRes.LogisticsOrder.LogisticsOrderFirstMode,
+    PassRes.LogisticsOrder.OrderListActive,
+    PassRes.LogisticsOrder.OrderListComplete,
+    PassRes.LogisticsOrder.OrderListCancel
+)]
 public class SeventeenTrackNumberEventController : Controller {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
