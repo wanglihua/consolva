@@ -52,6 +52,7 @@ public class ExpressCheckinPriceController : Controller {
             Id = express.Id,
             TrackingNo = express.TrackingNo,
             CheckinTrackingNo = express.CheckinTrackingNo,
+            GoodsValue = express.GoodsValue,
             GoodsList = goodsList.OrderBy(e => e.Id)
                 .Select(e => new ExpressCheckinGoodsListItem {
                     Id = e.Id,

@@ -13,6 +13,9 @@ public class ExpressCheckinPriceModel {
     [JsonProperty("checkinTrackingNo")]
     public string CheckinTrackingNo { get; set; } = string.Empty;
 
+    [JsonProperty("goodsValue")]
+    public decimal GoodsValue { get; set; }
+
     [JsonProperty("goodsList")]
     public IList<ExpressCheckinGoodsListItem> GoodsList = new List<ExpressCheckinGoodsListItem>();
 }

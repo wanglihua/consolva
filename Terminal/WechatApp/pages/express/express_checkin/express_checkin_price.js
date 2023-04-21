@@ -25,8 +25,11 @@ Page({
                 }
             }
 
+            let expressData = res.data;
+            expressData.goodsValueInput = expressData.goodsValue;
+
             that.setData({
-                express: res.data,
+                express: expressData,
             });
         });
     },
