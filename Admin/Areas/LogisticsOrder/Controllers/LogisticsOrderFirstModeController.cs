@@ -209,13 +209,13 @@ public class LogisticsOrderFirstModeController : Controller {
                     .Take(1)
                     .SingleOrDefault();
 
-                try {
-                    log.Error("trackNumber == null");
-                    log.Error(trackNumber == null);
-                }
-                catch (Exception exp) {
-                    log.Error(exp);
-                }
+                // try {
+                //     log.Error("trackNumber == null");
+                //     log.Error(trackNumber == null);
+                // }
+                // catch (Exception exp) {
+                //     log.Error(exp);
+                // }
 
                 if (trackNumber == null) {
                     var successList = seventeenTrackRegisterService.Register(new List<SeventeenTrackRegisterRequestItem>() {
@@ -225,25 +225,25 @@ public class LogisticsOrderFirstModeController : Controller {
                         }
                     });
 
-                    try {
-                        log.Error("successList:");
-                        log.Error(string.Join(",", successList.Select(e => e.TrackingNo)));
-                    }
-                    catch (Exception exp) {
-                        log.Error(exp);
-                    }
+                    // try {
+                    //     log.Error("successList:");
+                    //     log.Error(string.Join(",", successList.Select(e => e.TrackingNo)));
+                    // }
+                    // catch (Exception exp) {
+                    //     log.Error(exp);
+                    // }
 
                     var successTrackNumber = successList.Where(e => e.TrackingNo == trackingNo).Take(1).SingleOrDefault();
                     if (successTrackNumber != null) {
                         int carrierKey = successTrackNumber.CarrierKey;
                         var carrier = session.Query<SeventeenTrackCarrierInfo>().Where(e => e.CarrierKey == carrierKey).Take(1).SingleOrDefault();
 
-                        try {
-                            log.Error("customerMessageInternationalExpressTrackingNoService.SendMessage()");
-                        }
-                        catch (Exception exp) {
-                            log.Error(exp);
-                        }
+                        // try {
+                        //     log.Error("customerMessageInternationalExpressTrackingNoService.SendMessage()");
+                        // }
+                        // catch (Exception exp) {
+                        //     log.Error(exp);
+                        // }
 
                         customerMessageInternationalExpressTrackingNoService.SendMessage(orderFirstMode.Order.Customer, orderFirstMode.Order, trackingNo, carrier?.CarrierName ?? string.Empty, carrier?.Url ?? string.Empty);
                     }

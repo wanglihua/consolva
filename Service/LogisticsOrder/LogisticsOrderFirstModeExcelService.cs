@@ -324,13 +324,13 @@ public class LogisticsOrderFirstModeExcelService {
 
         trackingNoListToRegister = trackingNoListToRegister.Distinct().ToList(); // 防止重复
 
-        try {
-            log.Error("trackingNoListToRegister:");
-            log.Error(string.Join(",", trackingNoListToRegister));
-        }
-        catch (Exception exp) {
-            log.Error(exp);
-        }
+        // try {
+        //     log.Error("trackingNoListToRegister:");
+        //     log.Error(string.Join(",", trackingNoListToRegister));
+        // }
+        // catch (Exception exp) {
+        //     log.Error(exp);
+        // }
 
         // 注册单号
         if (trackingNoListToRegister.Count != 0) {
@@ -343,13 +343,13 @@ public class LogisticsOrderFirstModeExcelService {
                     .ToList()
             );
 
-            try {
-                log.Error("successTrackNumberList:");
-                log.Error(string.Join(",", successTrackNumberList.Select(e => e.TrackingNo)));
-            }
-            catch (Exception exp) {
-                log.Error(exp);
-            }
+            // try {
+            //     log.Error("successTrackNumberList:");
+            //     log.Error(string.Join(",", successTrackNumberList.Select(e => e.TrackingNo)));
+            // }
+            // catch (Exception exp) {
+            //     log.Error(exp);
+            // }
 
             var carierKeyList = successTrackNumberList.Select(e => e.CarrierKey).Distinct().ToList();
             var carrierList = session.Query<SeventeenTrackCarrierInfo>().Where(e => carierKeyList.Contains(e.CarrierKey)).ToList();
@@ -361,25 +361,25 @@ public class LogisticsOrderFirstModeExcelService {
                     .Take(1)
                     .SingleOrDefault();
 
-                try {
-                    log.Error("actualImportItem != null:");
-                    log.Error(actualImportItem != null);
-                }
-                catch (Exception exp) {
-                    log.Error(exp);
-                }
+                // try {
+                //     log.Error("actualImportItem != null:");
+                //     log.Error(actualImportItem != null);
+                // }
+                // catch (Exception exp) {
+                //     log.Error(exp);
+                // }
 
                 if (actualImportItem != null) {
                     var orderFirstMode = actualImportItem.OrderFirstMode;
                     int carrierKey = successTrackNumber.CarrierKey;
                     var carrier = carrierList.Where(e => e.CarrierKey == carrierKey).Take(1).SingleOrDefault();
 
-                    try {
-                        log.Error("customerMessageInternationalExpressTrackingNoService.SendMessage()");
-                    }
-                    catch (Exception exp) {
-                        log.Error(exp);
-                    }
+                    // try {
+                    //     log.Error("customerMessageInternationalExpressTrackingNoService.SendMessage()");
+                    // }
+                    // catch (Exception exp) {
+                    //     log.Error(exp);
+                    // }
 
                     customerMessageInternationalExpressTrackingNoService.SendMessage(orderFirstMode.Order.Customer, orderFirstMode.Order, trackingNo, carrier?.CarrierName ?? string.Empty, carrier?.Url ?? string.Empty);
                 }
