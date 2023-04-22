@@ -302,6 +302,7 @@
                                 <label asp-for="FeeType" class="col-xs-2 control-label">计费方式</label>
                                 <div class="col-xs-10">
                                     <select asp-for="FeeType" class="input-sm form-control">
+                                        <option value="0">计费方式选择</option>
                                         @foreach (var feeType in Model.FeeTypeList) {
                                             <option value="@(feeType.Id)">@(feeType.Name)</option>
                                         }
