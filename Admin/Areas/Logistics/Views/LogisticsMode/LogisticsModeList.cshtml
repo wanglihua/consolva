@@ -1,6 +1,7 @@
 @{
     Layout = null;
 }
+@using shunda.Core.Web
 @using shunda.Domain.Logistics
 @using shunda.Domain.Storage
 @model shunda.Admin.Areas.Logistics.Models.LogisticsMode.LogisticsModeListModel
@@ -17,6 +18,9 @@
             <th style="width: 100px;" class="center">
                 <div>
                     <a field="@(nameof(LogisticsModeInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">类型</a>
+                </div>
+                <div>
+                    <a field="@(nameof(LogisticsModeInfo.FeeType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">计费方式</a>
                 </div>
             </th>
             <th style="width: 250px;" class="center">
@@ -74,6 +78,9 @@
                     <td class="center">
                         <div>
                             @logisticsMode.Type.Name
+                        </div>
+                        <div>
+                            @ListDataUtil.Render(logisticsMode.FeeType.Name)
                         </div>
                     </td>
 
