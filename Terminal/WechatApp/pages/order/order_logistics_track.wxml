@@ -1,0 +1,24 @@
+<header />
+<view class="container">
+    <van-cell-group title="订单物流跟踪" />
+
+    <!-- 基本信息 -->
+    <view>
+        <van-cell title="基本信息" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
+        <van-cell title="订单编号" value="{{ orderCode }}" border="{{ false }}" custom-class="item" />
+        <van-cell title="物流名称" value="{{ firstModeName }}" border="{{ false }}" custom-class="item" />
+        <van-cell title="物品类型" value="{{ goodsType }}" border="{{ false }}" custom-class="item" />
+        <van-cell title="国际单号" value="{{ trackingNo }}" border="{{ false }}" custom-class="item" />
+        <van-cell title="运输商" value="{{ carrierName }}" border="{{ false }}" custom-class="item" />
+        <view class="item-last-vspace" />
+    </view>
+
+    <!-- 跟踪明细 -->
+    <view>
+        <van-cell title="跟踪明细" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" />
+        <block wx:for="{{ eventList }}" wx:key="eventTime" wx:for-item="evt" wx:for-index="index">
+            <van-cell title="{{ index + 1 }}. {{ evt.eventTime }}" label="{{ evt.eventDesc }}" border="{{ false }}" custom-class="item" />
+        </block>
+        <view class="item-last-vspace" />
+    </view>
+</view>

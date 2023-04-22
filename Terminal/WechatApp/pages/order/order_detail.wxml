@@ -1,87 +1,97 @@
-<header/>
+<header />
 <view class="container">
-    <van-cell-group title="订单详细"/>
+    <van-cell-group title="订单详细" />
     <van-cell-group custom-class="items">
         <!-- 基本信息 -->
         <block wx:if="{{ orderDetail.order }}">
-            <van-cell title="基本信息" value="{{ orderShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderHeaderClick"/>
+            <van-cell title="基本信息" value="{{ orderShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderHeaderClick" />
             <block wx:if="{{ orderShow.show }}">
                 <van-cell title="订单编号" value="{{ orderDetail.order.orderCode }}" border="{{ false }}" custom-class="item" bind:click="onCopyClick" data-item="{{ orderDetail.order.orderCode }}">
                     <view slot="right-icon">
                         <view style="padding-left: 5px;">
-                            <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                            <van-icon class-prefix="iconfont" name="copy" color="#1989fa" />
                         </view>
                     </view>
                 </van-cell>
-                <van-cell title="订单状态" value="{{ orderDetail.order.orderStatus }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="创建时间" value="{{ orderDetail.order.createTime }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="打包时间" value="{{ orderDetail.order.packTime }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="转运时间" value="{{ orderDetail.order.transferTime }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="签收时间" value="{{ orderDetail.order.deliverTime }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="订单货值" value="¥ {{ orderDetail.order.goodsValue }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="订单状态" value="{{ orderDetail.order.orderStatus }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="物流名称" value="{{ orderDetail.order.firstModeName }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="创建时间" value="{{ orderDetail.order.createTime }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="打包时间" value="{{ orderDetail.order.packTime }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="转运时间" value="{{ orderDetail.order.transferTime }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="签收时间" value="{{ orderDetail.order.deliverTime }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="订单货值" value="¥ {{ orderDetail.order.goodsValue }}" border="{{ false }}" custom-class="item" />
                 <block wx:if="{{ orderDetail.order.hasPacked === true }}">
-                    <van-cell title="物流费用" value="¥ {{ orderDetail.order.orderAmount }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arrearsAmount }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="物流费用" value="¥ {{ orderDetail.order.orderAmount }}" border="{{ false }}" custom-class="item" />
+                    <van-cell title="欠费总额" value="¥ {{ orderDetail.order.arrearsAmount }}" border="{{ false }}" custom-class="item" />
                 </block>
                 <block wx:if="{{ orderDetail.order.hasCheckinSizeWeightData === true }}">
-                    <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="入库总体积重" value="{{ orderDetail.order.checkinTotalVolumeWeight }} KG" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="入库总实际重" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="入库包裹数" value="{{ orderDetail.order.checkinTotalPackageCount }} 个" border="{{ false }}" custom-class="item" />
+                    <van-cell title="入库总体积" value="{{ orderDetail.order.checkinTotalVolume }} CBM" border="{{ false }}" custom-class="item" />
+                    <van-cell title="入库总体积重" value="{{ orderDetail.order.checkinTotalVolumeWeight }} KG" border="{{ false }}" custom-class="item" />
+                    <van-cell title="入库总实际重" value="{{ orderDetail.order.checkinTotalActualWeight }} KG" border="{{ false }}" custom-class="item" />
                 </block>
                 <block wx:if="{{ orderDetail.order.hasPacked === true && orderDetail.hasOrderPackData === true && orderDetail.orderPackData }}">
-                    <van-cell title="打包包裹数" value="{{ orderDetail.orderPackData.totalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="打包总体积" value="{{ orderDetail.orderPackData.totalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="打包总体积重" value="{{ orderDetail.orderPackData.totalVolumeWeight }} KG" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="打包总实际重" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="打包包裹数" value="{{ orderDetail.orderPackData.totalPackageCount }} 个" border="{{ false }}" custom-class="item" />
+                    <van-cell title="打包总体积" value="{{ orderDetail.orderPackData.totalVolume }} CBM" border="{{ false }}" custom-class="item" />
+                    <van-cell title="打包总体积重" value="{{ orderDetail.orderPackData.totalVolumeWeight }} KG" border="{{ false }}" custom-class="item" />
+                    <van-cell title="打包总实际重" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item" />
                 </block>
-                <van-cell title="保险类型" value="{{ orderDetail.order.insurance }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="GST申报" value="{{ orderDetail.order.gst }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="打包方式" value="{{ orderDetail.order.repackTypeTitle }}" border="{{ false }}" custom-class="item"/>
-                <van-cell label="{{ orderDetail.order.repackTypeDesc }}" border="{{ false }}" custom-class="item-repack-type-desc"/>
-                <van-cell title="客户备注" value="{{ orderDetail.order.customerRemark }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="仓库备注" value="{{ orderDetail.order.warehouseRemark }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="客服备注" value="{{ orderDetail.order.serviceRemark }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="保险类型" value="{{ orderDetail.order.insurance }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="GST申报" value="{{ orderDetail.order.gst }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="打包方式" value="{{ orderDetail.order.repackTypeTitle }}" border="{{ false }}" custom-class="item" />
+                <van-cell label="{{ orderDetail.order.repackTypeDesc }}" border="{{ false }}" custom-class="item-repack-type-desc" />
+                <van-cell title="客户备注" value="{{ orderDetail.order.customerRemark }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="仓库备注" value="{{ orderDetail.order.warehouseRemark }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="客服备注" value="{{ orderDetail.order.serviceRemark }}" border="{{ false }}" custom-class="item" />
             </block>
-            <view class="item-last-vspace"/>
+            <view class="item-last-vspace" />
         </block>
 
         <!-- 物流信息 -->
         <block wx:if="{{ orderDetail.firstMode && orderDetail.firstMode.firstModeList && orderDetail.firstMode.firstModeList.length > 0 }}">
-            <van-cell title="物流信息" value="{{ firstModeShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onFirstModeHeaderClick"/>
+            <van-cell title="物流信息" value="{{ firstModeShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onFirstModeHeaderClick" />
             <block wx:if="{{ firstModeShow.show }}">
                 <block wx:if="{{ orderDetail.firstMode.firstModeList.length === 1 }}">
-                    <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="物品类型" value="{{ orderDetail.firstMode.firstModeList[0].goodsType }}" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="国际单号" value="{{ orderDetail.firstMode.firstModeList[0].trackingNo }}" border="{{ false }}" custom-class="item"/>
+                    <van-cell title="发货渠道" value="{{ orderDetail.firstMode.firstModeList[0].channel }}" border="{{ false }}" custom-class="item" />
+                    <van-cell title="物流名称" value="{{ orderDetail.firstMode.firstModeList[0].modeName }}" border="{{ false }}" custom-class="item" />
+                    <van-cell title="物品类型" value="{{ orderDetail.firstMode.firstModeList[0].goodsType }}" border="{{ false }}" custom-class="item" />
+                    <block wx:if="{{ orderDetail.firstMode.firstModeList[0].trackingNo === '' }}">
+                        <van-cell title="国际单号" value="{{ orderDetail.firstMode.firstModeList[0].trackingNo }}" border="{{ false }}" custom-class="item" />
+                    </block>
+                    <block wx:else>
+                        <van-cell title="国际单号" value="{{ orderDetail.firstMode.firstModeList[0].trackingNo }}" border="{{ false }}" custom-class="item" is-link data-item="{{ orderDetail.firstMode.firstModeList[0] }}" bind:click="onFirstModeTrackingNoClick" />
+                    </block>
                 </block>
                 <block wx:else>
                     <block wx:for="{{ orderDetail.firstMode.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="index">
-                        <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="物品类型{{ index + 1 }}" value="{{ firstMode.goodsType }}" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="国际单号{{ index + 1 }}" value="{{ orderDetail.firstMode.firstModeList[0].trackingNo }}" border="{{ false }}" custom-class="item"/>
+                        <van-cell title="发货渠道{{ index + 1 }}" value="{{ firstMode.channel }}" border="{{ false }}" custom-class="item" />
+                        <van-cell title="物流名称{{ index + 1 }}" value="{{ firstMode.modeName }}" border="{{ false }}" custom-class="item" />
+                        <van-cell title="物品类型{{ index + 1 }}" value="{{ firstMode.goodsType }}" border="{{ false }}" custom-class="item" />
+                        <block wx:if="{{ firstMode.trackingNo === '' }}">
+                            <van-cell title="国际单号{{ index + 1 }}" value="{{ firstMode.trackingNo }}" border="{{ false }}" custom-class="item" />
+                        </block>
+                        <block wx:else>
+                            <van-cell title="国际单号{{ index + 1 }}" value="{{ firstMode.trackingNo }}" border="{{ false }}" custom-class="item" is-link data-item="{{ firstMode }}" bind:click="onFirstModeTrackingNoClick" />
+                        </block>
                     </block>
                 </block>
             </block>
-            <view class="item-last-vspace"/>
+            <view class="item-last-vspace" />
         </block>
 
         <!-- 收货地址 -->
         <block wx:if="{{ orderDetail.receiveAddress }}">
-            <van-cell title="收货地址" value="{{ receiveAddressShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onReceiveAddressHeaderClick"/>
+            <van-cell title="收货地址" value="{{ receiveAddressShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onReceiveAddressHeaderClick" />
             <block wx:if="{{ receiveAddressShow.show }}">
-                <van-cell title="收货人" value="{{ orderDetail.receiveAddress.firstName }} {{ orderDetail.receiveAddress.lastName }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="手机" value="{{ orderDetail.receiveAddress.mobile }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="国家" value="{{ orderDetail.receiveAddress.country }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="洲" value="{{ orderDetail.receiveAddress.state }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="城市" value="{{ orderDetail.receiveAddress.city }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="地址" value="{{ orderDetail.receiveAddress.address }}" border="{{ false }}" custom-class="item"/>
-                <van-cell title="邮编" value="{{ orderDetail.receiveAddress.zipcode }}" border="{{ false }}" custom-class="item"/>
+                <van-cell title="收货人" value="{{ orderDetail.receiveAddress.firstName }} {{ orderDetail.receiveAddress.lastName }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="手机" value="{{ orderDetail.receiveAddress.mobile }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="国家" value="{{ orderDetail.receiveAddress.country }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="洲" value="{{ orderDetail.receiveAddress.state }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="城市" value="{{ orderDetail.receiveAddress.city }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="地址" value="{{ orderDetail.receiveAddress.address }}" border="{{ false }}" custom-class="item" />
+                <van-cell title="邮编" value="{{ orderDetail.receiveAddress.zipcode }}" border="{{ false }}" custom-class="item" />
             </block>
-            <view class="item-last-vspace"/>
+            <view class="item-last-vspace" />
         </block>
 
         <!-- 发货地址 -->
@@ -99,56 +109,56 @@
 
         <!-- 订单商品 -->
         <block wx:if="{{ orderDetail.expressList && orderDetail.expressList.length > 0 }}">
-            <van-cell title="订单商品" value="{{ expressListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onExpressListHeaderClick"/>
+            <van-cell title="订单商品" value="{{ expressListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onExpressListHeaderClick" />
             <block wx:if="{{ expressListShow.show }}">
                 <block wx:for="{{ orderDetail.expressList }}" wx:key="id" wx:for-item="express" wx:for-index="expressIndex">
                     <view>
                         <van-cell title="快递单#{{ expressIndex + 1 }}" border="{{ true }}" custom-class="express-item">
                             <view slot="right-icon">
                                 <view style="padding-left: 5px; color: #1989fa;" bind:tap="onViewExpressDetailClick" data-item="{{ express }}">
-                                    <van-icon class-prefix="iconfont" name="view-detail" color="#1989fa"/>查看详细
+                                    <van-icon class-prefix="iconfont" name="view-detail" color="#1989fa" />查看详细
                                 </view>
                             </view>
                         </van-cell>
                         <van-cell title="快递单号" value="{{ express.trackingNo }}" border="{{ false }}" custom-class="express-item" bind:click="onCopyClick" data-item="{{ express.trackingNo }}">
                             <view slot="right-icon">
                                 <view style="padding-left: 5px;">
-                                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa" />
                                 </view>
                             </view>
                         </van-cell>
                         <van-cell title="入库跟踪号" value="{{ express.checkinTrackingNo }}" border="{{ false }}" custom-class="express-item" bind:click="onCopyClick" data-item="{{ express.checkinTrackingNo }}">
                             <view slot="right-icon">
                                 <view style="padding-left: 5px;">
-                                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa"/>
+                                    <van-icon class-prefix="iconfont" name="copy" color="#1989fa" />
                                 </view>
                             </view>
                         </van-cell>
-                        <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="express-item"/>
-                        <van-cell title="状态" value="{{ express.status }}" border="{{ false }}" custom-class="express-item"/>
-                        <van-cell title="入库时间" value="{{ express.checkinTime }}" border="{{ false }}" custom-class="express-item"/>
-                        <van-cell title="货品总值" value="{{ express.goodsValue }} RMB" border="{{ false }}" custom-class="express-item"/>
-                        <view class="express-item-last-vspace"/>
+                        <van-cell title="物品类型" value="{{ express.goodsType }}" border="{{ false }}" custom-class="express-item" />
+                        <van-cell title="状态" value="{{ express.status }}" border="{{ false }}" custom-class="express-item" />
+                        <van-cell title="入库时间" value="{{ express.checkinTime }}" border="{{ false }}" custom-class="express-item" />
+                        <van-cell title="货品总值" value="{{ express.goodsValue }} RMB" border="{{ false }}" custom-class="express-item" />
+                        <view class="express-item-last-vspace" />
                     </view>
 
                     <block wx:for="{{ express.expressGoodsList }}" wx:key="id" wx:for-item="expressGoods" wx:for-index="expressGoodsIndex">
                         <view>
-                            <van-cell title="物品#{{ expressGoodsIndex + 1 }}" border="{{ true }}" custom-class="express-goods-item"/>
-                            <van-cell title="物品名称" value="{{ expressGoods.goodsName }}" border="{{ false }}" custom-class="express-goods-item"/>
-                            <van-cell title="物品类型" value="{{ expressGoods.goodsType }}" border="{{ false }}" custom-class="express-goods-item"/>
-                            <van-cell title="数量" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}" custom-class="express-goods-item"/>
-                            <view class="express-goods-item-last-vspace"/>
+                            <van-cell title="物品#{{ expressGoodsIndex + 1 }}" border="{{ true }}" custom-class="express-goods-item" />
+                            <van-cell title="物品名称" value="{{ expressGoods.goodsName }}" border="{{ false }}" custom-class="express-goods-item" />
+                            <van-cell title="物品类型" value="{{ expressGoods.goodsType }}" border="{{ false }}" custom-class="express-goods-item" />
+                            <van-cell title="数量" value="{{ expressGoods.quantity }} {{ expressGoods.unit }}" border="{{ false }}" custom-class="express-goods-item" />
+                            <view class="express-goods-item-last-vspace" />
                         </view>
                     </block>
-                    <view class="item-last-vspace"/>
+                    <view class="item-last-vspace" />
                 </block>
             </block>
-            <view class="item-last-vspace"/>
+            <view class="item-last-vspace" />
         </block>
 
         <!-- 快递单尺寸重量 -->
         <block wx:if="{{ orderDetail.order && orderDetail.order.hasCheckinSizeWeightData && orderDetail.expressSizeWeightList && orderDetail.expressSizeWeightList.length > 0 }}">
-            <van-cell title="快递单尺寸重量(合箱打包前)" value="{{ expressSizeWeightListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onExpressSizeWeightListHeaderClick"/>
+            <van-cell title="快递单尺寸重量(合箱打包前)" value="{{ expressSizeWeightListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onExpressSizeWeightListHeaderClick" />
             <block wx:if="{{ expressSizeWeightListShow.show }}">
                 <block wx:for="{{ orderDetail.expressSizeWeightList }}" wx:key="id" wx:for-item="sizeWeight" wx:for-index="index">
                     <van-cell title="{{ index + 1 }}、快递单号:{{ sizeWeight.trackingNo }}，单箱尺寸：{{ sizeWeight.length }}✕{{ sizeWeight.width }}✕{{ sizeWeight.height }}CM，单箱体积重：{{ sizeWeight.volumeWeight }}KG，单箱实际重：{{ sizeWeight.actualWeight }}KG，箱数：{{ sizeWeight.packageCount }}" border="{{ false }}" custom-class="item" />
@@ -161,79 +171,79 @@
                 </block>
             </block>
 
-            <view class="item-last-vspace"/>
+            <view class="item-last-vspace" />
         </block>
 
         <!-- 订单打包 -->
         <block wx:if="{{ orderDetail.order &&  orderDetail.order.hasPacked && orderDetail.orderPackList && orderDetail.orderPackList.length > 0 }}">
-            <van-cell title="订单打包(合箱打包后)" value="{{ orderPackListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderPackListHeaderClick"/>
+            <van-cell title="订单打包(合箱打包后)" value="{{ orderPackListShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onOrderPackListHeaderClick" />
             <block wx:if="{{ orderPackListShow.show }}">
                 <block wx:for="{{ orderDetail.orderPackList }}" wx:key="id" wx:for-item="orderPack" wx:for-index="index">
                     <view>
-                        <van-cell title="打包#{{ index + 1 }}" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
-                        <van-cell title="物流名称" value="{{ orderPack.firstModeName }}" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="物品类型" value="{{ orderPack.goodsType }}" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="包裹数量" value="{{ orderPack.packageCount }}" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="单箱尺寸" value="{{ orderPack.singleSize }} CM" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="单箱体积" value="{{ orderPack.singleVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="单箱重量" value="{{ orderPack.singleWeight }} KG" border="{{ false }}" custom-class="item"/>
-                        <view class="item-last-vspace"/>
+                        <van-cell title="打包#{{ index + 1 }}" border="{{ true }}" title-class="item-subtitle" custom-class="item" />
+                        <van-cell title="物流名称" value="{{ orderPack.firstModeName }}" border="{{ false }}" custom-class="item" />
+                        <van-cell title="物品类型" value="{{ orderPack.goodsType }}" border="{{ false }}" custom-class="item" />
+                        <van-cell title="包裹数量" value="{{ orderPack.packageCount }}" border="{{ false }}" custom-class="item" />
+                        <van-cell title="单箱尺寸" value="{{ orderPack.singleSize }} CM" border="{{ false }}" custom-class="item" />
+                        <van-cell title="单箱体积" value="{{ orderPack.singleVolume }} CBM" border="{{ false }}" custom-class="item" />
+                        <van-cell title="单箱重量" value="{{ orderPack.singleWeight }} KG" border="{{ false }}" custom-class="item" />
+                        <view class="item-last-vspace" />
                     </view>
                 </block>
 
                 <block wx:if="{{ orderDetail.orderPackData }}">
                     <view>
-                        <van-cell title="打包汇总" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
-                        <van-cell title="包裹数量" value="{{ orderDetail.orderPackData.totalPackageCount }}" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="总实际重" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="总体积重" value="{{ orderDetail.orderPackData.totalVolumeWeight }} KG" border="{{ false }}" custom-class="item"/>
-                        <van-cell title="总体积" value="{{ orderDetail.orderPackData.totalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                        <view class="item-last-vspace"/>
+                        <van-cell title="打包汇总" border="{{ true }}" title-class="item-subtitle" custom-class="item" />
+                        <van-cell title="包裹数量" value="{{ orderDetail.orderPackData.totalPackageCount }}" border="{{ false }}" custom-class="item" />
+                        <van-cell title="总实际重" value="{{ orderDetail.orderPackData.totalActualWeight }} KG" border="{{ false }}" custom-class="item" />
+                        <van-cell title="总体积重" value="{{ orderDetail.orderPackData.totalVolumeWeight }} KG" border="{{ false }}" custom-class="item" />
+                        <van-cell title="总体积" value="{{ orderDetail.orderPackData.totalVolume }} CBM" border="{{ false }}" custom-class="item" />
+                        <view class="item-last-vspace" />
                     </view>
                 </block>
             </block>
 
-            <view class="item-last-vspace"/>
+            <view class="item-last-vspace" />
         </block>
 
         <!-- 订单费用 -->
         <block wx:if="{{ orderDetail.fee }}">
-            <van-cell title="订单费用" value="{{ feeShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onFeeHeaderClick"/>
+            <van-cell title="订单费用" value="{{ feeShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onFeeHeaderClick" />
             <block wx:if="{{ feeShow.show }}">
                 <block wx:if="{{ orderDetail.fee.firstModeList && orderDetail.fee.firstModeList.length > 0 }}">
                     <block wx:for="{{ orderDetail.fee.firstModeList }}" wx:key="id" wx:for-item="firstMode" wx:for-index="firstModeIndex">
-                        <van-cell title="{{ firstMode.firstModeName }}({{ firstMode.goodsType }})" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
+                        <van-cell title="{{ firstMode.firstModeName }}({{ firstMode.goodsType }})" border="{{ true }}" title-class="item-subtitle" custom-class="item" />
                         <block wx:if="{{ firstMode.feeList && firstMode.feeList.length > 0 }}">
                             <block wx:for="{{ firstMode.feeList }}" wx:key="id" wx:for-item="fee" wx:for-index="feeIndex">
-                                <van-cell title="{{ fee.feeType }}" value="{{ fee.amount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                                <van-cell title="{{ fee.feeType }}" value="{{ fee.amount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item" />
                             </block>
-                            <view class="item-last-vspace"/>
+                            <view class="item-last-vspace" />
                         </block>
                     </block>
                 </block>
 
                 <block wx:if="{{ orderDetail.fee.otherFeeList && orderDetail.fee.otherFeeList.length > 0 }}">
-                    <van-cell title="其他费用" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
+                    <van-cell title="其他费用" border="{{ true }}" title-class="item-subtitle" custom-class="item" />
                     <block wx:for="{{ orderDetail.fee.otherFeeList }}" wx:key="id" wx:for-item="fee" wx:for-index="feeIndex">
-                        <van-cell title="{{ fee.feeType }}" value="{{ fee.amount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                        <van-cell title="{{ fee.feeType }}" value="{{ fee.amount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item" />
                     </block>
-                    <view class="item-last-vspace"/>
+                    <view class="item-last-vspace" />
                 </block>
 
                 <block>
-                    <van-cell title="费用合计" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
-                    <van-cell title="总计费用" value="{{ orderDetail.fee.totalAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="已付费用" value="{{ orderDetail.fee.paidAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
-                    <van-cell title="欠费总额" value="{{ orderDetail.fee.arrearsAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
-                    <view class="item-last-vspace"/>
+                    <van-cell title="费用合计" border="{{ true }}" title-class="item-subtitle" custom-class="item" />
+                    <van-cell title="总计费用" value="{{ orderDetail.fee.totalAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item" />
+                    <van-cell title="已付费用" value="{{ orderDetail.fee.paidAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item" />
+                    <van-cell title="欠费总额" value="{{ orderDetail.fee.arrearsAmount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item" />
+                    <view class="item-last-vspace" />
                 </block>
             </block>
-            <view class="item-last-vspace"/>
+            <view class="item-last-vspace" />
         </block>
 
         <!-- 订单图片 -->
         <block wx:if="{{ orderDetail.photoTypeList && orderDetail.photoTypeList.length !== 0 }}">
-            <van-cell title="订单图片({{ orderDetail.totalPhotoCount }})" value="{{ photoShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onPhotoHeaderClick"/>
+            <van-cell title="订单图片({{ orderDetail.totalPhotoCount }})" value="{{ photoShow.text }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value" bind:click="onPhotoHeaderClick" />
             <block wx:if="{{ photoShow.show }}">
                 <van-tabs>
                     <block wx:for="{{ orderDetail.photoTypeList }}" wx:key="id" wx:for-item="photoType" wx:for-index="index">
@@ -241,7 +251,7 @@
                             <view style="margin: 18rpx 0;">
                                 <block wx:for="{{ photoType.photoList }}" wx:key="id" wx:for-item="photo" wx:for-index="index">
                                     <van-image height="160rpx" fit="heightFix" lazy-load src="{{ photo.smallUrl }}" bind:click="onSmallPhotoClick" data-item="{{ photo }}" use-loading-slot custom-class="express-detail-small-image">
-                                        <van-loading slot="loading" type="spinner" size="20" vertical/>
+                                        <van-loading slot="loading" type="spinner" size="20" vertical />
                                     </van-image>
                                 </block>
                             </view>
@@ -250,7 +260,7 @@
                 </van-tabs>
                 <van-popup show="{{ showBigPhoto }}" closeable position="bottom" custom-style="height: 95%; padding: 80rpx 10rpx 10rpx 10rpx;" bind:close="onBigPhotoClose">
                     <van-image width="100%" height="100%" fit="contain" lazy-load src="{{ bigPhoto.bigUrl }}" use-loading-slot>
-                        <van-loading slot="loading" type="spinner" size="20" vertical/>
+                        <van-loading slot="loading" type="spinner" size="20" vertical />
                     </van-image>
                 </van-popup>
             </block>

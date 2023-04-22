@@ -127,6 +127,13 @@ Page({
         });
     },
 
+    onFirstModeTrackingNoClick(e) {
+        const orderFirstModeId = e.currentTarget.dataset.item.id;
+        wx.navigateTo({
+          url: './order_logistics_track?orderFirstModeId=' + orderFirstModeId,
+        });
+    },
+
     onExpressSizeWeightListHeaderClick(e) {
         const expressSizeWeightListShow = this.data.expressSizeWeightListShow;
         if (expressSizeWeightListShow.show) {
