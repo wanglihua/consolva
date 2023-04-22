@@ -182,6 +182,8 @@ public class LogisticsModeController : Controller {
         model.ExpressCompanyName = logisticsMode.ExpressCompanyName;
         model.ExpressCompanyUrl = logisticsMode.ExpressCompanyUrl;
 
+        model.FeeType = logisticsMode.FeeType;
+
         model.Status = logisticsMode.Status;
         model.InnerStatus = logisticsMode.InnerStatus;
 
@@ -206,6 +208,7 @@ public class LogisticsModeController : Controller {
         model.RepackTypeList = LogisticsRepackType.GetList();
         model.GoodsTypeList = LogisticsGoodsType.GetCustomerList();
         model.ChannelList = LogisticsModeChannel.GetList();
+        model.FeeTypeList = LogisticsModeFeeType.GetList();
 
         model.InnerModeId = logisticsMode.InnerModeId;
         var modeType = logisticsMode.Type;
@@ -302,6 +305,8 @@ public class LogisticsModeController : Controller {
         logisticsMode.Channel = model.Channel;
         logisticsMode.ExpressCompanyName = model.ExpressCompanyName ?? string.Empty;
         logisticsMode.ExpressCompanyUrl = model.ExpressCompanyUrl ?? string.Empty;
+
+        logisticsMode.FeeType = model.FeeType;
 
         logisticsMode.Status = model.Status;
         logisticsMode.InnerStatus = model.InnerStatus;

@@ -296,6 +296,19 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="FeeType" class="col-xs-2 control-label">计费方式</label>
+                                <div class="col-xs-10">
+                                    <select asp-for="FeeType" class="input-sm form-control">
+                                        @foreach (var feeType in Model.FeeTypeList) {
+                                            <option value="@(feeType.Id)">@(feeType.Name)</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">

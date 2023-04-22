@@ -141,6 +141,15 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo> {
         );
 
         Property(
+            x => x.FeeType,
+            map => {
+                map.Type<LogisticsModeFeeTypeHibernateType>();
+                map.Column("fee_type_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.InnerModeId,
             map => {
                 map.Type(NHibernateUtil.Int32);
@@ -174,6 +183,6 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo> {
                 map.Column("order_num");
                 map.NotNullable(true);
             }
-        );        
+        );
     }
 }

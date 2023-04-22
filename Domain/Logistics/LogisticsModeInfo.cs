@@ -94,6 +94,12 @@ public class LogisticsModeInfo : Entity {
     public virtual string ExpressCompanyUrl { get; set; } = string.Empty;
 
     /// <summary>
+    /// 计费方式
+    /// </summary>
+    [ModelBinder(typeof(LogisticsModeFeeTypeModelBinder))]
+    public virtual LogisticsModeFeeType FeeType { get; set; } = LogisticsModeFeeType.None;
+
+    /// <summary>
     /// 对应的内部费率
     /// 现在是中澳空运和中澳快递在用
     /// </summary>
@@ -110,11 +116,11 @@ public class LogisticsModeInfo : Entity {
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public virtual LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
-    
+
     /// <summary>
     /// 排序号
     /// </summary>
-    public virtual  int OrderNum { get; set; }
+    public virtual int OrderNum { get; set; }
 
     #region Cache
 

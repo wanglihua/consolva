@@ -89,7 +89,7 @@ public class LogisticsFeeService {
             throw new ValidationException($"物流方式{logisticsMode.Name}不支持物品类型{goodsType.Name}！");
         }
 
-        // todo 检查物流方式对应的费率设置
+        // 检查物流方式对应的费率设置
         var logisticsModeFeeRate = session.Query<LogisticsModeFeeRateInfo>()
             .Fetch(e => e.FeeRate)
             .Where(e => e.Mode.Id == logisticsModeId

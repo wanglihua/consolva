@@ -98,6 +98,12 @@ public class LogisticsModeDetailModel {
     public string? ExpressCompanyUrl { get; set; }
 
     /// <summary>
+    /// 计费方式
+    /// </summary>
+    [ModelBinder(typeof(LogisticsModeFeeTypeModelBinder))]
+    public LogisticsModeFeeType FeeType { get; set; } = LogisticsModeFeeType.None;
+
+    /// <summary>
     /// 状态
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
@@ -108,7 +114,7 @@ public class LogisticsModeDetailModel {
     /// </summary>
     [ModelBinder(typeof(LogisticsModeStatusModelBinder))]
     public LogisticsModeStatus InnerStatus { get; set; } = LogisticsModeStatus.None;
-    
+
     /// <summary>
     /// 排序号
     /// </summary>
@@ -159,6 +165,9 @@ public class LogisticsModeDetailModel {
     /// </summary>
     [BindNever]
     public IList<LogisticsModeInfo> InnerModeList { get; set; } = new List<LogisticsModeInfo>();
+
+    [BindNever]
+    public IList<LogisticsModeFeeType> FeeTypeList { get; set; } = LogisticsModeFeeType.GetList();
 
     public string GetFeeRateFieldName(LogisticsGoodsType goodsType) {
         return $"{FeeRateFieldPrefix}{goodsType?.Id ?? 0}";
