@@ -59,12 +59,12 @@
         "pages/order/order_list_wait_transport",
         "pages/order/order_list_transporting",
         "pages/order/order_list_delivered",
+        "pages/order/order_logistics_track",
         "pages/order/order_pay_coupon",
         "pages/order/order_pay_type",
         "pages/order/order_pay_customer_account",
         "pages/notice/notice_list",
-        "pages/notice/notice_detail",
-        "pages/order/order_logistics_track"
+        "pages/notice/notice_detail"
     ],
     "window": {
         "backgroundColor": "#f8f8f8",
