@@ -62,12 +62,20 @@ public class LogisticsFeeDataItem {
 /// 运费计算中的包裹信息
 /// </summary>
 public class LogisticsFeePack {
+    /// <summary>
+    /// 用于按打包顺序排序，可以按箱号计费时算得箱号顺序号
+    /// </summary>
+    public int PackId { get; set; }
+    
     public decimal Length { get; set; }
 
     public decimal Width { get; set; }
 
     public decimal Height { get; set; }
 
+    /// <summary>
+    /// 单位，kg
+    /// </summary>
     public decimal Weight { get; set; }
 
     /// <summary>

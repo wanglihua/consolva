@@ -337,6 +337,7 @@ public class LogisticsOrderFeeService {
                 OrderGoodsValue = order.GoodsValue,
 
                 FeePackList = orderFirstModeOrderPackList.Select(e => new LogisticsFeePack {
+                    PackId = e.Id,
                     Length = e.Length,
                     Width = e.Width,
                     Height = e.Height,

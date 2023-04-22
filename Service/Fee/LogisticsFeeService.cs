@@ -160,22 +160,55 @@ public class LogisticsFeeService {
 
         var logisticsModeType = logisticsMode.Type;
 
-        // 跨国快递
-        if (logisticsModeType == LogisticsModeType.Express) {
-            initialTotalFee = logisticsFeeExpressService.GetFee(finalTotalWeightKg, logisticsModeId, feeMessageType);
-        } else {
-            throw new ValidationException("计费不支持的物流方式类型，无法计费！");
-        }
 
-        resultEntryList.Add(new LogisticsFeeResultEntry {
-            OrderFirstMode = feeDataItem.OrderFirstMode,
-            LogisticsMode = feeDataItem.LogisticsMode,
-            Title = LogisticsOrderFeeType.InitFee.Name,
-            FeeType = LogisticsOrderFeeType.InitFee,
-            Fee = initialTotalFee,
-            GoodsType = feeDataItem.GoodsType,
-            EntryType = LogisticsFeeResultEntryType.Single
-        });
+        if (logisticsMode.FeeType != LogisticsModeFeeType.SinglePackBox) {
+            // 这种情况是汇总计算
+
+            // 跨国快递
+            if (logisticsModeType == LogisticsModeType.Express) {
+                initialTotalFee = logisticsFeeExpressService.GetFee(finalTotalWeightKg, logisticsModeId, feeMessageType);
+
+                resultEntryList.Add(new LogisticsFeeResultEntry {
+                    OrderFirstMode = feeDataItem.OrderFirstMode,
+                    LogisticsMode = feeDataItem.LogisticsMode,
+                    Title = LogisticsOrderFeeType.InitFee.Name,
+                    FeeType = LogisticsOrderFeeType.InitFee,
+                    Fee = initialTotalFee,
+                    GoodsType = feeDataItem.GoodsType,
+                    EntryType = LogisticsFeeResultEntryType.Single
+                });
+            } else {
+                throw new ValidationException("计费不支持的物流方式类型，无法计费！");
+            }
+        } else {
+            // 这种情况是分箱计算
+
+            int boxNum = 0;
+            feePackList = feePackList.OrderBy(e => e.PackId).ToList(); // 让箱号推断正确
+            foreach (var feePack in feePackList) {
+                for (int boxIndx = 0; boxIndx < feePack.PackageCount; boxIndx++) {
+                    boxNum = boxNum + 1;
+
+                    // 跨国快递
+                    if (logisticsModeType == LogisticsModeType.Express) {
+                        decimal initFeeForPackBox = logisticsFeeExpressService.GetFee(feePack.Weight, logisticsModeId, feeMessageType);
+                        initialTotalFee = initialTotalFee + initFeeForPackBox;
+
+                        resultEntryList.Add(new LogisticsFeeResultEntry {
+                            OrderFirstMode = feeDataItem.OrderFirstMode,
+                            LogisticsMode = feeDataItem.LogisticsMode,
+                            Title = LogisticsOrderFeeType.InitFee.Name + $"箱号{boxNum}",
+                            FeeType = LogisticsOrderFeeType.InitFee,
+                            Fee = initFeeForPackBox,
+                            GoodsType = feeDataItem.GoodsType,
+                            EntryType = LogisticsFeeResultEntryType.Single
+                        });
+                    } else {
+                        throw new ValidationException("计费不支持的物流方式类型，无法计费！");
+                    }
+                }
+            }
+        }
 
         feeCalculateLogService.AddLog($"{LogisticsOrderFeeType.InitFee.Name}: {initialTotalFee}");
         feeCalculateLogService.AddLog("计算初步费用 结束");
@@ -1223,6 +1256,10 @@ public class LogisticsFeeService {
         return 0m;
     }
 
+    /*
+     
+     这个费用不用计算了
+
     /// <summary>
     /// 计算总重量超重费用
     /// </summary>
@@ -1301,6 +1338,8 @@ public class LogisticsFeeService {
         // 如果没有重量限制就没有超重费用
         return 0m;
     }
+    
+    */
 
     /// <summary>
     /// 计算额外包裹数量费用
