@@ -36,6 +36,7 @@
                                         <option value="@(false.ToString())">否</option>
                                     </select>
                                 </div>
+                                <div class="help-block">同一时间只有一个弹窗是可以弹出的</div>
                             </div>
                         </div>
 
@@ -45,9 +46,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label for="popupContent" class="col-xs-2 control-label">内容</label>
+                                <label for="content" class="col-xs-2 control-label">内容</label>
                                 <div class="col-xs-10">
-                                    <input id="popupContent" asp-for="Content" type="text" required="required" maxlength="1000" class="input-sm form-control" autocomplete="off"/>
+                                    <textarea id="content" asp-for="Content" type="text" required="required" maxlength="1000" class="input-sm form-control" autocomplete="off"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -63,6 +64,9 @@
 <script type="text/javascript">
 
     function saveClientPopup() {
+        var content = CKEDITOR.instances.content.getData();
+        $("#content").val(content);        
+        
         var form = $("#clientPopupDetailForm");
         var valid = validate(form);
 
@@ -97,4 +101,21 @@
         window.location.href = url;
     }
 
+</script>
+
+<script type="text/javascript">
+    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
+        CKEDITOR.tools.enableHtml5Elements(document);
+    }
+
+    CKEDITOR.config.height = 520;
+    CKEDITOR.config.width = 'auto';
+
+    var initCkEditor = (function () {
+        return function () {
+            CKEDITOR.replace('content');
+        };
+    })();
+
+    initCkEditor();
 </script>

@@ -5,8 +5,6 @@
 @using shunda.Domain.Client
 @model shunda.Admin.Areas.Setting.Models.ClientPopup.ClientPopupListModel
 
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientPopupList" }))
-
 <table id="tblClientPopupList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
@@ -19,7 +17,7 @@
 
             <th style="width: 80px; text-align: center;">
                 <div>
-                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.ShouldPopup))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">是否弹窗</a>
+                    <span>是否弹窗</span>
                 </div>
             </th>
 
@@ -31,13 +29,13 @@
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">创建时间</a>
+                    <span>创建时间</span>
                 </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
                 <div>
-                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.EditTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">编辑时间</a>
+                    <span>编辑时间</span>
                 </div>
             </th>
 
@@ -46,7 +44,7 @@
     </thead>
     <tbody>
         @if (Model.ClientPopupList.Count != 0) {
-            int index = 0;
+            int orderNum = 0;
             foreach (ClientPopupInfo clientPopup in Model.ClientPopupList) {
                 <tr ondblclick="showClientPopupDetail(@(clientPopup.Id));">
                     <td style="text-align: center;">
@@ -54,7 +52,7 @@
                             <label for="clientPopupCheck_@(clientPopup.Id)"></label><input id="clientPopupCheck_@(clientPopup.Id)" type="checkbox" class="ace" value="@clientPopup.Id"/><span class="lbl"></span>
                         </div>
                     </td>
-                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+                    <td style="text-align: center;">@(orderNum++)</td>
 
                     <td style="text-align: center;">
                         @if (clientPopup.ShouldPopup) {
@@ -97,5 +95,3 @@
         }
     </tbody>
 </table>
-
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientPopupList" }))

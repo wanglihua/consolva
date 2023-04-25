@@ -38,25 +38,10 @@ public class ClientPopupController : Controller {
     [HttpPost]
     [Route("/admin/setting/client/popup/list")]
     public IActionResult List(ClientPopupListQueryParam queryParam) {
-        int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<ClientPopupInfo>(e => clientPopupAlias!.Id))
-            .Select(Projections.RowCount())
-            .SingleOrDefault<int>();
-
-        ListPager listPager = new ListPager(queryParam, totalCount);
-
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending) {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        } else {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
-
-        listQuery = listQuery.ThenByAlias(() => clientPopupAlias!.Id).Desc;
+        listQuery = listQuery.ThenByAlias(() => clientPopupAlias!.ShouldPopup).Desc;
 
         IList<ClientPopupInfo> clientPopupList = listQuery
-            .Skip(listPager.Skip())
-            .Take(listPager.Take())
             .List<ClientPopupInfo>();
 
         /*
@@ -64,7 +49,7 @@ public class ClientPopupController : Controller {
         }
         */
 
-        ClientPopupListModel model = new ClientPopupListModel(listPager);
+        ClientPopupListModel model = new ClientPopupListModel();
         model.ClientPopupList = clientPopupList;
         model.ClientPopupAlias = nameof(clientPopupAlias);
 
@@ -124,7 +109,19 @@ public class ClientPopupController : Controller {
             }
         }
 
-        clientPopup.ShouldPopup = model.ShouldPopup ?? false;
+        bool shouldPopup = model.ShouldPopup ?? false;
+        if (shouldPopup) {
+            // 如果当前这个是要弹出的，就把别的都改成不弹出
+            var clientPopupList = session.Query<ClientPopupInfo>().ToList();
+            foreach (var cp in clientPopupList) {
+                cp.ShouldPopup = false;
+                session.Update(cp);
+            }
+
+            session.Flush();
+        }
+
+        clientPopup.ShouldPopup = shouldPopup;
 
         if (clientPopup.Content != model.Content) {
             clientPopup.Content = model.Content;
