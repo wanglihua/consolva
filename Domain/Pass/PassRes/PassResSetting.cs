@@ -14,7 +14,8 @@ public partial class PassRes {
             new PassResInfo { Id = ClientAgreement, Name = "客户端协议", Cate = Cate },
             new PassResInfo { Id = ClientInstruction, Name = "客户端文本菜单", Cate = Cate },
             new PassResInfo { Id = AutoMeasureMachine, Name = "自动秤设备", Cate = Cate },
-            new PassResInfo { Id = AdvertBanner, Name = "广告横幅", Cate = Cate },
+            new PassResInfo { Id = AdvertBanner, Name = "客户端广告横幅", Cate = Cate },
+            new PassResInfo { Id = ClientPopup, Name = "客户端弹窗", Cate = Cate },
         };
 
         /// <summary>
@@ -48,8 +49,13 @@ public partial class PassRes {
         public const int AutoMeasureMachine = CateId + 1000;
 
         /// <summary>
-        /// 广告横幅
+        /// 客户端广告横幅
         /// </summary>
         public const int AdvertBanner = CateId + 1200;
+
+        /// <summary>
+        /// 客户端弹窗
+        /// </summary>
+        public const int ClientPopup = CateId + 1400;
     }
 }

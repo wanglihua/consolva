@@ -1,0 +1,102 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Client
+@model shunda.Admin.Areas.Setting.Models.ClientPopup.ClientPopupListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientPopupList" }))
+
+<table id="tblClientPopupList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="clientPopupCheckAll"></label><input id="clientPopupCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.ShouldPopup))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">是否弹窗</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.Content))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">内容</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.EditTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">编辑时间</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ClientPopupList.Count != 0) {
+            int index = 0;
+            foreach (ClientPopupInfo clientPopup in Model.ClientPopupList) {
+                <tr ondblclick="showClientPopupDetail(@(clientPopup.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="clientPopupCheck_@(clientPopup.Id)"></label><input id="clientPopupCheck_@(clientPopup.Id)" type="checkbox" class="ace" value="@clientPopup.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(clientPopup.ShouldPopup)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(clientPopup.Content)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(clientPopup.EditTime)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @clientPopup.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @clientPopup.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadClientPopupList" }))
