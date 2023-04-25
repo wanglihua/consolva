@@ -9,6 +9,5 @@ public class ClientPopupSaveModelValidator : AbstractValidator<ClientPopupSaveMo
 
         RuleFor(e => e.Content).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("内容不能为空！");
         RuleFor(e => e.Content).MaximumLength(1000).WithMessage("内容长度不能大于1000！");
-
     }
 }
