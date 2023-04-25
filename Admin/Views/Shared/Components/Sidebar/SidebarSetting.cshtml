@@ -14,6 +14,16 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
+            @if (Model.HasPassRes(PassRes.Setting.ClientPopup)) {
+                <li id="settings-client-popup-menu">
+                    <a asp-area="Setting" asp-controller="ClientPopup" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        客户端弹窗
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
             @if (Model.HasPassRes(PassRes.Setting.ClientNotice)) {
                 <li id="settings-client-notice-menu">
                     <a asp-area="Setting" asp-controller="ClientNotice" asp-action="Index">
