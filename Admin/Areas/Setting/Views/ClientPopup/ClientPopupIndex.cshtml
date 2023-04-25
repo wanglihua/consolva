@@ -8,29 +8,6 @@
     Layout = "_AdminLayout";
 }
 
-@*
-
-        <li id="settings-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">系统设置</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="settings-client-popup-menu">
-                    <a asp-area="Setting" asp-controller="ClientPopup" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>客户端弹窗
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
-
 @section Breadcrumb {
     <li class="parent" data-menu="settings-menu">系统设置</li>
     <li class="active" data-menu="settings-client-popup-menu">@(ViewData[ViewDataKey.Title])</li>
@@ -48,13 +25,6 @@
     <button type="button" class="btn btn-danger btn-sm" onclick="deleteClientPopup()">
         <i class="ace-icon fa fa-trash-o"></i>
         删除
-    </button>
-</div>
-
-<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-
-    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadClientPopupList(0)">
-        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
     </button>
 </div>
 
@@ -114,51 +84,9 @@
     }
 
     function showClientPopupDetail(id) {
-        $("#clientPopupDetailDialogWrapper").html("");
-
-        showMask("加载中...");
-        // $("#clientPopupDetailForm").clearValidation();
-
-        $.ajax({
-            url: '@Url.Action("Detail", "ClientPopup")',
-            type: "POST",
-            data: { "id": id },
-            success: function(data) {
-                hideMask();
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $("#clientPopupDetailDialogWrapper").html(data);
-                $("#clientPopupDetailDialog").modal(modalOptions);
-            }
-        });
-    }
-
-    function saveClientPopup() {
-        var form = $("#clientPopupDetailForm");
-        var valid = validate(form);
-
-        if (valid) {
-            showMask("提交中...");
-            $.ajax({
-                url: '@Url.Action("Save", "ClientPopup")',
-                type: "POST",
-                data: form.serialize(),
-                success: function(data) {
-                    hideMask();
-                    if (data.success === false) {
-                        $.msg.error(data.message);
-                        return;
-                    }
-
-                    $.msg.show(data.message);
-                    $('#clientPopupDetailDialog').modal('hide');
-                    loadClientPopupList();
-                }
-            });
-        }
+        var url = "@Url.Action("Detail", "ClientPopup", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
     }
 
     function deleteClientPopup() {

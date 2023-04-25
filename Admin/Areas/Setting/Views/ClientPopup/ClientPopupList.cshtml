@@ -12,20 +12,26 @@
         <tr>
             <th style="width: 40px; text-align: center;">
                 <div>
-                    <label for="clientPopupCheckAll"></label><input id="clientPopupCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                    <label for="clientPopupCheckAll"></label><input id="clientPopupCheckAll" type="checkbox" class="ace checkall"/><span class="lbl"></span>
                 </div>
             </th>
             <th style="width: 50px; text-align: center;">序号</th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 80px; text-align: center;">
                 <div>
                     <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.ShouldPopup))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">是否弹窗</a>
                 </div>
             </th>
 
-            <th style="width: 100px; text-align: center;">
+            <th style="width: 380px; text-align: center;">
                 <div>
-                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.Content))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">内容</a>
+                    <span>内容</span>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">创建时间</a>
                 </div>
             </th>
 
@@ -35,16 +41,6 @@
                 </div>
             </th>
 
-            <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">创建时间</a>
-                </div>
-            </th>
-            <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(Model.ClientPopupAlias).@(nameof(ClientPopupInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortClientPopupList">修改时间</a>
-                </div>
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -55,24 +51,26 @@
                 <tr ondblclick="showClientPopupDetail(@(clientPopup.Id));">
                     <td style="text-align: center;">
                         <div>
-                            <label for="clientPopupCheck_@(clientPopup.Id)"></label><input id="clientPopupCheck_@(clientPopup.Id)" type="checkbox" class="ace" value="@clientPopup.Id" /><span class="lbl"></span>
+                            <label for="clientPopupCheck_@(clientPopup.Id)"></label><input id="clientPopupCheck_@(clientPopup.Id)" type="checkbox" class="ace" value="@clientPopup.Id"/><span class="lbl"></span>
                         </div>
                     </td>
                     <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
 
                     <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(clientPopup.ShouldPopup)
-                        </div>
+                        @if (clientPopup.ShouldPopup) {
+                            <div style="color: blue;">
+                                @ListDataUtil.Render(clientPopup.ShouldPopup)
+                            </div>
+                        } else {
+                            <div>
+                                @ListDataUtil.Render(clientPopup.ShouldPopup)
+                            </div>
+                        }
                     </td>
-                    <td style="text-align: center;">
+
+                    <td style="text-align: center;" class="break-word">
                         <div>
-                            @ListDataUtil.Render(clientPopup.Content)
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(clientPopup.EditTime)
+                            @Html.Raw(clientPopup.Content)
                         </div>
                     </td>
 
@@ -81,9 +79,10 @@
                             @clientPopup.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
+
                     <td style="text-align: center;">
                         <div>
-                            @clientPopup.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                            @ListDataUtil.Render(clientPopup.EditTime)
                         </div>
                     </td>
                     <td></td>

@@ -1,16 +1,26 @@
-@using shunda.Domain
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using shunda.Core.Web
 @model shunda.Admin.Areas.Setting.Models.ClientPopup.ClientPopupDetailModel
 @{
-    Layout = null;
+    ViewData[ViewDataKey.Title] = "客户端弹窗详细";
+    Layout = "_AdminLayout";
 }
-<div class="modal fade" id="clientPopupDetailDialog">
-    <div class="modal-dialog" style="width: 640px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
-                <h4 class="modal-title">客户端弹窗详细</h4>
-            </div>
-            <div class="modal-body clearfix">
+
+<div class="gridToolBar clearfix">
+    <button class="btn btn-success btn-sm" onclick="saveClientPopup();">
+        <i class="ace-icon fa fa-floppy-o"></i>
+        保存
+    </button>
+    <a type="button" class="btn btn-info btn-sm" href="@Url.Action("Index", "ClientPopup")">
+        <i class="ace-icon fa fa-arrow-left"></i>
+        返回
+    </a>
+</div>
+
+<div>
+    <div class="widget-box" style="border-style: none; width: 980px;">
+        <div class="widget-body">
+            <div class="widget-main">
                 <form id="clientPopupDetailForm" class="form-horizontal" role="form">
                     <input asp-for="ClientPopupId" type="hidden"/>
 
@@ -20,6 +30,11 @@
                             <div class="form-group">
                                 <label asp-for="ShouldPopup" class="col-xs-2 control-label">是否弹窗</label>
                                 <div class="col-xs-10">
+                                    <select asp-for="ShouldPopup" required="required" class="input-sm form-control">
+                                        <option value="">请选择是否弹窗</option>
+                                        <option value="@(true.ToString())">是</option>
+                                        <option value="@(false.ToString())">否</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -30,21 +45,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="Content" class="col-xs-2 control-label">内容</label>
+                                <label for="popupContent" class="col-xs-2 control-label">内容</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="Content" type="text" required="required" maxlength="1000" class="input-sm form-control" autocomplete="off"/>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-xs-12">
-                            <div class="form-group">
-                                <label asp-for="EditTime" class="col-xs-2 control-label">编辑时间</label>
-                                <div class="col-xs-10">
+                                    <input id="popupContent" asp-for="Content" type="text" required="required" maxlength="1000" class="input-sm form-control" autocomplete="off"/>
                                 </div>
                             </div>
                         </div>
@@ -53,16 +56,45 @@
 
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-sm" onclick="saveClientPopup();">
-                    <i class="ace-icon fa fa-floppy-o"></i>
-                    保存
-                </button>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
-                    <i class="ace-icon fa fa-times"></i>
-                    关闭
-                </button>
-            </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+
+    function saveClientPopup() {
+        var form = $("#clientPopupDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ClientPopup")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        hideMask();
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    
+                    if (data.data.create) {
+                        setTimeout("showClientPopupDetail(" + data.data.id + ")", 1000);
+                    }
+                    
+                    hideMask();
+                }
+            });
+        }
+    }
+    
+    function showClientPopupDetail(id) {
+        var url = "@Url.Action("Detail", "ClientPopup", new { id = 88888 })";
+        url = url.replace("88888", id);
+        window.location.href = url;
+    }
+
+</script>

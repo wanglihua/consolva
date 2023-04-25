@@ -32,8 +32,6 @@ public class ClientPopupController : Controller {
     [Route("/admin/setting/client/popup")]
     public IActionResult Index() {
         ClientPopupIndexModel model = new ClientPopupIndexModel();
-
-
         return View("ClientPopupIndex", model);
     }
 
@@ -55,7 +53,7 @@ public class ClientPopupController : Controller {
         }
 
         listQuery = listQuery.ThenByAlias(() => clientPopupAlias!.Id).Desc;
-            
+
         IList<ClientPopupInfo> clientPopupList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
@@ -68,8 +66,7 @@ public class ClientPopupController : Controller {
 
         ClientPopupListModel model = new ClientPopupListModel(listPager);
         model.ClientPopupList = clientPopupList;
-        
-        model.ClientPopupAlias = nameof(clientPopupAlias);        
+        model.ClientPopupAlias = nameof(clientPopupAlias);
 
         return View("ClientPopupList", model);
     }
@@ -83,11 +80,9 @@ public class ClientPopupController : Controller {
         return query;
     }
 
-    [HttpPost]
-    [Route("/admin/setting/client/popup/detail")]
-    public IActionResult Detail(IdParam param) {
-        var id = param.Id;
-
+    [HttpGet]
+    [Route("/admin/setting/client/popup/detail/{id:int}")]
+    public IActionResult Detail(int id) {
         ClientPopupInfo? clientPopup;
 
         if (id <= 0) {
@@ -99,13 +94,11 @@ public class ClientPopupController : Controller {
             }
         }
 
-        ClientPopupDetailModel model = new ClientPopupDetailModel();
-        model.ClientPopupId = clientPopup.Id;
-
-        model.ShouldPopup = clientPopup.ShouldPopup;
-        model.Content = clientPopup.Content;
-        model.EditTime = clientPopup.EditTime;
-
+        ClientPopupDetailModel model = new ClientPopupDetailModel {
+            ClientPopupId = clientPopup.Id,
+            ShouldPopup = clientPopup.ShouldPopup,
+            Content = clientPopup.Content
+        };
 
         return View("ClientPopupDetail", model);
     }
@@ -126,14 +119,17 @@ public class ClientPopupController : Controller {
             clientPopup = new ClientPopupInfo();
         } else {
             clientPopup = session.Get<ClientPopupInfo>(clientPopupId);
-            if (clientPopup == null){
+            if (clientPopup == null) {
                 throw new ValidationException($"指定的 客户端弹窗#{clientPopupId} 不存在！");
             }
         }
 
-        clientPopup.ShouldPopup = model.ShouldPopup;
-        clientPopup.Content = model.Content;
-        clientPopup.EditTime = model.EditTime;
+        clientPopup.ShouldPopup = model.ShouldPopup ?? false;
+
+        if (clientPopup.Content != model.Content) {
+            clientPopup.Content = model.Content;
+            clientPopup.EditTime = DateTime.Now;
+        }
 
         if (isCreate) {
             session.Save(clientPopup);
@@ -146,6 +142,10 @@ public class ClientPopupController : Controller {
         return Json(new JsonResultData {
             Success = true,
             Message = "保存成功！",
+            Data = new {
+                create = isCreate,
+                id = clientPopup.Id,
+            }
         });
     }
 
