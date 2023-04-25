@@ -14,7 +14,7 @@ using ISession = NHibernate.ISession;
 namespace shunda.Admin.Areas.Setting.Controllers;
 
 /// <summary>
-/// 广告横幅 控制器
+/// 客户端广告横幅 控制器
 /// </summary>
 [SettingArea]
 [AdminAuth(PassRes.Setting.AdvertBanner)]
