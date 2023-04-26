@@ -123,7 +123,15 @@ public class LogisticsFeeService {
             if (feeMessageType == FeeMessageType.Customer) {
                 throw new LogisticsFeeException("物流方式不支持！SD0243");
             } else {
-                throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率体积重考虑最长边时，体积重最长边起始应该大于0！");
+                throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率体积重考虑最长边起始时，体积重最长边起始应该大于0！");
+            }
+        }
+
+        if (feeRate.VolumeWeightCareSideSumBegin && feeRate.VolumeWeightSideSumBegin <= 0) {
+            if (feeMessageType == FeeMessageType.Customer) {
+                throw new LogisticsFeeException("物流方式不支持！SD0244");
+            } else {
+                throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率体积重考虑三边之和起始时，体积重三边之和起始应该大于0！");
             }
         }
 
@@ -425,6 +433,13 @@ public class LogisticsFeeService {
                     finalCareVolumeWeight = false;
                 }
             }
+
+            if (feeRate.VolumeWeightCareSideSumBegin) {
+                // 体积重三边之和起始，低于这个长度，不考虑体积重；大于这个长度，考虑体积重
+                if (maxSideLength <= feeRate.VolumeWeightSideSumBegin) {
+                    finalCareVolumeWeight = false;
+                }
+            }
         }
 
         decimal finalVolume = GetAllPackTotalVolume(packList, feeRate);
@@ -615,6 +630,13 @@ public class LogisticsFeeService {
             if (feeRate.VolumeWeightCareMaxSideLength) {
                 // 体积重最长边起始，低于这个长度，不考虑体积重；大于这个长度，考虑体积重
                 if (maxSideLength <= feeRate.VolumeWeightMaxSideLengthBegin) {
+                    finalCareVolumeWeight = false;
+                }
+            }
+
+            if (feeRate.VolumeWeightCareSideSumBegin) {
+                // 体积重三边之和起始，低于这个长度，不考虑体积重；大于这个长度，考虑体积重
+                if (maxSideLength <= feeRate.VolumeWeightSideSumBegin) {
                     finalCareVolumeWeight = false;
                 }
             }
