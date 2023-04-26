@@ -164,6 +164,29 @@ public class HomeController : Controller {
 
         var homeData = clientHomeDataService.GetCustomerClientHomeData(loginCustomerId);
 
+/*
+        string homeNote = @"
+<div style='font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #545556;'>亲爱的舜达全球集运用户</div>
+<div style='font-size: 14px; line-height: 22px; color: #545556;'>
+    <div>
+        五一劳动节假期安排：
+    </div>
+    <div>
+        4.26号停止发货
+    </div>
+    <div>
+        5.4号恢复发货
+    </div>
+    <div>
+        假期期间正常收货
+    </div>
+    <div>
+        悉尼海运，已开启，可联系客服咨询价格。
+    </div>
+</div>
+";
+*/
+
         string homeNote = @"
 <div style='font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #545556;'>亲爱的舜达全球集运用户</div>
 <div style='font-size: 14px; line-height: 22px; color: #545556;'>
