@@ -271,57 +271,103 @@ public class LogisticsOrderExcelService {
                         int orderFirstModeId = ofm.Id;
                         var modePackList = thisOrderPackList.Where(e => e.OrderFirstMode.Id == orderFirstModeId).ToList();
 
-                        var modePackIdList = modePackList.Select(e => e.Id).ToList();
-                        var modeExpressIdList = thisOrderPackExpressList
-                            .Where(e => modePackIdList.Contains(e.OrderPack.Id))
-                            .Select(e => e.Express.Id)
-                            .ToList();
-                        var modeExpressGoodsList = expressGoodsList.Where(e => modeExpressIdList.Contains(e.Express.Id)).ToList();
 
                         double orderAmount = 0d;
                         if (first == true) {
                             orderAmount = (double)order.OrderAmount;
                         }
 
-                        int totalPackageCount = 0;
-                        decimal totalVolume = 0m;
-                        decimal totalActualWeight = 0m;
-                        decimal maxSideLength = 0m;
+                        // 物流方式汇总计算的，按汇总的导出
+                        if (ofm.FirstMode.FeeType == LogisticsModeFeeType.Summary) {
+                            int totalPackageCount = 0;
+                            decimal totalVolume = 0m;
+                            decimal totalActualWeight = 0m;
+                            decimal maxSideLength = 0m;
 
-                        foreach (var p in modePackList) {
-                            totalPackageCount += p.PackageCount;
-                            totalVolume += p.Length * p.Width * p.Height * p.PackageCount;
-                            totalActualWeight += p.Weight;
+                            foreach (var p in modePackList) {
+                                totalPackageCount += p.PackageCount;
+                                totalVolume += p.Length * p.Width * p.Height * p.PackageCount;
+                                totalActualWeight += p.Weight;
 
-                            maxSideLength = Math.Max(maxSideLength, Math.Max(p.Length, Math.Max(p.Width, p.Height)));
+                                maxSideLength = Math.Max(maxSideLength, Math.Max(p.Length, Math.Max(p.Width, p.Height)));
+                            }
+
+                            decimal totalVolumeWeight = totalVolume / volumeWeightDenominator;
+
+                            var modePackIdList = modePackList.Select(e => e.Id).ToList();
+                            var modeExpressIdList = thisOrderPackExpressList
+                                .Where(e => modePackIdList.Contains(e.OrderPack.Id))
+                                .Select(e => e.Express.Id)
+                                .ToList();
+                            var modeExpressGoodsList = expressGoodsList.Where(e => modeExpressIdList.Contains(e.Express.Id)).ToList();
+
+                            LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
+                                OrderCode = order.Code,
+                                CustomerCode = order.CustomerCode,
+                                GoodsTypeName = order.GoodsType.Name,
+                                CountryName = order.Country.Name,
+                                FirstModeName = ofm.FirstMode.Name,
+
+                                OrderAmount = orderAmount,
+                                TotalVolumeWeight = (double)totalVolumeWeight,
+                                TotalActualWeight = (double)totalActualWeight,
+                                TotalPackageCount = (double)totalPackageCount,
+                                MaxSideLength = (double)maxSideLength,
+                                GoodsNames = string.Join(",", modeExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()),
+
+                                Address = address,
+                                Consignee = consignee,
+                                Mobile = orderReceiveAddress.Mobile,
+                                Company = orderReceiveAddress.Company,
+                            };
+
+                            lineList.Add(line);
+
+                            if (first == true) {
+                                first = false;
+                            }
                         }
 
-                        decimal totalVolumeWeight = totalVolume / volumeWeightDenominator;
+                        // 物流费用按箱号分立计算的，按箱号导出
+                        if (ofm.FirstMode.FeeType == LogisticsModeFeeType.SinglePackBox) {
+                            // 按订单打包循环
+                            foreach (var pack in modePackList) {
+                                int packId = pack.Id;
+                                var packExpressIdList = thisOrderPackExpressList
+                                    .Where(e => e.OrderPack.Id == packId)
+                                    .Select(e => e.Express.Id)
+                                    .ToList();
+                                var packExpressGoodsList = expressGoodsList.Where(e => packExpressIdList.Contains(e.Express.Id)).ToList();
 
-                        LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
-                            OrderCode = order.Code,
-                            CustomerCode = order.CustomerCode,
-                            GoodsTypeName = order.GoodsType.Name,
-                            CountryName = order.Country.Name,
-                            FirstModeName = ofm.FirstMode.Name,
+                                // 按箱号循环
+                                for (int boxIndex = 0; boxIndex < pack.PackageCount; boxIndex++) {
+                                    LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
+                                        OrderCode = order.Code,
+                                        CustomerCode = order.CustomerCode,
+                                        GoodsTypeName = order.GoodsType.Name,
+                                        CountryName = order.Country.Name,
+                                        FirstModeName = ofm.FirstMode.Name,
 
-                            OrderAmount = orderAmount,
-                            TotalVolumeWeight = (double)totalVolumeWeight,
-                            TotalActualWeight = (double)totalActualWeight,
-                            TotalPackageCount = (double)totalPackageCount,
-                            MaxSideLength = (double)maxSideLength,
-                            GoodsNames = string.Join(",", modeExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()),
+                                        OrderAmount = orderAmount,
+                                        TotalVolumeWeight = (double)((pack.Width * pack.Length * pack.Height) / volumeWeightDenominator),
+                                        TotalActualWeight = (double)pack.Weight,
+                                        TotalPackageCount = 1d, // 按箱号导出，每次就只有一箱了
+                                        MaxSideLength = (double)Math.Max(Math.Max(pack.Width, pack.Length), pack.Height),
+                                        GoodsNames = string.Join(",", packExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()),
 
-                            Address = address,
-                            Consignee = consignee,
-                            Mobile = orderReceiveAddress.Mobile,
-                            Company = orderReceiveAddress.Company,
-                        };
+                                        Address = address,
+                                        Consignee = consignee,
+                                        Mobile = orderReceiveAddress.Mobile,
+                                        Company = orderReceiveAddress.Company,
+                                    };
 
-                        lineList.Add(line);
+                                    lineList.Add(line);
 
-                        if (first == true) {
-                            first = false;
+                                    if (first == true) {
+                                        first = false;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
