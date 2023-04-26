@@ -323,6 +323,16 @@ public class LogisticsFeeRateInfo : Entity {
     public virtual decimal? VolumeWeightMaxSideLengthBegin { get; set; }
 
     /// <summary>
+    /// 体积重考虑三边之和起始
+    /// </summary>
+    public virtual bool VolumeWeightCareSideSumBegin { get; set; }
+
+    /// <summary>
+    /// 体积重三边之和起始
+    /// </summary>
+    public virtual decimal? VolumeWeightSideSumBegin { get; set; }
+
+    /// <summary>
     /// 是否启用实际货值与体积货值最大值计算
     /// </summary>
     public virtual bool CareGoodsVolumePrice { get; set; }

@@ -133,7 +133,11 @@ public class LogisticsFeeRateController : Controller {
 
             if (logisticsFeeRateFromUi.VolumeWeightCareMaxSideLength
                 && (logisticsFeeRateFromUi.VolumeWeightMaxSideLengthBegin.HasValue == false || logisticsFeeRateFromUi.VolumeWeightMaxSideLengthBegin.Value <= 0))
-                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeWeightMaxSideLengthBegin), "体积重考虑最长边，但体积重最长边起始 未设置 或 为0！");
+                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeWeightMaxSideLengthBegin), "体积重考虑最长边起始，但体积重最长边起始 未设置 或 为0！");
+
+            if (logisticsFeeRateFromUi.VolumeWeightCareSideSumBegin
+                && (logisticsFeeRateFromUi.VolumeWeightSideSumBegin.HasValue == false || logisticsFeeRateFromUi.VolumeWeightSideSumBegin.Value <= 0))
+                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeWeightMaxSideLengthBegin), "体积重考虑三边之和起始，但体积重三边之和起始 未设置 或 为0！");
 
             if (logisticsFeeRateFromUi.CareGoodsVolumePrice
                 && (logisticsFeeRateFromUi.GoodsVolumePrice == null || logisticsFeeRateFromUi.GoodsVolumePrice.Value <= 0))
@@ -258,6 +262,8 @@ public class LogisticsFeeRateController : Controller {
         logisticsFeeRate.MinVolumeActualWeightRatio = logisticsFeeRateFromUi.MinVolumeActualWeightRatio;
         logisticsFeeRate.VolumeWeightCareMaxSideLength = logisticsFeeRateFromUi.VolumeWeightCareMaxSideLength;
         logisticsFeeRate.VolumeWeightMaxSideLengthBegin = logisticsFeeRateFromUi.VolumeWeightMaxSideLengthBegin;
+        logisticsFeeRate.VolumeWeightCareSideSumBegin = logisticsFeeRateFromUi.VolumeWeightCareSideSumBegin;
+        logisticsFeeRate.VolumeWeightSideSumBegin = logisticsFeeRateFromUi.VolumeWeightSideSumBegin;
 
         logisticsFeeRate.CustomerLengthDiscount = logisticsFeeRateFromUi.CustomerLengthDiscount;
         logisticsFeeRate.CustomerWidthDiscount = logisticsFeeRateFromUi.CustomerWidthDiscount;

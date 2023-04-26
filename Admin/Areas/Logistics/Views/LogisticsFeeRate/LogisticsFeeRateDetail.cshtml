@@ -50,7 +50,7 @@
 </div>
 
 <div>
-    <div class="widget-box" style="border-style: none; width: 860px;">
+    <div class="widget-box" style="border-style: none; width: 1024px;">
         <div class="widget-body">
             <div class="widget-main">
                 <form id="logisticsFeeRateDetailForm" class="form-horizontal" role="form">
@@ -156,7 +156,7 @@
 
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label asp-for="LogisticsFeeRate.VolumeWeightCareMaxSideLength" class="col-xs-4 control-label">体积重考虑最长边</label>
+                                            <label asp-for="LogisticsFeeRate.VolumeWeightCareMaxSideLength" class="col-xs-4 control-label">体积重考虑最长边起始</label>
                                             <div class="col-xs-8">
                                                 <select asp-for="LogisticsFeeRate.VolumeWeightCareMaxSideLength" class="input-sm form-control">
                                                     <option value="@(false.ToString())">否，不考虑</option>
@@ -175,18 +175,48 @@
                                                     <input asp-for="LogisticsFeeRate.VolumeWeightMaxSideLengthBegin" type="number" class="input-sm form-control"/>
                                                     <span class="input-group-addon">cm</span>
                                                 </div>
-                                                <div class="help-block">大于这个长度，考虑体积重。考虑体积重启用，体积重考虑最长边，这个设置才会起作用。</div>
+                                                <div class="help-block">大于这个长度，考虑体积重。考虑体积重启用，体积重考虑最长边起始，这个设置才会起作用。</div>
                                             </div>
                                         </div>
                                     </div>
 
                                 </div>
+                                
+                                <div class="row">
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.VolumeWeightCareSideSumBegin" class="col-xs-4 control-label">体积重考虑三边之和起始</label>
+                                            <div class="col-xs-8">
+                                                <select asp-for="LogisticsFeeRate.VolumeWeightCareSideSumBegin" class="input-sm form-control">
+                                                    <option value="@(false.ToString())">否，不考虑</option>
+                                                    <option value="@(true.ToString())">是，考虑</option>
+                                                </select>
+                                                <div class="help-block">考虑体积重启用后，这个配置才会起作用。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label asp-for="LogisticsFeeRate.VolumeWeightSideSumBegin" class="col-xs-4 control-label">体积重三边之和起始</label>
+                                            <div class="col-xs-8">
+                                                <div class="input-group">
+                                                    <input asp-for="LogisticsFeeRate.VolumeWeightSideSumBegin" type="number" class="input-sm form-control"/>
+                                                    <span class="input-group-addon">cm</span>
+                                                </div>
+                                                <div class="help-block">大于这个长度，考虑体积重。考虑体积重启用，体积重考虑三边之和起始，这个设置才会起作用。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>                                
 
                                 <div class="row">
 
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label asp-for="LogisticsFeeRate.CareSideSum" class="col-xs-4 control-label">考虑三边之和</label>
+                                            <label asp-for="LogisticsFeeRate.CareSideSum" class="col-xs-4 control-label">体积重算法考虑三边之和</label>
                                             <div class="col-xs-8">
                                                 <select asp-for="LogisticsFeeRate.CareSideSum" required="required" class="input-sm form-control">
                                                     <option value="@(false.ToString())">否，不考虑</option>

@@ -518,6 +518,24 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
         );
 
         Property(
+            x => x.VolumeWeightCareSideSumBegin,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("volume_weight_care_side_sum_begin");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.VolumeWeightSideSumBegin,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("volume_weight_side_sum_begin");
+                map.NotNullable(false);
+            }
+        );        
+
+        Property(
             x => x.CareGoodsVolumePrice,
             map => {
                 map.Type(NHibernateUtil.Boolean);
