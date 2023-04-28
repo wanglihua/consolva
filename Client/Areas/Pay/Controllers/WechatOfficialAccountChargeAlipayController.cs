@@ -131,6 +131,13 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
             callbackDataDict.Add(item, Request.Form[item]);
         }
 
+        // "trade_status": "TRADE_SUCCESS"
+        // "trade_status": "TRADE_FINISHED"
+        string tradeStatus = callbackDataDict["trade_status"];
+        if (tradeStatus != "TRADE_SUCCESS" && tradeStatus != "TRADE_FINISHED") {
+            return Content("success");
+        }
+
         try {
             Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); }); // 数据库事务
             return Content("success");

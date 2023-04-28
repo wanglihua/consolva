@@ -1,4 +1,5 @@
 using NHibernate;
+using NLog;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
@@ -8,6 +9,8 @@ namespace shunda.Service.Customer;
 
 [Service(ServiceType.Scoped)]
 public class CustomerChargeService {
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
     private readonly ISession session;
     private readonly ExchangeRateService exchangeRateService;
     private readonly CustomerAccountService customerAccountService;
@@ -30,6 +33,11 @@ public class CustomerChargeService {
     public void CompleteCharge(CustomerChargeInfo customerCharge, decimal amount, CustomerChargeType chargeType) {
         if (customerCharge == null) {
             throw new ValidationException("指定的充值记录为空！");
+        }
+
+        if (customerCharge.Status == CustomerChargeStatus.Complete) {
+            log.Error($"会员充值#{customerCharge.Id}之前已完成！");
+            return;
         }
 
         string chargeDescription = "";
