@@ -205,8 +205,8 @@ public class HomeController : Controller {
     <div>
         悉尼海运，已开启，可联系客服咨询价格。
     </div>
-    <div style='color: #FF00FB;'>
-        5月份最新优惠价格已上线，可查阅【运费说明】
+    <div style='color: #FF0000; font-weight:bold;'>
+        *5月份最新优惠价格已上线，可查阅【运费说明】*
     </div>
 </div>
 ";
