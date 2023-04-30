@@ -61,8 +61,6 @@ public class CurrencyType : StringCodeTypeBase {
     /// </summary>
     public static readonly CurrencyType MYR = new CurrencyType("MYR", "林吉特", "马来西亚林吉特");
 
-    // MYR
-
     /// <summary>
     /// None
     /// </summary>
