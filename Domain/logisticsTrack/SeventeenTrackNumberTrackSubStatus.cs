@@ -296,7 +296,7 @@ public class SeventeenTrackNumberTrackSubStatus : StringCodeTypeBase {
             return None;
         }
 
-        code = code.ToUpper();
+        code = code.Trim();
         if (codeTypeMap.TryGetValue(code, out SeventeenTrackNumberTrackSubStatus? codeType)) {
             return codeType;
         }

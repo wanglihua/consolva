@@ -77,7 +77,7 @@ public class LogisticsOrderFirstModeController : Controller {
         }
 
         int totalCount = GetQueryOver(queryParam)
-            // .Select(Projections.Count<LogisticsOrderFirstModeInfo>(e => logisticsOrderFirstModeAlias!.Id))
+            // .Select(Projections.Count<LogisticsOrderFirstModeViewInfo>(e => logisticsOrderFirstModeAlias!.Id))
             .Select(Projections.RowCount())
             .SingleOrDefault<int>();
 
@@ -92,13 +92,13 @@ public class LogisticsOrderFirstModeController : Controller {
 
         listQuery = listQuery.ThenByAlias(() => orderFirstModeAlias!.Id).Desc;
 
-        IList<LogisticsOrderFirstModeInfo> logisticsOrderFirstModeList = listQuery
+        IList<LogisticsOrderFirstModeViewInfo> logisticsOrderFirstModeList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
-            .List<LogisticsOrderFirstModeInfo>();
+            .List<LogisticsOrderFirstModeViewInfo>();
 
         /*
-        foreach (LogisticsOrderFirstModeInfo logisticsOrderFirstMode in logisticsOrderFirstModeList) {
+        foreach (LogisticsOrderFirstModeViewInfo logisticsOrderFirstMode in logisticsOrderFirstModeList) {
         }
         */
 
@@ -112,13 +112,13 @@ public class LogisticsOrderFirstModeController : Controller {
         return View("LogisticsOrderFirstModeList", model);
     }
 
-    private LogisticsOrderFirstModeInfo? orderFirstModeAlias = null;
+    private LogisticsOrderFirstModeViewInfo? orderFirstModeAlias = null;
     private LogisticsOrderInfo? orderAlias = null;
     private LogisticsModeInfo? firstModeAlias = null;
 
     [NonAction]
-    private IQueryOver<LogisticsOrderFirstModeInfo, LogisticsOrderFirstModeInfo> GetQueryOver(LogisticsOrderFirstModeListQueryParam queryParam) {
-        var query = session.QueryOver<LogisticsOrderFirstModeInfo>(() => orderFirstModeAlias!)
+    private IQueryOver<LogisticsOrderFirstModeViewInfo, LogisticsOrderFirstModeViewInfo> GetQueryOver(LogisticsOrderFirstModeListQueryParam queryParam) {
+        var query = session.QueryOver<LogisticsOrderFirstModeViewInfo>(() => orderFirstModeAlias!)
             // .JoinAlias(() => orderFirstModeAlias!.Order, () => orderAlias)
             .JoinAlias(() => orderFirstModeAlias!.FirstMode, () => firstModeAlias);
 
@@ -277,8 +277,8 @@ public class LogisticsOrderFirstModeController : Controller {
 
         listQuery = listQuery.OrderByAlias(() => orderFirstModeAlias!.Id).Asc;
 
-        IList<LogisticsOrderFirstModeInfo> orderFirstModeList = listQuery
-            .List<LogisticsOrderFirstModeInfo>();
+        IList<LogisticsOrderFirstModeViewInfo> orderFirstModeList = listQuery
+            .List<LogisticsOrderFirstModeViewInfo>();
 
         var excel = logisticsOrderFirstModeExcelService.Export(orderFirstModeList);
 

@@ -19,36 +19,42 @@
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeInfo.OrderCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">订单编号</a>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.OrderCode))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">订单编号</a>
                 </div>
             </th>
 
             <th style="width: 360px; text-align: left;">
                 <div>
-                    <a field="@(Model.FirstModeAlias).@(nameof(LogisticsOrderFirstModeInfo.FirstMode.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">物流方式</a>
+                    <a field="@(Model.FirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.FirstMode.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">物流方式</a>
                 </div>
             </th>
 
             <th style="width: 90px; text-align: center;">
                 <div>
-                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">物品类型</a>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.GoodsType))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">物品类型</a>
                 </div>
             </th>
 
             <th style="width: 220px; text-align: center;">
                 <div>
-                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">国际单号</a>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.TrackingNo))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">国际单号</a>
+                </div>
+            </th>
+
+            <th style="width: 150px; text-align: center;">
+                <div>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.TrackStatus))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">单号状态</a>
                 </div>
             </th>
 
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">打包时间</a>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">打包时间</a>
                 </div>
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">修改时间</a>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">修改时间</a>
                 </div>
             </th>
             <th></th>
@@ -57,7 +63,7 @@
     <tbody>
         @if (Model.LogisticsOrderFirstModeList.Count != 0) {
             int index = 0;
-            foreach (LogisticsOrderFirstModeInfo orderFirstMode in Model.LogisticsOrderFirstModeList) {
+            foreach (var orderFirstMode in Model.LogisticsOrderFirstModeList) {
                 <tr ondblclick="showLogisticsOrderFirstModeDetail(@(orderFirstMode.Id));">
                     <td style="text-align: center;">
                         <div>
@@ -88,12 +94,18 @@
 
                     <td style="text-align: center;">
                         <div>
-                            @if(string.IsNullOrWhiteSpace(orderFirstMode.TrackingNo)) {
+                            @if (string.IsNullOrWhiteSpace(orderFirstMode.TrackingNo)) {
                                 <span>@ListDataUtil.Render(orderFirstMode.TrackingNo)</span>
                             } else {
                                 <a style="cursor: pointer;" onclick="showSeventeenTrackNumberEvent('@(orderFirstMode.TrackingNo)')">@ListDataUtil.Render(orderFirstMode.TrackingNo)</a>
                             }
-                            
+
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(orderFirstMode.TrackStatus.Name)
                         </div>
                     </td>
 
@@ -112,7 +124,7 @@
             }
         } else {
             <tr>
-                <td colspan="9">
+                <td colspan="10">
                     暂时没有数据！
                 </td>
             </tr>

@@ -47,7 +47,7 @@ public class LogisticsOrderFirstModeExcelService {
     /// </summary>
     /// <param name="orderFirstModeList"></param>
     /// <returns></returns>
-    public byte[] Export(IList<LogisticsOrderFirstModeInfo> orderFirstModeList) {
+    public byte[] Export(IList<LogisticsOrderFirstModeViewInfo> orderFirstModeList) {
         IWorkbook workbook = new XSSFWorkbook();
 
         string sheetName = "订单国际单号列表";

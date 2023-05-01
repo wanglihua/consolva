@@ -18,5 +18,5 @@ public class LogisticsOrderFirstModeListModel : ListModel {
     public string FirstModeAlias { get; set; } = string.Empty;    
 
     [BindNever]
-    public IList<LogisticsOrderFirstModeInfo> LogisticsOrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeInfo>();
+    public IList<LogisticsOrderFirstModeViewInfo> LogisticsOrderFirstModeList { get; set; } = new List<LogisticsOrderFirstModeViewInfo>();
 }
