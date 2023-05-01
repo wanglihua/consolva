@@ -43,6 +43,14 @@
     </select>&nbsp;
 
     <label for="trackingNoQuery">国际单号</label>&nbsp;<input id="trackingNoQuery" autocomplete="off" style="width: 220px; height: 30px;" placeholder="国际单号查询"/>&nbsp;
+
+    <label for="trackStatusQuery">跟踪状态</label>&nbsp;
+    <select id="trackStatusQuery" style="width: 120px; height: 30px;">
+        <option value="0">跟踪状态查询</option>
+        @foreach (var status in Model.TrackStatusList) {
+            <option value="@status.Code">@status.Name</option>
+        }
+    </select>&nbsp;
     
     <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
 
@@ -103,6 +111,7 @@
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackStatusQuery))": $("#trackStatusQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackingNoQuery))": $("#trackingNoQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.BeginDateQuery))": $("#beginDateQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.EndDateQuery))": $("#endDateQuery").val(),

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsTrack;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderFirstMode;
 
@@ -15,6 +16,9 @@ public class LogisticsOrderFirstModeListQueryParam : ListQueryParam {
 
     [ModelBinder(typeof(LogisticsGoodsTypeModelBinder))]
     public LogisticsGoodsType? GoodsTypeQuery { get; set; }
+
+    [ModelBinder(typeof(SeventeenTrackNumberTrackStatusModelBinder))]
+    public SeventeenTrackNumberTrackStatus? TrackStatusQuery { get; set; }
 
     public string? TrackingNoQuery { get; set; }
 

@@ -60,6 +60,7 @@ public class LogisticsOrderFirstModeController : Controller {
         model.GoodsTypeList = LogisticsGoodsType.GetInnerList();
         model.FirstTypeList = LogisticsModeType.GetList();
         model.ChannelList = LogisticsModeChannel.GetList();
+        model.TrackStatusList = SeventeenTrackNumberTrackStatus.GetList();
 
         return View("LogisticsOrderFirstModeIndex", model);
     }
@@ -140,6 +141,11 @@ public class LogisticsOrderFirstModeController : Controller {
         if (string.IsNullOrWhiteSpace(queryParam.TrackingNoQuery) == false) {
             string trackingNoQuery = queryParam.TrackingNoQuery.Trim();
             query = query.Where(e => e.TrackingNo == trackingNoQuery);
+        }
+
+        if (queryParam.TrackStatusQuery != null && queryParam.TrackStatusQuery != SeventeenTrackNumberTrackStatus.None) {
+            SeventeenTrackNumberTrackStatus trackStatusQuery = queryParam.TrackStatusQuery;
+            query = query.Where(e => e.TrackStatus == trackStatusQuery);
         }
 
         if (queryParam.BeginDateQuery != null) {

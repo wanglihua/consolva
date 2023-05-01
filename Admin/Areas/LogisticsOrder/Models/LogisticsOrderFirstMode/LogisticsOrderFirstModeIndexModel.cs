@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsTrack;
 
 namespace shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderFirstMode;
 
@@ -12,4 +13,7 @@ public class LogisticsOrderFirstModeIndexModel {
 
     [BindNever]
     public IList<LogisticsModeChannel> ChannelList { get; set; } = new List<LogisticsModeChannel>();
+
+    [BindNever]
+    public IList<SeventeenTrackNumberTrackStatus> TrackStatusList { get; set; } = new List<SeventeenTrackNumberTrackStatus>();
 }
