@@ -192,10 +192,16 @@ public class LogisticsFeeService {
             // 这种情况是分箱计算
 
             int boxNum = 0;
-            feePackList = feePackList.OrderBy(e => e.PackId).ToList(); // 让箱号推断正确
+            feePackList = feePackList.OrderBy(e => e.BoxNum).ToList();
             foreach (var feePack in feePackList) {
+                // 订单费用计算时，这里 feePack.PackageCount == 1
                 for (int boxIndx = 0; boxIndx < feePack.PackageCount; boxIndx++) {
                     boxNum = boxNum + 1;
+
+                    int boxNumFinal = feePack.BoxNum;
+                    if (boxNumFinal <= 0) {
+                        boxNumFinal = boxNum;
+                    }
 
                     // 跨国快递
                     if (logisticsModeType == LogisticsModeType.Express) {
@@ -206,7 +212,7 @@ public class LogisticsFeeService {
                         resultEntryList.Add(new LogisticsFeeResultEntry {
                             OrderFirstMode = feeDataItem.OrderFirstMode,
                             LogisticsMode = feeDataItem.LogisticsMode,
-                            Title = LogisticsOrderFeeType.InitFee.Name + $"箱号{boxNum}",
+                            Title = LogisticsOrderFeeType.InitFee.Name + $"箱号{boxNumFinal}",
                             FeeType = LogisticsOrderFeeType.InitFee,
                             Fee = initFeeForPackBox,
                             GoodsType = feeDataItem.GoodsType,

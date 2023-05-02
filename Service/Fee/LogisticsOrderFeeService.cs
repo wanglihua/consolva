@@ -287,6 +287,10 @@ public class LogisticsOrderFeeService {
             .Where(e => e.Order.Id == orderId)
             .ToList();
 
+        var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
         var orderFirstModeListFromPack = orderPackList
             .Select(e => e.OrderFirstMode)
             .Distinct()
@@ -327,6 +331,9 @@ public class LogisticsOrderFeeService {
                 .OrderBy(e => e.Id)
                 .ToList();
 
+            var orderFirstModeOrderPackIdList = orderFirstModeOrderPackList.Select(e => e.Id).ToList();
+            var orderFirstModePackBoxList = orderPackBoxList.Where(e => orderFirstModeOrderPackIdList.Contains(e.OrderPack.Id)).ToList();
+
             feeDataItemList.Add(new LogisticsFeeDataItem {
                 Country = order.Country,
                 OrderFirstMode = orderFirstMode,
@@ -336,13 +343,23 @@ public class LogisticsOrderFeeService {
                 Zipcode = orderReceiveAddress.Zipcode,
                 OrderGoodsValue = order.GoodsValue,
 
-                FeePackList = orderFirstModeOrderPackList.Select(e => new LogisticsFeePack {
-                    PackId = e.Id,
-                    Length = e.Length,
-                    Width = e.Width,
-                    Height = e.Height,
-                    Weight = e.Weight,
-                    PackageCount = e.PackageCount,
+                // FeePackList = orderFirstModeOrderPackList.Select(e => new LogisticsFeePack {
+                //     PackId = e.Id,
+                //     Length = e.Length,
+                //     Width = e.Width,
+                //     Height = e.Height,
+                //     Weight = e.Weight,
+                //     PackageCount = e.PackageCount,
+                // }).ToList(),
+
+                // 改用分箱号的数据，方便分箱号计算费用时记录箱号
+                FeePackList = orderFirstModePackBoxList.Select(e => new LogisticsFeePack {
+                    BoxNum = e.BoxNum,
+                    Length = e.OrderPack.Length,
+                    Width = e.OrderPack.Width,
+                    Height = e.OrderPack.Height,
+                    Weight = e.OrderPack.Weight,
+                    PackageCount = 1, // 分箱号了，就都是一箱了
                 }).ToList(),
             });
         }
