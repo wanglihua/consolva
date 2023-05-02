@@ -106,12 +106,13 @@ public class HomeController : Controller {
             .Take(1)
             .SingleOrDefault();
 
-        string customerLevelTitle = vipDiscountFromDiscountPercent?.Rank.Name ?? string.Empty; // VIP1,2,3...
-        if (string.IsNullOrWhiteSpace(customerLevelTitle)) {
-            customerLevelTitle = customer.Level.Name;
-        }
+        // string customerLevelTitle = vipDiscountFromDiscountPercent?.Rank.Name ?? string.Empty; // VIP1,2,3...
+        // if (string.IsNullOrWhiteSpace(customerLevelTitle)) {
+        //     customerLevelTitle = customer.Level.Name;
+        // }
 
-        customerCode = $"专属会员号 SD{customerCode} {customerLevelTitle} {discountDesc}";
+        // customerCode = $"专属会员号 SD{customerCode} {customerLevelTitle} {discountDesc}";
+        customerCode = $"专属会员号 SD{customerCode} {discountDesc}";
 
         if (vipDiscountFromDiscountPercent != null
             && (customer.Level != CustomerLevel.Vip || customer.VipRank != vipDiscountFromDiscountPercent.Rank)) {
