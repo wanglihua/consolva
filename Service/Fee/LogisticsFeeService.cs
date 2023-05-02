@@ -199,7 +199,8 @@ public class LogisticsFeeService {
 
                     // 跨国快递
                     if (logisticsModeType == LogisticsModeType.Express) {
-                        decimal initFeeForPackBox = logisticsFeeExpressService.GetFee(feePack.Weight, logisticsModeId, feeMessageType);
+                        decimal finalSingleWeightKg = GetSinglePackWeight(feePack, feeRate, feeMessageType);
+                        decimal initFeeForPackBox = logisticsFeeExpressService.GetFee(finalSingleWeightKg, logisticsModeId, feeMessageType);
                         initialTotalFee = initialTotalFee + initFeeForPackBox;
 
                         resultEntryList.Add(new LogisticsFeeResultEntry {
