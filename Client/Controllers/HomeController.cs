@@ -111,7 +111,7 @@ public class HomeController : Controller {
             customerLevelTitle = customer.Level.Name;
         }
 
-        customerCode = $"SD{customerCode} {customerLevelTitle} {discountDesc}";
+        customerCode = $"专属会员号 SD{customerCode} {customerLevelTitle} {discountDesc}";
 
         if (vipDiscountFromDiscountPercent != null
             && (customer.Level != CustomerLevel.Vip || customer.VipRank != vipDiscountFromDiscountPercent.Rank)) {
