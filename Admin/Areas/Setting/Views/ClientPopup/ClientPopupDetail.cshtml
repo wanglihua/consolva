@@ -48,7 +48,7 @@
                             <div class="form-group">
                                 <label for="content" class="col-xs-2 control-label">内容</label>
                                 <div class="col-xs-10">
-                                    <textarea id="content" asp-for="Content" type="text" required="required" maxlength="1000" class="input-sm form-control" autocomplete="off"></textarea>
+                                    <textarea id="content" asp-for="Content" rows="30" required="required" maxlength="1000" class="input-sm form-control" autocomplete="off"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -64,9 +64,6 @@
 <script type="text/javascript">
 
     function saveClientPopup() {
-        var content = CKEDITOR.instances.content.getData();
-        $("#content").val(content);        
-        
         var form = $("#clientPopupDetailForm");
         var valid = validate(form);
 
@@ -101,21 +98,4 @@
         window.location.href = url;
     }
 
-</script>
-
-<script type="text/javascript">
-    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
-        CKEDITOR.tools.enableHtml5Elements(document);
-    }
-
-    CKEDITOR.config.height = 520;
-    CKEDITOR.config.width = 'auto';
-
-    var initCkEditor = (function () {
-        return function () {
-            CKEDITOR.replace('content');
-        };
-    })();
-
-    initCkEditor();
 </script>
