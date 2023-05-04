@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using NLog;
 using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
@@ -90,16 +91,24 @@ public class WechatMessageService {
         object data = param.Data;
 
         try {
+            string dataJson = JsonConvert.SerializeObject(data);
+            log.Error($"发送模板消息参数记录，openid: {openId}, templateId: {templateId}, data: {dataJson}");
+        }
+        catch (Exception exp) {
+            log.Error(exp);
+        }
+
+        try {
             var miniProgram = new TemplateModel_MiniProgram {
                 appid = WechatAppConfig.AppId,
                 pagepath = url,
             };
-            // todo a 小程序发布后改回来 TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data, miniProgram);
             // TemplateApi.SendTemplateMessage(accessToken, openId, templateId, null, data, null);
             TemplateApi.SendTemplateMessage(accessToken, openId, templateId, url, data, miniProgram);
         }
         catch (Exception exp) {
-            log.Error($"发送模板消息失败，openid: ${openId}, templateId: ${templateId}, data: ${data}");
+            string dataJson = JsonConvert.SerializeObject(data);
+            log.Error($"发送模板消息失败，openid: {openId}, templateId: {templateId}, data: {dataJson}");
             log.Error(exp);
         }
     }
@@ -132,7 +141,6 @@ public class WechatMessageService {
         log.Trace($"remark: {remark}");
         log.Trace($"sender: {sender}");
         log.Trace($"url: {url}");
-
 
         return CustomerMessageStatus.Success;
 #else
