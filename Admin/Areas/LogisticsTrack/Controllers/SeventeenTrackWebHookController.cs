@@ -79,6 +79,14 @@ public class SeventeenTrackWebHookController : Controller {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
+            if (model.Event == "TRACKING_STOPPED") {
+                log.Error(requestBody); // 暂时记录一下
+                return StatusCode((int)HttpStatusCode.OK);
+            }
+
+            // 就两种情况 TRACKING_UPDATED 和 TRACKING_STOPPED
+            // if (model.Event == "TRACKING_UPDATED") 
+
             string trackingNo = model.Data.Number;
             int carrierKey = model.Data.Carrier;
 
