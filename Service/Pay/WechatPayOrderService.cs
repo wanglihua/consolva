@@ -80,7 +80,7 @@ public class WechatPayOrderService {
 
         decimal discountAmount = 0;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeCouponType);
             if (discountResult.Success == false) {
                 discountAmount = 0;
             } else {
@@ -100,7 +100,7 @@ public class WechatPayOrderService {
 
         decimal scoreDeductBaseAmount = 0;
         if (scoreDeduct) {
-            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion);
+            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeCouponType);
             var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }

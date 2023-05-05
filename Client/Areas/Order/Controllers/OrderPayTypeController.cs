@@ -74,7 +74,7 @@ public class OrderPayTypeController : Controller {
         decimal couponDiscountAmount = 0;
         string couponDiscountAmountStr = string.Empty;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeCouponType);
             if (discountResult.Success == false) {
                 couponDiscountAmount = 0;
                 couponDiscountAmountStr = discountResult.Message;
@@ -90,7 +90,7 @@ public class OrderPayTypeController : Controller {
             arrearsAmount = 0;
         }
 
-        var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+        var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeCouponType));
 
         if (param.ScoreDeduct) {
             arrearsAmount -= scoreDeductResult.Amount;

@@ -142,6 +142,21 @@ public class LogisticsOrderFeeType : CodeTypeBase {
         return feeTypeList.ToList();
     }
 
+    /// <summary>
+    /// 优惠券折扣考虑的费用类型
+    /// </summary>
+    /// <returns></returns>
+    public static IList<LogisticsOrderFeeType> GetCouponFeeTypeLList() {
+        List<LogisticsOrderFeeType> couponFeeTypeList = new List<LogisticsOrderFeeType>();
+        couponFeeTypeList.AddRange(logisticsFeeTypeList);
+        couponFeeTypeList.Add(ExtraPackageFee);
+        couponFeeTypeList.Add(ManualIncrease);
+        couponFeeTypeList.Add(ManualDecrease);
+        couponFeeTypeList.Add(ManualAdjustFee);
+        
+        return couponFeeTypeList;
+    }
+
     public static IList<LogisticsOrderFeeType> GetLogisticsFeeTypeList() {
         return logisticsFeeTypeList.ToList();
     }

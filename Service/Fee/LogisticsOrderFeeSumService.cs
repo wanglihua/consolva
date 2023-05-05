@@ -50,14 +50,14 @@ public class LogisticsOrderFeeSumService {
         }
 
         decimal firstModeFee = 0.0m;
-        decimal firstModeFeeNoPromotion = 0.0m;
-        var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
+        decimal firstModeFeeCouponType = 0.0m;
+        var couponFeeTypeList = LogisticsOrderFeeType.GetCouponFeeTypeLList();
         foreach (var fee in orderFeeList) {
-            if (logisticsFeeTypeList.Contains(fee.Type)) {
+            if (couponFeeTypeList.Contains(fee.Type)) {
                 firstModeFee += fee.Fee;
 
                 if (fee.OrderFirstMode != null && fee.OrderFirstMode.FirstMode.Promotion == false) {
-                    firstModeFeeNoPromotion += fee.Fee;
+                    firstModeFeeCouponType += fee.Fee;
                 }
             }
         }
@@ -68,7 +68,7 @@ public class LogisticsOrderFeeSumService {
             VipDiscountAmount = Math.Abs(vipDiscount),
             TotalAmountWithoutCouponDiscount = totalAmountWithoutCouponDiscount,
             FirstModeFee = firstModeFee,
-            FirstModeFeeNoPromotion = firstModeFeeNoPromotion,
+            FirstModeFeeCouponType = firstModeFeeCouponType,
         };
     }
 }

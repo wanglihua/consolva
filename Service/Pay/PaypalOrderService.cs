@@ -86,7 +86,7 @@ public class PaypalOrderService {
                 throw new ValidationException("优惠券持有客户和订单客户不一致！");
             }
 
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeCouponType);
             if (discountResult.Success == false) {
                 discountAmount = 0;
             } else {
@@ -107,7 +107,7 @@ public class PaypalOrderService {
 
         decimal scoreDeductBaseAmount = 0;
         if (param.ScoreDeduct) {
-            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion);
+            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeCouponType);
             var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }

@@ -86,7 +86,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         decimal discountAmount = 0;
         string discountAmountStr = string.Empty;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeCouponType);
             if (discountResult.Success == false) {
                 discountAmount = 0;
                 discountAmountStr = discountResult.Message;
@@ -104,12 +104,12 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         }
 
         if (param.ScoreDeduct) {
-            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion));
+            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeCouponType));
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
         decimal customerAccount = loginCustomer.Account;
-        decimal maxCustomerAccountAllowed = orderFeeSumData.FirstModeFeeNoPromotion - discountAmount;
+        decimal maxCustomerAccountAllowed = orderFeeSumData.FirstModeFeeCouponType - discountAmount;
         decimal availableAccount = Math.Min(customerAccount, maxCustomerAccountAllowed);
         decimal actualPayAmount = Math.Min(arrearsAmount, availableAccount);
 
@@ -172,7 +172,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
 
         decimal discountAmount = 0;
         if (coupon != null) {
-            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
+            var discountResult = couponService.CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeCouponType);
             if (discountResult.Success == false) {
                 discountAmount = 0;
             } else {
@@ -192,13 +192,13 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
 
         decimal scoreDeductBaseAmount = 0;
         if (param.ScoreDeduct) {
-            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeNoPromotion);
+            scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeCouponType);
             var scoreDeductResult = customerScoreDeductService.Deduct(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
         decimal customerAccount = loginCustomer.Account;
-        decimal maxCustomerAccountAllowed = orderFeeSumData.FirstModeFeeNoPromotion - discountAmount;
+        decimal maxCustomerAccountAllowed = orderFeeSumData.FirstModeFeeCouponType - discountAmount;
         decimal availableAccount = Math.Min(customerAccount, maxCustomerAccountAllowed);
         decimal actualPayAmount = Math.Min(arrearsAmount, availableAccount);
 

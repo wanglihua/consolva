@@ -447,7 +447,7 @@ public class CouponService {
 
         decimal couponDiscount = 0m;
         if (coupon != null) {
-            var couponDiscountResult = CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeNoPromotion);
+            var couponDiscountResult = CalculateCouponDiscount(couponId, orderFeeSumData.FirstModeFeeCouponType);
             if (couponDiscountResult.Success == false) {
                 throw new ValidationException(couponDiscountResult.Message);
             }
