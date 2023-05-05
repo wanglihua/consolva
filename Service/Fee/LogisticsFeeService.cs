@@ -508,7 +508,7 @@ public class LogisticsFeeService {
                     finalWeightKg = weightList[0];
                 } else if (feeRate.VolumeWeightResultType == VolumeWeightResultType.Middle) // 取中
                 {
-                    finalWeightKg = weightList[1]; // 三个元素的时候是取中，两个元素的时候就是取小了
+                    finalWeightKg = weightList[1]; // 三个元素的时候是取中，两个元素的时候就是取大了
                 } else // 其他都取大
                 {
                     finalWeightKg = weightList[weightList.Count - 1];
@@ -708,7 +708,7 @@ public class LogisticsFeeService {
                     finalWeightKg = weightList[0];
                 } else if (feeRate.VolumeWeightResultType == VolumeWeightResultType.Middle) // 取中
                 {
-                    finalWeightKg = weightList[1]; // 三个元素的时候是取中，两个元素的时候就是取小了
+                    finalWeightKg = weightList[1]; // 三个元素的时候是取中，两个元素的时候就是取大了
                 } else // 其他都取大
                 {
                     finalWeightKg = weightList[weightList.Count - 1];
