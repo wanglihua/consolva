@@ -4,6 +4,7 @@ using NLog;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.LogisticsTrack;
@@ -300,10 +301,12 @@ public class LogisticsOrderFirstModeExcelService {
 
         session.Flush();
 
-        // 订单日志
-        foreach (var importItem in actualImportItemList) {
-            logisticsOrderActionService.NewActionUser(importItem.OrderId, LogisticsOrderActionType.OrderFirstModeImportTrackingNo, importItem.TrackingNo, loginUserId);
-        }
+        // 订单日志，统一一个事务
+        Transactional.Wrap(session, () => {
+            foreach (var importItem in actualImportItemList) {
+                logisticsOrderActionService.NewActionUser(importItem.OrderId, LogisticsOrderActionType.OrderFirstModeImportTrackingNo, importItem.TrackingNo, loginUserId);
+            }
+        });
 
         session.Flush();
 
@@ -332,7 +335,7 @@ public class LogisticsOrderFirstModeExcelService {
         //     log.Error(exp);
         // }
 
-        // 注册单号
+        // 注册单号，一个批次(40个单号)，一个数据库事务
         if (trackingNoListToRegister.Count != 0) {
             var successTrackNumberList = seventeenTrackRegisterService.Register(
                 trackingNoListToRegister
@@ -354,6 +357,7 @@ public class LogisticsOrderFirstModeExcelService {
             var carierKeyList = successTrackNumberList.Select(e => e.CarrierKey).Distinct().ToList();
             var carrierList = session.Query<SeventeenTrackCarrierInfo>().Where(e => carierKeyList.Contains(e.CarrierKey)).ToList();
 
+            // 发送消息，一个消息一个事务
             foreach (var successTrackNumber in successTrackNumberList) {
                 string trackingNo = successTrackNumber.TrackingNo;
                 var actualImportItem = actualImportItemList
@@ -381,7 +385,10 @@ public class LogisticsOrderFirstModeExcelService {
                     //     log.Error(exp);
                     // }
 
-                    customerMessageInternationalExpressTrackingNoService.SendMessage(orderFirstMode.Order.Customer, orderFirstMode.Order, trackingNo, carrier?.CarrierName ?? string.Empty, carrier?.Url ?? string.Empty);
+                    Transactional.Wrap(session, () => {
+                        // 发送消息
+                        customerMessageInternationalExpressTrackingNoService.SendMessage(orderFirstMode.Order.Customer, orderFirstMode.Order, trackingNo, carrier?.CarrierName ?? string.Empty, carrier?.Url ?? string.Empty);
+                    });
                 }
             }
         }

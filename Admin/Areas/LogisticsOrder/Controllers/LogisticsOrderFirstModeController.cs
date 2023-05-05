@@ -294,6 +294,7 @@ public class LogisticsOrderFirstModeController : Controller {
 
     [HttpPost]
     [Route("/admin/logistics/order/logistics/order/first/mode/import")]
+    // 里面有数据库事务
     public IActionResult Import(IFormFile excelFile) {
         int loginUserId = loginUserService.GetLoginUserId();
         logisticsOrderFirstModeExcelService.Import(excelFile, loginUserId);

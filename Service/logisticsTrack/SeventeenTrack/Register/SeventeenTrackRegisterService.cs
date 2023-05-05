@@ -4,6 +4,7 @@ using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 using shunda.Core;
 using shunda.Core.Config;
+using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using shunda.Domain.LogisticsTrack;
 
@@ -62,147 +63,149 @@ public class SeventeenTrackRegisterService {
             throw new ValidationException("一次注册单号数量不能超过40，请分批次注册！");
         }
 
-        // https://api.17track.net/track/v2/register
-
-        using var client = new RestClient(
-            new RestClientOptions {
-                BaseUrl = new Uri("https://api.17track.net"),
-            },
-            configureSerialization: c => c.UseNewtonsoftJson()
-        );
-
-        var request = new RestRequest("/track/v2/register");
-        request.AddHeader("17token", LogisticsTrackConfig.SeventeenTrackToken);
-        request.AddHeader("Content-Type", "application/json");
-
-        request.AddJsonBody(requestDataItemList);
-
-        request.OnBeforeDeserialization = response => {
-            string contentType = response.ContentType ?? string.Empty;
-            if (contentType != "application/json") {
-                string content = response.Content ?? string.Empty;
-                log.Error($"contentType: {contentType}");
-                log.Error($"content: {content}");
-                throw new ValidationException(content);
-            }
-        };
-
-        SevenTrackResponse<SeventeenTrackRegisterResponseData>? responseData = null;
-
-        try {
-            responseData = client.Post<SevenTrackResponse<SeventeenTrackRegisterResponseData>>(request);
-        }
-        catch (Exception exp) {
-            log.Error(exp);
-            throw new Exception($"注册17track快递单数据出现异常: {exp.Message}");
-        }
-
-        if (responseData == null
-            || responseData.Code != 0
-            || (responseData.Data.ErrorList != null && responseData.Data.ErrorList.Count != 0)) {
-            string errorMessage = "注册17track快递单失败！";
-            if ((responseData?.Data.ErrorList?.Count ?? 0) != 0) {
-                errorMessage = errorMessage + string.Join(",", responseData?.Data.ErrorList?.Select(e => e.Message).ToList() ?? new List<string>());
-            }
-
-            throw new ValidationException(errorMessage);
-        }
-
-        // 将返回结果放入数据库
-        var trackingNoList = requestDataItemList.Select(e => e.Number).ToList();
-        var seventeenTrackNumberList = session.Query<SeventeenTrackNumberInfo>()
-            .Where(e => trackingNoList.Contains(e.TrackingNo))
-            .ToList();
-
         var successTrackNumberList = new List<SeventeenTrackNumberInfo>();
 
-        var acceptedList = responseData.Data.AcceptedList;
-        if (acceptedList != null && acceptedList.Count != 0) {
-            var carrierKeyList = acceptedList.Select(e => e.Carrier).Distinct().ToList();
-            var carrierList = session.Query<SeventeenTrackCarrierInfo>()
-                .Where(e => carrierKeyList.Contains(e.CarrierKey))
+        // 一个注册批次一个数据库事务
+        Transactional.Wrap(session, () => {
+            // https://api.17track.net/track/v2/register
+            using var client = new RestClient(
+                new RestClientOptions {
+                    BaseUrl = new Uri("https://api.17track.net"),
+                },
+                configureSerialization: c => c.UseNewtonsoftJson()
+            );
+
+            var request = new RestRequest("/track/v2/register");
+            request.AddHeader("17token", LogisticsTrackConfig.SeventeenTrackToken);
+            request.AddHeader("Content-Type", "application/json");
+
+            request.AddJsonBody(requestDataItemList);
+
+            request.OnBeforeDeserialization = response => {
+                string contentType = response.ContentType ?? string.Empty;
+                if (contentType != "application/json") {
+                    string content = response.Content ?? string.Empty;
+                    log.Error($"contentType: {contentType}");
+                    log.Error($"content: {content}");
+                    throw new ValidationException(content);
+                }
+            };
+
+            SevenTrackResponse<SeventeenTrackRegisterResponseData>? responseData = null;
+
+            try {
+                responseData = client.Post<SevenTrackResponse<SeventeenTrackRegisterResponseData>>(request);
+            }
+            catch (Exception exp) {
+                log.Error(exp);
+                throw new Exception($"注册17track快递单数据出现异常: {exp.Message}");
+            }
+
+            if (responseData == null
+                || responseData.Code != 0
+                || (responseData.Data.ErrorList != null && responseData.Data.ErrorList.Count != 0)) {
+                string errorMessage = "注册17track快递单失败！";
+                if ((responseData?.Data.ErrorList?.Count ?? 0) != 0) {
+                    errorMessage = errorMessage + string.Join(",", responseData?.Data.ErrorList?.Select(e => e.Message).ToList() ?? new List<string>());
+                }
+
+                throw new ValidationException(errorMessage);
+            }
+
+            // 将返回结果放入数据库
+            var trackingNoList = requestDataItemList.Select(e => e.Number).ToList();
+            var seventeenTrackNumberList = session.Query<SeventeenTrackNumberInfo>()
+                .Where(e => trackingNoList.Contains(e.TrackingNo))
                 .ToList();
 
-            foreach (var accepted in acceptedList) {
-                int carrierKey = accepted.Carrier;
-                var carrier = carrierList
-                    .Where(e => e.CarrierKey == carrierKey)
-                    .Take(1)
-                    .SingleOrDefault();
+            var acceptedList = responseData.Data.AcceptedList;
+            if (acceptedList != null && acceptedList.Count != 0) {
+                var carrierKeyList = acceptedList.Select(e => e.Carrier).Distinct().ToList();
+                var carrierList = session.Query<SeventeenTrackCarrierInfo>()
+                    .Where(e => carrierKeyList.Contains(e.CarrierKey))
+                    .ToList();
 
-                string trackingNo = accepted.Number;
+                foreach (var accepted in acceptedList) {
+                    int carrierKey = accepted.Carrier;
+                    var carrier = carrierList
+                        .Where(e => e.CarrierKey == carrierKey)
+                        .Take(1)
+                        .SingleOrDefault();
 
-                var seventeenTrackNumber = seventeenTrackNumberList
-                    .Where(e => e.TrackingNo == trackingNo)
-                    .Take(1)
-                    .SingleOrDefault();
+                    string trackingNo = accepted.Number;
 
-                if (seventeenTrackNumber == null) {
-                    seventeenTrackNumber = new SeventeenTrackNumberInfo {
-                        TrackingNo = trackingNo,
-                    };
+                    var seventeenTrackNumber = seventeenTrackNumberList
+                        .Where(e => e.TrackingNo == trackingNo)
+                        .Take(1)
+                        .SingleOrDefault();
 
-                    seventeenTrackNumberList.Add(seventeenTrackNumber); // 要加进去，否则当前列表有重复的，就会报错了                    
+                    if (seventeenTrackNumber == null) {
+                        seventeenTrackNumber = new SeventeenTrackNumberInfo {
+                            TrackingNo = trackingNo,
+                        };
+
+                        seventeenTrackNumberList.Add(seventeenTrackNumber); // 要加进去，否则当前列表有重复的，就会报错了                    
+                    }
+
+                    seventeenTrackNumber.TrackingNo = trackingNo;
+                    seventeenTrackNumber.CarrierKey = carrierKey;
+                    seventeenTrackNumber.CarrierName = carrier?.CarrierName ?? "未知运输商";
+                    seventeenTrackNumber.Origin = SeventeenTrackNumberOrigin.GetById(accepted.Origin);
+                    seventeenTrackNumber.ErrorCode = 0;
+                    seventeenTrackNumber.ErrorMessage = string.Empty;
+                    seventeenTrackNumber.Status = SeventeenTrackNumberStatus.Accepted;
+
+                    session.SaveOrUpdate(seventeenTrackNumber);
+
+                    successTrackNumberList.Add(seventeenTrackNumber);
                 }
 
-                seventeenTrackNumber.TrackingNo = trackingNo;
-                seventeenTrackNumber.CarrierKey = carrierKey;
-                seventeenTrackNumber.CarrierName = carrier?.CarrierName ?? "未知运输商";
-                seventeenTrackNumber.Origin = SeventeenTrackNumberOrigin.GetById(accepted.Origin);
-                seventeenTrackNumber.ErrorCode = 0;
-                seventeenTrackNumber.ErrorMessage = string.Empty;
-                seventeenTrackNumber.Status = SeventeenTrackNumberStatus.Accepted;
-
-                session.SaveOrUpdate(seventeenTrackNumber);
-
-                successTrackNumberList.Add(seventeenTrackNumber);
+                session.Flush();
             }
 
-            session.Flush();
-        }
+            var rejectedList = responseData.Data.RejectedList;
+            if (rejectedList != null && rejectedList.Count != 0) {
+                foreach (var rejected in rejectedList) {
+                    string trackingNo = rejected.Number;
 
-        var rejectedList = responseData.Data.RejectedList;
-        if (rejectedList != null && rejectedList.Count != 0) {
-            foreach (var rejected in rejectedList) {
-                string trackingNo = rejected.Number;
+                    var seventeenTrackNumber = seventeenTrackNumberList
+                        .Where(e => e.TrackingNo == trackingNo)
+                        .Take(1)
+                        .SingleOrDefault();
 
-                var seventeenTrackNumber = seventeenTrackNumberList
-                    .Where(e => e.TrackingNo == trackingNo)
-                    .Take(1)
-                    .SingleOrDefault();
+                    if (seventeenTrackNumber == null) {
+                        seventeenTrackNumber = new SeventeenTrackNumberInfo {
+                            TrackingNo = trackingNo,
+                            CarrierKey = 0,
+                            CarrierName = string.Empty,
+                            Origin = SeventeenTrackNumberOrigin.None,
+                            ErrorCode = rejected.Error.Code,
+                            ErrorMessage = rejected.Error.Message,
+                            Status = SeventeenTrackNumberStatus.Rejected,
+                        };
 
-                if (seventeenTrackNumber == null) {
-                    seventeenTrackNumber = new SeventeenTrackNumberInfo {
-                        TrackingNo = trackingNo,
-                        CarrierKey = 0,
-                        CarrierName = string.Empty,
-                        Origin = SeventeenTrackNumberOrigin.None,
-                        ErrorCode = rejected.Error.Code,
-                        ErrorMessage = rejected.Error.Message,
-                        Status = SeventeenTrackNumberStatus.Rejected,
-                    };
+                        session.Save(seventeenTrackNumber);
 
-                    session.Save(seventeenTrackNumber);
+                        seventeenTrackNumberList.Add(seventeenTrackNumber); // 要加进去，否则当前列表有重复的，就会报错了
+                    } else {
+                        // 之前被拒绝的才有可能要更新最新的错误相关信息等，其他的状态不需要更新。比如重复注册了，更不用更新。
+                        if (seventeenTrackNumber.Status == SeventeenTrackNumberStatus.Rejected) {
+                            // seventeenTrackNumber.TrackingNo = trackingNo;
+                            seventeenTrackNumber.CarrierKey = 0;
+                            seventeenTrackNumber.CarrierName = string.Empty;
+                            seventeenTrackNumber.Origin = SeventeenTrackNumberOrigin.None;
+                            seventeenTrackNumber.ErrorCode = rejected.Error.Code;
+                            seventeenTrackNumber.ErrorMessage = rejected.Error.Message;
+                            seventeenTrackNumber.Status = SeventeenTrackNumberStatus.Rejected;
 
-                    seventeenTrackNumberList.Add(seventeenTrackNumber); // 要加进去，否则当前列表有重复的，就会报错了
-                } else {
-                    // 之前被拒绝的才有可能要更新最新的错误相关信息等，其他的状态不需要更新。比如重复注册了，更不用更新。
-                    if (seventeenTrackNumber.Status == SeventeenTrackNumberStatus.Rejected) {
-                        // seventeenTrackNumber.TrackingNo = trackingNo;
-                        seventeenTrackNumber.CarrierKey = 0;
-                        seventeenTrackNumber.CarrierName = string.Empty;
-                        seventeenTrackNumber.Origin = SeventeenTrackNumberOrigin.None;
-                        seventeenTrackNumber.ErrorCode = rejected.Error.Code;
-                        seventeenTrackNumber.ErrorMessage = rejected.Error.Message;
-                        seventeenTrackNumber.Status = SeventeenTrackNumberStatus.Rejected;
-
-                        session.Update(seventeenTrackNumber);
+                            session.Update(seventeenTrackNumber);
+                        }
                     }
                 }
-            }
 
-            session.Flush();
-        }
+                session.Flush();
+            }
+        });
 
         return successTrackNumberList;
     }
