@@ -119,21 +119,22 @@ public class CustomerMessageExpressCheckinService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
+                    string messsageTitle = customerMessageCommonService.GetMessageTitle(messageType, "【快递单入库】提醒");
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【快递单入库】提醒", customerCode, message1, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messsageTitle, customerCode, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【快递单入库】提醒", customerCode, message2, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messsageTitle, customerCode, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【快递单入库】提醒", customerCode, message3, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messsageTitle, customerCode, processUser, url);
                     }
                 }
 

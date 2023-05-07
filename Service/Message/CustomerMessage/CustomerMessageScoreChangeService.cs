@@ -115,21 +115,21 @@ public class CustomerMessageScoreChangeService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    string messageTitle = "积分变动提醒";
+                    string messageTitle = customerMessageCommonService.GetMessageTitle(messageType, "积分变动提醒");
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message1, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message2, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message3, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
                     }
                 }
 

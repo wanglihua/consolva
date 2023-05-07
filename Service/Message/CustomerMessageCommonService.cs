@@ -156,14 +156,13 @@ public class CustomerMessageCommonService {
     /// 发送订单通知
     /// </summary>
     /// <param name="customer">customer</param>
-    /// <param name="first">first</param>
     /// <param name="orderCode">orderCode</param>
     /// <param name="customerCode">customerCode</param>
-    /// <param name="remark">remark</param>
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
-    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string url = "") {
-        wechatMessageService.SendOrderNoticeTemplateMessage(customer, first, orderCode, customerCode, remark, sender, url);
+    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string orderCode, string customerCode, string sender, string url = "") {
+        orderCode = orderCode + ",点击查看详情";
+        wechatMessageService.SendOrderNoticeTemplateMessage(customer, string.Empty, orderCode, customerCode, string.Empty, sender, url);
     }
 
     /// <summary>
@@ -184,5 +183,13 @@ public class CustomerMessageCommonService {
     /// <returns></returns>
     public bool CustomerShouldSend(int customerId, CustomerMessageType messageType) {
         return customerMessageClientCustomizeService.ShouldSend(customerId, messageType);
+    }
+
+    public string GetMessageTitle(CustomerMessageType messageType, string assignedTitle = "") {
+        if (string.IsNullOrWhiteSpace(assignedTitle) == false) {
+            return assignedTitle;
+        }
+
+        return messageType.Name;
     }
 }

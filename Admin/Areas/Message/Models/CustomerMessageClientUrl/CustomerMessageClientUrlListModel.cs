@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace shunda.Admin.Areas.Message.Models.CustomerMessageClientUrl;
 
+[Obsolete]
 public class CustomerMessageClientUrlListModel : ListModel
 {
     public CustomerMessageClientUrlListModel(ListPager listPager) : base(listPager)
