@@ -1,6 +1,7 @@
 using NHibernate;
 using shunda.Core.Service;
 using shunda.Domain;
+using shunda.Domain.Express;
 using shunda.Domain.Message;
 using shunda.Service.Message.CustomerMessage;
 
@@ -16,19 +17,25 @@ public class CustomerMessageClientUrlService {
     private readonly CustomerMessageCouponFollowService customerMessageCouponFollowService;
     private readonly CustomerMessageExpressCheckinService customerMessageExpressCheckinService;
     private readonly CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService;
+    private readonly CustomerMessageExpressPhotoCheckinService customerMessageExpressPhotoCheckinService;
+    private readonly CustomerMessageExpressPhotoSignService customerMessageExpressPhotoSignService;
 
     public CustomerMessageClientUrlService(
         ISession session,
         CustomerMessageAccountChangeService customerMessageAccountChangeService,
         CustomerMessageCouponFollowService customerMessageCouponFollowService,
         CustomerMessageExpressCheckinService customerMessageExpressCheckinService,
-        CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService
+        CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService,
+        CustomerMessageExpressPhotoCheckinService customerMessageExpressPhotoCheckinService,
+        CustomerMessageExpressPhotoSignService customerMessageExpressPhotoSignService
     ) {
         this.session = session;
         this.customerMessageAccountChangeService = customerMessageAccountChangeService;
         this.customerMessageCouponFollowService = customerMessageCouponFollowService;
         this.customerMessageExpressCheckinService = customerMessageExpressCheckinService;
         this.customerMessageExpressExpectEnterService = customerMessageExpressExpectEnterService;
+        this.customerMessageExpressPhotoCheckinService = customerMessageExpressPhotoCheckinService;
+        this.customerMessageExpressPhotoSignService = customerMessageExpressPhotoSignService;
     }
 
     public string GetUrl(CustomerMessageInfo customerMessage) {
@@ -60,6 +67,44 @@ public class CustomerMessageClientUrlService {
             int expressId = relatedId;
             return customerMessageExpressExpectEnterService.GetUrl(expressId);
         }
+
+        if (messageType == CustomerMessageType.ExpressPhotoCheckin) {
+            int expressPhotoId = relatedId;
+            var expressPhoto = session.Get<ExpressPhotoInfo>(expressPhotoId);
+            if (expressPhoto == null) {
+                return string.Empty;
+            }
+
+            string trackingNo = expressPhoto.TrackingNo;
+            var express = session.Query<ExpressInfo>()
+                .Where(e => e.TrackingNo == trackingNo)
+                .Take(1)
+                .SingleOrDefault();
+            if (express == null) {
+                return string.Empty;
+            }
+
+            return customerMessageExpressPhotoCheckinService.GetUrl(express.Id);
+        }
+        
+        if (messageType == CustomerMessageType.ExpressPhotoSign) {
+            int expressPhotoId = relatedId;
+            var expressPhoto = session.Get<ExpressPhotoInfo>(expressPhotoId);
+            if (expressPhoto == null) {
+                return string.Empty;
+            }
+
+            string trackingNo = expressPhoto.TrackingNo;
+            var express = session.Query<ExpressInfo>()
+                .Where(e => e.TrackingNo == trackingNo)
+                .Take(1)
+                .SingleOrDefault();
+            if (express == null) {
+                return string.Empty;
+            }
+
+            return customerMessageExpressPhotoSignService.GetUrl(express.Id);
+        }        
 
         return string.Empty;
     }
